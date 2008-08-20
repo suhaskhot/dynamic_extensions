@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.xmi.importer;
 
 import java.util.ArrayList;
@@ -82,7 +83,6 @@ import edu.common.dynamicextensions.xmi.model.ControlsModel;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 
-
 /**
  *
  * @author sujay_narkar
@@ -92,7 +92,7 @@ import edu.wustl.common.util.dbManager.DAOException;
 public class XMIImportProcessor
 {
 	public boolean isEditedXmi = false;
-	
+
 	public boolean isPackagePresent = false;
 	/**
 	 * Instance of Domain object factory, which will be used to create  dynamic extension's objects.
@@ -119,13 +119,13 @@ public class XMIImportProcessor
 	private Collection<ContainerInterface> retrievedContainerList = new ArrayList<ContainerInterface>();
 
 	private List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>();
-	
-	private Map<AttributeInterface, Map<String,String>> attrVsMapTagValues = new HashMap<AttributeInterface, Map<String,String>>();
-	
-	private Map<EntityInterface, Map<String,String>> entityVsMapTagValues = new HashMap<EntityInterface, Map<String,String>>();
-	
-	private Map<AssociationInterface, Map<String,String>> associationVsMapTagValues = new HashMap<AssociationInterface, Map<String,String>>();
-	
+
+	private Map<AttributeInterface, Map<String, String>> attrVsMapTagValues = new HashMap<AttributeInterface, Map<String, String>>();
+
+	private Map<EntityInterface, Map<String, String>> entityVsMapTagValues = new HashMap<EntityInterface, Map<String, String>>();
+
+	private Map<AssociationInterface, Map<String, String>> associationVsMapTagValues = new HashMap<AssociationInterface, Map<String, String>>();
+
 	/**
 	 * Default constructor
 	 *
@@ -134,18 +134,19 @@ public class XMIImportProcessor
 	{
 		super();
 	}
-	
-	public List<ContainerInterface> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName, List<String> containerNames, boolean isEntityGroupSystemGenerated) throws Exception
+
+	public List<ContainerInterface> processXmi(UmlPackage umlPackage, String entityGroupName, String packageName, List<String> containerNames,
+			boolean isEntityGroupSystemGenerated) throws Exception
 	{
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
 		List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>();
 		List<Generalization> umlGeneralisationColl = new ArrayList<Generalization>();
 
-		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl,packageName);
+		processModel(umlPackage, umlClassColl, umlAssociationColl, umlGeneralisationColl, packageName);
 
 		validate();
-		
-		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,packageName);
+
+		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName, packageName);
 
 		if (entityGroupColl == null || entityGroupColl.size() == 0)
 		{//Add
@@ -160,23 +161,23 @@ public class XMIImportProcessor
 		}
 		//Static models of caTissue and Clinportal are system generated entity groups		
 		entityGroup.setIsSystemGenerated(isEntityGroupSystemGenerated);
-		
-		addTaggedValue(packageName);	
+
+		addTaggedValue(packageName);
 		int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);
 
 		//Creating entities and entity group.
 		for (UmlClass umlClass : umlClassColl)
 		{
-			if(isEntityGroupSystemGenerated)
+			if (isEntityGroupSystemGenerated)
 			{
-				if(!umlClass.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
+				if (!umlClass.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
 				{
 					umlClass.setName(XMIConstants.CATISSUE_PACKAGE + umlClass.getName());
 				}
 			}
 			EntityInterface entity = entityGroup.getEntityByName(umlClass.getName());
-						
+
 			if (entity == null)
 			{//Add
 				entity = createEntity(umlClass);
@@ -188,18 +189,18 @@ public class XMIImportProcessor
 				Collection<Attribute> attrColl = XMIUtilities.getAttributes(umlClass, false);
 				createAttributes(attrColl, entity);
 			}
-			
+
 			populateEntityUIProperties(entity, umlClass.getTaggedValue());
 			addSemanticPropertyForEntities(entity, entityVsMapTagValues.get(entity));
-			
-//			For static models
-			if(isEntityGroupSystemGenerated)
+
+			//			For static models
+			if (isEntityGroupSystemGenerated)
 			{
-				if(!entity.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
+				if (!entity.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
 				{
 					entity.setName(XMIConstants.CATISSUE_PACKAGE + entity.getName());
 				}
-			}						
+			}
 			umlClassIdVsEntity.put(umlClass.refMofId(), entity);
 		}
 
@@ -213,7 +214,7 @@ public class XMIImportProcessor
 		if (umlAssociationColl != null)
 		{
 			for (UmlAssociation umlAssociation : umlAssociationColl)
-			{				
+			{
 				addAssociation(umlAssociation, parentIdVsChildrenIds);
 			}
 		}
@@ -225,10 +226,11 @@ public class XMIImportProcessor
 
 		//Retriving all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
-		{			
+		{
 			//retrievedContainerList populated by containerCollection of each entity			
 			Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-			for(EntityInterface entity: entityCollection){
+			for (EntityInterface entity : entityCollection)
+			{
 				retrievedContainerList.addAll(entity.getContainerCollection());
 			}
 		}
@@ -238,7 +240,7 @@ public class XMIImportProcessor
 			EntityInterface entity = umlClassIdVsEntity.get(umlClass.refMofId());
 			//In memory operation
 			createContainer(entity);
-		}	
+		}
 		if (umlGeneralisationColl.size() > 0)
 		{//setting base container in child container.
 			postProcessInheritence(parentIdVsChildrenIds);
@@ -248,7 +250,7 @@ public class XMIImportProcessor
 			postProcessAssociation();
 		}
 		//Persist container in DB
-		processPersistence(containerNames,isEntityGroupSystemGenerated);
+		processPersistence(containerNames, isEntityGroupSystemGenerated);
 
 		return mainContainerList;
 	}
@@ -258,11 +260,12 @@ public class XMIImportProcessor
 	 */
 	private void validate() throws Exception
 	{
-		if(!isPackagePresent)
+		if (!isPackagePresent)
 		{
 			throw new Exception("Specified package is not present in the XMI.");
 		}
 	}
+
 	/**
 	 * @param entityGroupName
 	 * @param packageName
@@ -273,12 +276,12 @@ public class XMIImportProcessor
 	{
 		List<EntityGroupInterface> entityGroupColl = null;
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-		
-			entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class
-					.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
-		
+
+		entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class.getName(), edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
+
 		return entityGroupColl;
 	}
+
 	/**
 	 * @param entityGroupName
 	 */
@@ -289,24 +292,25 @@ public class XMIImportProcessor
 		entityGroup.setLongName(entityGroupName);
 		entityGroup.setDescription(entityGroupName);
 	}
-		/**
-	 * @param packageName
-	 */
+
+	/**
+	* @param packageName
+	*/
 	private void addTaggedValue(String packageName)
 	{
 		TaggedValueInterface tv = DomainObjectFactory.getInstance().createTaggedValue();
 		tv.setKey("PackageName");
 		tv.setValue(packageName);
-		
+
 		Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
-		if(tvColl == null)
+		if (tvColl == null)
 		{
 			tvColl = new HashSet<TaggedValueInterface>();
 		}
 		tvColl.add(tv);
 		entityGroup.setTaggedValueCollection(tvColl);
 	}
-	
+
 	/**
 	 * This method checks the entity name if it matches with the data type names like Integer, String etc.
 	 * @param umlClassName
@@ -316,9 +320,9 @@ public class XMIImportProcessor
 	{
 		DatatypeMappings dataType = DatatypeMappings.get(umlClassName);
 
-		if(dataType != null || umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION) ||
-			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.DATE) ||
-			umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.TIME))
+		if (dataType != null || umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.COLLECTION)
+				|| umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.DATE)
+				|| umlClassName.equalsIgnoreCase(edu.common.dynamicextensions.ui.util.Constants.TIME))
 		{
 			return true;
 		}
@@ -331,9 +335,9 @@ public class XMIImportProcessor
 	 * @param umlAssociationColl
 	 * @param umlGeneralisationColl
 	 */
-	private void processModel(UmlPackage umlPackage, List<UmlClass> umlClassColl,
-			List<UmlAssociation> umlAssociationColl, List<Generalization> umlGeneralisationColl, String packageName)
-	{		
+	private void processModel(UmlPackage umlPackage, List<UmlClass> umlClassColl, List<UmlAssociation> umlAssociationColl,
+			List<Generalization> umlGeneralisationColl, String packageName)
+	{
 		ModelManagementPackage modelManagementPackage = umlPackage.getModelManagement();
 		ModelClass modelClass = modelManagementPackage.getModel();
 		Collection<Model> modelColl = modelClass.refAllOfClass();
@@ -343,38 +347,39 @@ public class XMIImportProcessor
 			Collection ownedElementColl = model.getOwnedElement();
 			System.out.println("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
 			Iterator iter = ownedElementColl.iterator();
-			
-			StringTokenizer tokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
+
+			StringTokenizer tokens = new StringTokenizer(packageName, XMIConstants.DOT_SEPARATOR);
 			String token = "";
-			if(tokens.hasMoreTokens())
+			if (tokens.hasMoreTokens())
 			{
 				token = tokens.nextToken();
 			}
-			if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+			if (token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
 			{
-				processPackageForModel(model,umlClassColl,umlAssociationColl,umlGeneralisationColl);				
+				processPackageForModel(model, umlClassColl, umlAssociationColl, umlGeneralisationColl);
 			}
 			else
 			{
-				
+
 				while (iter.hasNext())
 				{
-					StringTokenizer initializedTokens = new StringTokenizer(packageName,XMIConstants.DOT_SEPARATOR);
+					StringTokenizer initializedTokens = new StringTokenizer(packageName, XMIConstants.DOT_SEPARATOR);
 					Object obj = iter.next();
-							
+
 					if (obj instanceof org.omg.uml.modelmanagement.UmlPackage)
 					{
 						org.omg.uml.modelmanagement.UmlPackage umlPackageObj = (org.omg.uml.modelmanagement.UmlPackage) obj;
-						
-						processSelectedPackage(umlPackageObj,initializedTokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
-											
-	//					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
-	//							umlGeneralisationColl , packageName);
+
+						processSelectedPackage(umlPackageObj, initializedTokens, umlClassColl, umlAssociationColl, umlGeneralisationColl);
+
+						//					processPackage(umlPackageObj, umlClassColl, umlAssociationColl,
+						//							umlGeneralisationColl , packageName);
 					}
 				}
 			}
 		}
 	}
+
 	/**
 	 * @param parentPkg
 	 * @param tokens
@@ -382,22 +387,22 @@ public class XMIImportProcessor
 	 * @param umlAssociationColl
 	 * @param umlGeneralisationColl
 	 */
-	private void processSelectedPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg,StringTokenizer tokens, List<UmlClass> umlClassColl,
+	private void processSelectedPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg, StringTokenizer tokens, List<UmlClass> umlClassColl,
 			List<UmlAssociation> umlAssociationColl, List<Generalization> umlGeneralisationColl)
-	{	
+	{
 		String token = "";
-		if(tokens.hasMoreTokens())
+		if (tokens.hasMoreTokens())
 		{
 			token = tokens.nextToken();
 		}
-		
+
 		//If no package is present in the XMI take package name as "Default"
-//		if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
-//		{
-//			processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
-//		}
-//		else
-		if(parentPkg.getName().equalsIgnoreCase(token))
+		//		if(token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
+		//		{
+		//			processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+		//		}
+		//		else
+		if (parentPkg.getName().equalsIgnoreCase(token))
 		{
 			int temp = 0;
 			for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
@@ -406,38 +411,38 @@ public class XMIImportProcessor
 				if (o instanceof org.omg.uml.modelmanagement.UmlPackage)
 				{
 					org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
-					processSelectedPackage(subPkg,tokens,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+					processSelectedPackage(subPkg, tokens, umlClassColl, umlAssociationColl, umlGeneralisationColl);
 					temp++;
-				}			
+				}
 			}
-			if(temp == 0)
+			if (temp == 0)
 			{//if package name is present, import only that package.
-				processPackage(parentPkg,umlClassColl,umlAssociationColl,umlGeneralisationColl);
+				processPackage(parentPkg, umlClassColl, umlAssociationColl, umlGeneralisationColl);
 			}
-		}		
+		}
 	}
+
 	/**
 	 * @param parentPkg
 	 * @param umlClasses
 	 * @param associations
 	 * @param generalizations
 	 */
-	private void processPackageForModel(Model parentPkg,
-			List<UmlClass> umlClasses, List<UmlAssociation> associations,
+	private void processPackageForModel(Model parentPkg, List<UmlClass> umlClasses, List<UmlAssociation> associations,
 			List<Generalization> generalizations)
 	{
 		isPackagePresent = true;
 		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
 			Object o = i.next();
-		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
-			{
-				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
-				processPackage(subPkg, umlClasses, associations, generalizations,packageName);
-			}
-			else*/
-				
-				if (o instanceof UmlAssociation)
+			/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
+				{
+					org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+					processPackage(subPkg, umlClasses, associations, generalizations,packageName);
+				}
+				else*/
+
+			if (o instanceof UmlAssociation)
 			{
 				associations.add((UmlAssociation) o);
 			}
@@ -460,30 +465,30 @@ public class XMIImportProcessor
 					generalizations.addAll(generalizationColl);
 				}
 				umlClasses.add(umlClass);
-			} 
+			}
 		}
 	}
+
 	/**
 	 * @param parentPkg
 	 * @param pkgName
 	 * @return
 	 */
-	private void processPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg,
-			List<UmlClass> umlClasses, List<UmlAssociation> associations,
+	private void processPackage(org.omg.uml.modelmanagement.UmlPackage parentPkg, List<UmlClass> umlClasses, List<UmlAssociation> associations,
 			List<Generalization> generalizations)
 	{
 		isPackagePresent = true;
 		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
 			Object o = i.next();
-		/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
-			{
-				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
-				processPackage(subPkg, umlClasses, associations, generalizations,packageName);
-			}
-			else*/
-				
-				if (o instanceof UmlAssociation)
+			/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
+				{
+					org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+					processPackage(subPkg, umlClasses, associations, generalizations,packageName);
+				}
+				else*/
+
+			if (o instanceof UmlAssociation)
 			{
 				associations.add((UmlAssociation) o);
 			}
@@ -509,6 +514,7 @@ public class XMIImportProcessor
 			}
 		}
 	}
+
 	/**
 	 * Creates a Dynamic Exension Entity from given UMLClass.<br>
 	 * It also assigns all the attributes of the UMLClass to the Entity as the
@@ -528,7 +534,7 @@ public class XMIImportProcessor
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
 		EntityInterface entity = entityProcessor.createEntity();
 		entity.setName(name);
-		entity.setDescription(entityGroup.getName()+"--"+umlClass.getName());
+		entity.setDescription(entityGroup.getName() + "--" + umlClass.getName());
 		entity.setAbstract(umlClass.isAbstract());
 		Collection<Attribute> attrColl = XMIUtilities.getAttributes(umlClass, false);
 
@@ -548,18 +554,15 @@ public class XMIImportProcessor
 		{
 			for (Attribute umlAttribute : attrColl)
 			{//Not showing id attribute on UI
-				if (!(umlAttribute.getName().equalsIgnoreCase(Constants.ID) || umlAttribute
-						.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
+				if (!(umlAttribute.getName().equalsIgnoreCase(Constants.ID) || umlAttribute.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
 				{
 					DataType dataType = DataType.get(umlAttribute.getType().getName());
 					if (dataType != null)
 					{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
 
-						Collection<AttributeInterface> originalAttrColl = entity
-								.getAttributeCollection();
+						Collection<AttributeInterface> originalAttrColl = entity.getAttributeCollection();
 
-						AttributeInterface originalAttribute = getAttributeByName(umlAttribute
-								.getName(), originalAttrColl);
+						AttributeInterface originalAttribute = getAttributeByName(umlAttribute.getName(), originalAttrColl);
 						if (originalAttribute == null)
 						{//New attribute has been created
 							AttributeInterface attribute = dataType.createAttribute(umlAttribute);
@@ -569,7 +572,7 @@ public class XMIImportProcessor
 								//					attribute.setDescription(umlAttribute.getTaggedValue().getDescription());
 								//					setSemanticMetadata(attribute, umlAttribute.getSemanticMetadata());
 								Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
-								populateAttributeUIProperties(attribute,taggedValueColl);
+								populateAttributeUIProperties(attribute, taggedValueColl);
 								addSemanticPropertyForAttributes(attribute, attrVsMapTagValues.get(attribute));
 								entity.addAttribute(attribute);
 							}
@@ -577,14 +580,14 @@ public class XMIImportProcessor
 						else
 						{//Attribute has been edited
 							Collection<TaggedValue> taggedValueColl = umlAttribute.getTaggedValue();
-							populateAttributeUIProperties(originalAttribute,taggedValueColl);
+							populateAttributeUIProperties(originalAttribute, taggedValueColl);
 							addSemanticPropertyForAttributes(originalAttribute, attrVsMapTagValues.get(originalAttribute));
 							//Data Type has been changed						
-//							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
-//							{								
-//								AttributeTypeInformationInterface attrTypeInfo = createAttributeTypeInformation(umlAttribute.getType().getName());
-//								originalAttribute.setAttributeTypeInformation(attrTypeInfo);
-//							}
+							//							if(!originalAttribute.getAttributeTypeInformation().getDataType().equalsIgnoreCase(umlAttribute.getType().getName()))
+							//							{								
+							//								AttributeTypeInformationInterface attrTypeInfo = createAttributeTypeInformation(umlAttribute.getType().getName());
+							//								originalAttribute.setAttributeTypeInformation(attrTypeInfo);
+							//							}
 						}
 					}
 					//				else
@@ -595,7 +598,7 @@ public class XMIImportProcessor
 			}
 		}
 	}
-	
+
 	/**
 	 * @param attribute
 	 * @param taggedValueColl
@@ -605,7 +608,7 @@ public class XMIImportProcessor
 		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
 		attrVsMapTagValues.put(attribute, tagNameVsTagValue);
 	}
-	
+
 	/**
 	 * @param entity
 	 * @param taggedValueColl
@@ -615,7 +618,7 @@ public class XMIImportProcessor
 		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
 		entityVsMapTagValues.put(entity, tagNameVsTagValue);
 	}
-	
+
 	/**
 	 * @param association
 	 * @param taggedValueColl
@@ -625,7 +628,7 @@ public class XMIImportProcessor
 		Map<String, String> tagNameVsTagValue = populateTagValueMap(taggedValueColl);
 		associationVsMapTagValues.put(association, tagNameVsTagValue);
 	}
-	
+
 	/**
 	 * @param taggedValueColl
 	 * @return
@@ -636,18 +639,18 @@ public class XMIImportProcessor
 		for (TaggedValue taggedValue : taggedValueColl)
 		{
 			if (taggedValue.getType() != null)
-			{				
+			{
 				Collection<String> dataValueColl = taggedValue.getDataValue();
 				for (String value : dataValueColl)
 				{
 					tagNameVsTagValue.put(taggedValue.getType().getName(), value);
-				}				
+				}
 			}
 		}
-		
+
 		return tagNameVsTagValue;
 	}
-	
+
 	/**
 	 * @param entityInterface
 	 * @param taggedValueMap
@@ -657,36 +660,37 @@ public class XMIImportProcessor
 		Collection<SemanticPropertyInterface> semanticPropertyColl = new HashSet<SemanticPropertyInterface>();
 		//		Concept codes		
 		String conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_CODE);
-		if(conceptCode != null)
+		if (conceptCode != null)
 		{
 			String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION);
 			String term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION_SOURCE);
 			String thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_CONCEPT_PREFERRED_NAME);
-			SemanticPropertyInterface semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term ,thesarausName ,0);
+			SemanticPropertyInterface semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, 0);
 			semanticPropertyColl.add(semanticPropertyInterface);
-			
+
 			Set<String> tagNames = taggedValueMap.keySet();
-			for(String tagName : tagNames)
+			for (String tagName : tagNames)
 			{
-				if(tagName.startsWith(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE))
+				if (tagName.startsWith(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE))
 				{
 					int beginIndex = XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE.length();
 					String qualifierNumber = tagName.substring(beginIndex);
-					
+
 					conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE + qualifierNumber);
 					conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION + qualifierNumber);
 					term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_DEFINITION_SOURCE + qualifierNumber);
-					thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_PREFERRED_NAME + qualifierNumber);	
-					
-					semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, Integer.parseInt(qualifierNumber));
+					thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_PREFERRED_NAME + qualifierNumber);
+
+					semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, Integer
+							.parseInt(qualifierNumber));
 					semanticPropertyColl.add(semanticPropertyInterface);
 				}
-			}			
+			}
 		}
-		
-		entityInterface.setSemanticPropertyCollection(semanticPropertyColl);		
+
+		entityInterface.setSemanticPropertyCollection(semanticPropertyColl);
 	}
-	
+
 	/**
 	 * @param conceptCode
 	 * @param conceptDefinition
@@ -703,10 +707,10 @@ public class XMIImportProcessor
 		semanticProperty.setTerm(term);
 		semanticProperty.setThesaurasName(thesaurasName);
 		semanticProperty.setSequenceNumber(seqNo);
-		
+
 		return semanticProperty;
 	}
-	
+
 	/**
 	 * @param abstractMetadataInterface
 	 * @param taggedValueMap
@@ -717,113 +721,103 @@ public class XMIImportProcessor
 		Collection<SemanticPropertyInterface> semanticPropertyColl = new HashSet<SemanticPropertyInterface>();
 		//		Concept codes		
 		String conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_CODE);
-		if(conceptCode != null)
+		if (conceptCode != null)
 		{
 			String conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION);
 			String term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_DEFINITION_SOURCE);
 			String thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_CONCEPT_PREFERRED_NAME);
-			SemanticPropertyInterface semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term ,thesarausName ,0);
+			SemanticPropertyInterface semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, 0);
 			semanticPropertyColl.add(semanticPropertyInterface);
-			
+
 			Set<String> tagNames = taggedValueMap.keySet();
-			for(String tagName : tagNames)
+			for (String tagName : tagNames)
 			{
-				if(tagName.startsWith(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE))
+				if (tagName.startsWith(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE))
 				{
 					int beginIndex = XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE.length();
 					String qualifierNumber = tagName.substring(beginIndex);
-					
+
 					conceptCode = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_CODE + qualifierNumber);
 					conceptDefinition = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION + qualifierNumber);
 					term = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_DEFINITION_SOURCE + qualifierNumber);
-					thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME + qualifierNumber);	
-					
-					semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, Integer.parseInt(qualifierNumber));
+					thesarausName = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME + qualifierNumber);
+
+					semanticPropertyInterface = getSemanticProperty(conceptCode, conceptDefinition, term, thesarausName, Integer
+							.parseInt(qualifierNumber));
 					semanticPropertyColl.add(semanticPropertyInterface);
 				}
-			}			
+			}
 		}
-		
-		attributeInterface.setSemanticPropertyCollection(semanticPropertyColl);	
+
+		attributeInterface.setSemanticPropertyCollection(semanticPropertyColl);
 	}
-/**
-	 * @param attributeType
-	 * @return
-	 */
-	private AttributeTypeInformationInterface createAttributeTypeInformation(
-			String attributeType)			
+
+	/**
+		 * @param attributeType
+		 * @return
+		 */
+	private AttributeTypeInformationInterface createAttributeTypeInformation(String attributeType)
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = null;
 		if (attributeType != null && !attributeType.equals(""))
-		{			
-			
+		{
+
 			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 			if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE))
 			{
-				attributeTypeInformation = domainObjectFactory
-						.createStringAttributeTypeInformation();
+				attributeTypeInformation = domainObjectFactory.createStringAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE))
 			{
-				attributeTypeInformation = domainObjectFactory
-						.createDateAttributeTypeInformation();
+				attributeTypeInformation = domainObjectFactory.createDateAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE))
 			{
-				attributeTypeInformation = domainObjectFactory
-						.createBooleanAttributeTypeInformation();
+				attributeTypeInformation = domainObjectFactory.createBooleanAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.BYTE_ARRAY_ATTRIBUTE_TYPE))
 			{
-				attributeTypeInformation = domainObjectFactory
-						.createByteArrayAttributeTypeInformation();
+				attributeTypeInformation = domainObjectFactory.createByteArrayAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE))
 			{
-				attributeTypeInformation = domainObjectFactory
-						.createFileAttributeTypeInformation();
+				attributeTypeInformation = domainObjectFactory.createFileAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE))
-			{				
-				attributeTypeInformation = domainObjectFactory
-				.createIntegerAttributeTypeInformation();
+			{
+				attributeTypeInformation = domainObjectFactory.createIntegerAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE))
-			{				
-				attributeTypeInformation = domainObjectFactory
-				.createFloatAttributeTypeInformation();
+			{
+				attributeTypeInformation = domainObjectFactory.createFloatAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE))
-			{				
-				attributeTypeInformation = domainObjectFactory
-				.createLongAttributeTypeInformation();
+			{
+				attributeTypeInformation = domainObjectFactory.createLongAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE))
-			{				
-				attributeTypeInformation = domainObjectFactory
-				.createDoubleAttributeTypeInformation();
+			{
+				attributeTypeInformation = domainObjectFactory.createDoubleAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE))
-			{				
-				attributeTypeInformation = domainObjectFactory
-				.createShortAttributeTypeInformation();
+			{
+				attributeTypeInformation = domainObjectFactory.createShortAttributeTypeInformation();
 			}
 			else if (attributeType.equalsIgnoreCase(EntityManagerConstantsInterface.OBJECT_ATTRIBUTE_TYPE))
-			{				
-				attributeTypeInformation = domainObjectFactory
-				.createObjectAttributeTypeInformation();
+			{
+				attributeTypeInformation = domainObjectFactory.createObjectAttributeTypeInformation();
 			}
 		}
-		
+
 		return attributeTypeInformation;
 	}
+
 	/**
 	 * @param attrName
 	 * @param originalAttrColl
 	 * @return
 	 */
-	private AttributeInterface getAttributeByName(String attrName,
-			Collection<AttributeInterface> originalAttrColl)
+	private AttributeInterface getAttributeByName(String attrName, Collection<AttributeInterface> originalAttrColl)
 	{
 		if (originalAttrColl != null && originalAttrColl.size() > 0)
 		{
@@ -842,13 +836,11 @@ public class XMIImportProcessor
 	 * Gives a map having parent child information.
 	 * @return Map with key as UML-id of parent class and value as list of UML-id of all children classes.
 	 */
-	private Map<String, List<String>> getParentVsChildrenMap(
-			List<Generalization> umlGeneralisationColl)
+	private Map<String, List<String>> getParentVsChildrenMap(List<Generalization> umlGeneralisationColl)
 	{
 		if (umlGeneralisationColl != null)
 		{
-			HashMap<String, List<String>> parentIdVsChildrenIds = new HashMap<String, List<String>>(
-					umlGeneralisationColl.size());
+			HashMap<String, List<String>> parentIdVsChildrenIds = new HashMap<String, List<String>>(umlGeneralisationColl.size());
 			for (Generalization umlGeneralization : umlGeneralisationColl)
 			{
 				String childClass = umlGeneralization.getChild().refMofId();
@@ -875,8 +867,7 @@ public class XMIImportProcessor
 	 * @param umlAssociation umlAssociation to process
 	 * @param parentIdVsChildrenIds Map with key as UML-id of parent class and value as list of UML-id of all children classes.
 	 */
-	private void addAssociation(UmlAssociation umlAssociation,
-			Map<String, List<String>> parentIdVsChildrenIds)
+	private void addAssociation(UmlAssociation umlAssociation, Map<String, List<String>> parentIdVsChildrenIds)
 	{
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();
 
@@ -908,11 +899,9 @@ public class XMIImportProcessor
 					targetAssociationEnd = assoEnd;
 				}
 			}
-			if (direction.equals("")
-					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_DEST_SRC)
+			if (direction.equals("") || direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_DEST_SRC)
 					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_SRC_DEST)
-					|| direction
-							.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED))
+					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED))
 			{
 				direction = Constants.AssociationDirection.SRC_DESTINATION.toString();
 			}
@@ -921,8 +910,7 @@ public class XMIImportProcessor
 		{//bidirectional
 			sourceAssociationEnd = associationEnds.get(0);
 			targetAssociationEnd = associationEnds.get(1);
-			if (direction.equals("")
-					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_BIDIRECTIONAL))
+			if (direction.equals("") || direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_BIDIRECTIONAL))
 			{
 				direction = Constants.AssociationDirection.BI_DIRECTIONAL.toString();
 			}
@@ -933,10 +921,8 @@ public class XMIImportProcessor
 		}
 		//		getAssociationEnds(sourceAssociationEnd,targetAssociationEnd,associationEnds,direction);
 
-		String sourceAssoTypeTV = getTaggedValue(sourceAssociationEnd.getTaggedValue(),
-				XMIConstants.TAGGED_VALUE_CONTAINMENT);
-		String destinationAssoTypeTV = getTaggedValue(targetAssociationEnd.getTaggedValue(),
-				XMIConstants.TAGGED_VALUE_CONTAINMENT);
+		String sourceAssoTypeTV = getTaggedValue(sourceAssociationEnd.getTaggedValue(), XMIConstants.TAGGED_VALUE_CONTAINMENT);
+		String destinationAssoTypeTV = getTaggedValue(targetAssociationEnd.getTaggedValue(), XMIConstants.TAGGED_VALUE_CONTAINMENT);
 
 		String srcId = sourceAssociationEnd.getParticipant().refMofId();
 		EntityInterface srcEntity = umlClassIdVsEntity.get(srcId);
@@ -953,12 +939,11 @@ public class XMIImportProcessor
 		RoleInterface targetRole = getRole(tgtMultiplicity, tgtRoleName, destinationAssoTypeTV);
 
 		AssociationInterface association = null;
-		Collection<AssociationInterface> existingAssociationColl = srcEntity
-				.getAssociationCollection();
+		Collection<AssociationInterface> existingAssociationColl = srcEntity.getAssociationCollection();
 		if (existingAssociationColl != null && existingAssociationColl.size() > 0)
 		{//EDIT Case
-			association = isAssociationPresent(umlAssociation.getName(), existingAssociationColl,
-					srcEntity.getName(), tgtEntity.getName(), direction, sourceRole, targetRole);
+			association = isAssociationPresent(umlAssociation.getName(), existingAssociationColl, srcEntity.getName(), tgtEntity.getName(),
+					direction, sourceRole, targetRole);
 		}
 
 		//Adding association to entity
@@ -1001,15 +986,12 @@ public class XMIImportProcessor
 	 * @param targetRole
 	 * @return
 	 */
-	private AssociationInterface isAssociationPresent(String umlAssociationName,
-			Collection<AssociationInterface> existingAssociationColl, String srcEntityName,
-			String tgtEntityName, String direction, RoleInterface sourceRole,
-			RoleInterface targetRole)
+	private AssociationInterface isAssociationPresent(String umlAssociationName, Collection<AssociationInterface> existingAssociationColl,
+			String srcEntityName, String tgtEntityName, String direction, RoleInterface sourceRole, RoleInterface targetRole)
 	{
 		for (AssociationInterface existingAsso : existingAssociationColl)
 		{
-			if (umlAssociationName != null
-					&& umlAssociationName.equalsIgnoreCase(existingAsso.getName()))
+			if (umlAssociationName != null && umlAssociationName.equalsIgnoreCase(existingAsso.getName()))
 			{//Since name is present, edit this association
 				return existingAsso;
 			}
@@ -1027,14 +1009,11 @@ public class XMIImportProcessor
 				continue;
 			}
 			//SourecRole
-			if (!existingAsso.getSourceRole().getAssociationsType().equals(
-					sourceRole.getAssociationsType()))
+			if (!existingAsso.getSourceRole().getAssociationsType().equals(sourceRole.getAssociationsType()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (!existingAsso.getSourceRole().getAssociationsType().equals(
-							targetRole.getAssociationsType()))
+					if (!existingAsso.getSourceRole().getAssociationsType().equals(targetRole.getAssociationsType()))
 					{
 						continue;
 					}
@@ -1044,14 +1023,11 @@ public class XMIImportProcessor
 					continue;
 				}
 			}
-			if (!existingAsso.getSourceRole().getMaximumCardinality().equals(
-					sourceRole.getMaximumCardinality()))
+			if (!existingAsso.getSourceRole().getMaximumCardinality().equals(sourceRole.getMaximumCardinality()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (!existingAsso.getSourceRole().getMaximumCardinality().equals(
-							targetRole.getMaximumCardinality()))
+					if (!existingAsso.getSourceRole().getMaximumCardinality().equals(targetRole.getMaximumCardinality()))
 					{
 						continue;
 					}
@@ -1061,14 +1037,11 @@ public class XMIImportProcessor
 					continue;
 				}
 			}
-			if (!existingAsso.getSourceRole().getMinimumCardinality().equals(
-					sourceRole.getMinimumCardinality()))
+			if (!existingAsso.getSourceRole().getMinimumCardinality().equals(sourceRole.getMinimumCardinality()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (!existingAsso.getSourceRole().getMinimumCardinality().equals(
-							targetRole.getMinimumCardinality()))
+					if (!existingAsso.getSourceRole().getMinimumCardinality().equals(targetRole.getMinimumCardinality()))
 					{
 						continue;
 					}
@@ -1078,18 +1051,13 @@ public class XMIImportProcessor
 					continue;
 				}
 			}
-			if (existingAsso.getSourceRole().getName() != null
-					&& sourceRole.getName() != null
-					&& !existingAsso.getSourceRole().getName().equalsIgnoreCase(
-							sourceRole.getName()))
+			if (existingAsso.getSourceRole().getName() != null && sourceRole.getName() != null
+					&& !existingAsso.getSourceRole().getName().equalsIgnoreCase(sourceRole.getName()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (existingAsso.getSourceRole().getName() != null
-							&& targetRole.getName() != null
-							&& !existingAsso.getSourceRole().getName().equalsIgnoreCase(
-									targetRole.getName()))
+					if (existingAsso.getSourceRole().getName() != null && targetRole.getName() != null
+							&& !existingAsso.getSourceRole().getName().equalsIgnoreCase(targetRole.getName()))
 					{
 						continue;
 					}
@@ -1100,14 +1068,11 @@ public class XMIImportProcessor
 				}
 			}
 			//			TargetRole
-			if (!existingAsso.getTargetRole().getAssociationsType().equals(
-					targetRole.getAssociationsType()))
+			if (!existingAsso.getTargetRole().getAssociationsType().equals(targetRole.getAssociationsType()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (!existingAsso.getTargetRole().getAssociationsType().equals(
-							sourceRole.getAssociationsType()))
+					if (!existingAsso.getTargetRole().getAssociationsType().equals(sourceRole.getAssociationsType()))
 					{
 						continue;
 					}
@@ -1117,14 +1082,11 @@ public class XMIImportProcessor
 					continue;
 				}
 			}
-			if (!existingAsso.getTargetRole().getMaximumCardinality().equals(
-					targetRole.getMaximumCardinality()))
+			if (!existingAsso.getTargetRole().getMaximumCardinality().equals(targetRole.getMaximumCardinality()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (!existingAsso.getTargetRole().getMaximumCardinality().equals(
-							sourceRole.getMaximumCardinality()))
+					if (!existingAsso.getTargetRole().getMaximumCardinality().equals(sourceRole.getMaximumCardinality()))
 					{
 						continue;
 					}
@@ -1134,14 +1096,11 @@ public class XMIImportProcessor
 					continue;
 				}
 			}
-			if (!existingAsso.getTargetRole().getMinimumCardinality().equals(
-					targetRole.getMinimumCardinality()))
+			if (!existingAsso.getTargetRole().getMinimumCardinality().equals(targetRole.getMinimumCardinality()))
 			{//For bi directional association, reversing the association ends and comparing
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{
-					if (!existingAsso.getTargetRole().getMinimumCardinality().equals(
-							sourceRole.getMinimumCardinality()))
+					if (!existingAsso.getTargetRole().getMinimumCardinality().equals(sourceRole.getMinimumCardinality()))
 					{
 						continue;
 					}
@@ -1151,18 +1110,13 @@ public class XMIImportProcessor
 					continue;
 				}
 			}
-			if (existingAsso.getTargetRole().getName() != null
-					&& targetRole.getName() != null
-					&& !existingAsso.getTargetRole().getName().equalsIgnoreCase(
-							targetRole.getName()))
+			if (existingAsso.getTargetRole().getName() != null && targetRole.getName() != null
+					&& !existingAsso.getTargetRole().getName().equalsIgnoreCase(targetRole.getName()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
-						.toString()))
+				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
 				{//For bi directional association, reversing the association ends and comparing
-					if (existingAsso.getTargetRole().getName() != null
-							&& sourceRole.getName() != null
-							&& !existingAsso.getTargetRole().getName().equalsIgnoreCase(
-									sourceRole.getName()))
+					if (existingAsso.getTargetRole().getName() != null && sourceRole.getName() != null
+							&& !existingAsso.getTargetRole().getName().equalsIgnoreCase(sourceRole.getName()))
 					{
 						continue;
 					}
@@ -1231,8 +1185,7 @@ public class XMIImportProcessor
 			if (entity.getParentEntity() != null)
 			{
 				List<AbstractAttributeInterface> duplicateAttrColl = new ArrayList<AbstractAttributeInterface>();
-				Collection<AttributeInterface> parentAttributeCollection = entity.getParentEntity()
-						.getAttributeCollection();
+				Collection<AttributeInterface> parentAttributeCollection = entity.getParentEntity().getAttributeCollection();
 				for (AttributeInterface attributeFromChild : entity.getAttributeCollection())
 				{
 					boolean isInherited = false;
@@ -1262,8 +1215,7 @@ public class XMIImportProcessor
 		//remove it after getting DE fix,association name should not be compulsory
 		if (associationName == null || associationName.equals(""))
 		{
-			association.setName("AssociationName_"
-					+ (sourceEntity.getAssociationCollection().size() + 1));
+			association.setName("AssociationName_" + (sourceEntity.getAssociationCollection().size() + 1));
 		}
 		else
 		{
@@ -1279,8 +1231,7 @@ public class XMIImportProcessor
 	 * @param edge UML Association Edge to process
 	 * @return the Role for given UML Association Edge
 	 */
-	private RoleInterface getRole(Multiplicity srcMultiplicity, String sourceRoleName,
-			String associationType)
+	private RoleInterface getRole(Multiplicity srcMultiplicity, String sourceRoleName, String associationType)
 	{
 		Collection<MultiplicityRange> rangeColl = srcMultiplicity.getRange();
 		int minCardinality = 0;
@@ -1293,8 +1244,7 @@ public class XMIImportProcessor
 
 		RoleInterface role = deFactory.createRole();
 		if (associationType != null
-				&& (associationType
-						.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED) || associationType
+				&& (associationType.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED) || associationType
 						.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_NOTSPECIFIED)))
 		{
 			role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
@@ -1345,14 +1295,13 @@ public class XMIImportProcessor
 		containerInterface.setRequiredFieldIndicatior("*");
 		containerInterface.setRequiredFieldWarningMessage("indicates required fields.");
 
-		Collection<AbstractAttributeInterface> abstractAttributeCollection = entityInterface
-				.getAbstractAttributeCollection();
+		Collection<AbstractAttributeInterface> abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
 		Integer sequenceNumber = new Integer(0);
 		ControlInterface controlInterface;
 		for (AbstractAttributeInterface abstractAttributeInterface : abstractAttributeCollection)
 		{
-			controlInterface = getControlForAttribute(abstractAttributeInterface,controlModel);
-			if(controlInterface!=null)  //no control created for id attribute
+			controlInterface = getControlForAttribute(abstractAttributeInterface, controlModel);
+			if (controlInterface != null) //no control created for id attribute
 			{
 				sequenceNumber++;
 				controlInterface.setSequenceNumber(sequenceNumber);
@@ -1407,25 +1356,24 @@ public class XMIImportProcessor
 	 * @return
 	 */
 	protected void createContainer(EntityInterface entityInterface) throws Exception
-	{		
+	{
 		ContainerInterface containerInterface = getContainer(entityInterface.getName());
 		ControlsModel controlModel = new ControlsModel();
 		/*DynamicExtensionsUtility.getContainerByCaption(entityInterface.getName()); */
 		if (containerInterface == null)//Add
 		{
-			containerInterface = createNewContainer(entityInterface,controlModel);
+			containerInterface = createNewContainer(entityInterface, controlModel);
 		}
 		else
 		{//Edit
 			editEntityAndContainer(containerInterface, entityInterface);
 
 			//Populating Attributes and Controls
-//			Collection<AbstractAttributeInterface> editedAttributeColl = entityInterface
-//				.getAbstractAttributeCollection();
-//			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
-//					.getAbstractEntity()).getAbstractAttributeCollection();
-			
-			
+			//			Collection<AbstractAttributeInterface> editedAttributeColl = entityInterface
+			//				.getAbstractAttributeCollection();
+			//			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
+			//					.getAbstractEntity()).getAbstractAttributeCollection();
+
 			/* Bug Id: 7209
 			 * editedAttributeColl - contains new attribute that needs to be added
 			 * originalAttributeColl - contains only original attributes from database
@@ -1433,26 +1381,27 @@ public class XMIImportProcessor
 			 * Hence a new object for editedAttributeColl is created and the 
 			 * new attribute is removed from the originalAttributeColl on the basis of objects having id as null
 			 */
-			Collection<AbstractAttributeInterface> savedAssociation=new ArrayList<AbstractAttributeInterface>();
-			Collection<AbstractAttributeInterface> editedAttributeColl=new ArrayList<AbstractAttributeInterface>();
+			Collection<AbstractAttributeInterface> savedAssociation = new ArrayList<AbstractAttributeInterface>();
+			Collection<AbstractAttributeInterface> editedAttributeColl = new ArrayList<AbstractAttributeInterface>();
 			editedAttributeColl.addAll(entityInterface.getAbstractAttributeCollection());
-			
-			Collection<AbstractAttributeInterface> originalAttributeColl =((EntityInterface) containerInterface
-				.getAbstractEntity()).getAbstractAttributeCollection(); 
-		
-			Iterator<AbstractAttributeInterface> it=originalAttributeColl.iterator();
-			while(it.hasNext())
+
+			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface.getAbstractEntity())
+					.getAbstractAttributeCollection();
+
+			Iterator<AbstractAttributeInterface> it = originalAttributeColl.iterator();
+			while (it.hasNext())
 			{
 				AbstractAttributeInterface originalAttr = it.next();
-				if(originalAttr.getId()==null)
+				if (originalAttr.getId() == null)
 				{
 					/*
 					 * Bug Id:7316
 					 * Here the new associations were also getting deleted from the entity object
 					 * Hence, new association objects are saved in a list and then removed from entity
 					 * so that they can be added again to the entity object 
-					 */ 
-					if(originalAttr instanceof AssociationInterface){
+					 */
+					if (originalAttr instanceof AssociationInterface)
+					{
 						savedAssociation.add(originalAttr);
 					}
 					it.remove();
@@ -1461,7 +1410,7 @@ public class XMIImportProcessor
 			Collection<AbstractAttributeInterface> attributesToRemove = new HashSet<AbstractAttributeInterface>();
 			for (AbstractAttributeInterface editedAttribute : editedAttributeColl)
 			{
-				if(editedAttribute.getName().equalsIgnoreCase(Constants.SYSTEM_IDENTIFIER))
+				if (editedAttribute.getName().equalsIgnoreCase(Constants.SYSTEM_IDENTIFIER))
 				{// We dont edit "id" attribute as it is the system identifier.
 					continue;
 				}
@@ -1474,7 +1423,7 @@ public class XMIImportProcessor
 				}
 
 				boolean isAttrPresent = getAttrToEdit(originalAttributeColl, editedAttribute);
-				
+
 				if (isAttrPresent)
 				{//Edit
 					editAttributeAndControl(controlModel, editedAttribute, containerInterface);
@@ -1495,16 +1444,15 @@ public class XMIImportProcessor
 				//Not for Containment Association Control
 				if (!(editedAttribute instanceof AssociationInterface))
 				{
-					ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor
-							.getInstance();
-					applyFormControlsProcessor.addControlToForm(containerInterface, controlModel,
-							controlModel, entityInterface.getEntityGroup());
+					ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor.getInstance();
+					applyFormControlsProcessor.addControlToForm(containerInterface, controlModel, controlModel, entityInterface.getEntityGroup());
 				}
 			}
 			/*Bug id:7316
 			 * new associations are added again to the entity
 			 */
-			for(AbstractAttributeInterface savedAssoc : savedAssociation){
+			for (AbstractAttributeInterface savedAssoc : savedAssociation)
+			{
 				entityInterface.addAbstractAttribute(savedAssoc);
 			}
 			//Since we are creating attributes in createAttributes method and also in applyFormControlsProcessor.addControlToForm method
@@ -1520,43 +1468,38 @@ public class XMIImportProcessor
 	 * @param editedAttribute
 	 * @param attributesToRemove
 	 */
-	private void removeRedundantAssociation(AbstractAttributeInterface editedAttribute,
-			Collection<AbstractAttributeInterface> attributesToRemove)
+	private void removeRedundantAssociation(AbstractAttributeInterface editedAttribute, Collection<AbstractAttributeInterface> attributesToRemove)
 	{
 		AssociationInterface association = (AssociationInterface) editedAttribute;
-		Collection<AssociationInterface> targetEntityAssociationColl = association
-				.getTargetEntity().getAssociationCollection();
+		Collection<AssociationInterface> targetEntityAssociationColl = association.getTargetEntity().getAssociationCollection();
 
 		EntityInterface originalTargetEntity = getEntity(association.getTargetEntity().getName());
-		if(originalTargetEntity != null)
+		if (originalTargetEntity != null)
 		{
-		 //Removing redundant association
-		 for (AssociationInterface targetAsso : targetEntityAssociationColl)
-		 {
-			if (targetAsso.getTargetEntity().getName().equalsIgnoreCase(
-					association.getEntity().getName()))
+			//Removing redundant association
+			for (AssociationInterface targetAsso : targetEntityAssociationColl)
 			{
-				AssociationInterface originalTargetAssociation = null;
-				for (AssociationInterface originalTgtAsso : originalTargetEntity
-						.getAssociationCollection())
+				if (targetAsso.getTargetEntity().getName().equalsIgnoreCase(association.getEntity().getName()))
 				{
-					if (targetAsso.getName().equalsIgnoreCase(originalTgtAsso.getName()))
+					AssociationInterface originalTargetAssociation = null;
+					for (AssociationInterface originalTgtAsso : originalTargetEntity.getAssociationCollection())
 					{
-						originalTargetAssociation = originalTgtAsso;
-						break;
+						if (targetAsso.getName().equalsIgnoreCase(originalTgtAsso.getName()))
+						{
+							originalTargetAssociation = originalTgtAsso;
+							break;
+						}
 					}
-				}
 
-				if (targetAsso.getAssociationDirection().equals(
-							Constants.AssociationDirection.SRC_DESTINATION) && originalTargetAssociation != null 
-							&& originalTargetAssociation.getAssociationDirection().equals(
-									Constants.AssociationDirection.BI_DIRECTIONAL))
+					if (targetAsso.getAssociationDirection().equals(Constants.AssociationDirection.SRC_DESTINATION)
+							&& originalTargetAssociation != null
+							&& originalTargetAssociation.getAssociationDirection().equals(Constants.AssociationDirection.BI_DIRECTIONAL))
 					{//We need to remove system generated association if direction has been changed from bi directional to source destination						
 						attributesToRemove.add(editedAttribute);
 					}
+				}
 			}
 		}
-	 }
 	}
 
 	/**
@@ -1566,18 +1509,18 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void addAttributeAndControl(ControlsModel controlModel,
-			AbstractAttributeInterface editedAttribute, ContainerInterface containerInterface)
+	private void addAttributeAndControl(ControlsModel controlModel, AbstractAttributeInterface editedAttribute, ContainerInterface containerInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		controlModel.setControlOperation(ProcessorConstants.OPERATION_ADD);
-		ControlInterface newcontrol = getControlForAttribute(editedAttribute,controlModel);
-		if(newcontrol != null){  //no control created for id attribute
+		ControlInterface newcontrol = getControlForAttribute(editedAttribute, controlModel);
+		if (newcontrol != null)
+		{ //no control created for id attribute
 			int sequenceNumber = containerInterface.getControlCollection().size() + 1;
 			newcontrol.setSequenceNumber(sequenceNumber);
 			//containerInterface.addControl(newcontrol);
 			newcontrol.setParentContainer((Container) containerInterface);
-	
+
 			String userSelectedTool = DynamicExtensionsUtility.getControlName(newcontrol);
 			controlModel.setUserSelectedTool(userSelectedTool);
 			//For Text Control
@@ -1587,7 +1530,7 @@ public class XMIImportProcessor
 			}
 			//For creating Association or Attribute
 			populateControlModel(controlModel, editedAttribute);
-	
+
 			//if(controlModel.getUserSelectedTool().equalsIgnoreCase(ProcessorConstants.ADD_SUBFORM_CONTROL))
 			if (editedAttribute instanceof AssociationInterface)
 			{
@@ -1605,21 +1548,17 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void editAttributeAndControl(ControlsModel controlModel,
-			AbstractAttributeInterface editedAttribute, ContainerInterface containerInterface)
+	private void editAttributeAndControl(ControlsModel controlModel, AbstractAttributeInterface editedAttribute, ContainerInterface containerInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor
-				.getInstance();
+		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
 		controlModel.setControlOperation(ProcessorConstants.OPERATION_EDIT);
 
-		Collection<ControlInterface> originalControlColl = containerInterface
-				.getControlCollection();
+		Collection<ControlInterface> originalControlColl = containerInterface.getControlCollection();
 		ControlInterface originalControlObj = null;
 		for (ControlInterface originalcontrol : originalControlColl)
 		{
-			if (originalcontrol.getBaseAbstractAttribute().getName().equalsIgnoreCase(
-					editedAttribute.getName()))
+			if (originalcontrol.getBaseAbstractAttribute().getName().equalsIgnoreCase(editedAttribute.getName()))
 			{
 				originalControlObj = originalcontrol;
 				break;
@@ -1632,59 +1571,57 @@ public class XMIImportProcessor
 			//This method wil give us populated ControlUIBean and AttributeUIBean with original control object corresponding to edited attribute
 			if (!(editedAttribute instanceof AssociationInterface))
 			{
-				loadFormControlsProcessor.editControl(originalControlObj, controlModel,
-						controlModel);
+				loadFormControlsProcessor.editControl(originalControlObj, controlModel, controlModel);
 
-				controlModel
-						.setSelectedControlId(originalControlObj.getSequenceNumber().toString());
-				
+				controlModel.setSelectedControlId(originalControlObj.getSequenceNumber().toString());
+
 			}
 			//controlModel.setCaption(originalControlObj.getCaption());
 		}
 	}
+
 	/**
 	 * Method to set tagged values(max length, precision, date format) in control model
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void setTaggedValue(ControlsModel controlModel, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException 
+	private void setTaggedValue(ControlsModel controlModel, AbstractAttributeInterface editedAttribute) throws DynamicExtensionsSystemException
 	{
-		if(!(editedAttribute instanceof AssociationInterface))
+		if (!(editedAttribute instanceof AssociationInterface))
 		{
 			Map<String, String> taggedValueMap = attrVsMapTagValues.get(editedAttribute);
-			if(taggedValueMap != null)
+			if (taggedValueMap != null)
 			{
 				// max length of string from tagged value		
 				String maxLen = getMaxLengthTagValue(taggedValueMap);
 				controlModel.setAttributeSize(maxLen);
-				
+
 				//date format tagged value
 				String format = getDateFormatTagValue(taggedValueMap);
 				controlModel.setFormat(format);
-				String dateFormat = DynamicExtensionsUtility.getDateFormat(format); 
+				String dateFormat = DynamicExtensionsUtility.getDateFormat(format);
 				controlModel.setDateValueType(dateFormat);
-				
+
 				// precision tagged value
-				Integer precision = getPrecisionTagValue(taggedValueMap,((AttributeInterface) editedAttribute).getAttributeTypeInformation());
-				controlModel.setAttributeDecimalPlaces(precision.toString());		
-				
+				Integer precision = getPrecisionTagValue(taggedValueMap, ((AttributeInterface) editedAttribute).getAttributeTypeInformation());
+				controlModel.setAttributeDecimalPlaces(precision.toString());
+
 				//Added by Prashant
 				//password tagged value
 				String password = getPasswordTagValue(taggedValueMap);
 				controlModel.setIsPassword(Boolean.parseBoolean(password));
-	
+
 				//Single/Multiline(Number of Lines) tagged Value
-				setMultilineTaggedValue(taggedValueMap,controlModel);
+				setMultilineTaggedValue(taggedValueMap, controlModel);
 
 				//NoOfColumns tagged Value
 				String width = getDisplayWidthTagValue(taggedValueMap);
 				controlModel.setColumns(Integer.parseInt(width.toString()));
-				
-				
+
 				//defaultValue tagged Value
 				String defaultValue = getDefaultValueTagValue(taggedValueMap);
 				controlModel.setAttributeDefaultValue(defaultValue);
-				
-				if(defaultValue!=null && !defaultValue.equalsIgnoreCase(""))
+
+				if (defaultValue != null && !defaultValue.equalsIgnoreCase(""))
 				{
 					//dateValueType  value
 					controlModel.setDateValueType(ProcessorConstants.DATE_VALUE_SELECT);
@@ -1692,42 +1629,43 @@ public class XMIImportProcessor
 				//URL tagged value
 				String url = getUrlTagValue(taggedValueMap);
 				controlModel.setIsUrl(Boolean.parseBoolean(url));
-				
+
 				//PHI Attribute tagged value
 				String PHIAttribute = getPHIAttributeTagValue(taggedValueMap);
 				controlModel.setAttributeIdentified(PHIAttribute);
-				
+
 				//FileFormats tagged value
-				String[] fileFormats = getFileFormatsTagValue(taggedValueMap);			
+				String[] fileFormats = getFileFormatsTagValue(taggedValueMap);
 				controlModel.setFileFormats(fileFormats);
-				
+
 				//For list box or combo box
-				setMultiselectTaggedValue(taggedValueMap,controlModel);
-				
+				setMultiselectTaggedValue(taggedValueMap, controlModel);
+
 				//For combo box,separator tagged value
 				String separator = getSeparatorTagValue(taggedValueMap);
 				controlModel.setSeparator(separator);
-				
+
 				//set Explicit validation Rules	
-				setExplicitValidationRules(taggedValueMap, (AttributeInterface) editedAttribute, controlModel);
+				setExplicitValidationRules(taggedValueMap, controlModel);
 			}
 
 		}
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMap
 	 * @param controlModel
 	 */
-	private  void setMultiselectTaggedValue(Map<String, String> taggedValueMap, ControlsModel controlModel)
+	private void setMultiselectTaggedValue(Map<String, String> taggedValueMap, ControlsModel controlModel)
 	{
-		if(taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
+		if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
 		{
 			controlModel.setIsMultiSelect(true);
 			String listBoxHeight = getListBoxHeightTagValue(taggedValueMap);
 			controlModel.setAttributeNoOfRows(listBoxHeight);
-		}	
-		
+		}
+
 	}
 
 	/**
@@ -1738,12 +1676,13 @@ public class XMIImportProcessor
 	private String getListBoxHeightTagValue(Map<String, String> taggedValueMap)
 	{
 		String listBoxHeight = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTISELECT);
-		if(listBoxHeight == null || listBoxHeight.trim().equals(""))
+		if (listBoxHeight == null || listBoxHeight.trim().equals(""))
 		{
 			listBoxHeight = "" + edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE;
 		}
 		return listBoxHeight;
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -1758,6 +1697,7 @@ public class XMIImportProcessor
 		}
 		return separator;
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -1765,7 +1705,7 @@ public class XMIImportProcessor
 	 */
 	private void setMultilineTaggedValue(Map<String, String> taggedValueMap, ControlsModel controlModel)
 	{
-		if(taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTILINE))
+		if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTILINE))
 		{
 			controlModel.setLinesType(XMIConstants.MULTILINE);
 			String noOFLines = getNoOfRowsTagValue(taggedValueMap);
@@ -1781,27 +1721,28 @@ public class XMIImportProcessor
 	private String[] getFileFormatsTagValue(Map<String, String> taggedValueMap)
 	{
 		String fileFormat = taggedValueMap.get(XMIConstants.TAGGED_VALUE_FILE_FORMATS);
-		if(fileFormat != null)
+		if (fileFormat != null)
 		{
 			StringTokenizer st = new StringTokenizer(fileFormat, ",");
 			int size = st.countTokens();
-		    
-		    String[] fileformats = new String[size];
-		    
-		    fileformats = fileFormat.split(",");
-			
-		    return fileformats;			
-			
+
+			String[] fileformats = new String[size];
+
+			fileformats = fileFormat.split(",");
+
+			return fileformats;
+
 		}
 		return null;
 	}
+
 	/**
 	 * @param taggedValueMap
 	 * @return
 	 */
-	private boolean isMultiselectTagValue(Map<String,String> taggedValueMap)
-	{	
-		if(taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
+	private boolean isMultiselectTagValue(Map<String, String> taggedValueMap)
+	{
+		if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
 		{
 			return true;
 		}
@@ -1816,13 +1757,13 @@ public class XMIImportProcessor
 	private String getPHIAttributeTagValue(Map<String, String> taggedValueMap)
 	{
 		String PHIAttribute = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PHI_ATTRIBUTE);
-		if(PHIAttribute == null || PHIAttribute.trim().equals(""))
+		if (PHIAttribute == null || PHIAttribute.trim().equals(""))
 		{
 			return "false";
 		}
-		return PHIAttribute;	
+		return PHIAttribute;
 	}
-	
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -1830,42 +1771,43 @@ public class XMIImportProcessor
 	 */
 	private String getDisplayWidthTagValue(Map<String, String> taggedValueMap)
 	{
-		String width = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DISPLAY_WIDTH );
-		if(width == null || width.trim().equals(""))
+		String width = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DISPLAY_WIDTH);
+		if (width == null || width.trim().equals(""))
 		{
-			width = ""+(edu.common.dynamicextensions.ui.util.Constants.DEFAULT_COLUMN_SIZE);
+			width = "" + (edu.common.dynamicextensions.ui.util.Constants.DEFAULT_COLUMN_SIZE);
 		}
 		return width;
 	}
 
-	
 	/**
 	 * @param taggedValueMap
 	 * @return
 	 */
-	private String getMaxLengthTagValue(Map<String,String> taggedValueMap)
+	private String getMaxLengthTagValue(Map<String, String> taggedValueMap)
 	{
 		String maxLen = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MAX_LENGTH);
-		if(maxLen == null || maxLen.trim().equals(""))
+		if (maxLen == null || maxLen.trim().equals(""))
 		{
 			maxLen = XMIConstants.DEFAULT_TEXT_FIELD_MAX_LENGTH;
 		}
 		return maxLen;
 	}
+
 	/**
 	 * @param taggedValueMap
 	 * @return
 	 */
-	private String getDateFormatTagValue(Map<String,String> taggedValueMap)
+	private String getDateFormatTagValue(Map<String, String> taggedValueMap)
 	{
 		String format = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DATE_FORMAT);
-		if(format == null || format.trim().equals(""))
+		if (format == null || format.trim().equals(""))
 		{
 			format = Constants.DATE_PATTERN_MM_DD_YYYY;
 		}
-		
+
 		return format;
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -1874,12 +1816,13 @@ public class XMIImportProcessor
 	private String getNoOfRowsTagValue(Map<String, String> taggedValueMap)
 	{
 		String noOFRows = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTILINE);
-		if(noOFRows == null || noOFRows.trim().equals(""))
+		if (noOFRows == null || noOFRows.trim().equals(""))
 		{
 			noOFRows = "" + edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE;
 		}
 		return noOFRows;
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -1904,12 +1847,13 @@ public class XMIImportProcessor
 	private String getPasswordTagValue(Map<String, String> taggedValueMap)
 	{
 		String password = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PASSWORD);
-		if(password == null || password.trim().equals(""))
+		if (password == null || password.trim().equals(""))
 		{
 			return "false";
 		}
 		return password;
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -1918,24 +1862,26 @@ public class XMIImportProcessor
 	private String getUrlTagValue(Map<String, String> taggedValueMap)
 	{
 		String url = taggedValueMap.get(XMIConstants.TAGGED_VALUE_URL);
-		if(url == null || url.trim().equals(""))
+		if (url == null || url.trim().equals(""))
 		{
 			return "false";
 		}
 		return url;
 	}
+
 	/**
 	 * @param precision
 	 * @param editedAttribute
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Integer getPrecisionTagValue(Map<String,String> taggedValueMap, AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException
+	private Integer getPrecisionTagValue(Map<String, String> taggedValueMap, AttributeTypeInformationInterface attrTypeInfo)
+			throws DynamicExtensionsSystemException
 	{
 		String precision = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PRECISION);
 		Integer precisionDigits = null;
-		
+
 		if (precision == null || precision.trim().equals(""))
-		{			
+		{
 			if (attrTypeInfo instanceof FloatAttributeTypeInformation)
 			{
 				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION);
@@ -1946,10 +1892,10 @@ public class XMIImportProcessor
 			}
 			else
 			{
-				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);				
-			}			
+				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);
+			}
 		}
-		else 
+		else
 		{
 			precisionDigits = Integer.parseInt(precision);
 			if (precisionDigits.intValue() > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
@@ -1957,18 +1903,18 @@ public class XMIImportProcessor
 				throw new DynamicExtensionsSystemException("Precision can at maximum be 15 owing to database constraints.");
 			}
 		}
-		
+
 		return precisionDigits;
 	}
+
 	/**
 	 * @param containerInterface
 	 * @param entityInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void editEntityAndContainer(ContainerInterface containerInterface,
-			EntityInterface entityInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private void editEntityAndContainer(ContainerInterface containerInterface, EntityInterface entityInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();
@@ -1977,12 +1923,12 @@ public class XMIImportProcessor
 		//Setting Edited entity name as caption for container.
 		//Also not setting parentform to avoid unncessary DB call as base container is already present in the container object
 		containerModel.setFormName(entityInterface.getName());
-		if(entityInterface.isAbstract())
+		if (entityInterface.isAbstract())
 			containerModel.setIsAbstract("true");
 		//Container Object is now populated
 		containerProcessor.populateContainerInterface(containerInterface, containerModel);
 
-		containerModel.setFormDescription(entityInterface.getDescription());		
+		containerModel.setFormDescription(entityInterface.getDescription());
 		//Entity Object is now populated
 		entityProcessor.populateEntity(containerModel, (EntityInterface) containerInterface.getAbstractEntity());
 	}
@@ -1992,8 +1938,7 @@ public class XMIImportProcessor
 	 * @param editedAttribute
 	 * @return
 	 */
-	private boolean getAttrToEdit(Collection<AbstractAttributeInterface> originalAttributeColl,
-			AbstractAttributeInterface editedAttribute)
+	private boolean getAttrToEdit(Collection<AbstractAttributeInterface> originalAttributeColl, AbstractAttributeInterface editedAttribute)
 	{
 		for (AbstractAttributeInterface originalAttribute : originalAttributeColl)
 		{
@@ -2009,8 +1954,7 @@ public class XMIImportProcessor
 	 * @param controlModel
 	 * @param editedAttribute
 	 */
-	private void populateControlModel(ControlsModel controlModel,
-			AbstractAttributeInterface editedAttribute)
+	private void populateControlModel(ControlsModel controlModel, AbstractAttributeInterface editedAttribute)
 	{
 		if (editedAttribute instanceof AssociationInterface)
 		{
@@ -2020,8 +1964,7 @@ public class XMIImportProcessor
 		{
 			AttributeInterface attribute = (AttributeInterface) editedAttribute;
 
-			AttributeTypeInformationInterface attributeTypeInfo = attribute
-					.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attributeTypeInfo = attribute.getAttributeTypeInformation();
 			if (attributeTypeInfo instanceof DateAttributeTypeInformation)
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_DATE);
@@ -2042,19 +1985,19 @@ public class XMIImportProcessor
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_SHORT);
 			}
-			else if(attributeTypeInfo instanceof IntegerAttributeTypeInformation)
+			else if (attributeTypeInfo instanceof IntegerAttributeTypeInformation)
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_INTEGER);
 			}
-			else if(attributeTypeInfo instanceof LongAttributeTypeInformation)
+			else if (attributeTypeInfo instanceof LongAttributeTypeInformation)
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_LONG);
 			}
-			else if(attributeTypeInfo instanceof FloatAttributeTypeInformation)
+			else if (attributeTypeInfo instanceof FloatAttributeTypeInformation)
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_FLOAT);
 			}
-			else if(attributeTypeInfo instanceof DoubleAttributeTypeInformation)
+			else if (attributeTypeInfo instanceof DoubleAttributeTypeInformation)
 			{
 				controlModel.setDataType(ProcessorConstants.DATATYPE_DOUBLE);
 			}
@@ -2065,8 +2008,7 @@ public class XMIImportProcessor
 	 * @param parentIdVsChildrenIds
 	 * This method add the parent container to the child container for Generalization.
 	 */
-	protected void postProcessInheritence(Map<String, List<String>> parentIdVsChildrenIds)
-			throws Exception
+	protected void postProcessInheritence(Map<String, List<String>> parentIdVsChildrenIds) throws Exception
 	{
 		for (Entry<String, List<String>> entry : parentIdVsChildrenIds.entrySet())
 		{
@@ -2112,34 +2054,29 @@ public class XMIImportProcessor
 		{
 			List containerList = (ArrayList) entityNameVsContainers.get(entityId);
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
-			Collection<ControlInterface> controlCollection = containerInterface
-					.getControlCollection();
+			Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 
 			for (ControlInterface controlInterface : controlCollection)
 			{
 				if (controlInterface instanceof ContainmentAssociationControl)
 				{
 					ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) controlInterface;
-					AssociationInterface associationInterface = (AssociationInterface) controlInterface
-							.getBaseAbstractAttribute();
+					AssociationInterface associationInterface = (AssociationInterface) controlInterface.getBaseAbstractAttribute();
 
 					String targetEntityId = associationInterface.getTargetEntity().getName();
 
-					List targetContainerInterfaceList = (ArrayList) entityNameVsContainers
-							.get(targetEntityId.toString());
+					List targetContainerInterfaceList = (ArrayList) entityNameVsContainers.get(targetEntityId.toString());
 
 					//					TODO remove this condition to delete association with deleted or renamed entities.
 					//getting container corresponding to renamed or deleted entity which is associated with some association from the retrieved entity group
 					ContainerInterface targetContainerInterface = null;
-					if (targetContainerInterfaceList == null
-							|| targetContainerInterfaceList.size() == 0)
+					if (targetContainerInterfaceList == null || targetContainerInterfaceList.size() == 0)
 					{
 						targetContainerInterface = getContainer(targetEntityId);
 					}
 					else
 					{
-						targetContainerInterface = (ContainerInterface) targetContainerInterfaceList
-								.get(0);
+						targetContainerInterface = (ContainerInterface) targetContainerInterfaceList.get(0);
 					}
 					containmentAssociationControl.setContainer(targetContainerInterface);
 				}
@@ -2155,266 +2092,274 @@ public class XMIImportProcessor
 	 * This method creates a control for the attribute.
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private ControlInterface getControlForAttribute(
-			AbstractAttributeInterface abstractAttributeInterface, ControlsModel controlModel)
+	private ControlInterface getControlForAttribute(AbstractAttributeInterface abstractAttributeInterface, ControlsModel controlModel)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
-		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
-				.getInstance();
+		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
-		// Collect all the applicable Rule names
-		List<String> implicitRuleList = null;
+
 		if (abstractAttributeInterface instanceof AssociationInterface)
 		{
+			
 			AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
 			Map<String, String> taggedValueMap = associationVsMapTagValues.get(associationInterface);
-			if (associationInterface.getSourceRole().getAssociationsType().compareTo(
-					AssociationType.CONTAINTMENT) == 0)
-			{//This line is for containment association.
+			if (associationInterface.getSourceRole().getAssociationsType().compareTo(AssociationType.CONTAINTMENT) == 0)
+			{
+				// This line is for containment association.
+
 				controlInterface = deFactory.createContainmentAssociationControl();
-				associationInterface.getSourceRole().setAssociationsType(
-						AssociationType.CONTAINTMENT);
-				associationInterface.getTargetRole().setAssociationsType(
-						AssociationType.CONTAINTMENT);
+				associationInterface.getSourceRole().setAssociationsType(AssociationType.CONTAINTMENT);
+				associationInterface.getTargetRole().setAssociationsType(AssociationType.CONTAINTMENT);
 			}
 			else
-			{//	this is for Linking Association
-				//if source maxcardinality or target  maxcardinality or both == -1, then control is listbox.
-				//int  sourceMaxCardinality = associationInterface.getSourceRole().getMaximumCardinality().getValue().intValue();
+			{
+				// this is for Linking Association
+				// if source maxcardinality or target  maxcardinality or both == -1, then control is listbox.
+				// int  sourceMaxCardinality = associationInterface.getSourceRole().getMaximumCardinality().getValue().intValue();
+				controlModel.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
+				String userSelectedControlName = null;
+//				int targetMaxCardinality = 0;
+//				if (associationInterface.getTargetRole() != null && associationInterface.getTargetRole().getMaximumCardinality() != null)
+//				{
+//					targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality().getValue().intValue();
+//				}
+				//if (targetMaxCardinality == -1)
 
-				int targetMaxCardinality = 0;
-				if(associationInterface.getTargetRole() != null && associationInterface.getTargetRole().getMaximumCardinality() != null)
-				{
-					targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality().getValue().intValue();
-				}
-//				if (targetMaxCardinality == -1)
-								
-				if(isMultiselectTagValue(taggedValueMap))
+				if (isMultiselectTagValue(taggedValueMap))
 				{//List box for 1 to many or many to many relationship
+					userSelectedControlName = ProcessorConstants.LISTBOX_CONTROL;
 					controlInterface = deFactory.createListBox();
-					setMultiselectTaggedValue(taggedValueMap,controlModel);
+					setMultiselectTaggedValue(taggedValueMap, controlModel);
 					((ListBoxInterface) controlInterface).setIsMultiSelect(controlModel.getIsMultiSelect());
 					((ListBoxInterface) controlInterface).setNoOfRows(controlModel.getRows());
 				}
 				else
 				{//Combo box for the rest
+					userSelectedControlName = ProcessorConstants.COMBOBOX_CONTROL;
 					controlInterface = deFactory.createComboBox();
 				}
 				String separator = getSeparatorTagValue(taggedValueMap);
 				((SelectControl) controlInterface).setSeparator(separator);
 				addAssociationDisplayAttributes(associationInterface, taggedValueMap, controlInterface);
-				implicitRuleList = configurationsFactory.getAllImplicitRules(
-						ProcessorConstants.COMBOBOX_CONTROL, "Text");
+				//Set Explicit Validation Rules
+				setExplicitValidationRules(taggedValueMap, controlModel);
+				//populate rules
+				attributeProcessor.populateRules(userSelectedControlName, associationInterface, controlModel);
+				String[] ruleNamesString = new String[0];
+				controlModel.setValidationRules(ruleNamesString);
+				controlModel.setTempValidationRules(ruleNamesString);
 			}
 		}
 		else
 		{
 			AttributeInterface attributeInterface = (AttributeInterface) abstractAttributeInterface;
-			AttributeTypeInformationInterface attributeTypeInformation = attributeInterface
-					.getAttributeTypeInformation();
-			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) attributeTypeInformation
-					.getDataElement();
-			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.ID) || attributeInterface
-					.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
+			AttributeTypeInformationInterface attributeTypeInformation = attributeInterface.getAttributeTypeInformation();
+			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) attributeTypeInformation.getDataElement();
+			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.ID) || attributeInterface.getName().equalsIgnoreCase(Constants.IDENTIFIER)))
 			{
 				Map<String, String> taggedValueMap = attrVsMapTagValues.get(attributeInterface);
-					if (userDefinedDEInterface != null
-							&& userDefinedDEInterface.getPermissibleValueCollection() != null
-							&& userDefinedDEInterface.getPermissibleValueCollection().size() > 0)
+				if (userDefinedDEInterface != null && userDefinedDEInterface.getPermissibleValueCollection() != null
+						&& userDefinedDEInterface.getPermissibleValueCollection().size() > 0)
+				{
+					String userSelectedControlName = null;
+					controlModel.setDataType(ProcessorConstants.DATATYPE_STRING);
+					// multiselect for permisible values
+					attributeInterface.setIsCollection(new Boolean(true));
+					if (isMultiselectTagValue(taggedValueMap))
 					{
-		
-						// multiselect for permisible values
-						attributeInterface.setIsCollection(new Boolean(true));
-						if(isMultiselectTagValue(taggedValueMap))
-						{
-							controlInterface = deFactory.createListBox();
-							setMultiselectTaggedValue(taggedValueMap,controlModel);
-						}
-						else
-						{//Combo box for the rest
-							controlInterface = deFactory.createComboBox();
-						}
-						if ((controlModel.getIsMultiSelect() != null) && (controlModel.getIsMultiSelect().booleanValue() == true))
-						{
-							controlInterface = controlProcessor.getListBoxControl(controlInterface, controlModel);
-						}
-						else
-						{
-							controlInterface = controlProcessor.getComboBoxControl(controlInterface, controlModel, entityGroup);
-						}
-						implicitRuleList = configurationsFactory.getAllImplicitRules(
-								ProcessorConstants.LISTBOX_CONTROL, attributeInterface.getDataType());
-		
+						userSelectedControlName = ProcessorConstants.LISTBOX_CONTROL;
+						controlInterface = deFactory.createListBox();
+						setMultiselectTaggedValue(taggedValueMap, controlModel);
 					}
-					else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
-					{
-						
-						String userSelectedControlName = ProcessorConstants.DATEPICKER_CONTROL;
-						String format = getDateFormatTagValue(taggedValueMap);
-						controlModel.setFormat(format);
-						/*String dateFormat =DynamicExtensionsUtility.getDateFormat(format); 
-						((DateAttributeTypeInformation) attributeTypeInformation)
-								.setFormat(dateFormat);*/
-						//((DateAttributeTypeInformation) attributeTypeInformation)
-							//	.setFormat(Constants.DATE_PATTERN_MM_DD_YYYY);
-						controlInterface = deFactory.createDatePicker();
-						String defaultValue = getDefaultValueTagValue(taggedValueMap);
-						controlModel.setAttributeDefaultValue(defaultValue);
-						if(defaultValue !=null && !defaultValue.equalsIgnoreCase(""))
-						{
-							controlModel.setDateValueType(ProcessorConstants.DATE_VALUE_SELECT);
-						}
-						attributeProcessor.populateDateAttributeInterface((DateAttributeTypeInformation) attributeTypeInformation, controlModel);
-						
-						//PHI
-						String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
-						if(strIsIdentified !=null && !strIsIdentified.equalsIgnoreCase(""))
-						{
-							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
-						}
-						//Set Explicit Validation Rules
-						setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
-						//populate rules
-						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
-						String[] ruleNamesString = new String[0];
-						controlModel.setValidationRules(ruleNamesString);
-						controlModel.setTempValidationRules(ruleNamesString);
-						implicitRuleList = configurationsFactory.getAllImplicitRules(
-								ProcessorConstants.DATEPICKER_CONTROL, attributeInterface.getDataType());
+					else
+					{//Combo box for the rest
+						userSelectedControlName = ProcessorConstants.COMBOBOX_CONTROL;
+						controlInterface = deFactory.createComboBox();
 					}
-					//Creating check box for boolean attributes
-					else if (attributeTypeInformation instanceof BooleanAttributeTypeInformation)
+					if ((controlModel.getIsMultiSelect() != null) && (controlModel.getIsMultiSelect().booleanValue() == true))
 					{
-						controlInterface = deFactory.createCheckBox();
-						BooleanValueInterface booleanValue = DomainObjectFactory.getInstance().createBooleanValue();
-						booleanValue.setValue(new Boolean(false));
-						((BooleanAttributeTypeInformation)attributeTypeInformation).setDefaultValue(booleanValue);
-						implicitRuleList = configurationsFactory.getAllImplicitRules(
-								ProcessorConstants.CHECKBOX_CONTROL, attributeInterface.getDataType());
-					}
-					//Creating File upload for byte array attributes
-					else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
-					{
-						String userSelectedControlName = ProcessorConstants.FILEUPLOAD_CONTROL;
-						controlInterface = deFactory.createFileUploadControl();	
-						((FileUploadInterface)controlInterface).setColumns(10);
-						//Setting MaxLength
-						String maxLen = getMaxLengthTagValue(taggedValueMap);
-						controlModel.setAttributeSize(maxLen);
-						//Setting fileformats
-						String[] fileFormats = getFileFormatsTagValue(taggedValueMap);
-						controlModel.setFileFormats(fileFormats);
-						attributeProcessor.populateFileAttributeInterface((FileAttributeTypeInformation) attributeTypeInformation, controlModel);
-						
-						//PHI
-						String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
-						if(strIsIdentified !=null && !strIsIdentified.equalsIgnoreCase(""))
-						{
-							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
-						}
-						//Set Explicite validation Rules
-						setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
-						//populate rules
-						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
-						String[] ruleNamesString = new String[0];
-						controlModel.setValidationRules(ruleNamesString);
-						controlModel.setTempValidationRules(ruleNamesString);
+						controlInterface = controlProcessor.getListBoxControl(controlInterface, controlModel);
 					}
 					else
 					{
-						String userSelectedControlName = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
-						controlInterface = deFactory.createTextField();
-						((TextFieldInterface) controlInterface).setColumns(10);
-						//Creating Text Control
-						if (attributeTypeInformation instanceof StringAttributeTypeInformation)
+						controlInterface = controlProcessor.getComboBoxControl(controlInterface, controlModel, entityGroup);
+					}
+					//Set Explicit Validation Rules
+					setExplicitValidationRules(taggedValueMap, controlModel);
+					//populate rules
+					attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+					String[] ruleNamesString = new String[0];
+					controlModel.setValidationRules(ruleNamesString);
+					controlModel.setTempValidationRules(ruleNamesString);
+				}
+				else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
+				{
+					controlModel.setDataType(ProcessorConstants.DATATYPE_DATE);
+					String userSelectedControlName = ProcessorConstants.DATEPICKER_CONTROL;
+					String format = getDateFormatTagValue(taggedValueMap);
+					controlModel.setFormat(format);
+					controlInterface = deFactory.createDatePicker();
+					String defaultValue = getDefaultValueTagValue(taggedValueMap);
+					controlModel.setAttributeDefaultValue(defaultValue);
+					if (defaultValue != null && !defaultValue.equalsIgnoreCase(""))
+					{
+						controlModel.setDateValueType(ProcessorConstants.DATE_VALUE_SELECT);
+					}
+					attributeProcessor.populateDateAttributeInterface((DateAttributeTypeInformation) attributeTypeInformation, controlModel);
+
+					//PHI
+					String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
+					if (strIsIdentified != null && !strIsIdentified.equalsIgnoreCase(""))
+					{
+						attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
+					}
+					//Set Explicit Validation Rules
+					setExplicitValidationRules(taggedValueMap, controlModel);
+					//populate rules
+					attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+					String[] ruleNamesString = new String[0];
+					controlModel.setValidationRules(ruleNamesString);
+					controlModel.setTempValidationRules(ruleNamesString);
+
+				}
+				//Creating check box for boolean attributes
+				else if (attributeTypeInformation instanceof BooleanAttributeTypeInformation)
+				{
+					String userSelectedControlName = ProcessorConstants.CHECKBOX_CONTROL;
+					controlModel.setDataType(ProcessorConstants.DATATYPE_BOOLEAN);
+					controlInterface = deFactory.createCheckBox();
+					BooleanValueInterface booleanValue = DomainObjectFactory.getInstance().createBooleanValue();
+					booleanValue.setValue(new Boolean(false));
+					((BooleanAttributeTypeInformation) attributeTypeInformation).setDefaultValue(booleanValue);
+					//Set Explicit Validation Rules
+					setExplicitValidationRules(taggedValueMap, controlModel);
+					//populate rules
+					attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+					String[] ruleNamesString = new String[0];
+					controlModel.setValidationRules(ruleNamesString);
+					controlModel.setTempValidationRules(ruleNamesString);
+				}
+				//Creating File upload for byte array attributes
+				else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
+				{
+					controlModel.setDataType(ProcessorConstants.DATATYPE_FILE);
+					String userSelectedControlName = ProcessorConstants.FILEUPLOAD_CONTROL;
+					controlInterface = deFactory.createFileUploadControl();
+					((FileUploadInterface) controlInterface).setColumns(10);
+					//Setting MaxLength
+					String maxLen = getMaxLengthTagValue(taggedValueMap);
+					controlModel.setAttributeSize(maxLen);
+					//Setting fileformats
+					String[] fileFormats = getFileFormatsTagValue(taggedValueMap);
+					controlModel.setFileFormats(fileFormats);
+					attributeProcessor.populateFileAttributeInterface((FileAttributeTypeInformation) attributeTypeInformation, controlModel);
+
+					//PHI
+					String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
+					if (strIsIdentified != null && !strIsIdentified.equalsIgnoreCase(""))
+					{
+						attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
+					}
+					//Set Explicite validation Rules
+					setExplicitValidationRules(taggedValueMap, controlModel);
+					//populate rules
+					attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+					String[] ruleNamesString = new String[0];
+					controlModel.setValidationRules(ruleNamesString);
+					controlModel.setTempValidationRules(ruleNamesString);
+				}
+				else
+				{
+					String userSelectedControlName = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
+					controlInterface = deFactory.createTextField();
+					((TextFieldInterface) controlInterface).setColumns(10);
+					//Creating Text Control
+					if (attributeTypeInformation instanceof StringAttributeTypeInformation)
+					{
+						controlModel.setDataType(ProcessorConstants.DATATYPE_STRING);
+						String defaultValue = getDefaultValueTagValue(taggedValueMap);
+						controlModel.setAttributeDefaultValue(defaultValue);
+						String maxLen = getMaxLengthTagValue(taggedValueMap);
+						controlModel.setAttributeSize(maxLen);
+						attributeProcessor.populateStringAttributeInterface((StringAttributeTypeInformation) attributeTypeInformation, controlModel);
+						//Password
+						String password = getPasswordTagValue(taggedValueMap);
+						controlModel.setIsPassword(Boolean.parseBoolean(password));
+						//URL
+						String url = getUrlTagValue(taggedValueMap);
+						controlModel.setIsUrl(Boolean.parseBoolean(url));
+
+						//NoOfColumns
+						String width = getDisplayWidthTagValue(taggedValueMap);
+						controlModel.setColumns(Integer.parseInt(width.toString()));
+
+						//Single/Multiline(Number of Lines) tagged Value
+						setMultilineTaggedValue(taggedValueMap, controlModel);
+						//PHI
+						String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
+						attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
+
+						if (controlModel.getLinesType() != null && controlModel.getLinesType().equalsIgnoreCase(XMIConstants.MULTILINE))
 						{
-							String defaultValue = getDefaultValueTagValue(taggedValueMap);
-							controlModel.setAttributeDefaultValue(defaultValue);
-							String maxLen = getMaxLengthTagValue(taggedValueMap);
-							controlModel.setAttributeSize(maxLen);
-							attributeProcessor.populateStringAttributeInterface((StringAttributeTypeInformation) attributeTypeInformation, controlModel);
-							//Password
-							String password = getPasswordTagValue(taggedValueMap);
-							controlModel.setIsPassword(Boolean.parseBoolean(password));	
-							//URL
-							String url = getUrlTagValue(taggedValueMap);
-							controlModel.setIsUrl(Boolean.parseBoolean(url));
-							
-							//NoOfColumns
-							String width = getDisplayWidthTagValue(taggedValueMap);
-							controlModel.setColumns(Integer.parseInt(width.toString()));
-							
-							//Single/Multiline(Number of Lines) tagged Value
-							setMultilineTaggedValue(taggedValueMap,controlModel);
-							//PHI
-							String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);		
-							attributeProcessor.populateIsIdentifiedInfo(attributeInterface, strIsIdentified);
-							
-							if (controlModel.getLinesType() != null && controlModel.getLinesType().equalsIgnoreCase(XMIConstants.MULTILINE))
-							{
-								controlInterface = controlProcessor.getMultiLineControl(controlInterface, controlModel);
-							}
-							else
-							{
-								controlInterface =controlProcessor.getTextControl(controlInterface, controlModel);
-							}
-							
-							implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.TEXT_CONTROL,
-									ProcessorConstants.DATATYPE_STRING);
-							//Set Explicite validation Rules
-							setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
-							//populate rules
-							attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
-							String[] ruleNamesString = new String[0];
-							controlModel.setValidationRules(ruleNamesString);
-							controlModel.setTempValidationRules(ruleNamesString);
+							controlInterface = controlProcessor.getMultiLineControl(controlInterface, controlModel);
 						}
-						//Number Attribute
 						else
 						{
-							String defaultValue = getDefaultValueTagValue(taggedValueMap);
-							controlModel.setAttributeDefaultValue(defaultValue);
-							
-							Integer precision = getPrecisionTagValue(taggedValueMap, attributeTypeInformation);
-							controlModel.setAttributeDecimalPlaces(precision.toString());
-
-							if (attributeTypeInformation instanceof LongAttributeTypeInformation)
-							{
-								attributeProcessor.populateLongAttributeInterface((LongAttributeTypeInformation) attributeTypeInformation, controlModel);
-							}
-							else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
-							{
-								attributeProcessor.populateIntegerAttributeInterface((IntegerAttributeTypeInformation) attributeTypeInformation,
-										controlModel);
-							}
-							else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
-							{
-								attributeProcessor
-										.populateFloatAttributeInterface((FloatAttributeTypeInformation) attributeTypeInformation, controlModel);
-							}
-							else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
-							{
-								attributeProcessor.populateDoubleAttributeInterface((DoubleAttributeTypeInformation) attributeTypeInformation,
-										controlModel);
-							}
-
-							implicitRuleList = configurationsFactory.getAllImplicitRules(ProcessorConstants.TEXT_CONTROL,
-									ProcessorConstants.DATATYPE_NUMBER);
-							//Set Explicite validation Rules
-							setExplicitValidationRules(taggedValueMap, attributeInterface, controlModel);
-							//populate rules
-							attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
-							String[] ruleNamesString = new String[0];
-							controlModel.setValidationRules(ruleNamesString);
-							controlModel.setTempValidationRules(ruleNamesString);
+							controlInterface = controlProcessor.getTextControl(controlInterface, controlModel);
 						}
-
+						//Set Explicite validation Rules
+						setExplicitValidationRules(taggedValueMap, controlModel);
+						//populate rules
+						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+						String[] ruleNamesString = new String[0];
+						controlModel.setValidationRules(ruleNamesString);
+						controlModel.setTempValidationRules(ruleNamesString);
 					}
+					//Number Attribute
+					else
+					{
+						controlModel.setDataType(ProcessorConstants.DATATYPE_NUMBER);
+
+						String defaultValue = getDefaultValueTagValue(taggedValueMap);
+						controlModel.setAttributeDefaultValue(defaultValue);
+
+						Integer precision = getPrecisionTagValue(taggedValueMap, attributeTypeInformation);
+						controlModel.setAttributeDecimalPlaces(precision.toString());
+
+						if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+						{
+							attributeProcessor.populateLongAttributeInterface((LongAttributeTypeInformation) attributeTypeInformation, controlModel);
+						}
+						else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
+						{
+							attributeProcessor.populateIntegerAttributeInterface((IntegerAttributeTypeInformation) attributeTypeInformation,
+									controlModel);
+						}
+						else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
+						{
+							attributeProcessor
+									.populateFloatAttributeInterface((FloatAttributeTypeInformation) attributeTypeInformation, controlModel);
+						}
+						else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+						{
+							attributeProcessor.populateDoubleAttributeInterface((DoubleAttributeTypeInformation) attributeTypeInformation,
+									controlModel);
+						}
+						//Set Explicite validation Rules
+						setExplicitValidationRules(taggedValueMap, controlModel);
+						//populate rules
+						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
+						String[] ruleNamesString = new String[0];
+						controlModel.setValidationRules(ruleNamesString);
+						controlModel.setTempValidationRules(ruleNamesString);
+					}
+
+				}
 			}
 			else
-				return null;		//no control created for id attribute
+				return null; //no control created for id attribute
 		}
 		controlInterface.setName(abstractAttributeInterface.getName());
 		controlInterface.setCaption(abstractAttributeInterface.getName());
@@ -2422,13 +2367,12 @@ public class XMIImportProcessor
 		return controlInterface;
 	}
 
-
 	/**
 	 * @param associationInterface
 	 * @param controlInterface
 	 * In case of linking association, this method adds the association display attributes.
 	 */
-	private void addAssociationDisplayAttributes(AssociationInterface associationInterface,Map<String, String> taggedValueMap,
+	private void addAssociationDisplayAttributes(AssociationInterface associationInterface, Map<String, String> taggedValueMap,
 			ControlInterface controlInterface)
 	{
 		EntityInterface targetEntity = associationInterface.getTargetEntity();
@@ -2437,7 +2381,7 @@ public class XMIImportProcessor
 		Collection<AttributeInterface> targetEntityAttrColl = targetEntity.getAttributeCollection();
 		int seqNo = 1;
 		String attributesInAssociationDropDownTagValue = taggedValueMap.get(XMIConstants.TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN);
-		if(attributesInAssociationDropDownTagValue != null)
+		if (attributesInAssociationDropDownTagValue != null)
 		{
 			StringTokenizer st = new StringTokenizer(attributesInAssociationDropDownTagValue, ",");
 			while (st.hasMoreTokens())
@@ -2445,22 +2389,20 @@ public class XMIImportProcessor
 				String attributeName = st.nextToken();
 				for (AttributeInterface attr : targetEntityAttrColl)
 				{
-					if(attributeName.equals(attr.getName()))
+					if (attributeName.equals(attr.getName()))
 					{
-						AssociationDisplayAttributeInterface associationDisplayAttribute = domainObjectFactory
-								.createAssociationDisplayAttribute();
+						AssociationDisplayAttributeInterface associationDisplayAttribute = domainObjectFactory.createAssociationDisplayAttribute();
 						associationDisplayAttribute.setSequenceNumber(seqNo);
 						associationDisplayAttribute.setAttribute(attr);
 						//This method adds to the associationDisplayAttributeCollection
-						((SelectControl) controlInterface)
-								.addAssociationDisplayAttribute(associationDisplayAttribute);
+						((SelectControl) controlInterface).addAssociationDisplayAttribute(associationDisplayAttribute);
 						seqNo++;
 					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param taggedValueMap
@@ -2468,8 +2410,7 @@ public class XMIImportProcessor
 	 * @param controlModel 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void setExplicitValidationRules(Map<String, String> taggedValueMap, AttributeInterface attributeInterface, ControlsModel controlModel)
-			throws DynamicExtensionsSystemException
+	private void setExplicitValidationRules(Map<String, String> taggedValueMap, ControlsModel controlModel) throws DynamicExtensionsSystemException
 	{
 		Map<String, String> taggedValueRuleMap = new HashMap<String, String>();
 		if (taggedValueMap != null)
@@ -2486,10 +2427,11 @@ public class XMIImportProcessor
 			//Seting Rule Tagged Values to ControlsModel
 			if (taggedValueRuleMap != null && !(taggedValueRuleMap.isEmpty()))
 			{
-				populateValidationRule(taggedValueRuleMap, attributeInterface, controlModel);
+				populateValidationRule(taggedValueRuleMap, controlModel);
 			}
 		}
 	}
+
 	/**
 	 * 
 	 * @param taggedValueMapRule
@@ -2497,32 +2439,33 @@ public class XMIImportProcessor
 	 * @param controlModel 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void populateValidationRule(Map<String, String> taggedValueRuleMap, AttributeInterface attributeInterface, ControlsModel controlModel)
-			throws DynamicExtensionsSystemException
+	private void populateValidationRule(Map<String, String> taggedValueRuleMap, ControlsModel controlModel) throws DynamicExtensionsSystemException
 	{
 		ArrayList<String> ruleNames = new ArrayList<String>();
 		String ruleName = new String();
 		int i = 0;
+
 		Set<String> keySetForRuleTaggedValueMap = taggedValueRuleMap.keySet();
 		for (String key : keySetForRuleTaggedValueMap)
 		{
 			StringTokenizer st = new StringTokenizer(key, XMIConstants.SEPARATOR);
-			int token = 0;
+			int tokenNumber = 0;
 			int count = st.countTokens();
-			//Seting Rule Tagged Values and parameter values to ControlsModel 
+
+			// Seting Rule Tagged Values and parameter values to ControlsModel.
 			if (count <= 3)
 			{
 				while (st.hasMoreTokens())
 				{
-					token++;
+					tokenNumber++;
 					String tokenName = st.nextToken();
-					//Finding Rule name
-					if (token == 2)
+					// Finding Rule name.
+					if (tokenNumber == 2)
 					{
 						ruleName = tokenName;
 					}
-					//Setting Parameter values 
-					if (token == 3)
+					// Setting Parameter values.
+					if (tokenNumber == 3)
 					{
 						if (tokenName.equalsIgnoreCase("min"))
 						{
@@ -2542,23 +2485,23 @@ public class XMIImportProcessor
 				}
 			}
 		}
+
 		String[] ruleNamesString = new String[ruleNames.size()];
 		for (String ruleStringName : ruleNames)
 		{
 			ruleNamesString[i++] = ruleStringName;
 		}
+
 		controlModel.setValidationRules(ruleNamesString);
 		controlModel.setTempValidationRules(ruleNamesString);
 	}
-
 
 	/**
 	 * @param entity
 	 * This method removes inherited attributes.
 	 */
 
-	protected void removeInheritedAttributes(EntityInterface entity,
-			List duplicateAttributeCollection)
+	protected void removeInheritedAttributes(EntityInterface entity, List duplicateAttributeCollection)
 	{
 		if (duplicateAttributeCollection != null)
 		{
@@ -2574,40 +2517,40 @@ public class XMIImportProcessor
 	{
 		//Collection<ContainerInterface> containerColl = new HashSet<ContainerInterface>();
 
-//		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
+		//		Set<String> entityIdKeySet = entityNameVsContainers.keySet();
 
-		for(String containerName : containerNames)
+		for (String containerName : containerNames)
 		{
-//		For static models
+			//		For static models
 			String temp = "";
-			if(isEntityGroupSystemGenerated)
-			{				
-				if(!containerName.startsWith(XMIConstants.CATISSUE_PACKAGE))
+			if (isEntityGroupSystemGenerated)
+			{
+				if (!containerName.startsWith(XMIConstants.CATISSUE_PACKAGE))
 				{
 					temp = containerName;
 					containerName = new String();
 					containerName = XMIConstants.CATISSUE_PACKAGE + temp;
-				}				
-			}			
+				}
+			}
 			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
-			if(containerList == null || containerList.size() < 1)
+			if (containerList == null || containerList.size() < 1)
 			{
-				throw new DynamicExtensionsApplicationException("The container name " + containerName + " does " +
-						"not match with the container name in the Model.");
+				throw new DynamicExtensionsApplicationException("The container name " + containerName + " does "
+						+ "not match with the container name in the Model.");
 			}
 			ContainerInterface containerInterface = (ContainerInterface) containerList.get(0);
-			mainContainerList.add(containerInterface);			
+			mainContainerList.add(containerInterface);
 		}
 
 		EntityGroupManagerInterface entityManagerInterface = EntityGroupManager.getInstance();
 		try
 		{
-		//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);			
-			for(ContainerInterface container : mainContainerList)
+			//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);			
+			for (ContainerInterface container : mainContainerList)
 			{
 				entityGroup.addMainContainer(container);
 			}
-			if(isEntityGroupSystemGenerated)
+			if (isEntityGroupSystemGenerated)
 			{//Static Model. Hence saving only metadata
 				entityManagerInterface.persistEntityGroupMetadata(entityGroup);
 			}

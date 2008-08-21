@@ -32,6 +32,11 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	 * The Collection of RuleParameter.
 	 */
 	protected Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
+	
+	/**
+	 * 
+	 */
+	protected Boolean isImplicitRule = new Boolean(true);
 
 	/**
 	 * Empty Constructor.
@@ -105,6 +110,23 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 			ruleParameterCollection = new LinkedHashSet<RuleParameterInterface>();
 		}
 		ruleParameterCollection.add(ruleParameter);
+	}
+
+	/**
+	 * @hibernate.property name="isImplicitRule" type="boolean" column="IS_IMPLICIT"
+	 * @return the isImplicitRule 
+	 */
+	public Boolean getIsImplicitRule()
+	{
+		return isImplicitRule;
+	}
+
+	/**
+	 * @param isImplicitRule the isImplicitRule to set
+	 */
+	public void setIsImplicitRule(Boolean isImplicitRule)
+	{
+		this.isImplicitRule = isImplicitRule;
 	}
 
 }

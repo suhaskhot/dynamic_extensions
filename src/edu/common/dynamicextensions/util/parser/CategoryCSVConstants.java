@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.util.parser;
 
 /**
@@ -27,34 +28,34 @@ public interface CategoryCSVConstants
 	 * This keyword is used before defining the options available for a control. 
 	 */
 	String OPTIONS = "options";
-	
+
 	/**
 	 * Defines rules for a particular category attribute.
 	 */
 	String RULES = "Rules";
-	
+
 	/**
 	 * Defines range for a particular category attribute.
 	 */
 	String RANGE = "range";
-	
+
 	String DATE_RANGE = "dateRange";
-	
+
 	/**
 	 * Defines minimum value of the range.
 	 */
 	String MIN = "min";
-	
+
 	/**
 	 * Defines maximum value of the range.
 	 */
 	String MAX = "max";
-	
+
 	/**
 	 * Defines Uniqueness for a particular category attribute value.
 	 */
 	String UNIQUE = "unique";
-	
+
 	/**
 	 * Defines mandatory condition for a particular category attribute value.
 	 */
@@ -69,7 +70,7 @@ public interface CategoryCSVConstants
 	 * This keyword used to define the label for the form
 	 */
 	String SINGLE = "single";
-	
+
 	/**
 	 * This keyword used to define the label for the form
 	 */
@@ -91,4 +92,9 @@ public interface CategoryCSVConstants
 	 * default value of the attribute
 	 */
 	String DEFAULT_VALUE = "defaultValue";
+
+	/**
+	 * DE Error messages file
+	 */
+	String DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE = "DynamicExtensionsErrorsMessages";
 }

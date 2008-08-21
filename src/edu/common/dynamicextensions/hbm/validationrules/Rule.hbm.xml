@@ -50,6 +50,14 @@
               />
         </set>
 
+        <property
+            name="isImplicitRule"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_IMPLICIT"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-Rule.xml

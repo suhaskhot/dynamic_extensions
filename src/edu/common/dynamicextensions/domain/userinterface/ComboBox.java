@@ -44,10 +44,13 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String defaultValue = "";
-		AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
-		if (attributeMetadataInterface != null)
+		if (this.value == null)
 		{
-			this.value = this.getAttibuteMetadataInterface().getDefaultValue();
+			AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
+			if (attributeMetadataInterface != null)
+			{
+				this.value = this.getAttibuteMetadataInterface().getDefaultValue();
+			}
 		}
 		if (this.value != null)
 		{

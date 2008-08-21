@@ -211,9 +211,12 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			for (RuleInterface rule : attributeRules)
 			{
-				if (rule.getIsImplicitRule() || rule.getName().equals(CategoryCSVConstants.REQUIRED))
+				if (rule.getIsImplicitRule() != null)
 				{
-					rules.add(rule);
+					if (rule.getIsImplicitRule() || rule.getName().equals(CategoryCSVConstants.REQUIRED))
+					{
+						rules.add(rule);
+					}
 				}
 			}
 		}

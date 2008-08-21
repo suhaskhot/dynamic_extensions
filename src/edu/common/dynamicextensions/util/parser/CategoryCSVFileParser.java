@@ -80,7 +80,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		while ((line = reader.readNext()) != null)
 		{
 			lineNumber++;
-			if (line[0].length() != 0)
+			if (line[0].length() != 0 && !line[0].startsWith("##"))
 			{
 				break;
 			}

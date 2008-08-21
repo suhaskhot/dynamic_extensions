@@ -72,8 +72,8 @@ public class ImportPermissibleValues
 				//1:read the entity group
 				EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup(categoryCSVFileParser.getEntityGroupName());
 
-				CategoryValidator.checkForNullRefernce(entityGroup," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ENTITY GROUP WITH NAME " + categoryCSVFileParser.getEntityGroupName()
-						+ " DOES NOT");
+				CategoryValidator.checkForNullRefernce(entityGroup, " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
+						+ " ENTITY GROUP WITH NAME " + categoryCSVFileParser.getEntityGroupName() + " DOES NOT");
 
 				categoryCSVFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 
@@ -88,15 +88,16 @@ public class ImportPermissibleValues
 					String entityName = categoryCSVFileParser.getEntityName();
 					currentEntity = entityGroup.getEntityByName(entityName);
 
-					CategoryValidator.checkForNullRefernce(currentEntity," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ENTITY WITH NAME " + entityName
-							+ " DOES NOT EXIST");
+					CategoryValidator.checkForNullRefernce(currentEntity, " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
+							+ " ENTITY WITH NAME " + entityName + " DOES NOT EXIST");
 
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
-					Map<String,Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser.getPermissibleValues();
-					Map<String,Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String,Collection<SemanticPropertyInterface>>();
+					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser.getPermissibleValues();
+					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String, Collection<SemanticPropertyInterface>>();
 
-					CategoryValidator.checkForNullRefernce(currentEntity.getAttributeByName(attributeName)," ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
+					CategoryValidator.checkForNullRefernce(currentEntity.getAttributeByName(attributeName), " ERROR AT LINE:"
+							+ categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
 
 					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName(attributeName)
 							.getAttributeTypeInformation();
@@ -150,8 +151,17 @@ public class ImportPermissibleValues
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE:" + categoryCSVFileParser.getLineNumber() , e);
-		}	
+			throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE:" + categoryCSVFileParser.getLineNumber(), e);
+		}
+		catch (Exception e)
+		{
+			if (!(e instanceof DynamicExtensionsSystemException))
+			{
+				throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE: " + categoryCSVFileParser.getLineNumber() + "READING FILE "
+						+ categoryCSVFileParser.getFilePath(), e);
+			}
+			throw new DynamicExtensionsSystemException("", e);
+		}
 
 	}
 

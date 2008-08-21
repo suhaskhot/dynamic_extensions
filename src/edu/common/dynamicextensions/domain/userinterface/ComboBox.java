@@ -13,14 +13,14 @@ import edu.wustl.common.beans.NameValueBean;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
- * @hibernate.joined-subclass table="DYEXTN_COMBOBOX" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_COMBOBOX"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class ComboBox extends SelectControl implements ComboBoxInterface
 {
 
 	/**
-	 * Serial Version Unique Identifier. 
+	 * Serial Version Unique Identifier.
 	 */
 	private static final long serialVersionUID = 3062212342005513616L;
 
@@ -77,25 +77,36 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		{
 			isDisabled = ",disabled:'" + ProcessorConstants.TRUE + "'";
 		}
-
-		String htmlString = "<script>Ext.onReady(function(){ " + "var myUrl= 'ComboDataAction.do?controlId= " + this.getId()
-				+ "~containerIdentifier=" + +this.getParentContainer().getId() + "';" + "var ds = new Ext.data.Store({"
+		String htmlComponentName = getHTMLComponentName();
+		String parentContainerId = "";
+		if (this.getParentContainer() != null
+				&& this.getParentContainer().getId() != null)
+		{
+			parentContainerId = this.getParentContainer().getId().toString();
+		}
+		String id = "";
+		if (this.getId() != null)
+		{
+			id = this.getId().toString();
+		}
+		String htmlString = "<script>Ext.onReady(function(){ " + "var myUrl= 'ComboDataAction.do?controlId= " + id
+				+ "~containerIdentifier=" + parentContainerId + "';" + "var ds = new Ext.data.Store({"
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
 				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
 				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
-				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</script>" + "<div id='auto_complete_dropdown'>"
-				+ "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName() + "' size='20'/>"
+				+ "selectOnFocus:true,applyTo: '" + htmlComponentName + "'});});" + "</script>" + "<div id='auto_complete_dropdown'>"
+				+ "<input type='text' id='" + htmlComponentName + "' " + " name='" + htmlComponentName + "' size='20'/>"
 				+ "<div name='comboScript' style='display:none'>" + "Ext.onReady(function(){ " + "var myUrl='ComboDataAction.do?controlId= "
-				+ this.getId() + "~containerIdentifier=" + this.getParentContainer().getId() + "';var ds = new Ext.data.Store({"
+				+ id + "~containerIdentifier=" + parentContainerId + "';var ds = new Ext.data.Store({"
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
 				+ "[{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,displayField:'excerpt',"
 				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
 				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
-				+ "selectOnFocus:true,applyTo: '" + getHTMLComponentName() + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
-				+ "<div>" + "<input type='text' id='" + getHTMLComponentName() + "' " + " name='" + getHTMLComponentName()
+				+ "selectOnFocus:true,applyTo: '" + htmlComponentName + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
+				+ "<div>" + "<input type='text' id='" + htmlComponentName + "' " + " name='" + htmlComponentName
 				+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";
 
 		return htmlString;

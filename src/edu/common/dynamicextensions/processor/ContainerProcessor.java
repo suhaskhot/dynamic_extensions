@@ -150,6 +150,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	public void populateContainerUIBeanInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface,
 			EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		List<NameValueBean> formList = new ArrayList<NameValueBean>();
+		NameValueBean formTobeRemoved = null;
 		if (containerInterface != null && containerUIBeanInterface != null)
 		{
 			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface.getButtonCss()));
@@ -159,9 +161,23 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface.getRequiredFieldIndicatior()));
 			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility.toString(containerInterface.getRequiredFieldWarningMessage()));
 			containerUIBeanInterface.setTitleCss(Utility.toString(containerInterface.getTitleCss()));
+
 			if (entityGroup.getId() != null)
 			{
-				containerUIBeanInterface.setFormList(getFormsList(entityGroup.getId()));
+				// Restrict Inherit call from same form.
+
+				formList = getFormsList(entityGroup.getId());
+
+				for (NameValueBean form : formList)
+				{
+					if (containerUIBeanInterface.getFormName() != null && form.getName().equals(containerUIBeanInterface.getFormName()))
+					{
+						formTobeRemoved = form;
+					}
+				}
+				formList.remove(formTobeRemoved);
+
+				containerUIBeanInterface.setFormList(formList);
 			}
 			else
 			{

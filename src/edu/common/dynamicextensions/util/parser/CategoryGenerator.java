@@ -677,6 +677,7 @@ public class CategoryGenerator
 					categoryEntityNameInstanceMap.put(container.getAbstractEntity().getName(), getCategoryPath(categoryPaths, newCategoryEntityName));
 
 					categoryEntityName.add(newCategoryEntityName);
+					showCaption = false;
 				}
 			}
 		}

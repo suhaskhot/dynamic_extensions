@@ -193,13 +193,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		Set<RuleInterface> rules = new HashSet<RuleInterface>();
 
-		//ControlConfigurationsFactory factory = ControlConfigurationsFactory.getInstance();
-		//List<String> implicitRules = factory.getImplicitRules(controlCaption, attribute.getAttributeTypeInformation().getDataType());
-
-		//List<String> implicitRules = new ArrayList<String>();
-		//implicitRules.add("textLength");
-
-		//addImplicitRules(implicitRules, rules, attribute.getRuleCollection());
+		addImplicitRules(rules, attribute.getRuleCollection());
 		addExplicitRules(rules, rulesMap);
 
 		categoryAttribute.setRuleCollection(rules);
@@ -211,13 +205,13 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param rules
 	 * @param attributeRules
 	 */
-	private void addImplicitRules(List<String> implicitRules, Set<RuleInterface> rules, Collection<RuleInterface> attributeRules)
+	private void addImplicitRules(Set<RuleInterface> rules, Collection<RuleInterface> attributeRules)
 	{
-		if (attributeRules != null && implicitRules != null && !implicitRules.isEmpty())
+		if (attributeRules != null)
 		{
 			for (RuleInterface rule : attributeRules)
 			{
-				if (implicitRules.contains(rule.getName()))
+				if (rule.getIsImplicitRule() || rule.getName().equals(CategoryCSVConstants.REQUIRED))
 				{
 					rules.add(rule);
 				}
@@ -246,6 +240,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				{
 					rule = factory.createRule();
 					rule.setName(ruleName);
+					rule.setIsImplicitRule(false);
 				}
 				else if (ruleName.equalsIgnoreCase(CategoryCSVConstants.RANGE) || ruleName.equalsIgnoreCase(CategoryCSVConstants.DATE_RANGE))
 				{
@@ -253,6 +248,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 					rule = factory.createRule();
 					rule.setName(ruleName);
+					rule.setIsImplicitRule(false);
 
 					RuleParameterInterface minValue = factory.createRuleParameter();
 					minValue.setName(CategoryCSVConstants.MIN);
@@ -272,19 +268,6 @@ public class CategoryHelper implements CategoryHelperInterface
 				}
 			}
 		}
-	}
-
-	private RuleInterface getPreviousRule(String ruleName, Set<RuleInterface> rules)
-	{
-		for (RuleInterface rule : rules)
-		{
-			if (rule.getName().equalsIgnoreCase(ruleName))
-			{
-				return rule;
-			}
-		}
-
-		return null;
 	}
 
 	/**
@@ -1104,23 +1087,24 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (rootContainer == null)
 		{
 			return associationControl;
-		}	
-		
+		}
+
 		for (ControlInterface controlInterface : rootContainer.getControlCollection())
 		{
 			if (controlInterface instanceof AbstractContainmentControlInterface)
 			{
-				if (((AbstractContainmentControlInterface)controlInterface).getContainer().getId().equals(associationContainerId))
+				if (((AbstractContainmentControlInterface) controlInterface).getContainer().getId().equals(associationContainerId))
 				{
 					associationControl = (AbstractContainmentControlInterface) controlInterface;
 					return associationControl;
 				}
-				
-				associationControl =  getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),associationContainerId);
-				if(associationControl!=null)
+
+				associationControl = getAssociationControl(((AbstractContainmentControlInterface) controlInterface).getContainer(),
+						associationContainerId);
+				if (associationControl != null)
 				{
 					return associationControl;
-						
+
 				}
 			}
 		}

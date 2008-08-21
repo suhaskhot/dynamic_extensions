@@ -468,11 +468,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory.getInstance();
 		HashSet<String> allValidationRules = new HashSet<String>();
 
-		// Collect all the applicable Rule names
-		List<String> implicitRuleList = null;
+		// Collect all the applicable rule names
+		List<String> implicitRules = null;
 
-		implicitRuleList = configurationsFactory.getAllImplicitRules(userSelectedControlName, attributeUIBeanInformationIntf.getDataType());
-		for (String implicitRule : implicitRuleList)
+		implicitRules = configurationsFactory.getAllImplicitRules(userSelectedControlName, attributeUIBeanInformationIntf.getDataType());
+		for (String implicitRule : implicitRules)
 		{
 			allValidationRules.add(implicitRule);
 		}
@@ -486,10 +486,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				allValidationRules.add(validationRules[i]);
 			}
 		}
-		
-		if (allValidationRules.contains("date") && allValidationRules.contains("dateRange"))
+
+		if (allValidationRules.contains(ProcessorConstants.DATE) && allValidationRules.contains(ProcessorConstants.DATE_RANGE))
 		{
-			allValidationRules.remove("date");
+			allValidationRules.remove(ProcessorConstants.DATE);
 		}
 
 		Collection<RuleInterface> attributeRuleCollection = abstractAttributeInterface.getRuleCollection();
@@ -507,7 +507,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				else
 				{
 					obsoleteRules.add(rule);
-					rule = instantiateRule(attributeRuleName, attributeUIBeanInformationIntf);
+					rule = instantiateRule(attributeRuleName, attributeUIBeanInformationIntf, implicitRules);
 					newRules.add(rule);
 					allValidationRules.remove(attributeRuleName);
 				}
@@ -520,7 +520,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			for (String validationRule : allValidationRules)
 			{
-				RuleInterface rule = instantiateRule(validationRule, attributeUIBeanInformationIntf);
+				RuleInterface rule = instantiateRule(validationRule, attributeUIBeanInformationIntf, implicitRules);
 				abstractAttributeInterface.addRule(rule);
 			}
 		}
@@ -529,11 +529,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * This method populates and returns a new Rule depending upon the Rule name
 	 * @param validationRule
-	 * @param attributeUIBeanInformationIntf
+	 * @param attributeUIBeanInfo
+	 * @param implicitRules 
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private RuleInterface instantiateRule(String validationRule, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private RuleInterface instantiateRule(String validationRule, AbstractAttributeUIBeanInterface attributeUIBeanInfo, List<String> implicitRules)
 			throws DynamicExtensionsSystemException
 	{
 		RuleConfigurationObject ruleConfigurationObject = null;
@@ -544,10 +545,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
 
 		ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
-		ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject, attributeUIBeanInformationIntf);
+		ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject, attributeUIBeanInfo);
 
 		rule = domainObjectFactory.createRule();
 		rule.setName(ruleConfigurationObject.getRuleName());
+
+		if (implicitRules.contains(validationRule))
+		{
+			rule.setIsImplicitRule(true);
+		}
+		else
+		{
+			rule.setIsImplicitRule(false);
+		}
 
 		if (ruleParameterCollection != null && !(ruleParameterCollection.isEmpty()))
 		{

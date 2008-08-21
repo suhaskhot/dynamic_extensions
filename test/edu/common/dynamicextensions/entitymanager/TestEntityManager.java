@@ -2497,6 +2497,70 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+	
+	/**
+	 * Insert data for dates with different date formats.
+	 */
+	public void testInsertDataForDateWithDifferentFormats()
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("DATE_TEST" + new Double(Math.random()).toString());
+		
+		//Step 1
+		Entity entity = (Entity) DomainObjectFactory.getInstance().createEntity();
+		entity.setName("DateForm");
+		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
+
+		try
+		{
+			AttributeInterface dateOnly = DomainObjectFactory.getInstance().createDateAttribute();
+			((DateAttributeTypeInformation) dateOnly.getAttributeTypeInformation()).setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+			dateOnly.setName("dateOnly");
+			
+			AttributeInterface dateTime = DomainObjectFactory.getInstance().createDateAttribute();
+			((DateAttributeTypeInformation) dateTime.getAttributeTypeInformation()).setFormat(ProcessorConstants.DATE_TIME_FORMAT);
+			dateTime.setName("dateTime");
+			
+			AttributeInterface yearOnlyDate = DomainObjectFactory.getInstance().createDateAttribute();
+			((DateAttributeTypeInformation) yearOnlyDate.getAttributeTypeInformation()).setFormat(ProcessorConstants.YEAR_ONLY_FORMAT);
+			yearOnlyDate.setName("yearOnlyDate");
+			
+			AttributeInterface monthYearDate = DomainObjectFactory.getInstance().createDateAttribute();
+			((DateAttributeTypeInformation) monthYearDate.getAttributeTypeInformation()).setFormat(ProcessorConstants.MONTH_YEAR_FORMAT);
+			monthYearDate.setName("monthYearDate");
+
+			entity.addAbstractAttribute(dateOnly);
+			entity.addAbstractAttribute(dateTime);
+			entity.addAbstractAttribute(yearOnlyDate);
+			entity.addAbstractAttribute(monthYearDate);
+			
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+			//Step 2
+			EntityInterface savedEntity = EntityManagerInterface.persistEntity(entity);
+
+			Map dataValue = new HashMap();
+			dataValue.put(dateOnly, "01-12-1982");
+			dataValue.put(dateTime, "11-12-1982 10:11");
+			dataValue.put(yearOnlyDate, "1900");
+			dataValue.put(monthYearDate, "09-1900");
+
+			Long recordId = EntityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue = EntityManagerInterface.getRecordById(entity, recordId);
+
+			assertEquals("11-12-1982 10:11", dataValue.get(dateTime));
+			assertEquals("01-12-1982", dataValue.get(dateOnly));
+			assertEquals("1900", dataValue.get(yearOnlyDate));
+			assertEquals("09-1900", dataValue.get(monthYearDate));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 
 	/**
 	 * Create a date attribute, specify range for the attribute, try to insert

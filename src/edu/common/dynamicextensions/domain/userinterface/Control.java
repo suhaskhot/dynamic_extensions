@@ -366,7 +366,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		Control control = (Control) object;
 		Integer thisSequenceNumber = this.sequenceNumber;
 		Integer otherSequenceNumber = control.getSequenceNumber();
-		return thisSequenceNumber.compareTo(otherSequenceNumber);
+		return otherSequenceNumber.compareTo(thisSequenceNumber);
 	}
 
 	/**

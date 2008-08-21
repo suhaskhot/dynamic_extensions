@@ -65,6 +65,7 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.DateValidator;
+import edu.common.dynamicextensions.validation.UniqueValidator;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -683,6 +684,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			assertEquals(user.getName(), newEntity.getName());
 
 			String tableName = newEntity.getTableProperties().getName();
+			System.out.println("===========table name " + tableName);
 			assertTrue(isTablePresent(tableName));
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
 			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
@@ -3709,6 +3711,65 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * unique rule
+	 */
+	public void testUniqueRule()
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("unique");
+
+		//Step 1
+		Entity entity = (Entity) factory.createEntity();
+		entity.setName("unique_rule");
+		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
+		Long recordId1 = null;
+		Long recordId2 = null;
+		try
+		{
+			Attribute floatAtribute = (Attribute) factory.createFloatAttribute();
+			floatAtribute.setName("Price");
+
+			RuleInterface uniqueRule = factory.createRule();
+			uniqueRule.setName("unique");
+			floatAtribute.getRuleCollection().add(uniqueRule);
+
+			entity.addAbstractAttribute(floatAtribute);
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+
+			//Step 2
+			EntityInterface savedEntity = EntityManagerInterface.persistEntity(entity);
+
+			Map dataValue = new HashMap();
+			dataValue.put(floatAtribute, "15.90");
+
+			recordId1 = EntityManagerInterface.insertData(savedEntity, dataValue);
+
+			dataValue = EntityManagerInterface.getRecordById(entity, recordId1);
+			Map<String, String> rulesMap = new HashMap<String, String>();
+			UniqueValidator uniqueValidator = new UniqueValidator();
+			uniqueValidator.validate(floatAtribute, "15.90", rulesMap, "Date");
+
+			Map dataValue2 = new HashMap();
+			dataValue2.put(floatAtribute, "15.90");
+
+			recordId2 = EntityManagerInterface.insertData(savedEntity, dataValue2);
+		}
+		catch (DynamicExtensionsValidationException e)
+		{
+			System.out.println("Could not insert data....");
+			System.out.println("Validation failed. Input data should be unique");
+			assertEquals(recordId2, null);
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			fail();

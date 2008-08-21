@@ -177,7 +177,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				: permissibleValueList[0]);
 		control = createOrUpdateControl(controlType, controlCaption, container, categoryAttribute, permissibleValueNameList);
 		control.setCaption(controlCaption);
-
+		updateCommonControlProperties(control, controlCaption, container);
 		return control;
 	}
 
@@ -458,7 +458,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(sourceContainer, targetContainer,
 				categoryAssociation, targetContainer.getCaption());
-
+		updateCommonControlProperties(categoryAssociationControl, targetContainer.getCaption(), sourceContainer);
 		return categoryAssociationControl;
 	}
 
@@ -618,7 +618,6 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 
 		CategoryAssociationControlInterface categoryAssociationControl = DomainObjectFactory.getInstance().createCategoryAssociationControl();
-		categoryAssociationControl.setSequenceNumber(getNextSequenceNumber(parentContainer));
 		categoryAssociationControl.setCaption(caption);
 		categoryAssociationControl.setContainer(targetContainer);
 		categoryAssociationControl.setBaseAbstractAttribute(categoryAssociation);
@@ -682,7 +681,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			textField = DomainObjectFactory.getInstance().createTextField();
 			textField.setColumns(50);
-			textField.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, textField, baseAbstractAttribute);
 		}
 
@@ -743,7 +741,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				selectControl = DomainObjectFactory.getInstance().createComboBox();
 			}
-			selectControl.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
 		//clear old permissible values
@@ -828,7 +825,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (datePicker == null)
 		{
 			datePicker = DomainObjectFactory.getInstance().createDatePicker();
-			datePicker.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, datePicker, baseAbstractAttribute);
 		}
 
@@ -858,7 +854,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (fileUpload == null)
 		{
 			fileUpload = DomainObjectFactory.getInstance().createFileUploadControl();
-			fileUpload.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, fileUpload, baseAbstractAttribute);
 		}
 
@@ -886,7 +881,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (textArea == null)
 		{
 			textArea = DomainObjectFactory.getInstance().createTextArea();
-			textArea.setSequenceNumber(getNextSequenceNumber(container));
 			textArea.setColumns(50);
 			textArea.setRows(5);
 			updateContainerAndControl(container, textArea, baseAbstractAttribute);
@@ -918,7 +912,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (radioButton == null)
 		{
 			radioButton = DomainObjectFactory.getInstance().createRadioButton();
-			radioButton.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, radioButton, baseAbstractAttribute);
 		}
 
@@ -954,7 +947,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (checkBox == null)
 		{
 			checkBox = DomainObjectFactory.getInstance().createCheckBox();
-			checkBox.setSequenceNumber(getNextSequenceNumber(container));
 			updateContainerAndControl(container, checkBox, baseAbstractAttribute);
 		}
 
@@ -1176,6 +1168,12 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			throw new DynamicExtensionsSystemException("Please conatct administartor", e);
 		}
+	}
+	
+	private void updateCommonControlProperties(ControlInterface control, String caption, ContainerInterface parentContainer)
+	{
+		control.setCaption(caption);
+		control.setSequenceNumber(getNextSequenceNumber(parentContainer));
 	}
 
 }

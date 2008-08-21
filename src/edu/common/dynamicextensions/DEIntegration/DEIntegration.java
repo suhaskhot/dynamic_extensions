@@ -126,19 +126,16 @@ public class DEIntegration implements IntegrationInterface
             entityMap.put(categoryContainerId.toString(), catTableName);
 
         }
-        Session session = null;
         ResultSet resultSet = null;
         Statement statement = null;
         Connection connection = null;
         try
         {
-            session = DBUtil.getCleanSession();
-            connection = session.connection();
+            connection = DBUtil.getConnection();
             statement = connection.createStatement();
 
             String entitySql = "select identifier from " + entityTableName
                     + " where " + columnName + " = " + staticRecId;
-            //EntityManagerUtil util = new EntityManagerUtil();
             resultSet = statement.executeQuery(entitySql.toString()); //util.executeQuery(entitySql);
             List recIdList = new ArrayList();
             while (resultSet.next())
@@ -175,17 +172,11 @@ public class DEIntegration implements IntegrationInterface
             }
 
         }
-        catch (BizLogicException e)
-        {
-            throw new DynamicExtensionsSystemException(
-                    "Error while opening session", e);
-        }
         finally
         {
             resultSet.close();
             statement.close();
-            connection.close();
-            session.close();
+            DBUtil.closeConnection();
         }
 
         return catRecIds;
@@ -322,5 +313,78 @@ public class DEIntegration implements IntegrationInterface
         }
         return recIdList;
     }
+    
+    
+    /**
+     *This method returns the Category Record_Id ie id of its root entty 
+     *BasedOn categoryContainerId and dynamicEntityRecordId    
+     */
+    public Collection<Long> getCategoryRecordIdBasedOnCategoryId(
+            Long categoryContainerId, Long dynamicEntityRecordId)
+            throws DynamicExtensionsSystemException
+    {
+
+        Collection recIdList = new HashSet();
+        String catTableName = "";
+
+            /*
+             * Checked for categoryContainerId in the entityMap if present then get the Category Table Name from the Map
+             * else get it from DB.
+             */
+            if (entityMap.containsKey(categoryContainerId.toString()))
+            {
+                catTableName = (String) entityMap.get(categoryContainerId
+                        .toString());
+            }
+            else
+            {   
+                catTableName = EntityManager.getInstance().getDynamicTableName(
+                        categoryContainerId);
+                entityMap.put(categoryContainerId.toString(), catTableName);
+             }
+     
+        ResultSet resultSet = null;
+        Statement statement = null;
+        Connection connection = null;
+        try
+        {
+            connection =DBUtil.getConnection(); 
+            statement = connection.createStatement();
+
+            String catSql = "select RECORD_ID from " + catTableName
+            + " where identifier= " + dynamicEntityRecordId;
+            resultSet = statement.executeQuery(catSql.toString()); //util.executeQuery(entitySql);
+            
+            while (resultSet.next())
+            {
+                recIdList.add(resultSet.getLong(1));
+            }
+            
+        }
+        catch (SQLException e)
+        {
+            throw new DynamicExtensionsSystemException(
+                    "Error while opening session", e);
+        }
+        finally
+        {
+            try
+            {
+                resultSet.close();
+                statement.close();
+                DBUtil.closeConnection();
+            }
+            catch (SQLException e)
+            {
+                throw new DynamicExtensionsSystemException(
+                        "Error while closing session", e);
+            }
+            
+        }
+        return recIdList;
+    }
+    
+    
+    
 
 }

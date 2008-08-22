@@ -232,7 +232,7 @@
 		    			<include name="**/dynamicextensions/validation/**/*.*"/>
 		    			<include name="**/common/util/**/*.*"/>
 		    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
-	    				<exclude name="*.properties"/>
+	    				<include name="DynamicExtensionsErrorsMessages.properties"/>
 	    				<include name="*.xml"/>
 		    			<include name="**/xmi/**/*.*"/>
 	    				<include name="*.xsl"/>

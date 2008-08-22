@@ -99,7 +99,7 @@ public class XMIImporter
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			
 			List<String> containerNames = readFile(args[2]);
-			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames,true);			
+			xmiImportProcessor.processXmi(uml, domainModelName,packageName,containerNames,false);			
 			System.out.println("--------------- Done ------------");
 		
 		}

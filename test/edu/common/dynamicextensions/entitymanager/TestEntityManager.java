@@ -30,6 +30,7 @@ import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringValue;
@@ -42,6 +43,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.NumericTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.ObjectAttributeRecordValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
@@ -55,6 +57,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -65,7 +68,9 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.DateValidator;
+import edu.common.dynamicextensions.validation.NumberValidator;
 import edu.common.dynamicextensions.validation.UniqueValidator;
+import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
 
@@ -2499,6 +2504,68 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	}
 	
 	/**
+	 * Create a date only attribute, and try to insert a future date value 
+	 * Data should not get inserted and a validation message with cause should be shown to the user.
+	 */
+	public void testInsertFutureDateForDateOnlyFormat()
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_date_only_future_date");
+
+		//Step 1
+		Entity entity = (Entity) factory.createEntity();
+		entity.setName("Stock");
+
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+
+		Long recordId = null;
+		try
+		{
+			Attribute date = (Attribute) factory.createDateAttribute();
+			date.setName("Date");
+			((DateAttributeTypeInformation) date.getAttributeTypeInformation()).setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+
+			RuleInterface dateRule = factory.createRule();
+			dateRule.setName("date");
+			date.getRuleCollection().add(dateRule);
+			
+			date.getRuleCollection().add(dateRule);
+
+			entity.addAbstractAttribute(date);
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+
+			//Step 2
+			EntityInterface savedEntity = entityManager.persistEntity(entity);
+
+			Map dataValue = new HashMap();
+			dataValue.put("date", "11-16-1982");
+
+			for (RuleInterface rule : date.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
+				validatorRule.validate(date, "08-16-2020", null, "Date");
+			}
+
+			recordId = entityManager.insertData(savedEntity, dataValue);
+			assertEquals(recordId, null);
+		}
+		catch (DynamicExtensionsValidationException e)
+		{
+			System.out.println("Could not insert data....");
+			System.out.println("Validation failed. Input date should be lesser than or equal to today's date");
+			assertEquals("Validation failed", e.getMessage());
+			assertEquals(recordId, null);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
 	 * Insert data for dates with different date formats.
 	 */
 	public void testInsertDataForDateWithDifferentFormats()
@@ -2593,6 +2660,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			minValue.setName("min");
 			minValue.setValue("11-12-1982");
 			dateRange.getRuleParameterCollection().add(minValue);
+			
+			date.getRuleCollection().add(dateRange);
 
 			RuleParameterInterface maxValue = factory.createRuleParameter();
 			maxValue.setName("max");
@@ -2612,76 +2681,22 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Map<String, String> rulesMap = new HashMap<String, String>();
 			rulesMap.put("min", "11-12-1982");
 			rulesMap.put("max", "11-15-1982");
-
-			DateRangeValidator dateRangeValidator = new DateRangeValidator();
-			dateRangeValidator.validate(date, "11-16-1982", rulesMap, "LeapYear");
+			
+			for (RuleInterface rule : date.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
+				validatorRule.validate(date, "11-16-1982", rulesMap, "LeapYear");
+			}
 
 			recordId = entityManager.insertData(savedEntity, dataValue);
+			assertEquals(recordId, null);
 		}
 		catch (DynamicExtensionsValidationException e)
 		{
 			System.out.println("Could not insert data....");
 			System.out.println("Validation failed. Input date should be lesser than or equal to 11-15-1982");
 			assertEquals("Validation failed", e.getMessage());
-			assertEquals(null, recordId);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-	}
-
-	/**
-	 * Create a date only attribute, and try to insert a future date value 
-	 * Data should not get inserted and a validation message with cause should be shown to the user.
-	 */
-	public void testInsertFutureDateForDateOnlyFormat()
-	{
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		EntityGroupInterface entityGroup = factory.createEntityGroup();
-		entityGroup.setName("test_date_only_future_date");
-
-		//Step 1
-		Entity entity = (Entity) factory.createEntity();
-		entity.setName("Stock");
-
-		EntityManagerInterface entityManager = EntityManager.getInstance();
-
-		Long recordId = null;
-		try
-		{
-			Attribute date = (Attribute) factory.createDateAttribute();
-			date.setName("Date");
-			((DateAttributeTypeInformation) date.getAttributeTypeInformation()).setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
-
-			RuleInterface dateRule = factory.createRule();
-			dateRule.setName("date");
-			date.getRuleCollection().add(dateRule);
-
-			entity.addAbstractAttribute(date);
-			entityGroup.addEntity(entity);
-			entity.setEntityGroup(entityGroup);
-
-			//Step 2
-			EntityInterface savedEntity = entityManager.persistEntity(entity);
-
-			Map dataValue = new HashMap();
-			dataValue.put("date", "11-16-1982");
-
-			Map<String, String> rulesMap = new HashMap<String, String>();
-
-			DateValidator dateValidator = new DateValidator();
-			dateValidator.validate(date, "08-16-2020", rulesMap, "Date");
-
-			recordId = entityManager.insertData(savedEntity, dataValue);
-		}
-		catch (DynamicExtensionsValidationException e)
-		{
-			System.out.println("Could not insert data....");
-			System.out.println("Validation failed. Input date should be lesser than or equal to today's date");
-			assertEquals("Validation failed", e.getMessage());
-			assertEquals(null, recordId);
+			assertEquals(recordId, null);
 		}
 		catch (Exception e)
 		{
@@ -3796,10 +3811,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
 		Long recordId1 = null;
 		Long recordId2 = null;
+		
 		try
 		{
 			Attribute floatAtribute = (Attribute) factory.createFloatAttribute();
 			floatAtribute.setName("Price");
+			
+			NumericTypeInformationInterface numericAttributeTypeInfo = (NumericTypeInformationInterface) factory.createFloatAttributeTypeInformation();
+			numericAttributeTypeInfo.setDecimalPlaces(2);
+			
+			floatAtribute.setAttributeTypeInformation(numericAttributeTypeInfo);
 
 			RuleInterface uniqueRule = factory.createRule();
 			uniqueRule.setName("unique");
@@ -3818,20 +3839,84 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			recordId1 = EntityManagerInterface.insertData(savedEntity, dataValue);
 
 			dataValue = EntityManagerInterface.getRecordById(entity, recordId1);
-			Map<String, String> rulesMap = new HashMap<String, String>();
-			UniqueValidator uniqueValidator = new UniqueValidator();
-			uniqueValidator.validate(floatAtribute, "15.90", rulesMap, "Date");
+
+			for (RuleInterface rule : floatAtribute.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
+				validatorRule.validate(floatAtribute, "15.90", null, "Date");
+			}
 
 			Map dataValue2 = new HashMap();
 			dataValue2.put(floatAtribute, "15.90");
 
 			recordId2 = EntityManagerInterface.insertData(savedEntity, dataValue2);
+			assertEquals(recordId2, null);
 		}
 		catch (DynamicExtensionsValidationException e)
 		{
 			System.out.println("Could not insert data....");
 			System.out.println("Validation failed. Input data should be unique");
 			assertEquals(recordId2, null);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * numeric data types implicit rule.
+	 */
+	public void testImplicitRuleForFloatDataType()
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("NumberValidations");
+
+		//Step 1
+		Entity entity = (Entity) factory.createEntity();
+		entity.setName("Numeric");
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		
+		Long recordId = null;
+		
+		try
+		{
+			Attribute floatTypeAttribute = (Attribute) factory.createFloatAttribute();
+			floatTypeAttribute.setName("floatTypeAttribute");
+
+			RuleInterface rule1 = factory.createRule();
+			rule1.setName("number");
+			rule1.setIsImplicitRule(true);
+			floatTypeAttribute.getRuleCollection().add(rule1);
+
+			entity.addAbstractAttribute(floatTypeAttribute);
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+
+			//Step 2
+			EntityInterface savedEntity = entityManager.persistEntity(entity);
+			
+			String incorrectValue = "ABC";
+
+			Map dataValue = new HashMap();
+			dataValue.put(floatTypeAttribute, incorrectValue);
+			
+			for (RuleInterface rule : floatTypeAttribute.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(rule.getName());
+				validatorRule.validate(floatTypeAttribute, incorrectValue, null, floatTypeAttribute.getName());
+			}
+
+			recordId = entityManager.insertData(savedEntity, dataValue);
+			assertEquals(recordId, null);
+		}
+		catch (DynamicExtensionsValidationException e)
+		{
+			System.out.println("Could not insert data....");
+			System.out.println(e.getMessage());
+			assertEquals(recordId, null);
 		}
 		catch (Exception e)
 		{

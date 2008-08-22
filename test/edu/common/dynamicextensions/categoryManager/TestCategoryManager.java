@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
@@ -37,12 +39,17 @@ import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssoci
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.common.dynamicextensions.util.CategoryCreator;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
@@ -51,8 +58,11 @@ import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -198,6 +208,28 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		}
 
 		return entityGroup;
+	}
+	
+	public void testImportInvalidPVForCategory()
+	{
+		ApplicationProperties.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
+		String errorMessage = "";
+		
+		try
+		{
+			errorMessage = "edu.common.dynamicextensions.exception.DynamicExtensionsSystemException:";
+			String [] args1 = {"./xmi/newsurgery.xmi", "Surgery", "./csv/surgery.csv"};
+			XMIImporter xmImporter = new XMIImporter();
+			xmImporter.main(args1);
+		
+			String [] args2 = {"./csv/cat_RULES.csv"};
+			CategoryCreator categoryCreator = new CategoryCreator();
+			categoryCreator.main(args2);
+		}
+		catch(Exception e)
+		{
+			assertEquals(e.getMessage(), errorMessage);
+		}
 	}
 
 	/**

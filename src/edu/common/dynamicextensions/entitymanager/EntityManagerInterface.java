@@ -157,15 +157,15 @@ public interface EntityManagerInterface
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue, Long...userId) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue, Long... userId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing
 	 * is persisted.
 	 * It returns the record id in the same sequence as that of input maps in dataValueMapList.
 	 */
-	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long...userId)
+	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -178,7 +178,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, Long...userId)
+	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -328,6 +328,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long checkContainerForAbstractCategoryEntity(Long entityIdentifier) throws DynamicExtensionsSystemException;
+
 	/**
 	 * Get entity id for entity. This method fires direct SQL query and does not use hibernate for
 	 * performance reasons.
@@ -511,10 +512,10 @@ public interface EntityManagerInterface
 	 */
 	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
-	
+
 	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity, Long recordId)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -528,10 +529,10 @@ public interface EntityManagerInterface
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long...userId)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-	UserNotAuthorizedException;
-	
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+			UserNotAuthorizedException;
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -545,10 +546,10 @@ public interface EntityManagerInterface
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long...userId)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-	UserNotAuthorizedException;
-	
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
+			UserNotAuthorizedException;
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -562,9 +563,10 @@ public interface EntityManagerInterface
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
-	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-	UserNotAuthorizedException;
+	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO,
+			Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException,
+			DAOException, UserNotAuthorizedException;
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -575,7 +577,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,HibernateDAO hibernateDAO, Long... userId)
-	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
-	
+	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,
+			HibernateDAO hibernateDAO, Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+
 }

@@ -14,13 +14,11 @@ import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
@@ -83,7 +81,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 			DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObject(group);
-	
+
 		//Update the dynamic extension cache for all containers within entitygroup
 		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return entityGroupInterface;
@@ -101,7 +99,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 			DynamicExtensionsApplicationException
 	{
 		addTaggedValue(entityGroup);
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);		
+		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
 		//Update the dynamic extension cache for all containers within entitygroup
 		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return entityGroupInterface;
@@ -169,9 +167,10 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	 * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
+	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
 	{
-		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
 	}
 
 	/**
@@ -437,7 +436,7 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 				}
 			}
 		}
-		catch(DAOException e)
+		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException("Error while checking for duplicate group", e);
 		}

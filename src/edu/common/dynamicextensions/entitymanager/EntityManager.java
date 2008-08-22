@@ -158,7 +158,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				hibernateDAO.update(entity, null, false, false, false);
 			}
 
-			postProcess(queryList, reverseQueryList, rollbackQueryStack);
+			postProcess(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
 
 			hibernateDAO.commit();
 			//			Update the dynamic extension cache for all containers within entitygroup
@@ -277,9 +277,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
+	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
 	{
-		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
 	}
 
 	/**
@@ -317,7 +318,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		String message = "";
 		/*try
 		{*/
-			dao.rollback();
+		dao.rollback();
 		/*}
 		catch (DAOException e2)
 		{
@@ -627,17 +628,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
 	 */
-	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO, Long userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException
+	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO,
+			Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException,
+			DAOException, UserNotAuthorizedException
 	{
 		List<EntityInterface> entityList = getParentEntityList(entity);
+		Long uId = ((userId != null || userId.length > 0) ? userId[0] : null);
 		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
 		Long parentRecordId = null;
 		for (EntityInterface entityInterface : entityList)
 		{
 			Map valueMap = entityValueMap.get(entityInterface);
-			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO, parentRecordId);
+			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO, parentRecordId, uId);
 		}
 
 		return parentRecordId;
@@ -842,9 +844,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		for (String queryString : queryList)
 		{
 			logDebug("insertData", "Query for insert data is : " + queryString);
+			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString), null, false, false);
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString), null, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : attributeRecords)
@@ -988,6 +990,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return isSuccess;
 	}
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -998,8 +1001,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,HibernateDAO hibernateDAO, Long... userId)
-	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,
+			HibernateDAO hibernateDAO, Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		boolean isSuccess = false;
 		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
@@ -1023,6 +1026,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return isSuccess;
 	}
+
 	/**
 	 * @param entity
 	 * @param dataValue
@@ -1133,7 +1137,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					//Fixed by : Prashant
 					//Reviewed by : Kunal
 					//if (value.toString().isEmpty())
-					if (value!=null && value.toString().length() == 0)
+					if (value != null && value.toString().length() == 0)
 					{
 						value = "'" + value + "'";
 					}
@@ -1211,9 +1215,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		for (String queryString : editDataQueryList)
 		{
 			logDebug("editData", "Query is: " + queryString.toString());
+			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString), null, false, false);
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString), null, false, false);
 		}
 
 		for (AttributeRecord collectionAttributeRecord : collectionRecords)
@@ -1771,8 +1775,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e
-							.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}
@@ -1943,7 +1946,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			/*try
 			{*/
-				hibernateDAO.rollback();
+			hibernateDAO.rollback();
 			/*}
 			catch (DAOException e1)
 			{
@@ -1956,7 +1959,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			/*try
 			{*/
-				hibernateDAO.rollback();
+			hibernateDAO.rollback();
 			/*}
 			catch (DAOException e1)
 			{
@@ -2351,7 +2354,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			List queryList = new ArrayList();
 			queryList.add(query);
-			stack = queryBuilder.executeQueries(queryList, list, stack);
+			stack = queryBuilder.executeQueries(queryList, list, stack, null);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -2452,7 +2455,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityIdentifier));
 
-
 		Collection containerCollection = executeHQL("checkContainerForAbstractCategoryEntity", substitutionParameterMap);
 
 		Long contId = null;
@@ -2464,7 +2466,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return contId;
 	}
-
 
 	public Long getEntityId(String entityName) throws DynamicExtensionsSystemException
 	{
@@ -2497,8 +2498,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e
-							.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}
@@ -2546,8 +2546,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e
-							.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}
@@ -2608,8 +2607,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e
-							.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}

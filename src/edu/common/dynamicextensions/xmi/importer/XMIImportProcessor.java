@@ -1358,10 +1358,11 @@ public class XMIImportProcessor
 	protected void createContainer(EntityInterface entityInterface) throws Exception
 	{
 		ContainerInterface containerInterface = getContainer(entityInterface.getName());
-		ControlsModel controlModel = new ControlsModel();
+		
 		/*DynamicExtensionsUtility.getContainerByCaption(entityInterface.getName()); */
 		if (containerInterface == null)//Add
 		{
+			ControlsModel controlModel = new ControlsModel();
 			containerInterface = createNewContainer(entityInterface, controlModel);
 		}
 		else
@@ -1421,7 +1422,7 @@ public class XMIImportProcessor
 					//the redundant association.
 					removeRedundantAssociation(editedAttribute, attributesToRemove);
 				}
-
+				ControlsModel controlModel = new ControlsModel();
 				boolean isAttrPresent = getAttrToEdit(originalAttributeColl, editedAttribute);
 
 				if (isAttrPresent)

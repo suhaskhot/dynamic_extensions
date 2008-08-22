@@ -67,7 +67,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	 * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected abstract void postProcess(List<String> queryList, List<String> reverseQueryList, Stack rollbackQueryStack)
+	protected abstract void postProcess(List<String> queryList, List<String> reverseQueryList, Stack rollbackQueryStack, HibernateDAO hibernateDAO)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -199,7 +199,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 		String message = "";
 		/*try
 		{*/
-			dao.rollback();
+		dao.rollback();
 		/*}
 		catch (DAOException e2)
 		{
@@ -369,7 +369,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 
 			saveDynamicExtensionObject(abstractMetdata, hibernateDAO, rollbackQueryStack);
 
-			postProcess(queryList, reverseQueryList, rollbackQueryStack);
+			postProcess(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
 
 			hibernateDAO.commit();
 		}
@@ -494,7 +494,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 	{
 		/*try
 		{*/
-			dao.rollback();
+		dao.rollback();
 		/*}
 		catch (DAOException e1)
 		{

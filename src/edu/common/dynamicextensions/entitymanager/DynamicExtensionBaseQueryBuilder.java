@@ -558,8 +558,7 @@ class DynamicExtensionBaseQueryBuilder
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException(e
-								.getMessage(), e);
+						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
 				}
 			}
@@ -2081,8 +2080,7 @@ class DynamicExtensionBaseQueryBuilder
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException(e
-								.getMessage(), e);
+						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
 				}
 			}
@@ -2148,8 +2146,7 @@ class DynamicExtensionBaseQueryBuilder
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException(e
-								.getMessage(), e);
+						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
 				}
 			}
@@ -2192,8 +2189,7 @@ class DynamicExtensionBaseQueryBuilder
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e
-							.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}
@@ -2309,7 +2305,8 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is
 	 * wrapped inside this exception.
 	 */
-	public Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack) throws DynamicExtensionsSystemException
+	public Stack executeQueries(List queryList, List reverseQueryList, Stack rollbackQueryStack, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
 	{
 		Session session = null;
 		Transaction transaction = null;
@@ -2334,7 +2331,7 @@ class DynamicExtensionBaseQueryBuilder
 		try
 		{
 			connection = session.connection();
-			//            System.out.print("Autocomit flag ********"+ connection.getAutoCommit());
+			//            System.out.print("Autocommit flag ********"+ connection.getAutoCommit());
 			if (queryList != null && !queryList.isEmpty())
 			{
 				Iterator queryListIterator = queryList.iterator();
@@ -2342,6 +2339,7 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					String query = (String) queryListIterator.next();
 					System.out.println("Query: " + query);
+
 					PreparedStatement statement = null;
 					try
 					{
@@ -2533,8 +2531,7 @@ class DynamicExtensionBaseQueryBuilder
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException(e
-								.getMessage(), e);
+						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
 				}
 			}
@@ -2595,8 +2592,7 @@ class DynamicExtensionBaseQueryBuilder
 					}
 					catch (SQLException e)
 					{
-						throw new DynamicExtensionsSystemException(e
-								.getMessage(), e);
+						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
 				}
 			}
@@ -2744,16 +2740,17 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			//for mysql5 if user not enter any value for date field its getting saved as 00-00-0000 ,which is throwing exception
 			//So to avoid it store null value in database
-			if(Variables.databaseName.equals(Constants.MYSQL_DATABASE) && str.trim().length() == 0)
+			if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && str.trim().length() == 0)
 			{
 				formattedvalue = null;
-				
+
 			}
 			else
 			{
-				formattedvalue = Variables.strTodateFunction + "('" + str.trim() + "','" + DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+				formattedvalue = Variables.strTodateFunction + "('" + str.trim() + "','" + DynamicExtensionsUtility.getSQLDateFormat(dateFormat)
+						+ "')";
 			}
-		}		
+		}
 		else
 		{
 			// quick fix.
@@ -2766,7 +2763,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else
 				formattedvalue = value.toString();
-			
+
 			//In case of Mysql 5 ,if the column datatype double ,float ,integer then its not possible to pass '' as  in insert-update query
 			//so instead pass null as value.
 			if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof DoubleAttributeTypeInformation)
@@ -2778,7 +2775,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof IntegerAttributeTypeInformation)
 			{
-				
+
 				if (formattedvalue.trim().length() == 0)
 				{
 					formattedvalue = null;
@@ -2786,7 +2783,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof FloatAttributeTypeInformation)
 			{
-				
+
 				if (formattedvalue.trim().length() == 0)
 				{
 					formattedvalue = null;
@@ -2794,7 +2791,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof ShortAttributeTypeInformation)
 			{
-				
+
 				if (formattedvalue.trim().length() == 0)
 				{
 					formattedvalue = null;
@@ -2802,21 +2799,21 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof LongAttributeTypeInformation)
 			{
-				
+
 				if (formattedvalue.trim().length() == 0)
 				{
 					formattedvalue = null;
 				}
 			}
-			else if ( Variables.databaseName.equals(Constants.MYSQL_DATABASE) &&  attributeInformation instanceof BooleanAttributeTypeInformation)
+			else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && attributeInformation instanceof BooleanAttributeTypeInformation)
 			{
-				if(formattedvalue.equals("false"))
-					formattedvalue ="0";
+				if (formattedvalue.equals("false"))
+					formattedvalue = "0";
 				else
-					formattedvalue ="1";
+					formattedvalue = "1";
 			}
-			
-			if(formattedvalue!=null)
+
+			if (formattedvalue != null)
 			{
 				formattedvalue = "'" + formattedvalue + "'";
 			}
@@ -2824,7 +2821,6 @@ class DynamicExtensionBaseQueryBuilder
 		Logger.out.debug("getFormattedValue The formatted value for attribute " + attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
 	}
-
 
 	/**
 	 * @param value
@@ -2876,8 +2872,7 @@ class DynamicExtensionBaseQueryBuilder
 				}
 				catch (SQLException e)
 				{
-					throw new DynamicExtensionsSystemException(e
-							.getMessage(), e);
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}

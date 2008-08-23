@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.validation.category;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -258,4 +261,29 @@ public class CategoryValidator
 		}
 	}
 
+	/**
+	 * User should not be allowed to use root entity twice in the category creation
+	 * @param entityName
+	 * @param mainFormList
+	 * @param categoryEntityName
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void isRootEntityUsedTwice(String entityName, List<String> mainFormList, Collection<String> categoryEntityName)
+			throws DynamicExtensionsSystemException
+	{
+		if (!mainFormList.contains(entityName))
+		{
+			return;
+		}
+		String seperatedEntityName = null;
+		for (String categoriesCreated : categoryEntityName)
+		{
+			seperatedEntityName = CategoryGenerationUtil.getEntityName(categoriesCreated);
+			if (seperatedEntityName.equals(entityName))
+			{
+				String errorMessage = getErrorMessageStart() + ApplicationProperties.getValue("rootEntityUsedTwice") + entityName;
+				throw new DynamicExtensionsSystemException(errorMessage);
+			}
+		}
+	}
 }

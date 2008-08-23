@@ -43,6 +43,20 @@ public class CategoryGenerator
 {
 	private CategoryFileParser categoryFileParser;
 	private static final String SET = "set";
+	
+	private CategoryValidator categoryValidator;
+	
+	List<String> mainFormList = new ArrayList<String>();
+
+	public CategoryValidator getCategoryValidator()
+	{
+		return categoryValidator;
+	}
+
+	public void setCategoryValidator(CategoryValidator categoryValidator)
+	{
+		this.categoryValidator = categoryValidator;
+	}
 
 	/**
 	 * @param filePath
@@ -52,6 +66,7 @@ public class CategoryGenerator
 	public CategoryGenerator(String filePath) throws DynamicExtensionsSystemException, FileNotFoundException
 	{
 		categoryFileParser = new CategoryCSVFileParser(filePath);
+		categoryValidator = new CategoryValidator((CategoryCSVFileParser) categoryFileParser);
 	}
 
 	/**
@@ -88,7 +103,8 @@ public class CategoryGenerator
 						+ ApplicationProperties.getValue("noEntityGroup") + categoryFileParser.getEntityGroupName());
 
 				categoryFileParser.getCategoryValidator().setEntityGroup(entityGroup);
-
+				populateMainFormList(entityGroup);
+				
 				// 3: Get the path represented by ordered entity names.
 				categoryFileParser.readNext();
 				Map<String, List<String>> paths = categoryFileParser.getPaths();
@@ -663,9 +679,11 @@ public class CategoryGenerator
 			{
 				categoryEntitysInPath = categoryPath.split("->");
 				String newCategoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
+				entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
+				categoryValidator.isRootEntityUsedTwice(entityName,mainFormList,categoryEntityNameInstanceMap.keySet());
 				if (!categoryEntityName.contains(newCategoryEntityName))
 				{
-					entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
+					
 					ContainerInterface container = null;
 					container = SearchExistingCategoryEntityAndContainer(newCategoryEntityName, containerCollection);
 					if (container == null)
@@ -747,5 +765,19 @@ public class CategoryGenerator
 					categoryFileParser.getDefaultValue()));
 		}
 	}
+
+
+	/**
+	 * This method popoulate the main form list for the given entity group
+	 * @param entityGroup
+	 */
+	private void populateMainFormList(EntityGroupInterface entityGroup)
+	{
+		for(ContainerInterface containerInterface : entityGroup.getMainContainerCollection())
+		{
+			mainFormList.add(containerInterface.getAbstractEntity().getName());
+		}
+	}
+
 
 }

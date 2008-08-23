@@ -1111,7 +1111,7 @@ public class XMIExporter implements XMIExportInterface
 						TextFieldInterface textField = (TextFieldInterface)control;					
 						addTextFieldTagValues(textField, taggedValues);				
 					}
-					else
+					else if(control instanceof TextAreaInterface)
 					{
 						TextAreaInterface textArea = (TextAreaInterface)control;
 						addTextAreaTagValues(textArea, taggedValues);

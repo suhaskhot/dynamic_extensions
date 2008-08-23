@@ -69,7 +69,7 @@ public class CategoryCreator
 		catch (Exception ex)
 		{
 			System.out.println("\n----------");
-			System.out.println("Exception: " + ex.getMessage());
+			System.out.println("Exception: ");
 			System.out.println("----------");
 			throw new RuntimeException(ex);
 		}

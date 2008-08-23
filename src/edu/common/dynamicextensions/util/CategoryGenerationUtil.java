@@ -15,6 +15,8 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
@@ -129,7 +131,7 @@ public class CategoryGenerationUtil
 		for (ContainerInterface containerInterface : containerCollection)
 		{
 			CategoryEntityInterface categoryEntity = ((CategoryEntityInterface) containerInterface.getAbstractEntity());
-			boolean isTableCreated =((CategoryEntity)categoryEntity).isCreateTable();
+			boolean isTableCreated = ((CategoryEntity) categoryEntity).isCreateTable();
 			if (rootContainer != containerInterface && categoryEntity.getTreeParentCategoryEntity() == null && isTableCreated)
 			{
 				categoryHelper.associateCategoryContainers(category, categoryEntity.getEntity().getEntityGroup(), rootContainer, containerInterface,
@@ -137,6 +139,16 @@ public class CategoryGenerationUtil
 								.getName()));
 			}
 		}
+		//If category is edited and no attributes from the main form of the model are not selected
+		//rootContainer will be null
+		//keep the root container unchanged in this case. Just use the root entity of the catgeory
+		if (rootContainer == null)
+		{
+			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+			rootContainer = entityManagerInterface.getContainerByEntityIdentifier(category.getRootCategoryElement().getId());
+		}
+		categoryHelper.setRootCategoryEntity(rootContainer, category);
+
 		categoryHelper.setRootCategoryEntity(rootContainer, category);
 	}
 
@@ -239,17 +251,17 @@ public class CategoryGenerationUtil
 					}
 				}
 				//Add all parententity association also to the list
-				
+
 				EntityInterface parentEntity = sourceEntity.getParentEntity();
-				while(parentEntity!=null)
+				while (parentEntity != null)
 				{
-					for(AssociationInterface associationInterface : parentEntity.getAssociationCollection())
+					for (AssociationInterface associationInterface : parentEntity.getAssociationCollection())
 					{
 						if (associationInterface.getTargetEntity() == targetEntity)
 						{
 							assocaitionList.add(associationInterface);
 						}
-						
+
 					}
 					parentEntity = parentEntity.getParentEntity();
 				}
@@ -346,4 +358,13 @@ public class CategoryGenerationUtil
 		return categoryEntityName;
 	}
 
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Nnmber]
+	 * @param catgeoryNameInCSV
+	 * @return
+	 */
+	public static String getEntityName(String catgeoryNameInCSV)
+	{
+		return catgeoryNameInCSV.substring(0, catgeoryNameInCSV.indexOf("["));
+	}
 }

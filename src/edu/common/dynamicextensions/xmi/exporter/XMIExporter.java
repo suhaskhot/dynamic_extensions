@@ -1104,16 +1104,19 @@ public class XMIExporter implements XMIExportInterface
 				{
 					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_MAX_LENGTH, maxLength.toString()));
 				}
-				if(control instanceof TextFieldInterface)
+				if(control != null)
 				{
-					TextFieldInterface textField = (TextFieldInterface)control;					
-					addTextFieldTagValues(textField, taggedValues);				
+					if(control instanceof TextFieldInterface)
+					{
+						TextFieldInterface textField = (TextFieldInterface)control;					
+						addTextFieldTagValues(textField, taggedValues);				
+					}
+					else
+					{
+						TextAreaInterface textArea = (TextAreaInterface)control;
+						addTextAreaTagValues(textArea, taggedValues);
+					}
 				}
-				else
-				{
-					TextAreaInterface textArea = (TextAreaInterface)control;
-					addTextAreaTagValues(textArea, taggedValues);
-				}				
 			}
 			else
 			{//Number attribute

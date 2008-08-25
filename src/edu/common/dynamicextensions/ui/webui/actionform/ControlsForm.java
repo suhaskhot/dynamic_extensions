@@ -1139,8 +1139,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 }
 
 	 *//**
-		 * @param showPreview The showPreview to set.
-		 */
+			 * @param showPreview The showPreview to set.
+			 */
 	/*
 	 public void setShowPreview(String showPreview)
 	 {
@@ -1343,6 +1343,20 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 				//Special case for Check box control
 				getErrorsForCheckBoxControl(validator, errors);
 			}
+			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.RADIOBUTTON_CONTROL)))
+			{
+				getErrorsForRadioButtonControl(validator, errors);
+			}
+		}
+	}
+
+	private void getErrorsForRadioButtonControl(Validator validator, ActionErrors errors)
+	{
+		if (displayChoice != null && displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED) && csvString.length() == 0
+				|| csvString.equalsIgnoreCase("0\t0\t\t\t\r\n"))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
+					.getValue("dynExtn.validation.radio.NoPV")));
 		}
 	}
 
@@ -1459,6 +1473,18 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
 		}
+
+		if (attributeMultiSelect != null && attributeMultiSelect.equalsIgnoreCase("SingleSelect")
+				|| attributeMultiSelect.equalsIgnoreCase("MultiSelect"))
+		{
+			if (displayChoice != null && displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED) && csvString.length() == 0
+					|| csvString.equalsIgnoreCase("0\t0\t\t\t\r\n"))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
+						.getValue("dynExtn.validation.listCombo.NoPV")));
+			}
+		}
+
 		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));

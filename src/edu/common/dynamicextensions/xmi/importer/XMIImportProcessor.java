@@ -1358,7 +1358,7 @@ public class XMIImportProcessor
 	protected void createContainer(EntityInterface entityInterface) throws Exception
 	{
 		ContainerInterface containerInterface = getContainer(entityInterface.getName());
-		
+
 		/*DynamicExtensionsUtility.getContainerByCaption(entityInterface.getName()); */
 		if (containerInterface == null)//Add
 		{
@@ -2103,7 +2103,7 @@ public class XMIImportProcessor
 
 		if (abstractAttributeInterface instanceof AssociationInterface)
 		{
-			
+
 			AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
 			Map<String, String> taggedValueMap = associationVsMapTagValues.get(associationInterface);
 			if (associationInterface.getSourceRole().getAssociationsType().compareTo(AssociationType.CONTAINTMENT) == 0)
@@ -2121,11 +2121,11 @@ public class XMIImportProcessor
 				// int  sourceMaxCardinality = associationInterface.getSourceRole().getMaximumCardinality().getValue().intValue();
 				controlModel.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
 				String userSelectedControlName = null;
-//				int targetMaxCardinality = 0;
-//				if (associationInterface.getTargetRole() != null && associationInterface.getTargetRole().getMaximumCardinality() != null)
-//				{
-//					targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality().getValue().intValue();
-//				}
+				//				int targetMaxCardinality = 0;
+				//				if (associationInterface.getTargetRole() != null && associationInterface.getTargetRole().getMaximumCardinality() != null)
+				//				{
+				//					targetMaxCardinality = associationInterface.getTargetRole().getMaximumCardinality().getValue().intValue();
+				//				}
 				//if (targetMaxCardinality == -1)
 
 				if (isMultiselectTagValue(taggedValueMap))
@@ -2296,7 +2296,7 @@ public class XMIImportProcessor
 						String width = getDisplayWidthTagValue(taggedValueMap);
 						controlModel.setColumns(Integer.parseInt(width.toString()));
 
-						//Single/Multiline(Number of Lines) tagged Value
+						// Single/Multiline(Number of Lines) tagged Value
 						setMultilineTaggedValue(taggedValueMap, controlModel);
 						//PHI
 						String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
@@ -2310,7 +2310,7 @@ public class XMIImportProcessor
 						{
 							controlInterface = controlProcessor.getTextControl(controlInterface, controlModel);
 						}
-						//Set Explicite validation Rules
+						//Set Explicit validation Rules
 						setExplicitValidationRules(taggedValueMap, controlModel);
 						//populate rules
 						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
@@ -2329,34 +2329,41 @@ public class XMIImportProcessor
 						Integer precision = getPrecisionTagValue(taggedValueMap, attributeTypeInformation);
 						controlModel.setAttributeDecimalPlaces(precision.toString());
 
+						//Set Explicit validation Rules.
+						setExplicitValidationRules(taggedValueMap, controlModel);
+
 						if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 						{
-							attributeProcessor.populateLongAttributeInterface((LongAttributeTypeInformation) attributeTypeInformation, controlModel);
+							attributeProcessor.populateLongAttributeInterface(attributeInterface,
+									(LongAttributeTypeInformation) attributeTypeInformation, controlModel);
 						}
 						else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
 						{
-							attributeProcessor.populateIntegerAttributeInterface((IntegerAttributeTypeInformation) attributeTypeInformation,
-									controlModel);
+							attributeProcessor.populateIntegerAttributeInterface(attributeInterface,
+									(IntegerAttributeTypeInformation) attributeTypeInformation, controlModel);
 						}
 						else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
 						{
 							attributeProcessor
-									.populateFloatAttributeInterface((FloatAttributeTypeInformation) attributeTypeInformation, controlModel);
+									.populateFloatAttributeInterface(attributeInterface, (FloatAttributeTypeInformation) attributeTypeInformation, controlModel);
 						}
 						else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 						{
-							attributeProcessor.populateDoubleAttributeInterface((DoubleAttributeTypeInformation) attributeTypeInformation,
+							attributeProcessor.populateDoubleAttributeInterface(attributeInterface, (DoubleAttributeTypeInformation) attributeTypeInformation,
 									controlModel);
 						}
-						//Set Explicite validation Rules
-						setExplicitValidationRules(taggedValueMap, controlModel);
+						else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
+						{
+							attributeProcessor.populateShortAttributeInterface(attributeInterface, (ShortAttributeTypeInformation) attributeTypeInformation,
+									controlModel);
+						}
+
 						//populate rules
 						attributeProcessor.populateRules(userSelectedControlName, attributeInterface, controlModel);
 						String[] ruleNamesString = new String[0];
 						controlModel.setValidationRules(ruleNamesString);
 						controlModel.setTempValidationRules(ruleNamesString);
 					}
-
 				}
 			}
 			else

@@ -96,12 +96,12 @@ public class CategoryHelper implements CategoryHelperInterface
 		catch (DynamicExtensionsSystemException e)
 		{
 			e.printStackTrace();
-			throw new DynamicExtensionsSystemException("Error while saving a category");
+			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY");
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
 			e.printStackTrace();
-			throw new DynamicExtensionsApplicationException("Error while saving a category");
+			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY");
 		}
 	}
 
@@ -162,7 +162,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		if (controlType == null)
 		{
-			throw new DynamicExtensionsSystemException("INVALID CONTROL TYPE FOR:" + controlCaption);
+			throw new DynamicExtensionsSystemException("INVALID CONTROL TYPE FOR : " + controlCaption);
 		}
 
 		CategoryAttributeInterface categoryAttribute = createOrupdateCategoryAttribute(entity, attributeName, container);
@@ -530,7 +530,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				String targetEntity = entityArray[counter + 1];
 				if (sourceEntity.indexOf("[") == -1 || sourceEntity.indexOf("]") == -1)
 				{
-					throw new DynamicExtensionsSystemException("ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT" + instance);
+					throw new DynamicExtensionsSystemException("ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT " + instance);
 
 				}
 				associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(sourceEntity.indexOf("[") + 1, sourceEntity
@@ -986,7 +986,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		catch (ParseException parseException)
 		{
-			throw new DynamicExtensionsSystemException("Parse Exception", parseException);
+			throw new DynamicExtensionsSystemException("PARSE EXCEPTION", parseException);
 		}
 
 		return permissibleValues;
@@ -1033,8 +1033,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		else
 		{
 			throw new DynamicExtensionsApplicationException(
-					"Invalid subset of persmissible values. Original set of permissible values for the attribute " + attributeInterface.getName()
-							+ " of the entity " + attributeInterface.getEntity().getName() + "is different.");
+					"INVALID SUBSET OF PERMISSIBLE VALUES. ORIGINAL SET OF PERMISSIBLE VALUES FOR THE ATTRIBUTE " + attributeInterface.getName()
+							+ " OF THE ENTITY " + attributeInterface.getEntity().getName() + " IS DIFFERENT.");
 		}
 
 		return permissibleValues;
@@ -1166,7 +1166,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		catch (Exception e)
 		{
-			throw new DynamicExtensionsSystemException("Please conatct administartor", e);
+			throw new DynamicExtensionsSystemException("PLEASE CONTACT ADMINISTRATOR", e);
 		}
 	}
 	

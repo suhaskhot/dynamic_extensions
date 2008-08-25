@@ -43,9 +43,9 @@ public class CategoryGenerator
 {
 	private CategoryFileParser categoryFileParser;
 	private static final String SET = "set";
-	
+
 	private CategoryValidator categoryValidator;
-	
+
 	List<String> mainFormList = new ArrayList<String>();
 
 	public CategoryValidator getCategoryValidator()
@@ -104,7 +104,7 @@ public class CategoryGenerator
 
 				categoryFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 				populateMainFormList(entityGroup);
-				
+
 				// 3: Get the path represented by ordered entity names.
 				categoryFileParser.readNext();
 				Map<String, List<String>> paths = categoryFileParser.getPaths();
@@ -330,7 +330,7 @@ public class CategoryGenerator
 		catch (IOException e)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber() + " "
 					+ ApplicationProperties.getValue("readingFile") + categoryFileParser.getFilePath(), e);
 		}
 		catch (Exception e)
@@ -338,7 +338,7 @@ public class CategoryGenerator
 			if (!(e instanceof DynamicExtensionsSystemException))
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-						+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+						+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber() + " "
 						+ ApplicationProperties.getValue("readingFile") + categoryFileParser.getFilePath(), e);
 			}
 
@@ -680,10 +680,10 @@ public class CategoryGenerator
 				categoryEntitysInPath = categoryPath.split("->");
 				String newCategoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
 				entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
-				categoryValidator.isRootEntityUsedTwice(entityName,mainFormList,categoryEntityNameInstanceMap.keySet());
+				categoryValidator.isRootEntityUsedTwice(entityName, mainFormList, categoryEntityNameInstanceMap.keySet());
 				if (!categoryEntityName.contains(newCategoryEntityName))
 				{
-					
+
 					ContainerInterface container = null;
 					container = SearchExistingCategoryEntityAndContainer(newCategoryEntityName, containerCollection);
 					if (container == null)
@@ -766,18 +766,16 @@ public class CategoryGenerator
 		}
 	}
 
-
 	/**
 	 * This method popoulate the main form list for the given entity group
 	 * @param entityGroup
 	 */
 	private void populateMainFormList(EntityGroupInterface entityGroup)
 	{
-		for(ContainerInterface containerInterface : entityGroup.getMainContainerCollection())
+		for (ContainerInterface containerInterface : entityGroup.getMainContainerCollection())
 		{
 			mainFormList.add(containerInterface.getAbstractEntity().getName());
 		}
 	}
-
 
 }

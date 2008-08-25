@@ -505,6 +505,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				isValidExtension = checkValidFormat(dataEntryForm, control, formFile.getFileName(), formFile.getFileSize());
 			}
+			else
+			{
+				attributeValueMap.put(abstractAttribute, attributeValue);
+			}
 			if (isValidExtension && (formFile.getFileName() != null && !formFile.getFileName().equals("")))
 			{
 				FileAttributeRecordValue fileAttributeRecordValue = new FileAttributeRecordValue();
@@ -567,28 +571,22 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			applyDataEntryFormProcessor.setUserId(Long.parseLong(userId.trim()));
 		}
-
-		if ((rootValueMap == null) || rootValueMap.isEmpty())
+		
+		String messageKey = "app.successfulDataInsertionMessage";
+		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
-			saveMessages(request, getMessageString("app.noDataMessage"));
-		}
-		else
-		{
-			String messageKey = "app.successfulDataInsertionMessage";
-			if (recordIdentifier != null && !recordIdentifier.equals(""))
+			Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(rootContainerInterface, rootValueMap, Long.valueOf(recordIdentifier));
+			if (edited.booleanValue())
 			{
-				Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(rootContainerInterface, rootValueMap, Long.valueOf(recordIdentifier));
-				if (edited.booleanValue())
-				{
-					saveMessages(request, getMessageString(messageKey));
-				}
-			}
-			else
-			{
-				recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(rootContainerInterface, rootValueMap);
 				saveMessages(request, getMessageString(messageKey));
 			}
 		}
+		else
+		{
+			recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(rootContainerInterface, rootValueMap);
+			saveMessages(request, getMessageString(messageKey));
+		}
+		
 		return recordIdentifier;
 	}
 
@@ -621,18 +619,25 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			FileAttributeTypeInformation fileAttibuteInformation = (FileAttributeTypeInformation) attributeTypeInformation;
 			Collection<FileExtension> fileExtensionsCollection = fileAttibuteInformation.getFileExtensionCollection();
 
-			for (FileExtension fileExtensionsIterator : fileExtensionsCollection)
+			if(fileExtensionsCollection == null || fileExtensionsCollection.isEmpty())
 			{
-				validFileExtension = fileExtensionsIterator.getFileExtension();
-				selectedfileExt = selectedFile.substring(selectedFile.lastIndexOf(".") + 1, selectedFile.length());
-				allFileExtension = validFileExtension + "," + allFileExtension;
-
-				if (selectedfileExt.equalsIgnoreCase(validFileExtension))
+				isValidExtension = true;
+			}
+			else
+			{
+				for (FileExtension fileExtensionsIterator : fileExtensionsCollection)
 				{
-					isValidExtension = true;
-					break;
-				}
+					validFileExtension = fileExtensionsIterator.getFileExtension();
+					selectedfileExt = selectedFile.substring(selectedFile.lastIndexOf(".") + 1, selectedFile.length());
+					allFileExtension = validFileExtension + "," + allFileExtension;
 
+					if (selectedfileExt.equalsIgnoreCase(validFileExtension))
+					{
+						isValidExtension = true;
+						break;
+					}
+
+				}
 			}
 			if (allFileExtension.length() > 0)
 			{

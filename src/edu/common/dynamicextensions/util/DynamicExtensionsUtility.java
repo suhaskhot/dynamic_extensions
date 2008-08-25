@@ -40,6 +40,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -60,13 +61,16 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
+import edu.common.dynamicextensions.validation.RangeValidator;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
@@ -1516,5 +1520,27 @@ public class DynamicExtensionsUtility
 			}
 		}
 		return listOfIds;
+	}
+	
+	/**
+	 * @param attribute
+	 * @param defaultValue
+	 * @param min
+	 * @param max
+	 * @param attributeName
+	 * @throws DynamicExtensionsValidationException
+	 * @throws DataTypeFactoryInitializationException
+	 */
+	public static void verifyDefaultValueIsInRange(AbstractAttributeInterface attribute, String defaultValue, String min, String max, String attributeName) throws DynamicExtensionsValidationException, DataTypeFactoryInitializationException
+	{
+		if (defaultValue != null && min != null && max != null)
+		{
+			Map<String, String> parameterMap = new HashMap<String, String>();
+			parameterMap.put("min", min);
+			parameterMap.put("max", max);
+			
+			RangeValidator rangeValidator = new RangeValidator();
+			rangeValidator.validate((AttributeMetadataInterface) attribute, defaultValue, parameterMap, attributeName);
+		}
 	}
 }

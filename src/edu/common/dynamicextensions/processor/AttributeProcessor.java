@@ -965,7 +965,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param shortAttributeInterface : Short attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
-	private void populateShortAttributeInterface(AbstractAttributeInterface attribute, ShortAttributeTypeInformation shortAttributeInterface,
+	public void populateShortAttributeInterface(AbstractAttributeInterface attribute, ShortAttributeTypeInformation shortAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Set default value

@@ -56,8 +56,10 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
@@ -68,6 +70,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.xmi.model.ControlsModel;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.logger.Logger;
@@ -325,10 +328,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeUIBeanInformationIntf
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void populateAttributeSpecificInfo(AbstractAttributeInterface attributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
+	private void populateAttributeSpecificInfo(AbstractAttributeInterface attribute, AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+			throws DynamicExtensionsApplicationException
 	{
-		AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility.getAttributeTypeInformation(attributeInterface);
+		AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility.getAttributeTypeInformation(attribute);
 		if ((attributeTypeInformation != null) && (attributeUIBeanInformationIntf != null))
 		{
 			if (attributeTypeInformation instanceof StringAttributeTypeInformation)
@@ -353,23 +356,24 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
 			{
-				populateShortAttributeInterface((ShortAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
+				populateShortAttributeInterface(attribute, (ShortAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
 			}
 			else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 			{
-				populateLongAttributeInterface((LongAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
+				populateLongAttributeInterface(attribute, (LongAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
 			}
 			else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
 			{
-				populateIntegerAttributeInterface((IntegerAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
+				populateIntegerAttributeInterface(attribute, (IntegerAttributeTypeInformation) attributeTypeInformation,
+						attributeUIBeanInformationIntf);
 			}
 			else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
 			{
-				populateFloatAttributeInterface((FloatAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
+				populateFloatAttributeInterface(attribute, (FloatAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
 			}
 			else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 			{
-				populateDoubleAttributeInterface((DoubleAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
+				populateDoubleAttributeInterface(attribute, (DoubleAttributeTypeInformation) attributeTypeInformation, attributeUIBeanInformationIntf);
 			}
 		}
 	}
@@ -961,15 +965,36 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param shortAttributeInterface : Short attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
-	private void populateShortAttributeInterface(ShortAttributeTypeInformation shortAttributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void populateShortAttributeInterface(AbstractAttributeInterface attribute, ShortAttributeTypeInformation shortAttributeInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Set default value
-		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
-				&& (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
+		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
+			Short defaultValue;
+			try
+			{
+				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
+				{
+					defaultValue = new Short((short) 0); //Assume 0 for blank fields
+				}
+				else
+				{
+					defaultValue = new Short(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+			}
+
+			if (attributeUIBeanInformationIntf instanceof ControlsModel)
+			{
+				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
+			}
+			
 			ShortValueInterface shortValue = DomainObjectFactory.getInstance().createShortValue();
-			shortValue.setValue(new Short(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
+			shortValue.setValue(new Short(defaultValue));
 			shortAttributeInterface.setDefaultValue(shortValue);
 		}
 		shortAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
@@ -989,11 +1014,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 *
+	 * @param attribute 
 	 * @param integerAttributeInterface : Integer Attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
-	 * @throws DynamicExtensionsApplicationException : Excpetion
+	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
-	public void populateIntegerAttributeInterface(IntegerAttributeTypeInformation integerAttributeInterface,
+	public void populateIntegerAttributeInterface(AbstractAttributeInterface attribute, IntegerAttributeTypeInformation integerAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Set default value
@@ -1015,6 +1041,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
+
+			if (attributeUIBeanInformationIntf instanceof ControlsModel)
+			{
+				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
+			}
+
 			IntegerValueInterface integerValue = DomainObjectFactory.getInstance().createIntegerValue();
 			integerValue.setValue(defaultValue);
 			integerAttributeInterface.setDefaultValue(integerValue);
@@ -1040,15 +1072,36 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param longAttributeInterface : Long attribute object
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
-	public void populateLongAttributeInterface(LongAttributeTypeInformation longAttributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	public void populateLongAttributeInterface(AbstractAttributeInterface attribute, LongAttributeTypeInformation longAttributeInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Set Default Value
-		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
-				&& (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
+		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
+			Long defaultValue;
+			try
+			{
+				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
+				{
+					defaultValue = new Long(0); //Assume 0 for blank fields
+				}
+				else
+				{
+					defaultValue = new Long(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+			}
+			
+			if (attributeUIBeanInformationIntf instanceof ControlsModel)
+			{
+				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
+			}
+			
 			LongValueInterface longValue = DomainObjectFactory.getInstance().createLongValue();
-			longValue.setValue(new Long(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
+			longValue.setValue(new Long(defaultValue));
 			longAttributeInterface.setDefaultValue(longValue);
 		}
 		longAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
@@ -1072,14 +1125,35 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param floatAttributeInterface : Float attribute
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
-	public void populateFloatAttributeInterface(FloatAttributeTypeInformation floatAttributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	public void populateFloatAttributeInterface(AbstractAttributeInterface attribute, FloatAttributeTypeInformation floatAttributeInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
-		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
-				&& (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
+		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
+			Float defaultValue;
+			try
+			{
+				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
+				{
+					defaultValue = new Float(0); //Assume 0 for blank fields
+				}
+				else
+				{
+					defaultValue = new Float(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+			}
+			
+			if (attributeUIBeanInformationIntf instanceof ControlsModel)
+			{
+				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
+			}
+			
 			FloatValueInterface floatValue = DomainObjectFactory.getInstance().createFloatValue();
-			floatValue.setValue(new Float(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
+			floatValue.setValue(new Float(defaultValue));
 			floatAttributeInterface.setDefaultValue(floatValue);
 		}
 		floatAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
@@ -1103,14 +1177,35 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param doubleAttributeInterface : Double attribute
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
-	public void populateDoubleAttributeInterface(DoubleAttributeTypeInformation doubleAttributeInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	public void populateDoubleAttributeInterface(AbstractAttributeInterface attribute, DoubleAttributeTypeInformation doubleAttributeInterface,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
-		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
-				&& (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals("")))
+		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
+			Double defaultValue;
+			try
+			{
+				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
+				{
+					defaultValue = new Double(0); //Assume 0 for blank fields
+				}
+				else
+				{
+					defaultValue = new Double(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+				}
+			}
+			catch (NumberFormatException e)
+			{
+				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
+			}
+			
+			if (attributeUIBeanInformationIntf instanceof ControlsModel)
+			{
+				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
+			}
+			
 			DoubleValueInterface doubleValue = DomainObjectFactory.getInstance().createDoubleValue();
-			doubleValue.setValue(new Double(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
+			doubleValue.setValue(new Double(defaultValue));
 			doubleAttributeInterface.setDefaultValue(doubleValue);
 		}
 		doubleAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
@@ -1167,6 +1262,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		String[] ruleNames = new String[0];
+		
+		attributeUIBeanInformationIntf.setMin("");
+		attributeUIBeanInformationIntf.setMax("");
+		attributeUIBeanInformationIntf.setMinTemp("");
+		attributeUIBeanInformationIntf.setMaxTemp("");
 
 		int i = 0;
 		if (attributeInterface.getRuleCollection() != null && !attributeInterface.getRuleCollection().isEmpty())
@@ -1364,8 +1464,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
 		if (doubleAttributeInformation.getDefaultValue() != null)
 		{
-			DoubleValue defaultDoubleValue = (DoubleValue) doubleAttributeInformation.getDefaultValue();
-			attributeUIBeanInformationIntf.setAttributeDefaultValue(defaultDoubleValue.getValue() + "");
+			DoubleValue doubleValue = (DoubleValue) doubleAttributeInformation.getDefaultValue();
+			if (doubleValue.getValue() != 0)
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(doubleValue.getValue() + "");
+			else
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		else
 		{
@@ -1387,7 +1490,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (floatAttributeInformation.getDefaultValue() != null)
 		{
 			FloatValue floatValue = (FloatValue) floatAttributeInformation.getDefaultValue();
-			attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue() + "");
+			if (floatValue.getValue() != 0)
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue() + "");
+			else
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		else
 		{
@@ -1409,7 +1515,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (longAttributeInformation.getDefaultValue() != null)
 		{
 			LongValue longDefaultValue = (LongValue) longAttributeInformation.getDefaultValue();
-			attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue() + "");
+			if (longDefaultValue.getValue() != 0)
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue() + "");
+			else
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		else
 		{
@@ -1431,7 +1540,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (shortAttributeInformation.getDefaultValue() != null)
 		{
 			ShortValue shortDefaultValue = (ShortValue) shortAttributeInformation.getDefaultValue();
-			attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue.getValue() + "");
+			if (shortDefaultValue.getValue() != 0)
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue.getValue() + "");
+			else
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		else
 		{
@@ -1449,11 +1561,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateIntegerAttributeUIBeanInterface(IntegerAttributeTypeInformation integerAttributeInformation,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_INTEGER);
+		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
 		if (integerAttributeInformation.getDefaultValue() != null)
 		{
 			IntegerValue integerDefaultValue = (IntegerValue) integerAttributeInformation.getDefaultValue();
-			attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue.getValue() + "");
+			if (integerDefaultValue.getValue() != 0)
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue.getValue() + "");
+			else
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		else
 		{
@@ -1942,6 +2057,40 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		return numAttrTypeInfo;
+	}
+
+	/**
+	 * Check if the default value falls in range given for the attribute.
+	 * @param attribute
+	 * @param controlsForm
+	 * @param defaultValue
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void verifyDefaultValueIsInRange(AbstractAttributeInterface attribute, AbstractAttributeUIBeanInterface controlsForm, Number defaultValue)
+			throws DynamicExtensionsApplicationException
+	{
+		if (controlsForm.getMin() != null && controlsForm.getMin().length() != 0 && controlsForm.getMax() != null && controlsForm.getMax().length() != 0)
+		{
+			String min = controlsForm.getMin();
+			String max = controlsForm.getMax();
+	
+			try
+			{
+				DynamicExtensionsUtility.verifyDefaultValueIsInRange(attribute, String.valueOf(defaultValue), min, max, attribute.getName());
+			}
+			catch (DynamicExtensionsValidationException e)
+			{
+				System.out.println("\n---- VALIDATION ERROR ---- : SPECIFIED DEFAULT VALUE (" + defaultValue + ") FOR ATTRIBUTE : " + attribute.getName()
+						+ " OUT OF RANGE [" + min + ", " + max + "] \n");
+				System.out.println();
+				throw new DynamicExtensionsApplicationException(e.getMessage());
+			}
+			catch (DataTypeFactoryInitializationException e)
+			{
+				System.out.println(e.getMessage());
+				throw new DynamicExtensionsApplicationException(e.getMessage());
+			}
+		}
 	}
 
 }

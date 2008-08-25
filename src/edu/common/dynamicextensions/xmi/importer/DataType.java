@@ -1,20 +1,9 @@
 package edu.common.dynamicextensions.xmi.importer;
 
-import java.util.Date;
-
 import org.omg.uml.foundation.core.Attribute;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
-import edu.common.dynamicextensions.domaininterface.DateValueInterface;
-import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
-import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
-import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
-import edu.common.dynamicextensions.domaininterface.LongValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringValueInterface;
-import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.wustl.common.util.logger.Logger;
 
 
 /**

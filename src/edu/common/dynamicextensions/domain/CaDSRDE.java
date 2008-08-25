@@ -2,8 +2,6 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * This Class represents the values form CaDSR

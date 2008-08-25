@@ -2,8 +2,6 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @hibernate.joined-subclass table="DYEXTN_BOOLEAN_CONCEPT_VALUE" 

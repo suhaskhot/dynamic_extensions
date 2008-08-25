@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 import java.util.HashSet;
 
-import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;

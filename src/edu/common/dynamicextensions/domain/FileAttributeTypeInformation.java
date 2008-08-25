@@ -6,7 +6,6 @@ import java.util.HashSet;
 
 import edu.common.dynamicextensions.domaininterface.FileTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 
 /**

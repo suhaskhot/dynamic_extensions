@@ -8,7 +8,6 @@ package edu.common.dynamicextensions.processor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;

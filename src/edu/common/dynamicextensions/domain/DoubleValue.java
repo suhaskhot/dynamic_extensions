@@ -2,8 +2,6 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * @author sujay_narkar

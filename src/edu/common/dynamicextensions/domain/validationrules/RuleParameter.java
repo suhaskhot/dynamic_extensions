@@ -5,9 +5,6 @@ import java.io.Serializable;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * This Rule 

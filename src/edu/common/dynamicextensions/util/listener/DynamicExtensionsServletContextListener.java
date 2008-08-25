@@ -6,9 +6,7 @@ import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.sf.ehcache.CacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.global.ApplicationProperties;

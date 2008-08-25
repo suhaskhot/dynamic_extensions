@@ -9,7 +9,6 @@ import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.entitymanager.ContainerInformationObject;
 
 /**
  * This is an abstract class extended by Entity, Entity group, Attribute.

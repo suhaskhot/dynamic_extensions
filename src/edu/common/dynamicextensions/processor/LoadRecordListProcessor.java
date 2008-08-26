@@ -7,8 +7,6 @@ package edu.common.dynamicextensions.processor;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.common.dynamicextensions.domain.Entity;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;

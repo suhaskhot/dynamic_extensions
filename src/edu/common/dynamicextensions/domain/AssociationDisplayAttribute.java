@@ -10,7 +10,6 @@ package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.AssociationDisplayAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 
 /**
  * @author vishvesh_mulay

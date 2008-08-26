@@ -2,7 +2,6 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
-import edu.wustl.common.domain.AbstractDomainObject;
 
 /**
  * This Class represents the pre-defined values of the Attribute.

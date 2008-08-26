@@ -1897,11 +1897,11 @@ function changeValueForCheckBox(checkbox)
     {
         if (checkbox.checked == true)
         {
-            checkbox.value = checkbox.checkedValue;
+            checkbox.value = true;
         }
         else
         {
-            checkbox.value = checkbox.uncheckedValue;
+            checkbox.value = false;
         }
     }
 }

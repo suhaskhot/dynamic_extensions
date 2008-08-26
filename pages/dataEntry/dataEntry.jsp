@@ -83,13 +83,13 @@
 				</c:otherwise>
 			</c:choose>
 				<!-- Main Page heading -->
+				<c:if test='${showFormPreview == "true"}'>
 				<tr>
 					<td class="formFieldNoBorders">
-						<c:if test='${showFormPreview == "true"}'> 
 							<bean:message key="app.title.MainPageTitle" />
-						</c:if>
 					</td>
 				</tr>
+				</c:if>
 	 
 				<tr valign="top">
 					<td>

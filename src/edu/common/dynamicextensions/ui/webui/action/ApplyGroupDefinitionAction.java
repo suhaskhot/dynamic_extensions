@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.GroupForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -46,7 +47,16 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 
 		try
 		{
+			
 			ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			//This is incase when dynamic exception shown on UI-eg. Group name already exist ,so in this case container object is not set in request
+			//So get container object by Containercaption ,which is available in request.
+			if(container == null && !(operationMode.equals(Constants.ADD_NEW_FORM)))
+			{
+				String containerCaption = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+				container = DynamicExtensionsUtility.getContainerByCaption(containerCaption);
+			}
+		
 			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm, container, operationMode, request);
 
 			if ((operationMode != null) && (operationMode.equals(Constants.EDIT_FORM)))

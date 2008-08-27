@@ -57,7 +57,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 	{
 		GroupProcessor groupProcessor = GroupProcessor.getInstance();
 		String groupOperation = groupUIBean.getGroupOperation();
-		EntityGroupInterface entityGroup = null;
+		EntityGroupInterface objEntityGroup = null;
 
 		//Use existing group
 		String createGroupAs = groupUIBean.getCreateGroupAs();
@@ -67,27 +67,92 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 			if (container != null)
 			{
 				EntityInterface entity = (EntityInterface) container.getAbstractEntity();
-				entityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
+				EntityGroupInterface  existingEntityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
 				if (operationMode.equals(Constants.EDIT_FORM))
 				{
-					entityGroup.setDescription(groupUIBean.getGroupDescription());
+					existingEntityGroup.setDescription(groupUIBean.getGroupDescription());
+					if(existingEntityGroup.getId()!=Long.parseLong(groupUIBean.getGroupName()))
+					{
+						//Remove entity form existing group 
+						existingEntityGroup.removeEntity(entity);
+						existingEntityGroup.removeMainContainer(container);						
+						
+						//create changed Entity group
+						EntityGroupInterface newEntityGroup = DynamicExtensionsUtility.getEntityGroupByIdentifier(groupUIBean.getGroupName());					
+						newEntityGroup.setDescription(groupUIBean.getGroupDescription());
+						newEntityGroup.addMainContainer(container);
+						newEntityGroup.addEntity(entity);
+						entity.setEntityGroup(newEntityGroup);
+						container.setAbstractEntity(entity);				
+						
+						objEntityGroup = newEntityGroup;
+						
+						//Save to DB that now the form is related to another Entitygroup 
+						//Save only if its not shownext page operation
+						if ((groupOperation != null) && !(groupOperation.equals(ProcessorConstants.SHOW_NEXT_PAGE)))
+						{
+							 groupProcessor.saveEntityGroup(existingEntityGroup);
+							 groupProcessor.saveEntityGroup(objEntityGroup);
+							 ContainerProcessor.getInstance().saveContainer(container);							 
+						}					
+					}
+					else
+					{
+						//If group selected is same as old group then assign the existing entity group
+						objEntityGroup = existingEntityGroup;						
+					}
 				}
 			}
 			else
 			{
-				entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
+				objEntityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
 				container = DomainObjectFactory.getInstance().createContainer();
 				container.setCaption("New Form");
 				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
-				CacheManager.addObjectToCache(request, Constants.ENTITYGROUP_INTERFACE, entityGroup);
+				CacheManager.addObjectToCache(request, Constants.ENTITYGROUP_INTERFACE, objEntityGroup);
+			}
+		}
+		else if((createGroupAs != null) && (createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW)) && operationMode.equals(Constants.EDIT_FORM))
+		{
+			//This is the case where Form is alredy is within one group.But in Edit mode the form Group is created newly
+			//In this case ,new group requires to create ,the entity and container set to it
+			//Remove container and entity from old group 
+			if (container != null)
+			{
+				EntityInterface entity = (EntityInterface) container.getAbstractEntity();
+				EntityGroupInterface  existingEntityGroup = DynamicExtensionsUtility.getEntityGroup(entity);
+				if (operationMode.equals(Constants.EDIT_FORM))
+				{
+					//check whether groupname already exist
+					DynamicExtensionsUtility.validateName(groupUIBean.getGroupNameText());
+					//Remove entity form existing gourp 
+					existingEntityGroup.removeEntity(entity);
+					existingEntityGroup.removeMainContainer(container);	
+								
+					//Create new entitygroup and assign container to it.
+					EntityGroupInterface newEntityGroup = groupProcessor.createEntityGroup();
+					groupProcessor.populateEntityGroupDetails(newEntityGroup, groupUIBean);
+					newEntityGroup.addMainContainer(container);
+					newEntityGroup.addEntity(entity);
+					entity.setEntityGroup(newEntityGroup);						
+					container.setAbstractEntity(entity);
+					objEntityGroup = newEntityGroup;
+					//Save only if its not shownext page operation
+					if ((groupOperation != null) && !(groupOperation.equals(ProcessorConstants.SHOW_NEXT_PAGE)))
+					{
+						groupProcessor.saveEntityGroup(existingEntityGroup);
+						objEntityGroup = groupProcessor.saveEntityGroup(newEntityGroup);
+						ContainerProcessor.getInstance().saveContainer(container);
+					}
+				}
 			}
 		}
 		else
 		{
 			//Create new entity group and validate entity group name
 			DynamicExtensionsUtility.validateName(groupUIBean.getGroupNameText());
-			entityGroup = groupProcessor.createEntityGroup();
-			groupProcessor.populateEntityGroupDetails(entityGroup, groupUIBean);
+			objEntityGroup = groupProcessor.createEntityGroup();
+			groupProcessor.populateEntityGroupDetails(objEntityGroup, groupUIBean);
 		}
 
 		if (createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW))
@@ -96,10 +161,10 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 			if ((groupOperation != null) && (groupOperation.equals(ProcessorConstants.SAVE_GROUP)))
 			{
 				//Save to DB 
-				entityGroup = groupProcessor.saveEntityGroup(entityGroup);
+				objEntityGroup = groupProcessor.saveEntityGroup(objEntityGroup);
 			}
 		}
-		return entityGroup;
+		return objEntityGroup;
 	}
 
 	private EntityGroupInterface getEntityGroup(ContainerInterface containerInterface, Long entityGroupId)

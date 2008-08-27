@@ -962,13 +962,28 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 *
-	 * @param shortAttributeInterface : Short attribute object
+	 * @param shortAttributeTypeInfo : Short attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
-	public void populateShortAttributeInterface(AbstractAttributeInterface attribute, ShortAttributeTypeInformation shortAttributeInterface,
+	public void populateShortAttributeInterface(AbstractAttributeInterface attribute, ShortAttributeTypeInformation shortAttributeTypeInfo,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
-		//Set default value
+		shortAttributeTypeInfo.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
+
+		// Set decimal places.
+		String decimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((decimalPlaces != null) && (!decimalPlaces.trim().equals("")))
+		{
+			shortAttributeTypeInfo.setDecimalPlaces(Integer.parseInt(decimalPlaces));
+		}
+		// Set digits.
+		String digits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((digits != null) && (!digits.trim().equals("")))
+		{
+			shortAttributeTypeInfo.setDigits(Integer.parseInt(digits));
+		}
+
+		// Set default value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
 			Short defaultValue;
@@ -992,37 +1007,40 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-			
+
 			ShortValueInterface shortValue = DomainObjectFactory.getInstance().createShortValue();
 			shortValue.setValue(new Short(defaultValue));
-			shortAttributeInterface.setDefaultValue(shortValue);
-		}
-		shortAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
-		{
-			shortAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
-		}
-		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
-		if ((strDigits != null) && (!strDigits.trim().equals("")))
-		{
-			shortAttributeInterface.setDigits(Integer.parseInt(strDigits));
+			shortAttributeTypeInfo.setDefaultValue(shortValue);
 		}
 	}
 
 	/**
 	 *
 	 * @param attribute 
-	 * @param integerAttributeInterface : Integer Attribute object
+	 * @param integerAttributeTypeInfo : Integer Attribute object
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 * @throws DynamicExtensionsApplicationException : Exception
 	 */
-	public void populateIntegerAttributeInterface(AbstractAttributeInterface attribute, IntegerAttributeTypeInformation integerAttributeInterface,
+	public void populateIntegerAttributeInterface(AbstractAttributeInterface attribute, IntegerAttributeTypeInformation integerAttributeTypeInfo,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
-		//Set default value
+		integerAttributeTypeInfo.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
+
+		// Set decimal places.
+		String decimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((decimalPlaces != null) && (!decimalPlaces.trim().equals("")))
+		{
+			integerAttributeTypeInfo.setDecimalPlaces(Integer.parseInt(decimalPlaces));
+		}
+
+		// Set digits.
+		String digits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((digits != null) && (!digits.trim().equals("")))
+		{
+			integerAttributeTypeInfo.setDigits(Integer.parseInt(digits));
+		}
+
+		// Set default value.
 		if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 		{
 			Integer defaultValue;
@@ -1049,33 +1067,35 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 			IntegerValueInterface integerValue = DomainObjectFactory.getInstance().createIntegerValue();
 			integerValue.setValue(defaultValue);
-			integerAttributeInterface.setDefaultValue(integerValue);
+			integerAttributeTypeInfo.setDefaultValue(integerValue);
 		}
-		integerAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
-		{
-			integerAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
-		}
-		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
-		if ((strDigits != null) && (!strDigits.trim().equals("")))
-		{
-			integerAttributeInterface.setDigits(Integer.parseInt(strDigits));
-		}
-
 	}
 
 	/**
 	 *
-	 * @param longAttributeInterface : Long attribute object
+	 * @param longAttributeTypeInfo : Long attribute object
 	 * @param attributeUIBeanInformationIntf : UI Bean containing attribute information entered by user on UI
 	 */
-	public void populateLongAttributeInterface(AbstractAttributeInterface attribute, LongAttributeTypeInformation longAttributeInterface,
+	public void populateLongAttributeInterface(AbstractAttributeInterface attribute, LongAttributeTypeInformation longAttributeTypeInfo,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
-		//Set Default Value
+		longAttributeTypeInfo.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
+
+		// Set decimal places.
+		String decimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((decimalPlaces != null) && (!decimalPlaces.trim().equals("")))
+		{
+			longAttributeTypeInfo.setDecimalPlaces(Integer.parseInt(decimalPlaces));
+		}
+
+		// Set digits.
+		String digits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((digits != null) && (!digits.trim().equals("")))
+		{
+			longAttributeTypeInfo.setDigits(Integer.parseInt(digits));
+		}
+
+		// Set Default Value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
 			Long defaultValue;
@@ -1094,40 +1114,43 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
-			
+
 			if (attributeUIBeanInformationIntf instanceof ControlsModel)
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-			
+
 			LongValueInterface longValue = DomainObjectFactory.getInstance().createLongValue();
 			longValue.setValue(new Long(defaultValue));
-			longAttributeInterface.setDefaultValue(longValue);
+			longAttributeTypeInfo.setDefaultValue(longValue);
 		}
-		longAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		//		Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
-		{
-			longAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
-		}
-		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
-		if ((strDigits != null) && (!strDigits.trim().equals("")))
-		{
-			longAttributeInterface.setDigits(Integer.parseInt(strDigits));
-		}
-
 	}
 
 	/**
 	 *
-	 * @param floatAttributeInterface : Float attribute
+	 * @param floatAttributeTypeInfo : Float attribute
 	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
 	 */
-	public void populateFloatAttributeInterface(AbstractAttributeInterface attribute, FloatAttributeTypeInformation floatAttributeInterface,
+	public void populateFloatAttributeInterface(AbstractAttributeInterface attribute, FloatAttributeTypeInformation floatAttributeTypeInfo,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
+		floatAttributeTypeInfo.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
+
+		// Set decimal places.
+		String decimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((decimalPlaces != null) && (!decimalPlaces.trim().equals("")))
+		{
+			floatAttributeTypeInfo.setDecimalPlaces(Integer.parseInt(decimalPlaces));
+		}
+
+		// Set digits.
+		String digits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((digits != null) && (!digits.trim().equals("")))
+		{
+			floatAttributeTypeInfo.setDigits(Integer.parseInt(digits));
+		}
+
+		//Set Default Value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
 			Float defaultValue;
@@ -1146,30 +1169,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
-			
+
 			if (attributeUIBeanInformationIntf instanceof ControlsModel)
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-			
+
 			FloatValueInterface floatValue = DomainObjectFactory.getInstance().createFloatValue();
 			floatValue.setValue(new Float(defaultValue));
-			floatAttributeInterface.setDefaultValue(floatValue);
+			floatAttributeTypeInfo.setDefaultValue(floatValue);
 		}
-		floatAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
-		{
-			floatAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
-		}
-		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
-		if ((strDigits != null) && (!strDigits.trim().equals("")))
-		{
-			floatAttributeInterface.setDigits(Integer.parseInt(strDigits));
-		}
-
 	}
 
 	/**
@@ -1180,6 +1189,23 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	public void populateDoubleAttributeInterface(AbstractAttributeInterface attribute, DoubleAttributeTypeInformation doubleAttributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
+		doubleAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
+
+		// Set decimal places.
+		String decimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
+		if ((decimalPlaces != null) && (!decimalPlaces.trim().equals("")))
+		{
+			doubleAttributeInterface.setDecimalPlaces(Integer.parseInt(decimalPlaces));
+		}
+
+		// Set digits.
+		String digits = attributeUIBeanInformationIntf.getAttributeDigits();
+		if ((digits != null) && (!digits.trim().equals("")))
+		{
+			doubleAttributeInterface.setDigits(Integer.parseInt(digits));
+		}
+
+		//Set Default Value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
 			Double defaultValue;
@@ -1198,31 +1224,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
-			
+
 			if (attributeUIBeanInformationIntf instanceof ControlsModel)
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-			
+
 			DoubleValueInterface doubleValue = DomainObjectFactory.getInstance().createDoubleValue();
 			doubleValue.setValue(new Double(defaultValue));
 			doubleAttributeInterface.setDefaultValue(doubleValue);
 		}
-		doubleAttributeInterface.setMeasurementUnits(attributeUIBeanInformationIntf.getAttributeMeasurementUnits());
-
-		//Decimal places
-		String strDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if ((strDecimalPlaces != null) && (!strDecimalPlaces.trim().equals("")))
-		{
-			doubleAttributeInterface.setDecimalPlaces(Integer.parseInt(strDecimalPlaces));
-		}
-		//digits
-		String strDigits = attributeUIBeanInformationIntf.getAttributeDigits();
-		if ((strDigits != null) && (!strDigits.trim().equals("")))
-		{
-			doubleAttributeInterface.setDigits(Integer.parseInt(strDigits));
-		}
-		//doubleAttributeInterface.setValidationRules(attributeInformationIntf.getValidationRules());
 	}
 
 	/**
@@ -1262,7 +1273,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		String[] ruleNames = new String[0];
-		
+
 		attributeUIBeanInformationIntf.setMin("");
 		attributeUIBeanInformationIntf.setMax("");
 		attributeUIBeanInformationIntf.setMinTemp("");
@@ -2069,19 +2080,20 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void verifyDefaultValueIsInRange(AbstractAttributeInterface attribute, AbstractAttributeUIBeanInterface controlsForm, Number defaultValue)
 			throws DynamicExtensionsApplicationException
 	{
-		if (controlsForm.getMin() != null && controlsForm.getMin().length() != 0 && controlsForm.getMax() != null && controlsForm.getMax().length() != 0)
+		if (controlsForm.getMin() != null && controlsForm.getMin().length() != 0 && controlsForm.getMax() != null
+				&& controlsForm.getMax().length() != 0)
 		{
 			String min = controlsForm.getMin();
 			String max = controlsForm.getMax();
-	
+
 			try
 			{
 				DynamicExtensionsUtility.verifyDefaultValueIsInRange(attribute, String.valueOf(defaultValue), min, max, attribute.getName());
 			}
 			catch (DynamicExtensionsValidationException e)
 			{
-				System.out.println("\n---- VALIDATION ERROR ---- : SPECIFIED DEFAULT VALUE (" + defaultValue + ") FOR ATTRIBUTE : " + attribute.getName()
-						+ " OUT OF RANGE [" + min + ", " + max + "] \n");
+				System.out.println("\n---- VALIDATION ERROR ---- : SPECIFIED DEFAULT VALUE (" + defaultValue + ") FOR ATTRIBUTE : "
+						+ attribute.getName() + " OUT OF RANGE [" + min + ", " + max + "] \n");
 				System.out.println();
 				throw new DynamicExtensionsApplicationException(e.getMessage());
 			}

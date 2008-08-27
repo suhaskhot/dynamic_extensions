@@ -33,6 +33,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	{
 		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
 		String htmlString = "";
+		ApplicationProperties.initBundle("ApplicationResources");
 		if (fileAttributeRecordValue != null && fileAttributeRecordValue.getFileName() != null)
 		{
 			htmlString = ApplicationProperties.getValue("eav.file.fileName")

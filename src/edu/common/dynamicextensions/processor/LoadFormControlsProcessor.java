@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.processor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -20,6 +21,7 @@ import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author sujay_narkar
@@ -249,13 +251,14 @@ public class LoadFormControlsProcessor
 	 */
 	private List<String> getFileFormatsList()
 	{
+		ApplicationProperties.initBundle("DynamicExtensionsFileFormats");
 		ArrayList<String> fileFormatsList = new ArrayList<String>();
-		fileFormatsList.add("bmp");
-		fileFormatsList.add("jpeg");
-		fileFormatsList.add("gif");
-		fileFormatsList.add("doc");
-		fileFormatsList.add("xls");
-		fileFormatsList.add("pdf");
+		String fileExtensionsString = ApplicationProperties.getValue("fileExtensions");
+		StringTokenizer st = new StringTokenizer(fileExtensionsString, ",");
+		while (st.hasMoreTokens())
+		{
+			fileFormatsList.add(st.nextToken());
+		}
 		return fileFormatsList;
 	}
 

@@ -19,7 +19,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * This class is executed when user selects 'Add to Form'.
- * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed
  * added with error messages .
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
@@ -42,17 +42,16 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 		{
 			//Get container interface from cache
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
-			
+
 			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
-			
+
 			//Add control to form
 			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor.getInstance();
 			//Ashish - Changes done for XMI Edited XMI Import
 			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm, controlsForm, entityGroup);
 
 			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
-			response.sendRedirect("http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath()
-					+ actionForward.getPath());
+			response.sendRedirect(request.getContextPath()+ actionForward.getPath());
 			return null;
 		}
 		catch (Exception e)

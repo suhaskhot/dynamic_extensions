@@ -232,6 +232,7 @@
 
 			<html:hidden styleId='recordIdentifier' property="recordIdentifier"/>
 			<html:hidden styleId='entitySaved' property="entitySaved"/>
+			<html:hidden property="containerId" styleId="dataEntryForm" value="<%=containerInterface.getId().toString()%>"/>
 			<input type="hidden" id="childContainerId" name="childContainerId" value=""/>
 			<input type="hidden" id="childRowId" name="childRowId" value=""/>
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="<%=dataEntryOperation%>"/>

@@ -92,7 +92,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						&& (mode != null && mode.equals("cancel")))
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
-					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier, WebUIManagerConstants.CANCELLED);
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier, WebUIManagerConstants.CANCELLED, dataEntryForm.getContainerId());
 				}
 
 				if ((actionForward != null && actionForward.getName().equals("showDynamicExtensionsHomePage"))
@@ -100,14 +100,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					deleteRecord(recordIdentifier, containerStack.firstElement());
-					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier, WebUIManagerConstants.DELETED);
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier, WebUIManagerConstants.DELETED, dataEntryForm.getContainerId());
 				}
 
 				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
 					String recordIdentifier = dataEntryForm.getRecordIdentifier();
 					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request, recordIdentifier);
-					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier, WebUIManagerConstants.SUCCESS);
+					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier, WebUIManagerConstants.SUCCESS, dataEntryForm.getContainerId());
 				}
 			}
 			catch (Exception exception)
@@ -155,7 +155,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response, String recordIdentifier, String webUIManagerConstant)
+	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response, String recordIdentifier, String webUIManagerConstant, String containerId)
 			throws IOException
 	{
 		boolean isCallbackURL = false;
@@ -163,7 +163,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
 			calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier + "&"
-					+ WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant;
+					+ WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant + "&containerId="+containerId;
 			CacheManager.clearCache(request);
 			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;

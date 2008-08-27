@@ -70,6 +70,22 @@ public class DataEntryForm extends AbstractActionForm
 	
 	protected String previewBack;
 	
+	protected String containerId;
+	
+	/**
+	 * @return the containerId
+	 */
+	public String getContainerId() {
+		return containerId;
+	}
+
+	/**
+	 * @param containerId the containerId to set
+	 */
+	public void setContainerId(String containerId) {
+		this.containerId = containerId;
+	}
+
 	/**
 	 * 
 	 * @param key

@@ -197,12 +197,21 @@ function dataFldDataTypeChanged(datatypeControl)
 			if(document.getElementById('controlOperation') != null && document.getElementById('controlOperation').value=='Add'){
 				clearFields(selectedDatatype);
 			}
-			if(selectedDatatype == 'Text'){
-				 document.getElementById("TextDataType").style.display="";
-				 document.getElementById("NumberDataType").style.display="none";
+			if(selectedDatatype == 'Text')
+			{
+				var textArr=document.getElementsByName("TextDataType");
+				for(var i=0;i<textArr.length;i++)
+				{
+					 textArr[i].style.display="";
+				}
+				document.getElementById("NumberDataType").style.display="none";
 			}else{
-				 document.getElementById("TextDataType").style.display="none";
-				 document.getElementById("NumberDataType").style.display="";
+				var textArr=document.getElementsByName("TextDataType");
+				for(var i=0;i<textArr.length;i++)
+				{
+					 textArr[i].style.display="none";
+				}
+			    document.getElementById("NumberDataType").style.display="";
 			}
 		}
 		insertRules(datatypeControl);
@@ -230,9 +239,9 @@ function clearTextValues()
 	{
 		document.getElementById('attributeSize').value = "";
 	}
-	if(document.forms[0].attributeDefaultValue[0].value != "")
+	if(document.getElementById('attributeDefaultValue').value != "")
 	{
-		document.forms[0].attributeDefaultValue[0].value = "";
+		document.getElementById('attributeDefaultValue').value = "";
 	}
 	if(document.forms[0].attributeDisplayAsURL.checked == true)
 	{
@@ -251,9 +260,9 @@ function clearNumberValues()
 	{
 		document.getElementById('attributeDecimalPlaces').value = "";
 	}
-	if(document.forms[0].attributeDefaultValue[1].value != "")
+	if(document.getElementById('attributeDefaultValue').value != "")
 	{
-		document.forms[0].attributeDefaultValue[1].value = "";
+		document.getElementById('attributeDefaultValue').value = "";
 	}
 	if(document.forms[0].attributeIsPassword.checked == true)
 	{

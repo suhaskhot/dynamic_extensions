@@ -2,11 +2,8 @@
 package edu.common.dynamicextensions.util.global;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +15,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.domain.UserDefinedDE;
-import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.action.BaseDynamicExtensionsAction;
 import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
+import edu.wustl.common.beans.NameValueBean;
 
 /**
  * @author kunal_kamble
@@ -52,22 +49,24 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		ContainerInterface containerInterface = (ContainerInterface) ((HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER))
 				.get(Long.parseLong(containerId));
 
-		ControlInterface controlInterface = null;
+				
+		List<NameValueBean> nameValueBeanList = null;
 		for (ControlInterface control : containerInterface.getControlCollection())
 		{
 			if (Long.parseLong(controlId) == control.getId())
 			{
-				controlInterface = control;
+				nameValueBeanList = ControlsUtility.populateListOfValues(control);
 			}
 		}
 
-		UserDefinedDE definedDE = (UserDefinedDE) controlInterface.getAttibuteMetadataInterface().getDataElement();
+		/*UserDefinedDE definedDE = (UserDefinedDE) controlInterface.getAttibuteMetadataInterface().getDataElement();
 
 		Set<PermissibleValueInterface> set = new HashSet<PermissibleValueInterface>(definedDE.getPermissibleValueCollection());
 
 		int count = 0;
 		Integer total = limitFetch + startFetch;
 
+		
 		List<String> permissibleValues = new ArrayList<String>();
 		for (PermissibleValueInterface permissibleValueInterface : set)
 		{
@@ -82,21 +81,20 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 			}
 
 		}
-
-		trialJSONObject.put("totalCount", set.size());
-
-		for (int i = startFetch; i < total && i < permissibleValues.size(); i++)
+*/
+		//sint count = 0;
+		Integer total = limitFetch + startFetch;
+		trialJSONObject.put("totalCount", nameValueBeanList.size());
+		
+		for (int i = startFetch; i < total && i < nameValueBeanList.size(); i++)
 		{
 			JSONObject trialJSONObjectNewObj = new JSONObject();
-			trialJSONObjectNewObj.put("id", new Integer(i));
-			trialJSONObjectNewObj.put("field", permissibleValues.get(i));
+			trialJSONObjectNewObj.put("id", nameValueBeanList.get(i).getValue());
+			trialJSONObjectNewObj.put("field", nameValueBeanList.get(i).getName());
 			trialJSONArray.put(trialJSONObjectNewObj);
 		}
 		trialJSONObject.put("row", trialJSONArray);
-
-		// System.out.println("----json object---"+trialJSONObject.toString());	
-
-		response.setContentType("text/javascript");
+		response.flushBuffer();
 		PrintWriter out = response.getWriter();
 		out.write(trialJSONObject.toString());
 

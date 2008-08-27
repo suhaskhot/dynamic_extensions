@@ -11,7 +11,7 @@
 <jsp:useBean id="measurementUnitsList" type="java.util.List"/>
 
 <input type="hidden" id='linesTypeHidden' name="linesTypeHidden" value='<%=linesType%>' />
-<div id="TextDataType" style="display:none">
+<div id="TextDataType" style="display:none" name="TextDataType">
 	<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' >
 		<tr valign="top" >
  			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
@@ -48,6 +48,26 @@
 				<html:text styleClass="formFieldSized5" maxlength="3" size="60" styleId = 'attributeSize' property="attributeSize" />
 			</td>
 		</tr>
+	</table>
+</div>
+
+
+<div id="NumberDataType" style="display:none">
+	<table summary="" cellpadding="3" cellspacing="0"  align = 'center'  width='100%'>
+		<tr>
+			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+			<td class="formRequiredLabelWithoutBorder" width="30%">
+				<bean:message key="eav.att.AttributeDecimalPlaces"/> :
+			</td>
+			<td class="formFieldWithoutBorder">
+				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributeDecimalPlaces' property="attributeDecimalPlaces" />
+			</td>
+		</tr>	
+	</table>
+</div>
+
+
+<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' >
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 			<td class="formRequiredLabelWithoutBorder" width="30%">
@@ -57,6 +77,12 @@
 				<html:text styleClass="formDateSized" maxlength="100" size="60"  styleId='attributeDefaultValue' property="attributeDefaultValue" />
 			</td>
 		</tr>
+
+</table>
+
+
+<div id="TextDataType" style="display:none" name="TextDataType">
+	<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' >
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 			<td class="formRequiredLabelWithoutBorder" width="30%">&nbsp;</td>
@@ -70,26 +96,3 @@
 	</table>
 </div>
 
-<div id="NumberDataType" style="display:none">
-	<table summary="" cellpadding="3" cellspacing="0"  align = 'center'  width='100%'>
-		<tr>
-			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
-				<bean:message key="eav.att.AttributeDecimalPlaces"/> :
-			</td>
-			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributeDecimalPlaces' property="attributeDecimalPlaces" />
-			</td>
-		</tr>
-		<tr>
-			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
-				<bean:message key="eav.att.DefaultValue"/> :
-			</td>
-			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributeDefaultValue' property="attributeDefaultValue" />
-			</td>
-		</tr>
-		
-	</table>
-</div>

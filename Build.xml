@@ -233,6 +233,7 @@
 		    			<include name="**/common/util/**/*.*"/>
 		    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
 	    				<include name="DynamicExtensionsErrorsMessages.properties"/>
+	    				<include name="DynamicExtensionsFileFormats.properties"/>
 	    				<include name="*.xml"/>
 		    			<include name="**/xmi/**/*.*"/>
 	    				<include name="*.xsl"/>

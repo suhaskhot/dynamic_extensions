@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
@@ -39,20 +40,26 @@ public class CheckBox extends Control implements CheckBoxInterface
 		{
 			checked = this.getAttibuteMetadataInterface().getDefaultValue();
 		}
-
+		String disabled = "";
+//		If control is defined as readonly through category CSV file,make it Disabled
+		if(this.isReadOnly!=null && getIsReadOnly())
+		{
+			disabled = ProcessorConstants.DISABLED;
+		}
+		
 		String htmlComponentName = getHTMLComponentName();
 		if (checked != null &&(checked.equals("true") || checked.equals("1")))
 		{
 			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='" + htmlComponentName + "' checkedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='" + DynamicExtensionsUtility.getValueForCheckBox(false)
-					+ "'" + "value='" + DynamicExtensionsUtility.getValueForCheckBox(true) + "' " + "id='" + htmlComponentName + "'" + "checked"
+					+ "'" + "value='" + DynamicExtensionsUtility.getValueForCheckBox(true) + "' " + "id='" + htmlComponentName + "'" + "checked" + disabled 
 					+ " onclick='changeValueForCheckBox(this);'>";
 		}
 		else
 		{
 			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='" + htmlComponentName + "' checkedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='" + DynamicExtensionsUtility.getValueForCheckBox(false)
-					+ "'" + "value='" + DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + "id='" + htmlComponentName
+					+ "'" + "value='" + DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + disabled  + "id='" + htmlComponentName
 					+ "' onclick='changeValueForCheckBox(this);'>";
 		}
 

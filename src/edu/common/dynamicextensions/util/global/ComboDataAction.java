@@ -83,15 +83,20 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		}
 */
 		//sint count = 0;
+
 		Integer total = limitFetch + startFetch;
 		trialJSONObject.put("totalCount", nameValueBeanList.size());
 		
 		for (int i = startFetch; i < total && i < nameValueBeanList.size(); i++)
 		{
 			JSONObject trialJSONObjectNewObj = new JSONObject();
-			trialJSONObjectNewObj.put("id", nameValueBeanList.get(i).getValue());
-			trialJSONObjectNewObj.put("field", nameValueBeanList.get(i).getName());
-			trialJSONArray.put(trialJSONObjectNewObj);
+			if ( query==null || nameValueBeanList.get(i).getName().toLowerCase().startsWith(query.toLowerCase()) || query.length() == 0)
+			{
+				trialJSONObjectNewObj.put("id", nameValueBeanList.get(i).getValue());
+				trialJSONObjectNewObj.put("field", nameValueBeanList.get(i).getName());
+				trialJSONArray.put(trialJSONObjectNewObj);
+				
+			}
 		}
 		trialJSONObject.put("row", trialJSONArray);
 		response.flushBuffer();

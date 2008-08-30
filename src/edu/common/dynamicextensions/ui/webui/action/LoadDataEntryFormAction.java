@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -316,6 +317,17 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 								recordMap.put(currentAttribute, value);
 							}
 						}
+					}
+				}
+			}
+			else if (object instanceof AssociationInterface)
+			{
+				if (recordMap.get(object) != null)
+				{
+					List<Map<BaseAbstractAttributeInterface, Object>> innerRecordsList = (List<Map<BaseAbstractAttributeInterface, Object>>) recordMap.get(object);
+					for (Map<BaseAbstractAttributeInterface, Object> innerMap: innerRecordsList)
+					{
+						addPrecisionZeroes(innerMap);
 					}
 				}
 			}

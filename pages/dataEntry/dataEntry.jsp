@@ -72,6 +72,7 @@
 
 	<body onload="loadPreviewForm()">
 		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" method="post">
+		<div style="overflow:auto;height:415;width:99%">
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 		
 			<c:choose>
@@ -238,6 +239,7 @@
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="<%=dataEntryOperation%>"/>
 			<input type="hidden" id="showFormPreview" name="showFormPreview" value="<%=showFormPreview%>"/>
 			<input type="hidden" id="mode" name="mode" value="<%=mode%>"/>
+			</div>
 		</html:form>
 	</body>
 </html>

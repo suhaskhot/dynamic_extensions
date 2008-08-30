@@ -889,7 +889,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	public void populateDateAttributeInterface(DateAttributeTypeInformation dateAttributeIntf,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
-		// Set Date format based on the UI selection : DATE ONLY or DATE And TIME
+		// Set Date format based on the UI selection : DATE ONLY or DATE And TIME.
 		String format = attributeUIBeanInformationIntf.getFormat();
 		String dateFormat = DynamicExtensionsUtility.getDateFormat(format);
 		dateAttributeIntf.setFormat(dateFormat);
@@ -900,17 +900,32 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			try
 			{
-				//				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_TODAY))
-				//				{
-				//					String todaysDate = Utility.parseDateToString(new Date(), dateFormat);
-				//					defaultValue = Utility.parseDate(todaysDate, dateFormat);
-				//				}
 				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 				{
 					if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 					{
-						String value = DynamicExtensionsUtility.formatMonthAndYearDate(attributeUIBeanInformationIntf.getAttributeDefaultValue());
-						defaultValue = Utility.parseDate(value, "MM-dd-yyyy");
+						String value = "";
+						if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+						{
+							value = DynamicExtensionsUtility.formatMonthAndYearDate(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+						}
+						else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+						{
+							value = DynamicExtensionsUtility.formatYearDate(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+						}
+						else
+						{
+							value = attributeUIBeanInformationIntf.getAttributeDefaultValue();
+						}
+
+						if (format.equals(ProcessorConstants.DATE_FORMAT_OPTION_DATEANDTIME))
+						{
+							defaultValue = Utility.parseDate(value, ProcessorConstants.DATE_TIME_FORMAT);
+						}
+						else
+						{
+							defaultValue = Utility.parseDate(value, ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+						}
 					}
 				}
 			}
@@ -919,7 +934,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 			}
 		}
-		//Set default value
+
+		// Set default value.
 		DateValueInterface dateValue = DomainObjectFactory.getInstance().createDateValue();
 		dateValue.setValue(defaultValue);
 		dateAttributeIntf.setDefaultValue(dateValue);

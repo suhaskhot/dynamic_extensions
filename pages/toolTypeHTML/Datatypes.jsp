@@ -60,7 +60,7 @@
 				<bean:message key="eav.att.AttributeDecimalPlaces"/> :
 			</td>
 			<td class="formFieldWithoutBorder">
-				<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId='attributeDecimalPlaces' property="attributeDecimalPlaces" />
+				<html:text styleClass="formFieldSized5" maxlength="2" size="60" styleId='attributeDecimalPlaces' property="attributeDecimalPlaces" />
 			</td>
 		</tr>	
 	</table>

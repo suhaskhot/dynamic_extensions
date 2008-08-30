@@ -13,8 +13,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domain.CategoryAssociation;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
+import edu.common.dynamicextensions.domain.userinterface.CategoryAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -120,9 +122,14 @@ public class CategoryGenerator
 				// 5: Get the selected attributes and create the controls for them. 
 				String displayLabel = null;
 				List<String> categoryEntityName = null;
+				int sequenceNumber = 1;
 				ControlInterface lastControl = null;
 				Map<String, String> categoryEntityNameInstanceMap = new HashMap<String, String>();
 				boolean hasRelatedAttributes = false;
+
+				String previousEntityName = new String();
+				boolean firstTimeinDisplayLabel = false;
+				HashMap<String, List> sequenceMap = new HashMap<String, List>();
 
 				while (categoryFileParser.readNext())
 				{
@@ -142,11 +149,19 @@ public class CategoryGenerator
 						displayLabel = categoryFileParser.getDisplyLable();
 						categoryEntityName = createForm(entityGroup, containerCollection, entityNameAssociationMap, category,
 								categoryEntityNameInstanceMap);
+
+						firstTimeinDisplayLabel = true;
+						previousEntityName = null;
 						categoryFileParser.readNext();
 					}
 
 					if (categoryFileParser.hasSubcategory())
 					{
+						//Set this flag when subcategory is just after display label
+						if (firstTimeinDisplayLabel)
+						{
+							firstTimeinDisplayLabel = false;
+						}
 						ContainerInterface sourceContainer = null;
 						if (entityInterface != null)
 						{
@@ -211,6 +226,22 @@ public class CategoryGenerator
 						containerInterface = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, getcategoryEntityName(
 								categoryEntityName, categoryFileParser.getEntityName()));
 
+						//Set this flag when attribute is just after display label,and set previous entity name ,so that we can verify whether all attributes are of same entity or other entities also.
+						if (firstTimeinDisplayLabel)
+						{
+							firstTimeinDisplayLabel = false;
+							previousEntityName = ((CategoryEntityInterface) containerInterface.getAbstractEntity()).getName();
+						}
+						if ((previousEntityName != null && !previousEntityName.equals(containerInterface.getAbstractEntity().getName()) && !firstTimeinDisplayLabel))
+						{
+							List listofEntities = sequenceMap.get(containerInterface.getAbstractEntity().getName());
+							if (listofEntities == null)
+							{
+								listofEntities = new ArrayList<String>();
+							}
+							listofEntities.add(containerInterface.getAbstractEntity().getName());
+							sequenceMap.put(previousEntityName, listofEntities);
+						}
 						AttributeInterface attribute = entityInterface.getAttributeByName(attributeName);
 
 						if (attribute != null && permissibleValues != null)
@@ -227,6 +258,10 @@ public class CategoryGenerator
 								+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("attribute") + attributeName
 								+ ApplicationProperties.getValue("attributeNotPresent") + entityInterface.getName());
 
+						if (previousEntityName != null && !previousEntityName.equals(containerInterface.getAbstractEntity().getName()))
+						{
+							previousEntityName = containerInterface.getAbstractEntity().getName();
+						}
 						// If this is a parent attribute and currently the parent category entity is not created
 						// for given category entity, create parent category hierarchy up to where attribute is found. 
 						if (isParentAttribute)
@@ -274,7 +309,7 @@ public class CategoryGenerator
 							}
 
 							entityInterface = childEntity;
-							containerInterface = (ContainerInterface) (childCategoryEntity.getContainerCollection()).iterator().next();
+							//containerInterface = (ContainerInterface) (childCategoryEntity.getContainerCollection()).iterator().next();
 						}
 
 						Map<String, Object> rulesMap = categoryFileParser.getRules();
@@ -309,7 +344,9 @@ public class CategoryGenerator
 							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(true);
 							category.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
 						}
+
 					}
+					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
 				CategoryGenerationUtil
@@ -319,8 +356,12 @@ public class CategoryGenerator
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap, containerCollection);
 				}
+				rearrangeControlSequence((ContainerInterface) category.getRootCategoryElement().getContainerCollection().iterator().next(),
+						sequenceMap);
 				categoryList.add(category);
+
 			}
+
 		}
 		catch (FileNotFoundException e)
 		{
@@ -345,6 +386,99 @@ public class CategoryGenerator
 			throw new DynamicExtensionsSystemException("", e);
 		}
 		return categoryList;
+	}
+
+	/**
+	 * This function rearranges the sequences ,so that display is as per CSV file
+	 * @param containerObject
+	 * @param sequenceMap
+	 */
+	private void rearrangeControlSequence(ContainerInterface containerObject, HashMap<String, List> sequenceMap)
+	{
+		//The sequencemap contains the keyentityname and list of categoryentity which requires to set after this entity on UI
+		//See for eg. root categoryentity is having 4 controls(category association + othercontrol) ,its sequence number is assigned as  per their parsing
+		//But in one association is specified as with other association under one display label itself ,so only one subcategory name is under rootcategory in CSV
+		//eg. DL :XXX
+		//    class A:A1
+		//    class B:B1
+		//    DL: root
+		//    subcategory:XXX
+		//  So here both attributs will be shown under same display label XXX ,so we need to change category association B's sequence number such that its after class A on UI
+		//
+		List<ControlInterface> listControl = containerObject.getAllControls();
+		Iterator<String> iterator = sequenceMap.keySet().iterator();
+		while (iterator.hasNext())
+		{
+			String keyName = (String) iterator.next();
+			List<String> entityNameList = sequenceMap.get(keyName);
+			int newSequenceNumber = 0;
+			for (String entityName : entityNameList)
+			{
+				int previousSequenceNumber = 0;
+				for (ControlInterface objControl : listControl)
+				{
+					if (objControl instanceof CategoryAssociationControl)
+					{
+						CategoryAssociationControl obj = ((CategoryAssociationControl) objControl);
+						String categoryName = ((CategoryAssociation) obj.getBaseAbstractAttribute()).getTargetCategoryEntity().getName();
+						if (categoryName.equals(keyName))
+						{
+							previousSequenceNumber = objControl.getSequenceNumber();
+							break;
+						}
+
+					}
+				}
+
+				boolean modified = false;
+				for (int index = 0; index < listControl.size(); index++)
+				{
+					ControlInterface objControl = (ControlInterface) listControl.get(index);
+					if (objControl instanceof CategoryAssociationControl)
+					{
+						CategoryAssociationControl obj = ((CategoryAssociationControl) objControl);
+						String categoryName = ((CategoryAssociation) obj.getBaseAbstractAttribute()).getTargetCategoryEntity().getName();
+						if (categoryName.equals(entityName))
+						{
+
+							if (newSequenceNumber == 0)
+								newSequenceNumber = ++previousSequenceNumber;
+							else
+								newSequenceNumber++;
+							objControl.setSequenceNumber(newSequenceNumber);
+
+							modified = true;
+
+						}
+						if (modified)
+						{
+							if (index < listControl.size() - 1)
+							{
+								for (int cnt = index + 1; cnt < listControl.size(); cnt++)
+								{
+									objControl = listControl.get(cnt);
+									int latestSequenceNumber = 0;
+									if (objControl.getSequenceNumber() == newSequenceNumber)
+									{
+										objControl.setSequenceNumber(++newSequenceNumber);
+										latestSequenceNumber = newSequenceNumber;
+
+									}
+									else if (objControl.getSequenceNumber() >= newSequenceNumber)
+									{
+										objControl.setSequenceNumber(++latestSequenceNumber);
+									}
+								}
+								break;
+							}
+						}
+					}
+				}
+
+			}
+
+		}
+
 	}
 
 	/**

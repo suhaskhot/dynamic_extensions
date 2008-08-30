@@ -549,9 +549,9 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		int nextSequenceNumber = 1;
 
-		if (container.getControlCollection() != null)
+		if (container.getAllControls() != null)
 		{
-			nextSequenceNumber = container.getControlCollection().size() + 1;
+			nextSequenceNumber = container.getAllControls().size() + 1;
 		}
 
 		return nextSequenceNumber;
@@ -621,6 +621,13 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryAssociationControl.setCaption(caption);
 		categoryAssociationControl.setContainer(targetContainer);
 		categoryAssociationControl.setBaseAbstractAttribute(categoryAssociation);
+		if (categoryAssociationControl.getSequenceNumber() == null)
+		{
+
+			int sequenceNumber = getNextSequenceNumber(parentContainer);
+			categoryAssociationControl.setSequenceNumber(sequenceNumber);
+
+		}
 		parentContainer.addControl(categoryAssociationControl);
 		categoryAssociationControl.setParentContainer((Container) parentContainer);
 
@@ -799,7 +806,11 @@ public class CategoryHelper implements CategoryHelperInterface
 	private void updateContainerAndControl(ContainerInterface container, ControlInterface control,
 			BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
+
+		int sequenceNumber = getNextSequenceNumber(container);
 		container.addControl(control);
+		control.setSequenceNumber(sequenceNumber);
+
 		control.setParentContainer((Container) container);
 		control.setBaseAbstractAttribute(baseAbstractAttribute);
 	}
@@ -1169,11 +1180,11 @@ public class CategoryHelper implements CategoryHelperInterface
 			throw new DynamicExtensionsSystemException("PLEASE CONTACT ADMINISTRATOR", e);
 		}
 	}
-	
+
 	private void updateCommonControlProperties(ControlInterface control, String caption, ContainerInterface parentContainer)
 	{
 		control.setCaption(caption);
-		control.setSequenceNumber(getNextSequenceNumber(parentContainer));
+		//control.setSequenceNumber(getNextSequenceNumber(parentContainer));
 	}
 
 }

@@ -1550,8 +1550,12 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			this.attributeDecimalPlaces = "0";
 		}
-
-		if (Integer.parseInt(this.attributeDecimalPlaces) > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
+		if (!isNaturalNumber(attributeDecimalPlaces, validator))
+		{
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
+					.getValue("eav.att.AttributeDecimalPlaces")));
+		}
+		else if (Integer.parseInt(this.attributeDecimalPlaces) > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.maximumPrecision", String
 					.valueOf(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)));
@@ -1565,12 +1569,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		if (attributeDecimalPlaces.contains("."))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.precisionNotInteger", ApplicationProperties
-					.getValue("eav.att.AttributeDecimalPlaces")));
-		}
-
-		if (!isNaturalNumber(attributeDecimalPlaces, validator))
-		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
 					.getValue("eav.att.AttributeDecimalPlaces")));
 		}
 

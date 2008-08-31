@@ -1521,7 +1521,7 @@ public class DynamicExtensionsUtility
 		}
 		return listOfIds;
 	}
-	
+
 	/**
 	 * @param attribute
 	 * @param defaultValue
@@ -1531,16 +1531,44 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsValidationException
 	 * @throws DataTypeFactoryInitializationException
 	 */
-	public static void verifyDefaultValueIsInRange(AbstractAttributeInterface attribute, String defaultValue, String min, String max, String attributeName) throws DynamicExtensionsValidationException, DataTypeFactoryInitializationException
+	public static void verifyDefaultValueIsInRange(AbstractAttributeInterface attribute, String defaultValue, String min, String max,
+			String attributeName) throws DynamicExtensionsValidationException, DataTypeFactoryInitializationException
 	{
 		if (defaultValue != null && min != null && max != null)
 		{
 			Map<String, String> parameterMap = new HashMap<String, String>();
 			parameterMap.put("min", min);
 			parameterMap.put("max", max);
-			
+
 			RangeValidator rangeValidator = new RangeValidator();
 			rangeValidator.validate((AttributeMetadataInterface) attribute, defaultValue, parameterMap, attributeName);
 		}
+	}
+
+	/**
+	 * This method used to replace escape characters such as singel and double quote
+	 * @param str
+	 * @param one
+	 * @param another
+	 * @return
+	 */
+	public static String replaceUtil(String str, String one, String another)
+	{
+		if (str == null)
+			return str;
+		//    	 In a string replace one substring with another
+		if (str.equals(""))
+			return "";
+		String res = "";
+		int i = str.indexOf(one, 0);
+		int lastpos = 0;
+		while (i != -1)
+		{
+			res += str.substring(lastpos, i) + another;
+			lastpos = i + one.length();
+			i = str.indexOf(one, lastpos);
+		}
+		res += str.substring(lastpos);
+		return res;
 	}
 }

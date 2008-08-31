@@ -2823,11 +2823,15 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
+	 * Replace any single and double quotes value with proper escape character	
 	 * @param value
 	 * @return
 	 */
 	protected String getEscapedStringValue(String value)
 	{
+
+		value = DynamicExtensionsUtility.replaceUtil(value, "'", "\\\'");
+		value = DynamicExtensionsUtility.replaceUtil(value, "\"", "\\\"");
 		return value.trim();
 	}
 

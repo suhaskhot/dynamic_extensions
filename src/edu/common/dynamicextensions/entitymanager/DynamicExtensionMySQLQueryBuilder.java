@@ -11,7 +11,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQueryBuilder
 {
-	
 	/**
 	 * This method returns the query to add foreign key constraint in the given child entity
 	 * that refers to identifier column of the parent.
@@ -24,19 +23,10 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 		EntityInterface parentEntity = entity.getParentEntity();
 		String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
 
-		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
-				entity.getTableProperties().getName()).append(WHITESPACE).append(DROP_KEYWORD)
-				.append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(
-						foreignConstraintName);
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
+				DROP_KEYWORD).append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(foreignConstraintName);
 
 		return foreignKeyConstraint.toString();
 	}
-    
-    /**
-     * @see edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder#getEscapedStringValue(java.lang.String)
-     */
-    protected  String getEscapedStringValue(String value) {
-        return value.replaceAll("'", "\\\\'");
-    }
 
 }

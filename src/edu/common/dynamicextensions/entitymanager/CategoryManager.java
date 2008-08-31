@@ -599,11 +599,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						columnValues.append(", ");
 						columnNamesValues.append(", ");
 					}
+					//Replace any single and double quotes value with proper escape character
+					String defaultValue = categoryAttribute.getDefaultValue();
+					defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue,"'","\\\'" );
+					defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "\"","\\\"" );
 					columnNames.append(columnName);
-					columnValues.append("'" + categoryAttribute.getDefaultValue() + "'");
+					columnValues.append("'" + defaultValue + "'");
 					columnNamesValues.append(columnName);
 					columnNamesValues.append(" = ");
-					columnNamesValues.append("'" + categoryAttribute.getDefaultValue() + "'");
+					columnNamesValues.append("'" + defaultValue + "'");
 				}
 			}
 		}

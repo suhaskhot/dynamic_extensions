@@ -317,16 +317,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		String message = "";
 		/*try
-		{*/
+		 {*/
 		dao.rollback();
 		/*}
-		catch (DAOException e2)
-		{
-			logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
-			DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
-			ex.setErrorCode(DYEXTN_S_000);
-			throw ex;
-		}*/
+		 catch (DAOException e2)
+		 {
+		 logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
+		 DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
+		 ex.setErrorCode(DYEXTN_S_000);
+		 throw ex;
+		 }*/
 
 		if (reverseQueryStack != null && !reverseQueryStack.isEmpty())
 		{
@@ -1520,9 +1520,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				for (int i = 0; i < selectColumnNameList.size(); i++)
 				{
-
 					String dbColumnName = selectColumnNameList.get(i);
 					String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
+					//Replace single and double quote with HTML equivalent
+					value = DynamicExtensionsUtility.replaceUtil(value, "'", "&#39");
+					value = DynamicExtensionsUtility.replaceUtil(value, "\"", "&#34");
+
 					Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
 					recordValues.put(attribute, value);
 				}
@@ -1945,26 +1948,26 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		catch (DynamicExtensionsApplicationException e)
 		{
 			/*try
-			{*/
+			 {*/
 			hibernateDAO.rollback();
 			/*}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-			}*/
+			 catch (DAOException e1)
+			 {
+			 throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+			 }*/
 
 			throw e;
 		}
 		catch (Exception e)
 		{
 			/*try
-			{*/
+			 {*/
 			hibernateDAO.rollback();
 			/*}
-			catch (DAOException e1)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
-			}*/
+			 catch (DAOException e1)
+			 {
+			 throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
+			 }*/
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
 		finally

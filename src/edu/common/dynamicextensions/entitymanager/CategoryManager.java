@@ -601,8 +601,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					}
 					//Replace any single and double quotes value with proper escape character
 					String defaultValue = categoryAttribute.getDefaultValue();
-					defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue,"'","\\\'" );
-					defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "\"","\\\"" );
+					defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "'", "&#39");
+					defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "\"", "&#34");
+					
 					columnNames.append(columnName);
 					columnValues.append("'" + defaultValue + "'");
 					columnNamesValues.append(columnName);

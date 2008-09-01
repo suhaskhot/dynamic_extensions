@@ -252,4 +252,16 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.parentForm = parentForm;
 	}
 
+	public String getOperationMode()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setOperationMode(String operationMode)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

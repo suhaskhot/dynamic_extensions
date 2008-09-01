@@ -61,7 +61,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			}
 			catch (SQLException e1)
 			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				throw new DynamicExtensionsSystemException(e1.getMessage(), e1);
 			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
@@ -322,7 +322,59 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	{
 		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
 	}
+	/**
+	 * 
+	 * @param tableName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
+	{
+		StringBuffer queryBuffer = new StringBuffer();
+		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(
+				WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName);
 
+		ResultSet resultSet = null;
+		try
+		{
+			resultSet = executeQuery(queryBuffer.toString());
+			resultSet.next();
+			Long count = resultSet.getLong(1);
+			if (count > 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+		}
+		finally
+		{
+			if (resultSet != null)
+			{
+				try
+				{
+					resultSet.close();
+					DBUtil.closeConnection();
+				}
+				catch (SQLException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param attributeCollection
+	 * @return
+	 */
 	public static List<AbstractAttributeInterface> filterSystemAttributes(List<AbstractAttributeInterface> attributeCollection)
 	{
 		AbstractAttributeInterface idAttribute = null;
@@ -340,6 +392,11 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		return attributeCollection;
 	}
 
+	/**
+	 * 
+	 * @param attributesCollection
+	 * @return
+	 */
 	public static Collection<AbstractAttributeInterface> filterSystemAttributes(Collection<AbstractAttributeInterface> attributesCollection)
 	{
 		return filterSystemAttributes(new ArrayList(attributesCollection));

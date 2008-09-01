@@ -2029,8 +2029,9 @@ class DynamicExtensionBaseQueryBuilder
 	private void checkIfDataTypeChangeAllowable(Attribute attribute) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityInterface entityInterface = attribute.getEntity();
+		EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 		String tableName = entityInterface.getTableProperties().getName();
-		if (isDataPresent(tableName))
+		if (entityManagerUtil.isDataPresent(tableName))
 		{
 			throw new DynamicExtensionsApplicationException("Can not change the data type of the attribute", null, DYEXTN_A_009);
 		}
@@ -2154,46 +2155,6 @@ class DynamicExtensionBaseQueryBuilder
 		return dataPresent;
 	}
 
-	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
-	{
-		StringBuffer queryBuffer = new StringBuffer();
-		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(
-				WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName);
-
-		ResultSet resultSet = null;
-		try
-		{
-			resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
-			resultSet.next();
-			Long count = resultSet.getLong(1);
-			if (count > 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		catch (SQLException e)
-		{
-			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
-		}
-		finally
-		{
-			if (resultSet != null)
-			{
-				try
-				{
-					resultSet.close();
-				}
-				catch (SQLException e)
-				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
-				}
-			}
-		}
-	}
 
 	/**
 	 * This method returns the query for the attribute to modify its data type.

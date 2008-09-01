@@ -60,4 +60,16 @@ package edu.common.dynamicextensions.ui.interfaces;
 	  * @param isAbstract
 	  */
 	 void setIsAbstract(String isAbstract);
+	 
+	 /**
+	  * @return the operationMode
+	  */
+	 public String getOperationMode();
+		
+
+	 /**
+	  * @param operationMode the operationMode to set
+	  */
+	 void setOperationMode(String operationMode);
+		
 }

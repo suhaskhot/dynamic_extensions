@@ -106,7 +106,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		+ "selectOnFocus:true,applyTo: '" + textComponent + "'});";
 		if(!defaultValue.equals(""))
 		{
-			htmlString= htmlString+"ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){combo.setValue("+defaultValue+",false);});";
+			htmlString= htmlString+"ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){combo.setValue('"+defaultValue+"',false);});";
 		}
 		
 		 htmlString = htmlString

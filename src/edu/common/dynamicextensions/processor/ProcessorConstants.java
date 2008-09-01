@@ -159,5 +159,9 @@ public class ProcessorConstants
 
 	// disabled keyword
 	public static final String DISABLED = " disabled ";
+	
+	//File formats
+	public static  String JPEG_FORMAT = "jpeg";
+	public static  String JPG_FORMAT = "jpg";
 
 }

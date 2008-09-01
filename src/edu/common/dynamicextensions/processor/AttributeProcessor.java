@@ -413,6 +413,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			int noOfFileFormats = fileFormats.length;
 			for (int i = 0; i < noOfFileFormats; i++)
 			{
+				if(fileFormats[i].equalsIgnoreCase(ProcessorConstants.JPEG_FORMAT))
+				{
+					fileExtensionCollection.add(getFileExtension(ProcessorConstants.JPG_FORMAT));
+				}
 				fileExtensionCollection.add(getFileExtension(fileFormats[i]));
 			}
 		}

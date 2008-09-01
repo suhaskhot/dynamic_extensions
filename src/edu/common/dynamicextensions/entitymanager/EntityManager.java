@@ -1522,10 +1522,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				{
 					String dbColumnName = selectColumnNameList.get(i);
 					String value = getValueFromResultSet(resultSet, columnNameMap, dbColumnName, i);
-					//Replace single and double quote with HTML equivalent
-					value = DynamicExtensionsUtility.replaceUtil(value, "'", "&#39");
-					value = DynamicExtensionsUtility.replaceUtil(value, "\"", "&#34");
-
 					Attribute attribute = (Attribute) columnNameMap.get(dbColumnName);
 					recordValues.put(attribute, value);
 				}

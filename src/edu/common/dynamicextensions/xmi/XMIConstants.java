@@ -124,4 +124,5 @@ public class XMIConstants
 	public static final String CATISSUE_PACKAGE = "edu.wustl.catissuecore.domain.";
 
 	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "255";
+	public static final String MAX_LENGTH_LIMIT = "999";
 }

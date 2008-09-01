@@ -1777,6 +1777,10 @@ public class XMIImportProcessor
 		{
 			width = "" + (edu.common.dynamicextensions.ui.util.Constants.DEFAULT_COLUMN_SIZE);
 		}
+		if(width != null && (Integer.parseInt(width)) > 999)
+		{
+			width = XMIConstants.MAX_LENGTH_LIMIT;
+		}
 		return width;
 	}
 
@@ -1790,6 +1794,10 @@ public class XMIImportProcessor
 		if (maxLen == null || maxLen.trim().equals(""))
 		{
 			maxLen = XMIConstants.DEFAULT_TEXT_FIELD_MAX_LENGTH;
+		}
+		if(maxLen!= null && (Integer.parseInt(maxLen)) > 999)
+		{
+			maxLen = XMIConstants.MAX_LENGTH_LIMIT;
 		}
 		return maxLen;
 	}

@@ -927,14 +927,12 @@ public class DynamicExtensionsUtility
 	public static boolean isCheckBoxChecked(String value)
 	{
 		boolean isChecked = false;
-		String returnedCheckBoxVal = "";
 		if (value != null && value.trim().length() > 0)
 		{
-			returnedCheckBoxVal = getValueForCheckBox(Boolean.parseBoolean(value));
-			
-			if(returnedCheckBoxVal.equals("1") || returnedCheckBoxVal.equals("true"))
-				isChecked =true;
-						
+			if(value.equals("1") || value.equals("true"))
+			{
+				isChecked = true;
+			}
 		}
 		return isChecked;
 	}

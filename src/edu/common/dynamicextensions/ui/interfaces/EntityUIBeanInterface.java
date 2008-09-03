@@ -6,70 +6,58 @@ package edu.common.dynamicextensions.ui.interfaces;
  * @author deepti_shelar
  *
  */
- public interface EntityUIBeanInterface
- {
+public interface EntityUIBeanInterface
+{
 	/**
 	 * @return Returns the name.
 	 */
-	 String getFormName();
+	String getFormName();
 
 	/**
 	 * @param formName The name to set to the form.
 	 */
-	 void setFormName(String formName);
+	void setFormName(String formName);
 
 	/**
 	 * @return Returns the description.
 	 */
-	 String getFormDescription();
+	String getFormDescription();
 
 	/**
 	 * @param description The description to set.
 	 */
-	 void setFormDescription(String description);
+	void setFormDescription(String description);
 
 	/**
 	 * 
 	 * @return String CreateAs
 	 */
-	 String getCreateAs();
+	String getCreateAs();
 
 	/**
 	 * @param createAs The createAs to set.
 	 */
-	 void setCreateAs(String createAs);
+	void setCreateAs(String createAs);
 
 	/**
 	 * @return String conceptCode .
 	 */
-	 String getConceptCode();
+	String getConceptCode();
 
 	/**
 	 * @param conceptCode The ConceptCode to set.
 	 */
-	 void setConceptCode(String conceptCode);
-	 
-	 /**
-	  * 
-	  * @return
-	  */
-	 String getIsAbstract();
-	
-	 /**
-	  * 
-	  * @param isAbstract
-	  */
-	 void setIsAbstract(String isAbstract);
-	 
-	 /**
-	  * @return the operationMode
-	  */
-	 public String getOperationMode();
-		
+	void setConceptCode(String conceptCode);
 
-	 /**
-	  * @param operationMode the operationMode to set
-	  */
-	 void setOperationMode(String operationMode);
-		
+	/**
+	 * 
+	 * @return
+	 */
+	String getIsAbstract();
+
+	/**
+	 * 
+	 * @param isAbstract
+	 */
+	void setIsAbstract(String isAbstract);
 }

@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package edu.common.dynamicextensions.xmi.model;
 
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.List;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
-
 
 /**
  * @author ashish_gupta
@@ -46,20 +46,19 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 	 * 
 	 */
 	protected String parentForm;
-	
 
 	public String getButtonCss()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public String getMainTableCss()
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public String getRequiredFieldIndicatior()
 	{
 		// TODO Auto-generated method stub
@@ -81,34 +80,33 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 	public void setButtonCss(String buttonCss)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setMainTableCss(String mainTableCss)
 	{
 		// TODO Auto-generated method stub
-		
-	}	
+
+	}
 
 	public void setRequiredFieldIndicatior(String requiredFieldIndicatior)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setRequiredFieldWarningMessage(String requiredFieldWarningMessage)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setTitleCss(String titleCss)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
 	/**
 	 * @return the conceptCode
 	 */
@@ -117,7 +115,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return conceptCode;
 	}
 
-	
 	/**
 	 * @param conceptCode the conceptCode to set
 	 */
@@ -126,7 +123,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.conceptCode = conceptCode;
 	}
 
-	
 	/**
 	 * @return the createAs
 	 */
@@ -135,7 +131,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return createAs;
 	}
 
-	
 	/**
 	 * @param createAs the createAs to set
 	 */
@@ -144,7 +139,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.createAs = createAs;
 	}
 
-	
 	/**
 	 * @return the formCaption
 	 */
@@ -153,7 +147,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return formCaption;
 	}
 
-	
 	/**
 	 * @param formCaption the formCaption to set
 	 */
@@ -162,7 +155,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.formCaption = formCaption;
 	}
 
-	
 	/**
 	 * @return the formDescription
 	 */
@@ -171,7 +163,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return formDescription;
 	}
 
-	
 	/**
 	 * @param formDescription the formDescription to set
 	 */
@@ -180,7 +171,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.formDescription = formDescription;
 	}
 
-	
 	/**
 	 * @return the formList
 	 */
@@ -189,7 +179,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return formList;
 	}
 
-	
 	/**
 	 * @param formList the formList to set
 	 */
@@ -198,7 +187,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.formList = formList;
 	}
 
-	
 	/**
 	 * @return the formName
 	 */
@@ -207,7 +195,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return formName;
 	}
 
-	
 	/**
 	 * @param formName the formName to set
 	 */
@@ -216,7 +203,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.formName = formName;
 	}
 
-	
 	/**
 	 * @return the isAbstract
 	 */
@@ -225,7 +211,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return isAbstract;
 	}
 
-	
 	/**
 	 * @param isAbstract the isAbstract to set
 	 */
@@ -234,7 +219,6 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		this.isAbstract = isAbstract;
 	}
 
-	
 	/**
 	 * @return the parentForm
 	 */
@@ -243,25 +227,12 @@ public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInt
 		return parentForm;
 	}
 
-	
 	/**
 	 * @param parentForm the parentForm to set
 	 */
 	public void setParentForm(String parentForm)
 	{
 		this.parentForm = parentForm;
-	}
-
-	public String getOperationMode()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setOperationMode(String operationMode)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 
 }

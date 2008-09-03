@@ -1,10 +1,8 @@
 
 package edu.common.dynamicextensions.processor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -12,12 +10,9 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
-import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  *<p>Title: EntityProcessor</p>
@@ -38,7 +33,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * This is a singleton class so we have a protected constructor , We are providing getInstance method
 	 * to return the EntityProcessor's instance.
 	 */
-	public EntityProcessor()
+	protected EntityProcessor()
 	{
 
 	}
@@ -74,8 +69,8 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException in case of system error
 	 * @throws DynamicExtensionsApplicationException in case of application error.
 	 */
-	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public EntityInterface createAndSaveEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		EntityInterface entityInterface = null;
 		if (entityUIBeanInterface != null)
@@ -90,47 +85,27 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * This method populates the given EntityInterface using the given entityInformationInterface.
 	 * @param entityInterface Instance of EntityInterface which is populated using the informationInterface.
 	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which is used to populate the entityInterface.
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsValidationException 
 	 */
-	public void populateEntity(EntityUIBeanInterface entityUIBeanInterface,
-			EntityInterface entityInterface) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
+	public void populateEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface)
 	{
-		EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 		if (entityUIBeanInterface != null && entityInterface != null)
 		{
 			entityInterface.setName(entityUIBeanInterface.getFormName());
 			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
-			
-			Collection collection = SemanticPropertyBuilderUtil
-					.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
+
+			Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
 			if (collection != null && !collection.isEmpty())
 			{
 				entityInterface.removeAllSemanticProperties();
 				Iterator iterator = collection.iterator();
 				while (iterator.hasNext())
 				{
-					entityInterface
-							.addSemanticProperty((SemanticPropertyInterface) iterator.next());
+					entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
 				}
 			}
 			if (entityUIBeanInterface.getIsAbstract() != null && entityUIBeanInterface.getIsAbstract().equals("true"))
 			{
-				if(entityUIBeanInterface.getOperationMode().equals("EditForm"))
-				{
-					if(entityManagerUtil.isDataPresent(entityInterface.getTableProperties().getName()))
-					{
-						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.AbstractValidator", entityInterface.getName());
-					}
-					else
-					{
-						entityInterface.setAbstract(true);	
-					}
-				}
-				else
-				{
-					entityInterface.setAbstract(true);
-				}
+				entityInterface.setAbstract(true);
 			}
 			else
 			{
@@ -147,22 +122,18 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which will be populated using
 	 * the first parameter that is EntityInterface.
 	 */
-	public void populateEntityUIBeanInterface(EntityInterface entityInterface,
-			EntityUIBeanInterface entityUIBeanInterface)
+	public void populateEntityUIBeanInterface(EntityInterface entityInterface, EntityUIBeanInterface entityUIBeanInterface)
 	{
 		if (entityInterface != null && entityUIBeanInterface != null)
 		{
 			entityUIBeanInterface.setFormName(Utility.toString(entityInterface.getName()));
 			if (entityInterface.getDescription() != null)
 			{
-				entityUIBeanInterface.setFormDescription(Utility.toString(entityInterface
-						.getDescription()));
+				entityUIBeanInterface.setFormDescription(Utility.toString(entityInterface.getDescription()));
 			}
-			if ((entityInterface.getSemanticPropertyCollection() != null)
-					&& (!entityInterface.getSemanticPropertyCollection().isEmpty()))
+			if ((entityInterface.getSemanticPropertyCollection() != null) && (!entityInterface.getSemanticPropertyCollection().isEmpty()))
 			{
-				entityUIBeanInterface.setConceptCode(SemanticPropertyBuilderUtil
-						.getConceptCodeString(entityInterface));
+				entityUIBeanInterface.setConceptCode(SemanticPropertyBuilderUtil.getConceptCodeString(entityInterface));
 			}
 
 			if (entityInterface.isAbstract())
@@ -186,13 +157,11 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @return EntityInterface Returns the unsaved instance of EntityInterface with populated values taken
 	 * from the entityInformationInterface.
 	 * @throws DynamicExtensionsSystemException Exception
-	 * @throws DynamicExtensionsValidationException 
 	 */
-	public EntityInterface createAndPopulateEntity(EntityUIBeanInterface entityUIBeanInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
+	public EntityInterface createAndPopulateEntity(EntityUIBeanInterface entityUIBeanInterface) throws DynamicExtensionsSystemException
 	{
 		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
-		EntityManagerUtil.addIdAttribute(entityInterface);	
+		EntityManagerUtil.addIdAttribute(entityInterface);
 		populateEntity(entityUIBeanInterface, entityInterface);
 		return entityInterface;
 	}

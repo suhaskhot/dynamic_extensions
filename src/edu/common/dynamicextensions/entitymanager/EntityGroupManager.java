@@ -343,9 +343,8 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	 */
 	private void checkParentChangeAllowed(Entity entity) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 		String tableName = entity.getTableProperties().getName();
-		if (entityManagerUtil.isDataPresent(tableName))
+		if (queryBuilder.isDataPresent(tableName))
 		{
 			throw new DynamicExtensionsApplicationException("Can not change the data type of the attribute", null, DYEXTN_A_010);
 		}

@@ -1029,14 +1029,81 @@ public class CategoryHelper implements CategoryHelperInterface
 		else if (categoryManager.isPermissibleValuesSubsetValid(userDefinedDE, desiredPermissibleValues))
 		{
 			permissibleValues = new ArrayList<PermissibleValueInterface>();
-			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+			boolean allDoubleValues = false;
+			Iterator itrPV =  userDefinedDE.getPermissibleValueCollection().iterator();
+			while(itrPV.hasNext())
 			{
-				if (desiredPermissibleValues != null)
+				if(itrPV.next() instanceof edu.common.dynamicextensions.domain.DoubleValue)
 				{
-					Set<String> permissibleValueString = desiredPermissibleValues.keySet();
-					if (permissibleValueString.contains(pv.getValueAsObject().toString()))
+					
+					allDoubleValues = true;					
+				}
+				else
+				{
+					allDoubleValues = false;
+				}
+			}
+			boolean allFloatValues = false;
+			Iterator itrPVFloat =  userDefinedDE.getPermissibleValueCollection().iterator();
+			while(itrPVFloat.hasNext())
+			{
+				if(itrPVFloat.next() instanceof edu.common.dynamicextensions.domain.FloatValue)
+				{
+					
+					allFloatValues = true;					
+				}
+				else
+				{
+					allFloatValues = false;
+				}
+			}
+			if(allFloatValues && desiredPermissibleValues != null)
+			{
+				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+				{
+					if (desiredPermissibleValues != null)
 					{
-						permissibleValues.add(pv);
+						Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+						if (permissibleValueString.contains(Float.parseFloat(pv.getValueAsObject().toString())))
+						{
+							permissibleValues.add(pv);
+						}
+					}
+				}
+			}
+			
+			else if(allDoubleValues && desiredPermissibleValues != null)
+			{
+				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+				{
+					if (desiredPermissibleValues != null)
+					{
+						Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+						Iterator itrDouble =  permissibleValueString.iterator();
+						while(itrDouble.hasNext())
+						{
+						  if (((Double)pv.getValueAsObject()).doubleValue() ==  Double.parseDouble(itrDouble.next().toString()) )
+						  {
+							  	permissibleValues.add(pv);
+						  }
+						 
+						}
+					}
+				}
+				
+			}			
+			else
+			{
+			
+				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+				{
+					if (desiredPermissibleValues != null)
+					{
+						Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+						if (permissibleValueString.contains(pv.getValueAsObject().toString()))
+						{
+							permissibleValues.add(pv);
+						}
 					}
 				}
 			}

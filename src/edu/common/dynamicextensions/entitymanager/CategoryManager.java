@@ -34,6 +34,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DESQLAuditInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -1581,13 +1582,68 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		if (userDefinedDE != null)
 		{
-			List<String> attributePermissibleValues = new ArrayList<String>();
-
+			List<Object> attributePermissibleValues = new ArrayList<Object>();
+			
 			for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 			{
-				attributePermissibleValues.add(pv.getValueAsObject().toString());
+				attributePermissibleValues.add(pv.getValueAsObject());
 			}
-			if (desiredPermissibleValues != null)
+			boolean allDoubleValues = false;
+			Iterator itrPV =  userDefinedDE.getPermissibleValueCollection().iterator();
+			while(itrPV.hasNext())
+			{
+				if(itrPV.next() instanceof edu.common.dynamicextensions.domain.DoubleValue)
+				{
+					
+					allDoubleValues = true;					
+				}
+				else
+				{
+					allDoubleValues = false;
+				}
+			}
+			boolean allFloatValues = false;
+			Iterator itrPVFloat =  userDefinedDE.getPermissibleValueCollection().iterator();
+			while(itrPVFloat.hasNext())
+			{
+				if(itrPVFloat.next() instanceof edu.common.dynamicextensions.domain.FloatValue)
+				{
+					
+					allFloatValues = true;					
+				}
+				else
+				{
+					allFloatValues = false;
+				}
+			}
+			if(allFloatValues && desiredPermissibleValues != null)
+			{
+				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+				for (String s : permissibleValueString)
+				{
+					 
+					if (!attributePermissibleValues.contains(Float.parseFloat(s)))
+					{
+						arePermissibleValuesCorrect = false;
+					}
+				}
+				
+			}
+			
+			else if(allDoubleValues && desiredPermissibleValues != null)
+			{
+				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+				for (String s : permissibleValueString)
+				{
+					 
+					if (!attributePermissibleValues.contains(Double.parseDouble(s)))
+					{
+						arePermissibleValuesCorrect = false;
+					}
+				}
+				
+			}
+			else if (desiredPermissibleValues != null)
 			{
 				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
 				for (String s : permissibleValueString)

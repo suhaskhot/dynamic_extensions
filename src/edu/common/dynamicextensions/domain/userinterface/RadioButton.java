@@ -4,6 +4,9 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.FloatTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.LongTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -49,6 +52,23 @@ public class RadioButton extends Control implements RadioButtonInterface
 			{
 				defaultValue = "";
 			}
+		}
+		if(defaultValue.length() >0 && this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof DoubleTypeInformationInterface)
+		{
+			double doubleValue  = Double.parseDouble(defaultValue);
+		    defaultValue = doubleValue +"";			
+		}
+		else if(defaultValue.length() >0 && this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof LongTypeInformationInterface)
+		{
+			long longValue = Long.parseLong(defaultValue);
+		    defaultValue = longValue +"";
+			
+		}
+		else if(defaultValue.length() >0 && this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof FloatTypeInformationInterface)
+		{
+			float floatValue = Float.parseFloat(defaultValue);
+		    defaultValue = floatValue +"";
+			
 		}
 		String disabled = "";
 		//If control is defined as readonly through category CSV file,make it Disabled

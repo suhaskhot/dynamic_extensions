@@ -406,6 +406,7 @@ public class CategoryGenerator
 		//  So here both attributs will be shown under same display label XXX ,so we need to change category association B's sequence number such that its after class A on UI
 		//
 		List<ControlInterface> listControl = containerObject.getAllControls();
+		rearrangeSequenceMap(sequenceMap);
 		Iterator<String> iterator = sequenceMap.keySet().iterator();
 		while (iterator.hasNext())
 		{
@@ -452,25 +453,32 @@ public class CategoryGenerator
 						}
 						if (modified)
 						{
-							if (index < listControl.size() - 1)
-							{
-								for (int cnt = index + 1; cnt < listControl.size(); cnt++)
+								for (int j = 0; j < listControl.size(); j++)
 								{
-									objControl = listControl.get(cnt);
-									int latestSequenceNumber = 0;
-									if (objControl.getSequenceNumber() == newSequenceNumber)
+									ControlInterface controlObj = listControl.get(j);
+									if (controlObj instanceof CategoryAssociationControl)
 									{
-										objControl.setSequenceNumber(++newSequenceNumber);
-										latestSequenceNumber = newSequenceNumber;
-
-									}
-									else if (objControl.getSequenceNumber() >= newSequenceNumber)
-									{
-										objControl.setSequenceNumber(++latestSequenceNumber);
+									
+										String targetcategoryName = ((CategoryAssociation) controlObj.getBaseAbstractAttribute()).getTargetCategoryEntity().getName();
+										if(targetcategoryName.equals(categoryName))
+										{
+											//skip its the same control ,whose sequence is modified.
+										}
+										
+										else if (controlObj.getSequenceNumber() == newSequenceNumber)
+										{
+											controlObj.setSequenceNumber(++newSequenceNumber);											
+	
+										}
+										else if (controlObj.getSequenceNumber() >= newSequenceNumber)
+										{
+											//set all other control who has higher sequence number,increment it by 1 
+											controlObj.setSequenceNumber(controlObj.getSequenceNumber()+1);
+										}
 									}
 								}
 								break;
-							}
+							
 						}
 					}
 				}
@@ -479,6 +487,52 @@ public class CategoryGenerator
 
 		}
 
+	}
+
+	/**
+	 * @param sequenceMap
+	 */
+	private void rearrangeSequenceMap( HashMap<String, List> sequenceMap)
+	{
+	
+		List<String> toberemoveKey = new ArrayList<String>();		
+		Iterator<String> iterator = sequenceMap.keySet().iterator();
+		while (iterator.hasNext())
+		{
+			String keyName = (String) iterator.next();
+			List<String> listofEntities = sequenceMap.get(keyName);
+			List<String> elist = new ArrayList<String>();
+			elist.addAll(listofEntities);
+			findEntities(sequenceMap,listofEntities,toberemoveKey,elist);
+			sequenceMap.put(keyName,elist);
+		}
+		for(String key :toberemoveKey)
+		{
+			sequenceMap.remove(key);
+		}	
+		
+	}
+	
+	/**
+	 * @param sequenceMap
+	 * @param listofEntities
+	 * @param toberemoveKey
+	 * @param elist
+	 */
+	private void findEntities(HashMap<String, List> sequenceMap,List<String> listofEntities,List<String> toberemoveKey,List<String> elist)
+	{
+		
+			for(String ename : listofEntities)
+			{
+				if(sequenceMap.keySet().contains(ename))
+				{
+					List <String>  additionalList = sequenceMap.get(ename);
+					elist.addAll(additionalList);
+					findEntities(sequenceMap,additionalList, toberemoveKey,elist);					
+					toberemoveKey.add(ename);					
+				}
+			}			
+		
 	}
 
 	/**

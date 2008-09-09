@@ -1462,10 +1462,11 @@ function addRow(containerId)
 
 	var x = document.getElementsByTagName("script");
 	var RegularExpression  =  new RegExp("\^print");
+	var RegularExpressionForCombo  =  new RegExp("Ext.form.ComboBox");
 
     for(var i=0;i<x.length;i++)
     {
-	  if(x[i].text!='' && x[i].text.search(RegularExpression) == -1)
+	  if(x[i].text!='' && x[i].text.search(RegularExpression) == -1 && x[i].text.search(RegularExpressionForCombo) == -1)
 	  {
        		eval(x[i].text);
 	  }

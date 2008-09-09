@@ -406,7 +406,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else if (control instanceof ComboBoxInterface)
 			{
-				String selectedValue = request.getParameter("Control_" + sequence);
+				String selectedValue = request.getParameter("comboControl_" + sequence);
 				
 				if (selectedValue != null && selectedValue.trim().length() != 0)
 				{
@@ -519,7 +519,17 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				attributeValueMap.put(abstractAttribute, attributeValue);
 			}
 
+		}else if(control instanceof ComboBoxInterface)
+		{
+			String value = request.getParameter("comboControl_" + sequence);
+			if (value != null && value.equalsIgnoreCase("undefined"))
+			{
+				value = "1";
+			}
+			attributeValue = value;
+			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
+		
 		else
 		{
 			String value = request.getParameter("Control_" + sequence);

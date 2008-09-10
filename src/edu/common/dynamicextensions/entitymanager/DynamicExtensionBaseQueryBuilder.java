@@ -335,8 +335,7 @@ class DynamicExtensionBaseQueryBuilder
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
 		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
-		String comma = "";
-
+		
 		Map<Association, List> associationValuesMap = new HashMap<Association, List>();
 
 		while (associationIterator.hasNext())
@@ -463,7 +462,7 @@ class DynamicExtensionBaseQueryBuilder
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
 		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
-		String comma = "";
+		
 
 		while (associationIterator.hasNext())
 		{
@@ -774,7 +773,6 @@ class DynamicExtensionBaseQueryBuilder
 		}
 
 		String tableName = "";
-		String columnName = "";
 		String sourceKey = "";
 		String targetKey = "";
 		for (AssociationInterface association : incomingAssociations)

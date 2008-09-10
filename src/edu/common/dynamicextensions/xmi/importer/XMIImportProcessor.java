@@ -1743,9 +1743,12 @@ public class XMIImportProcessor
 	 */
 	private boolean isMultiselectTagValue(Map<String, String> taggedValueMap)
 	{
-		if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
+		if(taggedValueMap != null)
 		{
-			return true;
+			if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
+			{
+				return true;
+			}
 		}
 		return false;
 	}

@@ -595,7 +595,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		controlUIBeanInterface.setColumns(textAreaInterface.getColumns());
 		controlUIBeanInterface.setRows(textAreaInterface.getRows());
 		controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
-		controlUIBeanInterface.setIsPassword(textAreaInterface.getIsPassword());
+		
 	}
 
 	/**

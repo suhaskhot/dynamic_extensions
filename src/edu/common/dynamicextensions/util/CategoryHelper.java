@@ -1227,8 +1227,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				case TEXT_AREA_CONTROL :
 					TextAreaInterface textAreaControl = (TextAreaInterface) control;
 					textAreaControl.setIsHidden(false);
-					textAreaControl.setIsReadOnly(false);
-					textAreaControl.setIsPassword(false);
+					textAreaControl.setIsReadOnly(false);					
 					break;
 				case RADIO_BUTTON_CONTROL :
 					RadioButtonInterface radioButtonControl = (RadioButtonInterface) control;

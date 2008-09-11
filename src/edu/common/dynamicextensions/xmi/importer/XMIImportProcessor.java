@@ -1942,7 +1942,7 @@ public class XMIImportProcessor
 
 		containerModel.setFormDescription(entityInterface.getDescription());
 		//Entity Object is now populated
-		entityProcessor.populateEntity(containerModel, (EntityInterface) containerInterface.getAbstractEntity());
+		entityProcessor.addEntity(containerModel, (EntityInterface) containerInterface.getAbstractEntity());
 	}
 
 	/**

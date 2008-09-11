@@ -184,7 +184,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			//update entity
 			EntityProcessor entityProcessor = EntityProcessor.getInstance();
-			entityProcessor.populateEntity(formDefinitionForm, (EntityInterface) currentContainer.getAbstractEntity());
+			entityProcessor.addEntity(formDefinitionForm, (EntityInterface) currentContainer.getAbstractEntity());
 
 			//Update Associations
 			//Get parent container

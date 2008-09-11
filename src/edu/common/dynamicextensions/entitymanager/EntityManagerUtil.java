@@ -420,4 +420,25 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
 		return queryList;
 	}
+	
+	/**
+	 * This method checks the data in the form
+	 * @param tableName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
+	{
+		boolean isDataPresent = false;
+		try {
+			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+			isDataPresent = queryBuilder.isDataPresent(tableName);
+		} 
+		finally
+		{
+			DBUtil.closeConnection();
+		
+		}
+		return isDataPresent;
+	}
 }

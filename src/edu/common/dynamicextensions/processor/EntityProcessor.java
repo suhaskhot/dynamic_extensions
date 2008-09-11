@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
 import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.wustl.common.util.Utility;
@@ -86,23 +87,12 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	 * @param entityInterface Instance of EntityInterface which is populated using the informationInterface.
 	 * @param entityUIBeanInterface Instance of EntityUIBeanInterface which is used to populate the entityInterface.
 	 */
-	public void populateEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface)
+	public void addEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface)
 	{
 		if (entityUIBeanInterface != null && entityInterface != null)
 		{
-			entityInterface.setName(entityUIBeanInterface.getFormName());
-			entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
-
-			Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
-			if (collection != null && !collection.isEmpty())
-			{
-				entityInterface.removeAllSemanticProperties();
-				Iterator iterator = collection.iterator();
-				while (iterator.hasNext())
-				{
-					entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
-				}
-			}
+			
+			populateEntity(entityUIBeanInterface,entityInterface);
 			if (entityUIBeanInterface.getIsAbstract() != null && entityUIBeanInterface.getIsAbstract().equals("true"))
 			{
 				entityInterface.setAbstract(true);
@@ -115,6 +105,60 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
+	/**
+	 * This method edits the entity and check for abstract form
+	 * @param entityUIBeanInterface
+	 * @param entityInterface
+	 * @throws DynamicExtensionsValidationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void editEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface) throws DynamicExtensionsValidationException, DynamicExtensionsSystemException
+	{
+		EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
+		if (entityUIBeanInterface != null && entityInterface != null)
+		{
+			populateEntity(entityUIBeanInterface,entityInterface);
+			if (entityUIBeanInterface.getIsAbstract() != null && entityUIBeanInterface.getIsAbstract().equals("true"))
+			{
+				
+					if(entityManagerUtil.isDataPresent(entityInterface.getTableProperties().getName()))
+					{
+						throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.AbstractValidator", entityInterface.getName());
+					}
+					entityInterface.setAbstract(true);	
+					
+				
+			}
+			else
+			{
+				entityInterface.setAbstract(false);
+			}
+		}
+		
+	}
+	
+	/**
+	 * This method used to populate the entity
+	 * @param entityUIBeanInterface
+	 * @param entityInterface
+	 */
+	public void populateEntity(EntityUIBeanInterface entityUIBeanInterface, EntityInterface entityInterface)
+	{
+		entityInterface.setName(entityUIBeanInterface.getFormName());
+		entityInterface.setDescription(entityUIBeanInterface.getFormDescription());
+
+		Collection collection = SemanticPropertyBuilderUtil.getSymanticPropertyCollection(entityUIBeanInterface.getConceptCode());
+		if (collection != null && !collection.isEmpty())
+		{
+			entityInterface.removeAllSemanticProperties();
+			Iterator iterator = collection.iterator();
+			while (iterator.hasNext())
+			{
+				entityInterface.addSemanticProperty((SemanticPropertyInterface) iterator.next());
+			}
+		}
+	}
+	
 	/**
 	 * This method will populate the EntityUIBeanInterface using the EntityInterface so that the
 	 * information of the Entity can be shown on the user page using the EntityUIBeanInterface.
@@ -162,7 +206,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	{
 		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
 		EntityManagerUtil.addIdAttribute(entityInterface);
-		populateEntity(entityUIBeanInterface, entityInterface);
+		addEntity(entityUIBeanInterface, entityInterface);
 		return entityInterface;
 	}
 

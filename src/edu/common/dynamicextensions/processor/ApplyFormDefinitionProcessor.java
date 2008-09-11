@@ -82,8 +82,10 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		}
 		else
 		{
-			entityProcessor.populateEntity(actionForm, entity);
+			//entityProcessor.populateEntity(actionForm, entity);
+			entityProcessor.editEntity(actionForm, entity);
 		}
+		
 		container.setAbstractEntity(entity);
 		//entityInterface.setContainer((Container) containerInterface); 
 

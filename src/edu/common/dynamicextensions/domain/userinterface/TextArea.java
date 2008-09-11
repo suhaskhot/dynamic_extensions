@@ -29,9 +29,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 * Number of rows in the text area.
 	 */
 	protected Integer rows;
-	//password
-	protected Boolean isPassword;
-
+	
 	/**
 	 * Empty Constructor 
 	 */
@@ -151,26 +149,7 @@ public class TextArea extends Control implements TextAreaInterface
 	{
 	}
 
-	/**
-	 * This method returns the Boolean indicating whether the value is to be shown in password style or not.
-	 * If Boolean is true then show value as password otherwise not.
-	 * @return the Boolean indicating whether the value is to be shown in password style or not.
-	 */
-	public Boolean getIsPassword()
-	{
-		return isPassword;
-	}
-
-	/**
-	 * This method sets the Boolean indicating whether the value is to be shown in password style or not.
-	 * If Boolean is true then show value as password otherwise not.
-	 * @param isPassword the Boolean indicating whether the value is to be shown in password style or not.
-	 */
-	public void setIsPassword(Boolean isPassword)
-	{
-		this.isPassword = isPassword;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */

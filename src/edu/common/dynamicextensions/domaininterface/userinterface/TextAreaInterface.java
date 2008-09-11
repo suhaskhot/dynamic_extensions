@@ -24,14 +24,4 @@ public interface TextAreaInterface extends ControlInterface
 	 * @param rows The rows to set.
 	 */
 	void setRows(Integer rows);
-	/**
-	 * @return Returns the isPassword.
-	 */
-	Boolean getIsPassword();
-	/**
-	 * @param isPassword The isPassword to set.
-	 */
-	void setIsPassword(Boolean isPassword);
- 
-
 }

@@ -286,4 +286,25 @@ public class CategoryValidator
 			}
 		}
 	}
+
+	/**
+	 * This method checks for Numeric type field cannot have textarea control
+	 * @param controlType
+	 * @param attribute
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void isTextAreaForNumeric(String controlType, AttributeInterface attribute) throws DynamicExtensionsSystemException
+	{
+		AttributeTypeInformationInterface atrinfo = attribute.getAttributeTypeInformation();
+		if (atrinfo instanceof IntegerAttributeTypeInformation || atrinfo instanceof LongAttributeTypeInformation
+				|| atrinfo instanceof DoubleAttributeTypeInformation || atrinfo instanceof ShortAttributeTypeInformation
+				|| atrinfo instanceof FloatAttributeTypeInformation)
+		{
+
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
+					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+					+ ApplicationProperties.getValue("incorrectControlTypeTextArea") + attribute.getName());
+		}
+	}
+
 }

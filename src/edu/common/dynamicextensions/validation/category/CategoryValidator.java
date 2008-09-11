@@ -295,15 +295,18 @@ public class CategoryValidator
 	 */
 	public void isTextAreaForNumeric(String controlType, AttributeInterface attribute) throws DynamicExtensionsSystemException
 	{
-		AttributeTypeInformationInterface atrinfo = attribute.getAttributeTypeInformation();
-		if (atrinfo instanceof IntegerAttributeTypeInformation || atrinfo instanceof LongAttributeTypeInformation
-				|| atrinfo instanceof DoubleAttributeTypeInformation || atrinfo instanceof ShortAttributeTypeInformation
-				|| atrinfo instanceof FloatAttributeTypeInformation)
+		if (controlType.equals("textArea"))
 		{
+			AttributeTypeInformationInterface atrinfo = attribute.getAttributeTypeInformation();
+			if (atrinfo instanceof IntegerAttributeTypeInformation || atrinfo instanceof LongAttributeTypeInformation
+					|| atrinfo instanceof DoubleAttributeTypeInformation || atrinfo instanceof ShortAttributeTypeInformation
+					|| atrinfo instanceof FloatAttributeTypeInformation)
+			{
 
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
-					+ ApplicationProperties.getValue("incorrectControlTypeTextArea") + attribute.getName());
+				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
+						+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+						+ ApplicationProperties.getValue("incorrectControlTypeTextArea") + attribute.getName());
+			}
 		}
 	}
 

@@ -53,7 +53,7 @@
 
 				mygrid.enableMultiselect(true)
 				mygrid.enableDragAndDrop(true);
-				mygrid.setDropHandler(dropFn);
+				//mygrid.setDropHandler(dropFn);
 				mygrid.setOnRowSelectHandler(controlSelected);
 				mygrid.init();
 				loadGridData();

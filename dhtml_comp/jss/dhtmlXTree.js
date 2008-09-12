@@ -20,8 +20,8 @@ function dhtmlXTreeObject(htmlObject,width,height,rootId){
  this.height=height;
  this.rootId=rootId;
  this.childCalc=null;
- this.def_img_x="18px";
- this.def_img_y="18px";
+ this.def_img_x="10px";
+ this.def_img_y="10px";
 
  this.style_pointer="pointer";
  if(navigator.appName == 'Microsoft Internet Explorer')this.style_pointer="hand";

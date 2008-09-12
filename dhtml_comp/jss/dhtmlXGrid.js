@@ -4,8 +4,6 @@ To use this component please contact info@scbr.com to obtain license
 
 */ 
 
- 
-
 var globalActiveDHTMLGridObject;
 String.prototype._dhx_trim = function(){
  return this.replace(/&nbsp;/g," ").replace(/(^[ \t]*)|([ \t]*$)/g,"");
@@ -46,7 +44,6 @@ _dhtmlxArray.prototype._dhx_swapItems = function(ind1,ind2){
  var tmp = this[ind1];
  this[ind1] = this[ind2]
  this[ind2] = tmp;
-
 }
 
  
@@ -1147,10 +1144,19 @@ function dhtmlXGridObject(id){
  
  if(type=='str'){
  this.rowsCol[sort](function(a,b){
+// Name : Prafull_kadam
+// Bug ID: 3624
+// Patch ID: 3624_1 
+// Description: Added code for case insensitive comparision & handle hyperlinks String sorting.
+ var astr = arrTS[a.idd];
+ var bstr = arrTS[b.idd];
+ astr = getHyperlinkLable(astr);
+ bstr = getHyperlinkLable(bstr);
+
  if(order=="asc")
- return arrTS[a.idd]>arrTS[b.idd]?1:-1
+ return astr.toLowerCase()>bstr.toLowerCase()?1:-1
  else
- return arrTS[a.idd]<arrTS[b.idd]?1:-1
+ return astr.toLowerCase()<bstr.toLowerCase()?1:-1
 });
 }else if(type=='int'){
  this.rowsCol[sort](function(a,b){
@@ -1542,47 +1548,33 @@ function dhtmlXGridObject(id){
  
  this.moveRowUp = function(row_id){
  var r = this.getRowById(row_id)
- if(r!=null)
- {
- 	var rInd = this.rowsCol._dhx_find(r)
- 	if(rInd>0)
-	{
-		if(this.isTreeGrid())
-		{
-		 if(this.rowsCol[rInd].parent_id!=this.rowsCol[rInd-1].parent_id)return;
-		 this.collapseKids(r);
-		}
-	
-		this.rowsCol._dhx_swapItems(rInd,rInd-1)
-		 if(r.previousSibling)
-		 {
-			r.parentNode.insertBefore(r,r.previousSibling)
-			this.setSizes();
-		}
-	}
+ var rInd = this.rowsCol._dhx_find(r)
+ if(this.isTreeGrid()){
+ if(this.rowsCol[rInd].parent_id!=this.rowsCol[rInd-1].parent_id)return;
+ this.collapseKids(r);
+}
+
+ this.rowsCol._dhx_swapItems(rInd,rInd-1)
+
+ if(r.previousSibling){
+ r.parentNode.insertBefore(r,r.previousSibling)
+ this.setSizes();
 }
 }
  
  this.moveRowDown = function(row_id){
  var r = this.getRowById(row_id)
  var rInd = this.rowsCol._dhx_find(r)
- 
- if(rInd < this.getRowsNum()-1)
- {
-	 if(this.isTreeGrid())
-	 if(this.rowsCol[rInd].parent_id!=this.rowsCol[rInd+1].parent_id)return;
+ if(this.isTreeGrid())
+ if(this.rowsCol[rInd].parent_id!=this.rowsCol[rInd+1].parent_id)return;
 
-	 this.rowsCol._dhx_swapItems(rInd,rInd+1)
-	  if(r!=null)
-	  {
-		 if(r.nextSibling){
-		 if(r.nextSibling.nextSibling)
-		 r.parentNode.insertBefore(r,r.nextSibling.nextSibling)
-		 else
-		 r.parentNode.appendChild(r)
-		 this.setSizes();
-	  }
-	}
+ this.rowsCol._dhx_swapItems(rInd,rInd+1)
+ if(r.nextSibling){
+ if(r.nextSibling.nextSibling)
+ r.parentNode.insertBefore(r,r.nextSibling.nextSibling)
+ else
+ r.parentNode.appendChild(r)
+ this.setSizes();
 }
 }
  
@@ -1591,6 +1583,7 @@ function dhtmlXGridObject(id){
  return this.cells4(this.cell);
  else
  var c = this.getRowById(row_id);
+// alert("MD : row_id:"+row_id +",col: "+ col);
  var cell=(c._childIndexes?c.childNodes[c._childIndexes[col]]:c.childNodes[col]);
  return this.cells4(cell);
 }
@@ -3464,11 +3457,8 @@ dhtmlXGridObject.prototype.setOnRightClick=function(func){
  dhtmlXGridObject.prototype.getCheckedRows=function(col_ind){
  var d=new Array();
  for(var i=0;i<this.rowsCol.length;i++){
- if(this.rowsCol[i]!=undefined)
- {
-	 if(this.cells3(this.rowsCol[i],col_ind).getValue()!="0")
-	 d[d.length]=this.rowsCol[i].idd;
-	 }
+ if(this.cells3(this.rowsCol[i],col_ind).getValue()!="0")
+ d[d.length]=this.rowsCol[i].idd;
 }
  return d.join(",");
 }
@@ -3734,15 +3724,10 @@ dhtmlXGridObject.prototype._createHRow = function(data,parent){
  z.appendChild(w);
 }
 }
-
- 
- 
 dhtmlXGridObject.prototype.attachFooter = function(values,style){
  this.attachHeader(values,style,"_aFoot");
 }
 
-
- 
 dhtmlXGridObject.prototype.setCellExcellType = function(rowId,cellIndex,type){
  this.changeCellType(this.rowsAr[rowId],cellIndex,type);
 }
@@ -3765,7 +3750,3 @@ dhtmlXGridObject.prototype.setColumnExcellType = function(cellIndex,type){
  for(var i=0;i<this.rowsCol.length;i++)
  this.changeCellType(this.rowsCol[i],cellIndex,type);
 }
-
-
- 
-

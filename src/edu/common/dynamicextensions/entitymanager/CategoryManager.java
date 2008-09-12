@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import org.hibernate.HibernateException;
 
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
+import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -666,6 +667,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				columnValues.append(", ");
 				columnNamesValues.append(", ");
 			}
+			
+			if(attributeInformation instanceof BooleanAttributeTypeInformation)
+			{
+				defaultValue = DynamicExtensionsUtility.getValueForCheckBox(DynamicExtensionsUtility.isCheckBoxChecked(defaultValue));
+			}
+			
 			//Replace any single and double quotes value with proper escape character
 
 			defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "'", "&#39");

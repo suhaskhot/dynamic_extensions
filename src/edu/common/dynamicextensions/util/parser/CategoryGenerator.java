@@ -549,6 +549,15 @@ public class CategoryGenerator
 			EntityGroupInterface entityGroup, Collection<ContainerInterface> containerCollection) throws DynamicExtensionsSystemException
 	{
 		String newCategoryEntityName = parentEntity.getName() + "[1]";
+		for(ContainerInterface objContainer : containerCollection)
+		{
+			if(objContainer.getCaption().equals(newCategoryEntityName))
+			{
+				return objContainer;
+			}
+			
+		}
+		
 		CategoryHelper categoryHelper = new CategoryHelper();
 		CategoryInterface parentCategory = categoryHelper.getCategory(newCategoryEntityName);
 

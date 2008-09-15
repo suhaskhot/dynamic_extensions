@@ -61,4 +61,9 @@ public interface EntityManagerExceptionConstantsInterface
 
      // In case when association is falsely populated
      String DYEXTN_A_016 = "DYEXTN_A_016";
+     
+//   In case when form name is duplicate in entitygroup
+     String DYEXTN_A_019 = "DYEXTN_A_019";
+
+     
 }

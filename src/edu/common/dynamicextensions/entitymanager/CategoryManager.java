@@ -639,10 +639,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			{
 				populateColumnNamesAndValues(categoryAttribute.getAttribute(), categoryAttribute.getDefaultValue(), columnNames, columnValues,
 						columnNamesValues);
-
 			}
 		}
-
 	}
 
 	/**
@@ -667,12 +665,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				columnValues.append(", ");
 				columnNamesValues.append(", ");
 			}
-			
-			if(attributeInformation instanceof BooleanAttributeTypeInformation)
+
+			if (attributeInformation instanceof BooleanAttributeTypeInformation)
 			{
 				defaultValue = DynamicExtensionsUtility.getValueForCheckBox(DynamicExtensionsUtility.isCheckBoxChecked(defaultValue));
 			}
-			
+
 			//Replace any single and double quotes value with proper escape character
 
 			defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "'", "&#39");
@@ -1659,13 +1657,13 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			{
 				attributePermissibleValues.add(pv.getValueAsObject());
 			}
+
 			boolean allDoubleValues = false;
-			Iterator itrPV = userDefinedDE.getPermissibleValueCollection().iterator();
+			Iterator<PermissibleValueInterface> itrPV = userDefinedDE.getPermissibleValueCollection().iterator();
 			while (itrPV.hasNext())
 			{
 				if (itrPV.next() instanceof edu.common.dynamicextensions.domain.DoubleValue)
 				{
-
 					allDoubleValues = true;
 				}
 				else
@@ -1673,13 +1671,13 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					allDoubleValues = false;
 				}
 			}
+
 			boolean allFloatValues = false;
-			Iterator itrPVFloat = userDefinedDE.getPermissibleValueCollection().iterator();
+			Iterator<PermissibleValueInterface> itrPVFloat = userDefinedDE.getPermissibleValueCollection().iterator();
 			while (itrPVFloat.hasNext())
 			{
 				if (itrPVFloat.next() instanceof edu.common.dynamicextensions.domain.FloatValue)
 				{
-
 					allFloatValues = true;
 				}
 				else
@@ -1687,32 +1685,103 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					allFloatValues = false;
 				}
 			}
+
+			boolean allIntegerValues = false;
+			Iterator<PermissibleValueInterface> itrPVInteger = userDefinedDE.getPermissibleValueCollection().iterator();
+			while (itrPVInteger.hasNext())
+			{
+				if (itrPVInteger.next() instanceof edu.common.dynamicextensions.domain.IntegerValue)
+				{
+					allIntegerValues = true;
+				}
+				else
+				{
+					allIntegerValues = false;
+				}
+			}
+
+			boolean allShortValues = false;
+			Iterator<PermissibleValueInterface> itrPVShort = userDefinedDE.getPermissibleValueCollection().iterator();
+			while (itrPVShort.hasNext())
+			{
+				if (itrPVShort.next() instanceof edu.common.dynamicextensions.domain.ShortValue)
+				{
+					allShortValues = true;
+				}
+				else
+				{
+					allShortValues = false;
+				}
+			}
+
+			boolean allLongValues = false;
+			Iterator<PermissibleValueInterface> itrPVLong = userDefinedDE.getPermissibleValueCollection().iterator();
+			while (itrPVLong.hasNext())
+			{
+				if (itrPVLong.next() instanceof edu.common.dynamicextensions.domain.LongValue)
+				{
+					allLongValues = true;
+				}
+				else
+				{
+					allLongValues = false;
+				}
+			}
+
 			if (allFloatValues && desiredPermissibleValues != null)
 			{
 				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
 				for (String s : permissibleValueString)
 				{
-
 					if (!attributePermissibleValues.contains(Float.parseFloat(s)))
 					{
 						arePermissibleValuesCorrect = false;
 					}
 				}
-
 			}
-
 			else if (allDoubleValues && desiredPermissibleValues != null)
 			{
 				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
 				for (String s : permissibleValueString)
 				{
-
 					if (!attributePermissibleValues.contains(Double.parseDouble(s)))
 					{
 						arePermissibleValuesCorrect = false;
 					}
 				}
-
+			}
+			else if (allIntegerValues && desiredPermissibleValues != null)
+			{
+				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+				for (String s : permissibleValueString)
+				{
+					if (!attributePermissibleValues.contains(Integer.parseInt(s)))
+					{
+						arePermissibleValuesCorrect = false;
+					}
+				}
+			}
+			else if (allShortValues && desiredPermissibleValues != null)
+			{
+				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+				for (String s : permissibleValueString)
+				{
+					if (!attributePermissibleValues.contains(Short.parseShort(s)))
+					{
+						arePermissibleValuesCorrect = false;
+					}
+				}
+			}
+			else if (allLongValues && desiredPermissibleValues != null)
+			{
+				Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+				for (String s : permissibleValueString)
+				{
+					if (!attributePermissibleValues.contains(Long.parseLong(s)))
+					{
+						arePermissibleValuesCorrect = false;
+					}
+				}
 			}
 			else if (desiredPermissibleValues != null)
 			{

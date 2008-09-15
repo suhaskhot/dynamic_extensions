@@ -81,6 +81,7 @@ import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
+
 /**
  * @author chetan_patil
  *
@@ -1570,5 +1571,24 @@ public class DynamicExtensionsUtility
 		}
 		res += str.substring(lastpos);
 		return res;
+	}
+	public static void checkDuplicateFormNameEGroup(EntityGroupInterface entityGroup,String formName) throws DynamicExtensionsApplicationException,
+	DynamicExtensionsSystemException 
+	{
+		 if(entityGroup!=null && entityGroup.getEntityCollection().size() > 0)
+		 {
+			 
+			 for(EntityInterface entity : entityGroup.getEntityCollection())
+			 {
+				 if(entity.getName().equalsIgnoreCase(formName))
+				 {
+					 throw new DynamicExtensionsApplicationException("Duplicate Form name within same Entity Group", null, EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
+					 
+				 }
+				 
+			 }
+			 
+		 }
+		
 	}
 }

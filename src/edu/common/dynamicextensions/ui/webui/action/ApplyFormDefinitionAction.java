@@ -31,6 +31,7 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -296,7 +297,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
-
+		DynamicExtensionsUtility.checkDuplicateFormNameEGroup(entityGroup,formDefinitionForm.getFormName());
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		containerInterface = applyFormDefinitionProcessor.addEntityToContainer(containerInterface, formDefinitionForm, entityGroup);
 		updateCacheReferences(request, containerInterface);

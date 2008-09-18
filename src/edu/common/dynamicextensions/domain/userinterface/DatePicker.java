@@ -1,11 +1,16 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -38,7 +43,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	/**
 	 * This method generates the HTML code for DatePicker control on the HTML form
 	 * @return HTML code for DatePicker
-	 * @throws DynamicExtensionsSystemException if couldn't genreate the HTML name for the Control.
+	 * @throws DynamicExtensionsSystemException if couldn't generate the HTML name for the Control.
 	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
@@ -50,6 +55,34 @@ public class DatePicker extends Control implements DatePickerInterface
 		if (value == null)
 		{
 			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			if (defaultValue != null && this.getAttibuteMetadataInterface() != null
+					&& this.getAttibuteMetadataInterface() instanceof CategoryAttribute)
+			{
+				CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) this.getAttibuteMetadataInterface();
+				DateTypeInformationInterface dateTypeInformation = (DateTypeInformationInterface) categoryAttribute.getAttribute()
+						.getAttributeTypeInformation();
+				defaultValue = reverseDate(defaultValue);
+				Date date = null;
+				try
+				{
+					if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
+					{
+						SimpleDateFormat format = new SimpleDateFormat(ProcessorConstants.DATE_TIME_FORMAT);
+						date = format.parse(defaultValue);
+					}
+					else
+					{
+						SimpleDateFormat format = new SimpleDateFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+						date = format.parse(defaultValue);
+					}
+				}
+				catch (ParseException e)
+				{
+					e.printStackTrace();
+					throw new DynamicExtensionsSystemException("Error while parsing date");
+				}
+				defaultValue = new SimpleDateFormat(ControlsUtility.getDateFormat(dateTypeInformation)).format(date);
+			}
 			if (defaultValue == null)
 			{
 				if (this.getDateValueType() != null && this.getDateValueType().equals((ProcessorConstants.DATE_VALUE_TODAY)))
@@ -102,7 +135,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ htmlComponentName
 					+ "' value='"
 					+ defaultValue
-					+"'"
+					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='" + ProcessorConstants.TRUE : "")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
@@ -179,6 +212,26 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 
 		return output;
+	}
+
+	/**
+	 * @param defaultValue
+	 * @return
+	 */
+	private String reverseDate(String defaultValue)
+	{
+		// Date is like 1900-01-01 00:00:00.0 for MySQL5
+		String date = defaultValue.substring(0, 10); // 1900-01-01
+		String time = defaultValue.substring(10, defaultValue.length()); // 00:00:00.0
+
+		String year = date.substring(0, 4); // 1900
+		String month = date.substring(5, 7); // 01
+		String day = date.substring(8, date.length()); // 01
+
+		date = month + "-" + day + "-" + year;
+		defaultValue = date + time;
+
+		return defaultValue;
 	}
 
 	/* (non-Javadoc)

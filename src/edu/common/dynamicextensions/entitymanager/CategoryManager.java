@@ -47,6 +47,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
@@ -400,7 +401,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		// insert this identifier as record identifier in category entity table.
 		if (rootCategoryEntity.getCategoryAttributeCollection().size() == 0 || isAllRelatedCategoryAttributesCollection(rootCategoryEntity))
 		{
-			///--insert blank record in all parent entity of rootcategoryentity  so use insertDataForHeirarchy and add all keys to  keymap,recordmap,fullkeymap
+			// Insert blank record in all parent entity tables of root category entity so use insertDataForHeirarchy and add all keys to keymap, recordmap, fullkeymap.
 			Map<AbstractAttributeInterface, Object> attributeMap = new HashMap<AbstractAttributeInterface, Object>();
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			Long entityIdentifier = entityManager.insertDataForHeirarchy(categoryEntity.getEntity(), attributeMap, hibernateDAO, id);
@@ -493,12 +494,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param hibernateDAO
 	 * @param userId
 	 * @throws SQLException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void insertAllParentRelatedCategoryAttributesCollection(CategoryEntityInterface rootCategoryEntity, Map<String, List<Long>> recordsMap,
-			HibernateDAO hibernateDAO, Long userId) throws SQLException
+			HibernateDAO hibernateDAO, Long userId) throws SQLException, DynamicExtensionsSystemException
 	{
-
-		//get all attributes  including all parent's attribute
+		// Get all attributes including parent's attributes.
 		Collection<CategoryAttributeInterface> categoryAttributes = rootCategoryEntity.getAllCategoryAttributes();
 		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
 		{
@@ -512,8 +513,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					StringBuffer columnNamesValues = new StringBuffer();
 
 					// Fetch column names and column values for related category attributes.
-					populateColumnNamesAndValues(categoryAttribute.getAttribute(), categoryAttribute.getDefaultValue(), columnNames, columnValues,
-							columnNamesValues);
+					populateColumnNamesAndValues(categoryAttribute.getAttribute(), categoryAttribute, columnNames, columnValues, columnNamesValues);
 
 					String entityTableName = categoryAttribute.getAttribute().getEntity().getTableProperties().getName();
 					List<Long> recordIdList = recordsMap.get(rootCategoryEntity.getName());
@@ -525,12 +525,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							executeUpdateQuery(updateEntityQuery, userId, hibernateDAO);
 						}
 					}
-
 				}
-
 			}
 		}
-
 	}
 
 	/**
@@ -626,9 +623,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param columnNames
 	 * @param columnValues
 	 * @param columnNamesValues
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void getColumnNamesAndValuesForRelatedCategoryAttributes(CategoryEntityInterface categoryEntity, StringBuffer columnNames,
-			StringBuffer columnValues, StringBuffer columnNamesValues)
+			StringBuffer columnValues, StringBuffer columnNamesValues) throws DynamicExtensionsSystemException
 	{
 		Collection<CategoryAttributeInterface> categoryAttributes = new HashSet<CategoryAttributeInterface>();
 
@@ -637,8 +635,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		{
 			if (categoryAttribute.getIsRelatedAttribute() != null && categoryAttribute.getIsRelatedAttribute() == true)
 			{
-				populateColumnNamesAndValues(categoryAttribute.getAttribute(), categoryAttribute.getDefaultValue(), columnNames, columnValues,
-						columnNamesValues);
+				populateColumnNamesAndValues(categoryAttribute.getAttribute(), categoryAttribute, columnNames, columnValues, columnNamesValues);
 			}
 		}
 	}
@@ -649,14 +646,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param columnNames
 	 * @param columnValues
 	 * @param columnNamesValues
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void populateColumnNamesAndValues(AttributeInterface attribute, String defaultValue, StringBuffer columnNames, StringBuffer columnValues,
-			StringBuffer columnNamesValues)
+	private void populateColumnNamesAndValues(AttributeInterface attribute, CategoryAttributeInterface categoryAttribute, StringBuffer columnNames,
+			StringBuffer columnValues, StringBuffer columnNamesValues) throws DynamicExtensionsSystemException
 	{
 		String columnName = attribute.getColumnProperties().getName();
 		AttributeTypeInformationInterface attributeInformation = attribute.getAttributeTypeInformation();
-		//If attribute is  datetype whose default value is not getting set as  if its readonly so skip it,dont set in query 
-		if (!(attributeInformation instanceof DateAttributeTypeInformation && defaultValue == null))
+		// If attribute type information is date type whose default value is not getting set as if it is read only then skip it, do not set in query.
+		if (!(attributeInformation instanceof DateAttributeTypeInformation && categoryAttribute.getDefaultValue() == null))
 		{
 
 			if (columnNames.toString().length() > 0)
@@ -666,23 +664,36 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				columnNamesValues.append(", ");
 			}
 
+			String defaultValue = categoryAttribute.getDefaultValue();
+
 			if (attributeInformation instanceof BooleanAttributeTypeInformation)
 			{
 				defaultValue = DynamicExtensionsUtility.getValueForCheckBox(DynamicExtensionsUtility.isCheckBoxChecked(defaultValue));
 			}
 
-			//Replace any single and double quotes value with proper escape character
-
+			// Replace any single and double quotes value with a proper escape character.
 			defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "'", "&#39");
 			defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "\"", "&#34");
 
-			columnNames.append(columnName);
-			columnValues.append("'" + defaultValue + "'");
-			columnNamesValues.append(columnName);
-			columnNamesValues.append(" = ");
-			columnNamesValues.append("'" + defaultValue + "'");
+			if (Variables.databaseName.equals(Constants.ORACLE_DATABASE) && attributeInformation instanceof DateAttributeTypeInformation)
+			{
+				columnNames.append(columnName);
+				columnValues.append(DynamicExtensionsUtility.getDefaultDateForRelatedCategoryAttribute(categoryAttribute.getAttribute(),
+						categoryAttribute.getDefaultValue()));
+				columnNamesValues.append(columnName);
+				columnNamesValues.append(" = ");
+				columnNamesValues.append(DynamicExtensionsUtility.getDefaultDateForRelatedCategoryAttribute(categoryAttribute.getAttribute(),
+						categoryAttribute.getDefaultValue()));
+			}
+			else
+			{
+				columnNames.append(columnName);
+				columnValues.append("'" + defaultValue + "'");
+				columnNamesValues.append(columnName);
+				columnNamesValues.append(" = ");
+				columnNamesValues.append("'" + defaultValue + "'");
+			}
 		}
-
 	}
 
 	/**

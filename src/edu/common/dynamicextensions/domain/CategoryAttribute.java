@@ -59,7 +59,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * 
 	 */
 	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
-	
+
 	/**
 	 * 
 	 */
@@ -68,7 +68,6 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * 
 	 */
 	protected Boolean isRelatedAttribute;
-
 
 	public CategoryAttribute()
 	{
@@ -287,14 +286,20 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	/**
 	 * @param sourceEntity
 	 */
-	public void setDefaultValue(PermissibleValueInterface permissibleValueInterface)
+	public void setDefaultValue(PermissibleValueInterface permissibleValue)
 	{
 		if (defaultPermissibleValuesCollection == null)
 		{
 			defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 		}
+		if (defaultPermissibleValuesCollection != null && !defaultPermissibleValuesCollection.isEmpty())
+		{
+			Iterator<PermissibleValueInterface> iterator = defaultPermissibleValuesCollection.iterator();
+			PermissibleValueInterface pv = iterator.next();
+			defaultPermissibleValuesCollection.remove(pv);
+		}
 
-		this.defaultPermissibleValuesCollection.add(permissibleValueInterface);
+		this.defaultPermissibleValuesCollection.add(permissibleValue);
 	}
 
 	/* (non-Javadoc)
@@ -341,6 +346,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	{
 		this.isVisible = isVisible;
 	}
+
 	/**
 	* @hibernate.property name="isRelatedAttribute" type="boolean" column="IS_RELATTRIBUTE"
 	*/

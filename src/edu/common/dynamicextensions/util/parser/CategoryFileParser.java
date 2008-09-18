@@ -98,7 +98,7 @@ public abstract class CategoryFileParser extends FileReader
 	 * Return a map of rules belonging to a category attribute.
 	 * @return
 	 */
-	public abstract Map<String, Object> getRules();
+	public abstract Map<String, Object> getRules(String attributeName) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return list of permissible values

@@ -14,6 +14,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.StringTokenizer;
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -80,7 +82,6 @@ import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
-
 
 /**
  * @author chetan_patil
@@ -930,7 +931,7 @@ public class DynamicExtensionsUtility
 		boolean isChecked = false;
 		if (value != null && value.trim().length() > 0)
 		{
-			if(value.equals("1") || value.equals("true"))
+			if (value.equals("1") || value.equals("true"))
 			{
 				isChecked = true;
 			}
@@ -1572,23 +1573,49 @@ public class DynamicExtensionsUtility
 		res += str.substring(lastpos);
 		return res;
 	}
-	public static void checkDuplicateFormNameEGroup(EntityGroupInterface entityGroup,String formName) throws DynamicExtensionsApplicationException,
-	DynamicExtensionsSystemException 
+
+	/**
+	 * @param attr
+	 * @param value
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws ParseException 
+	 */
+	public static String getDefaultDateForRelatedCategoryAttribute(AttributeInterface attr, Object value) throws DynamicExtensionsSystemException
 	{
-		 if(entityGroup!=null && entityGroup.getEntityCollection().size() > 0)
-		 {
-			 
-			 for(EntityInterface entity : entityGroup.getEntityCollection())
-			 {
-				 if(entity.getName().equalsIgnoreCase(formName))
-				 {
-					 throw new DynamicExtensionsApplicationException("Duplicate Form name within same Entity Group", null, EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
-					 
-				 }
-				 
-			 }
-			 
-		 }
-		
+		String formattedvalue = null;
+		Date date = null;
+
+		String dateFormat = ((DateAttributeTypeInformation) attr.getAttributeTypeInformation()).getFormat();
+		if (dateFormat == null)
+		{
+			dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
+		}
+
+		String str = null;
+		if (value instanceof Date)
+		{
+			str = Utility.parseDateToString(((Date) value), dateFormat);
+		}
+		else
+		{
+			str = (String) value;
+		}
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ProcessorConstants.SDF_ORCL_CAT_REL_ATTR);
+		try
+		{
+			date = simpleDateFormat.parse(str);
+		}
+		catch (ParseException e)
+		{
+			throw new DynamicExtensionsSystemException("Unable to parse given date.");
+		}
+
+		formattedvalue = Variables.strTodateFunction + "('" + simpleDateFormat.format(date) + "','" + ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT
+				+ "')";
+
+		return formattedvalue;
 	}
+
 }

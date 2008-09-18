@@ -12,6 +12,7 @@ import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERM
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.PERMISSIBLE_VALUES_FILE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RANGE;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RELATED_ATTIBUTE;
+import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.REQUIRED;
 import static edu.common.dynamicextensions.util.parser.CategoryCSVConstants.RULES;
 
 import java.io.BufferedReader;
@@ -34,7 +35,9 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author kunal_kamble
@@ -456,39 +459,40 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 	/**
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Map<String, Object> getRules()
+	public Map<String, Object> getRules(String attributeName) throws DynamicExtensionsSystemException
 	{
 		Map<String, Object> rules = new HashMap<String, Object>();
 
 		for (String string : readLine())
 		{
-			if (string.toLowerCase().startsWith(RULES.toLowerCase() + "~"))
+			if (string.trim().toLowerCase().startsWith(RULES.toLowerCase() + "~"))
 			{
-				String[] rulesValues = string.split("~")[1].split(":");
+				String[] rulesValues = string.trim().split("~")[1].split(":");
 
 				for (String ruleValue : rulesValues)
 				{
-					if (ruleValue.toLowerCase().startsWith(RANGE.toLowerCase()))
+					if (ruleValue.trim().toLowerCase().startsWith(RANGE.toLowerCase()))
 					{
-						String[] rangeValues = ruleValue.split("-");
+						String[] rangeValues = ruleValue.trim().split("-");
 						for (String rangeValue : rangeValues)
 						{
-							if (!(rangeValue.toLowerCase().startsWith(RANGE.toLowerCase())))
+							if (!(rangeValue.trim().toLowerCase().startsWith(RANGE.toLowerCase())))
 							{
-								String[] minMaxValues = rangeValue.split("&");
+								String[] minMaxValues = rangeValue.trim().split("&");
 								boolean isDateRange = false;
 								Map<String, Object> valuesMap = new HashMap<String, Object>();
 								for (String value : minMaxValues)
 								{
-									if (value.split("=")[1].contains("/"))
+									if (value.trim().split("=")[1].contains("/"))
 									{
-										valuesMap.put(value.split("=")[0], value.split("=")[1].replace("/", "-"));
+										valuesMap.put(value.trim().split("=")[0], value.trim().split("=")[1].replace("/", "-"));
 										isDateRange = true;
 									}
 									else
 									{
-										valuesMap.put(value.split("=")[0], value.split("=")[1]);
+										valuesMap.put(value.trim().split("=")[0], value.trim().split("=")[1]);
 									}
 								}
 
@@ -501,11 +505,27 @@ public class CategoryCSVFileParser extends CategoryFileParser
 									rules.put(RANGE.toLowerCase(), valuesMap);
 								}
 							}
+							else
+							{
+								// If rule name is not correctly spelled as 'range', then throw an exception.
+								if (!RANGE.toLowerCase().equals(rangeValue.trim()))
+								{
+									throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+											+ ApplicationProperties.getValue("incorrectRuleName") + attributeName);
+								}
+							}
 						}
 					}
 					else
 					{
-						rules.put(ruleValue.split("=")[0], null);
+						// If rule name is not correctly spelled as 'required', then throw an exception.
+						if (!REQUIRED.toLowerCase().equals(ruleValue.trim()))
+						{
+							throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+									+ ApplicationProperties.getValue("incorrectRuleName") + attributeName);
+						}
+
+						rules.put(ruleValue.trim().split("=")[0], null);
 					}
 				}
 			}

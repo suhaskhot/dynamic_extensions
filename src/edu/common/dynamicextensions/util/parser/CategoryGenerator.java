@@ -885,6 +885,20 @@ public class CategoryGenerator
 				String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
 				entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
 
+				// Check if instance information is wrong, i.e. entity mentioned in 
+				// the instance information exists in the entity group.
+				for (String catEntName : categoryEntitiesInPath)
+				{
+					String entName = catEntName.substring(0, catEntName.indexOf("["));
+
+					if (entityGroup.getEntityByName(entName) == null)
+					{
+						throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber() + " "
+								+ ApplicationProperties.getValue(CategoryConstants.WRONG_INST_INFO) + entName);
+					}
+				}
+
 				categoryValidator.isRootEntityUsedTwice(entityName, mainFormList, categoryEntityNameInstanceMap.keySet());
 				if (!categoryEntityName.contains(newCategoryEntityName))
 				{

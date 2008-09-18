@@ -159,9 +159,12 @@ public class ProcessorConstants
 
 	// disabled keyword
 	public static final String DISABLED = " disabled ";
-	
+
 	//File formats
-	public static  String JPEG_FORMAT = "jpeg";
-	public static  String JPG_FORMAT = "jpg";
+	public static String JPEG_FORMAT = "jpeg";
+	public static String JPG_FORMAT = "jpg";
+
+	public static final String SDF_ORCL_CAT_REL_ATTR = "yyyy-MM-dd HH:mm:ss";
+	public static final String ORCL_CAT_REL_ATTR_FORMAT = "YYYY-MM-DD HH24:MI:SS";
 
 }

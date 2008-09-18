@@ -71,7 +71,7 @@ public class CategoryCreator
 			System.out.println("\n----------");
 			System.out.println("Exception: ");
 			System.out.println("----------");
-			throw new RuntimeException(ex);
+			throw new RuntimeException(ex.getCause().getLocalizedMessage());
 		}
 	}
 

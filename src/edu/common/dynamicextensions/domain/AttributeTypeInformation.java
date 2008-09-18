@@ -22,9 +22,7 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
  */
-public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject
-implements
-AttributeTypeInformationInterface
+public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject implements AttributeTypeInformationInterface
 {
 
 	/**
@@ -52,7 +50,6 @@ AttributeTypeInformationInterface
 	 * 
 	 */
 	protected Collection<PermissibleValueInterface> defaultValueCollection = new HashSet<PermissibleValueInterface>();
-
 
 	/**
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
@@ -84,7 +81,7 @@ AttributeTypeInformationInterface
 		if (dataElementCollection != null)
 		{
 			Iterator dataElementIterator = dataElementCollection.iterator();
-			if(dataElementIterator.hasNext())
+			if (dataElementIterator.hasNext())
 			{
 				return (DataElement) dataElementIterator.next();
 			}
@@ -126,8 +123,6 @@ AttributeTypeInformationInterface
 		this.defaultValueCollection = defaultValueCollection;
 	}
 
-
-
 	/**
 	 * 
 	 * @return
@@ -146,20 +141,21 @@ AttributeTypeInformationInterface
 
 	}
 
-	/**
-	 * 
-	 * @param sourceEntity
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#setDefaultValue(edu.common.dynamicextensions.domaininterface.PermissibleValueInterface)
 	 */
-	public void setDefaultValue(PermissibleValueInterface permissibleValueInterface)
+	public void setDefaultValue(PermissibleValueInterface permissibleValue)
 	{
 		if (defaultValueCollection == null)
 		{
 			defaultValueCollection = new HashSet();
 		}
-		this.defaultValueCollection.add(permissibleValueInterface);
+		if (this.getDefaultValue() != null)
+		{
+			defaultValueCollection.remove(this.getDefaultValue());
+		}
+		this.defaultValueCollection.add(permissibleValue);
 	}
-
-
 
 	/**
 	 * 
@@ -168,8 +164,8 @@ AttributeTypeInformationInterface
 	public AttributeTypeInformation()
 	{
 		super();
-		// TODO Auto-generated constructor stub
 	}
+
 	/**
 	 * 
 	 * @param value
@@ -177,7 +173,5 @@ AttributeTypeInformationInterface
 	 * @throws ParseException 
 	 */
 	public abstract PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
-	
-		
-	
+
 }

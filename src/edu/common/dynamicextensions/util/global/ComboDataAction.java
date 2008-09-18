@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.util.global;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,10 +30,8 @@ import edu.wustl.common.beans.NameValueBean;
  */
 public class ComboDataAction extends BaseDynamicExtensionsAction
 {
-
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-
 		String limit = request.getParameter("limit");
 		String query = request.getParameter("query");
 		String start = request.getParameter("start");
@@ -42,68 +41,63 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		Integer limitFetch = Integer.parseInt(limit);
 		Integer startFetch = Integer.parseInt(start);
 
-		JSONArray trialJSONArray = new JSONArray();
-		JSONObject trialJSONObject = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		JSONObject mainJsonObject = new JSONObject();
 
 		DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
-		ContainerInterface containerInterface = (ContainerInterface) ((HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER))
-				.get(Long.parseLong(containerId));
+		ContainerInterface container = (ContainerInterface) ((HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER)).get(Long
+				.parseLong(containerId));
 
-				
-		List<NameValueBean> nameValueBeanList = null;
-		for (ControlInterface control : containerInterface.getControlCollection())
+		List<NameValueBean> nameValueBeans = null;
+		for (ControlInterface control : container.getControlCollection())
 		{
 			if (Long.parseLong(controlId) == control.getId())
 			{
-				nameValueBeanList = ControlsUtility.populateListOfValues(control);
+				nameValueBeans = ControlsUtility.populateListOfValues(control);
 			}
 		}
 
-		/*UserDefinedDE definedDE = (UserDefinedDE) controlInterface.getAttibuteMetadataInterface().getDataElement();
-
-		Set<PermissibleValueInterface> set = new HashSet<PermissibleValueInterface>(definedDE.getPermissibleValueCollection());
-
-		int count = 0;
 		Integer total = limitFetch + startFetch;
 
-		
-		List<String> permissibleValues = new ArrayList<String>();
-		for (PermissibleValueInterface permissibleValueInterface : set)
-		{
-			if (count >= total)
-			{
-				break;
-			}
-			if (permissibleValueInterface.getValueAsObject().toString().toLowerCase().startsWith(query.toLowerCase()) || query.length() == 0)
-			{
-				permissibleValues.add(permissibleValueInterface.getValueAsObject().toString());
-				count++;
-			}
+		List<NameValueBean> querySpecificNVBeans = new ArrayList<NameValueBean>();
+		populateQuerySpecificNameValueBeansList(querySpecificNVBeans, nameValueBeans, query);
+		mainJsonObject.put("totalCount", querySpecificNVBeans.size());
 
-		}
-*/
-		//sint count = 0;
-
-		Integer total = limitFetch + startFetch;
-		trialJSONObject.put("totalCount", nameValueBeanList.size());
-		
-		for (int i = startFetch; i < total && i < nameValueBeanList.size(); i++)
+		for (int i = startFetch; i < total && i < querySpecificNVBeans.size(); i++)
 		{
-			JSONObject trialJSONObjectNewObj = new JSONObject();
-			if ( query==null || nameValueBeanList.get(i).getName().toLowerCase().startsWith(query.toLowerCase()) || query.length() == 0)
+			JSONObject jsonObject = new JSONObject();
+			if (query == null || querySpecificNVBeans.get(i).getName().toLowerCase().startsWith(query.toLowerCase()) || query.length() == 0)
 			{
-				trialJSONObjectNewObj.put("id", nameValueBeanList.get(i).getValue());
-				trialJSONObjectNewObj.put("field", nameValueBeanList.get(i).getName());
-				trialJSONArray.put(trialJSONObjectNewObj);
-				
+				jsonObject.put("id", querySpecificNVBeans.get(i).getValue());
+				jsonObject.put("field", querySpecificNVBeans.get(i).getName());
+				jsonArray.put(jsonObject);
 			}
 		}
-		trialJSONObject.put("row", trialJSONArray);
+
+		mainJsonObject.put("row", jsonArray);
 		response.flushBuffer();
 		PrintWriter out = response.getWriter();
-		out.write(trialJSONObject.toString());
+		out.write(mainJsonObject.toString());
 
 		return null;
+	}
+
+	/**
+	 * This method populates name value beans list as per query,
+	 * i.e. word typed into the auto-complete drop-down text field.
+	 * @param querySpecificNVBeans
+	 * @param nameValueBeans
+	 * @param query
+	 */
+	private void populateQuerySpecificNameValueBeansList(List<NameValueBean> querySpecificNVBeans, List<NameValueBean> nameValueBeans, String query)
+	{
+		for (NameValueBean nvb : nameValueBeans)
+		{
+			if (nvb.getName().startsWith(query))
+			{
+				querySpecificNVBeans.add(nvb);
+			}
+		}
 	}
 
 }

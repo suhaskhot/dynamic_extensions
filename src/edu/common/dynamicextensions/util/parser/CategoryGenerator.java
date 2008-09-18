@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
 
@@ -101,8 +102,9 @@ public class CategoryGenerator
 				categoryFileParser.readNext();
 				EntityGroupInterface entityGroup = CategoryGenerationUtil.getEntityGroup(category, categoryFileParser.getEntityGroupName());
 
-				CategoryValidator.checkForNullRefernce(entityGroup, ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
-						+ ApplicationProperties.getValue("noEntityGroup") + categoryFileParser.getEntityGroupName());
+				CategoryValidator.checkForNullRefernce(entityGroup, ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+						+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("noEntityGroup")
+						+ categoryFileParser.getEntityGroupName());
 
 				categoryFileParser.getCategoryValidator().setEntityGroup(entityGroup);
 				populateMainFormList(entityGroup);
@@ -178,7 +180,7 @@ public class CategoryGenerator
 						ContainerInterface targetContainer = CategoryGenerationUtil.getContainer(containerCollection, targetContainerCaption);
 
 						CategoryValidator
-								.checkForNullRefernce(targetContainer, ApplicationProperties.getValue("lineNumber")
+								.checkForNullRefernce(targetContainer, ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
 										+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("subcategoryNotFound")
 										+ targetContainerCaption);
 
@@ -189,7 +191,7 @@ public class CategoryGenerator
 						String entityName = ((CategoryEntityInterface) CategoryGenerationUtil.getContainer(containerCollection,
 								targetContainerCaption).getAbstractEntity()).getEntity().getName();
 						List<AssociationInterface> associationNameList = entityNameAssociationMap.get(entityName);
-						CategoryValidator.checkForNullRefernce(associationNameList, ApplicationProperties.getValue("lineNumber")
+						CategoryValidator.checkForNullRefernce(associationNameList, ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
 								+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("pathNotFound") + targetContainerCaption);
 
 						lastControl = categoryHelper.associateCategoryContainers(category, entityGroup, sourceContainer, targetContainer,
@@ -221,8 +223,8 @@ public class CategoryGenerator
 
 						boolean isAttributeCategoryMatched = false;
 						CategoryValidator.checkForNullRefernce(getcategoryEntityName(categoryEntityName, categoryFileParser.getEntityName()),
-								ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber() + categoryEntityName
-										+ ApplicationProperties.getValue("incorrectInstanceInformation"));
+								ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
+										+ categoryEntityName + ApplicationProperties.getValue("incorrectInstanceInformation"));
 						containerInterface = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, getcategoryEntityName(
 								categoryEntityName, categoryFileParser.getEntityName()));
 
@@ -249,13 +251,13 @@ public class CategoryGenerator
 							UserDefinedDE userDefinedDE = (UserDefinedDE) attribute.getAttributeTypeInformation().getDataElement();
 							if (userDefinedDE == null)
 							{
-								throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
+								throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
 										+ ApplicationProperties.getValue("noPVForAttribute") + attribute.getName());
 							}
 						}
 
-						CategoryValidator.checkForNullRefernce(attribute, ApplicationProperties.getValue("lineNumber")
-								+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("attribute") + attributeName
+						CategoryValidator.checkForNullRefernce(attribute, ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+								+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("attribute") + " " + attributeName
 								+ ApplicationProperties.getValue("attributeNotPresent") + entityInterface.getName());
 
 						if (previousEntityName != null && !previousEntityName.equals(containerInterface.getAbstractEntity().getName()))
@@ -312,16 +314,17 @@ public class CategoryGenerator
 							//containerInterface = (ContainerInterface) (childCategoryEntity.getContainerCollection()).iterator().next();
 						}
 
-						Map<String, Object> rulesMap = categoryFileParser.getRules();
-						if (rulesMap != null)
+						Map<String, Object> rules = categoryFileParser.getRules(attribute.getName());
+						if (rules != null)
 						{
-							CategoryValidator.checkRangeAgainstAttributeValueRange(attribute, rulesMap);
-							CategoryValidator.checkRequiredRule(attribute, rulesMap);
+							CategoryValidator.checkRangeAgainstAttributeValueRange(attribute, rules);
+							CategoryValidator.checkRequiredRule(attribute, rules);
 						}
+
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
-								.get(controlType), categoryFileParser.getControlCaption(), rulesMap, permissibleValues);
+								.get(controlType), categoryFileParser.getControlCaption(), rules, permissibleValues);
 
 						// Set default value for attribute's IsRelatedAttribute and IsVisible property.
 						// This is required in case of edit of category entity.
@@ -345,7 +348,6 @@ public class CategoryGenerator
 							((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface()).setIsVisible(true);
 							category.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
 						}
-
 					}
 					lastControl.setSequenceNumber(sequenceNumber++);
 				}
@@ -366,21 +368,21 @@ public class CategoryGenerator
 		}
 		catch (FileNotFoundException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue("fileNotFound"), e);
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber() + " "
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber() + " "
 					+ ApplicationProperties.getValue("readingFile") + categoryFileParser.getFilePath(), e);
 		}
 		catch (Exception e)
 		{
 			if (!(e instanceof DynamicExtensionsSystemException))
 			{
-				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-						+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber() + " "
+				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber() + " "
 						+ ApplicationProperties.getValue("readingFile") + categoryFileParser.getFilePath(), e);
 			}
 
@@ -549,15 +551,15 @@ public class CategoryGenerator
 			EntityGroupInterface entityGroup, Collection<ContainerInterface> containerCollection) throws DynamicExtensionsSystemException
 	{
 		String newCategoryEntityName = parentEntity.getName() + "[1]";
-		for(ContainerInterface objContainer : containerCollection)
+		for (ContainerInterface objContainer : containerCollection)
 		{
-			if(objContainer.getCaption().equals(newCategoryEntityName))
+			if (objContainer.getCaption().equals(newCategoryEntityName))
 			{
 				return objContainer;
 			}
-			
+
 		}
-		
+
 		CategoryHelper categoryHelper = new CategoryHelper();
 		CategoryInterface parentCategory = categoryHelper.getCategory(newCategoryEntityName);
 
@@ -609,8 +611,11 @@ public class CategoryGenerator
 				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(), categoryEntity, associationName, 1, entityGroup,
 						entityNameAssociationMap.get(entityName), categoryPaths[0]);
 			}
-			CategoryValidator.checkForNullRefernce(entity.getAttributeByName(attributeName), ApplicationProperties.getValue("lineNumber")
-					+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("attribute") + attributeName
+			CategoryValidator.checkForNullRefernce(entity.getAttributeByName(attributeName), ApplicationProperties
+					.getValue(CategoryConstants.LINE_NUMBER)
+					+ categoryFileParser.getLineNumber()
+					+ ApplicationProperties.getValue("attribute")
+					+ attributeName
 					+ ApplicationProperties.getValue("attributeNotPresent") + entity.getName());
 
 			// Added for category inheritance.
@@ -763,8 +768,8 @@ public class CategoryGenerator
 				Class[] types = getParameterType(methodName, control);
 				if (types.length < 1)
 				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-							+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
 							+ ApplicationProperties.getValue("incorrectControlOption") + optionString);
 				}
 				List<Object> values = new ArrayList<Object>();
@@ -779,34 +784,34 @@ public class CategoryGenerator
 		}
 		catch (SecurityException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("contactAdmin"), e);
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
 		}
 		catch (NoSuchMethodException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
 					+ ApplicationProperties.getValue("incorrectOption"), e);
 		}
 		catch (IllegalArgumentException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("contactAdmin"), e);
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
 		}
 		catch (IllegalAccessException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("contactAdmin"), e);
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
 		}
 		catch (InvocationTargetException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("contactAdmin"), e);
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
 		}
 		catch (InstantiationException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("contactAdmin"), e);
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
 		}
 	}
 
@@ -867,7 +872,7 @@ public class CategoryGenerator
 
 		List<String> categoryEntityName = new ArrayList<String>();
 		String entityName = null;
-		String[] categoryEntitysInPath;
+		String[] categoryEntitiesInPath;
 
 		try
 		{
@@ -876,9 +881,10 @@ public class CategoryGenerator
 
 			for (String categoryPath : categoryPaths)
 			{
-				categoryEntitysInPath = categoryPath.split("->");
-				String newCategoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
+				categoryEntitiesInPath = categoryPath.split("->");
+				String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
 				entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
+
 				categoryValidator.isRootEntityUsedTwice(entityName, mainFormList, categoryEntityNameInstanceMap.keySet());
 				if (!categoryEntityName.contains(newCategoryEntityName))
 				{
@@ -900,8 +906,8 @@ public class CategoryGenerator
 		}
 		catch (IOException exception)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue("categoryCreationFailure")
-					+ ApplicationProperties.getValue("lineNumber") + categoryFileParser.getLineNumber()
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
 					+ ApplicationProperties.getValue("errorReadingCategoryEntityPath"));
 		}
 

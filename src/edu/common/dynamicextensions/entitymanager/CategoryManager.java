@@ -1,10 +1,12 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -301,10 +303,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	private Long insertDataForHierarchy(CategoryEntityInterface categoryEntity, Map<BaseAbstractAttributeInterface, ?> dataValue,
 			HibernateDAO hibernateDAO, Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
-			HibernateException, SQLException, DAOException, UserNotAuthorizedException
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException, ParseException, IOException
 	{
 		List<CategoryEntityInterface> categoryEntityList = getParentEntityList(categoryEntity);
 		Map<CategoryEntityInterface, Map> entityValueMap = initialiseEntityValueMap(dataValue);
@@ -375,10 +379,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	private Long insertDataForSingleCategoryEntity(CategoryEntityInterface categoryEntity, Map dataValue, HibernateDAO hibernateDAO,
 			Long parentRecordId, Map dataMap, Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
-			HibernateException, SQLException, DAOException, UserNotAuthorizedException
+			HibernateException, SQLException, DAOException, UserNotAuthorizedException, ParseException, IOException
 	{
 		Long identifier = null;
 
@@ -1074,12 +1080,14 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws UserNotAuthorizedException
 	 * @throws DAOException
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	private void insertRecordsForCategoryEntityTree(String entityForeignKeyColumnName, String categoryEntityForeignKeyColumnName,
 			Long sourceCategoryEntityIdentifier, Long sourceEntityIdentifier, CategoryEntityInterface categoryEntity, Map dataValue,
 			Map<String, Long> keyMap, Map<String, Long> fullKeyMap, Map<String, List<Long>> recordsMap, boolean isMultipleRecords,
 			boolean isNoCategoryAttributePresent, HibernateDAO hibernateDAO, Long userId) throws DynamicExtensionsSystemException, SQLException,
-			HibernateException, DynamicExtensionsApplicationException, UserNotAuthorizedException, DAOException
+			HibernateException, DynamicExtensionsApplicationException, UserNotAuthorizedException, DAOException, ParseException, IOException
 	{
 		Object value = null;
 		boolean isCategoryEntityRecordInserted = false;

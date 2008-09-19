@@ -34,7 +34,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		String checked = (String) this.value;
+		String checked = String.valueOf(this.value);
 		String htmlString = "";
 		if (this.value == null)
 		{

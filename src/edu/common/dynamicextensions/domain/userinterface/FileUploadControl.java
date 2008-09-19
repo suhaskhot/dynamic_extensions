@@ -31,20 +31,17 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
 		String htmlString = "";
 		ApplicationProperties.initBundle("ApplicationResources");
-		if (fileAttributeRecordValue != null && fileAttributeRecordValue.getFileName() != null)
+		if (this.value != null)
 		{
-			htmlString = ApplicationProperties.getValue("eav.file.fileName")
-					+ "&nbsp;"
+			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;"
 					+ " <A onclick='appendRecordId(this);' href='/dynamicExtensions/DownloadFileAction?attributeIdentifier="
-					+ this.baseAbstractAttribute.getId() + "'>"
-					+ fileAttributeRecordValue.getFileName() + "</A>";
+					+ this.baseAbstractAttribute.getId() + "'>" + this.value + "</A>";
 
 		}
-		htmlString = htmlString + "<input type=\"file\" " + "name=\"value("
-				+ getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName() + "\"/>";
+		htmlString = htmlString + "<input type=\"file\" " + "name=\"value(" + getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName()
+				+ "\"/>";
 		return htmlString;
 	}
 

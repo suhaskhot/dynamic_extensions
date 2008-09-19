@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +28,7 @@ import edu.common.dynamicextensions.domain.CategoryAssociation;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.DoubleAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
@@ -335,7 +337,7 @@ class DynamicExtensionBaseQueryBuilder
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
 		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
-		
+
 		Map<Association, List> associationValuesMap = new HashMap<Association, List>();
 
 		while (associationIterator.hasNext())
@@ -452,17 +454,18 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param recordId recordId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
+	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public void putAssociationValues(List<AssociationInterface> associationCollection, EntityRecordResultInterface entityRecordResult,
-			EntityRecordInterface entityRecord, Long recordId) throws DynamicExtensionsSystemException
+			EntityRecordInterface entityRecord, Long recordId) throws DynamicExtensionsSystemException, IOException, ClassNotFoundException
 
 	{
 		Iterator associationIterator = associationCollection.iterator();
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
 		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
-		
 
 		while (associationIterator.hasNext())
 		{
@@ -930,6 +933,11 @@ class DynamicExtensionBaseQueryBuilder
 						//column is not created if it is multi select,file type etc.
 						continue;
 					}
+					if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+					{
+
+						query = query.append(extraColumnQueryStringForFileAttribute(attribute) + COMMA);
+					}
 
 					String type = "";
 					//get column info for attribute
@@ -958,11 +966,6 @@ class DynamicExtensionBaseQueryBuilder
 
 			// add create query
 			queryList.add(query.toString());
-			//		// add foerfign key query for inheritance
-			//		if (parentEntity != null) {
-			//			String foreignKeyConstraintQueryForInheritance = getForeignKeyConstraintQueryForInheritance(entity);
-			//			queryList.add(foreignKeyConstraintQueryForInheritance);
-			//		}
 
 			String reverseQuery = getReverseQueryForAbstractEntityTable(entity.getTableProperties().getName());
 			reverseQueryList.add(reverseQuery);
@@ -1149,16 +1152,6 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			isExclude = true;
 		}
-		else
-		{
-			AttributeTypeInformationInterface typeInfo = attribute.getAttributeTypeInformation();
-
-			if (typeInfo instanceof FileAttributeTypeInformation || typeInfo instanceof ObjectAttributeTypeInformation)
-			{
-				isExclude = true;
-			}
-		}
-
 		return isExclude;
 	}
 
@@ -1287,6 +1280,14 @@ class DynamicExtensionBaseQueryBuilder
 			else if (attributeInformation instanceof ShortAttributeTypeInformation)
 			{
 				return dataTypeFactory.getDatabaseDataType("Short");
+			}
+			if (attributeInformation instanceof FileAttributeTypeInformation)
+			{
+				return dataTypeFactory.getDatabaseDataType("File");
+			}
+			else if (attributeInformation instanceof ObjectAttributeTypeInformation)
+			{
+				return dataTypeFactory.getDatabaseDataType("Object");
 			}
 
 		}
@@ -2202,7 +2203,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected List getAttributeDataTypeChangedQuery(Attribute attribute, Attribute savedAttribute, List modifyAttributeRollbackQueryList)
+	protected List<String> getAttributeDataTypeChangedQuery(Attribute attribute, Attribute savedAttribute, List modifyAttributeRollbackQueryList)
 			throws DynamicExtensionsSystemException
 	{
 		String tableName = attribute.getEntity().getTableProperties().getName();
@@ -2210,13 +2211,15 @@ class DynamicExtensionBaseQueryBuilder
 		String modifyAttributeRollbackQuery = "";
 
 		String modifyAttributeQuery = getQueryPartForAttribute(attribute, type, false);
-		modifyAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD + WHITESPACE + modifyAttributeQuery;
+		modifyAttributeQuery = ALTER_TABLE + tableName + ADD_KEYWORD + OPENING_BRACKET + modifyAttributeQuery;
 
 		modifyAttributeRollbackQuery = getQueryPartForAttribute(savedAttribute, type, false);
 		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD + WHITESPACE + modifyAttributeRollbackQuery;
 
 		String nullQueryKeyword = "";
 		String nullQueryRollbackKeyword = "";
+		List<String> modifyAttributeQueryList = new ArrayList<String>();
+		modifyAttributeQueryList.add(ALTER_TABLE + tableName + DROP_KEYWORD + COLUMN_KEYWORD + savedAttribute.getColumnProperties().getName());
 
 		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
 		{
@@ -2230,11 +2233,22 @@ class DynamicExtensionBaseQueryBuilder
 
 		}
 
+		/*
+		 * added by: Kunal 
+		 * Two more extra columns file name and content type
+		 * needs to be added to the table.
+		 */
+		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+		{
+			modifyAttributeQuery = modifyAttributeQuery + COMMA + extraColumnQueryStringForFileAttribute(attribute);
+			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + COMMA + dropExtraColumnQueryStringForFileAttribute(attribute);
+
+		}
 		modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
 		modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + nullQueryRollbackKeyword;
 		modifyAttributeRollbackQueryList.add(modifyAttributeRollbackQuery);
 
-		List modifyAttributeQueryList = new ArrayList();
+		modifyAttributeQuery += CLOSING_BRACKET;
 		modifyAttributeQueryList.add(modifyAttributeQuery);
 
 		return modifyAttributeQueryList;
@@ -2255,12 +2269,19 @@ class DynamicExtensionBaseQueryBuilder
 		String columnName = attribute.getColumnProperties().getName();
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
-		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
+		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE + OPENING_BRACKET
 				+ getQueryPartForAttribute(attribute, type, true);
 
 		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
-				+ WHITESPACE + columnName;
+				+ WHITESPACE + OPENING_BRACKET + columnName;
+		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+		{
+			newAttributeQuery += COMMA + extraColumnQueryStringForFileAttribute(attribute);
+			newAttributeRollbackQuery += COMMA + dropExtraColumnQueryStringForFileAttribute(attribute);
 
+		}
+		newAttributeQuery += CLOSING_BRACKET;
+		newAttributeRollbackQuery += CLOSING_BRACKET;
 		attributeRollbackQueryList.add(newAttributeRollbackQuery);
 
 		return newAttributeQuery;
@@ -2290,6 +2311,34 @@ class DynamicExtensionBaseQueryBuilder
 		attributeRollbackQueryList.add(newAttributeRollbackQuery);
 
 		return newAttributeQuery;
+	}
+
+	/**
+	 * This method contrsucts the query part for adding tow extra columns when
+	 * an attribute of type File is created 
+	 * @param attribute FileAttribute
+	 * @return queryString
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private String extraColumnQueryStringForFileAttribute(Attribute attribute) throws DynamicExtensionsSystemException
+	{
+		Attribute stringAttribute = (Attribute) DomainObjectFactory.getInstance().createStringAttribute();
+		String queryString = attribute.getName() + UNDERSCORE + FILE_NAME + WHITESPACE + getDatabaseTypeAndSize(stringAttribute) + COMMA + WHITESPACE
+				+ attribute.getName() + UNDERSCORE + CONTENT_TYPE + WHITESPACE + getDatabaseTypeAndSize(stringAttribute);
+		return queryString;
+	}
+
+	/**
+	 * This method constructs the query part for dropping the extra columns
+	 * created while creating an attribute of type File
+	 * @param attribute FileAttribute
+	 * @return queryString
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private String dropExtraColumnQueryStringForFileAttribute(Attribute attribute) throws DynamicExtensionsSystemException
+	{
+		String queryString = attribute.getName() + UNDERSCORE + FILE_NAME + COMMA + WHITESPACE + attribute.getName() + UNDERSCORE + CONTENT_TYPE;
+		return queryString;
 	}
 
 	/**
@@ -2673,7 +2722,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param value
 	 * @return
 	 */
-	public String getFormattedValue(AbstractAttribute attribute, Object value)
+	public Object getFormattedValue(AbstractAttribute attribute, Object value)
 	{
 		String formattedvalue = null;
 		AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute).getAttributeTypeInformation();

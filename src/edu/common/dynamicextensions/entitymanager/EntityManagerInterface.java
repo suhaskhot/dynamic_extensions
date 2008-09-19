@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -187,10 +189,12 @@ public interface EntityManagerInterface
 	 * @param recordIdList
 	 * @return
 	 * @throws DynamicExtensionsSystemException
+	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	EntityRecordResultInterface getEntityRecords(EntityInterface entity, List<? extends AbstractAttributeInterface> abstractAttributeCollection,
-			List<Long> recordIdList) throws DynamicExtensionsSystemException;
+			List<Long> recordIdList) throws DynamicExtensionsSystemException, IOException, ClassNotFoundException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId
@@ -249,11 +253,11 @@ public interface EntityManagerInterface
 			DynamicExtensionsApplicationException;
 
 	/**
-	*
-	* @return
-	* @throws DynamicExtensionsSystemException
-	* @throws DynamicExtensionsApplicationException
-	*/
+	 *
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -314,12 +318,12 @@ public interface EntityManagerInterface
 	Map<Long, Date> getEntityCreatedDateByContainerId() throws DynamicExtensionsSystemException;
 
 	/**
-	*
-	* @param isAbstarct
-	* @param entityIdentifier
-	* @return
-	* @throws DynamicExtensionsSystemException
-	*/
+	 *
+	 * @param isAbstarct
+	 * @param entityIdentifier
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct) throws DynamicExtensionsSystemException;
 
 	/**
@@ -381,12 +385,12 @@ public interface EntityManagerInterface
 	public boolean validateEntity(EntityInterface entity) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
-	*
-	* @param entityId
-	* @param attributeId
-	* @return
-	* @throws DynamicExtensionsSystemException
-	*/
+	 *
+	 * @param entityId
+	 * @param attributeId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId) throws DynamicExtensionsSystemException;
 
 	/**
@@ -411,87 +415,90 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws DAOException 
+	 * @throws SQLException 
+	 * @throws IOException 
 	 */
 	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute, Long recordId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, DAOException, SQLException, IOException;
 
 	public Long isCategory(Long containerId) throws DynamicExtensionsSystemException;
 
 	/**
-	*
-	* @param hookEntityId
-	* @return the container Id of the DE entities that are associated with given static hook entity
-	*/
+	 *
+	 * @param hookEntityId
+	 * @return the container Id of the DE entities that are associated with given static hook entity
+	 */
 	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException;
 
 	/**
-	*
-	* @param hookEntityId
-	* @return  the container Id of the DE entities/categories that are associated with given static hook entity
-	* @throws DynamicExtensionsSystemException
-	*/
+	 *
+	 * @param hookEntityId
+	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException;
 
 	/**
-	*
-	* @param hookEntityRecId
-	* @param containerId
-	* @return the category or form record id based on the containerId and hookentityRecId
-	*/
+	 *
+	 * @param hookEntityRecId
+	 * @param containerId
+	 * @return the category or form record id based on the containerId and hookentityRecId
+	 */
 	public String getDynamicTableName(Long containerId) throws DynamicExtensionsSystemException;
 
 	/**
-	*
-	* @param categoryContainerId
-	* @param staticRecId
-	* @return the record id of the category depending on hook entity record id.
-	*/
+	 *
+	 * @param categoryContainerId
+	 * @param staticRecId
+	 * @return the record id of the category depending on hook entity record id.
+	 */
 	public String getColumnNameForAssociation(Long hookEntityId, Long containerId) throws DynamicExtensionsSystemException;
 
 	public Long getCategoryRootContainerId(Long containerId) throws DynamicExtensionsSystemException;
 
 	/**
-	* @param entityGroupIdentifier
-	* @return
-	*/
+	 * @param entityGroupIdentifier
+	 * @return
+	 */
 	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
-	* @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
-	*/
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
 	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface, boolean isDataTablePresent,
 			boolean copyDataTableState, AssociationInterface association) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
-	* @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
-	*/
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	 */
 	public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException;
 
 	/**
-	* @param entityGroupName
-	* @return EntityGroupInterface EntityGroupInterface
-	* @throws DynamicExtensionsSystemException
-	* @throws DynamicExtensionsApplicationException
-	*/
+	 * @param entityGroupName
+	 * @return EntityGroupInterface EntityGroupInterface
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
-	* This method returns the EntityGroupInterface given the short name for the
-	* entity.
-	* @param entityGroupShortName short name for entity group
-	* @return entityGroupInterface entity group interface
-	* @throws DynamicExtensionsSystemException
-	*/
+	 * This method returns the EntityGroupInterface given the short name for the
+	 * entity.
+	 * @param entityGroupShortName short name for entity group
+	 * @return entityGroupInterface entity group interface
+	 * @throws DynamicExtensionsSystemException
+	 */
 	EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName) throws DynamicExtensionsSystemException;
 
 	/**
-	* Returns all entityGroups in the system.
-	* @return
-	* @throws DynamicExtensionsSystemException
-	* @throws DynamicExtensionsApplicationException
-	*/
+	 * Returns all entityGroups in the system.
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -528,10 +535,12 @@ public interface EntityManagerInterface
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long... userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException;
+			UserNotAuthorizedException, ParseException, IOException;
 
 	/**
 	 * @param entity
@@ -545,10 +554,12 @@ public interface EntityManagerInterface
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long... userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException;
+			UserNotAuthorizedException, ParseException, IOException;
 
 	/**
 	 * @param entity
@@ -562,10 +573,12 @@ public interface EntityManagerInterface
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
 	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO,
 			Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException,
-			DAOException, UserNotAuthorizedException;
+			DAOException, UserNotAuthorizedException, ParseException, IOException;
 
 	/**
 	 * @param entity

@@ -39,14 +39,24 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static ResultSet executeQuery(String query) throws DynamicExtensionsSystemException
+	public static ResultSet executeQuery(String query, boolean... useCleanSession) throws DynamicExtensionsSystemException
 	{
 		//System.out.println("[DE_QUERY] : " + query);
 
 		Connection conn = null;
+		Session session = null;
 		try
 		{
-			conn = DBUtil.getConnection();
+			if (useCleanSession.length == 1 && useCleanSession[0])
+			{
+				session = DBUtil.getCleanSession();
+				conn = session.connection();
+			}
+			else
+			{
+				conn = DBUtil.getConnection();
+			}
+
 			Statement statement = null;
 			statement = conn.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
@@ -420,7 +430,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
 		return queryList;
 	}
-	
+
 	/**
 	 * This method checks the data in the form
 	 * @param tableName
@@ -430,15 +440,44 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
 	{
 		boolean isDataPresent = false;
-		try {
+		try
+		{
 			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
 			isDataPresent = queryBuilder.isDataPresent(tableName);
-		} 
+		}
 		finally
 		{
 			DBUtil.closeConnection();
-		
+
 		}
 		return isDataPresent;
 	}
+
+	/*public String getQueryStringForInsert(String tableName,List<Object> columnValues)
+	 {
+	 StringBuffer queryString = new StringBuffer();
+	 queryString.append(INSERT_INTO_KEYWORD);
+	 queryString.append(tableName);
+	 queryString.append(WHITESPACE);
+	 queryString.append(VALUES_KEYWORD);
+	 for(Object columnValue: columnValues)
+	 {
+	 if (columnValue instanceof byte)
+	 {
+	 byte new_name = (byte) columnValue;
+	 
+	 }
+	 }
+	 
+	 
+	 
+	 return null;
+	 }
+	 
+	 public String getQueryStringForUpdate(String updateQuery, List<String> columnNames, List<Object> columnValues)
+	 {
+	 StringBuffer qurerString = new StringBuffer();
+	 return null;
+	 }*/
+
 }

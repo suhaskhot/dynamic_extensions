@@ -8,7 +8,7 @@
     <session-factory>
     	<property name="show_sql">false</property>
    		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
-   	 	<property name="connection.datasource">java:/catissuecore</property>
+   	 	<property name="connection.datasource">java:/dynamicextensions</property>
 		<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
        	<property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property>
 		<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>

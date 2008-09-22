@@ -9,6 +9,10 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -30,7 +34,6 @@ import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
-import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringValue;
@@ -66,10 +69,6 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
-import edu.common.dynamicextensions.validation.DateRangeValidator;
-import edu.common.dynamicextensions.validation.DateValidator;
-import edu.common.dynamicextensions.validation.NumberValidator;
-import edu.common.dynamicextensions.validation.UniqueValidator;
 import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
@@ -509,7 +508,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 * 2. Save entityGroup using entity manager.
 	 * 3. Check whether the saved entity group is retrieved back properly or not.
 	 */
-	public void testCreateEntityGroup()
+	/*public void testCreateEntityGroup()
 	{
 		try
 		{
@@ -528,7 +527,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail("Exception occured");
 		}
-	}
+	}*/
 
 	/**
 	 * PURPOSE : To test the method getEntityGroupByName
@@ -1129,7 +1128,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//DBUtil.Connection();
 
 			metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
-			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumnsForfile);
 
 			//executeQuery("select * from dyextn_file_extensions");
 		}
@@ -1183,7 +1182,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			user = EntityManagerInterface.persistEntity(user);
 			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + user.getTableProperties().getName());
-			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
+			assertEquals(metaData.getColumnCount(), noOfDefaultColumnsForfile);
 		}
 		catch (Exception e)
 		{
@@ -1576,16 +1575,28 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
 			fileRecord.setContentType("PDF");
-			fileRecord.setFileName("tp.java");
-			String fileContent = "this is cntent of the file";
+			fileRecord.setFileName("test.pdf");
+			//String fileContent = "this is cntent of the file";
+			
+			File file=new File("F:/Chapter5.pdf");
+			FileInputStream streamer = new FileInputStream(file);
+			byte[] byteArray=new byte[streamer.available()];
+			for(int j=0; j<byteArray.length; j++)
+			{
+			byteArray[j]=(byte) streamer.read();
+			}
+
+
 			//File f = new File("C:\\BinaryBlobType.java");
-			fileRecord.setFileContent(fileContent.getBytes());
+			fileRecord.setFileContent(byteArray);
 
 			Map dataValue = new HashMap();
 			dataValue.put(age, "45");
 			dataValue.put(resume, fileRecord);
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
+			FileAttributeRecordValue attributeRecordValue = EntityManagerInterface.getFileAttributeRecordValueByRecordId(resume, recordId);
+			
 
 			ResultSet resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
@@ -1724,8 +1735,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			dataValue = EntityManagerInterface.getRecordById(user, recordId);
 
-			assertEquals("45", dataValue.get(age));
-			assertEquals("tp.java", ((FileAttributeRecordValue) dataValue.get(resume)).getFileName());
+			assertEquals("45", dataValue.get(age).toString());
+			assertEquals("tp.java", dataValue.get(resume).toString());
 
 			System.out.println(dataValue);
 		}
@@ -1802,7 +1813,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			dataValue = EntityManagerInterface.getRecordById(user, recordId);
 
-			assertEquals("new file name", ((FileAttributeRecordValue) dataValue.get(resume)).getFileName());
+			assertEquals("new file name", dataValue.get(resume).toString());
 
 			System.out.println(dataValue);
 		}
@@ -2344,7 +2355,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 5.
 			metadata = executeQueryForMetadata("select * from " + savedEntity.getTableProperties().getName());
-			assertEquals(metadata.getColumnCount(), noOfDefaultColumns + 1);
+			assertEquals(metadata.getColumnCount(), noOfDefaultColumnsForfile + 1);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{

@@ -17,7 +17,7 @@ public interface AttributeTypeInformationInterface extends DynamicExtensionBaseD
      * Returns the data element associated with the attribute.The data elment specify the
      * source of permissible values.
      * @return DataElementInterface
-     * 
+     *
      */
     DataElementInterface getDataElement();
 
@@ -25,9 +25,13 @@ public interface AttributeTypeInformationInterface extends DynamicExtensionBaseD
      * @param dataElementInterface data element interface
      */
     void setDataElement(DataElementInterface dataElementInterface);
+    /**
+     * @param dataElementInterface data element interface
+     */
+    void removeDataElement(DataElementInterface dataElementInterface);
 
     /**
-     * @return return the default value for this attribute type. 
+     * @return return the default value for this attribute type.
      */
     PermissibleValueInterface getDefaultValue();
 
@@ -36,18 +40,18 @@ public interface AttributeTypeInformationInterface extends DynamicExtensionBaseD
      * @param permissibleValueInterface  default value
      */
     void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
-    
+
 	/**
 	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.
 	 * @return Strin attribute type
 	 */
 	String getDataType();
-	
+
 	/**
-	 * 
+	 *
 	 * @param value
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
 }

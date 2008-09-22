@@ -65,7 +65,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 			}
-			if ((attrUIBean.getDataType() != null) && DynamicExtensionsUtility.isDataTypeNumeric(attrUIBean.getDataType()))	
+			if ((attrUIBean.getDataType() != null) && DynamicExtensionsUtility.isDataTypeNumeric(attrUIBean.getDataType()))
 			{
 				initializeMeasurementUnits(attrUIBean);
 			}
@@ -83,7 +83,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				DynamicExtensionsUtility.validateDuplicateNamesWithinEntity(entity, attributeName);
 				controlUIBean.setName(attributeName);
 
-				//Create Attribute  
+				//Create Attribute
 				abstractAttribute = attributeProcessor.createAndPopulateAttribute(controlUIBean.getUserSelectedTool(), attrUIBean, entityGroup);
 
 				//Set permissible values
@@ -121,9 +121,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				/*
 				 * CODE COMMENTED BY PREETI : 24 Nov 2006
-				 * The attribute reference need not be removed. Its type information needs to be updated as per the 
-				 * new design 
-				 * 
+				 * The attribute reference need not be removed. Its type information needs to be updated as per the
+				 * new design
+				 *
 				 * //Remove old references : From Entity
 				 entityInterface.removeAbstractAttribute(controlInterface.getAbstractAttribute());
 
@@ -196,6 +196,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
 				if (attributeTypeInformation != null)
 				{
+					attributeTypeInformation.removeDataElement(attributeTypeInformation.getDataElement());
 					attributeTypeInformation.setDataElement(attributeProcessor.getDataElementInterface(attributeUIBean));
 				}
 			}
@@ -204,9 +205,9 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param caption :Caption of the attribute
-	 * @return : Name of the attribute derived from the caption. 
+	 * @return : Name of the attribute derived from the caption.
 	 * The name has all spaces removed and first letter of every word capitalized
 	 */
 	private String deriveAttributeNameFromCaption(String caption)

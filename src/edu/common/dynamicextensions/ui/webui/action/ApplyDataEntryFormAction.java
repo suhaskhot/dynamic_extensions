@@ -28,10 +28,13 @@ import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -40,6 +43,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
@@ -325,7 +329,22 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control.getBaseAbstractAttribute();
 					if (abstractAttribute instanceof AttributeMetadataInterface)
 					{
-						collectAttributeValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
+						if (abstractAttribute instanceof CategoryAttributeInterface)
+						{
+							CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) abstractAttribute;
+							if (categoryAttribute.getAbstractAttribute() instanceof AssociationMetadataInterface)
+							{
+								collectAssociationValues(request, dataEntryForm, controlSequence, control, attributeValueMap, processOneToMany);
+							}
+							else
+							{
+								collectAttributeValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
+							}
+						}
+						else
+						{
+							collectAttributeValues(request, dataEntryForm, controlSequence, control, attributeValueMap);
+						}
 					}
 					else if (abstractAttribute instanceof AssociationMetadataInterface)
 					{
@@ -391,29 +410,55 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else if (control instanceof SelectInterface)
 		{
-			List<Long> valueList = new ArrayList<Long>();
+			AssociationInterface association = null;
+			List valueList = new ArrayList();
 			if (control instanceof ListBoxInterface)
 			{
 				String[] selectedValues = (String[]) request.getParameterValues("Control_" + sequence);
-				if (selectedValues != null)
+				ListBoxInterface listBoxInterface = (ListBoxInterface) control;
+				association  = listBoxInterface.getBaseAbstractAttributeAssociation();
+				if (association != null)
 				{
-					for (String id : selectedValues)
+					if (association.getIsCollection())
 					{
-						Long identifier = new Long(id.trim());
-						valueList.add(identifier);
+						if (selectedValues != null)
+						{
+							Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
+							Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
+							List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+									filteredAttributeCollection);
+							for (String id : selectedValues)
+							{
+								Map dataMap = new HashMap();
+								dataMap.put(attributesList.get(0), id);
+								valueList.add(dataMap);
+							}
+						}
+					}
+					else
+					{
+						if (selectedValues != null)
+						{
+							for (String id : selectedValues)
+							{
+								Long identifier = new Long(id.trim());
+								valueList.add(identifier);
+							}
+						}
 					}
 				}
+
 			}
 			else if (control instanceof ComboBoxInterface)
 			{
 				String selectedValue = request.getParameter("comboControl_" + sequence);
-				
+
 				if (selectedValue != null && selectedValue.trim().length() != 0)
 				{
 					valueList.add(new Long(selectedValue.trim()));
 				}
 			}
-			
+
 			if (!valueList.isEmpty())
 			{
 				attributeValueMap.put(abstractAttribute, valueList);
@@ -529,7 +574,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			attributeValue = value;
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
-		
+
 		else
 		{
 			String value = request.getParameter("Control_" + sequence);
@@ -566,7 +611,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws NumberFormatException If record identifier is not a numeric value.
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	private String storeParentContainer(Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack, Stack<ContainerInterface> containerStack,
 			HttpServletRequest request, String recordIdentifier) throws NumberFormatException, DynamicExtensionsApplicationException,
@@ -581,7 +626,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			applyDataEntryFormProcessor.setUserId(Long.parseLong(userId.trim()));
 		}
-		
+
 		String messageKey = "app.successfulDataInsertionMessage";
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
@@ -596,12 +641,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(rootContainerInterface, rootValueMap);
 			saveMessages(request, getMessageString(messageKey));
 		}
-		
+
 		return recordIdentifier;
 	}
 
 	/**
-	 * This method is used to check for the valid File Extensions. 
+	 * This method is used to check for the valid File Extensions.
 	 * @param dataEntryForm
 	 * @param control
 	 * @param selectedFile
@@ -668,14 +713,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method is used to check for the maximum file size. 
-	 * 
+	 * This method is used to check for the maximum file size.
+	 *
 	 * @param dataEntryForm
-	 *            
+	 *
 	 * @param control
-	 *           
+	 *
 	 * @param selectedFile
-	 *           
+	 *
 	 */
 	private void checkFileSize(Float maxFileSize, int selectedFileSize, String attributeName, List<String> errorList)
 	{

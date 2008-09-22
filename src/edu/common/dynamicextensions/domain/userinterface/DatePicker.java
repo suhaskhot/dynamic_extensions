@@ -7,6 +7,7 @@ import java.util.Date;
 
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -21,14 +22,14 @@ import edu.wustl.common.util.Utility;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:07 PM
- * @hibernate.joined-subclass table="DYEXTN_DATEPICKER" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_DATEPICKER"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class DatePicker extends Control implements DatePickerInterface
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	String dateValueType = null;
@@ -59,7 +60,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					&& this.getAttibuteMetadataInterface() instanceof CategoryAttribute)
 			{
 				CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) this.getAttibuteMetadataInterface();
-				DateTypeInformationInterface dateTypeInformation = (DateTypeInformationInterface) categoryAttribute.getAttribute()
+				DateTypeInformationInterface dateTypeInformation = (DateTypeInformationInterface) ((AttributeInterface) categoryAttribute.getAbstractAttribute())
 						.getAttributeTypeInformation();
 				defaultValue = reverseDate(defaultValue);
 				Date date = null;

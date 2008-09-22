@@ -289,6 +289,13 @@
         <key
             column="IDENTIFIER"
         />
+        <property
+            name="noOfRows"
+            type="integer"
+            update="true"
+            insert="true"
+            column="NO_OF_ROWS"
+        />
 
         <property
             name="isMultiSelect"

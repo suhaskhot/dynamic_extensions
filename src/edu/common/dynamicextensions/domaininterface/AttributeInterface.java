@@ -11,18 +11,6 @@ public interface AttributeInterface extends AbstractAttributeInterface
 {
 
 	/**
-	 * This method returns whether the Attribute is a Collection or not.
-	 * @return whether the Attribute is a Collection or not.
-	 */
-	Boolean getIsCollection();
-
-	/**
-	 * This method sets whether the Attribute is a Collection or not.
-	 * @param isCollection the Boolean value to be set.
-	 */
-	void setIsCollection(Boolean isCollection);
-
-	/**
 	 * This method returns whether the Attribute is identifiable or not.
 	 * @return whether the Attribute is identifiable or not.
 	 */
@@ -59,7 +47,7 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	void setIsNullable(Boolean isNullable);
 
 	/**
-	 * Column properties object contains database column name  
+	 * Column properties object contains database column name
 	 * @return ColumnPropertiesInterface ColumnPropertiesInterface
 	 */
 	ColumnPropertiesInterface getColumnProperties();
@@ -70,7 +58,7 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	void setColumnProperties(ColumnPropertiesInterface columnProperties);
 
 	/**
-	 * 
+	 *
 	 * @return AttributeTypeInformationInterface
 	 */
 	AttributeTypeInformationInterface getAttributeTypeInformation();
@@ -80,22 +68,22 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	 */
 	void setAttributeTypeInformation(
 			AttributeTypeInformationInterface attributeTypeInformationInterface);
-	
-	
+
+
 	/**
 	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.
 	 * @return Strin attribute type
 	 */
 	String getDataType();
-	
+
 	/**
-	 * 
+	 *
 	 * @return AttributeTypeInformationInterface
 	 */
 	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo();
-	
+
 	/**
-	 * 
+	 *
 	 * @return AttributeTypeInformationInterface
 	 */
 	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface);

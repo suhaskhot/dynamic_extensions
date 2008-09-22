@@ -382,7 +382,11 @@ class DynamicExtensionBaseQueryBuilder
 
 				List<Long> reocordIdList = getAssociationRecordValues(query.toString());
 
-				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT)
+						|| (association.getSourceRole().getAssociationsType()
+								.equals(AssociationType.ASSOCIATION) && association
+								.getIsCollection()))
 				{
 					List<Map> containmentRecordMapList = new ArrayList<Map>();
 
@@ -454,8 +458,10 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param recordId recordId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public void putAssociationValues(List<AssociationInterface> associationCollection, EntityRecordResultInterface entityRecordResult,
@@ -466,6 +472,7 @@ class DynamicExtensionBaseQueryBuilder
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
 		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
+
 
 		while (associationIterator.hasNext())
 		{
@@ -1146,13 +1153,8 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	protected boolean isAttributeColumnToBeExcluded(AttributeInterface attribute)
 	{
-		boolean isExclude = false;
-
-		if (attribute.getIsCollection() != null && attribute.getIsCollection())
-		{
-			isExclude = true;
-		}
-		return isExclude;
+		//this method is to be deleted.
+		return false;
 	}
 
 	/**
@@ -2234,7 +2236,7 @@ class DynamicExtensionBaseQueryBuilder
 		}
 
 		/*
-		 * added by: Kunal 
+		 * added by: Kunal
 		 * Two more extra columns file name and content type
 		 * needs to be added to the table.
 		 */
@@ -2315,7 +2317,7 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method contrsucts the query part for adding tow extra columns when
-	 * an attribute of type File is created 
+	 * an attribute of type File is created
 	 * @param attribute FileAttribute
 	 * @return queryString
 	 * @throws DynamicExtensionsSystemException

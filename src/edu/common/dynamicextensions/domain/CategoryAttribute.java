@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -48,7 +48,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	/**
 	 *
 	 */
-	protected AttributeInterface attribute;
+	protected AbstractAttributeInterface abstractAttribute;
 
 	/**
 	 *
@@ -56,16 +56,16 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	protected CategoryEntityInterface categoryEntity;
 
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean isVisible;
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean isRelatedAttribute;
 
@@ -171,7 +171,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/**
-	 * 
+	 *
 	 * @param dataElementInterface
 	 */
 	public void setDataElement(DataElementInterface dataElementInterface)
@@ -206,20 +206,20 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/**
-	 * @hibernate.many-to-one column="ATTRIBUTE_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.Attribute"
+	 * @hibernate.many-to-one column="ABSTRACT_ATTRIBUTE_ID" cascade="save-update" class="edu.common.dynamicextensions.domain.AbstractAttribute"
 	 * @return the attribute
 	 */
-	public AttributeInterface getAttribute()
+	public AbstractAttributeInterface getAbstractAttribute()
 	{
-		return attribute;
+		return abstractAttribute;
 	}
 
 	/**
 	 * @param attribute the attribute to set
 	 */
-	public void setAttribute(AttributeInterface attribute)
+	public void setAbstractAttribute(AbstractAttributeInterface attribute)
 	{
-		this.attribute = attribute;
+		this.abstractAttribute = attribute;
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
 	 * @hibernate.cache usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"   
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"
 	 * @return Returns the dataElementCollection.
 	 */
 	private Collection<PermissibleValueInterface> getDefaultPermissibleValuesCollection()
@@ -266,7 +266,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	}
 
 	/**
-	 * This method return the default value for the category attribute if set otherwise 
+	 * This method return the default value for the category attribute if set otherwise
 	 * return the default value for the original atttribute
 	 * @return
 	 */
@@ -279,7 +279,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		}
 		else
 		{
-			return ((AttributeMetadataInterface) this.attribute).getDefaultValue();
+			return ((AttributeMetadataInterface) this.abstractAttribute).getDefaultValue();
 		}
 	}
 
@@ -307,7 +307,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public int getMaxSize()
 	{
-		return ((AttributeMetadataInterface) this.attribute).getMaxSize();
+		return ((AttributeMetadataInterface) this.abstractAttribute).getMaxSize();
 	}
 
 	/* (non-Javadoc)
@@ -315,7 +315,7 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public String getMeasurementUnit()
 	{
-		return ((AttributeMetadataInterface) this.attribute).getMeasurementUnit();
+		return ((AttributeMetadataInterface) this.abstractAttribute).getMeasurementUnit();
 	}
 
 	/* (non-Javadoc)
@@ -323,12 +323,12 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public int getDecimalPlaces()
 	{
-		return ((AttributeMetadataInterface) this.attribute).getDecimalPlaces();
+		return ((AttributeMetadataInterface) this.abstractAttribute).getDecimalPlaces();
 	}
 
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
 	{
-		return ((AttributeMetadataInterface) this.attribute).getAttributeTypeInformation();
+		return ((AttributeMetadataInterface) this.abstractAttribute).getAttributeTypeInformation();
 	}
 
 	/**

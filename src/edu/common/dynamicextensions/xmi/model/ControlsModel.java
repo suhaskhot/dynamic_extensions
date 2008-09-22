@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.common.dynamicextensions.xmi.model;
 
@@ -30,7 +30,7 @@ AbstractAttributeUIBeanInterface
 	 */
 	AbstractAttributeInterface abstractAttribute;
 	/**
-	 * 
+	 *
 	 */
 	String description;
 	/**
@@ -40,45 +40,45 @@ AbstractAttributeUIBeanInterface
 	String attributeConceptCode;
 
 	/**
-	 * 
+	 *
 	 */
 	String dataType;
 
 	/**
-	 * 
+	 *
 	 */
 	List dataTypeList;
 
 	/**
-	 * 
+	 *
 	 */
 	String attributeSize;
 
 	/**
-	 * 
+	 *
 	 */
 	String attributeDefaultValue;
 
 	/**
-	 * 
+	 *
 	 */
 	String format;
 	/**
-	 * 
+	 *
 	 */
 	String attributeValidationRules;
 
 	/**
-	 * 
+	 *
 	 */
 	String attributeDisplayUnits;
 
 	/**
-	 * 
+	 *
 	 */
 	String referenceValues;
 	/**
-	 * 
+	 *
 	 */
 
 	String displayChoice;
@@ -92,7 +92,7 @@ AbstractAttributeUIBeanInterface
 	String attributeDigits;
 
 	/**
-	 * 
+	 *
 	 */
 	String htmlFile;
 	/**
@@ -104,31 +104,31 @@ AbstractAttributeUIBeanInterface
 	 */
 	String attributeIdentifier;
 	/**
-	 * 
+	 *
 	 */
 	String caption;
 	/**
-	 * 
+	 *
 	 */
 	String attributeIsPassword;
 	/**
-	 * 
+	 *
 	 */
 	Boolean isPassword;
 	/**
-	 * 
+	 *
 	 */
 	Boolean isUrl;
 	/**
-	 * 
+	 *
 	 */
 	List toolsList = new ArrayList();
 	/**
-	 * 
+	 *
 	 */
 	Boolean isHidden;
 	/**
-	 * 
+	 *
 	 */
 	Integer sequenceNumber;
 	/**
@@ -136,91 +136,91 @@ AbstractAttributeUIBeanInterface
 	 */
 	String controlsSequenceNumbers;
 	/**
-	 * 
+	 *
 	 */
 	protected String cssClass;
 	/**
-	 * 
+	 *
 	 */
 	protected String name;
 	/**
-	 * 
+	 *
 	 */
 	protected String tooltip;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeNoOfRows;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributenoOfCols;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeMultiSelect;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeSequenceNumber;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeMeasurementUnits;
 	/**
-	 * 
+	 *
 	 */
 	protected String attributeScale;
 	/**
-	 * 
+	 *
 	 */
 	protected String userSelectedTool;
 	/**
-	 * 
+	 *
 	 */
 	protected Integer columns;
 	/**
-	 * 
+	 *
 	 */
 	protected Integer rows;
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean isMultiSelect;
 
 	/**
-	 * 
+	 *
 	 */
 	protected String controlOperation;
 	/**
-	 * 
+	 *
 	 */
 	protected String selectedControlId;
 	/**
-	 * 
+	 *
 	 */
 
 	protected String rootName;
 
 	/**
-	 * 
+	 *
 	 */
 	protected List childList;
 
 	/**
-	 * 
+	 *
 	 */
 	protected String linesType;
 	/**
-	 * 
+	 *
 	 */
 	protected String dateValueType;
 	/**
-	 * 
+	 *
 	 */
 	protected String[] validationRules = new String[0];
 	/**
-	 * 
+	 *
 	 */
 	protected String[] tempValidationRules = new String[]{""};
 
@@ -238,27 +238,27 @@ AbstractAttributeUIBeanInterface
 
 	protected List optionDetails;
 	/**
-	 * 
+	 *
 	 */
 	protected String min;
 	/**
-	 * 
+	 *
 	 */
 	protected String max;
 	/**
-	 * 
+	 *
 	 */
 	protected String minTemp;
 	/**
-	 * 
+	 *
 	 */
 	protected String maxTemp;
 	/**
-	 * 
+	 *
 	 */
 	protected Map controlRuleMap;
 	/**
-	 * 
+	 *
 	 */
 	protected String selectedControlCaption;
 	/**
@@ -349,7 +349,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return List MeasurementUnitsList
 	 */
 	public List getMeasurementUnitsList()
@@ -358,7 +358,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param measurementUnitsList list of measurementUnits
 	 */
 	public void setMeasurementUnitsList(List measurementUnitsList)
@@ -367,7 +367,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 *  
+	 *
 	 * @return String AttributeIdentified
 	 */
 	public String getAttributeIdentified()
@@ -376,7 +376,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeIdentified attributeIdentified
 	 */
 	public void setAttributeIdentified(String attributeIdentified)
@@ -385,7 +385,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String selectedControlCaption
 	 */
 	public String getSelectedControlCaption()
@@ -394,7 +394,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param selectedControlCaption selectedControlCaption
 	 */
 	public void setSelectedControlCaption(String selectedControlCaption)
@@ -403,7 +403,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void reset()
 	{
@@ -801,7 +801,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Boolean isPassword
 	 */
 	public Boolean getIsPassword()
@@ -810,7 +810,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param isPassword isPassword
 	 */
 	public void setIsPassword(Boolean isPassword)
@@ -839,7 +839,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return AbstractAttributeInterface abstractAttributeInterface
 	 */
 	public AbstractAttributeInterface getAbstractAttribute()
@@ -848,7 +848,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param abstractAttributeInterface abstractAttributeInterface
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
@@ -857,7 +857,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Integer columns
 	 */
 
@@ -875,7 +875,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Boolean isHidden
 	 */
 	public Boolean getIsHidden()
@@ -884,8 +884,8 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
-	 * @return name name 
+	 *
+	 * @return name name
 	 */
 	public String getName()
 	{
@@ -893,7 +893,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Integer  rows
 	 */
 	public Integer getRows()
@@ -911,7 +911,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Integer sequenceNumber
 	 */
 	public Integer getSequenceNumber()
@@ -928,7 +928,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param columns Integer columns
 	 */
 	public void setColumns(Integer columns)
@@ -942,7 +942,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param isHidden isHidden
 	 */
 	public void setIsHidden(Boolean isHidden)
@@ -951,7 +951,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param name name to be set
 	 */
 	public void setName(String name)
@@ -960,7 +960,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param rows Integer rows
 	 */
 	public void setRows(Integer rows)
@@ -973,7 +973,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param sequenceNumber Integer sequenceNumber
 	 */
 	public void setSequenceNumber(Integer sequenceNumber)
@@ -1001,7 +1001,7 @@ AbstractAttributeUIBeanInterface
 		}
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
 	 * @see edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface#getAttributeDigits()
 	 */
@@ -1020,7 +1020,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return attributeSequenceNumber attributeSequenceNumber
 	 */
 	public String getAttributeSequenceNumber()
@@ -1029,7 +1029,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 *  
+	 *
 	 * @param attributeSequenceNumber attributeSequenceNumber
 	 */
 	public void setAttributeSequenceNumber(String attributeSequenceNumber)
@@ -1038,7 +1038,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String attributeIsPassword
 	 */
 	public String getAttributeIsPassword()
@@ -1047,7 +1047,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeIsPassword attributeIsPassword
 	 */
 	public void setAttributeIsPassword(String attributeIsPassword)
@@ -1260,7 +1260,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @return String measurementUnitOther
 	 */
 	public String getMeasurementUnitOther()
@@ -1269,7 +1269,7 @@ AbstractAttributeUIBeanInterface
 	}
 
 	/**
-	 * 
+	 *
 	 * @param measurementUnitOther measurementUnitOther
 	 */
 	public void setMeasurementUnitOther(String measurementUnitOther)

@@ -38,12 +38,14 @@ import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentCont
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domain.userinterface.Control;
+import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -1498,24 +1500,22 @@ public class DynamicExtensionsUtility
 			for (ControlInterface control : controlCollection)
 			{
 				isPresent = false;
-				if (control instanceof ContainmentAssociationControl)
+				if (control instanceof ContainmentAssociationControl || control instanceof ListBox)
 				{
-					ContainmentAssociationControl containmentAssociationControl = (ContainmentAssociationControl) control;
 					if (sequenceNumbers != null)
 					{
 						for (Integer sequenceNumber : sequenceNumbers)
 						{
-							if (containmentAssociationControl.getSequenceNumber() != null
-									&& containmentAssociationControl.getSequenceNumber().equals(sequenceNumber))
+							if (control.getSequenceNumber() != null
+									&& control.getSequenceNumber().equals(sequenceNumber))
 							{
 								isPresent = true;
 							}
 						}
 						if (!isPresent)
 						{
-							AssociationInterface associationInterface = (AssociationInterface) containmentAssociationControl
-									.getBaseAbstractAttribute();
-							listOfIds.add(associationInterface.getId());
+							listOfIds.add(control.getBaseAbstractAttribute()
+									.getId());
 						}
 					}
 				}
@@ -1578,8 +1578,8 @@ public class DynamicExtensionsUtility
 	 * @param attr
 	 * @param value
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws ParseException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws ParseException
 	 */
 	public static String getDefaultDateForRelatedCategoryAttribute(AttributeInterface attr, Object value) throws DynamicExtensionsSystemException
 	{

@@ -54,7 +54,7 @@ public class ImportPermissibleValues
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public void importValues() throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, ParseException
 	{
@@ -96,7 +96,7 @@ public class ImportPermissibleValues
 					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser.getPermissibleValues();
 					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String, Collection<SemanticPropertyInterface>>();
 
-					CategoryValidator.checkForNullRefernce(currentEntity.getAttributeByName(attributeName), " ERROR AT LINE:"
+					CategoryValidator.checkForNullRefernce(currentEntity.getAbstractAttributeByName(attributeName), " ERROR AT LINE:"
 							+ categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
 
 					AttributeTypeInformationInterface attributeTypeInformation = currentEntity.getAttributeByName(attributeName)

@@ -1,9 +1,11 @@
 
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+
 /**
  * ListBoxInterface stores necessary information for generating ListBox control on
- * dynamically generated user interface.  
+ * dynamically generated user interface.
  * @author geetika_bangard
  */
 public interface ListBoxInterface extends SelectInterface
@@ -11,7 +13,7 @@ public interface ListBoxInterface extends SelectInterface
 
 	/**
 	 * This method returns whether the ListBox has a multiselect property or not.
-	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT" 
+	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT"
 	 * @return whether the ListBox has a multiselect property or not.
 	 */
 	Boolean getIsMultiSelect();
@@ -33,5 +35,11 @@ public interface ListBoxInterface extends SelectInterface
 	 * @param noOfRows the Number of rows to be set for ListBox.
 	 */
 	void setNoOfRows(Integer noOfRows);
+	/**
+	 *
+	 * This method returns AssociationInterface
+	 * @return association
+	 */
+	AssociationInterface getBaseAbstractAttributeAssociation();
 
 }

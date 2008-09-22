@@ -2,10 +2,16 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -14,8 +20,8 @@ import edu.wustl.common.beans.NameValueBean;
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
- * @hibernate.joined-subclass table="DYEXTN_LIST_BOX" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_LIST_BOX"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class ListBox extends SelectControl implements ListBoxInterface
 {
@@ -40,9 +46,11 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 */
 	private List listOfValues = null;
 
+
 	/**
 	 * This method returns the Number of rows to be displayed on the UI for ListBox.
-	 * @return the Number of rows to be displayed on the UI for ListBox.
+	 * @hibernate.property name="noOfRows" type="integer" column="NO_OF_ROWS"
+	 * @return Returns the noOfRows.
 	 */
 	public Integer getNoOfRows()
 	{
@@ -67,7 +75,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 	/**
 	 * This method returns whether the ListBox has a multiselect property or not.
-	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT" 
+	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT"
 	 * @return whether the ListBox has a multiselect property or not.
 	 */
 	public Boolean getIsMultiSelect()
@@ -87,23 +95,29 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	/**
 	 * This method generates the HTML code to display the ListBox Control on the form.
 	 * @return HTML code for ListBox Control.
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
-		List<String> valueList = null;
-
-		// quick fix. 
-		if (!(value instanceof List) && value != null)
+		List<String> valueList = new ArrayList<String>();
+		AssociationInterface association = getBaseAbstractAttributeAssociation();
+		if (association != null)
 		{
-			List<String> tempList = new ArrayList<String>();
-			tempList.add((String) value);
-			valueList = tempList;
+			getValueList(association,valueList);
 		}
 		else
 		{
-			valueList = (List<String>) this.value;
+			if (!(value instanceof List) && value != null)
+			{
+				List<String> tempList = new ArrayList<String>();
+				tempList.add((String) value);
+				valueList = tempList;
+			}
+			else
+			{
+				valueList = (List<String>) this.value;
+			}
 		}
 
 		String strMultiSelect = "";
@@ -161,18 +175,25 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
-		List<String> selectedOptions = null;
+		List<String> selectedOptions = new ArrayList<String>();
 
-		// quick fix. 
-		if (!(value instanceof List) && value != null)
+		AssociationInterface association = getBaseAbstractAttributeAssociation();
+		if (association != null)
 		{
-			List<String> tempList = new ArrayList<String>();
-			tempList.add((String) value);
-			selectedOptions = tempList;
+			getValueList(association,selectedOptions);
 		}
 		else
 		{
-			selectedOptions = (List<String>) this.value;
+			if (!(value instanceof List) && value != null)
+			{
+				List<String> tempList = new ArrayList<String>();
+				tempList.add((String) value);
+				selectedOptions = tempList;
+			}
+			else
+			{
+				selectedOptions = (List<String>) this.value;
+			}
 		}
 
 		//List<String> selectedOptions = (List<String>) this.value;
@@ -193,5 +214,50 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 		return htmlString.toString();
 	}
-
+	/**
+	 * getValueList
+	 * @param association
+	 * @param valueList
+	 */
+	private void getValueList(AssociationInterface association,List<String> valueList)
+	{
+		if (association.getIsCollection())
+		{
+			Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
+			Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
+			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+					filteredAttributeCollection);
+			List<Map> values = (List<Map>) this.value;
+			if (values != null)
+			{
+				for (Map valueMap :values)
+				{
+					String value = (String) valueMap.get(attributesList.get(0));
+					valueList.add(value);
+				}
+			}
+		}
+	}
+	/**
+	 *
+	 * @return
+	 */
+	public AssociationInterface getBaseAbstractAttributeAssociation()
+	{
+		AssociationInterface association = null;
+		if (baseAbstractAttribute != null && baseAbstractAttribute instanceof AssociationInterface)
+		{
+			association = (AssociationInterface) baseAbstractAttribute;
+		}
+		else if (baseAbstractAttribute != null && baseAbstractAttribute instanceof CategoryAttributeInterface)
+		{
+			CategoryAttributeInterface categoryAttributeInterface = (CategoryAttributeInterface) baseAbstractAttribute;
+			AbstractAttributeInterface abstractAttributeInterface = categoryAttributeInterface.getAbstractAttribute();
+			if (abstractAttributeInterface instanceof AssociationInterface)
+			{
+				association = (AssociationInterface) abstractAttributeInterface;
+			}
+		}
+		return association;
+	}
 }

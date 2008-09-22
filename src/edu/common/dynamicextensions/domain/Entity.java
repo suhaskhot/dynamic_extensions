@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -13,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
@@ -494,13 +496,13 @@ public class Entity extends AbstractEntity implements EntityInterface
 			{
 				if (attributeNames.add(parentAttribute.getName()))
 				{
-				
+
 					theAttributeCollection.add(parentAttribute);
 					boolean isDerivedTagPresent = false;
 					for (TaggedValueInterface tag : parentAttribute.getTaggedValueCollection()) {
 					if (tag.getKey().equals(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED)) {
 							isDerivedTagPresent = true;
-						}	
+						}
 					}
 					if (!isDerivedTagPresent)
 					{
@@ -516,24 +518,103 @@ public class Entity extends AbstractEntity implements EntityInterface
 		return theAttributeCollection;
 
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param attributeName
 	 * @return
 	 */
 	public AttributeInterface getAttributeByName(String attributeName)
 	{
 		AttributeInterface attribute = null;
-		for (AttributeInterface attr: this.getAllAttributes())
+		AbstractAttributeInterface abstractAttribute = null;
+		for (AbstractAttributeInterface attr: this.getAllAbstractAttributes())
 		{
 			if (attr.getName().trim().equals(attributeName))
 			{
-				attribute = attr;
+				abstractAttribute = attr;
+				break;
 			}
 		}
-		
+		if (abstractAttribute != null && abstractAttribute instanceof AssociationInterface)
+		{
+			AssociationInterface association = (AssociationInterface) abstractAttribute;
+			if (association.getIsCollection())
+			{
+				Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
+				Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
+				List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+						filteredAttributeCollection);
+				attribute = (AttributeInterface) attributesList.get(0);
+			}
+		}
+		else
+		{
+			attribute = (AttributeInterface) abstractAttribute;
+		}
 		return attribute;
 	}
-
+	/**
+	 *
+	 * @param attributeName
+	 * @return
+	 */
+	public AbstractAttributeInterface getAbstractAttributeByName(String attributeName)
+	{
+		AbstractAttributeInterface abstractAttribute = null;
+		for (AbstractAttributeInterface attr: this.getAllAbstractAttributes())
+		{
+			if (attr.getName().trim().equals(attributeName))
+			{
+				abstractAttribute = attr;
+				break;
+			}
+		}
+		return abstractAttribute;
+	}
+	/**
+	 *
+	 * @param attributeName
+	 * @return
+	 */
+	public boolean isAttributePresent(String attributeName)
+	{
+		boolean isAttributePresent = false;
+		for (AbstractAttributeInterface attr: this.getAbstractAttributeCollection())
+		{
+			if (attr.getName().trim().equals(attributeName))
+			{
+				isAttributePresent = true;
+				break;
+			}
+		}
+		return isAttributePresent;
+	}
+	/**
+	 *
+	 * @param attributeName
+	 * @return
+	 */
+	public boolean isMultiselectAttributePresent(String attributeName)
+	{
+		boolean isAttributePresent = false;
+		AbstractAttributeInterface abstractAttribute = null;
+		for (AbstractAttributeInterface attr: this.getAllAbstractAttributes())
+		{
+			if (attr.getName().trim().equals(attributeName))
+			{
+				abstractAttribute = attr;
+				break;
+			}
+		}
+		if (abstractAttribute != null && abstractAttribute instanceof AssociationInterface)
+		{
+			AssociationInterface association = (AssociationInterface) abstractAttribute;
+			if (association.getIsCollection())
+			{
+				isAttributePresent = true;
+			}
+		}
+		return isAttributePresent;
+	}
 }

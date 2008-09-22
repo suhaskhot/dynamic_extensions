@@ -1,7 +1,7 @@
 /**
  *<p>Title: ControlProcessor</p>
  *<p>Description:  This class acts as a utility class which processes tne control in various ways as needed
- *and provides methods to the UI layer.This processor class is a POJO and not a framework specific class so 
+ *and provides methods to the UI layer.This processor class is a POJO and not a framework specific class so
  *it can be used by all types of presentation layers.  </p>
  *<p>Copyright:TODO</p>
  *@author Deepti Shelar
@@ -66,12 +66,12 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
-	 * @param userSelectedControlName : Name of the User Selected Control 
+	 *
+	 * @param userSelectedControlName : Name of the User Selected Control
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public ControlInterface createAndPopulateControl(String userSelectedControlName, ControlUIBeanInterface controlUIBeanInterface,
 			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -81,13 +81,13 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
-	 * @param userSelectedControlName : Name of the User Selected Control 
+	 *
+	 * @param userSelectedControlName : Name of the User Selected Control
 	 * @param controlIntf : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public ControlInterface populateControlInterface(String userSelectedControlName, ControlInterface controlIntf,
 			ControlUIBeanInterface controlUIBeanInterface, EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException,
@@ -151,7 +151,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 
 	}
 
-	/** 
+	/**
 	 * @param controlIntf : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for File upload
@@ -175,7 +175,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param controlInterface : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
-	 * @return : Control interface populated with required information for date 
+	 * @return : Control interface populated with required information for date
 	 */
 	private ControlInterface getDatePickerControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
@@ -236,14 +236,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInterface : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for list box
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ListBoxInterface listBoxIntf = null;
-		if (controlInterface == null) //If does not exist create it 
+		if (controlInterface == null) //If does not exist create it
 		{
 			listBoxIntf = DomainObjectFactory.getInstance().createListBox();
 		}
@@ -264,7 +264,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		AbstractAttributeInterface controlAttribute = controlUIBeanInterface.getAbstractAttribute();
 		if ((controlAttribute != null) && (controlAttribute instanceof AttributeInterface))
 		{
-			((AttributeInterface) controlAttribute).setIsCollection(new Boolean(true));
+			//((AttributeInterface) controlAttribute).setIsCollection(new Boolean(true));
 		}
 		if (listBoxIntf instanceof SelectControl)
 		{
@@ -277,14 +277,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlInterface : Control Interface (Domain Object Interface)
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for Combobox
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ControlInterface getComboBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,
 			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ComboBoxInterface comboBoxIntf = null;
-		if (controlInterface == null) //If does not exist create it 
+		if (controlInterface == null) //If does not exist create it
 		{
 			comboBoxIntf = DomainObjectFactory.getInstance().createComboBox();
 		}
@@ -308,10 +308,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @param controlUIBeanInterface 
+	 * @param controlUIBeanInterface
 	 * @param control
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void initializeSelectControl(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface,
 			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -345,8 +345,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param controlUIBeanInterface
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private AssociationDisplayAttributeInterface getAssociationDisplayAttribute(String controlId, int sequenceNo, EntityGroupInterface... entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -366,14 +366,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param string
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private AttributeInterface getAttributeForId(String controlId, EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		ControlInterface control = null;
-		
+
 		for (EntityInterface entity : entityGroup.getEntityCollection())
 		{
 			Collection<ContainerInterface> containerCollection = entity.getContainerCollection();
@@ -409,7 +409,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	public ControlInterface getMultiLineControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		TextAreaInterface textAreaIntf = null;
-		if (controlInterface == null) //If does not exist create it 
+		if (controlInterface == null) //If does not exist create it
 		{
 			textAreaIntf = DomainObjectFactory.getInstance().createTextArea();
 		}
@@ -439,7 +439,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	public ControlInterface getTextControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 	{
 		TextFieldInterface textFldIntf = null;
-		if (controlInterface == null) //If does not exist create it 
+		if (controlInterface == null) //If does not exist create it
 		{
 			textFldIntf = DomainObjectFactory.getInstance().createTextField();
 		}
@@ -462,13 +462,13 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * This method will populate the ControlUIBeanInterface using the controlInterface so that the 
+	 * This method will populate the ControlUIBeanInterface using the controlInterface so that the
 	 * information of the Control can be shown on the user page using the ControlUIBeanInterface.
 	 * @param controlInterface Instance of controlInterface from which to populate the informationInterface.
-	 * @param controlUIBeanInterface Instance of ControlUIBeanInterface which will be populated using 
+	 * @param controlUIBeanInterface Instance of ControlUIBeanInterface which will be populated using
 	 * the first parameter that is controlInterface.
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public void populateControlUIBeanInterface(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -483,8 +483,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param controlInterface
 	 * @param controlUIBeanInterface
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void populateControlSpecificAttributes(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -530,8 +530,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param selectControl
 	 * @param controlUIBeanInterface
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void populateSelectControlAttributesInUIBean(SelectControl selectControl, ControlUIBeanInterface controlUIBeanInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -595,7 +595,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		controlUIBeanInterface.setColumns(textAreaInterface.getColumns());
 		controlUIBeanInterface.setRows(textAreaInterface.getRows());
 		controlUIBeanInterface.setLinesType(ProcessorConstants.LINE_TYPE_MULTILINE);
-		
+
 	}
 
 	/**

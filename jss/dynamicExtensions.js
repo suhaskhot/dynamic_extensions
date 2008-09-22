@@ -667,10 +667,13 @@ function listTypeChanged(obj)
             if(obj.value == 'SingleSelect')
             {
                 rowForDisplayHeight.style.display="none";
+                document.getElementById("userSelectedTool").value = "ComboboxControl";
             }
             if(obj.value == 'MultiSelect')
             {
                 rowForDisplayHeight.style.display="";
+                document.getElementById("userSelectedTool").value = "ListBoxControl";
+                //alert(document.getElementById("userSelectedTool").value);
             }
         }
     }
@@ -1595,7 +1598,7 @@ function setDefaultValues(tableId, obj)
     var i = 0;
     for (j = 0 ; j < children.length; j++)
     {
-		
+
         var childObject = children[j];
         childObjectName = childObject.name;
         if (childObjectName != null && childObjectName.indexOf('_')!= -1)
@@ -1610,7 +1613,7 @@ function setDefaultValues(tableId, obj)
 					str = childObjectName + "_" + rowIndex;
 				}
                 str = str + ")";
-				
+
             }
             else
             {
@@ -1630,11 +1633,11 @@ function setDefaultValues(tableId, obj)
 
 			var oldName  = childNodes2[2].childNodes[0].childNodes[0].name;
 			var newName = oldName + "_" +rowIndex;
-		
+
 			var newScript = replaceAll(childNodes2[1].innerHTML,oldName,newName);
-		
+
 			obj.innerHTML =replaceAll(childNodes2[2].innerHTML,oldName,newName);
-		
+
 			eval(newScript);
 
 		}

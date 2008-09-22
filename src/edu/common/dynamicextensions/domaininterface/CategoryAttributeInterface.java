@@ -17,13 +17,13 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 *
 	 * @return
 	 */
-	public AttributeInterface getAttribute();
+	public AbstractAttributeInterface getAbstractAttribute();
 
 	/**
 	 *
 	 * @param attribute
 	 */
-	public void setAttribute(AttributeInterface attribute);
+	public void setAbstractAttribute(AbstractAttributeInterface attribute);
 
 	/**
 	 *
@@ -64,32 +64,32 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * @param columnProperties the ColumnProperties to be set.
 	 */
 	public void setColumnProperties(ColumnPropertiesInterface columnProperties);
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public Boolean getIsVisible();
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public void setIsVisible(Boolean isVisible);
-	
+
 	public Set<RuleInterface> getRuleCollection();
 
 	/**
 	 * @param ruleCollection the ruleCollection to set
 	 */
 	public void setRuleCollection(Set<RuleInterface> ruleCollection);
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public Boolean getIsRelatedAttribute();
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public void setIsRelatedAttribute(Boolean isRelatedAttribute);
-	
+
 }

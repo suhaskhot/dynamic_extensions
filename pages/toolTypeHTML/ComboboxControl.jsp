@@ -59,6 +59,7 @@
 						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_LOOKUP%>" >
 							<bean:message key="eav.att.OptionsLookup"/>
 						</html:radio>
+						<input type="hidden" name="userSelectedTool" id="userSelectedTool" value="ComboboxControl" />
 					</td>
 				</tr>
 			 </table>

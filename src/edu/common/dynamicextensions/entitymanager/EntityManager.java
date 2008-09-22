@@ -637,8 +637,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
-	 * @throws IOException 
-	 * @throws ParseException 
+	 * @throws IOException
+	 * @throws ParseException
 	 */
 	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO,
 			Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException,
@@ -713,8 +713,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws SQLException
 	 * @throws DAOException
 	 * @throws UserNotAuthorizedException
-	 * @throws IOException 
-	 * @throws ParseException 
+	 * @throws IOException
+	 * @throws ParseException
 	 */
 	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long... userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
@@ -744,37 +744,35 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			identifier = entityManagerUtil.getNextIdentifier(entity.getTableProperties().getName());
 		}
-		
+
 		StringBuffer queryValuesString = new StringBuffer();
 		StringBuffer queryString = new StringBuffer(INSERT_INTO_KEYWORD);
 		queryString.append(entity.getTableProperties().getName() + WHITESPACE);
-		
+
 		queryString.append(OPENING_BRACKET);
 		queryString.append("IDENTIFIER,");
 		queryString.append(Constants.ACTIVITY_STATUS_COLUMN);
-		
+
 		columnNames.add("IDENTIFIER ");
 		columnValues.add(identifier);
 		queryValuesString.append(VALUES_KEYWORD);
 		queryValuesString.append(OPENING_BRACKET);
 		queryValuesString.append(identifier);
 		queryValuesString.append(COMMA);
-		
+
 
 		columnNames.add(Constants.ACTIVITY_STATUS_COLUMN);
 		columnValues.add(Constants.ACTIVITY_STATUS_ACTIVE);
 		queryValuesString.append(Constants.ACTIVITY_STATUS_ACTIVE);
 		queryValuesString.append(COMMA);
-		
-		String tableName = entity.getTableProperties().getName();
 
-		List<AttributeRecord> attributeRecords = new ArrayList<AttributeRecord>();
+		String tableName = entity.getTableProperties().getName();
 
 		Set uiColumnSet = dataValue.keySet();
 		Iterator uiColumnSetIter = uiColumnSet.iterator();
 		List<String> queryList = new ArrayList<String>();
 		Object value = null;
-		
+
 		DynamicExtensionBaseQueryBuilder baseQueryBuilder = new DynamicExtensionBaseQueryBuilder();
 		while (uiColumnSetIter.hasNext())
 		{
@@ -788,41 +786,27 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			if (attribute instanceof AttributeInterface)
 			{
-				//For collection type attribute, populate CollectionAttributeRecordValue HO
-				if (((AttributeInterface) attribute).getIsCollection())
+				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
+				if (((AttributeInterface)attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				{
-					AttributeRecord collectionRecord = populateCollectionAttributeRecord(null, entity, (AttributeInterface) attribute, identifier,
-							(List<String>) value);
-					attributeRecords.add(collectionRecord);
+					queryString.append(COMMA);
+					queryValuesString.append(COMMA);
+					queryString.append(attribute.getName()+UNDERSCORE+ FILE_NAME);
+					queryValuesString.append(((FileAttributeRecordValue)value).getFileName());
+					queryValuesString.append(COMMA);
+					queryString.append(COMMA);
+					queryString.append(attribute.getName()+UNDERSCORE+CONTENT_TYPE);
+					queryValuesString.append(((FileAttributeRecordValue)value).getContentType());
+					queryString.append(COMMA);
+					queryValuesString.append(((FileAttributeRecordValue)value).getFileContent());
 				}
 				else
 				{
-					updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
-					
-					if (((AttributeInterface)attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-					{
-						queryString.append(COMMA);
-						queryValuesString.append(COMMA);
-						queryString.append(attribute.getName()+UNDERSCORE+ FILE_NAME);
-						queryValuesString.append(((FileAttributeRecordValue)value).getFileName());
-						
-						queryValuesString.append(COMMA);
-						queryString.append(COMMA);
-						queryString.append(attribute.getName()+UNDERSCORE+CONTENT_TYPE);						
-						queryValuesString.append(((FileAttributeRecordValue)value).getContentType());
-						
-						queryString.append(COMMA);
-						queryValuesString.append(((FileAttributeRecordValue)value).getFileContent());
-					}
-					else
-					{
-						queryValuesString.append(COMMA);
-						queryValuesString.append(baseQueryBuilder.getFormattedValue(attribute, value));
-						queryString.append(COMMA);
-						queryString.append(((AttributeInterface)attribute).getColumnProperties().getName());
-					}
+					queryValuesString.append(COMMA);
+					queryValuesString.append(baseQueryBuilder.getFormattedValue(attribute, value));
+					queryString.append(COMMA);
+					queryString.append(((AttributeInterface)attribute).getColumnProperties().getName());
 				}
-
 			}
 			else
 			{
@@ -830,7 +814,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				AssociationInterface association = (AssociationInterface) attribute;
 				List<Long> recordIdList = null;
 
-				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT)
+						|| (association.getSourceRole().getAssociationsType()
+								.equals(AssociationType.ASSOCIATION) && association
+								.getIsCollection()))
 				{
 					List<Map> listOfMapsForContainedEntity = (List) value;
 					recordIdList = new ArrayList<Long>();
@@ -859,14 +847,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		JDBCDAOImpl jdbcDao = new JDBCDAOImpl();
 		jdbcDao.openSession(null);
 		jdbcDao.insert(tableName, columnValues, columnNames);
-		
+
 		queryString.append(CLOSING_BRACKET);
 		queryValuesString.append(CLOSING_BRACKET);
 		queryString.append(queryValuesString);
-		
+
 		hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString.toString()),
 				null, false, false);
-		
+
 
 		Connection conn = DBUtil.getConnection();
 		for (String string : queryList)
@@ -878,15 +866,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					null, false, false);
 			statement.executeUpdate();
 		}
-		
+
 		//hibernateDAO.commit();
 		jdbcDao.commit();
-
-
-		for (AttributeRecord collectionAttributeRecord : attributeRecords)
-		{
-			hibernateDAO.insert(collectionAttributeRecord, null, false, false);
-		}
 
 		return identifier;
 
@@ -897,9 +879,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param value
 	 * @param columnNames
 	 * @param columnValues
-	 * @throws ParseException 
 	 * @throws ParseException
-	 * @throws IOException 
+	 * @throws ParseException
+	 * @throws IOException
 	 * @throws IOException
 	 */
 	private void updateColumnNamesAndColumnValues(AbstractAttribute attribute, Object value, List<String> columnNames, List<Object> columnValues)
@@ -908,7 +890,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
 
 		// populate FileAttributeRecordValue HO
-		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation && 
+		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation &&
 				!(value instanceof String))
 		{
 			populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) value, primitiveAttribute);
@@ -921,9 +903,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				if(value != null && value.toString().length() != 0 )
 				{
 					String dateFormat = ((DateAttributeTypeInformation) primitiveAttribute.getAttributeTypeInformation()).getFormat();
-					value = new Timestamp(new SimpleDateFormat(dateFormat).parse(value.toString()).getTime());					
+					value = new Timestamp(new SimpleDateFormat(dateFormat).parse(value.toString()).getTime());
 				}
-				
 			}
 			else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 			{
@@ -933,18 +914,24 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 				value = bStream.toByteArray();
 			}
-			columnValues.add(value);
-
+			if (value == null || value.toString().length() == 0)
+			{
+				columnValues.add(null);
+			}
+			else
+			{
+				columnValues.add(value);
+			}
 		}
 	}
 
 	/**
-	 * This method adds the extra columns information 
+	 * This method adds the extra columns information
 	 * that needs to be maintained while adding the file data
 	 * @param columnNames list of column names
 	 * @param columnValues list of column values
 	 * @param value file attribute value
-	 * @param attribute 
+	 * @param attribute
 	 */
 	private void populateFileAttribute(List<String> columnNames, List<Object> columnValues, FileAttributeRecordValue value,
 			AttributeInterface attribute)
@@ -1136,8 +1123,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
-	 * @throws IOException 
-	 * @throws ParseException 
+	 * @throws IOException
+	 * @throws ParseException
 	 */
 	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long... userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
@@ -1151,10 +1138,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		List<String> columnNames = new ArrayList<String>();
 		List<Object> columnValues = new ArrayList<Object>();
-		
-
-		List<AttributeRecord> collectionRecords = new ArrayList<AttributeRecord>();
-		List<AttributeRecord> deleteCollectionRecords = new ArrayList<AttributeRecord>();
 
 		String tableName = entity.getTableProperties().getName();
 
@@ -1172,40 +1155,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			if (attribute instanceof AttributeInterface)
 			{
-				AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
-
-				if (primitiveAttribute.getIsCollection())
-				{
-					// get previous values for multi select attributes
-					AttributeRecord collectionRecord = getAttributeRecord(entity.getId(), primitiveAttribute.getId(), recordId, hibernateDAO);
-					List<String> listOfValues = (List<String>) value;
-
-					if (!listOfValues.isEmpty())
-					{ //if some values are provided,set these values clearing previous ones.
-						collectionRecord = populateCollectionAttributeRecord(collectionRecord, entity, primitiveAttribute, recordId,
-								(List<String>) value);
-						collectionRecords.add(collectionRecord);
-					}
-
-					if (collectionRecord != null && listOfValues.isEmpty())
-					{
-						//if updated value is empty list, then delete previously saved value if any.
-						deleteCollectionRecords.add(collectionRecord);
-					}
-
-				}
-				else
-				{
-					updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
-				}
-
+				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
 			}
 			else
 			{
 				AssociationInterface association = (AssociationInterface) attribute;
 				List<Long> recordIdList = new ArrayList<Long>();
 
-				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
+				if (association.getSourceRole().getAssociationsType().equals(
+						AssociationType.CONTAINTMENT)
+						|| (association.getSourceRole().getAssociationsType()
+								.equals(AssociationType.ASSOCIATION) && association
+								.getIsCollection()))
 				{
 					List<String> removeContainmentRecordQuery = new ArrayList<String>();
 					recordIdList.add(recordId);
@@ -1269,7 +1230,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				{
 					query.append(COMMA + WHITESPACE);
 					auditQuery.append(COMMA + WHITESPACE);
-					
+
 				}
 
 			}
@@ -1280,10 +1241,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			PreparedStatement preparedStatement = conn.prepareStatement(query.toString());
 			int i = 1;
+			String value = null;
 			for (Object columnValue : columnValues)
 			{
 				preparedStatement.setObject(i++, columnValue);
-				auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?")+1, columnValue.toString());
+				auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?")+1, columnValue == null ? "":columnValue.toString());
 			}
 			preparedStatement.setMaxFieldSize(1);
 			preparedStatement.executeUpdate();
@@ -1297,19 +1259,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			PreparedStatement statement = conn.prepareStatement(queryString);
 			statement.executeUpdate();
 		}
-
-		for (AttributeRecord collectionAttributeRecord : collectionRecords)
-		{
-			logDebug("editData", "updating multi select: " + collectionAttributeRecord.getValueCollection());
-			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
-		}
-
-		for (AttributeRecord collectionAttributeRecord : deleteCollectionRecords)
-		{
-			logDebug("editData", "deleting multi select: " + collectionAttributeRecord.getValueCollection());
-			hibernateDAO.update(collectionAttributeRecord, null, false, false, false);
-		}
-
 		return true;
 	}
 
@@ -1334,10 +1283,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Collection attributesCollection = entity.getAttributeCollection();
 		attributesCollection = entityManagerUtil.filterSystemAttributes(attributesCollection);
-		List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
-		List<AttributeInterface> fileAttributes = new ArrayList<AttributeInterface>();
-		List<AttributeInterface> objectAttributes = new ArrayList<AttributeInterface>();
-
 		String tableName = entity.getTableProperties().getName();
 		List<String> selectColumnNameList = new ArrayList<String>();
 
@@ -1347,26 +1292,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
 			String dbColumnName = null;
-			if (attribute.getIsCollection())
-			{ // need to fetch AttributeRecord object for the multi select type attribute.
-				collectionAttributes.add(attribute);
+			//for the other attributes, create select query.
+			if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+			{
+				dbColumnName = attribute.getName() + UNDERSCORE + FILE_NAME;
 			}
 			else
 			{
-				//for the other attributes, create select query.
-
-				if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-				{
-					dbColumnName = attribute.getName() + UNDERSCORE + FILE_NAME;
-				}
-				else
-				{
-					dbColumnName = attribute.getColumnProperties().getName();
-				}
-
-				selectColumnNameList.add(dbColumnName);
-				columnNameMap.put(dbColumnName, attribute);
+				dbColumnName = attribute.getColumnProperties().getName();
 			}
+			selectColumnNameList.add(dbColumnName);
+			columnNameMap.put(dbColumnName, attribute);
 		}
 
 		//get association values.
@@ -1374,7 +1310,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		try
 		{
-
 			if (!selectColumnNameList.isEmpty())
 			{
 
@@ -1396,36 +1331,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 				recordValues.putAll(getAttributeValues(selectColumnNameList, query.toString(), columnNameMap));
 			}
-
-			/*
-			 * process any multi select attributes
-			 */
-			for (AttributeInterface attribute : collectionAttributes)
-			{
-				List<String> valueList = getCollectionAttributeRecordValues(entity.getId(), attribute.getId(), recordId);
-				//put the value multi select attributes
-				recordValues.put(attribute, valueList);
-			}
-			/*
-			 * process any file type attributes
-			 */
-			for (AttributeInterface attribute : fileAttributes)
-			{
-				FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity.getId(), attribute.getId(), recordId);
-				//put the value file attributes
-				recordValues.put(attribute, fileRecordValue);
-			}
-
-			/*
-			 * process any file type attributes
-			 */
-			for (AttributeInterface attribute : objectAttributes)
-			{
-				ObjectAttributeRecordValueInterface objectRecordValue = getObjectAttributeRecordValue(entity.getId(), attribute.getId(), recordId);
-				//put the value file attributes
-				recordValues.put(attribute, objectRecordValue);
-			}
-
 		}
 		catch (SQLException e)
 		{
@@ -1637,7 +1542,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) valueObj);
 						value = new ObjectInputStream(bais).readObject();
 					}
-					
+
 				}
 				else
 				{
@@ -1655,8 +1560,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param recordIds Record ids whose values are to be shown
 	 * @return EntityRecordResultInterface Object containing the result.
 	 * @throws DynamicExtensionsSystemException
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityRecordResultInterface getEntityRecords(EntityInterface entity,
@@ -1687,11 +1592,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		filterAttributes(abstractAttributeCollection, attributesCollection, associationCollection);
 		//      attributesCollection = EntityManagerUtil.filterSystemAttributes(attributesCollection);
 
-		//Initialising collection for file attributes and collection attributes.
-		//        List<AttributeInterface> collectionAttributes = new ArrayList<AttributeInterface>();
-		//        List<AttributeInterface> fileAttributes = new ArrayList<AttributeInterface>();
-		//        List<AttributeInterface> objectAttributes = new ArrayList<AttributeInterface>();
-
 		String tableName = entity.getTableProperties().getName();
 		List<String> selectColumnNameList = new ArrayList<String>();
 
@@ -1701,28 +1601,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		while (attriIterator.hasNext())
 		{
 			AttributeInterface attribute = (AttributeInterface) attriIterator.next();
-			//Filtering attributes into primitive attributes and collection attributes and file attributes
-			if (attribute.getIsCollection())
-			{ // need to fetch AttributeRecord object for the multi select type attribute.
-				//collectionAttributes.add(attribute);
-			}
-			else if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-			{
-				// need to fetch AttributeRecord object for the File type attribute.
-				//fileAttributes.add(attribute);
-			}
-			else if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
-			{
-				// need to fetch AttributeRecord object for the File type attribute.
-				//objectAttributes.add(attribute);
-			}
-			else
-			{
-				//for the other attributes, create select query.
-				String dbColumnName = attribute.getColumnProperties().getName();
-				selectColumnNameList.add(dbColumnName);
-				columnNameMap.put(dbColumnName, attribute);
-			}
+			//for the other attributes, create select query.
+			String dbColumnName = attribute.getColumnProperties().getName();
+			selectColumnNameList.add(dbColumnName);
+			columnNameMap.put(dbColumnName, attribute);
 		}
 		try
 		{
@@ -1815,8 +1697,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
 	 */
 	private List<EntityRecordInterface> getEntityRecordList(List<String> selectColumnNameList, String query, Map columnNameMap,
 			EntityRecordMetadata recordMetadata) throws DynamicExtensionsSystemException, SQLException, IOException, ClassNotFoundException
@@ -1963,7 +1845,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					AttributeInterface attribute = (AttributeInterface) iterator.next();
 					AttributeTypeInformationInterface typeInfo = attribute.getAttributeTypeInformation();
 					// remove AttributeRecord objects for multi select and file type attributes
-					if (attribute.getIsCollection() || typeInfo instanceof FileAttributeTypeInformation
+					if (typeInfo instanceof FileAttributeTypeInformation
 							|| typeInfo instanceof ObjectAttributeTypeInformation)
 					{
 						AttributeRecord collectionAttributeRecord = getAttributeRecord(entity.getId(), attribute.getId(), recordId, hibernateDAO);
@@ -2981,9 +2863,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws DAOException 
-	 * @throws SQLException 
-	 * @throws IOException 
+	 * @throws DAOException
+	 * @throws SQLException
+	 * @throws IOException
 	 */
 	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, DAOException, SQLException, IOException
@@ -2995,7 +2877,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				+COMMA+attribute.getName() + UNDERSCORE + CONTENT_TYPE+COMMA+attribute.getColumnProperties().getName()
 				+FROM_KEYWORD+ entity.getTableProperties().getName()
 				+WHITESPACE+ WHERE_KEYWORD+IDENTIFIER+EQUAL+recordId;
-		
+
 		ResultSet resultSet = null;
         Statement statement = null;
         Connection connection = null;
@@ -3010,7 +2892,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
     			fileRecordValue.setContentType(resultSet.getString(attribute.getName() + UNDERSCORE + CONTENT_TYPE));
     			Blob blob = resultSet.getBlob(attribute.getColumnProperties().getName());
     			byte[] byteArray= blob.getBytes(1,(int)blob.length());
-    	
+
     			fileRecordValue.setFileContent(byteArray);
     		}
         }
@@ -3020,15 +2902,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
             statement.close();
             DBUtil.closeConnection();
         }
-		
-		//resultSet.close();		
+
+		//resultSet.close();
 
 		/*	ToDo: Correct this logger statement
 		 * 	logDebug("insertData", "Query is: " + query.toString());
 		 * */
 		return fileRecordValue;
 	}
-	
+
 	public ResultSet executeQuery(String query) throws SQLException
 	{
 		ResultSet resultSet = null;
@@ -3038,7 +2920,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
         {
             connection = DBUtil.getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(query); 
+            resultSet = statement.executeQuery(query);
         }
         finally
         {

@@ -42,7 +42,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.dbManager.DAOException;
 
 /**
- * 
+ *
  * @author mandar_shidhore
  *
  */
@@ -50,7 +50,7 @@ public class MockCategoryManager
 {
 
 	/**
-	 * 
+	 *
 	 * @return Category
 	 */
 	public CategoryInterface createCategoryFromModel1()
@@ -71,7 +71,7 @@ public class MockCategoryManager
 			EntityInterface trialAgent = factory.createEntity();
 			trialAgent.setName("TrialAgent");
 
-			// Create attribute(s) for trialAgent entity.	
+			// Create attribute(s) for trialAgent entity.
 			AttributeInterface agent = factory.createStringAttribute();
 			agent.setName("Agent");
 			((StringAttributeTypeInformation) agent.getAttributeTypeInformation()).setSize(40);
@@ -83,7 +83,7 @@ public class MockCategoryManager
 			chemotherapyTrials.setName("ChemotherapyTrials");
 			chemotherapyTrials.setParentEntity(trialAgent);
 
-			// Create attribute(s) for chemotherapyTrials entity.	
+			// Create attribute(s) for chemotherapyTrials entity.
 			AttributeInterface trialsName = factory.createStringAttribute();
 			trialsName.setName("TrialsName");
 			((StringAttributeTypeInformation) trialsName.getAttributeTypeInformation()).setSize(40);
@@ -94,7 +94,7 @@ public class MockCategoryManager
 			EntityInterface testDetails = factory.createEntity();
 			testDetails.setName("TestDetails");
 
-			// Create attribute(s) for testDetails entity.	
+			// Create attribute(s) for testDetails entity.
 			AttributeInterface testName = factory.createStringAttribute();
 			testName.setName("TestName");
 			((StringAttributeTypeInformation) testName.getAttributeTypeInformation()).setSize(40);
@@ -105,7 +105,7 @@ public class MockCategoryManager
 			EntityInterface agentDetails = factory.createEntity();
 			agentDetails.setName("agentDetails");
 
-			// Create attribute(s) for agentDetails entity.	
+			// Create attribute(s) for agentDetails entity.
 			AttributeInterface molecularFormula = factory.createStringAttribute();
 			molecularFormula.setName("MolecularFormula");
 			((StringAttributeTypeInformation) molecularFormula.getAttributeTypeInformation()).setSize(40);
@@ -150,7 +150,7 @@ public class MockCategoryManager
 			EntityInterface testResults = factory.createEntity();
 			testResults.setName("testResults");
 
-			// Create attribute(s) for testResults entity.	
+			// Create attribute(s) for testResults entity.
 			AttributeInterface resultType = factory.createStringAttribute();
 			resultType.setName("ResultType");
 			((StringAttributeTypeInformation) resultType.getAttributeTypeInformation()).setSize(40);
@@ -161,7 +161,7 @@ public class MockCategoryManager
 			EntityInterface testIteration = factory.createEntity();
 			testIteration.setName("testIteration");
 
-			// Create attribute(s) for testIteration entity.	
+			// Create attribute(s) for testIteration entity.
 			AttributeInterface testCycle = factory.createStringAttribute();
 			testCycle.setName("TestCycle");
 			((StringAttributeTypeInformation) testCycle.getAttributeTypeInformation()).setSize(40);
@@ -206,7 +206,7 @@ public class MockCategoryManager
 			EntityInterface radioTherapyTrials = factory.createEntity();
 			radioTherapyTrials.setName("RadioTherapyTrials");
 
-			// Create attribute(s) for radioTherapyTrials entity.	
+			// Create attribute(s) for radioTherapyTrials entity.
 			AttributeInterface radiationWavelengthType = factory.createStringAttribute();
 			radiationWavelengthType.setName("RadiationWavelengthType");
 			((StringAttributeTypeInformation) radiationWavelengthType.getAttributeTypeInformation()).setSize(40);
@@ -217,7 +217,7 @@ public class MockCategoryManager
 			EntityInterface treatmentDetails = factory.createEntity();
 			treatmentDetails.setName("TreatmentDetails");
 
-			// Create attribute(s) for radioTherapyTrials entity.	
+			// Create attribute(s) for radioTherapyTrials entity.
 			AttributeInterface targetOrgan = factory.createStringAttribute();
 			targetOrgan.setName("TargetOrgan");
 			((StringAttributeTypeInformation) targetOrgan.getAttributeTypeInformation()).setSize(40);
@@ -228,7 +228,7 @@ public class MockCategoryManager
 			EntityInterface labDetails = factory.createEntity();
 			labDetails.setName("LabDetails");
 
-			// Create attribute(s) for labDetails entity.	
+			// Create attribute(s) for labDetails entity.
 			AttributeInterface labName = factory.createStringAttribute();
 			labName.setName("LabName");
 			((StringAttributeTypeInformation) labName.getAttributeTypeInformation()).setSize(40);
@@ -239,7 +239,7 @@ public class MockCategoryManager
 			EntityInterface tumorInfo = factory.createEntity();
 			tumorInfo.setName("TumorInfo");
 
-			// Create attribute(s) for tumorInfo entity.	
+			// Create attribute(s) for tumorInfo entity.
 			AttributeInterface site = factory.createStringAttribute();
 			site.setName("Site");
 			((StringAttributeTypeInformation) site.getAttributeTypeInformation()).setSize(40);
@@ -351,7 +351,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for trialAgentCategoryEntity.
 			CategoryAttributeInterface agentCategoryAttribute = factory.createCategoryAttribute();
 			agentCategoryAttribute.setName("agentCategoryAttribute");
-			agentCategoryAttribute.setAttribute(agent);
+			agentCategoryAttribute.setAbstractAttribute(agent);
 
 			trialAgentCategoryEntity.addCategoryAttribute(agentCategoryAttribute);
 			agentCategoryAttribute.setCategoryEntity(trialAgentCategoryEntity);
@@ -366,7 +366,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for chemotherapyTrialsCategoryEntity.
 			CategoryAttributeInterface trialsNameCategoryAttribute = factory.createCategoryAttribute();
 			trialsNameCategoryAttribute.setName("trialNameCategoryAttribute");
-			trialsNameCategoryAttribute.setAttribute(trialsName);
+			trialsNameCategoryAttribute.setAbstractAttribute(trialsName);
 
 			chemotherapyTrialsCategoryEntity.addCategoryAttribute(trialsNameCategoryAttribute);
 			trialsNameCategoryAttribute.setCategoryEntity(chemotherapyTrialsCategoryEntity);
@@ -380,7 +380,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for radioTherapyTrialsCategoryEntity.
 			CategoryAttributeInterface radiationWavelengthTypeCategoryAttribute = factory.createCategoryAttribute();
 			radiationWavelengthTypeCategoryAttribute.setName("radiationWavelengthTypeCategoryAttribute");
-			radiationWavelengthTypeCategoryAttribute.setAttribute(radiationWavelengthType);
+			radiationWavelengthTypeCategoryAttribute.setAbstractAttribute(radiationWavelengthType);
 
 			radioTherapyTrialsCategoryEntity.addCategoryAttribute(radiationWavelengthTypeCategoryAttribute);
 			radiationWavelengthTypeCategoryAttribute.setCategoryEntity(radioTherapyTrialsCategoryEntity);
@@ -394,7 +394,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for testDetailsCategoryEntity.
 			CategoryAttributeInterface testNameCategoryAttribute = factory.createCategoryAttribute();
 			testNameCategoryAttribute.setName("testNameCategoryAttribute");
-			testNameCategoryAttribute.setAttribute(testName);
+			testNameCategoryAttribute.setAbstractAttribute(testName);
 
 			testDetailsCategoryEntity.addCategoryAttribute(testNameCategoryAttribute);
 			testNameCategoryAttribute.setCategoryEntity(testDetailsCategoryEntity);
@@ -408,7 +408,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for agentDetailsCategoryEntity.
 			CategoryAttributeInterface molecularFormulaCategoryAttribute = factory.createCategoryAttribute();
 			molecularFormulaCategoryAttribute.setName("molecularFormulaCategoryAttribute");
-			molecularFormulaCategoryAttribute.setAttribute(molecularFormula);
+			molecularFormulaCategoryAttribute.setAbstractAttribute(molecularFormula);
 
 			agentDetailsCategoryEntity.addCategoryAttribute(molecularFormulaCategoryAttribute);
 			molecularFormulaCategoryAttribute.setCategoryEntity(agentDetailsCategoryEntity);
@@ -418,7 +418,7 @@ public class MockCategoryManager
 			//			treatmentDetailsCategoryEntity.setName("agentDetailsCategoryEntity");
 			//			treatmentDetailsCategoryEntity.setEntity(treatmentDetails);
 			//			treatmentDetailsCategoryEntity.setNumberOfEntries(-1);
-			//			
+			//
 			//			// Create category attribute(s) for treatmentDetailsCategoryEntity.
 			//			CategoryAttributeInterface targetOrganCategoryAttribute = factory.createCategoryAttribute();
 			//			targetOrganCategoryAttribute.setName("targetOrganCategoryAttribute");
@@ -436,7 +436,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for tumorInfoCategoryEntity.
 			CategoryAttributeInterface siteCategoryAttribute = factory.createCategoryAttribute();
 			siteCategoryAttribute.setName("siteCategoryAttribute");
-			siteCategoryAttribute.setAttribute(site);
+			siteCategoryAttribute.setAbstractAttribute(site);
 
 			tumorInfoCategoryEntity.addCategoryAttribute(siteCategoryAttribute);
 			siteCategoryAttribute.setCategoryEntity(tumorInfoCategoryEntity);
@@ -450,7 +450,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for testResultsCategoryEntity.
 			CategoryAttributeInterface resultTypeCategoryAttribute = factory.createCategoryAttribute();
 			resultTypeCategoryAttribute.setName("resultTypeCategoryAttribute");
-			resultTypeCategoryAttribute.setAttribute(resultType);
+			resultTypeCategoryAttribute.setAbstractAttribute(resultType);
 
 			testResultsCategoryEntity.addCategoryAttribute(resultTypeCategoryAttribute);
 			resultTypeCategoryAttribute.setCategoryEntity(testResultsCategoryEntity);
@@ -464,7 +464,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for testIterationCategoryEntity.
 			CategoryAttributeInterface testCycleCategoryAttribute = factory.createCategoryAttribute();
 			testCycleCategoryAttribute.setName("testCycleCategoryAttribute");
-			testCycleCategoryAttribute.setAttribute(testCycle);
+			testCycleCategoryAttribute.setAbstractAttribute(testCycle);
 
 			testIterationCategoryEntity.addCategoryAttribute(testCycleCategoryAttribute);
 			testCycleCategoryAttribute.setCategoryEntity(testIterationCategoryEntity);
@@ -478,7 +478,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for labDetailsCategoryEntity.
 			CategoryAttributeInterface labNameCategoryAttribute = factory.createCategoryAttribute();
 			labNameCategoryAttribute.setName("labNameCategoryAttribute");
-			labNameCategoryAttribute.setAttribute(labName);
+			labNameCategoryAttribute.setAbstractAttribute(labName);
 
 			labDetailsCategoryEntity.addCategoryAttribute(labNameCategoryAttribute);
 			labNameCategoryAttribute.setCategoryEntity(labDetailsCategoryEntity);
@@ -581,7 +581,7 @@ public class MockCategoryManager
 			// Add path information to the target category entity.
 			testIterationCategoryEntity.setPath(path7);
 
-			// Create a category association between chemotherapyTrialsCategoryEntity and testDetailsCategoryEntity 
+			// Create a category association between chemotherapyTrialsCategoryEntity and testDetailsCategoryEntity
 			// that corresponds to association between chemotherapyTrials and testDetails.
 			CategoryAssociationInterface categoryAssociation1 = factory.createCategoryAssociation();
 			categoryAssociation1.setName("chemotherapyTrialsCategoryEntity to testDetailsCategoryEntity association");
@@ -589,7 +589,7 @@ public class MockCategoryManager
 			categoryAssociation1.setTargetCategoryEntity(testDetailsCategoryEntity);
 			chemotherapyTrialsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation1);
 
-			// Create a category association between chemotherapyTrialsCategoryEntity and agentDetailsCategoryEntity 
+			// Create a category association between chemotherapyTrialsCategoryEntity and agentDetailsCategoryEntity
 			// that corresponds to association between chemotherapyTrials and agentDetails.
 			CategoryAssociationInterface categoryAssociation2 = factory.createCategoryAssociation();
 			categoryAssociation2.setName("chemotherapyTrialsCategoryEntity to agentDetailsCategoryEntity association");
@@ -597,7 +597,7 @@ public class MockCategoryManager
 			categoryAssociation2.setTargetCategoryEntity(agentDetailsCategoryEntity);
 			chemotherapyTrialsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation2);
 
-			// Create a category association between testDetailsCategoryEntity and testResultsCategoryEntity 
+			// Create a category association between testDetailsCategoryEntity and testResultsCategoryEntity
 			// that corresponds to association between testDetails and testResults.
 			CategoryAssociationInterface categoryAssociation3 = factory.createCategoryAssociation();
 			categoryAssociation3.setName("testDetailsCategoryEntity to testResultsCategoryEntity association");
@@ -605,7 +605,7 @@ public class MockCategoryManager
 			categoryAssociation3.setTargetCategoryEntity(testResultsCategoryEntity);
 			testDetailsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation3);
 
-			// Create a category association between testDetailsCategoryEntity and testIterationCategoryEntity 
+			// Create a category association between testDetailsCategoryEntity and testIterationCategoryEntity
 			// that corresponds to association between testDetails and testIteration.
 			CategoryAssociationInterface categoryAssociation4 = factory.createCategoryAssociation();
 			categoryAssociation4.setName("testDetailsCategoryEntity to testIterationCategoryEntity association");
@@ -613,7 +613,7 @@ public class MockCategoryManager
 			categoryAssociation4.setTargetCategoryEntity(testIterationCategoryEntity);
 			testDetailsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation4);
 
-			// Create a category association between trialAgentCategoryEntity and radioTherapyTrialsCategoryEntity 
+			// Create a category association between trialAgentCategoryEntity and radioTherapyTrialsCategoryEntity
 			// that corresponds to association between trialAgent and radioTherapyTrials.
 			CategoryAssociationInterface categoryAssociation5 = factory.createCategoryAssociation();
 			categoryAssociation5.setName("trialAgentCategoryEntity to radioTherapyTrialsCategoryEntity association");
@@ -621,7 +621,7 @@ public class MockCategoryManager
 			categoryAssociation5.setTargetCategoryEntity(radioTherapyTrialsCategoryEntity);
 			trialAgentCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation5);
 
-			// Create a category association between radioTherapyTrialsCategoryEntity and labDetailsCategoryEntity 
+			// Create a category association between radioTherapyTrialsCategoryEntity and labDetailsCategoryEntity
 			// that corresponds to association between radioTherapyTrials and radioTherapyTrials.
 			CategoryAssociationInterface categoryAssociation6 = factory.createCategoryAssociation();
 			categoryAssociation6.setName("radioTherapyTrialsCategoryEntity to labDetailsCategoryEntity association");
@@ -629,7 +629,7 @@ public class MockCategoryManager
 			categoryAssociation6.setTargetCategoryEntity(labDetailsCategoryEntity);
 			radioTherapyTrialsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation6);
 
-			// Create a category association between radioTherapyTrialsCategoryEntity and tumorInfoCategoryEntity 
+			// Create a category association between radioTherapyTrialsCategoryEntity and tumorInfoCategoryEntity
 			// that corresponds to association between radioTherapyTrials and tumorInfo.
 			CategoryAssociationInterface categoryAssociation7 = factory.createCategoryAssociation();
 			categoryAssociation7.setName("radioTherapyTrialsCategoryEntity to tumorInfoCategoryEntity association");
@@ -738,7 +738,7 @@ public class MockCategoryManager
 
 			tumorInfoContainer.addControl(siteControl);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl1 = factory.createCategoryAssociationControl();
 			containmentControl1.setBaseAbstractAttribute(categoryAssociation1);
 			containmentControl1.setSequenceNumber(sequenceNumber++);
@@ -748,7 +748,7 @@ public class MockCategoryManager
 
 			chemotherapyTrialsContainer.addControl(containmentControl1);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl2 = factory.createCategoryAssociationControl();
 			containmentControl2.setBaseAbstractAttribute(categoryAssociation2);
 			containmentControl2.setSequenceNumber(sequenceNumber++);
@@ -758,7 +758,7 @@ public class MockCategoryManager
 
 			chemotherapyTrialsContainer.addControl(containmentControl2);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl3 = factory.createCategoryAssociationControl();
 			containmentControl3.setBaseAbstractAttribute(categoryAssociation3);
 			containmentControl3.setSequenceNumber(sequenceNumber++);
@@ -768,7 +768,7 @@ public class MockCategoryManager
 
 			testDetailsContainer.addControl(containmentControl3);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl4 = factory.createCategoryAssociationControl();
 			containmentControl4.setBaseAbstractAttribute(categoryAssociation4);
 			containmentControl4.setSequenceNumber(sequenceNumber++);
@@ -778,7 +778,7 @@ public class MockCategoryManager
 
 			testDetailsContainer.addControl(containmentControl4);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl5 = factory.createCategoryAssociationControl();
 			containmentControl5.setBaseAbstractAttribute(categoryAssociation5);
 			containmentControl5.setSequenceNumber(sequenceNumber++);
@@ -788,7 +788,7 @@ public class MockCategoryManager
 
 			trialAgentContainer.addControl(containmentControl5);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl6 = factory.createCategoryAssociationControl();
 			containmentControl6.setBaseAbstractAttribute(categoryAssociation6);
 			containmentControl6.setSequenceNumber(sequenceNumber++);
@@ -798,7 +798,7 @@ public class MockCategoryManager
 
 			radioTherapyTrialsContainer.addControl(containmentControl6);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl7 = factory.createCategoryAssociationControl();
 			containmentControl7.setBaseAbstractAttribute(categoryAssociation7);
 			containmentControl7.setSequenceNumber(sequenceNumber++);
@@ -822,64 +822,64 @@ public class MockCategoryManager
 			//			{
 			//				categoryDataValueMap.put(ca, ca.getName());
 			//			}
-			//			
+			//
 			//			// For chemotherapyTrialsCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list1 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map1 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map1.put(testNameCategoryAttribute, testNameCategoryAttribute.getName());
-			//			
-			//			// For testResultsCategoryEntity.			
+			//
+			//			// For testResultsCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list2 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map2 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map2.put(resultTypeCategoryAttribute, resultTypeCategoryAttribute.getName());
 			//			list2.add(map2);
-			//			
+			//
 			//			// For testIterationCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list3 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map3 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map3.put(testCycleCategoryAttribute, testCycleCategoryAttribute.getName());
 			//			list3.add(map3);
-			//			
+			//
 			//			map1.put(categoryAssociation3, list2);
 			//			map1.put(categoryAssociation4, list3);
-			//			
+			//
 			//			list1.add(map1);
-			//			
+			//
 			//			categoryDataValueMap.put(categoryAssociation1, list1);
-			//			
+			//
 			//			// For agentDetailsCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list4 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map4 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map4.put(molecularFormulaCategoryAttribute, molecularFormulaCategoryAttribute.getName());
 			//			list4.add(map4);
-			//			
+			//
 			//			categoryDataValueMap.put(categoryAssociation2, list4);
-			//			
+			//
 			//			// For radioTherapyTrialsCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list5 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map5 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map5.put(radiationWavelengthTypeCategoryAttribute, radiationWavelengthTypeCategoryAttribute.getName());
-			//			
-			//			// For labDetailsCategoryEntity.			
+			//
+			//			// For labDetailsCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list6 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map6 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map6.put(labNameCategoryAttribute, labNameCategoryAttribute.getName());
 			//			list6.add(map6);
-			//			
+			//
 			//			map5.put(categoryAssociation6, list6);
-			//			
-			//			// For tumorInfoCategoryEntity.			
+			//
+			//			// For tumorInfoCategoryEntity.
 			//			List<Map<BaseAbstractAttributeInterface, Object>> list7 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
 			//			Map<BaseAbstractAttributeInterface, Object> map7 = new HashMap<BaseAbstractAttributeInterface, Object>();
 			//			map7.put(siteCategoryAttribute, siteCategoryAttribute.getName());
 			//			list7.add(map7);
-			//			
+			//
 			//			map5.put(categoryAssociation7, list7);
-			//			
+			//
 			//			list5.add(map5);
-			//			
-			//			categoryDataValueMap.put(categoryAssociation5, list5);		
-			//			
+			//
+			//			categoryDataValueMap.put(categoryAssociation5, list5);
+			//
 			//			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			//			categoryManager.persistCategory(category);
 			//			categoryManager.insertData(category, categoryDataValueMap);
@@ -897,7 +897,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param category
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
@@ -914,7 +914,7 @@ public class MockCategoryManager
 		EntityInterface geneticInfo = factory.createEntity();
 		geneticInfo.setName("GeneticInfo");
 
-		// Create attribute(s) for geneticInfo entity.	
+		// Create attribute(s) for geneticInfo entity.
 		AttributeInterface chromosomeName = factory.createStringAttribute();
 		chromosomeName.setName("chromosomeName");
 		((StringAttributeTypeInformation) chromosomeName.getAttributeTypeInformation()).setSize(40);
@@ -955,7 +955,7 @@ public class MockCategoryManager
 		// Create category attribute(s) for geneticInfoCategoryEntity.
 		CategoryAttributeInterface chromosomeNameCategoryAttribute = factory.createCategoryAttribute();
 		chromosomeNameCategoryAttribute.setName("chromosomeNameCategoryAttribute");
-		chromosomeNameCategoryAttribute.setAttribute(chromosomeName);
+		chromosomeNameCategoryAttribute.setAbstractAttribute(chromosomeName);
 
 		geneticInfoCategoryEntity.addCategoryAttribute(chromosomeNameCategoryAttribute);
 		chromosomeNameCategoryAttribute.setCategoryEntity(geneticInfoCategoryEntity);
@@ -977,7 +977,7 @@ public class MockCategoryManager
 		// Add path information to the target category entity.
 		geneticInfoCategoryEntity.setPath(path);
 
-		// Create a category association between chemotherapyTrialsCategoryEntity and geneticInfoCategoryEntity 
+		// Create a category association between chemotherapyTrialsCategoryEntity and geneticInfoCategoryEntity
 		// that corresponds to association between chemotherapyTrials and geneticInfo.
 		CategoryAssociationInterface categoryAssociation = factory.createCategoryAssociation();
 		categoryAssociation.setName("chemotherapyTrialsCategoryEntity to geneticInfoCategoryEntity association");
@@ -998,7 +998,7 @@ public class MockCategoryManager
 
 		geneticInfoContainer.addControl(chromosomeNameControl);
 
-		// Create a containment control. 
+		// Create a containment control.
 		AbstractContainmentControlInterface containmentControl = factory.createCategoryAssociationControl();
 		containmentControl.setBaseAbstractAttribute(categoryAssociation);
 		containmentControl.setSequenceNumber(sequenceNumber++);
@@ -1012,7 +1012,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param category
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
@@ -1028,7 +1028,7 @@ public class MockCategoryManager
 		// Retrieve the entity to which we want to add an attribute.
 		EntityInterface chemotherapyTrials = entityGroup.getEntityByName("ChemotherapyTrials");
 
-		// Create attribute(s) for chemotherapyTrials entity.	
+		// Create attribute(s) for chemotherapyTrials entity.
 		AttributeInterface trialsType = factory.createStringAttribute();
 		trialsType.setName("trialsType");
 		((StringAttributeTypeInformation) trialsType.getAttributeTypeInformation()).setSize(40);
@@ -1044,7 +1044,7 @@ public class MockCategoryManager
 		// Create category attribute(s) for chemotherapyTrialsCategoryEntity.
 		CategoryAttributeInterface trialsTypeCategoryAttribute = factory.createCategoryAttribute();
 		trialsTypeCategoryAttribute.setName("trialsTypeCategoryAttribute");
-		trialsTypeCategoryAttribute.setAttribute(trialsType);
+		trialsTypeCategoryAttribute.setAbstractAttribute(trialsType);
 
 		chemotherapyTrialsCategoryEntity.addCategoryAttribute(trialsTypeCategoryAttribute);
 		trialsTypeCategoryAttribute.setCategoryEntity(chemotherapyTrialsCategoryEntity);
@@ -1065,7 +1065,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Category
 	 */
 	public CategoryInterface createCategoryFromModel1WithDifferentAttributeTypes()
@@ -1086,7 +1086,7 @@ public class MockCategoryManager
 			EntityInterface trialAgent = factory.createEntity();
 			trialAgent.setName("TrialAgent");
 
-			// Create attribute(s) for trialAgent entity.	
+			// Create attribute(s) for trialAgent entity.
 			AttributeInterface agentBirthDate = factory.createDateAttribute();
 			agentBirthDate.setName("Agent Birth Date");
 			((DateAttributeTypeInformation) agentBirthDate.getAttributeTypeInformation()).setFormat(ProcessorConstants.DATE_FORMAT_OPTION_DATEONLY);
@@ -1098,7 +1098,7 @@ public class MockCategoryManager
 			chemotherapyTrials.setName("ChemotherapyTrials");
 			chemotherapyTrials.setParentEntity(trialAgent);
 
-			// Create attribute(s) for chemotherapyTrials entity.	
+			// Create attribute(s) for chemotherapyTrials entity.
 			AttributeInterface trialsValue = factory.createDoubleAttribute();
 			trialsValue.setName("TrialsValue");
 			((DoubleAttributeTypeInformation) trialsValue.getAttributeTypeInformation()).setDecimalPlaces(2);
@@ -1109,7 +1109,7 @@ public class MockCategoryManager
 			EntityInterface testDetails = factory.createEntity();
 			testDetails.setName("TestDetails");
 
-			// Create attribute(s) for testDetails entity.	
+			// Create attribute(s) for testDetails entity.
 			AttributeInterface testFile = factory.createFileAttribute();
 			testFile.setName("testFile");
 
@@ -1123,7 +1123,7 @@ public class MockCategoryManager
 			EntityInterface agentDetails = factory.createEntity();
 			agentDetails.setName("agentDetails");
 
-			// Create attribute(s) for agentDetails entity.	
+			// Create attribute(s) for agentDetails entity.
 			AttributeInterface molecularFormula = factory.createStringAttribute();
 			molecularFormula.setName("MolecularFormula");
 			((StringAttributeTypeInformation) molecularFormula.getAttributeTypeInformation()).setSize(40);
@@ -1168,7 +1168,7 @@ public class MockCategoryManager
 			EntityInterface testResults = factory.createEntity();
 			testResults.setName("testResults");
 
-			// Create attribute(s) for testResults entity.	
+			// Create attribute(s) for testResults entity.
 			AttributeInterface resultType = factory.createStringAttribute();
 			resultType.setName("ResultType");
 			((StringAttributeTypeInformation) resultType.getAttributeTypeInformation()).setSize(40);
@@ -1179,7 +1179,7 @@ public class MockCategoryManager
 			EntityInterface testIteration = factory.createEntity();
 			testIteration.setName("testIteration");
 
-			// Create attribute(s) for testIteration entity.	
+			// Create attribute(s) for testIteration entity.
 			AttributeInterface testCycle = factory.createStringAttribute();
 			testCycle.setName("TestCycle");
 			((StringAttributeTypeInformation) testCycle.getAttributeTypeInformation()).setSize(40);
@@ -1224,7 +1224,7 @@ public class MockCategoryManager
 			EntityInterface radioTherapyTrials = factory.createEntity();
 			radioTherapyTrials.setName("RadioTherapyTrials");
 
-			// Create attribute(s) for radioTherapyTrials entity.	
+			// Create attribute(s) for radioTherapyTrials entity.
 			AttributeInterface radiationWavelengthType = factory.createStringAttribute();
 			radiationWavelengthType.setName("RadiationWavelengthType");
 			((StringAttributeTypeInformation) radiationWavelengthType.getAttributeTypeInformation()).setSize(40);
@@ -1235,7 +1235,7 @@ public class MockCategoryManager
 			EntityInterface treatmentDetails = factory.createEntity();
 			treatmentDetails.setName("TreatmentDetails");
 
-			// Create attribute(s) for radioTherapyTrials entity.	
+			// Create attribute(s) for radioTherapyTrials entity.
 			AttributeInterface targetOrgan = factory.createStringAttribute();
 			targetOrgan.setName("TargetOrgan");
 			((StringAttributeTypeInformation) targetOrgan.getAttributeTypeInformation()).setSize(40);
@@ -1246,7 +1246,7 @@ public class MockCategoryManager
 			EntityInterface labDetails = factory.createEntity();
 			labDetails.setName("LabDetails");
 
-			// Create attribute(s) for labDetails entity.	
+			// Create attribute(s) for labDetails entity.
 			AttributeInterface labName = factory.createStringAttribute();
 			labName.setName("LabName");
 			((StringAttributeTypeInformation) labName.getAttributeTypeInformation()).setSize(40);
@@ -1257,7 +1257,7 @@ public class MockCategoryManager
 			EntityInterface tumorInfo = factory.createEntity();
 			tumorInfo.setName("TumorInfo");
 
-			// Create attribute(s) for tumorInfo entity.	
+			// Create attribute(s) for tumorInfo entity.
 			AttributeInterface site = factory.createStringAttribute();
 			site.setName("Site");
 			((StringAttributeTypeInformation) site.getAttributeTypeInformation()).setSize(40);
@@ -1369,7 +1369,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for trialAgentCategoryEntity.
 			CategoryAttributeInterface agentCategoryAttribute = factory.createCategoryAttribute();
 			agentCategoryAttribute.setName("agentCategoryAttribute");
-			agentCategoryAttribute.setAttribute(agentBirthDate);
+			agentCategoryAttribute.setAbstractAttribute(agentBirthDate);
 
 			trialAgentCategoryEntity.addCategoryAttribute(agentCategoryAttribute);
 			agentCategoryAttribute.setCategoryEntity(trialAgentCategoryEntity);
@@ -1384,7 +1384,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for chemotherapyTrialsCategoryEntity.
 			CategoryAttributeInterface trialsValueCategoryAttribute = factory.createCategoryAttribute();
 			trialsValueCategoryAttribute.setName("trialNameCategoryAttribute");
-			trialsValueCategoryAttribute.setAttribute(trialsValue);
+			trialsValueCategoryAttribute.setAbstractAttribute(trialsValue);
 
 			chemotherapyTrialsCategoryEntity.addCategoryAttribute(trialsValueCategoryAttribute);
 			trialsValueCategoryAttribute.setCategoryEntity(chemotherapyTrialsCategoryEntity);
@@ -1398,7 +1398,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for radioTherapyTrialsCategoryEntity.
 			CategoryAttributeInterface radiationWavelengthTypeCategoryAttribute = factory.createCategoryAttribute();
 			radiationWavelengthTypeCategoryAttribute.setName("radiationWavelengthTypeCategoryAttribute");
-			radiationWavelengthTypeCategoryAttribute.setAttribute(radiationWavelengthType);
+			radiationWavelengthTypeCategoryAttribute.setAbstractAttribute(radiationWavelengthType);
 
 			radioTherapyTrialsCategoryEntity.addCategoryAttribute(radiationWavelengthTypeCategoryAttribute);
 			radiationWavelengthTypeCategoryAttribute.setCategoryEntity(radioTherapyTrialsCategoryEntity);
@@ -1412,7 +1412,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for testDetailsCategoryEntity.
 			CategoryAttributeInterface testFileCategoryAttribute = factory.createCategoryAttribute();
 			testFileCategoryAttribute.setName("testNameCategoryAttribute");
-			testFileCategoryAttribute.setAttribute(testFile);
+			testFileCategoryAttribute.setAbstractAttribute(testFile);
 
 			testDetailsCategoryEntity.addCategoryAttribute(testFileCategoryAttribute);
 			testFileCategoryAttribute.setCategoryEntity(testDetailsCategoryEntity);
@@ -1426,7 +1426,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for agentDetailsCategoryEntity.
 			CategoryAttributeInterface molecularFormulaCategoryAttribute = factory.createCategoryAttribute();
 			molecularFormulaCategoryAttribute.setName("molecularFormulaCategoryAttribute");
-			molecularFormulaCategoryAttribute.setAttribute(molecularFormula);
+			molecularFormulaCategoryAttribute.setAbstractAttribute(molecularFormula);
 
 			agentDetailsCategoryEntity.addCategoryAttribute(molecularFormulaCategoryAttribute);
 			molecularFormulaCategoryAttribute.setCategoryEntity(agentDetailsCategoryEntity);
@@ -1436,7 +1436,7 @@ public class MockCategoryManager
 			//			treatmentDetailsCategoryEntity.setName("agentDetailsCategoryEntity");
 			//			treatmentDetailsCategoryEntity.setEntity(treatmentDetails);
 			//			treatmentDetailsCategoryEntity.setNumberOfEntries(-1);
-			//			
+			//
 			//			// Create category attribute(s) for treatmentDetailsCategoryEntity.
 			//			CategoryAttributeInterface targetOrganCategoryAttribute = factory.createCategoryAttribute();
 			//			targetOrganCategoryAttribute.setName("targetOrganCategoryAttribute");
@@ -1454,7 +1454,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for tumorInfoCategoryEntity.
 			CategoryAttributeInterface siteCategoryAttribute = factory.createCategoryAttribute();
 			siteCategoryAttribute.setName("siteCategoryAttribute");
-			siteCategoryAttribute.setAttribute(site);
+			siteCategoryAttribute.setAbstractAttribute(site);
 
 			tumorInfoCategoryEntity.addCategoryAttribute(siteCategoryAttribute);
 			siteCategoryAttribute.setCategoryEntity(tumorInfoCategoryEntity);
@@ -1468,7 +1468,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for testResultsCategoryEntity.
 			CategoryAttributeInterface resultTypeCategoryAttribute = factory.createCategoryAttribute();
 			resultTypeCategoryAttribute.setName("siteCategoryAttribute");
-			resultTypeCategoryAttribute.setAttribute(resultType);
+			resultTypeCategoryAttribute.setAbstractAttribute(resultType);
 
 			testResultsCategoryEntity.addCategoryAttribute(resultTypeCategoryAttribute);
 			resultTypeCategoryAttribute.setCategoryEntity(testResultsCategoryEntity);
@@ -1482,7 +1482,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for testIterationCategoryEntity.
 			CategoryAttributeInterface testCycleCategoryAttribute = factory.createCategoryAttribute();
 			testCycleCategoryAttribute.setName("testCycleCategoryAttribute");
-			testCycleCategoryAttribute.setAttribute(testCycle);
+			testCycleCategoryAttribute.setAbstractAttribute(testCycle);
 
 			testIterationCategoryEntity.addCategoryAttribute(testCycleCategoryAttribute);
 			testCycleCategoryAttribute.setCategoryEntity(testIterationCategoryEntity);
@@ -1496,7 +1496,7 @@ public class MockCategoryManager
 			// Create category attribute(s) for labDetailsCategoryEntity.
 			CategoryAttributeInterface labNameCategoryAttribute = factory.createCategoryAttribute();
 			labNameCategoryAttribute.setName("labNameCategoryAttribute");
-			labNameCategoryAttribute.setAttribute(labName);
+			labNameCategoryAttribute.setAbstractAttribute(labName);
 
 			labDetailsCategoryEntity.addCategoryAttribute(labNameCategoryAttribute);
 			labNameCategoryAttribute.setCategoryEntity(labDetailsCategoryEntity);
@@ -1599,7 +1599,7 @@ public class MockCategoryManager
 			// Add path information to the target category entity.
 			testIterationCategoryEntity.setPath(path7);
 
-			// Create a category association between chemotherapyTrialsCategoryEntity and testDetailsCategoryEntity 
+			// Create a category association between chemotherapyTrialsCategoryEntity and testDetailsCategoryEntity
 			// that corresponds to association between chemotherapyTrials and testDetails.
 			CategoryAssociationInterface categoryAssociation1 = factory.createCategoryAssociation();
 			categoryAssociation1.setName("chemotherapyTrialsCategoryEntity to testDetailsCategoryEntity association");
@@ -1607,7 +1607,7 @@ public class MockCategoryManager
 			categoryAssociation1.setTargetCategoryEntity(testDetailsCategoryEntity);
 			chemotherapyTrialsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation1);
 
-			// Create a category association between chemotherapyTrialsCategoryEntity and agentDetailsCategoryEntity 
+			// Create a category association between chemotherapyTrialsCategoryEntity and agentDetailsCategoryEntity
 			// that corresponds to association between chemotherapyTrials and agentDetails.
 			CategoryAssociationInterface categoryAssociation2 = factory.createCategoryAssociation();
 			categoryAssociation2.setName("chemotherapyTrialsCategoryEntity to agentDetailsCategoryEntity association");
@@ -1615,7 +1615,7 @@ public class MockCategoryManager
 			categoryAssociation2.setTargetCategoryEntity(agentDetailsCategoryEntity);
 			chemotherapyTrialsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation2);
 
-			// Create a category association between testDetailsCategoryEntity and testResultsCategoryEntity 
+			// Create a category association between testDetailsCategoryEntity and testResultsCategoryEntity
 			// that corresponds to association between testDetails and testResults.
 			CategoryAssociationInterface categoryAssociation3 = factory.createCategoryAssociation();
 			categoryAssociation3.setName("testDetailsCategoryEntity to testResultsCategoryEntity association");
@@ -1623,7 +1623,7 @@ public class MockCategoryManager
 			categoryAssociation3.setTargetCategoryEntity(testResultsCategoryEntity);
 			testDetailsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation3);
 
-			// Create a category association between testDetailsCategoryEntity and testIterationCategoryEntity 
+			// Create a category association between testDetailsCategoryEntity and testIterationCategoryEntity
 			// that corresponds to association between testDetails and testIteration.
 			CategoryAssociationInterface categoryAssociation4 = factory.createCategoryAssociation();
 			categoryAssociation4.setName("testDetailsCategoryEntity to testIterationCategoryEntity association");
@@ -1631,7 +1631,7 @@ public class MockCategoryManager
 			categoryAssociation4.setTargetCategoryEntity(testIterationCategoryEntity);
 			testDetailsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation4);
 
-			// Create a category association between trialAgentCategoryEntity and radioTherapyTrialsCategoryEntity 
+			// Create a category association between trialAgentCategoryEntity and radioTherapyTrialsCategoryEntity
 			// that corresponds to association between trialAgent and radioTherapyTrials.
 			CategoryAssociationInterface categoryAssociation5 = factory.createCategoryAssociation();
 			categoryAssociation5.setName("trialAgentCategoryEntity to radioTherapyTrialsCategoryEntity association");
@@ -1639,7 +1639,7 @@ public class MockCategoryManager
 			categoryAssociation5.setTargetCategoryEntity(radioTherapyTrialsCategoryEntity);
 			trialAgentCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation5);
 
-			// Create a category association between radioTherapyTrialsCategoryEntity and labDetailsCategoryEntity 
+			// Create a category association between radioTherapyTrialsCategoryEntity and labDetailsCategoryEntity
 			// that corresponds to association between radioTherapyTrials and radioTherapyTrials.
 			CategoryAssociationInterface categoryAssociation6 = factory.createCategoryAssociation();
 			categoryAssociation6.setName("radioTherapyTrialsCategoryEntity to labDetailsCategoryEntity association");
@@ -1647,7 +1647,7 @@ public class MockCategoryManager
 			categoryAssociation6.setTargetCategoryEntity(labDetailsCategoryEntity);
 			radioTherapyTrialsCategoryEntity.getCategoryAssociationCollection().add(categoryAssociation6);
 
-			// Create a category association between radioTherapyTrialsCategoryEntity and tumorInfoCategoryEntity 
+			// Create a category association between radioTherapyTrialsCategoryEntity and tumorInfoCategoryEntity
 			// that corresponds to association between radioTherapyTrials and tumorInfo.
 			CategoryAssociationInterface categoryAssociation7 = factory.createCategoryAssociation();
 			categoryAssociation7.setName("radioTherapyTrialsCategoryEntity to tumorInfoCategoryEntity association");
@@ -1756,7 +1756,7 @@ public class MockCategoryManager
 
 			tumorInfoContainer.addControl(siteControl);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl1 = factory.createCategoryAssociationControl();
 			containmentControl1.setBaseAbstractAttribute(categoryAssociation1);
 			containmentControl1.setSequenceNumber(sequenceNumber++);
@@ -1766,7 +1766,7 @@ public class MockCategoryManager
 
 			chemotherapyTrialsContainer.addControl(containmentControl1);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl2 = factory.createCategoryAssociationControl();
 			containmentControl2.setBaseAbstractAttribute(categoryAssociation2);
 			containmentControl2.setSequenceNumber(sequenceNumber++);
@@ -1776,7 +1776,7 @@ public class MockCategoryManager
 
 			chemotherapyTrialsContainer.addControl(containmentControl2);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl3 = factory.createCategoryAssociationControl();
 			containmentControl3.setBaseAbstractAttribute(categoryAssociation3);
 			containmentControl3.setSequenceNumber(sequenceNumber++);
@@ -1786,7 +1786,7 @@ public class MockCategoryManager
 
 			testDetailsContainer.addControl(containmentControl3);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl4 = factory.createCategoryAssociationControl();
 			containmentControl4.setBaseAbstractAttribute(categoryAssociation4);
 			containmentControl4.setSequenceNumber(sequenceNumber++);
@@ -1796,7 +1796,7 @@ public class MockCategoryManager
 
 			testDetailsContainer.addControl(containmentControl4);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl5 = factory.createCategoryAssociationControl();
 			containmentControl5.setBaseAbstractAttribute(categoryAssociation5);
 			containmentControl5.setSequenceNumber(sequenceNumber++);
@@ -1806,7 +1806,7 @@ public class MockCategoryManager
 
 			trialAgentContainer.addControl(containmentControl5);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl6 = factory.createCategoryAssociationControl();
 			containmentControl6.setBaseAbstractAttribute(categoryAssociation6);
 			containmentControl6.setSequenceNumber(sequenceNumber++);
@@ -1816,7 +1816,7 @@ public class MockCategoryManager
 
 			radioTherapyTrialsContainer.addControl(containmentControl6);
 
-			// Create a containment control. 
+			// Create a containment control.
 			AbstractContainmentControlInterface containmentControl7 = factory.createCategoryAssociationControl();
 			containmentControl7.setBaseAbstractAttribute(categoryAssociation7);
 			containmentControl7.setSequenceNumber(sequenceNumber++);
@@ -1846,7 +1846,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param objectClassName
 	 * @param identifier
 	 * @return
@@ -1893,7 +1893,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param categoryEntity
 	 * @return ContainerInterface
 	 */
@@ -1910,7 +1910,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param categoryAttribute
 	 * @param sequenceNumber
 	 * @return
@@ -1927,7 +1927,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param categoryAttribute
 	 * @param sequenceNumber
 	 * @return
@@ -1943,7 +1943,7 @@ public class MockCategoryManager
 	}
 
 	/**
-	 * 
+	 *
 	 * @param categoryAttribute
 	 * @param sequenceNumber
 	 * @return

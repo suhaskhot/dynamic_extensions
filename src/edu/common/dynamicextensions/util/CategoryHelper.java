@@ -21,6 +21,7 @@ import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -298,7 +299,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	{
 		CategoryAttributeInterface categoryAttribute = DomainObjectFactory.getInstance().createCategoryAttribute();
 		categoryAttribute.setName(attributeName + " Category Attribute");
-		categoryAttribute.setAttribute(entity.getAttributeByName(attributeName));
+		categoryAttribute.setAbstractAttribute(entity.getAbstractAttributeByName(attributeName));
 
 		categoryEntity.addCategoryAttribute(categoryAttribute);
 		categoryAttribute.setCategoryEntity(categoryEntity);
@@ -324,8 +325,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		ControlInterface control = null;
-		EntityInterface entity = categoryAttribute.getCategoryEntity().getEntity();
-		String attributeName = categoryAttribute.getAttribute().getName();
+		EntityInterface entity = categoryAttribute.getAbstractAttribute().getEntity();
+		String attributeName = categoryAttribute.getAbstractAttribute().getName();
 		switch (controlType)
 		{
 			case TEXT_FIELD_CONTROL :
@@ -378,7 +379,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			}
 			else
 			{
-				if (((CategoryAttributeInterface) control.getBaseAbstractAttribute()).getAttribute().getName().equals(attributeName))
+				if (((CategoryAttributeInterface) control.getBaseAbstractAttribute()).getAbstractAttribute().getName().equals(attributeName))
 				{
 					categoryAttribute = control.getBaseAbstractAttribute();
 					break;
@@ -515,7 +516,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	/**
 	 * @param path
 	 * @param instance
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public void addInstanceInformationToPath(PathInterface path, String instance) throws DynamicExtensionsSystemException
 	{
@@ -577,8 +578,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param targetCategoryEntity target category entity
 	 * @param name name of the category association
 	 * @return CategoryAssociationInterface category association object
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
 			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
@@ -606,7 +607,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * Method creates the association between the given parent and the target container 
+	 * Method creates the association between the given parent and the target container
 	 * @param parentContainer main form
 	 * @param targetContainer sub form
 	 * @param categoryAssociation association between category entities
@@ -717,6 +718,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	private SelectInterface createOrUpdateSelectControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
 			List<PermissibleValueInterface> permissibleValues, ControlEnum controlType)
 	{
+		CategoryAttribute categoryAttribute = (CategoryAttribute) baseAbstractAttribute;
 		ControlInterface control = getControl(container, baseAbstractAttribute);
 		SelectInterface selectControl = null;
 		if (control != null && !(control instanceof SelectInterface))
@@ -751,7 +753,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
 		//clear old permissible values
-		((CategoryAttribute) baseAbstractAttribute).clearDataElementCollection();
+		categoryAttribute.clearDataElementCollection();
 
 		UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
 		for (PermissibleValueInterface pv : permissibleValues)
@@ -760,15 +762,17 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 
 		//add new permissible values
-		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
-		AttributeTypeInformationInterface attributeTypeInformation = ((CategoryAttribute) baseAbstractAttribute).getAttribute()
+		categoryAttribute.setDataElement(userDefinedDE);
+		AttributeInterface attribute = categoryAttribute.getAbstractAttribute()
+				.getEntity().getAttributeByName(
+						categoryAttribute.getAbstractAttribute().getName());
+		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
 
 		if (attributeTypeInformation.getDefaultValue() != null)
 		{
-			((CategoryAttribute) baseAbstractAttribute).setDefaultValue(attributeTypeInformation.getDefaultValue());
+			categoryAttribute.setDefaultValue(attributeTypeInformation.getDefaultValue());
 		}
-
 		return selectControl;
 	}
 
@@ -992,7 +996,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			}
 			else
 			{
-				permissibleValues = getSubsetOfPermissibleValues(attribute, desiredPermissibleValues);
+				permissibleValues = getSubsetOfPermissibleValues(attributeName,entity.getName(),attribute, desiredPermissibleValues);
 			}
 		}
 		catch (ParseException parseException)
@@ -1010,7 +1014,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(AttributeInterface attributeInterface,
+	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(String attributeName,String entityName,AttributeInterface attributeInterface,
 			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException
 	{
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
@@ -1035,8 +1039,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				if(itrPV.next() instanceof edu.common.dynamicextensions.domain.DoubleValue)
 				{
-					
-					allDoubleValues = true;					
+
+					allDoubleValues = true;
 				}
 				else
 				{
@@ -1049,8 +1053,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				if(itrPVFloat.next() instanceof edu.common.dynamicextensions.domain.FloatValue)
 				{
-					
-					allFloatValues = true;					
+
+					allFloatValues = true;
 				}
 				else
 				{
@@ -1071,7 +1075,7 @@ public class CategoryHelper implements CategoryHelperInterface
 					}
 				}
 			}
-			
+
 			else if(allDoubleValues && desiredPermissibleValues != null)
 			{
 				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
@@ -1086,15 +1090,15 @@ public class CategoryHelper implements CategoryHelperInterface
 						  {
 							  	permissibleValues.add(pv);
 						  }
-						 
+
 						}
 					}
 				}
-				
-			}			
+
+			}
 			else
 			{
-			
+
 				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 				{
 					if (desiredPermissibleValues != null)
@@ -1111,8 +1115,8 @@ public class CategoryHelper implements CategoryHelperInterface
 		else
 		{
 			throw new DynamicExtensionsApplicationException(
-					"INVALID SUBSET OF PERMISSIBLE VALUES. ORIGINAL SET OF PERMISSIBLE VALUES FOR THE ATTRIBUTE " + attributeInterface.getName()
-							+ " OF THE ENTITY " + attributeInterface.getEntity().getName() + " IS DIFFERENT.");
+					"INVALID SUBSET OF PERMISSIBLE VALUES. ORIGINAL SET OF PERMISSIBLE VALUES FOR THE ATTRIBUTE " + attributeName
+							+ " OF THE ENTITY " + entityName + " IS DIFFERENT.");
 		}
 
 		return permissibleValues;
@@ -1227,7 +1231,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				case TEXT_AREA_CONTROL :
 					TextAreaInterface textAreaControl = (TextAreaInterface) control;
 					textAreaControl.setIsHidden(false);
-					textAreaControl.setIsReadOnly(false);					
+					textAreaControl.setIsReadOnly(false);
 					break;
 				case RADIO_BUTTON_CONTROL :
 					RadioButtonInterface radioButtonControl = (RadioButtonInterface) control;

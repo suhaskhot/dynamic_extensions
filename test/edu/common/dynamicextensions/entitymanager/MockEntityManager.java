@@ -322,7 +322,7 @@ public class MockEntityManager
 		defaultValue.setValue(stringDefaultValue);
 		stringAttribute.setCreatedDate(new Date());
 		stringAttribute.setDescription("This is a dummy StringAttributeTypeInformation");
-		stringAttribute.setIsCollection(new Boolean(false));
+		//stringAttribute.setIsCollection(new Boolean(false));
 		stringAttribute.setIsIdentified(new Boolean(true));
 		stringAttribute.setIsPrimaryKey(new Boolean(false));
 		stringAttribute.setLastUpdated(stringAttribute.getCreatedDate());
@@ -352,7 +352,7 @@ public class MockEntityManager
 
 		dateAttribute.setCreatedDate(new Date());
 		dateAttribute.setDescription("This is a dummy DateAttributeTypeInformation");
-		dateAttribute.setIsCollection(new Boolean(false));
+		//dateAttribute.setIsCollection(new Boolean(false));
 		dateAttribute.setIsIdentified(new Boolean(true));
 		dateAttribute.setIsPrimaryKey(new Boolean(false));
 		dateAttribute.setLastUpdated(dateAttribute.getCreatedDate());
@@ -387,7 +387,7 @@ public class MockEntityManager
 
 		doubleAttribute.setCreatedDate(new Date());
 		doubleAttribute.setDescription("This is a dummy DoubleAttributeTypeInformation");
-		doubleAttribute.setIsCollection(new Boolean(false));
+		//doubleAttribute.setIsCollection(new Boolean(false));
 		doubleAttribute.setIsIdentified(new Boolean(true));
 		doubleAttribute.setIsPrimaryKey(new Boolean(false));
 		doubleAttribute.setLastUpdated(doubleAttribute.getCreatedDate());
@@ -410,7 +410,7 @@ public class MockEntityManager
 
 		longAttribute.setCreatedDate(new Date());
 		longAttribute.setDescription("This is a dummy LongAttributeTypeInformation");
-		longAttribute.setIsCollection(new Boolean(false));
+		//longAttribute.setIsCollection(new Boolean(false));
 		longAttribute.setIsIdentified(new Boolean(true));
 		longAttribute.setIsPrimaryKey(new Boolean(false));
 		longAttribute.setLastUpdated(longAttribute.getCreatedDate());

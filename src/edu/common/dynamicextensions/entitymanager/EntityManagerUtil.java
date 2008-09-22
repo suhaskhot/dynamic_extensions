@@ -20,10 +20,13 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -452,32 +455,21 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
 		return isDataPresent;
 	}
-
-	/*public String getQueryStringForInsert(String tableName,List<Object> columnValues)
-	 {
-	 StringBuffer queryString = new StringBuffer();
-	 queryString.append(INSERT_INTO_KEYWORD);
-	 queryString.append(tableName);
-	 queryString.append(WHITESPACE);
-	 queryString.append(VALUES_KEYWORD);
-	 for(Object columnValue: columnValues)
-	 {
-	 if (columnValue instanceof byte)
-	 {
-	 byte new_name = (byte) columnValue;
-	 
-	 }
-	 }
-	 
-	 
-	 
-	 return null;
-	 }
-	 
-	 public String getQueryStringForUpdate(String updateQuery, List<String> columnNames, List<Object> columnValues)
-	 {
-	 StringBuffer qurerString = new StringBuffer();
-	 return null;
-	 }*/
-
+	/**
+	 * getRole.
+	 * @param associationType
+	 * @param name
+	 * @param minCard
+	 * @param maxCard
+	 * @return
+	 */
+	public static RoleInterface getRole(AssociationType associationType, String name, Cardinality minCard, Cardinality maxCard)
+	{
+		RoleInterface role = DomainObjectFactory.getInstance().createRole();
+		role.setAssociationsType(associationType);
+		role.setName(name);
+		role.setMinimumCardinality(minCard);
+		role.setMaximumCardinality(maxCard);
+		return role;
+	}
 }

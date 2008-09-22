@@ -58,7 +58,10 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	 */
 	public Collection<ConstraintPropertiesInterface> constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
 
-
+	/**
+	 * Specifies whether this abstarct attribute is a collection or not.
+	 */
+	protected Boolean isCollection = false;
 	/**
 	 *
 	 */
@@ -70,7 +73,24 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	public Association()
 	{
 	}
+	/**
+	 * This method returns whether the Attribute is a Collection or not.
+	 * @hibernate.property name="isCollection" type="boolean" column="IS_COLLECTION"
+	 * @return whether the Attribute is a Collection or not.
+	 */
+	public Boolean getIsCollection()
+	{
+		return isCollection;
+	}
 
+	/**
+	 * This method sets whether the Attribute is a Collection or not.
+	 * @param isCollection the Boolean value to be set.
+	 */
+	public void setIsCollection(Boolean isCollection)
+	{
+		this.isCollection = isCollection;
+	}
 	/**
 	 * This method returns the direction of the Association.
 	 * @hibernate.property name="direction" type="string" column="DIRECTION"

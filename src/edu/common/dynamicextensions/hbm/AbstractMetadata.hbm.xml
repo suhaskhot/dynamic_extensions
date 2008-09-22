@@ -323,14 +323,6 @@
         </set>
 
         <property
-            name="isCollection"
-            type="boolean"
-            update="true"
-            insert="true"
-            column="IS_COLLECTION"
-        />
-
-        <property
             name="isIdentified"
             type="boolean"
             update="true"
@@ -406,6 +398,14 @@
         <key
             column="IDENTIFIER"
         />
+        <property
+            name="isCollection"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_COLLECTION"
+        />
+
         <property
             name="direction"
             type="string"
@@ -527,7 +527,7 @@
                   class="edu.common.dynamicextensions.domain.DataElement"
               />
         </set>
-        
+
         <set
             name="ruleCollection"
             table="DYEXTN_RULE"
@@ -550,13 +550,13 @@
         </set>
 
         <many-to-one
-            name="attribute"
-            class="edu.common.dynamicextensions.domain.Attribute"
+            name="abstractAttribute"
+            class="edu.common.dynamicextensions.domain.AbstractAttribute"
             cascade="save-update"
             outer-join="auto"
             update="true"
             insert="true"
-            column="ATTRIBUTE_ID"
+            column="ABSTRACT_ATTRIBUTE_ID"
         />
 
         <many-to-one
@@ -597,6 +597,7 @@
             insert="true"
             column="IS_VISIBLE"
         />
+
         <property
             name="isRelatedAttribute"
             type="boolean"

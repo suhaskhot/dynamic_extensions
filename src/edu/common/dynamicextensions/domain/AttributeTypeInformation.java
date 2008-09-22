@@ -22,7 +22,9 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
  */
-public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject implements AttributeTypeInformationInterface
+public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject
+implements
+AttributeTypeInformationInterface
 {
 
 	/**
@@ -33,7 +35,7 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEX_ATTR_TYP_INFO_SEQ" 
+	 * @hibernate.generator-param name="sequence" value="DYEX_ATTR_TYP_INFO_SEQ"
 	 * @return Returns the id.
 	 */
 	public Long getId()
@@ -42,21 +44,22 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
 
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<PermissibleValueInterface> defaultValueCollection = new HashSet<PermissibleValueInterface>();
+
 
 	/**
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_TYPE_INFO_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"   
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"
 	 * @return Returns the dataElementCollection.
 	 */
 	private Collection getDataElementCollection()
@@ -73,7 +76,7 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public DataElementInterface getDataElement()
@@ -81,7 +84,7 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 		if (dataElementCollection != null)
 		{
 			Iterator dataElementIterator = dataElementCollection.iterator();
-			if (dataElementIterator.hasNext())
+			if(dataElementIterator.hasNext())
 			{
 				return (DataElement) dataElementIterator.next();
 			}
@@ -90,7 +93,7 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 	}
 
 	/**
-	 * 
+	 *
 	 * @param sourceEntity
 	 */
 	public void setDataElement(DataElementInterface dataElementInterface)
@@ -101,13 +104,22 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 		}
 		this.dataElementCollection.add(dataElementInterface);
 	}
-
+	/**
+	 * @param dataElementInterface
+	 */
+    public void removeDataElement(DataElementInterface dataElementInterface)
+    {
+		if (dataElementCollection != null && dataElementInterface != null)
+		{
+			this.dataElementCollection.remove(dataElementInterface);
+		}
+    }
 	/**
 	 * @hibernate.set name="defaultValueCollection" table="DYEXTN_PERMISSIBLE_VALUE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_TYPE_INFO_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"   
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"
 	 * @return Returns the dataElementCollection.
 	 */
 	private Collection getDefaultValueCollection()
@@ -123,8 +135,10 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 		this.defaultValueCollection = defaultValueCollection;
 	}
 
+
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public PermissibleValueInterface getDefaultValue()
@@ -141,8 +155,9 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#setDefaultValue(edu.common.dynamicextensions.domaininterface.PermissibleValueInterface)
+	/**
+	 *
+	 * @param sourceEntity
 	 */
 	public void setDefaultValue(PermissibleValueInterface permissibleValue)
 	{
@@ -157,21 +172,25 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 		this.defaultValueCollection.add(permissibleValue);
 	}
 
+
+
 	/**
-	 * 
+	 *
 	 *
 	 */
 	public AttributeTypeInformation()
 	{
 		super();
+		// TODO Auto-generated constructor stub
 	}
-
 	/**
-	 * 
+	 *
 	 * @param value
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public abstract PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
+
+
 
 }

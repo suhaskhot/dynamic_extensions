@@ -35,8 +35,8 @@ public class NumberValidator implements ValidatorRuleInterface
 	 * @param attribute the Attribute whose corresponding value is to be verified.
 	 * @param valueObject the value entered by the user.
 	 * @param parameterMap the parameters of the Rule.
-	 * @throws DynamicExtensionsValidationException if the value is not following the Numeric Rule. 
-	 * @throws DataTypeFactoryInitializationException 
+	 * @throws DynamicExtensionsValidationException if the value is not following the Numeric Rule.
+	 * @throws DataTypeFactoryInitializationException
 	 */
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap, String controlCaption) throws DynamicExtensionsValidationException, DataTypeFactoryInitializationException
 	{
@@ -44,60 +44,66 @@ public class NumberValidator implements ValidatorRuleInterface
 		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
 
 		String value = (String) valueObject;
-		value = value.trim();
-		
-		DataTypeFactory dataTypeFactory = null;
-		
-		try
+		if (value != null)
 		{
-			dataTypeFactory = DataTypeFactory.getInstance();
+			value = value.trim();
 		}
-		catch (DataTypeFactoryInitializationException e)
-		{
-			throw new DataTypeFactoryInitializationException(e.getMessage());
-		}
-		
-		if (attributeTypeInformation != null)
-		{
-			try
-			{
-				if (!(DynamicExtensionsUtility.isNumeric((String) valueObject)))
-				{
-					isValid = false;
-				}
-				else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
-				{
-					checkLongNumberValidity(dataTypeFactory, controlCaption, value);
-				}
-				else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
-				{
-					checkIntegerNumberValidity(dataTypeFactory, controlCaption, value);
-				}
-				else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
-				{
-					checkShortNumberValidity(dataTypeFactory, controlCaption, value);
-				}
-				else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
-				{
-					validateDigitsAfterDecimalAgainstPrecision(attributeTypeInformation, controlCaption, value.trim());
-					checkDoubleNumberValidity(dataTypeFactory, controlCaption, value);
-				}
-				else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
-				{
-					validateDigitsAfterDecimalAgainstPrecision(attributeTypeInformation, controlCaption, value.trim());
-					checkFloatNumberValidity(dataTypeFactory, controlCaption, value);
-				}
-			}
-			catch (NumberFormatException numberFormatException)
-			{
-				isValid = false;
-			}
-		}
-
-		if (value.length() == 0)
+		if (value == null || value.length() == 0)
 		{
 			isValid = true;
 		}
+		else
+		{
+
+			DataTypeFactory dataTypeFactory = null;
+
+			try
+			{
+				dataTypeFactory = DataTypeFactory.getInstance();
+			}
+			catch (DataTypeFactoryInitializationException e)
+			{
+				throw new DataTypeFactoryInitializationException(e.getMessage());
+			}
+
+			if (attributeTypeInformation != null)
+			{
+				try
+				{
+					if (!(DynamicExtensionsUtility.isNumeric((String) valueObject)))
+					{
+						isValid = false;
+					}
+					else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
+					{
+						checkLongNumberValidity(dataTypeFactory, controlCaption, value);
+					}
+					else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
+					{
+						checkIntegerNumberValidity(dataTypeFactory, controlCaption, value);
+					}
+					else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
+					{
+						checkShortNumberValidity(dataTypeFactory, controlCaption, value);
+					}
+					else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
+					{
+						validateDigitsAfterDecimalAgainstPrecision(attributeTypeInformation, controlCaption, value.trim());
+						checkDoubleNumberValidity(dataTypeFactory, controlCaption, value);
+					}
+					else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
+					{
+						validateDigitsAfterDecimalAgainstPrecision(attributeTypeInformation, controlCaption, value.trim());
+						checkFloatNumberValidity(dataTypeFactory, controlCaption, value);
+					}
+				}
+				catch (NumberFormatException numberFormatException)
+				{
+					isValid = false;
+				}
+			}
+		}
+
 		if (!isValid)
 		{
 			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Number", controlCaption);
@@ -105,7 +111,7 @@ public class NumberValidator implements ValidatorRuleInterface
 
 		return isValid;
 	}
-	
+
 	/**
 	 * This method checks the validity of the Long values.
 	 * @param attributeName Name of the Attribute.
@@ -119,15 +125,15 @@ public class NumberValidator implements ValidatorRuleInterface
         {
         	reportInvalidInput(controlCaption, EntityManagerConstantsInterface.REAL_ATTRIBUTE_TYPE, EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE, "dynExtn.validation.Number.errorInput");
         }
-        
+
 		validatePrecisionAndScale(dataTypeFactory, value, controlCaption, EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE);
-        
+
 		BigInteger numberValue = new BigInteger(value);
 		String strLongMin = (new Long(Long.MIN_VALUE)).toString();
 		String strLongMax = (new Long(Long.MAX_VALUE)).toString();
 		BigInteger longMin = new BigInteger(strLongMin);
 		BigInteger longMax = new BigInteger(strLongMax);
-		
+
 		if (numberValue.compareTo(longMin) < 0 || numberValue.compareTo(longMax) > 0)
 		{
 			reportInvalidInput(controlCaption, strLongMin, strLongMax, "dynExtn.validation.Number.Range");
@@ -146,21 +152,21 @@ public class NumberValidator implements ValidatorRuleInterface
         {
         	reportInvalidInput(controlCaption, EntityManagerConstantsInterface.REAL_ATTRIBUTE_TYPE, EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE, "dynExtn.validation.Number.errorInput");
         }
-        
+
 		validatePrecisionAndScale(dataTypeFactory, value, controlCaption, EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
-        
+
 		BigInteger numberValue = new BigInteger(value);
 		String strIntegerMin = (new Integer(Integer.MIN_VALUE)).toString();
 		String strIntegerMax = (new Integer(Integer.MAX_VALUE)).toString();
 		BigInteger integerMin = new BigInteger(strIntegerMin);
 		BigInteger integerMax = new BigInteger(strIntegerMax);
-		
+
 		if (numberValue.compareTo(integerMin) < 0 || numberValue.compareTo(integerMax) > 0)
 		{
 			reportInvalidInput(controlCaption, strIntegerMin, strIntegerMax, "dynExtn.validation.Number.Range");
 		}
 	}
-	
+
 	/**
 	 * @param dataTypeFactory
 	 * @param controlCaption
@@ -173,15 +179,15 @@ public class NumberValidator implements ValidatorRuleInterface
         {
         	reportInvalidInput(controlCaption, EntityManagerConstantsInterface.REAL_ATTRIBUTE_TYPE, EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE, "dynExtn.validation.Number.errorInput");
         }
-        
+
 		validatePrecisionAndScale(dataTypeFactory, value, controlCaption, EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE);
-        
+
 		BigInteger numberValue = new BigInteger(value);
 		String strShortMin = (new Short(Short.MIN_VALUE)).toString();
 		String strShortMax = (new Short(Short.MAX_VALUE)).toString();
 		BigInteger shortMin = new BigInteger(strShortMin);
 		BigInteger shortMax = new BigInteger(strShortMax);
-		
+
 		if (numberValue.compareTo(shortMin) < 0 || numberValue.compareTo(shortMax) > 0)
 		{
 			reportInvalidInput(controlCaption, strShortMin, strShortMax, "dynExtn.validation.Number.Range");
@@ -198,7 +204,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	private void checkDoubleNumberValidity(DataTypeFactory dataTypeFactory, String controlCaption, String value) throws DynamicExtensionsValidationException, NumberFormatException
 	{
 		validatePrecisionAndScale(dataTypeFactory, value, controlCaption, EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE);
-		
+
 		/*Double numberValue = new Double(value);
 		String strDoubleMin = (new Double(-Double.MAX_VALUE)).toString();
 		String strDoubleMax = (new Double(Double.MAX_VALUE)).toString();
@@ -210,7 +216,7 @@ public class NumberValidator implements ValidatorRuleInterface
 			reportInvalidInput(controlCaption, strDoubleMin, strDoubleMax, "dynExtn.validation.Number.Range");
 		}*/
 	}
-	
+
 	/**
 	 * @param dataTypeFactory
 	 * @param controlCaption
@@ -220,7 +226,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	private void checkFloatNumberValidity(DataTypeFactory dataTypeFactory, String controlCaption, String value) throws DynamicExtensionsValidationException
 	{
 		validatePrecisionAndScale(dataTypeFactory, value, controlCaption, EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE);
-		
+
 		/*Float numberValue = new Float(value);
 		String strFloatMin = (new Float(-Float.MAX_VALUE)).toString();
 		String strFloatMax = (new Float(Float.MAX_VALUE)).toString();
@@ -243,7 +249,7 @@ public class NumberValidator implements ValidatorRuleInterface
 	public void validatePrecisionAndScale(DataTypeFactory dataTypeFactory, String value, String controlCaption, String dataType) throws DynamicExtensionsValidationException
 	{
 		DataTypeInformation dataTypeInfoObject = (DataTypeInformation) dataTypeFactory.getDataTypePrecisionScaleInformation(dataType);
-		
+
 		if (value != null && dataTypeInfoObject != null)
 		{
 			if (value.contains("."))
@@ -251,7 +257,7 @@ public class NumberValidator implements ValidatorRuleInterface
 				int decimalPointIndex = value.indexOf(".");
 				String stringBeforeDecimalPoint = value.substring(0, decimalPointIndex);
 				String stringAfterDecimalPoint = value.substring(decimalPointIndex + 1, value.length());
-				
+
 				if (stringBeforeDecimalPoint.length() > Integer.parseInt(dataTypeInfoObject.getDigitsBeforeDecimal()) || stringAfterDecimalPoint.length() > Integer.parseInt(dataTypeInfoObject.getDigitsAfterDecimal()))
 				{
 					reportInvalidInput(controlCaption, dataType, dataTypeInfoObject, "dynExtn.validation.Number.PrecisionScale");
@@ -282,7 +288,7 @@ public class NumberValidator implements ValidatorRuleInterface
 		placeHolders.add(precisionScaleInfoObject.getDigitsAfterDecimal());
 		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey, placeHolders);
 	}
-	
+
 	/**
 	 * @param controlCaption
 	 * @param value1
@@ -298,7 +304,7 @@ public class NumberValidator implements ValidatorRuleInterface
 		placeHolders.add(value2);
 		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey, placeHolders);
 	}
-	
+
 	/**
 	 * @param attributeTypeInformation
 	 * @param controlCaption
@@ -308,14 +314,14 @@ public class NumberValidator implements ValidatorRuleInterface
 	private void validateDigitsAfterDecimalAgainstPrecision(AttributeTypeInformationInterface attributeTypeInformation, String controlCaption, String value) throws DynamicExtensionsValidationException
 	{
 		int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformation).getDecimalPlaces();
-		
+
 		if (value != null)
 		{
 			if (value.contains("."))
 			{
 				int decimalPointIndex = value.indexOf(".");
 				String stringAfterDecimalPoint = value.substring(decimalPointIndex + 1, value.length());
-				
+
 				if (stringAfterDecimalPoint.length() > decimalPlaces)
 				{
 					reportInvalidInput(controlCaption, "Number of digits after decimal point", "precision ("+decimalPlaces+")", "dynExtn.validation.Number.numberOfDigitsExceedsPrecision");

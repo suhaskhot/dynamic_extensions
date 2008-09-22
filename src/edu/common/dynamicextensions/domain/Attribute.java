@@ -16,25 +16,20 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * Entites have attributes that distinguishes them form other entities.
- * This Class represnts the Attribute of Entities. 
+ * This Class represnts the Attribute of Entities.
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
- * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
 public class Attribute extends AbstractAttribute implements AttributeInterface, AttributeMetadataInterface
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Specifies whether this primitive attribute is a collection or not.
-	 */
-	protected Boolean isCollection = false;
 
 	/**
 	 * Specifies whether this is an identified field or not.
@@ -57,11 +52,11 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	protected Collection<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
 
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection = new HashSet<AttributeTypeInformationInterface>();
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection = new HashSet<CaDSRValueDomainInfo>();
 
@@ -70,7 +65,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AttributeTypeInformation"   
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.AttributeTypeInformation"
 	 * @return Returns the attributeTypeInformationCollection.
 	 */
 	private Collection<AttributeTypeInformationInterface> getAttributeTypeInformationCollection()
@@ -87,7 +82,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	}
 
 	/**
-	 * 
+	 *
 	 * @return AttributeTypeInformationInterface
 	 */
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
@@ -105,7 +100,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	}
 
 	/**
-	 * 
+	 *
 	 * @return AttributeTypeInformationInterface
 	 */
 	public void setAttributeTypeInformation(AttributeTypeInformationInterface attributeTypeInformationInterface)
@@ -131,27 +126,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	}
 
 	/**
-	 * This method returns whether the Attribute is a Collection or not.
-	 * @hibernate.property name="isCollection" type="boolean" column="IS_COLLECTION" 
-	 * @return whether the Attribute is a Collection or not.
-	 */
-	public Boolean getIsCollection()
-	{
-		return isCollection;
-	}
-
-	/**
-	 * This method sets whether the Attribute is a Collection or not.
-	 * @param isCollection the Boolean value to be set.
-	 */
-	public void setIsCollection(Boolean isCollection)
-	{
-		this.isCollection = isCollection;
-	}
-
-	/**
 	 * This method returns whether the Attribute is identifiable or not.
-	 * @hibernate.property name="isIdentified" type="boolean" column="IS_IDENTIFIED" 
+	 * @hibernate.property name="isIdentified" type="boolean" column="IS_IDENTIFIED"
 	 * @return whether the Attribute is identifiable or not.
 	 */
 	public Boolean getIsIdentified()
@@ -170,7 +146,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 
 	/**
 	 * This method retunrs whehter the Attribute is a primary key or not.
-	 * @hibernate.property name="isPrimaryKey" type="boolean" column="IS_PRIMARY_KEY" 
+	 * @hibernate.property name="isPrimaryKey" type="boolean" column="IS_PRIMARY_KEY"
 	 * @return whehter the Attribute is a primary key or not.
 	 */
 	public Boolean getIsPrimaryKey()
@@ -244,7 +220,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 
 	/**
 	 * This method returns whether the Attribute is nullable or not.
-	 * @hibernate.property name="isNullable" type="boolean" column="IS_NULLABLE" 
+	 * @hibernate.property name="isNullable" type="boolean" column="IS_NULLABLE"
 	 * @return whether the Attribute is nullable or not.
 	 */
 	public Boolean getIsNullable()
@@ -282,7 +258,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PRIMITIVE_ATTRIBUTE_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CaDSRValueDomainInfo"   
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CaDSRValueDomainInfo"
 	 * @return the caDSRValueDomainInfoCollection
 	 */
 	public Collection<CaDSRValueDomainInfo> getCaDSRValueDomainInfoCollection()
@@ -299,7 +275,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	}
 
 	/**
-	 * 
+	 *
 	 * @return CaDSRValueDomainInfoInterface
 	 */
 	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo()
@@ -317,8 +293,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface)
 	{
@@ -399,7 +375,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public DataElementInterface getDataElement()
 	{

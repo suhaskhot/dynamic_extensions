@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
@@ -46,6 +47,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -268,7 +270,7 @@ public class ControlsUtility
 	{
 		String dateFormat = null;
 		/*
-		 * While creating a categoy of type date if original attribute 
+		 * While creating a categoy of type date if original attribute
 		 * is of type String then line
 		 * ((DateTypeInformationInterface) dateAttribute).getFormat();
 		 * will throw a class cast exception
@@ -321,16 +323,28 @@ public class ControlsUtility
 				}
 				else if (attribute instanceof AssociationInterface)
 				{
-					EntityManagerInterface entityManager = EntityManager.getInstance();
+					AssociationInterface association = (AssociationInterface) attribute;
+					if (association.getIsCollection())
+					{
+						Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
+						Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
+						List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+								filteredAttributeCollection);
+						nameValueBeanList = getListOfPermissibleValues((AttributeMetadataInterface) attributesList.get(0));
+					}
+					else
+					{
+						EntityManagerInterface entityManager = EntityManager.getInstance();
 
-					AssociationControlInterface associationControl = (AssociationControlInterface) control;
-					Map<Long, List<String>> displayAttributeMap = null;
+						AssociationControlInterface associationControl = (AssociationControlInterface) control;
+						Map<Long, List<String>> displayAttributeMap = null;
 
-					String sepatator = associationControl.getSeparator();
+						String sepatator = associationControl.getSeparator();
 
-					displayAttributeMap = entityManager.getRecordsForAssociationControl(associationControl);
+						displayAttributeMap = entityManager.getRecordsForAssociationControl(associationControl);
 
-					nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap, sepatator);
+						nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap, sepatator);
+					}
 				}
 			}
 		}

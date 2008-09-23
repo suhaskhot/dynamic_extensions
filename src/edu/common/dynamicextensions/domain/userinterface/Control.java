@@ -257,6 +257,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='30%' valign='top'>");
 		}
+		if (this instanceof ComboBox)
+		{
+			stringBuffer.append("<br/>");
+		}
 		stringBuffer.append(this.getCaption());
 		stringBuffer.append("</td>");
 
@@ -427,12 +431,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	public AttributeMetadataInterface getAttibuteMetadataInterface()
 	{
-		if(baseAbstractAttribute instanceof AttributeMetadataInterface)
+		if (baseAbstractAttribute instanceof AttributeMetadataInterface)
 		{
 			return (AttributeMetadataInterface) baseAbstractAttribute;
 		}
 		return null;
-			
+
 	}
 
 	/**

@@ -211,8 +211,6 @@ public class CategoryGenerator
 						// Added for category inheritance, check if a given attribute is parent category attribute.
 						boolean isAttributePresent = entityInterface.isAttributePresent(attributeName);
 
-
-
 						boolean isAttributeCategoryMatched = false;
 						CategoryValidator.checkForNullRefernce(getcategoryEntityName(categoryEntityName, categoryFileParser.getEntityName()),
 								ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
@@ -611,24 +609,12 @@ public class CategoryGenerator
 					+ ApplicationProperties.getValue("attributeNotPresent") + entity.getName());
 
 			// Added for category inheritance.
-			boolean isParentAttribute = true;
-
-			Iterator<AttributeInterface> attrIterator = entity.getAttributeCollection().iterator();
-			while (attrIterator.hasNext())
-			{
-				AttributeInterface objAttribute = attrIterator.next();
-				if (attributeName.equals(objAttribute.getName()))
-				{
-					isParentAttribute = false;
-					break;
-				}
-			}
-
+			boolean isAttributePresent = entity.isAttributePresent(attributeName);
 			boolean isAttributeCategoryMatched = false;
 
 			// If this is the parent attribute and currently the parent category entity is not created
 			// for given category entity, create parent category hierarchy up to where attribute is found.
-			if (isParentAttribute)
+			if (!isAttributePresent)
 			{
 				EntityInterface parentEntity = entity.getParentEntity();
 				EntityInterface childEntity = entity;
@@ -653,10 +639,11 @@ public class CategoryGenerator
 					}
 
 					// Iterate over parent entity's attribute, check whether its present in parent entity.
-					Iterator<AttributeInterface> parentattrIterator = parentEntity.getAttributeCollection().iterator();
+					Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity.getAbstractAttributeCollection().iterator();
+
 					while (parentattrIterator.hasNext())
 					{
-						AttributeInterface objParentAttribute = parentattrIterator.next();
+						AbstractAttributeInterface objParentAttribute = parentattrIterator.next();
 						if (attributeName.equals(objParentAttribute.getName()))
 						{
 							isAttributeCategoryMatched = true;
@@ -972,13 +959,10 @@ public class CategoryGenerator
 		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control.getAttibuteMetadataInterface();
 		if (!categoryFileParser.getDefaultValue().equals(categoryAttribute.getDefaultValue()))
 		{
-			AttributeInterface attributeInterface = categoryAttribute
-					.getAbstractAttribute().getEntity().getAttributeByName(
-							categoryAttribute.getAbstractAttribute().getName());
-			categoryAttribute.setDefaultValue(attributeInterface
-					.getAttributeTypeInformation()
-					.getPermissibleValueForString(
-							categoryFileParser.getDefaultValue()));
+			AttributeInterface attributeInterface = categoryAttribute.getAbstractAttribute().getEntity().getAttributeByName(
+					categoryAttribute.getAbstractAttribute().getName());
+			categoryAttribute.setDefaultValue(attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(
+					categoryFileParser.getDefaultValue()));
 		}
 	}
 

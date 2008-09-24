@@ -11,10 +11,15 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
+import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -337,4 +342,40 @@ public class CategoryValidator
 			}
 		}
 	}
+
+	/**
+	 * This method checks if multiselect specified for a category attribute is valid.
+	 * @param entity
+	 * @param attributeName
+	 * @param control
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void checkIsMultiSelectValid(EntityInterface entity, String attributeName, ControlInterface control)
+			throws DynamicExtensionsSystemException
+	{
+		Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
+
+		if (isMultiSelect != null && isMultiSelect == true)
+		{
+			AbstractAttributeInterface abstractAttribute = entity.getAbstractAttributeByName(attributeName);
+			if (abstractAttribute != null)
+			{
+				if (!(abstractAttribute instanceof AssociationInterface))
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.INVALID_MULTI_SELECT) + attributeName);
+				}
+				else
+				{
+					Boolean isCollection = ((AssociationInterface) abstractAttribute).getIsCollection();
+					if (isCollection != null && isCollection == false)
+					{
+						throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ ApplicationProperties.getValue(CategoryConstants.INVALID_MULTI_SELECT) + attributeName);
+					}
+				}
+			}
+		}
+	}
+
 }

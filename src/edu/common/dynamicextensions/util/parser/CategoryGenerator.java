@@ -28,6 +28,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
@@ -330,6 +331,11 @@ public class CategoryGenerator
 
 						setControlsOptions(lastControl);
 						setDefaultValue(lastControl);
+
+						if (lastControl != null && lastControl instanceof ListBoxInterface)
+						{
+							CategoryValidator.checkIsMultiSelectValid(entityInterface, attributeName, lastControl);
+						}
 
 						// Check for isReadOnly option.
 						if (lastControl.getIsReadOnly())

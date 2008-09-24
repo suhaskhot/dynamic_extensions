@@ -528,17 +528,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		if (control instanceof ListBoxInterface)
 		{
-			List<String> valueList = new ArrayList<String>();
-			String[] selectedListValues = (String[]) request.getParameterValues("Control_" + sequence);
-
-			if (selectedListValues != null)
-			{
-				for (int counter = 0; counter < selectedListValues.length; counter++)
-				{
-					valueList.add(selectedListValues[counter]);
-				}
-			}
-			attributeValue = valueList;
+			String selectedListValue = request.getParameter("Control_" + sequence);
+			attributeValue = selectedListValue;
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
 		else if (control instanceof FileUploadInterface)

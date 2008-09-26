@@ -26,6 +26,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
@@ -194,6 +195,8 @@ public class CategoryValidator
 				}
 			}
 		}
+		
+		validateCategoryAttributeRangeValues(minValue, maxValue, attribute);
 	}
 
 	/**
@@ -373,6 +376,39 @@ public class CategoryValidator
 						throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
 								+ ApplicationProperties.getValue(CategoryConstants.INVALID_MULTI_SELECT) + attributeName);
 					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @param minValue
+	 * @param maxValue
+	 * @param attribute
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static void validateCategoryAttributeRangeValues(String minValue, String maxValue, AttributeInterface attribute) throws DynamicExtensionsSystemException
+	{
+		AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
+
+		if (minValue != null && maxValue != null)
+		{
+			if (attrTypeInfo instanceof NumericAttributeTypeInformation)
+			{
+				if (Double.parseDouble(minValue) > Double.parseDouble(maxValue))
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.INCORRECT_MINMAX) + attribute.getName());
+				}
+			}
+			else
+			{
+				String dateFormat = ((DateAttributeTypeInformation)attrTypeInfo).getFormat();
+				int result = DynamicExtensionsUtility.compareDates(minValue, maxValue, dateFormat);
+				if (result == 1 || result == -2)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.INCORRECT_MINMAX_DATE) + attribute.getName());
 				}
 			}
 		}

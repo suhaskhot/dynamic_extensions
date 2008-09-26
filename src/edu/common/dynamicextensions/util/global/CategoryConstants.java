@@ -34,5 +34,9 @@ public class CategoryConstants
 	public final static String NULL_CONTROL = "nullControl";
 	
 	public final static String INVALID_MULTI_SELECT = "invalidMultiselect";
+	
+	public final static String INCORRECT_MINMAX = "incorrectMinMax";
+	
+	public final static String INCORRECT_MINMAX_DATE = "incorrectMinMaxDate";
 
 }

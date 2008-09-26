@@ -1576,19 +1576,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
 			fileRecord.setContentType("PDF");
 			fileRecord.setFileName("test.pdf");
-			//String fileContent = "this is cntent of the file";
-			
-			File file=new File("F:/Chapter5.pdf");
-			FileInputStream streamer = new FileInputStream(file);
-			byte[] byteArray=new byte[streamer.available()];
-			for(int j=0; j<byteArray.length; j++)
-			{
-			byteArray[j]=(byte) streamer.read();
-			}
-
-
-			//File f = new File("C:\\BinaryBlobType.java");
-			fileRecord.setFileContent(byteArray);
+			String fileContent = "this is cntent of the file";
+			fileRecord.setFileContent(fileContent.getBytes());
 
 			Map dataValue = new HashMap();
 			dataValue.put(age, "45");

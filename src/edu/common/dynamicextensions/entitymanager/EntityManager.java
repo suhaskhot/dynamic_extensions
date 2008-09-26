@@ -1064,7 +1064,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, jdbcDAO, uId);
 			}
 
-			jdbcDAO.commit();
+			//jdbcDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{

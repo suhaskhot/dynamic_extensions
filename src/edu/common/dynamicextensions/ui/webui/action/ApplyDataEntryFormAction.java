@@ -543,7 +543,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				attributeValueMap.put(abstractAttribute, attributeValue);
+				attributeValueMap.put(abstractAttribute, control.getValue());
 			}
 			if (isValidExtension && (formFile.getFileName() != null && !formFile.getFileName().equals("")))
 			{

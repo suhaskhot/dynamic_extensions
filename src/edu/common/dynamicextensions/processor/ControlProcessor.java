@@ -111,7 +111,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if ((controlUIBeanInterface.getIsMultiSelect() != null) && (controlUIBeanInterface.getIsMultiSelect().booleanValue() == true))
 				{
-					controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface);
+					controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface, entityGroup);
 				}
 				else
 				{
@@ -120,7 +120,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.LISTBOX_CONTROL))
 			{
-				controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface);
+				controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface, entityGroup);
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL))
 			{
@@ -239,8 +239,8 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public ControlInterface getListBoxControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,
+			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ListBoxInterface listBoxIntf = null;
 		if (controlInterface == null) //If does not exist create it
@@ -268,7 +268,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if (listBoxIntf instanceof SelectControl)
 		{
-			initializeSelectControl((SelectControl) listBoxIntf, controlUIBeanInterface);
+			initializeSelectControl((SelectControl) listBoxIntf, controlUIBeanInterface, entityGroup);
 		}
 		return listBoxIntf;
 	}
@@ -382,13 +382,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 				Collection<ControlInterface> controlCollection = container.getControlCollection();
 				for (ControlInterface currentControl : controlCollection)
 				{
-					if (currentControl.getId().toString().equals(controlId))
+					if (currentControl.getId() != null && currentControl.getId().toString().equals(controlId))
 					{
 						control = currentControl;
 					}
 				}
 			}
 		}
+
 		AttributeInterface attribute = null;
 		if (controlId != null)
 		{

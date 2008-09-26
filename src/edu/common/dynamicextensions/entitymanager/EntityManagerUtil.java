@@ -335,19 +335,15 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	public static List<AbstractAttributeInterface> filterSystemAttributes(List<AbstractAttributeInterface> attributeCollection)
 	{
-		AbstractAttributeInterface idAttribute = null;
+		List<AbstractAttributeInterface> attributeList = new ArrayList<AbstractAttributeInterface>();
 		for (AbstractAttributeInterface attribute : attributeCollection)
 		{
-
-			if (attribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
+			if (!attribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
 			{
-				idAttribute = attribute;
-				break;
+				attributeList.add(attribute);
 			}
-
 		}
-		attributeCollection.remove(idAttribute);
-		return attributeCollection;
+		return attributeList;
 	}
 
 	public static Collection<AbstractAttributeInterface> filterSystemAttributes(Collection<AbstractAttributeInterface> attributesCollection)

@@ -46,7 +46,6 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 */
 	private List listOfValues = null;
 
-
 	/**
 	 * This method returns the Number of rows to be displayed on the UI for ListBox.
 	 * @hibernate.property name="noOfRows" type="integer" column="NO_OF_ROWS"
@@ -104,7 +103,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		AssociationInterface association = getBaseAbstractAttributeAssociation();
 		if (association != null)
 		{
-			getValueList(association,valueList);
+			getValueList(association, valueList);
 		}
 		else
 		{
@@ -139,7 +138,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			valueList = new ArrayList<String>();
 
 			AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
-			if(attributeMetadataInterface != null)
+			if (attributeMetadataInterface != null)
 			{
 				String defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 				if (defaultValue != null && defaultValue.trim().length() != 0)
@@ -180,7 +179,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		AssociationInterface association = getBaseAbstractAttributeAssociation();
 		if (association != null)
 		{
-			getValueList(association,selectedOptions);
+			getValueList(association, selectedOptions);
 		}
 		else
 		{
@@ -214,30 +213,50 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 		return htmlString.toString();
 	}
+
 	/**
 	 * getValueList
 	 * @param association
 	 * @param valueList
 	 */
-	private void getValueList(AssociationInterface association,List<String> valueList)
+	private void getValueList(AssociationInterface association, List<String> valueList)
 	{
 		if (association.getIsCollection())
 		{
 			Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
 			Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
-			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-					filteredAttributeCollection);
+			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(filteredAttributeCollection);
 			List<Map> values = (List<Map>) this.value;
 			if (values != null)
 			{
-				for (Map valueMap :values)
+				for (Map valueMap : values)
 				{
 					String value = (String) valueMap.get(attributesList.get(0));
 					valueList.add(value);
 				}
 			}
 		}
+		else
+		{
+			if (!(value instanceof List) && value != null)
+			{
+				List<String> tempList = new ArrayList<String>();
+				tempList.add((String) value);
+				valueList = tempList;
+			}
+			else
+			{
+				if (this.value != null)
+				{
+					for (Long obj : (List<Long>) this.value)
+					{
+						valueList.add(obj.toString());
+					}
+				}
+			}
+		}
 	}
+
 	/**
 	 *
 	 * @return

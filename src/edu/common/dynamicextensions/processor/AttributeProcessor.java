@@ -46,7 +46,6 @@ import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
@@ -115,26 +114,21 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException  : Exception
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public AbstractAttributeInterface createAttribute(String userSelectedControlName,AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
-			AttributeTypeInformationInterface... attrTypeInformation) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public AbstractAttributeInterface createAttribute(String userSelectedControlName,
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf, AttributeTypeInformationInterface... attrTypeInformation)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		AbstractAttributeInterface attribute = null;
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		if (attributeUIBeanInformationIntf != null)
 		{
-			String displayChoice = attributeUIBeanInformationIntf
-					.getDisplayChoice();
-			if ((displayChoice != null)
-					&& (displayChoice
-							.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
+			String displayChoice = attributeUIBeanInformationIntf.getDisplayChoice();
+			if ((displayChoice != null) && (displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
 			{
 				attribute = createAssociation();
 			}
-			else if ((displayChoice != null && displayChoice
-					.equals(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
-					&& (userSelectedControlName != null)
-					&& (userSelectedControlName
-							.equals(ProcessorConstants.LISTBOX_CONTROL)))
+			else if ((displayChoice != null && displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
+					&& (userSelectedControlName != null) && (userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 			{
 				attribute = createAssociation();
 				AssociationInterface association = (AssociationInterface) attribute;
@@ -259,11 +253,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		EntityInterface targetEntity = null;
 		String displayChoice = attributeUIBeanInformationIntf.getDisplayChoice();
-		if ((displayChoice != null)
-				&& (displayChoice
-						.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
+		if ((displayChoice != null) && (displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
 		{
-			targetEntity =  entityGroup[0].getEntityByName(attributeUIBeanInformationIntf.getFormName());
+			targetEntity = entityGroup[0].getEntityByName(attributeUIBeanInformationIntf.getFormName());
 			for (EntityInterface entity : entityGroup[0].getEntityCollection())
 			{
 				Collection<ContainerInterface> containerCollection = entity.getContainerCollection();
@@ -279,14 +271,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				}
 			}
 		}
-		else if ((displayChoice != null && displayChoice
-				.equals(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
-				&& (userSelectedControlName != null)
-				&& (userSelectedControlName
-						.equals(ProcessorConstants.LISTBOX_CONTROL)))
+		else if ((displayChoice != null && displayChoice.equals(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED)) && (userSelectedControlName != null)
+				&& (userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 		{
 			AbstractAttributeInterface collectionAttribute = null;
-			if (attributeUIBeanInformationIntf.getFormName() == null)
+			if (associationIntf.getTargetEntity() == null)
 			{
 				DomainObjectFactory factory = DomainObjectFactory.getInstance();
 				targetEntity = factory.createEntity();
@@ -295,7 +284,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 				attributeUIBeanInformationIntf.setDisplayChoice(null);
 				//Create Attribute
-				collectionAttribute = createAndPopulateAttribute(ProcessorConstants.DEFAULT_SELECTED_CONTROL, attributeUIBeanInformationIntf, entityGroup);
+				collectionAttribute = createAndPopulateAttribute(ProcessorConstants.DEFAULT_SELECTED_CONTROL, attributeUIBeanInformationIntf,
+						entityGroup);
 				attributeUIBeanInformationIntf.setName("CollectionAttribute" + IdGeneratorUtil.getInstance().getNextUniqeId());
 				attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
 				targetEntity.addAbstractAttribute(collectionAttribute);
@@ -304,11 +294,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else
 			{
-				targetEntity =  associationIntf.getTargetEntity();
+				targetEntity = associationIntf.getTargetEntity();
 				Collection<AbstractAttributeInterface> attributeCollection = targetEntity.getAllAbstractAttributes();
 				Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
-				List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-						filteredAttributeCollection);
+				List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(filteredAttributeCollection);
 				collectionAttribute = attributesList.get(0);
 				attributeUIBeanInformationIntf.setName(collectionAttribute.getName());
 			}
@@ -331,11 +320,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			associationIntf.setSourceRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION, null, Cardinality.ONE, Cardinality.ONE));
 			if ((userSelectedControlName != null) && (userSelectedControlName.equals(ProcessorConstants.LISTBOX_CONTROL)))
 			{
-				associationIntf.setTargetRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE, Cardinality.MANY));
+				associationIntf.setTargetRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE,
+						Cardinality.MANY));
 			}
 			else
 			{
-				associationIntf.setTargetRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE, Cardinality.ONE));
+				associationIntf.setTargetRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION, targetEntity.getName(), Cardinality.ONE,
+						Cardinality.ONE));
 			}
 		}
 
@@ -475,7 +466,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			int noOfFileFormats = fileFormats.length;
 			for (int i = 0; i < noOfFileFormats; i++)
 			{
-				if(fileFormats[i].equalsIgnoreCase(ProcessorConstants.JPEG_FORMAT))
+				if (fileFormats[i].equalsIgnoreCase(ProcessorConstants.JPEG_FORMAT))
 				{
 					fileExtensionCollection.add(getFileExtension(ProcessorConstants.JPG_FORMAT));
 				}
@@ -928,7 +919,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf, EntityGroupInterface... entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		AbstractAttributeInterface attributeInterface = createAttribute(userSelectedControlName,attributeUIBeanInformationIntf);
+		AbstractAttributeInterface attributeInterface = createAttribute(userSelectedControlName, attributeUIBeanInformationIntf);
 		populateAttribute(userSelectedControlName, attributeInterface, attributeUIBeanInformationIntf, entityGroup);
 		return attributeInterface;
 	}
@@ -1817,41 +1808,37 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (!associationInterface.getIsCollection())
 		{
 			attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
+			if ((associationInterface != null) && (attributeUIBeanInformationIntf != null))
+			{
+				EntityInterface targetEntity = associationInterface.getTargetEntity();
+				if (targetEntity != null)
+				{
+					attributeUIBeanInformationIntf.setGroupName(getGroupName(targetEntity));
+					attributeUIBeanInformationIntf.setFormName(getFormName(targetEntity));
+				}
+			}
 		}
 		else
 		{
 			attributeUIBeanInformationIntf.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
 			Collection<AbstractAttributeInterface> attributeCollection = associationInterface.getTargetEntity().getAllAbstractAttributes();
 			Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
-			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-					filteredAttributeCollection);
-			AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
-					.getAttributeTypeInformation(attributesList.get(0));
+			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(filteredAttributeCollection);
+			AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(attributesList
+					.get(0));
 
-			if (attributeTypeInformationInterface != null) {
-				DataElementInterface dataEltInterface = attributeTypeInformationInterface
-						.getDataElement();
-				if ((dataEltInterface != null)
-						&& (dataEltInterface instanceof UserDefinedDEInterface)) {
-					populateUserDefinedOptionValues(
-							attributeTypeInformationInterface,
-							attributeUIBeanInformationIntf);
+			if (attributeTypeInformationInterface != null)
+			{
+				DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
+				if ((dataEltInterface != null) && (dataEltInterface instanceof UserDefinedDEInterface))
+				{
+					populateUserDefinedOptionValues(attributeTypeInformationInterface, attributeUIBeanInformationIntf);
 				}
 			}
-			AttributeProcessor attributeProcessor = AttributeProcessor
-					.getInstance();
-			attributeProcessor.populateAttributeUIBeanInterface(attributesList
-					.get(0), attributeUIBeanInformationIntf);
+			AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
+			attributeProcessor.populateAttributeUIBeanInterface(attributesList.get(0), attributeUIBeanInformationIntf);
 		}
-		if ((associationInterface != null) && (attributeUIBeanInformationIntf != null))
-		{
-			EntityInterface targetEntity = associationInterface.getTargetEntity();
-			if (targetEntity != null)
-			{
-				attributeUIBeanInformationIntf.setGroupName(getGroupName(targetEntity));
-				attributeUIBeanInformationIntf.setFormName(getFormName(targetEntity));
-			}
-		}
+
 	}
 
 	/**
@@ -1997,7 +1984,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		AbstractAttributeInterface attributeInterface = null;
 		if ((abstractAttributeInformation != null) && (attributeUIBeanInformation != null))
 		{
-			if (canUpdateExistingAttribute(userSelectedControlName,abstractAttributeInformation, attributeUIBeanInformation))
+			if (canUpdateExistingAttribute(userSelectedControlName, abstractAttributeInformation, attributeUIBeanInformation))
 			{
 				attributeInterface = abstractAttributeInformation;
 				if (attributeInterface instanceof AttributeInterface)
@@ -2063,14 +2050,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private boolean canUpdateExistingAttribute(String userSelectedControlName,AbstractAttributeInterface existingAbstractAttributeIntf,
+	private boolean canUpdateExistingAttribute(String userSelectedControlName, AbstractAttributeInterface existingAbstractAttributeIntf,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformation) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		boolean areInstancesOfSameType = false;
 		if (existingAbstractAttributeIntf != null)
 		{
-			AbstractAttributeInterface newAbstractAttribute = createAttribute(userSelectedControlName,attributeUIBeanInformation);
+			AbstractAttributeInterface newAbstractAttribute = createAttribute(userSelectedControlName, attributeUIBeanInformation);
 			if ((newAbstractAttribute instanceof AttributeInterface) && (existingAbstractAttributeIntf instanceof AttributeInterface))
 			{
 				areInstancesOfSameType = true;
@@ -2221,6 +2208,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 	}
+
 	/**
 	 * @return
 	 */

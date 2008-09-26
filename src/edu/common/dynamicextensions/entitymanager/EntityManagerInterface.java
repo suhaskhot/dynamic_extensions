@@ -3,13 +3,10 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.hibernate.HibernateException;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -25,8 +22,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.dao.HibernateDAO;
-import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
+import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 
 /**
@@ -189,12 +185,9 @@ public interface EntityManagerInterface
 	 * @param recordIdList
 	 * @return
 	 * @throws DynamicExtensionsSystemException
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
-	 * @throws DynamicExtensionsApplicationException
 	 */
 	EntityRecordResultInterface getEntityRecords(EntityInterface entity, List<? extends AbstractAttributeInterface> abstractAttributeCollection,
-			List<Long> recordIdList) throws DynamicExtensionsSystemException, IOException, ClassNotFoundException;
+			List<Long> recordIdList) throws DynamicExtensionsSystemException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId
@@ -526,71 +519,50 @@ public interface EntityManagerInterface
 	/**
 	 * @param entity
 	 * @param dataValue
-	 * @param hibernateDAO
+	 * @param jdbcDao
 	 * @param parentRecordId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws HibernateException
-	 * @throws SQLException
-	 * @throws DAOException
-	 * @throws UserNotAuthorizedException
-	 * @throws IOException 
-	 * @throws ParseException 
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long... userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException, ParseException, IOException;
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, JDBCDAO jdbcDao, Long parentRecordId, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
 	 * @param dataValue
 	 * @param recordId
-	 * @param hibernateDAO
+	 * @param jdbcDAO
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws HibernateException
-	 * @throws SQLException
-	 * @throws DAOException
-	 * @throws UserNotAuthorizedException
-	 * @throws IOException 
-	 * @throws ParseException 
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long... userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException, ParseException, IOException;
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, JDBCDAO jdbcDAO, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
 	 * @param dataValue
-	 * @param hibernateDAO
-	 * @param userId
+	 * @param jdbcDAO
+	 * @param id
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws HibernateException
-	 * @throws SQLException
-	 * @throws DAOException
-	 * @throws UserNotAuthorizedException
-	 * @throws IOException 
-	 * @throws ParseException 
 	 */
-	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO,
-			Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException,
-			DAOException, UserNotAuthorizedException, ParseException, IOException;
+	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDAO, Long... id)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
 	 * @param dataValue
 	 * @param recordId
-	 * @param hibernateDAO
+	 * @param jdbcDAO
 	 * @param userId
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,
-			HibernateDAO hibernateDAO, Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
+			Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 }

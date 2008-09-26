@@ -75,7 +75,6 @@ import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.dao.JDBCDAOImpl;
 import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -588,38 +587,38 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		List<Long> recordIdList = new ArrayList<Long>();
 		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
 
-		HibernateDAO hibernateDAO = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
 			DAOFactory factory = DAOFactory.getInstance();
-			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
-			hibernateDAO.openSession(null);
+			jdbcDao = (JDBCDAO) factory.getDAO(Constants.JDBC_DAO);
+			jdbcDao.openSession(null);
 
 			for (Map<AbstractAttributeInterface, ?> dataValue : dataValueMapList)
 			{
-				Long recordId = insertDataForHeirarchy(entity, dataValue, hibernateDAO, uId);
+				Long recordId = insertDataForHeirarchy(entity, dataValue, jdbcDao, uId);
 				recordIdList.add(recordId);
 			}
 
-			hibernateDAO.commit();
+			jdbcDao.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", hibernateDAO, false);
+			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", jdbcDao, false);
 		}
 		catch (Exception e)
 		{
-			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while inserting data", hibernateDAO, true);
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while inserting data", jdbcDao, true);
 		}
 		finally
 		{
 			try
 			{
-				hibernateDAO.closeSession();
+				jdbcDao.closeSession();
 			}
 			catch (DAOException e)
 			{
-				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", hibernateDAO, true);
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", jdbcDao, true);
 			}
 		}
 
@@ -629,7 +628,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @param entity
 	 * @param dataValue
-	 * @param hibernateDAO
+	 * @param jdbcDao
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
@@ -640,18 +639,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, HibernateDAO hibernateDAO,
-			Long... userId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException,
-			DAOException, UserNotAuthorizedException, ParseException, IOException
+	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDao, Long... id)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<EntityInterface> entityList = getParentEntityList(entity);
-		Long uId = ((userId != null || userId.length > 0) ? userId[0] : null);
+		Long uId = ((id != null || id.length > 0) ? id[0] : null);
 		Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
 		Long parentRecordId = null;
 		for (EntityInterface entityInterface : entityList)
 		{
 			Map valueMap = entityValueMap.get(entityInterface);
-			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, hibernateDAO, parentRecordId, uId);
+			parentRecordId = insertDataForSingleEntity(entityInterface, valueMap, jdbcDao, parentRecordId, uId);
 		}
 
 		return parentRecordId;
@@ -705,7 +703,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/**
 	 * @param entity
 	 * @param dataValue
-	 * @param hibernateDAO
+	 * @param jdbcDao
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
@@ -716,11 +714,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, HibernateDAO hibernateDAO, Long parentRecordId, Long... userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException, ParseException, IOException
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, JDBCDAO jdbcDao, Long parentRecordId, Long... id)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
+		Long uId = ((id != null && id.length != 0) ? id[0] : null);
 		if (entity == null)
 		{
 			throw new DynamicExtensionsSystemException("Input to insert data is null");
@@ -825,8 +822,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						//                      Long recordIdForContainedEntity = insertDataForSingleEntity(association
 						//                              .getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
 
-						Long recordIdForContainedEntity = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity,
-								hibernateDAO, uId);
+						Long recordIdForContainedEntity = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, jdbcDao,
+								uId);
 						recordIdList.add(recordIdForContainedEntity);
 					}
 
@@ -840,28 +837,39 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			}
 		}
-		JDBCDAOImpl jdbcDao = new JDBCDAOImpl();
-		jdbcDao.openSession(null);
-		jdbcDao.insert(tableName, columnValues, columnNames);
 
-		queryString.append(CLOSING_BRACKET);
-		queryValuesString.append(CLOSING_BRACKET);
-		queryString.append(queryValuesString);
-
-		hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString.toString()), null, false, false);
-
-		Connection conn = DBUtil.getConnection();
-		for (String string : queryList)
+		try
 		{
-			logDebug("insertData", "Query for insert data is : " + queryString);
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, string), null, false, false);
-			PreparedStatement statement = conn.prepareStatement(string);
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, string), null, false, false);
-			statement.executeUpdate();
-		}
+			jdbcDao.insert(tableName, columnValues, columnNames);
 
-		//hibernateDAO.commit();
-		jdbcDao.commit();
+			queryString.append(CLOSING_BRACKET);
+			queryValuesString.append(CLOSING_BRACKET);
+			queryString.append(queryValuesString);
+
+			jdbcDao.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString.toString()), null, false, false);
+
+			Connection conn = DBUtil.getConnection();
+
+			for (String string : queryList)
+			{
+				logDebug("insertData", "Query for insert data is : " + queryString);
+				PreparedStatement statement = conn.prepareStatement(string);
+				statement.executeUpdate();
+				jdbcDao.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString.toString()), null, false, false);
+			}
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsApplicationException("Exception in query execution", e);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsApplicationException("Exception in query execution", e);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			throw new DynamicExtensionsApplicationException("Exception in query execution", e);
+		}
 
 		return identifier;
 
@@ -872,45 +880,58 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param value
 	 * @param columnNames
 	 * @param columnValues
-	 * @throws ParseException
-	 * @throws ParseException
-	 * @throws IOException
-	 * @throws IOException
+	 * @throws DynamicExtensionsApplicationException 
+
 	 */
 	private void updateColumnNamesAndColumnValues(AbstractAttribute attribute, Object value, List<String> columnNames, List<Object> columnValues)
-			throws ParseException, IOException
+			throws DynamicExtensionsApplicationException
 	{
 		AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
 
 		// populate FileAttributeRecordValue HO
-		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation && !(value instanceof String))
+		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 		{
-			populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) value, primitiveAttribute);
+			if (!(value instanceof String))
+			{
+				populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) value, primitiveAttribute);
+			}
 		}
 		else
 		{
-			columnNames.add(primitiveAttribute.getColumnProperties().getName());
-			if (primitiveAttribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
-			{
-				if (value != null && value.toString().length() != 0)
-				{
-					String dateFormat = ((DateAttributeTypeInformation) primitiveAttribute.getAttributeTypeInformation()).getFormat();
-					value = new Timestamp(new SimpleDateFormat(dateFormat).parse(value.toString()).getTime());
-				}
-				else
-				{
-					value = "";
-				}
-			}
-			else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
-			{
-				ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-				ObjectOutputStream oStream = new ObjectOutputStream(bStream);
-				oStream.writeObject(value);
 
-				value = bStream.toByteArray();
+			try
+			{
+				columnNames.add(primitiveAttribute.getColumnProperties().getName());
+				if (primitiveAttribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+				{
+					if (value != null && value.toString().length() != 0)
+					{
+						String dateFormat = ((DateAttributeTypeInformation) primitiveAttribute.getAttributeTypeInformation()).getFormat();
+						value = new Timestamp(new SimpleDateFormat(dateFormat).parse(value.toString()).getTime());
+					}
+					else
+					{
+						value = "";
+					}
+				}
+				else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
+				{
+					ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+					ObjectOutputStream oStream = new ObjectOutputStream(bStream);
+					oStream.writeObject(value);
+
+					value = bStream.toByteArray();
+				}
+				columnValues.add(value);
 			}
-			columnValues.add(value);
+			catch (ParseException e)
+			{
+				throw new DynamicExtensionsApplicationException("Exception in parsing date for attribute " + attribute.getName(), e);
+			}
+			catch (IOException e)
+			{
+				throw new DynamicExtensionsApplicationException("Exception while creating blob for object type attribute " + attribute.getName(), e);
+			}
 		}
 	}
 
@@ -1027,41 +1048,41 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		boolean isSuccess = false;
 		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
 
-		HibernateDAO hibernateDAO = null;
+		JDBCDAO jdbcDAO = null;
 		try
 		{
 
 			DAOFactory factory = DAOFactory.getInstance();
-			hibernateDAO = (HibernateDAO) factory.getDAO(Constants.HIBERNATE_DAO);
+			jdbcDAO = (JDBCDAO) factory.getDAO(Constants.JDBC_DAO);
 
-			hibernateDAO.openSession(null);
+			jdbcDAO.openSession(null);
 			List<EntityInterface> entityList = getParentEntityList(entity);
 			Map<EntityInterface, Map> entityValueMap = initialiseEntityValueMap(entity, dataValue);
 			for (EntityInterface entityInterface : entityList)
 			{
 				Map valueMap = entityValueMap.get(entityInterface);
-				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO, uId);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, jdbcDAO, uId);
 			}
 
-			hibernateDAO.commit();
+			jdbcDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", hibernateDAO, false);
+			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", jdbcDAO, false);
 		}
 		catch (Exception e)
 		{
-			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating", hibernateDAO, true);
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating", jdbcDAO, true);
 		}
 		finally
 		{
 			try
 			{
-				hibernateDAO.closeSession();
+				jdbcDAO.closeSession();
 			}
 			catch (DAOException e)
 			{
-				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", hibernateDAO, true);
+				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing", jdbcDAO, true);
 			}
 
 		}
@@ -1073,14 +1094,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param entity
 	 * @param dataValue
 	 * @param recordId
-	 * @param hibernateDAO
+	 * @param jdbcDAO
 	 * @param userId
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId,
-			HibernateDAO hibernateDAO, Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
+			Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		boolean isSuccess = false;
 		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
@@ -1091,16 +1112,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			for (EntityInterface entityInterface : entityList)
 			{
 				Map valueMap = entityValueMap.get(entityInterface);
-				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, hibernateDAO, uId);
+				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, jdbcDAO, uId);
 			}
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", hibernateDAO, false);
+			throw (DynamicExtensionsApplicationException) handleRollback(e, "Error while inserting data", jdbcDAO, false);
 		}
 		catch (Exception e)
 		{
-			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating", hibernateDAO, true);
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while updating", jdbcDAO, true);
 		}
 		return isSuccess;
 	}
@@ -1111,13 +1132,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param recordId
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
-	 * @throws IOException
-	 * @throws ParseException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, HibernateDAO hibernateDAO, Long... userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, HibernateException, SQLException, DAOException,
-			UserNotAuthorizedException, ParseException, IOException
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, JDBCDAO jdbcDAO, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Long uId = ((userId != null && userId.length != 0) ? userId[0] : null);
 
@@ -1168,7 +1185,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					{
 						//Long childRecordId = insertDataForSingleEntity(association
 						//.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, null);
-						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, hibernateDAO, uId);
+						Long childRecordId = insertDataForHeirarchy(association.getTargetEntity(), valueMapForContainedEntity, jdbcDAO, uId);
 						recordIdList.add(childRecordId);
 					}
 
@@ -1201,48 +1218,66 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		editDataQueryList.addAll(associationInsertDataQueryList);
 
 		Connection conn = DBUtil.getConnection();
-		if (columnNames.size() != 0)
+		try
 		{
-			StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");
-			StringBuffer auditQuery = new StringBuffer("UPDATE " + tableName + " SET ");
-			Iterator<String> iterator = columnNames.iterator();
-			String columnName = null;
-			while (iterator.hasNext())
+			if (columnNames.size() != 0)
 			{
-				columnName = iterator.next();
-				query.append(columnName + EQUAL + "?");
-				auditQuery.append(columnName + EQUAL + "?");
-				if (iterator.hasNext())
+				StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");
+				StringBuffer auditQuery = new StringBuffer("UPDATE " + tableName + " SET ");
+				Iterator<String> iterator = columnNames.iterator();
+				String columnName = null;
+				while (iterator.hasNext())
 				{
-					query.append(COMMA + WHITESPACE);
-					auditQuery.append(COMMA + WHITESPACE);
+					columnName = iterator.next();
+					query.append(columnName + EQUAL + "?");
+					auditQuery.append(columnName + EQUAL + "?");
+					if (iterator.hasNext())
+					{
+						query.append(COMMA + WHITESPACE);
+						auditQuery.append(COMMA + WHITESPACE);
+
+					}
 
 				}
+				query.append(WHERE_KEYWORD);
+				query.append(IDENTIFIER);
+				query.append(WHITESPACE + EQUAL + WHITESPACE);
+				query.append(recordId);
 
+				PreparedStatement preparedStatement;
+
+				preparedStatement = conn.prepareStatement(query.toString());
+
+				int i = 1;
+				String value = null;
+				for (Object columnValue : columnValues)
+				{
+					preparedStatement.setObject(i++, columnValue);
+					auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?") + 1, columnValue == null ? "" : columnValue.toString());
+				}
+				preparedStatement.setMaxFieldSize(1);
+				preparedStatement.executeUpdate();
+				jdbcDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, auditQuery.toString()), null, false, false);
 			}
-			query.append(WHERE_KEYWORD);
-			query.append(IDENTIFIER);
-			query.append(WHITESPACE + EQUAL + WHITESPACE);
-			query.append(recordId);
 
-			PreparedStatement preparedStatement = conn.prepareStatement(query.toString());
-			int i = 1;
-			String value = null;
-			for (Object columnValue : columnValues)
+			for (String queryString : editDataQueryList)
 			{
-				preparedStatement.setObject(i++, columnValue);
-				auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?") + 1, columnValue == null ? "" : columnValue.toString());
+				logDebug("editData", "Query is: " + queryString.toString());
+				PreparedStatement statement = conn.prepareStatement(queryString);
+				statement.executeUpdate();
 			}
-			preparedStatement.setMaxFieldSize(1);
-			preparedStatement.executeUpdate();
-			hibernateDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, auditQuery.toString()), null, false, false);
 		}
-
-		for (String queryString : editDataQueryList)
+		catch (SQLException e)
 		{
-			logDebug("editData", "Query is: " + queryString.toString());
-			PreparedStatement statement = conn.prepareStatement(queryString);
-			statement.executeUpdate();
+			throw new DynamicExtensionsApplicationException("Exception in editing data", e);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsApplicationException("Exception in editing data", e);
+		}
+		catch (UserNotAuthorizedException e)
+		{
+			throw new DynamicExtensionsApplicationException("Exception in editing data", e);
 		}
 		return true;
 	}
@@ -1539,7 +1574,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		//All objects on the UI are handled as String, so objects string value needs to be 
 		//stored in the map 
 		if (!(((AttributeInterface) attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
-				|| !(((AttributeInterface) attribute).getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation))
+				&& !(((AttributeInterface) attribute).getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation))
 		{
 			value = value.toString();
 		}
@@ -1553,13 +1588,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param recordIds Record ids whose values are to be shown
 	 * @return EntityRecordResultInterface Object containing the result.
 	 * @throws DynamicExtensionsSystemException
-	 * @throws ClassNotFoundException
-	 * @throws IOException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityRecordResultInterface getEntityRecords(EntityInterface entity,
-			List<? extends AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIds) throws DynamicExtensionsSystemException,
-			IOException, ClassNotFoundException
+			List<? extends AbstractAttributeInterface> abstractAttributeCollection, List<Long> recordIds) throws DynamicExtensionsSystemException
 	{
 		if (abstractAttributeCollection == null || abstractAttributeCollection.isEmpty())
 		{
@@ -1623,49 +1655,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			List<EntityRecordInterface> entityRecordList = getEntityRecordList(selectColumnNameList, query.toString(), columnNameMap, recordMetadata);
 
 			entityRecordResult.setEntityRecordList(entityRecordList);
-			/*
-			 * process any multi select attributes
-			 */
-			//
-			//            for (AttributeInterface attribute : collectionAttributes)
-			//            {
-			//                for (EntityRecordInterface entityRecord : entityRecordList)
-			//                {
-			//                    Long recordId = entityRecord.getRecordId();
-			//                    List<String> valueList = getCollectionAttributeRecordValues(entity.getId(),
-			//                            attribute.getId(), recordId);
-			//                    int index = abstractAttributeCollection.indexOf(attribute);
-			//                    entityRecord.getRecordValueList().set(index, valueList);
-			//                }
-			//
-			//            }
-			//            for (AttributeInterface attribute : fileAttributes)
-			//            {
-			//
-			//                for (EntityRecordInterface entityRecord : entityRecordList)
-			//                {
-			//                    Long recordId = entityRecord.getRecordId();
-			//                    FileAttributeRecordValue fileRecordValue = getFileAttributeRecordValue(entity
-			//                            .getId(), attribute.getId(), recordId);
-			//                    int index = abstractAttributeCollection.indexOf(attribute);
-			//                    entityRecord.getRecordValueList().set(index, fileRecordValue);
-			//                }
-			//
-			//            }
-			//
-			//            for (AttributeInterface attribute : objectAttributes)
-			//            {
-			//
-			//                for (EntityRecordInterface entityRecord : entityRecordList)
-			//                {
-			//                    Long recordId = entityRecord.getRecordId();
-			//                    ObjectAttributeRecordValueInterface objectRecordValue = getObjectAttributeRecordValue(
-			//                            entity.getId(), attribute.getId(), recordId);
-			//                    int index = abstractAttributeCollection.indexOf(attribute);
-			//                    entityRecord.getRecordValueList().set(index, objectRecordValue);
-			//                }
-			//
-			//            }
 			for (EntityRecordInterface entityRecord : entityRecordList)
 			{
 				Long recordId = entityRecord.getRecordId();
@@ -1674,6 +1663,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		}
 		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		catch (IOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		catch (ClassNotFoundException e)
 		{
 			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
 		}

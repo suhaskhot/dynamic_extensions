@@ -1035,7 +1035,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 				insertRecordsForRelatedAttributes(rootCategoryEntityId, category.getRootCategoryElement(), recordsMap, jdbcDAO, id);
 
-				jdbcDAO.commit();
+//				jdbcDAO.commit();
 			}
 		}
 		catch (DynamicExtensionsApplicationException e)

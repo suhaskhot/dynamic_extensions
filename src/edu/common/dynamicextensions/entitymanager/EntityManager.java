@@ -1177,7 +1177,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					queryBuilder.getContenmentAssociationRemoveDataQueryList(((Association) attribute), recordIdList, removeContainmentRecordQuery,
 							false);
 
-					entityManagerUtil.executeDML(removeContainmentRecordQuery);
+					entityManagerUtil.executeDMLQueryList(jdbcDAO, removeContainmentRecordQuery);
 
 					List<Map> listOfMapsForContainedEntity = (List<Map>) value;
 					recordIdList.clear();

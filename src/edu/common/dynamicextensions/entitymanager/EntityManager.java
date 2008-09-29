@@ -1064,7 +1064,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				isSuccess = editDataForSingleEntity(entityInterface, valueMap, recordId, jdbcDAO, uId);
 			}
 
-			//jdbcDAO.commit();
+			jdbcDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
@@ -1217,9 +1217,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		editDataQueryList.addAll(associationRemoveDataQueryList);
 		editDataQueryList.addAll(associationInsertDataQueryList);
 
-		Connection conn = DBUtil.getConnection();
+		// Shift the below code into the jdbcdao 
+		Connection conn = jdbcDAO.getConnection();
+
 		try
 		{
+			jdbcDAO.setAutoCommit(false);
 			if (columnNames.size() != 0)
 			{
 				StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");

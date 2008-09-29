@@ -28,6 +28,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -138,46 +139,40 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
+	 * @param jdbcDAO 
 	 * @param query query to be executed
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDML(String query) throws DynamicExtensionsSystemException
+	public int executeDML(JDBCDAO jdbcDAO, String query) throws DynamicExtensionsSystemException
 	{
 		System.out.println(query);
 		Connection conn = null;
 		try
 		{
-			conn = DBUtil.getConnection();
+			conn = jdbcDAO.getConnection();
 			Statement statement = null;
 			statement = conn.createStatement();
 			return statement.executeUpdate(query);
 		}
 		catch (Exception e)
 		{
-			try
-			{
-				conn.rollback();
-			}
-			catch (SQLException e1)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 	}
 
 	/**
+	 * @param jdbcDAO 
 	 * @param queryList
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDML(List<String> queryList) throws DynamicExtensionsSystemException
+	public int executeDMLQueryList(JDBCDAO jdbcDAO, List<String> queryList) throws DynamicExtensionsSystemException
 	{
 		int result = -1;
 		for (String query : queryList)
 		{
-			result = executeDML(query);
+			result = executeDML(jdbcDAO, query);
 		}
 		return result;
 	}
@@ -451,6 +446,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
 		return isDataPresent;
 	}
+
 	/**
 	 * getRole.
 	 * @param associationType

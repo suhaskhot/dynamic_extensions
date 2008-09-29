@@ -565,6 +565,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		Collection<CategoryAttributeInterface> categoryAttributes = categoryEntity.getAllCategoryAttributes();
 
+		if (categoryAttributes != null && categoryAttributes.size() == 0)
+		{
+			return false;
+		}
+
 		for (CategoryAttributeInterface categoryAttribute : categoryAttributes)
 		{
 			if (categoryAttribute.getIsRelatedAttribute() == null || categoryAttribute.getIsRelatedAttribute() == false)
@@ -1035,7 +1040,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 				insertRecordsForRelatedAttributes(rootCategoryEntityId, category.getRootCategoryElement(), recordsMap, jdbcDAO, id);
 
-//				jdbcDAO.commit();
+				//				jdbcDAO.commit();
 			}
 		}
 		catch (DynamicExtensionsApplicationException e)

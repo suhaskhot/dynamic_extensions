@@ -382,11 +382,8 @@ class DynamicExtensionBaseQueryBuilder
 
 				List<Long> reocordIdList = getAssociationRecordValues(query.toString());
 
-				if (association.getSourceRole().getAssociationsType().equals(
-						AssociationType.CONTAINTMENT)
-						|| (association.getSourceRole().getAssociationsType()
-								.equals(AssociationType.ASSOCIATION) && association
-								.getIsCollection()))
+				if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT)
+						|| (association.getSourceRole().getAssociationsType().equals(AssociationType.ASSOCIATION) && association.getIsCollection()))
 				{
 					List<Map> containmentRecordMapList = new ArrayList<Map>();
 
@@ -472,7 +469,6 @@ class DynamicExtensionBaseQueryBuilder
 		StringBuffer manyToOneAssociationsGetReocrdQuery = new StringBuffer();
 		manyToOneAssociationsGetReocrdQuery.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssociationList = new ArrayList<Association>();
-
 
 		while (associationIterator.hasNext())
 		{
@@ -1707,12 +1703,21 @@ class DynamicExtensionBaseQueryBuilder
 					{
 						String columnName = savedAttribute.getColumnProperties().getName();
 
-						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD
+						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + OPENING_BRACKET
 								+ WHITESPACE + columnName;
-						String type = "";
 
+						String type = "";
 						String removeAttributeQueryRollBackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
-								+ getQueryPartForAttribute(savedAttribute, type, true);
+								+ OPENING_BRACKET + getQueryPartForAttribute(savedAttribute, type, true);
+
+						if (savedAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+						{
+							removeAttributeQuery = removeAttributeQuery + COMMA + dropExtraColumnQueryStringForFileAttribute(savedAttribute);
+							removeAttributeQueryRollBackQuery = removeAttributeQueryRollBackQuery + COMMA
+									+ extraColumnQueryStringForFileAttribute(savedAttribute);
+						}
+						removeAttributeQuery = removeAttributeQuery + CLOSING_BRACKET;
+						removeAttributeQueryRollBackQuery = removeAttributeQueryRollBackQuery + CLOSING_BRACKET;
 
 						attributeQueryList.add(removeAttributeQuery);
 						attributeRollbackQueryList.add(removeAttributeQueryRollBackQuery);
@@ -2052,9 +2057,14 @@ class DynamicExtensionBaseQueryBuilder
 			queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET).append("*").append(CLOSING_BRACKET).append(
 					WHITESPACE).append(FROM_KEYWORD).append(WHITESPACE).append(tableName).append(WHITESPACE).append(WHERE_KEYWORD).append(WHITESPACE)
 					.append(savedAttribute.getColumnProperties().getName()).append(WHITESPACE).append("IS").append(WHITESPACE).append(NOT_KEYWORD)
-					.append(WHITESPACE).append(NULL_KEYWORD).append(WHITESPACE).append(AND_KEYWORD).append(WHITESPACE).append(
-							savedAttribute.getColumnProperties().getName()).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(
-							LIKE_KEYWORD).append(WHITESPACE).append("''");
+					.append(WHITESPACE).append(NULL_KEYWORD).append(WHITESPACE);
+
+			if (!(savedAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+					&& !(savedAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation))
+			{
+				queryBuffer.append(AND_KEYWORD).append(WHITESPACE).append(savedAttribute.getColumnProperties().getName()).append(WHITESPACE).append(
+						NOT_KEYWORD).append(WHITESPACE).append(LIKE_KEYWORD).append(WHITESPACE).append("''");
+			}
 
 			ResultSet resultSet = null;
 			try

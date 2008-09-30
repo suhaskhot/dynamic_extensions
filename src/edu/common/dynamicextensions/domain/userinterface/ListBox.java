@@ -8,6 +8,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
@@ -135,12 +136,25 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 		if (valueList == null || valueList.isEmpty())
 		{
+			String defaultValue = null;
 			valueList = new ArrayList<String>();
 
 			AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
 			if (attributeMetadataInterface != null)
 			{
-				String defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+				if (attributeMetadataInterface instanceof CategoryAttributeInterface)
+				{
+					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadataInterface).getAbstractAttribute();
+					if (abstractAttribute instanceof AttributeInterface)
+					{
+						defaultValue = attributeMetadataInterface.getDefaultValue();
+					}
+				}
+				else
+				{
+					defaultValue = attributeMetadataInterface.getDefaultValue();
+				}
+
 				if (defaultValue != null && defaultValue.trim().length() != 0)
 				{
 					valueList.add(defaultValue);

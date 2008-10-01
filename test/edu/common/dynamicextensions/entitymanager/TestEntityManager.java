@@ -9,10 +9,6 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -701,7 +697,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entityGroup.addEntity(address);
 			address.setEntityGroup(entityGroup);
 
-
 			user = (Entity) EntityManagerInterface.persistEntity(user);
 
 			Entity savedEntity = (Entity) EntityManagerInterface.getEntityByIdentifier(user.getId().toString());
@@ -735,31 +730,31 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			System.out.println(map);
 
-//			String tableName = newEntity.getTableProperties().getName();
-//			System.out.println("===========table name " + tableName);
-//			assertTrue(isTablePresent(tableName));
-//			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
-//			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
-//
-//			userNameAttribute = (AttributeInterface) newEntity.getAttributeByIdentifier(userNameAttribute.getId());
-//			userNameAttribute.setIsCollection(false);
-//
-//			newEntity = (Entity) EntityManagerInterface.persistEntity(newEntity);
-//
-//			tableName = newEntity.getTableProperties().getName();
-//			assertTrue(isTablePresent(tableName));
-//			metaData = executeQueryForMetadata("select * from " + tableName);
-//			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
-//
-//			userNameAttribute = (AttributeInterface) newEntity.getAttributeByIdentifier(userNameAttribute.getId());
-//			userNameAttribute.setIsCollection(true);
-//
-//			newEntity = (Entity) EntityManagerInterface.persistEntity(newEntity);
-//
-//			tableName = newEntity.getTableProperties().getName();
-//			assertTrue(isTablePresent(tableName));
-//			metaData = executeQueryForMetadata("select * from " + tableName);
-//			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
+			//			String tableName = newEntity.getTableProperties().getName();
+			//			System.out.println("===========table name " + tableName);
+			//			assertTrue(isTablePresent(tableName));
+			//			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + tableName);
+			//			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
+			//
+			//			userNameAttribute = (AttributeInterface) newEntity.getAttributeByIdentifier(userNameAttribute.getId());
+			//			userNameAttribute.setIsCollection(false);
+			//
+			//			newEntity = (Entity) EntityManagerInterface.persistEntity(newEntity);
+			//
+			//			tableName = newEntity.getTableProperties().getName();
+			//			assertTrue(isTablePresent(tableName));
+			//			metaData = executeQueryForMetadata("select * from " + tableName);
+			//			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 1);
+			//
+			//			userNameAttribute = (AttributeInterface) newEntity.getAttributeByIdentifier(userNameAttribute.getId());
+			//			userNameAttribute.setIsCollection(true);
+			//
+			//			newEntity = (Entity) EntityManagerInterface.persistEntity(newEntity);
+			//
+			//			tableName = newEntity.getTableProperties().getName();
+			//			assertTrue(isTablePresent(tableName));
+			//			metaData = executeQueryForMetadata("select * from " + tableName);
+			//			assertEquals(metaData.getColumnCount(), noOfDefaultColumns);
 		}
 		catch (Exception e)
 		{
@@ -1585,7 +1580,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 			FileAttributeRecordValue attributeRecordValue = EntityManagerInterface.getFileAttributeRecordValueByRecordId(resume, recordId);
-			
 
 			ResultSet resultSet = executeQuery("select count(*) from " + user.getTableProperties().getName());
 			resultSet.next();
@@ -1816,79 +1810,80 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	/**
 	 * This method tests for creating a entity with file attribute.
 	 */
-	public void testDeleteRecordForFileAttribute()
-	{
-		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
-		entityGroup.setName("testGroup" + new Double(Math.random()).toString());
-
-		EntityInterface user = factory.createEntity();
-		user.setEntityGroup(entityGroup);
-		entityGroup.addEntity(user);
-		user.setName("User");
-
-		AttributeInterface age = factory.createIntegerAttribute();
-		age.setName("Age");
-		user.addAbstractAttribute(age);
-
-		AttributeInterface resume = factory.createFileAttribute();
-		resume.setName("Resume");
-		user.addAbstractAttribute(resume);
-
-		Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
-
-		FileExtension txtExtn = new FileExtension();
-		txtExtn.setFileExtension("txt");
-		allowedExtn.add(txtExtn);
-
-		FileExtension pdfExtn = new FileExtension();
-		pdfExtn.setFileExtension("pdf");
-		allowedExtn.add(pdfExtn);
-
-		allowedExtn.add(txtExtn);
-		allowedExtn.add(pdfExtn);
-
-		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
-		((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setFileExtensionCollection(allowedExtn);
-
-		try
+	/*
+		public void testDeleteRecordForFileAttribute()
 		{
-			user = EntityManagerInterface.persistEntity(user);
+			EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+			entityGroup.setName("testGroup" + new Double(Math.random()).toString());
 
-			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
-			fileRecord.setContentType("PDF");
-			fileRecord.setFileName("tp.java");
-			String fileContent = "this is content of the file";
-			fileRecord.setFileContent(fileContent.getBytes());
+			EntityInterface user = factory.createEntity();
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(user);
+			user.setName("User");
 
-			Map dataValue = new HashMap();
-			dataValue.put(age, "45");
-			dataValue.put(resume, fileRecord);
+			AttributeInterface age = factory.createIntegerAttribute();
+			age.setName("Age");
+			user.addAbstractAttribute(age);
 
-			Long recordId = EntityManagerInterface.insertData(user, dataValue);
+			AttributeInterface resume = factory.createFileAttribute();
+			resume.setName("Resume");
+			user.addAbstractAttribute(resume);
 
-			dataValue = EntityManagerInterface.getRecordById(user, recordId);
+			Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
-			ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
-			resultSet.next();
-			int beforeCnt = resultSet.getInt(1);
-			resultSet.close();
+			FileExtension txtExtn = new FileExtension();
+			txtExtn.setFileExtension("txt");
+			allowedExtn.add(txtExtn);
 
-			EntityManagerInterface.deleteRecord(user, recordId);
+			FileExtension pdfExtn = new FileExtension();
+			pdfExtn.setFileExtension("pdf");
+			allowedExtn.add(pdfExtn);
 
-			resultSet = executeQuery("select count(*) from dyextn_attribute_record");
-			resultSet.next();
-			int afterCnt = resultSet.getInt(1);
+			allowedExtn.add(txtExtn);
+			allowedExtn.add(pdfExtn);
 
-			assertEquals(1, beforeCnt - afterCnt);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-	}
+			((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setMaxFileSize(20F);
+			((FileAttributeTypeInformation) resume.getAttributeTypeInformation()).setFileExtensionCollection(allowedExtn);
+
+			try
+			{
+				user = EntityManagerInterface.persistEntity(user);
+
+				FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
+				fileRecord.setContentType("PDF");
+				fileRecord.setFileName("tp.java");
+				String fileContent = "this is content of the file";
+				fileRecord.setFileContent(fileContent.getBytes());
+
+				Map dataValue = new HashMap();
+				dataValue.put(age, "45");
+				dataValue.put(resume, fileRecord);
+
+				Long recordId = EntityManagerInterface.insertData(user, dataValue);
+
+				dataValue = EntityManagerInterface.getRecordById(user, recordId);
+
+				ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+				resultSet.next();
+				int beforeCnt = resultSet.getInt(1);
+				resultSet.close();
+
+				EntityManagerInterface.deleteRecord(user, recordId);
+
+				resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+				resultSet.next();
+				int afterCnt = resultSet.getInt(1);
+
+				assertEquals(1, beforeCnt - afterCnt);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				fail();
+			}
+		}*/
 
 	/**
 	 * PURPOSE : to test the method persistEntityMetadata.
@@ -3631,64 +3626,65 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 *
 	 *
 	 */
-	public void testDeleteRecordForObjectAttribute()
-	{
-		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
-		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		EntityGroupInterface entityGroup = factory.createEntityGroup();
-		entityGroup.setName("test_" + new Double(Math.random()).toString());
-
-		// create user
-		EntityInterface user = factory.createEntity();
-		user.setName("User");
-
-		AttributeInterface age = factory.createIntegerAttribute();
-		age.setName("Age");
-		user.addAbstractAttribute(age);
-
-		AttributeInterface info = factory.createObjectAttribute();
-		info.setName("Resume");
-		user.addAbstractAttribute(info);
-		user.addAttribute(info);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
-		try
+	/*
+		public void testDeleteRecordForObjectAttribute()
 		{
-			TaggedValue taggedValue = new TaggedValue();
-			taggedValue.setKey("rahul");
-			taggedValue.setValue("ner");
+			EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			EntityGroupInterface entityGroup = factory.createEntityGroup();
+			entityGroup.setName("test_" + new Double(Math.random()).toString());
 
-			user = EntityManagerInterface.persistEntity(user);
+			// create user
+			EntityInterface user = factory.createEntity();
+			user.setName("User");
 
-			ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
-			objectRecord.setObject(taggedValue);
-			objectRecord.setClassName(TaggedValue.class.getName());
+			AttributeInterface age = factory.createIntegerAttribute();
+			age.setName("Age");
+			user.addAbstractAttribute(age);
 
-			Map dataValue = new HashMap();
-			dataValue.put(age, "45");
-			dataValue.put(info, objectRecord);
+			AttributeInterface info = factory.createObjectAttribute();
+			info.setName("Resume");
+			user.addAbstractAttribute(info);
+			user.addAttribute(info);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			try
+			{
+				TaggedValue taggedValue = new TaggedValue();
+				taggedValue.setKey("rahul");
+				taggedValue.setValue("ner");
 
-			Long recordId = EntityManagerInterface.insertData(user, dataValue);
+				user = EntityManagerInterface.persistEntity(user);
 
-			ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
-			resultSet.next();
-			int beforeCnt = resultSet.getInt(1);
-			resultSet.close();
+				ObjectAttributeRecordValueInterface objectRecord = factory.createObjectAttributeRecordValue();
+				objectRecord.setObject(taggedValue);
+				objectRecord.setClassName(TaggedValue.class.getName());
 
-			EntityManagerInterface.deleteRecord(user, recordId);
+				Map dataValue = new HashMap();
+				dataValue.put(age, "45");
+				dataValue.put(info, objectRecord);
 
-			resultSet = executeQuery("select count(*) from dyextn_attribute_record");
-			resultSet.next();
-			int afterCnt = resultSet.getInt(1);
+				Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			assertEquals(1, beforeCnt - afterCnt);
-		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-	}
+				ResultSet resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+				resultSet.next();
+				int beforeCnt = resultSet.getInt(1);
+				resultSet.close();
+
+				EntityManagerInterface.deleteRecord(user, recordId);
+
+				resultSet = executeQuery("select count(*) from dyextn_attribute_record");
+				resultSet.next();
+				int afterCnt = resultSet.getInt(1);
+
+				assertEquals(1, beforeCnt - afterCnt);
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+				fail();
+			}
+		}*/
 
 	/**
 	 *
@@ -3865,7 +3861,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Attribute floatAtribute = (Attribute) factory.createFloatAttribute();
 			floatAtribute.setName("Price");
 
-			NumericTypeInformationInterface numericAttributeTypeInfo = (NumericTypeInformationInterface) factory.createFloatAttributeTypeInformation();
+			NumericTypeInformationInterface numericAttributeTypeInfo = (NumericTypeInformationInterface) factory
+					.createFloatAttributeTypeInformation();
 			numericAttributeTypeInfo.setDecimalPlaces(2);
 
 			floatAtribute.setAttributeTypeInformation(numericAttributeTypeInfo);

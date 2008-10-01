@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -49,19 +50,10 @@ public class FileReader
 	 */
 	public static String getSystemIndependantFilePath(String path) throws DynamicExtensionsSystemException
 	{
-
 		path = path.replace(" ", "%20");
-		path = path.replaceAll("\\\\", "//");
-		URI uri = null;
-		try
-		{
-			uri = new URI("file:///" + path);
-		}
-		catch (URISyntaxException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while openig file  " + path, e);
-		}
-		return uri.getPath();
+			
+		File file = new File(path);
+		return file.getAbsolutePath();
 	}
 
 }

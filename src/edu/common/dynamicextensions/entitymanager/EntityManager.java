@@ -880,8 +880,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @param value
 	 * @param columnNames
 	 * @param columnValues
-	 * @throws DynamicExtensionsApplicationException 
-
+	 * @throws ParseException
+	 * @throws ParseException
+	 * @throws IOException
+	 * @throws IOException
 	 */
 	private void updateColumnNamesAndColumnValues(AbstractAttribute attribute, Object value, List<String> columnNames, List<Object> columnValues)
 			throws DynamicExtensionsApplicationException
@@ -889,16 +891,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		AttributeInterface primitiveAttribute = (AttributeInterface) attribute;
 
 		// populate FileAttributeRecordValue HO
-		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+		if (primitiveAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation && !(value instanceof String))
 		{
-			if (!(value instanceof String))
-			{
-				populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) value, primitiveAttribute);
-			}
+			populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) value, primitiveAttribute);
 		}
 		else
 		{
-
 			try
 			{
 				columnNames.add(primitiveAttribute.getColumnProperties().getName());
@@ -909,10 +907,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						String dateFormat = ((DateAttributeTypeInformation) primitiveAttribute.getAttributeTypeInformation()).getFormat();
 						value = new Timestamp(new SimpleDateFormat(dateFormat).parse(value.toString()).getTime());
 					}
-					else
-					{
-						value = "";
-					}
 				}
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 				{
@@ -922,7 +916,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 					value = bStream.toByteArray();
 				}
-				columnValues.add(value);
+				if (value == null || value.toString().length() == 0)
+				{
+					columnValues.add(null);
+				}
+				else
+				{
+					columnValues.add(value);
+				}
 			}
 			catch (ParseException e)
 			{
@@ -1574,8 +1575,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 		}
 
-		//All objects on the UI are handled as String, so objects string value needs to be 
-		//stored in the map 
+		//All objects on the UI are handled as String, so objects string value needs to be
+		//stored in the map
 		if (!(((AttributeInterface) attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 				&& !(((AttributeInterface) attribute).getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation))
 		{

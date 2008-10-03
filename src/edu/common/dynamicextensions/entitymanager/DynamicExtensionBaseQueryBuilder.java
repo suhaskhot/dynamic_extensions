@@ -796,6 +796,8 @@ class DynamicExtensionBaseQueryBuilder
 			RoleInterface targetRole = association.getTargetRole();
 			Cardinality sourceMaxCardinality = sourceRole.getMaximumCardinality();
 			Cardinality targetMaxCardinality = targetRole.getMaximumCardinality();
+			//Commented query part checking for Disabled records.Since delete record functionality is removed we no longer need to check records 'Disabled'
+			//Moreover the removed query part was not executed on Oracle coz of syntax error.
 			if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.MANY)
 			{
 				//for many to many check into middle table
@@ -803,18 +805,18 @@ class DynamicExtensionBaseQueryBuilder
 				query.append(" AS m_table join " + srcTable);
 				query.append(" AS s_table on m_table." + sourceKey + "= s_table." + IDENTIFIER);
 				query.append(WHERE_KEYWORD + targetKey + WHITESPACE + IN_KEYWORD + WHITESPACE + getListToString(recordIdList));
-				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery("s_table"));
+//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery("s_table"));
 			}
 			else if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.ONE)
 			{
 				query.append(WHERE_KEYWORD + sourceKey + WHITESPACE + IN_KEYWORD + WHITESPACE + getListToString(recordIdList));
-				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
+//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
 			}
 			else
 			{ //one to one && onr to many : check target entity table
 				query.append(WHERE_KEYWORD + IDENTIFIER + WHITESPACE + IN_KEYWORD + WHITESPACE + getListToString(recordIdList));
-				query.append(" and " + targetKey);
-				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
+//				query.append(" and " + targetKey);
+//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
 			}
 
 			if (entityManagerUtil.getNoOfRecord(query.toString()) != 0)

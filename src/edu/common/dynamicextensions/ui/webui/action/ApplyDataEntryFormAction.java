@@ -283,6 +283,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws FileNotFoundException, DynamicExtensionsValidationException, DynamicExtensionsSystemException, IOException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+		List processedContainersList = new ArrayList<ContainerInterface>();
+		DynamicExtensionsUtility.setAllInContextContainers(containerInterface,
+				processedContainersList);
 		Map<BaseAbstractAttributeInterface, Object> valueMap = (Map<BaseAbstractAttributeInterface, Object>) valueMapStack.peek();
 		valueMap = generateAttributeValueMap(containerInterface, request, dataEntryForm, "", valueMap, true);
 

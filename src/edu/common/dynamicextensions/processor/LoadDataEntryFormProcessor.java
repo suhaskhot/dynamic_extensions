@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -46,10 +47,10 @@ public class LoadDataEntryFormProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param actionForm
 	 * @param containerInterface
-	 * @param recordIdentifier 
+	 * @param recordIdentifier
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
@@ -69,6 +70,9 @@ public class LoadDataEntryFormProcessor
 		{
 			containerInterface.setContainerValueMap(valueMap);
 		}
+		List processedContainersList = new ArrayList<ContainerInterface>();
+		DynamicExtensionsUtility.setAllInContextContainers(containerInterface,
+				processedContainersList);
 
 		dataEntryForm.setContainerInterface(containerInterface);
 		if (dataEntryForm.getErrorList() == null)
@@ -92,14 +96,14 @@ public class LoadDataEntryFormProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param entityInterface
 	 * @param recordIdentifier
 	 * @return
 	 * @throws NumberFormatException
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public Map<BaseAbstractAttributeInterface, Object> getValueMapFromRecordId(
 			AbstractEntityInterface entityInterface, String recordIdentifier) throws NumberFormatException,

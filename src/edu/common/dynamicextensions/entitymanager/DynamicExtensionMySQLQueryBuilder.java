@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
@@ -27,6 +29,34 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 				DROP_KEYWORD).append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(foreignConstraintName);
 
 		return foreignKeyConstraint.toString();
+	}
+
+	/**
+	 * This method generate the alter table query to drop columns
+	 * @param tableName
+	 * @param columnName
+	 * @return alter query
+	 */
+	protected String getDropColumnQuery(String tableName, List<String> columnName)
+	{
+		StringBuffer alterTableQuery = new StringBuffer();
+
+		alterTableQuery.append(ALTER_TABLE);
+		alterTableQuery.append(tableName);
+		alterTableQuery.append(WHITESPACE);
+
+		for (int i = 0; i < columnName.size(); i++)
+		{
+			alterTableQuery.append(DROP_KEYWORD);
+			alterTableQuery.append(COLUMN_KEYWORD);
+			alterTableQuery.append(columnName.get(i));
+			if (i != columnName.size() - 1)
+			{
+				alterTableQuery.append(COMMA);
+			}
+		}
+
+		return alterTableQuery.toString();
 	}
 
 }

@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -331,20 +332,22 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		}
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
-	 */
-	public List<ControlInterface> getAllControls()
-	{
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this.getControlCollection());
-		Collections.sort(controlsList);
+    /**
+     * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
+     */
+    public List<ControlInterface> getAllControls()
+    {
+        List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+                .getControlCollection());
+        Collections.sort(controlsList);
+        Collections.reverse(controlsList);
 
-		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+        List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
 
-		ContainerInterface baseContainer = this.baseContainer;
-		while (baseContainer != null)
-		{
-			 baseControlsList = new ArrayList(baseContainer.getControlCollection());
+        ContainerInterface baseContainer = this.baseContainer;
+        while (baseContainer != null)
+        {
+            baseControlsList = new ArrayList(baseContainer.getControlCollection());
             Collections.sort(baseControlsList);
             Collections.reverse(baseControlsList);
 
@@ -352,11 +355,11 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 
             baseContainer.setIncontextContainer(this);
             baseContainer = baseContainer.getBaseContainer();
-		}
-		Collections.sort(controlsList);
-		Collections.reverse(controlsList);
+
+        }
+        Collections.reverse(controlsList);
         return controlsList;
-	}
+    }
 
 	/**
 	 * @return return the HTML string for this type of a object
@@ -432,7 +435,8 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	{
 		stringBuffer.append("<tr>");
 		stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
-		stringBuffer.append(this.getCaption());
+        stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
+				.getCaption()));
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 		stringBuffer.append("<tr>");

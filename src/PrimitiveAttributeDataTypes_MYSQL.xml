@@ -58,7 +58,7 @@
     
     <Primitive-Attribute>
 		  <name>File</name>
-	  	  <database-datatype>blob</database-datatype>
+	  	  <database-datatype>longblob</database-datatype>
     </Primitive-Attribute>
     
         <Primitive-Attribute>

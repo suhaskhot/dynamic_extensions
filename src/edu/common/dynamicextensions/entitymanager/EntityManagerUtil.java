@@ -60,7 +60,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			{
 				conn = DBUtil.getConnection();
 			}
-
+			conn.setAutoCommit(false);
 			Statement statement = null;
 			statement = conn.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
@@ -139,7 +139,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * @param jdbcDAO 
+	 * @param jdbcDAO
 	 * @param query query to be executed
 	 * @return
 	 * @throws DynamicExtensionsSystemException
@@ -162,7 +162,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * @param jdbcDAO 
+	 * @param jdbcDAO
 	 * @param queryList
 	 * @return
 	 * @throws DynamicExtensionsSystemException
@@ -172,6 +172,14 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		int result = -1;
 		for (String query : queryList)
 		{
+			try
+			{
+				jdbcDAO.setAutoCommit(false);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
 			result = executeDML(jdbcDAO, query);
 		}
 		return result;

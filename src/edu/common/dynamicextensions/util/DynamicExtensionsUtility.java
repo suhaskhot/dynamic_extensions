@@ -45,13 +45,13 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -951,7 +951,7 @@ public class DynamicExtensionsUtility
 	public static String getValueForCheckBox(boolean ischecked)
 	{
 		String checkboxValue = "";
-		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE) || Variables.databaseName.equals(Constants.MYSQL_DATABASE))
 		{
 			if (ischecked)
 			{
@@ -962,7 +962,7 @@ public class DynamicExtensionsUtility
 				checkboxValue = "0";
 			}
 		}
-		else if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) || Variables.databaseName.equals(Constants.POSTGRESQL_DATABASE))
+		else if (Variables.databaseName.equals(Constants.POSTGRESQL_DATABASE))
 		{
 			if (ischecked)
 			{
@@ -1506,16 +1506,14 @@ public class DynamicExtensionsUtility
 					{
 						for (Integer sequenceNumber : sequenceNumbers)
 						{
-							if (control.getSequenceNumber() != null
-									&& control.getSequenceNumber().equals(sequenceNumber))
+							if (control.getSequenceNumber() != null && control.getSequenceNumber().equals(sequenceNumber))
 							{
 								isPresent = true;
 							}
 						}
 						if (!isPresent)
 						{
-							listOfIds.add(control.getBaseAbstractAttribute()
-									.getId());
+							listOfIds.add(control.getBaseAbstractAttribute().getId());
 						}
 					}
 				}
@@ -1617,5 +1615,47 @@ public class DynamicExtensionsUtility
 
 		return formattedvalue;
 	}
+	/**
+	 * getFormattedStringForCapitalization.
+	 * @param entityName
+	 * @return
+	 */
+	public static String getFormattedStringForCapitalization(String entityName)
+	{
+		return Utility.getDisplayLabel(entityName.trim());
+	}
+	/**
+	 *
+	 * @param containerInterface
+	 * @param inContextContainerInterface
+	 * @param processedContainersList
+	 */
+	public static void setAllInContextContainers(ContainerInterface containerInterface,
+			List<ContainerInterface> processedContainersList)
+	{
+		if (processedContainersList.contains(containerInterface))
+		{
+			return;
+		}
+		else
+		{
+			processedContainersList.add(containerInterface);
+			containerInterface.setIncontextContainer(containerInterface);
 
+			if (containerInterface.getBaseContainer() != null)
+			{
+				setAllInContextContainers(containerInterface.getBaseContainer(),
+						processedContainersList);
+			}
+			for (ControlInterface controlInterface : containerInterface.getControlCollection())
+			{
+				if (controlInterface instanceof AbstractContainmentControlInterface)
+				{
+					AbstractContainmentControlInterface containmentAssociationControl = (AbstractContainmentControlInterface) controlInterface;
+					setAllInContextContainers(containmentAssociationControl.getContainer(),
+							processedContainersList);
+				}
+			}
+		}
+	}
 }

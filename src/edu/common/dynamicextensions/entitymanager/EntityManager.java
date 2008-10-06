@@ -47,6 +47,7 @@ import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeRecordValue;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -769,7 +770,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		List<String> queryList = new ArrayList<String>();
 		Object value = null;
 
-		DynamicExtensionBaseQueryBuilder baseQueryBuilder = new DynamicExtensionBaseQueryBuilder();
 		while (uiColumnSetIter.hasNext())
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
@@ -783,7 +783,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			if (attribute instanceof AttributeInterface)
 			{
 				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
-				if (((AttributeInterface) attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
+				if (((AttributeInterface) attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation
+						&& !(value instanceof String))
 				{
 					queryString.append(COMMA);
 					queryValuesString.append(COMMA);
@@ -799,7 +800,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				else
 				{
 					queryValuesString.append(COMMA);
-					queryValuesString.append(baseQueryBuilder.getFormattedValue(attribute, value));
+					queryValuesString.append(queryBuilder.getFormattedValue(attribute, value));
 					queryString.append(COMMA);
 					queryString.append(((AttributeInterface) attribute).getColumnProperties().getName());
 				}
@@ -848,7 +849,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			jdbcDao.insert(DomainObjectFactory.getInstance().createDESQLAudit(uId, queryString.toString()), null, false, false);
 
-			Connection conn = DBUtil.getConnection();
+			Connection conn = jdbcDao.getConnection();
 
 			for (String string : queryList)
 			{
@@ -915,6 +916,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					oStream.writeObject(value);
 
 					value = bStream.toByteArray();
+				}
+				else if (primitiveAttribute.getAttributeTypeInformation() instanceof StringAttributeTypeInformation)
+				{
+					value = queryBuilder.getEscapedStringValue(value.toString());
 				}
 				if (value == null || value.toString().length() == 0)
 				{
@@ -1218,7 +1223,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		editDataQueryList.addAll(associationRemoveDataQueryList);
 		editDataQueryList.addAll(associationInsertDataQueryList);
 
-		// Shift the below code into the jdbcdao 
+		// Shift the below code into the jdbcdao
 		Connection conn = jdbcDAO.getConnection();
 
 		try

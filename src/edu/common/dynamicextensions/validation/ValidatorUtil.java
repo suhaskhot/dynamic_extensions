@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -34,8 +36,8 @@ public class ValidatorUtil
 	 * @param attributeValueMap  key - AttributeInterface
 	 *                           value - value that user has entred for this attribute
 	 * @return errorList if any
-	 * @throws DynamicExtensionsSystemException : Exception 
-	 * @throws DynamicExtensionsValidationException 
+	 * @throws DynamicExtensionsSystemException : Exception
+	 * @throws DynamicExtensionsValidationException
 	 */
 	public static List<String> validateEntity(Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> errorList,
 			ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
@@ -50,10 +52,9 @@ public class ValidatorUtil
 			for (Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 			{
 				BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
-
-				ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, containerInterface);
-				if (control != null && abstractAttribute instanceof AttributeMetadataInterface)
+				if (abstractAttribute instanceof AttributeMetadataInterface)
 				{
+					ControlInterface control = getControlForAbstractAttribute((AttributeMetadataInterface) abstractAttribute, containerInterface);
 					errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 				}
 				else if (abstractAttribute instanceof AssociationMetadataInterface)
@@ -66,13 +67,7 @@ public class ValidatorUtil
 								.get(abstractAttribute);
 						for (Map<BaseAbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
 						{
-							for (ControlInterface controlInterface : containerInterface.getControlCollection())
-							{
-								if (controlInterface instanceof AbstractContainmentControlInterface)
-								{
-									errorList.addAll(validateEntityAttributes(subAttributeValueMap, containerInterface));
-								}
-							}
+							errorList.addAll(validateEntityAttributes(subAttributeValueMap,getContainerForAbstractAttribute(associationInterface)));
 						}
 					}
 				}
@@ -83,30 +78,30 @@ public class ValidatorUtil
 	}
 
 	/**
-	 * 
+	 *
 	 * @param abstractAttribute
 	 * @param containerInterface
 	 * @return
 	 */
-	public static ControlInterface getControlOfGivenAbstractAttribute(BaseAbstractAttributeInterface abstractAttribute,
+	public static ControlInterface getControlForAbstractAttribute(AttributeMetadataInterface attributeMetadataInterface,
 			ContainerInterface containerInterface)
 	{
 		ControlInterface control = null;
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface controlInterface : controlCollection)
 		{
-			if (control != null)
-			{
-				break;
-			}
 			if (controlInterface instanceof AbstractContainmentControlInterface)
 			{
-				control = getControlOfGivenAbstractAttribute(abstractAttribute, ((AbstractContainmentControlInterface) controlInterface)
+				control = getControlForAbstractAttribute(attributeMetadataInterface, ((AbstractContainmentControlInterface) controlInterface)
 						.getContainer());
+				if (control != null)
+				{
+					return control;
+				}
 			}
 			else
 			{
-				if (controlInterface.getBaseAbstractAttribute().equals(abstractAttribute))
+				if (controlInterface.getBaseAbstractAttribute().equals(attributeMetadataInterface))
 				{
 					control = controlInterface;
 					break;
@@ -116,15 +111,44 @@ public class ValidatorUtil
 		return control;
 
 	}
+	/**
+	 *
+	 * @param abstractAttribute
+	 * @param containerInterface
+	 * @return
+	 */
+	public static ContainerInterface getContainerForAbstractAttribute(AssociationMetadataInterface associationMetadataInterface)
+	{
+		ContainerInterface containerInterface = null;
+		Collection<ContainerInterface> containerCollection = null;
+		if (associationMetadataInterface instanceof AssociationInterface)
+		{
+			AssociationInterface associationInterface = (AssociationInterface) associationMetadataInterface;
+			containerCollection = associationInterface.getTargetEntity().getContainerCollection();
+
+		}
+		else if (associationMetadataInterface instanceof CategoryAssociationInterface)
+		{
+			CategoryAssociationInterface categoryAssociationInterface = (CategoryAssociationInterface) associationMetadataInterface;
+			containerCollection = categoryAssociationInterface.getTargetCategoryEntity().getContainerCollection();
+		}
+		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>(containerCollection);
+		if (!containerList.isEmpty())
+		{
+			containerInterface = containerList.get(0);
+		}
+		return containerInterface;
+
+	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeValueMap
-	 * @param containerInterface 
-	 * @param abstractContainmentControlInterface 
+	 * @param containerInterface
+	 * @param abstractContainmentControlInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsValidationException 
+	 * @throws DynamicExtensionsValidationException
 	 */
 	private static List<String> validateEntityAttributes(Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
 			ContainerInterface containerInterface) throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
@@ -142,9 +166,11 @@ public class ValidatorUtil
 			BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 			if (abstractAttribute instanceof AttributeMetadataInterface)
 			{
-				ControlInterface control = getControlOfGivenAbstractAttribute(abstractAttribute, (ContainerInterface) containerInterface);
-				if(control!=null)
-				errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
+				ControlInterface control = getControlForAbstractAttribute((AttributeMetadataInterface) abstractAttribute, containerInterface);
+				if(control != null)
+				{
+					errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
+				}
 			}
 		}
 

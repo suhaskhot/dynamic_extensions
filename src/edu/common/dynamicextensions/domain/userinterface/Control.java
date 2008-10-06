@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * @version 1.0
@@ -261,7 +262,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		{
 			stringBuffer.append("<br/>");
 		}
-		stringBuffer.append(this.getCaption());
+		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
+				.getCaption()));
 		stringBuffer.append("</td>");
 
 		stringBuffer.append("<td class='formField_withoutBorder' valign='top'>");

@@ -26,6 +26,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 
@@ -81,7 +82,8 @@ public class UserInterfaceiUtility
 		{
 			stringBuffer.append("<tr width='100%'>");
 			stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
-			stringBuffer.append(subContainer.getCaption());
+	        stringBuffer.append(DynamicExtensionsUtility
+					.getFormattedStringForCapitalization(subContainer.getCaption()));
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
 
@@ -109,14 +111,16 @@ public class UserInterfaceiUtility
 				stringBuffer.append("</span>");
 				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
-				stringBuffer.append(control.getCaption());
+				stringBuffer.append(DynamicExtensionsUtility
+						.getFormattedStringForCapitalization(control.getCaption()));
 				stringBuffer.append("</span>");
 			}
 			else
 			{
 				stringBuffer.append("&nbsp;&nbsp;");
 				stringBuffer.append("<span class='font_bl_nor'>");
-				stringBuffer.append(control.getCaption());
+				stringBuffer.append(DynamicExtensionsUtility
+						.getFormattedStringForCapitalization(control.getCaption()));
 				stringBuffer.append("</span>");
 			}
 			stringBuffer.append("</th>");
@@ -372,7 +376,8 @@ public class UserInterfaceiUtility
 
 			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
 		}
-		stringBuffer.append(controlInterface.getCaption());
+		stringBuffer.append(DynamicExtensionsUtility
+				.getFormattedStringForCapitalization(controlInterface.getCaption()));
 		stringBuffer.append("</td>");
 
 		stringBuffer.append("<td class='formField_withoutBorder'>");

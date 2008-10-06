@@ -977,6 +977,114 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Logger.out.debug(e.getStackTrace());
 		}
 	}
+	/**
+	 * This method test for updating record for an entity.
+	 */
+	public void testEditRecordForContainmentAssociation()
+	{
+		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
+		try
+		{
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+
+			EntityGroup entityGroup = (EntityGroup) factory.createEntityGroup();
+			entityGroup.setName("testGroup" + new Double(Math.random()).toString());
+
+			EntityInterface user = factory.createEntity();
+			EntityManagerUtil.addIdAttribute(user);
+			user.setName("user");
+
+			EntityInterface userGroup = factory.createEntity();
+			EntityManagerUtil.addIdAttribute(userGroup);
+			userGroup.setName("userGroup");
+
+			// Step 2
+			EntityInterface address = factory.createEntity();
+			EntityManagerUtil.addIdAttribute(address);
+			address.setName("address");
+
+			AttributeInterface streetAttribute = factory.createStringAttribute();
+			streetAttribute.setName("street name");
+			address.addAbstractAttribute(streetAttribute);
+
+			// Step 3
+			AssociationInterface association = factory.createAssociation();
+			association.setTargetEntity(address);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("UserAddress");
+			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User", Cardinality.ZERO, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.CONTAINTMENT, "address", Cardinality.ZERO, Cardinality.MANY));
+
+
+			// Step 3
+			AssociationInterface associationUserGroup = factory.createAssociation();
+			associationUserGroup.setTargetEntity(address);
+			associationUserGroup.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			associationUserGroup.setName("associationUserGroup");
+			associationUserGroup.setSourceRole(getRole(AssociationType.CONTAINTMENT, "userGroup", Cardinality.ZERO, Cardinality.ONE));
+			associationUserGroup.setTargetRole(getRole(AssociationType.CONTAINTMENT, "address", Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+
+			userGroup.addAbstractAttribute(associationUserGroup);
+			entityGroup.addEntity(userGroup);
+			userGroup.setEntityGroup(entityGroup);
+
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
+
+			user = (Entity) EntityManagerInterface.persistEntity(user);
+
+			userGroup = (Entity) EntityManagerInterface.persistEntity(userGroup);
+
+			Entity savedEntity = (Entity) EntityManagerInterface.getEntityByIdentifier(user.getId().toString());
+			assertEquals(user.getName(), savedEntity.getName());
+
+			Map dataValue = new HashMap();
+			Map newDataValue = new HashMap();
+			List dataList = new ArrayList();
+			List newDataList = new ArrayList();
+
+			Map dataMapFirst = new HashMap();
+			dataMapFirst.put(streetAttribute, "xyz");
+			dataList.add(dataMapFirst);
+			newDataList.add(dataMapFirst);
+
+			Map dataMapSecond = new HashMap();
+			dataMapSecond.put(streetAttribute, "abc");
+			dataList.add(dataMapSecond);
+			newDataList.add(dataMapSecond);
+
+			//dataValue.put(commentsAttributes, "this is not default comment");
+			dataValue.put(association, dataList);
+
+			newDataValue.put(associationUserGroup, newDataList);
+
+			Long recordId = EntityManagerInterface.insertData(savedEntity, dataValue);
+
+			Long newRecordId = EntityManagerInterface.insertData(userGroup, newDataValue);
+
+			Map map = EntityManagerInterface.getRecordById(savedEntity, recordId);
+
+			System.out.println(map);
+
+			dataMapFirst.put(streetAttribute, "rajesh");
+
+			EntityManagerInterface.editData(savedEntity, dataValue, recordId);
+
+			map = EntityManagerInterface.getRecordById(savedEntity, recordId);
+
+			System.out.println(map);
+		}
+		catch (Exception e)
+		{
+			Logger.out.debug(e.getMessage());
+			e.printStackTrace();
+			fail("Exception occured");
+		}
+	}
 
 	/**
 	 * This method test for updating data for a multi select attribute

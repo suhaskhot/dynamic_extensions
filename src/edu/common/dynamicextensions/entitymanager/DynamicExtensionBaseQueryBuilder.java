@@ -711,10 +711,9 @@ class DynamicExtensionBaseQueryBuilder
 		EntityInterface targetEntity = association.getTargetEntity();
 
 		/*now chk if these records are referred by some other incoming association , if so this should not be disabled*/
-		Collection<AssociationInterface> incomingAssociations = EntityManager.getInstance().getIncomingAssociations(targetEntity);
-		incomingAssociations.remove(association);
-		validateForDeleteRecord(targetEntity, childrenRecordIdList, incomingAssociations);
-
+		//Collection<AssociationInterface> incomingAssociations = EntityManager.getInstance().getIncomingAssociations(targetEntity);
+		//incomingAssociations.remove(association);
+		//validateForDeleteRecord(targetEntity, childrenRecordIdList, incomingAssociations);
 		Collection<AssociationInterface> associationCollection = targetEntity.getAssociationCollection();
 		for (AssociationInterface targetEntityAssociation : associationCollection)
 		{
@@ -805,18 +804,18 @@ class DynamicExtensionBaseQueryBuilder
 				query.append(" AS m_table join " + srcTable);
 				query.append(" AS s_table on m_table." + sourceKey + "= s_table." + IDENTIFIER);
 				query.append(WHERE_KEYWORD + targetKey + WHITESPACE + IN_KEYWORD + WHITESPACE + getListToString(recordIdList));
-//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery("s_table"));
+				//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery("s_table"));
 			}
 			else if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.ONE)
 			{
 				query.append(WHERE_KEYWORD + sourceKey + WHITESPACE + IN_KEYWORD + WHITESPACE + getListToString(recordIdList));
-//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
+				//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
 			}
 			else
 			{ //one to one && onr to many : check target entity table
 				query.append(WHERE_KEYWORD + IDENTIFIER + WHITESPACE + IN_KEYWORD + WHITESPACE + getListToString(recordIdList));
-//				query.append(" and " + targetKey);
-//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
+				//				query.append(" and " + targetKey);
+				//				query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
 			}
 
 			if (entityManagerUtil.getNoOfRecord(query.toString()) != 0)
@@ -1703,10 +1702,8 @@ class DynamicExtensionBaseQueryBuilder
 					//attribute is removed or modified such that its column need to be removed
 					if (isAttributeColumnToBeRemoved(attribute, savedAttribute))
 					{
-						String columnName = savedAttribute.getColumnProperties().getName();
-
-						String removeAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD + WHITESPACE + OPENING_BRACKET
-								+ WHITESPACE + columnName;
+						List<String> columnName = new ArrayList<String>();
+						columnName.add(savedAttribute.getColumnProperties().getName());
 
 						String type = "";
 						String removeAttributeQueryRollBackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE
@@ -1714,12 +1711,14 @@ class DynamicExtensionBaseQueryBuilder
 
 						if (savedAttribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 						{
-							removeAttributeQuery = removeAttributeQuery + COMMA + dropExtraColumnQueryStringForFileAttribute(savedAttribute);
+							columnName.add(savedAttribute.getName() + UNDERSCORE + FILE_NAME);
+							columnName.add(savedAttribute.getName() + UNDERSCORE + CONTENT_TYPE);
 							removeAttributeQueryRollBackQuery = removeAttributeQueryRollBackQuery + COMMA
 									+ extraColumnQueryStringForFileAttribute(savedAttribute);
 						}
-						removeAttributeQuery = removeAttributeQuery + CLOSING_BRACKET;
 						removeAttributeQueryRollBackQuery = removeAttributeQueryRollBackQuery + CLOSING_BRACKET;
+
+						String removeAttributeQuery = getDropColumnQuery(tableName, columnName);
 
 						attributeQueryList.add(removeAttributeQuery);
 						attributeRollbackQueryList.add(removeAttributeQueryRollBackQuery);
@@ -3037,6 +3036,35 @@ class DynamicExtensionBaseQueryBuilder
 			e.printStackTrace();
 		}
 		throw new DynamicExtensionsSystemException("Can not execute query");
+	}
+
+	/**
+	 * This method generate the alter table query to drop columns
+	 * @param tableName
+	 * @param columnName
+	 * @return alter query
+	 */
+	protected String getDropColumnQuery(String tableName, List<String> columnName)
+	{
+		StringBuffer alterTableQuery = new StringBuffer();
+
+		alterTableQuery.append(ALTER_TABLE);
+		alterTableQuery.append(tableName);
+		alterTableQuery.append(WHITESPACE);
+		alterTableQuery.append(DROP_KEYWORD);
+		alterTableQuery.append(OPENING_BRACKET);
+		for (int i = 0; i < columnName.size(); i++)
+		{
+			alterTableQuery.append(columnName.get(i));
+			if (i != columnName.size() - 1)
+			{
+				alterTableQuery.append(COMMA);
+			}
+		}
+
+		alterTableQuery.append(CLOSING_BRACKET);
+
+		return alterTableQuery.toString();
 	}
 
 }

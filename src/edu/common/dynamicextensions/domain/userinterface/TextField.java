@@ -90,7 +90,6 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-		
 
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
@@ -124,8 +123,8 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			//set isdisabled property
-	
-			if(this.isReadOnly != null && this.isReadOnly)
+
+			if (this.isReadOnly != null && this.isReadOnly)
 			{
 				htmlString += " disabled='" + ProcessorConstants.TRUE + "' ";
 			}
@@ -209,7 +208,16 @@ public class TextField extends Control implements TextFieldInterface
 
 	private String getDefaultValue()
 	{
-		String defaultValue = String.valueOf(this.value);
+		String defaultValue = null;
+		if (this.value == null)
+		{
+			defaultValue = "";
+		}
+		else
+		{
+			defaultValue = String.valueOf(this.value);
+		}
+
 		if (isUrl != null && isUrl.booleanValue() == true)
 		{
 			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();

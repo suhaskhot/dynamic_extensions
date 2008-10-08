@@ -1059,14 +1059,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		// Set default value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
-			Short defaultValue;
+			Short defaultValue = null;
 			try
 			{
-				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
-				{
-					defaultValue = new Short((short) 0); //Assume 0 for blank fields
-				}
-				else
+				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
 					defaultValue = new Short(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 				}
@@ -1082,8 +1078,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 
 			ShortValueInterface shortValue = DomainObjectFactory.getInstance().createShortValue();
-			shortValue.setValue(new Short(defaultValue));
-			shortAttributeTypeInfo.setDefaultValue(shortValue);
+			if (defaultValue != null)
+			{
+				shortValue.setValue(new Short(defaultValue));
+				shortAttributeTypeInfo.setDefaultValue(shortValue);
+			}
 		}
 	}
 
@@ -1116,14 +1115,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		// Set default value.
 		if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 		{
-			Integer defaultValue;
+			Integer defaultValue = null;
 			try
 			{
-				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
-				{
-					defaultValue = new Integer(0); //Assume 0 for blank fields
-				}
-				else
+				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
 					defaultValue = new Integer(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 				}
@@ -1139,8 +1134,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 
 			IntegerValueInterface integerValue = DomainObjectFactory.getInstance().createIntegerValue();
-			integerValue.setValue(defaultValue);
-			integerAttributeTypeInfo.setDefaultValue(integerValue);
+			if (defaultValue != null)
+			{
+				integerValue.setValue(defaultValue);
+				integerAttributeTypeInfo.setDefaultValue(integerValue);
+			}
 		}
 	}
 
@@ -1171,14 +1169,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		// Set Default Value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
-			Long defaultValue;
+			Long defaultValue = null;
 			try
 			{
-				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
-				{
-					defaultValue = new Long(0); //Assume 0 for blank fields
-				}
-				else
+				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
 					defaultValue = new Long(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 				}
@@ -1194,8 +1188,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 
 			LongValueInterface longValue = DomainObjectFactory.getInstance().createLongValue();
-			longValue.setValue(new Long(defaultValue));
-			longAttributeTypeInfo.setDefaultValue(longValue);
+			if (defaultValue != null)
+			{
+				longValue.setValue(new Long(defaultValue));
+				longAttributeTypeInfo.setDefaultValue(longValue);
+			}
+
 		}
 	}
 
@@ -1226,14 +1224,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		//Set Default Value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
-			Float defaultValue;
+			Float defaultValue = null;
 			try
 			{
-				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
-				{
-					defaultValue = new Float(0); //Assume 0 for blank fields
-				}
-				else
+				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
 					defaultValue = new Float(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 				}
@@ -1249,8 +1243,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 
 			FloatValueInterface floatValue = DomainObjectFactory.getInstance().createFloatValue();
-			floatValue.setValue(new Float(defaultValue));
-			floatAttributeTypeInfo.setDefaultValue(floatValue);
+			if (defaultValue != null)
+			{
+				floatValue.setValue(new Float(defaultValue));
+				floatAttributeTypeInfo.setDefaultValue(floatValue);
+			}
+
 		}
 	}
 
@@ -1281,14 +1279,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		//Set Default Value.
 		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
 		{
-			Double defaultValue;
+			Double defaultValue = null;
 			try
 			{
-				if (attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
-				{
-					defaultValue = new Double(0); //Assume 0 for blank fields
-				}
-				else
+				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
 					defaultValue = new Double(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 				}
@@ -1304,8 +1298,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 
 			DoubleValueInterface doubleValue = DomainObjectFactory.getInstance().createDoubleValue();
-			doubleValue.setValue(new Double(defaultValue));
-			doubleAttributeInterface.setDefaultValue(doubleValue);
+			if (defaultValue != null)
+			{
+				doubleValue.setValue(new Double(defaultValue));
+				doubleAttributeInterface.setDefaultValue(doubleValue);
+			}
 		}
 	}
 

@@ -93,7 +93,7 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 	{
 		for (NameValueBean nvb : nameValueBeans)
 		{
-			if (nvb.getName().startsWith(query))
+			if (nvb.getName().toLowerCase().startsWith(query.toLowerCase()))
 			{
 				querySpecificNVBeans.add(nvb);
 			}

@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
@@ -564,5 +565,13 @@ public interface EntityManagerInterface
 	 */
 	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
 			Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	/**
+	 * This method updates attribute type info object
+	 * @param attrTypeInfo
+	 * @return AttributeTypeInformationInterface
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

@@ -3192,5 +3192,45 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return controlInterface;
 	}
+	/**
+	 * This method updates attribute type info object
+	 * @param attrTypeInfo
+	 * @return AttributeTypeInformationInterface
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{		
+		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
+		try
+		{
+			hibernateDAO.openSession(null);
+
+			hibernateDAO.update(attrTypeInfo, null, false, false, false);
+			
+			hibernateDAO.commit();
+		}
+		catch (DAOException e)
+		{	
+			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+		}
+		catch (UserNotAuthorizedException e)
+		{		
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+		}
+		finally
+		{
+			try
+			{
+				hibernateDAO.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
+			}
+		}
+		return attrTypeInfo;
+	}
 
 }

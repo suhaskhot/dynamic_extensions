@@ -108,7 +108,7 @@ public class CategoryGenerator
 						+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("noEntityGroup")
 						+ categoryFileParser.getEntityGroupName());
 
-				categoryFileParser.getCategoryValidator().setEntityGroup(entityGroup);
+				categoryFileParser.getCategoryValidator().setEntityGroupId(entityGroup.getId());
 				populateMainFormList(entityGroup);
 
 				// 3: Get the path represented by ordered entity names.

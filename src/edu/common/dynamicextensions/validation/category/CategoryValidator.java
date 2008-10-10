@@ -32,6 +32,7 @@ import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -39,8 +40,8 @@ import edu.wustl.common.util.global.ApplicationProperties;
  *
  */
 public class CategoryValidator
-{
-	EntityGroupInterface entityGroup;
+{	
+	Long entityGroupId;
 
 	CategoryCSVFileParser categoryFileParser;
 
@@ -58,17 +59,17 @@ public class CategoryValidator
 	/**
 	 * @return
 	 */
-	public EntityGroupInterface getEntityGroup()
+	public Long getEntityGroupId()
 	{
-		return entityGroup;
+		return entityGroupId;
 	}
 
 	/**
 	 * @param entityGroup
 	 */
-	public void setEntityGroup(EntityGroupInterface entityGroup)
+	public void setEntityGroupId(Long entityGroupId)
 	{
-		this.entityGroup = entityGroup;
+		this.entityGroupId = entityGroupId;
 	}
 
 	/**
@@ -86,11 +87,16 @@ public class CategoryValidator
 	/**
 	 * @param entityName
 	 * @throws DynamicExtensionsSystemException
+	 * @throws ClassNotFoundException 
+	 * @throws DAOException 
 	 */
-	public void validateEntityName(String entityName) throws DynamicExtensionsSystemException
+	public void validateEntityName(String entityName) throws DynamicExtensionsSystemException, DAOException, ClassNotFoundException
 	{
 		String errorMessage = getErrorMessageStart() + ApplicationProperties.getValue(CategoryConstants.NO_ENTITY) + entityName;
-		checkForNullRefernce(entityGroup.getEntityByName(entityName), errorMessage);
+		
+		String entityHQL = "select id from Entity entity where entity.entityGroup.id = "+entityGroupId +" and entity.name = '" + entityName +"'";
+		List entityIdList = DynamicExtensionsUtility.executeQuery(entityHQL);
+		checkForNullRefernce(entityIdList.get(0), errorMessage);
 	}
 
 	/**

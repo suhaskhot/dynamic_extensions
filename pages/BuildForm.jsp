@@ -46,7 +46,16 @@
 				mygrid = new dhtmlXGridObject('gridbox');
 				mygrid.setImagePath("dhtml_comp/imgs/");
 				mygrid.setHeader("#,Name,Type");
-				mygrid.enableAutoHeigth(true);
+				
+				if (document.all || navigator.userAgent.indexOf("Firefox") != -1)
+				{
+					mygrid.enableAutoHeigth(true);
+				}
+				else
+				{
+					mygrid.enableAutoHeigth(false);
+				}
+				
 				mygrid.setInitWidthsP("6,47,47")
 				mygrid.setColAlign("center,left,left")
 				mygrid.setColTypes("ch,ed,ed");
@@ -239,7 +248,11 @@
 																<tbody>
 																	<tr height="100%" valign="top">
 																		<td align="center">
+																			<% if (request.getHeader("User-Agent").indexOf("Safari") == -1) { %>
 																			<div id="gridbox" width="100%" height="100%" align="center" style="background-color:white;overflow:hidden"/>
+																			<% } else { %>
+																			<div id="gridbox" width="100%" height="500px" align="center" style="background-color:white;overflow:hidden"/>
+																			<% } %>
 																		</td>
 																	</tr>
 																</tbody>

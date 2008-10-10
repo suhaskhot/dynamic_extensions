@@ -78,6 +78,8 @@ import edu.common.dynamicextensions.validation.RangeValidator;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
+import edu.wustl.common.dao.DAOFactory;
+import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -1613,7 +1615,7 @@ public class DynamicExtensionsUtility
 		formattedvalue = Variables.strTodateFunction + "('" + simpleDateFormat.format(date) + "','" + ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT
 				+ "')";
 
-		return formattedvalue;
+		return formattedvalue;	
 	}
 	/**
 	 * getFormattedStringForCapitalization.
@@ -1657,5 +1659,27 @@ public class DynamicExtensionsUtility
 				}
 			}
 		}
+	}
+
+	/**
+	 * Executes hql Query and returns the results.
+	 * 
+	 * @param hql
+	 *            String hql
+	 * @throws DAOException 
+	 * @throws DAOException
+	 *             DAOException
+	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
+	 *             ClassNotFoundException
+	 */
+	public static List executeQuery(String hql) throws DAOException, ClassNotFoundException 
+	{
+		HibernateDAO dao = (HibernateDAO) DAOFactory.getInstance().getDAO(
+				Constants.HIBERNATE_DAO);
+		dao.openSession(null);
+		List list = dao.executeQuery(hql, null, false, null);
+		dao.closeSession();
+		return list;
 	}
 }

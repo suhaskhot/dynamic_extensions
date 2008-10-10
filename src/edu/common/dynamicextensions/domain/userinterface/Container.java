@@ -332,22 +332,20 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		}
 	}
 
-    /**
-     * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
-     */
-    public List<ControlInterface> getAllControls()
-    {
-        List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
-                .getControlCollection());
-        Collections.sort(controlsList);
-        Collections.reverse(controlsList);
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
+	 */
+	public List<ControlInterface> getAllControls()
+	{
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this.getControlCollection());
+		Collections.sort(controlsList);
 
-        List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
 
-        ContainerInterface baseContainer = this.baseContainer;
-        while (baseContainer != null)
-        {
-            baseControlsList = new ArrayList(baseContainer.getControlCollection());
+		ContainerInterface baseContainer = this.baseContainer;
+		while (baseContainer != null)
+		{
+			 baseControlsList = new ArrayList(baseContainer.getControlCollection());
             Collections.sort(baseControlsList);
             Collections.reverse(baseControlsList);
 
@@ -355,11 +353,11 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 
             baseContainer.setIncontextContainer(this);
             baseContainer = baseContainer.getBaseContainer();
-
-        }
-        Collections.reverse(controlsList);
+		}
+		Collections.sort(controlsList);
+		Collections.reverse(controlsList);
         return controlsList;
-    }
+	}
 
 	/**
 	 * @return return the HTML string for this type of a object

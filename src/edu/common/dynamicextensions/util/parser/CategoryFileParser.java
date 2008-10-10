@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.FileReader;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
+import edu.wustl.common.util.dbManager.DAOException;
 
 /**
  * @author kunal_kamble
@@ -71,7 +72,7 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public abstract String getEntityName() throws DynamicExtensionsSystemException;
+	public abstract String getEntityName() throws DynamicExtensionsSystemException, DAOException, ClassNotFoundException;
 
 	/**
 	 * @return attribute name

@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
+import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -154,8 +155,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	/**
 	 * @return entity name
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws ClassNotFoundException 
+	 * @throws DAOException 
 	 */
-	public String getEntityName() throws DynamicExtensionsSystemException
+	public String getEntityName() throws DynamicExtensionsSystemException, DAOException, ClassNotFoundException
 	{
 		this.categoryValidator.validateEntityName(readLine()[0].split(":")[0].trim());
 		return readLine()[0].split(":")[0].trim();
@@ -228,10 +231,11 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					indexOfConceptCodeStart = -1;
 				}
 				String permiValue = "";
-				Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
+				Collection<SemanticPropertyInterface> semanticPropertyCollection = null;
 
 				if (indexOfConceptCodeStart != -1)
 				{//Concept code is present
+					semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 					permiValue = pvString.substring(0, indexOfConceptCodeStart);
 					pvStringLength = pvStringLength + permiValue.length();
 
@@ -292,13 +296,14 @@ public class CategoryCSVFileParser extends CategoryFileParser
 				{
 					if (line.trim().length() != 0)//skip the line if it is blank 
 					{
-						Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
+						Collection<SemanticPropertyInterface> semanticPropertyCollection = null;
 						String pvString = line.trim();
 						int indexOfConceptCodeStart = pvString.indexOf("<");
 						int conceptCodeEnd = pvString.indexOf(">");
 						String pv = "";
 						if (indexOfConceptCodeStart != -1 && conceptCodeEnd != -1)
 						{
+							semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 							pv = pvString.substring(0, indexOfConceptCodeStart);
 							String tempCodesString = pvString.substring(indexOfConceptCodeStart + 1, conceptCodeEnd);
 							String[] conceptString = tempCodesString.split(":");

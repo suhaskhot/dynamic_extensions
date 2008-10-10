@@ -28,5 +28,10 @@ public interface UserDefinedDEInterface extends DataElementInterface
 	 * clears the permissible value collection
 	 */
 	public void clearPermissibleValues();
+	
+	/**
+	 * @param permissibleValueColl
+	 */
+	public void addAllPermissibleValues(Collection<PermissibleValueInterface> permissibleValueColl);
 
 }

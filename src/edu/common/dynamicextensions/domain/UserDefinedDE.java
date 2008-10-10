@@ -81,5 +81,16 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	{
 		this.permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
 	}
-
+	
+	/**
+	 * @param permissibleValueColl
+	 */
+	public void addAllPermissibleValues(Collection<PermissibleValueInterface> permissibleValueColl)
+	{
+		if (this.permissibleValueCollection == null)
+		{
+			this.permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
+		}
+		this.permissibleValueCollection.addAll(permissibleValueColl);
+	}
 }

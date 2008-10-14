@@ -2530,7 +2530,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		query.append(OPENING_BRACKET);
 		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_table_properties" + WHITESPACE);
-		query.append(WHERE_KEYWORD + WHITESPACE + "ENTITY_ID" + WHITESPACE + EQUAL);
+		query.append(WHERE_KEYWORD + WHITESPACE + "ABSTRACT_ENTITY_ID" + WHITESPACE + EQUAL);
 		query.append(OPENING_BRACKET);
 		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + "dyextn_abstract_metadata" + WHITESPACE);
@@ -3231,6 +3231,80 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 		}
 		return attrTypeInfo;
+	}
+	/**
+	 * @param entityGroupName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getEntityGroupId(String entityGroupName) throws DynamicExtensionsSystemException
+	{
+		Long entityGroupIdentifier = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityGroupName));
+		Collection entityGroupIdCollection = executeHQL("getEntityGroupId", substitutionParameterMap);
+		if (entityGroupIdCollection != null && entityGroupIdCollection.size() > 0)
+		{
+			entityGroupIdentifier = (Long) entityGroupIdCollection.iterator().next();
+		}
+		return entityGroupIdentifier;
+	}
+	/**
+	 * @param entityName
+	 * @param entityGroupId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getEntityId(String entityName, Long entityGroupId) throws DynamicExtensionsSystemException
+	{
+		Long entityId = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupId));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("string", entityName));
+		Collection entityIdCollection = executeHQL("getEntityId", substitutionParameterMap);
+		if (entityIdCollection != null && entityIdCollection.size() > 0)
+		{
+			entityId = (Long) entityIdCollection.iterator().next();
+		}
+		return entityId;
+	}
+	
+	/**
+	 * @param attributeName
+	 * @param entityId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getAttributeId(String attributeName, Long entityId) throws DynamicExtensionsSystemException
+	{
+		Long attributeId = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityId));
+		substitutionParameterMap.put("1", new HQLPlaceHolderObject("string", attributeName));
+		Collection attributeIdCollection = executeHQL("getAttributeId", substitutionParameterMap);
+		if (attributeIdCollection != null && attributeIdCollection.size() > 0)
+		{
+			attributeId = (Long) attributeIdCollection.iterator().next();
+		}
+		return attributeId;
+	}
+
+	/**
+	 * @param attributeId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public AttributeTypeInformationInterface getAttributeTypeInformation(Long attributeId) throws DynamicExtensionsSystemException
+	{
+		AttributeTypeInformationInterface attributeTypeInformation = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", attributeId));		
+		Collection attributeTypeInformationCollection = executeHQL("getAttributeTypeObject", substitutionParameterMap);
+		if (attributeTypeInformationCollection != null && attributeTypeInformationCollection.size() > 0)
+		{
+			attributeTypeInformation = (AttributeTypeInformationInterface) attributeTypeInformationCollection.iterator().next();
+		}
+		return attributeTypeInformation;
 	}
 
 }

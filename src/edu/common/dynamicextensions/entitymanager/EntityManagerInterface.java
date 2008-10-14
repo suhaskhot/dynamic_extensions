@@ -573,5 +573,34 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
+	/**
+	 * This method retrieves entity group id given the entity group name by executing hql query
+	 * @param entityGroupName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getEntityGroupId(String entityGroupName) throws DynamicExtensionsSystemException;
+	/**
+	 * This method retrieves the entity id for the given entity group and the given entity name
+	 * @param entityName
+	 * @param entityGroupId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getEntityId(String entityName, Long entityGroupId) throws DynamicExtensionsSystemException;
+	/**
+	 * This method retrieves the attribute id for the entity and the given attribute name.
+	 * @param attributeName
+	 * @param entityId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getAttributeId(String attributeName, Long entityId) throws DynamicExtensionsSystemException;
+	/**
+	 * This method retrives the AttributeTypeInformation object given the attribute id.
+	 * @param attributeId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public AttributeTypeInformationInterface getAttributeTypeInformation(Long attributeId) throws DynamicExtensionsSystemException;
 }

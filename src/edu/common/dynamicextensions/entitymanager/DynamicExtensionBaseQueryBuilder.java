@@ -20,6 +20,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import com.ibm.db2.jcc.b.db;
+
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -257,7 +259,7 @@ class DynamicExtensionBaseQueryBuilder
 				String foreignConstraintRollbackQuery = "";
 				if (databaseCopy.getParentEntity() != null)
 				{
-					String foreignConstraintRemoveQuery = getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy, databaseCopy
+					String foreignConstraintRemoveQuery = QueryBuilderFactory.getQueryBuilder().getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy, databaseCopy
 							.getParentEntity());
 					foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
 					queryList.add(foreignConstraintRemoveQuery);
@@ -921,7 +923,7 @@ class DynamicExtensionBaseQueryBuilder
 			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + activityStatusString + COMMA);
 			if (!EntityManagerUtil.isIdAttributePresent(entity))
 			{
-				query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(COMMA);
+				query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD).append(COMMA);
 			}
 			Collection<AttributeInterface> attributeCollection = entity.getAttributeCollection();
 
@@ -1017,7 +1019,7 @@ class DynamicExtensionBaseQueryBuilder
 
 			String tableName = categoryEntity.getTableProperties().getName();
 			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + activityStatusString + COMMA);
-			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(COMMA);
+			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD).append(COMMA);
 			query = query.append("record_Id" + WHITESPACE + getDataTypeForIdentifier() + WHITESPACE + "NOT NULL" + COMMA);
 			query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
 			queryList.add(query.toString());
@@ -1402,7 +1404,7 @@ class DynamicExtensionBaseQueryBuilder
 			tableName = constraintProperties.getName();
 
 			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET + WHITESPACE + IDENTIFIER + WHITESPACE + dataType
-					+ COMMA);
+					+ WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + COMMA);
 			query.append(constraintProperties.getSourceEntityKey() + WHITESPACE + dataType + COMMA);
 			query.append(constraintProperties.getTargetEntityKey() + WHITESPACE + dataType + COMMA + WHITESPACE);
 			query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + CLOSING_BRACKET);
@@ -2421,6 +2423,7 @@ class DynamicExtensionBaseQueryBuilder
 					{
 						throw new DynamicExtensionsSystemException("Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
 					}
+					
 				}
 			}
 		}
@@ -2904,7 +2907,7 @@ class DynamicExtensionBaseQueryBuilder
 
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String columnName = attribute.getColumnProperties().getName();
-		Object formattedValue = getFormattedValue((AbstractAttribute) attribute, value);
+		Object formattedValue = QueryBuilderFactory.getQueryBuilder().getFormattedValue((AbstractAttribute) attribute, value);
 
 		StringBuffer queryBuffer = new StringBuffer();
 		queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append(COUNT_KEYWORD).append(OPENING_BRACKET).append("*").append(CLOSING_BRACKET)

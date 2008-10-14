@@ -211,7 +211,7 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 
 		if (reverseQueryStack != null && !reverseQueryStack.isEmpty())
 		{
-			Connection conn;
+			Connection conn =null;
 			try
 			{
 				conn = DBUtil.getConnection();
@@ -221,7 +221,9 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 					PreparedStatement statement = null;
 					statement = conn.prepareStatement(query);
 					statement.executeUpdate();
+					
 				}
+				
 			}
 			catch (HibernateException e1)
 			{
@@ -234,8 +236,15 @@ public abstract class AbstractMetadataManager implements EntityManagerExceptionC
 			}
 			finally
 			{
+				try {
+					conn.commit();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(e));
 				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message, e);
+				
 				ex.setErrorCode(DYEXTN_S_000);
 				throw ex;
 			}

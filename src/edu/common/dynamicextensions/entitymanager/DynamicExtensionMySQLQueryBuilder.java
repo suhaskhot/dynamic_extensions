@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
@@ -19,11 +20,24 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 	 * @param entity
 	 * @return
 	 */
-	protected String getForeignKeyRemoveConstraintQueryForInheritance(EntityInterface entity)
+	/*
+	 * cnanged by: pavan
+	 * Method signature is different than the DynamicExtensionsBaseQueryBuilder
+	 * thus it is changed to match. Thus it can be overriden correctly
+	 * 
+	 */
+	 
+	protected String getForeignKeyRemoveConstraintQueryForInheritance(AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
 	{
 		StringBuffer foreignKeyConstraint = new StringBuffer();
-		EntityInterface parentEntity = entity.getParentEntity();
-		String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+		/*changed by :- pavan
+		 * fk id is same as constraint name.
+		 * not working with fkid
+		 * 
+		 */
+		//String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
+		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
+		+ parentEntity.getTableProperties().getConstraintName();
 
 		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
 				DROP_KEYWORD).append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(foreignConstraintName);

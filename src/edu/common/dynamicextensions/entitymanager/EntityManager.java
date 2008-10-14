@@ -169,7 +169,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 
 			postProcess(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
-
+		
 			hibernateDAO.commit();
 			//			Update the dynamic extension cache for all containers within entitygroup
 			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
@@ -1561,7 +1561,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 				{
-					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
+					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE)|| Variables.databaseName.equals(Constants.DB2_DATABASE))
 					{
 						Blob blob = (Blob) valueObj;
 						value = new ObjectInputStream(blob.getBinaryStream()).readObject();

@@ -9,6 +9,7 @@
 package edu.common.dynamicextensions.util;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -26,6 +27,7 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import gov.nih.nci.common.util.HibernateUtil;
 
 public class DynamicExtensionsBaseTestCase extends TestCase implements EntityManagerExceptionConstantsInterface
 {
@@ -34,6 +36,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 
 	//1:ACTIVITY_STATUS 2:IDENTIFIER 3:FILE NAME 4:CONTENTE_TYPE 5:ACTUAL_CONTENTS
 	protected int noOfDefaultColumnsForfile = 5;
+	
+	protected final static String STRING_TYPE="string";
+	protected final static String INT_TYPE="int";
 	/**
 	 * 
 	 */
@@ -70,44 +75,57 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	}
 
 	/**
-	 * @param query query to be executed
-	 * @return 
+	 * It will execute query passed as parameter & will return value of the
+	 * Column at columnNumber of returnType. 
+	 * @param query Query to be executed
+	 * @param returnType Returntype or DataType of the column
+	 * @param columnNumber of which value is to be retrieved
+	 * @return Object of the value
 	 */
-	protected ResultSet executeQuery(String query)
+	protected Object executeQuery(String query, String returnType, int columnNumber)
 	{
-		//      Checking whether the data table is created properly or not.
 		Connection conn = null;
-		try
-		{
-			conn = DBUtil.getConnection();
-		}
-		catch (HibernateException e)
-		{
-			e.printStackTrace();
-		}
-		java.sql.PreparedStatement statement = null;
+		PreparedStatement statement = null;
+		ResultSet resultSet=null;
+		Object ans=null;
+		conn=getConnection();
 		try
 		{
 			statement = conn.prepareStatement(query);
-			return statement.executeQuery();
+			resultSet= statement.executeQuery();
+			resultSet.next();
+			if(STRING_TYPE.equals(returnType))
+			{
+				ans=resultSet.getString(columnNumber);
+			}
+			if(INT_TYPE.equals(returnType))
+			{
+				ans=resultSet.getInt(columnNumber);
+			}
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 			fail();
 		}
-
-		return null;
+		finally
+		{
+			closeConnection(conn);
+		}
+		return ans;
 	}
+	
 	
 	/**
 	 * @param query query to be executed
-	 * @return  ResultSetMetaData
+	 * @return 
 	 */
-	protected ResultSetMetaData executeQueryForMetadata(String query)
+/*	protected ResultSet executeQuery(String query)
 	{
 		//      Checking whether the data table is created properly or not.
 		Connection conn = null;
+		java.sql.PreparedStatement statement = null;
+		java.sql.ResultSet resultSet=null;
 		try
 		{
 			conn = DBUtil.getConnection();
@@ -116,19 +134,138 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		{
 			e.printStackTrace();
 		}
-		java.sql.PreparedStatement statement = null;
+		
 		try
 		{
 			statement = conn.prepareStatement(query);
-			return statement.executeQuery().getMetaData();
+			resultSet= statement.executeQuery();
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 			fail();
 		}
+		/*finally
+		{
+			if(conn!=null)
+			{
+				DBUtil.closeConnection();
+			}
+		}
+		return resultSet;
+	}*/
+	
+	
+	/**
+	 *  It will execute query & will retrieve the total columncount in that queried table.
+	 * @param query to be executed for metadata
+	 * @return number of columns
+	 */
+	protected int getColumnCount(String query)
+	{
+		Connection conn = null;
+		ResultSetMetaData metadata=null;
+		int count=0;
+		conn=getConnection();
+		try
+		{
+			metadata=executeQueryForMetadata(conn,query,metadata);
+			count=metadata.getColumnCount();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		finally
+		{
+			closeConnection(conn);
+		}
 
-		return null;
+		return count;
+	}
+
+
+	
+	/**
+	 * It will retrieve the DataType of the column specified in the columnNumber
+	 * @param query To be executed 
+	 * @param columnNumber Of which dataType is required 
+	 * @return Dataype of the column
+	 */
+	protected int getColumntype(String query,int columnNumber)
+	{
+		Connection conn = null;
+		ResultSetMetaData metadata=null;
+		int type=0;
+		conn=getConnection();
+		try
+		{
+			metadata=executeQueryForMetadata(conn,query,metadata);
+			type=metadata.getColumnType(columnNumber);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		finally
+		{
+			closeConnection(conn);
+		}
+
+		return type;
+	}
+
+
+	/**
+	 * Close the connection
+	 * @param conn
+	 */
+	private void closeConnection(Connection conn) {
+		if(conn!=null)
+		{
+			DBUtil.closeConnection();
+		}
+	}
+
+	/**
+	 * It will execute actual query passed.
+	 * @param conn connection to be used  
+	 * @param query to be executed
+	 * @param statement 
+	 * @param metadata Object to be used for metadata
+	 * @return
+	 * @throws SQLException
+	 */
+	private ResultSetMetaData executeQueryForMetadata(Connection conn,
+			String query, ResultSetMetaData metadata)throws SQLException {
+		PreparedStatement statement=null;
+		statement = conn.prepareStatement(query);
+		metadata= statement.executeQuery().getMetaData();
+		
+		return metadata;
+	}
+
+	/**
+	 * Open the connection for use
+	 * @return connection 
+	 */
+	private Connection getConnection() {
+		Connection conn=null;
+		try
+		{
+			conn = DBUtil.getConnection();
+		}
+		catch (HibernateException e)
+		{
+			e.printStackTrace();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return conn;
 	}
 
 	/**
@@ -139,24 +276,22 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	{
 		//      Checking whether the data table is created properly or not.
 		Connection conn = null;
-		try
-		{
-			conn = DBUtil.getConnection();
-		}
-		catch (HibernateException e)
-		{
-			e.printStackTrace();
-		}
+		conn=getConnection();
 		java.sql.PreparedStatement statement = null;
 		try
 		{
 			statement = conn.prepareStatement(query);
-			statement.execute(query);
+			statement.execute();
+			conn.commit();
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 			fail();
+		}
+		finally
+		{
+			closeConnection(conn);
 		}
 
 		return null;
@@ -191,10 +326,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	}
 	
 	protected String getActivityStatus(EntityInterface entity , Long recordId) throws Exception {
-		ResultSet resultSet = executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN +  " from "
-				+ entity.getTableProperties().getName()  + " where identifier = " + recordId);
-		resultSet.next();
-		return resultSet.getString(1);
+		return (String)executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN +  " from "
+				+ entity.getTableProperties().getName()  + " where identifier = " + recordId,STRING_TYPE,1);
+		 
 	}
 	
 	/**

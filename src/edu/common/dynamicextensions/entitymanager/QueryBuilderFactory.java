@@ -40,6 +40,10 @@ public class QueryBuilderFactory
 		{
 			queryBuilder = new DynamicExtensionPostGreSQLQueryBuilder();
 		}
+		else if (Variables.databaseName.equalsIgnoreCase(Constants.DB2_DATABASE))
+		{
+			queryBuilder = new DynamicExtensionDb2QueryBuilder();
+		}
 		
 		return queryBuilder;
 	}

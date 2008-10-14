@@ -984,8 +984,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			EntityInterface study = entityGroup.getEntityByName("Study Entity");
 			EntityInterface experiment = entityGroup.getEntityByName("Experiment Entity");
 
-			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
-			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 4);
+			
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()), noOfDefaultColumns + 4);
 
 			// Create a category from user and experiment entities.
 			CategoryInterface category = factory.createCategory();
@@ -1107,11 +1107,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
 		catch (DAOException e)
 		{
 			e.printStackTrace();
@@ -1146,10 +1141,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			EntityInterface user = entityGroup.getEntityByName("User Entity");
 			EntityInterface study = entityGroup.getEntityByName("Study Entity");
 			EntityInterface experiment = entityGroup.getEntityByName("Experiment Entity");
-
-			ResultSetMetaData metaData = executeQueryForMetadata("select * from " + study.getTableProperties().getName());
-			assertEquals(metaData.getColumnCount(), noOfDefaultColumns + 4);
-
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()), noOfDefaultColumns + 4);
 			// Create a category from user, study and experiment entities.
 			CategoryInterface category = factory.createCategory();
 			category.setName("Category From User, Study and Experiment Entities");
@@ -1314,11 +1306,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 		catch (DynamicExtensionsApplicationException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		catch (SQLException e)
 		{
 			e.printStackTrace();
 			fail();
@@ -1691,69 +1678,57 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryManager.insertData(category, radicalProstateDataCategoryMap);
 
 			// Verify that correct data has been inserted into appropriate tables.
-			ResultSet resultSet = executeQuery("select " + attributesList1.get(0).getColumnProperties().getName() + " from "
-					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("tissueSlideCategoryAttribute"));
+			String columnValue = (String) executeQuery("select " + attributesList1.get(0).getColumnProperties().getName() + " from "
+					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("tissueSlideCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList1.get(1).getColumnProperties().getName() + " from "
-					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("tumourTissueSiteCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList1.get(1).getColumnProperties().getName() + " from "
+					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("tumourTissueSiteCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList2.get(0).getColumnProperties().getName() + " from "
-					+ prostatePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("seminalVesicleInvasionCategoryAttribute"));
+			columnValue =(String) executeQuery("select " + attributesList2.get(0).getColumnProperties().getName() + " from "
+					+ prostatePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("seminalVesicleInvasionCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList2.get(1).getColumnProperties().getName() + " from "
-					+ prostatePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("periprostaticFatInvasionCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList2.get(1).getColumnProperties().getName() + " from "
+					+ prostatePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("periprostaticFatInvasionCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList3.get(0).getColumnProperties().getName() + " from "
-					+ gleasonScore.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("primaryPatternCategoryAttribute"));
+			columnValue =(String) executeQuery("select " + attributesList3.get(0).getColumnProperties().getName() + " from "
+					+ gleasonScore.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("primaryPatternCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList3.get(1).getColumnProperties().getName() + " from "
-					+ gleasonScore.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("secondaryPatternCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList3.get(1).getColumnProperties().getName() + " from "
+					+ gleasonScore.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("secondaryPatternCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList4.get(0).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("radicalProstateNameCategoryAttribute"));
+			columnValue =(String) executeQuery("select " + attributesList4.get(0).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("radicalProstateNameCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList4.get(1).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("radicalProstateTypeCategoryAttribute"));
+			columnValue =(String) executeQuery("select " + attributesList4.get(1).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("radicalProstateTypeCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList5.get(0).getColumnProperties().getName() + " from "
-					+ melanomaMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("melanomaMarginNameCategoryAttribute"));
+			columnValue = (String) executeQuery("select " + attributesList5.get(0).getColumnProperties().getName() + " from "
+					+ melanomaMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("melanomaMarginNameCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList5.get(1).getColumnProperties().getName() + " from "
-					+ melanomaMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("melanomaMarginTypeCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList5.get(1).getColumnProperties().getName() + " from "
+					+ melanomaMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("melanomaMarginTypeCategoryAttribute"));
 
 			// Verify attribute columns in table for RadicalProstatectomyMargin entity do not contain any data.
 			// Fetch the radicalProstatectomyMargin's attributes' list.
 			List<AttributeInterface> attributesList6 = new ArrayList<AttributeInterface>(radicalProstatectomyMargin.getAttributeCollection());
 
-			resultSet = executeQuery("select " + attributesList6.get(0).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1) == null);
+			columnValue = (String)executeQuery("select " + attributesList6.get(0).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue == null);
 
-			resultSet = executeQuery("select " + attributesList6.get(1).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1) == null);
+			columnValue =(String) executeQuery("select " + attributesList6.get(1).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue == null);
 		}
 		catch (Exception e)
 		{
@@ -2044,45 +2019,38 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryManager.insertData(category, radicalProstateDataCategoryMap);
 
 			// Verify that correct data has been inserted into appropriate tables.
-			ResultSet resultSet = executeQuery("select " + attributesList1.get(0).getColumnProperties().getName() + " from "
-					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("tissueSlideCategoryAttribute"));
+			String columnValue = (String)executeQuery("select " + attributesList1.get(0).getColumnProperties().getName() + " from "
+					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("tissueSlideCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList1.get(1).getColumnProperties().getName() + " from "
-					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("tumourTissueSiteCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList1.get(1).getColumnProperties().getName() + " from "
+					+ baseSolidTissuePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("tumourTissueSiteCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList2.get(0).getColumnProperties().getName() + " from "
-					+ prostatePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("seminalVesicleInvasionCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList2.get(0).getColumnProperties().getName() + " from "
+					+ prostatePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("seminalVesicleInvasionCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList2.get(1).getColumnProperties().getName() + " from "
-					+ prostatePathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("periprostaticFatInvasionCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList2.get(1).getColumnProperties().getName() + " from "
+					+ prostatePathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("periprostaticFatInvasionCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList3.get(0).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("radicalProstateNameCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList3.get(0).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("radicalProstateNameCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList3.get(1).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("radicalProstateTypeCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList3.get(1).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyPathologyAnnotation.getTableProperties().getName(),STRING_TYPE,1);
+			
+			assertTrue(columnValue.equals("radicalProstateTypeCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList4.get(0).getColumnProperties().getName() + " from "
-					+ melanomaMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("melanomaMarginNameCategoryAttribute"));
+			columnValue = (String)executeQuery("select " + attributesList4.get(0).getColumnProperties().getName() + " from "
+					+ melanomaMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("melanomaMarginNameCategoryAttribute"));
 
-			resultSet = executeQuery("select " + attributesList4.get(1).getColumnProperties().getName() + " from "
-					+ melanomaMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1).equals("melanomaMarginTypeCategoryAttribute"));
+			columnValue =(String) executeQuery("select " + attributesList4.get(1).getColumnProperties().getName() + " from "
+					+ melanomaMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue.equals("melanomaMarginTypeCategoryAttribute"));
 
 			// Verify attribute columns in table for RadicalProstatectomyMargin entity do not contain any data.
 			// Also verify that no record has been entered in GleasonScore entity's table.
@@ -2090,28 +2058,26 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Fetch the gleasonScore's attributes' list.
 			List<AttributeInterface> attributesList5 = new ArrayList<AttributeInterface>(gleasonScore.getAttributeCollection());
 
-			resultSet = executeQuery("select " + attributesList5.get(0).getColumnProperties().getName() + " from "
-					+ gleasonScore.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.next() == false);
+			int rowCount =(Integer) executeQuery("select count(*) from "
+					+ gleasonScore.getTableProperties().getName(),INT_TYPE,1);
+			
+			assertEquals(rowCount,1);
 
-			resultSet = executeQuery("select " + attributesList5.get(1).getColumnProperties().getName() + " from "
-					+ gleasonScore.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.next() == false);
+			rowCount = (Integer)executeQuery("select count(*) from "
+					+ gleasonScore.getTableProperties().getName(),INT_TYPE,1);
+			
+			assertEquals(rowCount,1);
 
 			// Fetch the radicalProstatectomyMargin's attributes' list.
 			List<AttributeInterface> attributesList6 = new ArrayList<AttributeInterface>(radicalProstatectomyMargin.getAttributeCollection());
 
-			resultSet = executeQuery("select " + attributesList6.get(0).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1) == null);
+			columnValue = (String)executeQuery("select " + attributesList6.get(0).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue == null);
 
-			resultSet = executeQuery("select " + attributesList6.get(1).getColumnProperties().getName() + " from "
-					+ radicalProstatectomyMargin.getTableProperties().getName());
-			resultSet.next();
-			assertTrue(resultSet.getString(1) == null);
+			columnValue = (String)executeQuery("select " + attributesList6.get(1).getColumnProperties().getName() + " from "
+					+ radicalProstatectomyMargin.getTableProperties().getName(),STRING_TYPE,1);
+			assertTrue(columnValue == null);
 		}
 		catch (Exception e)
 		{

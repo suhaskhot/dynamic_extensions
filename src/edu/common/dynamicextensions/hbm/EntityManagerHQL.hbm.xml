@@ -229,5 +229,18 @@
 						where contColl.id= ?
 			)
    </query>
+   <query name="getEntityGroupId">
+   		select id from AbstractMetadata abstractMetadata where abstractMetadata.name = ?
+   </query>
+   <query name="getEntityId">
+   		select id from Entity entity where entity.entityGroup.id = ? and entity.name = ?
+   </query>
+   <query name="getAttributeId">
+   		select id from AbstractAttribute absAttr where absAttr.entity.id = ? and absAttr.name = ?
+   </query>
+   <query name="getAttributeTypeObject">
+   		select attr.attributeTypeInformationCollection from Attribute attr where attr.id = ?
+   </query>
+   
 
 </hibernate-mapping>

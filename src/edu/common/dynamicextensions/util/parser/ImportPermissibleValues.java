@@ -21,6 +21,8 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.HQLPlaceHolderObject;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
@@ -67,22 +69,19 @@ public class ImportPermissibleValues
 		{
 			while (categoryCSVFileParser.readNext())
 			{
+				EntityManagerInterface entityManager = EntityManager.getInstance(); 
 				//first line in the categopry file is Category_Definition
 				if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
 				{
 					continue;
 				}
 				//1:read the entity group
-				String entityGroupIdHQL = "select id from AbstractMetadata am where am.name = '" +  categoryCSVFileParser.getEntityGroupName() + "'";
-				List entityGroupIdList = DynamicExtensionsUtility.executeQuery(entityGroupIdHQL);
-				
-				CategoryValidator.checkForNullRefernce(entityGroupIdList.get(0), " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
+				Long entityGroupId = entityManager.getEntityGroupId(categoryCSVFileParser.getEntityGroupName());
+				CategoryValidator.checkForNullRefernce(entityGroupId, " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
 						+ " ENTITY GROUP WITH NAME " + categoryCSVFileParser.getEntityGroupName() + " DOES NOT");
-
-				Long entityGroupId = (Long)entityGroupIdList.get(0);
+				
 				categoryCSVFileParser.getCategoryValidator().setEntityGroupId(entityGroupId);
-
-				EntityInterface currentEntity = null;
+				
 				while (categoryCSVFileParser.readNext())
 				{
 					boolean overridePv = categoryCSVFileParser.isOverridePermissibleValues();
@@ -91,32 +90,20 @@ public class ImportPermissibleValues
 						break;
 					}
 					String entityName = categoryCSVFileParser.getEntityName();
-								
-					String entityHQL = "select id from Entity entity where entity.entityGroup.id = "+entityGroupId +" and entity.name = '" + entityName +"'";
-					List entityIdList = DynamicExtensionsUtility.executeQuery(entityHQL);
-										
-					CategoryValidator.checkForNullRefernce(entityIdList.get(0), " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
+					Long entityId = entityManager.getEntityId(entityName, entityGroupId);				
+					CategoryValidator.checkForNullRefernce(entityId, " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
 							+ " ENTITY WITH NAME " + entityName + " DOES NOT EXIST");
-
-					Long entityId = (Long)entityIdList.get(0);
 					
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
 					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser.getPermissibleValues();
 					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String, Collection<SemanticPropertyInterface>>();
+					Long attributeId = entityManager.getAttributeId(attributeName, entityId);
 					
-					String attributeHQL = "select id from AbstractAttribute absAttr where absAttr.entity.id = "+entityId +" and absAttr.name = '" + attributeName +"'";
-					List attrIdList = DynamicExtensionsUtility.executeQuery(attributeHQL);
-										
-					CategoryValidator.checkForNullRefernce(attrIdList.get(0), " ERROR AT LINE:"
+					CategoryValidator.checkForNullRefernce(attributeId, " ERROR AT LINE:"
 							+ categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
-
-					Long attributeId = (Long)attrIdList.get(0);
 										
-					String attributeTypeHQL = "select attr.attributeTypeInformationCollection from Attribute attr where attr.id = "+attributeId;
-					List attrTypeList = DynamicExtensionsUtility.executeQuery(attributeTypeHQL);
-					
-					AttributeTypeInformationInterface attributeTypeInformation = (AttributeTypeInformationInterface)attrTypeList.get(0);
+					AttributeTypeInformationInterface attributeTypeInformation = entityManager.getAttributeTypeInformation(attributeId);
 		
 					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.getDataElement();
 
@@ -157,7 +144,7 @@ public class ImportPermissibleValues
 						//set the first value in the list as the default value
 						attributeTypeInformation.setDefaultValue(list.get(0));
 					}
-					EntityManager.getInstance().updateAttributeTypeInfo(attributeTypeInformation);
+					entityManager.updateAttributeTypeInfo(attributeTypeInformation);
 				}				
 			}
 		}
@@ -176,7 +163,7 @@ public class ImportPermissibleValues
 		}
 
 	}
-
+	
 	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		try

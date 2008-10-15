@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
@@ -32,6 +31,7 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
@@ -181,7 +181,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
 
-			checkIfEntityPreExists(entityGroup, currentContainer, formDefinitionForm);
+			DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, currentContainer, formDefinitionForm.getFormName());
 
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			containerProcessor.populateContainer(currentContainer, formDefinitionForm, entityGroup);
@@ -214,20 +214,23 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if ((parentContainer != null) && (childContainer != null))
 		{
-			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility.getAssociationControl(parentContainer,
-					childContainer.getId().toString());
-			containmentAssociationControl.setCaption(childContainer.getCaption());
-
-			if (containmentAssociationControl != null)
+			if (childContainer.getId() != null)
 			{
-				AssociationInterface association = null;
-				AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
-						.getBaseAbstractAttribute();
-				if ((abstractAttributeInterface != null) && (abstractAttributeInterface instanceof AssociationInterface))
+				AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility.getAssociationControl(parentContainer,
+						childContainer.getId().toString());
+
+				if (containmentAssociationControl != null)
 				{
-					association = (AssociationInterface) abstractAttributeInterface;
-					ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-					association = applyFormDefinitionProcessor.associateEntity(association, parentContainer, childContainer, formDefinitionForm);
+					containmentAssociationControl.setCaption(childContainer.getCaption());
+					AssociationInterface association = null;
+					AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
+							.getBaseAbstractAttribute();
+					if ((abstractAttributeInterface != null) && (abstractAttributeInterface instanceof AssociationInterface))
+					{
+						association = (AssociationInterface) abstractAttributeInterface;
+						ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
+						association = applyFormDefinitionProcessor.associateEntity(association, parentContainer, childContainer, formDefinitionForm);
+					}
 				}
 			}
 		}
@@ -249,7 +252,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(formDefinitionForm, mainFormContainer, entityGroup);
 
-		checkIfEntityPreExists(entityGroup, subFormContainer, formDefinitionForm);
+		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, subFormContainer, formDefinitionForm.getFormName(), mainFormContainer);
 
 		AssociationInterface association = applyFormDefinitionProcessor.createAssociation();
 		association = applyFormDefinitionProcessor.associateEntity(association, mainFormContainer, subFormContainer, formDefinitionForm);
@@ -309,7 +312,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
 
-		checkIfEntityPreExists(entityGroup, container, formDefinitionForm);
+		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, container, formDefinitionForm.getFormName());
 
 		container = applyFormDefinitionProcessor.addEntityToContainer(container, formDefinitionForm, entityGroup);
 
@@ -317,42 +320,6 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		if (CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE) == null)
 		{
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
-		}
-	}
-
-	/**
-	 * This method checks if an entity with the same name exists in the entity group.
-	 * @param entityGroup
-	 * @param container
-	 * @param formDefinitionForm
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	private void checkIfEntityPreExists(EntityGroupInterface entityGroup, ContainerInterface container, FormDefinitionForm formDefinitionForm)
-			throws DynamicExtensionsApplicationException
-	{
-		if (entityGroup == null)
-		{
-			throw new DynamicExtensionsApplicationException("Null entity group!", null, "Entity group is null!");
-		}
-
-		if (container == null || container.getId() == null)
-		{
-			if (entityGroup.getEntityByName(formDefinitionForm.getFormName()) != null)
-			{
-				throw new DynamicExtensionsApplicationException("Duplicate form name within same entity group!", null,
-						EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
-			}
-		}
-		else if (container.getId() != null)
-		{
-			if (!container.getCaption().equals(formDefinitionForm.getFormName()))
-			{
-				if (entityGroup.getEntityByName(formDefinitionForm.getFormName()) != null)
-				{
-					throw new DynamicExtensionsApplicationException("Duplicate form name within same entity group!", null,
-							EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
-				}
-			}
 		}
 	}
 
@@ -409,4 +376,5 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		}
 		return calllbackURL;
 	}
+
 }

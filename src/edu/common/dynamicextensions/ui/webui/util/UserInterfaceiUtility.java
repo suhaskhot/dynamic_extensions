@@ -330,18 +330,22 @@ public class UserInterfaceiUtility
 			if (control instanceof AbstractContainmentControlInterface)
 			{
 				AbstractContainmentControl abstractContainmentControl = (AbstractContainmentControl) control;
-				String containmentAssociationControlId = abstractContainmentControl.getContainer().getId().toString();
-				if (containmentAssociationControlId.equals(childContainerId))
+				Long containerId = abstractContainmentControl.getContainer().getId();
+				if (containerId != null)
 				{
-					return abstractContainmentControl;
-				}
-				else
-				{
-					abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(abstractContainmentControl.getContainer(),
-							childContainerId);
-					if (abstractContainmentControl != null)
+					String containmentAssociationControlId = containerId.toString();
+					if (containmentAssociationControlId.equals(childContainerId))
 					{
 						return abstractContainmentControl;
+					}
+					else
+					{
+						abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(abstractContainmentControl.getContainer(),
+								childContainerId);
+						if (abstractContainmentControl != null)
+						{
+							return abstractContainmentControl;
+						}
 					}
 				}
 			}

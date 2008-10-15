@@ -169,7 +169,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 
 			postProcess(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
-		
+
 			hibernateDAO.commit();
 			//			Update the dynamic extension cache for all containers within entitygroup
 			EntityGroupInterface entityGroupInterface = entity.getEntityGroup();
@@ -775,7 +775,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			AbstractAttribute attribute = (AbstractAttribute) uiColumnSetIter.next();
 			value = dataValue.get(attribute);
 
-			if (value == null)
+			if (value == null || value.toString().length() == 0)
 			{
 				continue;
 			}
@@ -1561,7 +1561,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 				{
-					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE)|| Variables.databaseName.equals(Constants.DB2_DATABASE))
+					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE) || Variables.databaseName.equals(Constants.DB2_DATABASE))
 					{
 						Blob blob = (Blob) valueObj;
 						value = new ObjectInputStream(blob.getBinaryStream()).readObject();
@@ -3192,6 +3192,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return controlInterface;
 	}
+
 	/**
 	 * This method updates attribute type info object
 	 * @param attrTypeInfo
@@ -3199,23 +3200,24 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{		
+	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
 		HibernateDAO hibernateDAO = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		try
 		{
 			hibernateDAO.openSession(null);
 
 			hibernateDAO.update(attrTypeInfo, null, false, false, false);
-			
+
 			hibernateDAO.commit();
 		}
 		catch (DAOException e)
-		{	
+		{
 			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 		}
 		catch (UserNotAuthorizedException e)
-		{		
+		{
 			e.printStackTrace();
 			throw new DynamicExtensionsSystemException("DAOException occured while opening a session to save the container.", e);
 		}
@@ -3232,6 +3234,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return attrTypeInfo;
 	}
+
 	/**
 	 * @param entityGroupName
 	 * @return
@@ -3249,6 +3252,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return entityGroupIdentifier;
 	}
+
 	/**
 	 * @param entityName
 	 * @param entityGroupId
@@ -3268,7 +3272,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return entityId;
 	}
-	
+
 	/**
 	 * @param attributeName
 	 * @param entityId
@@ -3298,7 +3302,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = null;
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", attributeId));		
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", attributeId));
 		Collection attributeTypeInformationCollection = executeHQL("getAttributeTypeObject", substitutionParameterMap);
 		if (attributeTypeInformationCollection != null && attributeTypeInformationCollection.size() > 0)
 		{

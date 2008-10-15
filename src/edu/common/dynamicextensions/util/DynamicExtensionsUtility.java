@@ -96,7 +96,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method fetches the Control instance from the Database given the corresponding Control Identifier.
-	 * @param controlIdentifier The Idetifier of the Control.
+	 * @param controlIdentifier The identifier of the Control.
 	 * @return the ControlInterface
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
@@ -173,7 +173,7 @@ public class DynamicExtensionsUtility
 		}
 		try
 		{
-			//			After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
+			// After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
 			List objectList = bizLogic.retrieve(objectName, Constants.ID, new Long(identifier));
 
 			if (objectList == null || objectList.isEmpty())
@@ -1382,7 +1382,6 @@ public class DynamicExtensionsUtility
 	public static void getUnsavedCategoryEntityList(CategoryEntityInterface categoryEntity, HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-
 		if (categoryEntity != null)
 		{
 			if (objCategoryMap.containsKey(categoryEntity.getName()))
@@ -1427,7 +1426,6 @@ public class DynamicExtensionsUtility
 	public static void getSavedCategoryEntityList(CategoryEntityInterface categoryEntity, HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-
 		if (categoryEntity != null)
 		{
 			if (objCategoryMap.containsKey(categoryEntity.getName()))
@@ -1659,6 +1657,134 @@ public class DynamicExtensionsUtility
 				}
 			}
 		}
+	}
+	
+	/**
+	 * This method checks if an entity with the same name exists in the entity group.
+	 * @param entityGroup
+	 * @param container
+	 * @param formDefinitionForm
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup, ContainerInterface container, String formName, ContainerInterface... mainFormContainer)
+			throws DynamicExtensionsApplicationException
+	{
+		if (entityGroup == null)
+		{
+			throw new DynamicExtensionsApplicationException("Null entity group!", null, "Entity group is null!");
+		}
+
+		if (container == null || container.getId() == null)
+		{
+			if (container == null)
+			{
+				checkIfEntityPreExists(entityGroup, formName);
+			}
+			else if (container != null)
+			{
+				if (mainFormContainer != null && mainFormContainer.length > 0)
+				{
+					ContainerInterface mainContainer = mainFormContainer[0];
+					checkIfEntityPreExists(entityGroup, container.getCaption(), mainContainer);
+				}
+				else
+				{
+					checkIfEntityPreExists(entityGroup, container.getCaption(), formName);
+				}
+			}
+		}
+		else if (container.getId() != null)
+		{
+			checkIfEntityPreExists(entityGroup, container.getCaption(), formName);
+		}
+	}
+	
+	/**
+	 * If a sub-form is selected using the XML tree, and its name is changed, 
+	 * and if an entity already exists with the same name, then throw an exception.
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form 
+	 * by the name 'FA' is added, and a sub form by the name 'FB' is added to 'FA',
+	 * and previous is clicked, 'FB' is selected from XML tree and name of 'FB' 
+	 * is changed to 'FA', then this block is executed. 
+	 * also if a new entity group by the name 'TestGroup' is added and a new form by the
+	 * name 'FA' is added and a sub form 'FB' is added to 'FA' and 'FA' is saved. Then in
+	 * edit mode, 'FB' is opened again and its name is changed to 'FA', then this block 
+	 * is executed. Call delegation from editSubForm method of ApplyFormDefinitionAction or 
+	 * call delegation from addSubForm method of ApplyFormDefinitionAction.
+	 * @param entityGroup
+	 * @param caption
+	 * @param formName
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, String formName) throws DynamicExtensionsApplicationException
+	{
+		if (caption != null && !caption.equals(formName))
+		{
+			if (entityGroup.getEntityByName(formName) != null)
+			{
+				reportDuplicateEntityName();
+			}
+		}
+	}
+	
+	/**
+	 * If a new sub-form is being added, and if an entity with the same name 
+	 * already exists in the entity group, then throw an exception.
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form 
+	 * by the name 'FA' is added, and a sub-form by the same name 'FA' is added to
+	 * main form 'FA', then this block is executed. Call delegation from addSubForm
+	 * method of ApplyFormDefinitionAction.
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form 
+	 * by the name 'FA' is added, and a sub form by the name 'FB' is added to 
+	 * main form 'FA', then this block is executed. Call delegation from addSubForm
+	 * method of ApplyFormDefinitionAction.
+	 * @param entityGroup
+	 * @param caption
+	 * @param mainContainer
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, ContainerInterface mainContainer) throws DynamicExtensionsApplicationException
+	{
+		if (mainContainer != null && mainContainer.getCaption().equals(caption))
+		{
+			reportDuplicateEntityName();
+		}
+		
+		EntityInterface existingEntity = entityGroup.getEntityByName(caption);
+		if (existingEntity != null)
+		{
+			reportDuplicateEntityName();
+		}
+	}
+
+	/**
+	 * If a entity whose parent is a persistent object is selected using the XML tree
+	 * and its name is not changed, then check if the entity already exists 
+	 * and if it exists, then throw an exception.
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form by the
+	 * name 'FA' is added, or if 'FA' is previously saved and a sub form 'FB' is added
+	 * to 'FA', then this block is executed. Call delegation from applyFormDefinition 
+	 * method of ApplyFormDefinitionAction
+	 * @param entityGroup
+	 * @param formName
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String formName) throws DynamicExtensionsApplicationException
+	{
+		EntityInterface entity = entityGroup.getEntityByName(formName);
+		if (entity != null && entity.getId() != null)
+		{
+			reportDuplicateEntityName();
+		}
+	}
+
+	/**
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private static void reportDuplicateEntityName() throws DynamicExtensionsApplicationException
+	{
+		throw new DynamicExtensionsApplicationException("Duplicate form name within same entity group!", null,
+				EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
 	}
 
 	/**

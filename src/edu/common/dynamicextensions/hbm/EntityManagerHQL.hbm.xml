@@ -95,7 +95,12 @@
 			   from EntityGroup entityGroup
 			   		where entityGroup.isSystemGenerated = false
 	</query>
-
+	<query name="getEntityGroupBeanById">
+		select entityGroup.name,entityGroup.id
+			   from EntityGroup entityGroup
+			   		where entityGroup.isSystemGenerated = false 
+			   		AND entityGroup.id = ?
+	</query>
 	<query name="checkDuplicateGroupName">
 		select count(*)
 			   from EntityGroup entityGroup where entityGroup.name = ?

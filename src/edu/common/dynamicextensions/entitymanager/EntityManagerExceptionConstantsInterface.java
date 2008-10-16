@@ -64,6 +64,8 @@ public interface EntityManagerExceptionConstantsInterface
      
 //   In case when form name is duplicate in entitygroup
      String DYEXTN_A_019 = "DYEXTN_A_019";
+//   In case a sub form added forms a circular heirarchy
+     String DYEXTN_A_020 = "DYEXTN_A_020";
 
      
 }

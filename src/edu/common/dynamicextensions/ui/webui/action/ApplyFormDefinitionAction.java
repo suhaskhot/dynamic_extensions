@@ -2,6 +2,9 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ApplyFormDefinitionProcessor;
@@ -256,6 +260,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 		AssociationInterface association = applyFormDefinitionProcessor.createAssociation();
 		association = applyFormDefinitionProcessor.associateEntity(association, mainFormContainer, subFormContainer, formDefinitionForm);
+		if(association.getTargetEntity() != null && association.getTargetEntity().getId()!=null)
+		{
+			List<AssociationInterface> traversedAssocioations = new ArrayList<AssociationInterface>();
+			traversedAssocioations.add(association);
+			isValidSubForm(association,traversedAssocioations);
+		}
 		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer, subFormContainer, association);
 
 		if (isNewEnityCreated(formDefinitionForm))
@@ -267,6 +277,33 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				updateCacheReferences(request, subFormContainer);
 			}
 		}
+	}
+
+	private void isValidSubForm(AssociationInterface association,List<AssociationInterface> traversedAssocioations) throws DynamicExtensionsApplicationException
+	{
+	  if(traversedAssocioations.size()!=0)
+	  {
+		Collection<AssociationInterface> allAssociations = traversedAssocioations.get(0).getTargetEntity().getAssociationCollection();
+		Iterator<AssociationInterface> iterator = allAssociations.iterator();
+		while(iterator.hasNext())
+		{
+			AssociationInterface tempassociation = iterator.next();
+			traversedAssocioations.add(tempassociation);
+			if(tempassociation.getTargetEntity().getName().equals(association.getEntity().getName()))
+			{
+				throw new DynamicExtensionsApplicationException("Cannot add Sub Form as it created Circular heirachy.",null,EntityManagerExceptionConstantsInterface.DYEXTN_A_020);
+			}
+		}
+		if(traversedAssocioations.size()!=0)
+		{
+			traversedAssocioations.remove(0);
+		}
+		isValidSubForm(association, traversedAssocioations);
+	  }
+	  else
+	  {
+		return;
+	  }
 	}
 
 	/**

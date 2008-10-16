@@ -2619,6 +2619,27 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return attributeInterface;
 	}
 
+	public Collection<NameValueBean> getEntityGroupBeanById(Long entityGroupId) throws DynamicExtensionsSystemException
+	{
+		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",entityGroupId));
+		Collection groupBeansCollection = executeHQL("getEntityGroupBeanById", substitutionParameterMap);
+		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		Object[] objectArray;
+
+		while (groupBeansIterator.hasNext())
+		{
+			objectArray = (Object[]) groupBeansIterator.next();
+			NameValueBean entityGroupNameValue = new NameValueBean();
+			entityGroupNameValue.setName(objectArray[0]);
+			entityGroupNameValue.setValue(objectArray[1]);
+			entityGroupBeansCollection.add(entityGroupNameValue);
+		}
+
+		return entityGroupBeansCollection;
+	}
+	
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Beans Collection
@@ -2803,11 +2824,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Collection associationTreeObjectCollection = new HashSet();
-
-		Collection groupBeansCollection = getAllEntityGroupBeans();
+	   Collection groupBeansCollection = getEntityGroupBeanById(entityGroupId);
+		//Collection groupBeansCollection = getAllEntityGroupBeans();
 		Iterator groupBeansIterator = groupBeansCollection.iterator();
 		AssociationTreeObject associationTreeObject;
 

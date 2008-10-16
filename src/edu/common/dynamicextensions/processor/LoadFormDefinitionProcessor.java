@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -101,7 +102,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	public void initializeSubFormAttributes(FormDefinitionForm formDefinitionForm, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities());
+		formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities(entityGroup));
 
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		formDefinitionForm.setFormList(containerProcessor.getFormsList(entityGroup.getId()));
@@ -114,11 +115,15 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private String getXMLForDefinedEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private String getXMLForDefinedEntities(EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		StringBuffer definedEntitiesXML = new StringBuffer();
 		EntityManagerInterface entityManager = EntityManager.getInstance();
-		Collection<AssociationTreeObject> associationsCollection = entityManager.getAssociationTree();
+		Collection<AssociationTreeObject> associationsCollection =null;
+		if(entityGroup!=null && entityGroup.getId()!=null)
+		{
+			associationsCollection=entityManager.getAssociationTree(entityGroup.getId());
+		}
 		definedEntitiesXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
 		definedEntitiesXML.append("<tree id='0'>");
 		//Special handling for grp : assign id as "Group_ number
@@ -234,7 +239,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if (formDefinitionForm.getDefinedEntitiesTreeXML() == null)
 		{
-			formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities());
+			formDefinitionForm.setDefinedEntitiesTreeXML(getXMLForDefinedEntities(entityGroup));
 		}
 	}
 

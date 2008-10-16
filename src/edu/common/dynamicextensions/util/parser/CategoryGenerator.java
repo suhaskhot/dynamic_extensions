@@ -955,10 +955,18 @@ public class CategoryGenerator
 	 * @param control
 	 * @throws ParseException
 	 */
-	private void setDefaultValue(ControlInterface control) throws ParseException
+	private void setDefaultValue(ControlInterface control) throws ParseException, DynamicExtensionsSystemException
 	{
 		if (categoryFileParser.getDefaultValue() == null)
 		{
+			//Validation-If category attribute is of type Read-only its default value must be specified 
+			if (control.getIsReadOnly() != null && control.getIsReadOnly())
+			{
+				String attributeName = ((CategoryAttributeInterface) control.getAttibuteMetadataInterface()).getAbstractAttribute().getName();
+				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber() + " "
+						+ ApplicationProperties.getValue("mandatoryDValueForRO") + attributeName);
+			}
 			return;
 		}
 

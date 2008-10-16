@@ -9,9 +9,6 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.db2.jcc.b.me;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -50,6 +46,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
@@ -159,10 +156,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			floatAtribute.setName("NewPrice");
 			editedEntity.addAbstractAttribute(floatAtribute1);
 
-			
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from " + editedEntity.getTableProperties().getName()));
 
-			int rowCount=(Integer)executeQuery("select count(*) from " + editedEntity.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + editedEntity.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(0, rowCount);
 
 			//Step 5
@@ -170,14 +166,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			dataValue.put(floatAtribute1, "21");
 			EntityManagerInterface.insertData(newEditedEntity, dataValue);
 			//Step 6
-			
+
 			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from " + editedEntity.getTableProperties().getName()));
 
-			rowCount= (Integer) executeQuery("select count(*) from " + editedEntity.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from " + editedEntity.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			EntityManagerInterface.insertData(newEditedEntity, dataValue);
-			rowCount =(Integer) executeQuery("select count(*) from " + editedEntity.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from " + editedEntity.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(2, rowCount);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -253,7 +249,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 4
 			EntityInterface editedEntity = EntityManagerInterface.persistEntity(savedEntity);
 			//Step 6
-			
+
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from " + editedEntity.getTableProperties().getName()));
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -391,7 +387,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 2
 			entity = (Entity) EntityManagerInterface.persistEntity(entity);
 
-			
 			//Step 3
 			if (Variables.databaseName.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
 			{
@@ -413,16 +408,15 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//entity = (Entity) EntityManager.getInstance().persistEntity(entity);
 			entity = (Entity) EntityManagerInterface.persistEntity(entity);
 
-			
 			//Step 6
 			if (Variables.databaseName.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
 			{
-				
-				assertEquals(getColumntype("select * from " + entity.getTableProperties().getName(),3), Types.LONGVARCHAR);
+
+				assertEquals(getColumntype("select * from " + entity.getTableProperties().getName(), 3), Types.LONGVARCHAR);
 			}
 			else
 			{
-				assertEquals(getColumntype("select * from " + entity.getTableProperties().getName(),3), Types.VARCHAR);
+				assertEquals(getColumntype("select * from " + entity.getTableProperties().getName(), 3), Types.VARCHAR);
 			}
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -799,9 +793,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			}
 
 			EntityManagerInterface.insertData(newEntity, dataValue);
-			int column=(Integer) executeQuery("select count(*) from " + newEntity.getTableProperties().getName(),INT_TYPE,1);
-
-			
+			int column = (Integer) executeQuery("select count(*) from " + newEntity.getTableProperties().getName(), INT_TYPE, 1);
 
 			assertEquals(1, column);
 
@@ -974,6 +966,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Logger.out.debug(e.getStackTrace());
 		}
 	}
+
 	/**
 	 * This method test for updating record for an entity.
 	 */
@@ -1011,7 +1004,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			association.setName("UserAddress");
 			association.setSourceRole(getRole(AssociationType.CONTAINTMENT, "User", Cardinality.ZERO, Cardinality.ONE));
 			association.setTargetRole(getRole(AssociationType.CONTAINTMENT, "address", Cardinality.ZERO, Cardinality.MANY));
-
 
 			// Step 3
 			AssociationInterface associationUserGroup = factory.createAssociation();
@@ -1191,12 +1183,12 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 		try
 		{
-			int rowCount =(Integer) executeQuery("select count(*) from dyextn_file_extensions",INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from dyextn_file_extensions", INT_TYPE, 1);
 			System.out.println(rowCount);
 
 			// save the entity
 			user = EntityManagerInterface.persistEntity(user);
-			
+
 			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()), noOfDefaultColumns + 1);
 
 			//Edit attribute: change attribute type to file attrbiute type.
@@ -1225,7 +1217,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			DBUtil.closeConnection();
 			//DBUtil.Connection();
 
-			
 			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()), noOfDefaultColumnsForfile);
 
 			//executeQuery("select * from dyextn_file_extensions");
@@ -1274,7 +1265,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 		try
 		{
-			int beforeCount=(Integer)executeQuery("select count(*) from dyextn_file_extensions",INT_TYPE,1);
+			int beforeCount = (Integer) executeQuery("select count(*) from dyextn_file_extensions", INT_TYPE, 1);
 			user = EntityManagerInterface.persistEntity(user);
 			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()), noOfDefaultColumnsForfile);
 		}
@@ -1680,7 +1671,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 			FileAttributeRecordValue attributeRecordValue = EntityManagerInterface.getFileAttributeRecordValueByRecordId(resume, recordId);
 
-			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 		}
 		catch (Exception e)
@@ -1747,7 +1738,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 		}
 		catch (Exception e)
@@ -2191,7 +2182,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
-
 	/**
 	 *
 	 *
@@ -2368,7 +2358,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			EntityManagerInterface.insertData(savedEntity, dataValue);
 
 			//Step 4.
-			String status = (String)executeQuery("select * from " + savedEntity.getTableProperties().getName(),STRING_TYPE,2);
+			String status = (String) executeQuery("select * from " + savedEntity.getTableProperties().getName(), STRING_TYPE, 2);
 
 			assertEquals(null, status);
 		}
@@ -2424,7 +2414,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 2.
 			EntityInterface savedEntity = EntityManagerInterface.persistEntity(user);
-			
+
 			assertEquals(getColumnCount("select * from " + savedEntity.getTableProperties().getName()), noOfDefaultColumns + 1);
 
 			//Step 3.
@@ -2434,9 +2424,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			//Step 4.
 			savedEntity = EntityManagerInterface.persistEntity(user);
-			
+
 			//Step 5.
-			
+
 			assertEquals(getColumnCount("select * from " + savedEntity.getTableProperties().getName()), noOfDefaultColumnsForfile + 1);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -2897,22 +2887,24 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			EntityManagerInterface.insertData(entity, dataValue);
 
 			//step 5
-			int rowCount= (Integer)executeQuery("select count(*) from " + entity.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + entity.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
-			String activityStatus= (String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from " + entity.getTableProperties().getName(),STRING_TYPE,1);
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE,activityStatus);
+			String activityStatus = (String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from "
+					+ entity.getTableProperties().getName(), STRING_TYPE, 1);
+			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, activityStatus);
 
 			//step 6
 			boolean isRecordDeleted = EntityManagerInterface.deleteRecord(entity, new Long(1));
 
 			//step 7
 			assertTrue(isRecordDeleted);
-			activityStatus =(String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from " + entity.getTableProperties().getName(),STRING_TYPE,1);
+			activityStatus = (String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from " + entity.getTableProperties().getName(),
+					STRING_TYPE, 1);
 			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, activityStatus);
 
-			rowCount = (Integer) executeQuery("select count(*) from " + entity.getTableProperties().getName(),INT_TYPE,1);
-			
+			rowCount = (Integer) executeQuery("select count(*) from " + entity.getTableProperties().getName(), INT_TYPE, 1);
+
 			assertEquals(1, rowCount);
 		}
 		catch (Exception e)
@@ -3504,7 +3496,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			int rowCount = (Integer)executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 		}
 		catch (Throwable e)
@@ -3553,7 +3545,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			int rowCount = (Integer)executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			dataValue = EntityManagerInterface.getRecordById(user, recordId);
@@ -3611,7 +3603,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			int rowCount = (Integer)executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			List userAttribute = new ArrayList();
@@ -3674,7 +3666,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			int rowCount = (Integer)executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			dataValue = EntityManagerInterface.getRecordById(user, recordId);
@@ -3818,7 +3810,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			Long recordId = EntityManagerInterface.insertData(user, dataValue);
 
-			int rowCOunt = (Integer)executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			int rowCOunt = (Integer) executeQuery("select count(*) from " + user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCOunt);
 		}
 		catch (Throwable e)
@@ -4060,4 +4052,137 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
+	/**
+	 * Test duplicate form name validations.
+	 */
+	public void testDuplicateFormName()
+	{
+		EntityInterface mainForm = null;
+		EntityInterface subForm = null;
+		ContainerInterface mainFormContainer = null;
+		ContainerInterface subFormContainer = null;
+		AssociationInterface association = null;
+
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("DuplicateFormsValidations");
+
+		// Create an entity.
+		mainForm = (Entity) factory.createEntity();
+		mainForm.setName("mainForm");
+
+		entityGroup.addEntity(mainForm);
+		mainForm.setEntityGroup(entityGroup);
+
+		mainFormContainer = factory.createContainer();
+		mainFormContainer.setCaption("mainForm");
+
+		mainFormContainer.setAbstractEntity(mainForm);
+		mainForm.getContainerCollection().add(mainFormContainer);
+
+		subForm = (Entity) factory.createEntity();
+		subForm.setName("mainForm");
+
+		subFormContainer = factory.createContainer();
+		subFormContainer.setCaption("mainForm");
+
+		subFormContainer.setAbstractEntity(subForm);
+		subForm.getContainerCollection().add(subFormContainer);
+
+		try
+		{
+			try
+			{
+				DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, subFormContainer, subFormContainer.getCaption(), mainFormContainer);
+
+				// Association should not get created as sub form's name is same as that of main form.
+				association = factory.createAssociation();
+				association.setTargetEntity(subForm);
+				association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+				association.setName("mainForm-->subForm association");
+				association.setSourceRole(getRole(AssociationType.CONTAINTMENT, mainForm.getName(), Cardinality.ONE, Cardinality.ONE));
+				association.setTargetRole(getRole(AssociationType.CONTAINTMENT, subForm.getName(), Cardinality.ONE, Cardinality.MANY));
+				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility.getConstraintProperties(association);
+				association.setConstraintProperties(constraintProperties);
+
+				mainForm.addAssociation(association);
+
+				entityManager.persistEntity(mainForm);
+			}
+			catch (DynamicExtensionsApplicationException e)
+			{
+				assertEquals(e.getMessage(), "Duplicate form name within same entity group!");
+				assertEquals(e.getErrorCode(), EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
+				assertEquals(mainForm.getId(), null);
+				assertEquals(association, null);
+			}
+
+			try
+			{
+				entityManager.persistEntity(mainForm);
+
+				DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, subFormContainer, subFormContainer.getCaption());
+
+				// Entity group here must not contain sub form as its name is same as that of main form.
+				entityGroup.addEntity(subForm);
+				subForm.setEntityGroup(entityGroup);
+			}
+			catch (DynamicExtensionsApplicationException e)
+			{
+				assertEquals(e.getMessage(), "Duplicate form name within same entity group!");
+				assertEquals(e.getErrorCode(), EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
+				assertNotNull(mainForm.getId());
+				assertEquals(mainForm.getAssociationCollection().size(), 0);
+				assertNotNull(entityGroup.getEntityByName(subForm.getName()));
+			}
+
+			try
+			{
+				subForm.setName("subForm");
+				subFormContainer.setCaption("subForm");
+
+				DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, subFormContainer, subFormContainer.getCaption());
+
+				// Since sub form name is different from that of main form now,
+				//  entity group must contain this sub form.
+				entityGroup.addEntity(subForm);
+				subForm.setEntityGroup(entityGroup);
+
+				// Likewise, association should get created between main form and sub form.
+				association = factory.createAssociation();
+				association.setTargetEntity(subForm);
+				association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+				association.setName("mainForm-->subForm association");
+				association.setSourceRole(getRole(AssociationType.CONTAINTMENT, mainForm.getName(), Cardinality.ONE, Cardinality.ONE));
+				association.setTargetRole(getRole(AssociationType.CONTAINTMENT, subForm.getName(), Cardinality.ONE, Cardinality.MANY));
+				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility.getConstraintProperties(association);
+				association.setConstraintProperties(constraintProperties);
+
+				mainForm.addAssociation(association);
+
+				entityManager.persistEntity(mainForm);
+
+				// sub form should now be a persistent object, and the main form's association
+				// collection must now contain an association whose target entity is sub form.
+				assertNotNull(mainForm.getId());
+				assertNotNull(subForm.getId());
+				assertNotNull(association);
+				assertNotNull(association.getId());
+				assertNotNull(entityGroup.getEntityByName(subForm.getName()));
+				assertNotSame(mainForm.getAssociationCollection().size(), 0);
+			}
+			catch (DynamicExtensionsApplicationException e)
+			{
+				e.printStackTrace();
+				fail();
+			}
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 }

@@ -2137,7 +2137,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 *
 	 *
 	 */
-	public void testCreateEntityForRollbackQuery()
+	/*public void testCreateEntityForRollbackQuery()
 	{
 		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
 		Entity entity = null;
@@ -2180,13 +2180,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 				e1.printStackTrace();
 			}
 		}
-	}
+	}*/
 
 	/**
 	 *
 	 *
 	 */
-	public void testCreateEntityForQueryException()
+	/*public void testCreateEntityForQueryException()
 	{
 		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
 
@@ -2210,7 +2210,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		{
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 *

@@ -247,5 +247,12 @@
    		select attr.attributeTypeInformationCollection from Attribute attr where attr.id = ?
    </query>
    
+   	<query name="getContainerIdByName">
+		select container.id
+		from edu.common.dynamicextensions.domain.userinterface.Container container
+		where container.caption=?
+	
+	</query>
+   
 
 </hibernate-mapping>

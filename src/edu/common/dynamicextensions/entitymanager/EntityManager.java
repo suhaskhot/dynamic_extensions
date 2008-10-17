@@ -2623,7 +2623,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",entityGroupId));
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupId));
 		Collection groupBeansCollection = executeHQL("getEntityGroupBeanById", substitutionParameterMap);
 		Iterator groupBeansIterator = groupBeansCollection.iterator();
 		Object[] objectArray;
@@ -2639,7 +2639,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return entityGroupBeansCollection;
 	}
-	
+
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Beans Collection
@@ -2824,10 +2824,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		Collection associationTreeObjectCollection = new HashSet();
-	   Collection groupBeansCollection = getEntityGroupBeanById(entityGroupId);
+		Collection groupBeansCollection = getEntityGroupBeanById(entityGroupId);
 		//Collection groupBeansCollection = getAllEntityGroupBeans();
 		Iterator groupBeansIterator = groupBeansCollection.iterator();
 		AssociationTreeObject associationTreeObject;
@@ -3330,6 +3331,26 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			attributeTypeInformation = (AttributeTypeInformationInterface) attributeTypeInformationCollection.iterator().next();
 		}
 		return attributeTypeInformation;
+	}
+
+	/**
+	 * @param containerCaption
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getContainerIdByCaption(String containerCaption) throws DynamicExtensionsSystemException
+	{
+		Long containerId = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", containerCaption));
+		Collection<Long> containerIdCollection = executeHQL("getContainerIdByName", substitutionParameterMap);
+		if (containerIdCollection != null && containerIdCollection.size() > 0)
+		{
+			containerId = (Long) containerIdCollection.iterator().next();
+		}
+
+		return containerId;
+
 	}
 
 }

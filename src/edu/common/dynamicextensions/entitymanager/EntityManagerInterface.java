@@ -401,7 +401,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * @param attribute
@@ -565,6 +566,7 @@ public interface EntityManagerInterface
 	 */
 	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
 			Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+
 	/**
 	 * This method updates attribute type info object
 	 * @param attrTypeInfo
@@ -572,7 +574,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
 	/**
 	 * This method retrieves entity group id given the entity group name by executing hql query
 	 * @param entityGroupName
@@ -580,6 +584,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getEntityGroupId(String entityGroupName) throws DynamicExtensionsSystemException;
+
 	/**
 	 * This method retrieves the entity id for the given entity group and the given entity name
 	 * @param entityName
@@ -588,6 +593,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getEntityId(String entityName, Long entityGroupId) throws DynamicExtensionsSystemException;
+
 	/**
 	 * This method retrieves the attribute id for the entity and the given attribute name.
 	 * @param attributeName
@@ -596,6 +602,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getAttributeId(String attributeName, Long entityId) throws DynamicExtensionsSystemException;
+
 	/**
 	 * This method retrives the AttributeTypeInformation object given the attribute id.
 	 * @param attributeId
@@ -603,4 +610,11 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public AttributeTypeInformationInterface getAttributeTypeInformation(Long attributeId) throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param containerCaption
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getContainerIdByCaption(String containerCaption) throws DynamicExtensionsSystemException;
 }

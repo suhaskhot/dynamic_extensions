@@ -429,41 +429,20 @@
 
     </target>
 
-	<target name="db_initialized_mysql">
-	    <sql
-	    	driver="org.gjt.mm.mysql.Driver"
-			url="jdbc:mysql://${database.host}:${database.port}/${database.name}"
-			userid="${database.username}" password="${database.password}"  onerror="continue">
-			<classpath>
-	        	<fileset dir="${lib.dir}">
-	            	<include name="*.jar"/>
-				</fileset>
-			</classpath>
-	    	DROP DATABASE ${hibernate.connection.username}
-	    	CREATE DATABASE
-		</sql>
-	</target>
-
-	<target name="db_initialized_oracle" >
-		<sql
-			driver="${hibernate.connection.driver_class}"
-			url="${hibernate.connection.url}"
-			userid="${database.username}" password="${database.password}" onerror="continue"
-	    	rdbms="oracle">
-			<classpath>
-	        	<fileset dir="${lib.dir}">
-	            	<include name="*.jar"/>
-	             </fileset>
-			</classpath>
-			DROP USER ${hibernate.connection.username} CASCADE;
-			CREATE USER ${hibernate.connection.username} PROFILE "DEFAULT" IDENTIFIED BY ${hibernate.connection.password} DEFAULT TABLESPACE "${database.tablespace}" TEMPORARY TABLESPACE "${database.temptablespace}" QUOTA UNLIMITED ON "${database.tablespace}";
-			GRANT CONNECT, RESOURCE TO ${hibernate.connection.username};
-			GRANT DBA TO ${hibernate.connection.username};
-			ALTER USER ${hibernate.connection.username} DEFAULT ROLE ALL;
-		</sql>
-		<antcall target="generate_schema"></antcall>
-	</target>
-
+	<target name="db_initialized" depends="compile">
+		    <java classname="edu.common.dynamicextensions.util.DatabaseCleaner" fork="true">
+				<arg value="${hibernate.database.type}"/>
+				<arg value="${hibernate.connection.url}"/>
+				<arg value="${hibernate.connection.username}"/>
+				<arg value="${hibernate.connection.password}"/>
+				<classpath>
+					<pathelement location="${target.dir}"/>
+					<fileset dir="${lib.dir}">
+						<include name="*.jar"/>
+					</fileset>
+				</classpath>
+			</java>
+		</target>
 
 
 	<!-- ==================================================================================

@@ -143,9 +143,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					definedEntitiesXML.append("</item>");
 				}
 			}
-			definedEntitiesXML.append("</tree>");
 		}
-
+		definedEntitiesXML.append("</tree>");	
 		return definedEntitiesXML.toString();
 	}
 

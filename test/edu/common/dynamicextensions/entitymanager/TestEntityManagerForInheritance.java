@@ -447,11 +447,11 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			AttributeInterface arivalDate = factory.createDateAttribute();
 			arivalDate.setName("arivalDate");
 			tissueSpecimen.addAbstractAttribute(arivalDate);
-			
+
 			DateAttributeTypeInformation dateAttributeTypeInformation=new DateAttributeTypeInformation();
 			dateAttributeTypeInformation.setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
 			arivalDate.setAttributeTypeInformation(dateAttributeTypeInformation);
-			
+
 			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
 
 			//step 2
@@ -473,7 +473,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 
 			columnValue = (Integer)executeQuery("select * from "
 					+ tissueSpecimen.getTableProperties().getName(),INT_TYPE,2);
-			
+
 			assertEquals(1, columnValue);
 		}
 		catch (Exception e)
@@ -556,7 +556,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			DateAttributeTypeInformation dateAttributeTypeInformation=new DateAttributeTypeInformation();
 			dateAttributeTypeInformation.setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
 			arivalDate.setAttributeTypeInformation(dateAttributeTypeInformation);
-			
+
 			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
 			//step 2
 			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
@@ -708,10 +708,10 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			assertEquals(childColelction.size(), 1);
 			childColelction.contains(savedTissueSpecimen);
 
-			
+
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ specimen.getTableProperties().getName()));
 
-			
+
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ tissueSpecimen.getTableProperties().getName()));
 
 		}
@@ -759,7 +759,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			//Step 2
 			EntityInterface savedSpecimen = entityManagerInterface.persistEntity(specimen);
 			//Checking step 2
-			
+
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ specimen.getTableProperties().getName()));
 			//Step 3
 			AttributeInterface label = factory.createStringAttribute();
@@ -780,7 +780,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 					.persistEntity(tissueSpecimen);
 			assertEquals(savedTissueSpecimen.getParentEntity(), savedSpecimen);
 			//Step 7
-			
+
 			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ savedSpecimen.getTableProperties().getName()));
 
 		}
@@ -909,10 +909,10 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 					.persistEntity(tissueSpecimen);
 			assertEquals(savedTissueSpecimen.getParentEntity(), savedSpecimen);
 			//Check for step 4
-			
+
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ savedTissueSpecimen.getTableProperties().getName()));
 
-			
+
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ savedSpecimen.getTableProperties().getName()));
 
 			//Step 5
@@ -927,10 +927,10 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			//Step 7
 			savedTissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
 			//Step 8
-			
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ savedTissueSpecimen.getTableProperties().getName()));
 
-			
+			//assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ savedTissueSpecimen.getTableProperties().getName()));
+
+
 			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ savedTissueSpecimen.getParentEntity().getTableProperties().getName()));
 
 		}
@@ -1277,14 +1277,14 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			AttributeInterface arivalDate = factory.createDateAttribute();
 			arivalDate.setName("arivalDate");
 			tissueSpecimen.addAbstractAttribute(arivalDate);
-			
-			
+
+
 
 			DateAttributeTypeInformation dateAttributeTypeInformation=new DateAttributeTypeInformation();
 			dateAttributeTypeInformation.setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
 			arivalDate.setAttributeTypeInformation(dateAttributeTypeInformation);
 			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
-			
+
 			tissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
 
 			EntityInterface advanceTissueSpecimenA = factory.createEntity();

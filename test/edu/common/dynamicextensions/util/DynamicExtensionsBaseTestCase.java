@@ -15,7 +15,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
+
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -27,7 +30,6 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
-import gov.nih.nci.common.util.HibernateUtil;
 
 public class DynamicExtensionsBaseTestCase extends TestCase implements EntityManagerExceptionConstantsInterface
 {
@@ -36,16 +38,16 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 
 	//1:ACTIVITY_STATUS 2:IDENTIFIER 3:FILE NAME 4:CONTENTE_TYPE 5:ACTUAL_CONTENTS
 	protected int noOfDefaultColumnsForfile = 5;
-	
+
 	protected final static String STRING_TYPE="string";
 	protected final static String INT_TYPE="int";
 	/**
-	 * 
+	 *
 	 */
 	public DynamicExtensionsBaseTestCase()
 	{
 		super();
-		
+
 	}
 
 	/**
@@ -61,7 +63,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	 */
 	protected void setUp()
 	{
-		
+
 		Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
         ApplicationProperties.initBundle("ApplicationResources");
 	}
@@ -76,7 +78,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 
 	/**
 	 * It will execute query passed as parameter & will return value of the
-	 * Column at columnNumber of returnType. 
+	 * Column at columnNumber of returnType.
 	 * @param query Query to be executed
 	 * @param returnType Returntype or DataType of the column
 	 * @param columnNumber of which value is to be retrieved
@@ -114,11 +116,11 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		}
 		return ans;
 	}
-	
-	
+
+
 	/**
 	 * @param query query to be executed
-	 * @return 
+	 * @return
 	 */
 /*	protected ResultSet executeQuery(String query)
 	{
@@ -134,7 +136,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		{
 			e.printStackTrace();
 		}
-		
+
 		try
 		{
 			statement = conn.prepareStatement(query);
@@ -154,8 +156,8 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		}
 		return resultSet;
 	}*/
-	
-	
+
+
 	/**
 	 *  It will execute query & will retrieve the total columncount in that queried table.
 	 * @param query to be executed for metadata
@@ -164,13 +166,13 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	protected int getColumnCount(String query)
 	{
 		Connection conn = null;
-		ResultSetMetaData metadata=null;
-		int count=0;
-		conn=getConnection();
+		ResultSetMetaData metadata = null;
+		int count = 0;
+		conn = getConnection();
 		try
 		{
-			metadata=executeQueryForMetadata(conn,query,metadata);
-			count=metadata.getColumnCount();
+			metadata = executeQueryForMetadata(conn,query,metadata);
+			count = metadata.getColumnCount();
 		}
 		catch (SQLException e)
 		{
@@ -186,11 +188,11 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	}
 
 
-	
+
 	/**
 	 * It will retrieve the DataType of the column specified in the columnNumber
-	 * @param query To be executed 
-	 * @param columnNumber Of which dataType is required 
+	 * @param query To be executed
+	 * @param columnNumber Of which dataType is required
 	 * @return Dataype of the column
 	 */
 	protected int getColumntype(String query,int columnNumber)
@@ -222,34 +224,32 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	 * Close the connection
 	 * @param conn
 	 */
-	private void closeConnection(Connection conn) {
-		if(conn!=null)
-		{
-			DBUtil.closeConnection();
-		}
+	private void closeConnection(Connection conn)
+	{
+		DBUtil.closeConnection();
 	}
 
 	/**
 	 * It will execute actual query passed.
-	 * @param conn connection to be used  
+	 * @param conn connection to be used
 	 * @param query to be executed
-	 * @param statement 
+	 * @param statement
 	 * @param metadata Object to be used for metadata
 	 * @return
 	 * @throws SQLException
 	 */
 	private ResultSetMetaData executeQueryForMetadata(Connection conn,
 			String query, ResultSetMetaData metadata)throws SQLException {
-		PreparedStatement statement=null;
+		PreparedStatement statement = null;
 		statement = conn.prepareStatement(query);
 		metadata= statement.executeQuery().getMetaData();
-		
+		statement.close();
 		return metadata;
 	}
 
 	/**
 	 * Open the connection for use
-	 * @return connection 
+	 * @return connection
 	 */
 	private Connection getConnection() {
 		Connection conn=null;
@@ -296,7 +296,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 
 		return null;
 	}
-	
+
 	/**
 	 * @param tableName
 	 * @return
@@ -324,13 +324,13 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		}
 		return true;
 	}
-	
+
 	protected String getActivityStatus(EntityInterface entity , Long recordId) throws Exception {
 		return (String)executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN +  " from "
 				+ entity.getTableProperties().getName()  + " where identifier = " + recordId,STRING_TYPE,1);
-		 
+
 	}
-	
+
 	/**
 	 * @param associationType associationType
 	 * @param name name

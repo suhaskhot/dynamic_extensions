@@ -332,20 +332,22 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		}
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
-	 */
-	public List<ControlInterface> getAllControls()
-	{
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this.getControlCollection());
-		Collections.sort(controlsList);
+    /**
+     * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
+     */
+    public List<ControlInterface> getAllControls()
+    {
+        List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+                .getControlCollection());
+        Collections.sort(controlsList);
+        Collections.reverse(controlsList);
 
-		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+        List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
 
-		ContainerInterface baseContainer = this.baseContainer;
-		while (baseContainer != null)
-		{
-			 baseControlsList = new ArrayList(baseContainer.getControlCollection());
+        ContainerInterface baseContainer = this.baseContainer;
+        while (baseContainer != null)
+        {
+            baseControlsList = new ArrayList(baseContainer.getControlCollection());
             Collections.sort(baseControlsList);
             Collections.reverse(baseControlsList);
 
@@ -353,12 +355,11 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 
             baseContainer.setIncontextContainer(this);
             baseContainer = baseContainer.getBaseContainer();
-		}
-		Collections.sort(controlsList);
-		Collections.reverse(controlsList);
-        return controlsList;
-	}
 
+        }
+        Collections.reverse(controlsList);
+        return controlsList;
+    }
 	/**
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
@@ -367,7 +368,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	{
 		StringBuffer stringBuffer = new StringBuffer();
 
-		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0'  align='center' width='100%'>");
+		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		if (this.getMode() != null && this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
 		{
@@ -437,10 +438,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 				.getCaption()));
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td>");
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
+
 	}
 
 	/**

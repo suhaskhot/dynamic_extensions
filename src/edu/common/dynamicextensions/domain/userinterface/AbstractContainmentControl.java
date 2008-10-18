@@ -20,28 +20,34 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
-	 * Parent container 
+	 * Parent container
 	 */
 	protected ContainerInterface container;
 
+	/**
+	 * Empty Constructor
+	 */
+	public AbstractContainmentControl()
+	{
+	}
 
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = this.getContainer();
 		this.setIsSubControl(true);
-		
+
 		if (this.getParentContainer().getShowAssociationControlsAsLink() == true)
 		{
 			String link = containerInterface.generateLink(getParentContainer());
 			link = UserInterfaceiUtility.getControlHTMLAsARow(this, link);
 			return link;
 		}
-         
+
 		String subContainerHTML = "";
 		if (isCardinalityOneToMany())
 		{
@@ -107,7 +113,7 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 
 		return stringBuffer.toString();
 	}
-	
+
 	/**
 	 * @return container
 	 * @hibernate.many-to-one cascade="save-update" column="CONTAINER_ID" class="edu.common.dynamicextensions.domain.userinterface.Container" constrained="true"
@@ -125,6 +131,6 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 	{
 		this.container = container;
 	}
-	
+
 
 }

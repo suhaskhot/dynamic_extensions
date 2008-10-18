@@ -241,7 +241,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
 
-		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
+		stringBuffer.append("<td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
 			stringBuffer.append("<span class='font_red'>");
@@ -249,14 +249,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			stringBuffer.append("</span>");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='30%' valign='top'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
 		}
 		else
 		{
 			stringBuffer.append("&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='30%' valign='top'>");
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
 		}
 		if (this instanceof ComboBox)
 		{
@@ -271,11 +271,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		stringBuffer.append(htmlString);
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
+
 		stringBuffer.append("<tr>");
 		stringBuffer.append("<td>");
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
-
 		return stringBuffer.toString();
 	}
 
@@ -372,7 +372,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		Control control = (Control) object;
 		Integer thisSequenceNumber = this.sequenceNumber;
 		Integer otherSequenceNumber = control.getSequenceNumber();
-		return otherSequenceNumber.compareTo(thisSequenceNumber);
+		return thisSequenceNumber.compareTo(otherSequenceNumber);
 	}
 
 	/**

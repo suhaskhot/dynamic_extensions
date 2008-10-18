@@ -414,11 +414,10 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
+		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 		try
 		{
-			JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
 			dao.openSession(null);
-
 			String query = "select count(*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"
 					+ entityGroup.getName() + "'";
 			List result = dao.executeQuery(query, new SessionDataBean(), false, null);
@@ -443,6 +442,16 @@ public class EntityGroupManager extends AbstractMetadataManager implements Entit
 		catch (ClassNotFoundException e)
 		{
 			throw new DynamicExtensionsSystemException("Class not found", e);
+		}
+		finally
+		{
+			try
+			{
+				dao.closeSession();
+			} catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("DAOException", null);
+			}
 		}
 	}
 }

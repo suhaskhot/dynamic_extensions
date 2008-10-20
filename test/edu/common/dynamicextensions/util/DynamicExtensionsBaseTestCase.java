@@ -243,7 +243,6 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		PreparedStatement statement = null;
 		statement = conn.prepareStatement(query);
 		metadata= statement.executeQuery().getMetaData();
-		statement.close();
 		return metadata;
 	}
 

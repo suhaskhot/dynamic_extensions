@@ -2428,40 +2428,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	public Long getEntityId(String entityName) throws DynamicExtensionsSystemException
 	{
-		ResultSet resultSet = null;
-		String entityTableName = "dyextn_abstract_metadata";
-		String NAME = "name";
-		StringBuffer query = new StringBuffer();
-		query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
-		query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + entityTableName + WHITESPACE);
-		query.append(WHERE_KEYWORD + WHITESPACE + NAME + WHITESPACE + EQUAL + "'" + entityName + "'");
-		System.out.println("Query = " + query.toString());
-		try
+		Long entityId = null;
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("string", entityName));
+		Collection entityIdCollection = executeHQL("getEntityIdentifier", substitutionParameterMap);
+		if (entityIdCollection != null && entityIdCollection.size() > 0)
 		{
-			resultSet = EntityManagerUtil.executeQuery(query.toString());
-			resultSet.next();
-			Long identifier = resultSet.getLong(IDENTIFIER);
-			return identifier;
+			entityId = (Long) entityIdCollection.iterator().next();
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			if (resultSet != null)
-			{
-				try
-				{
-					resultSet.close();
-				}
-				catch (SQLException e)
-				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
-				}
-			}
-		}
-		return null;
+		return entityId;
 	}
 
 	/**

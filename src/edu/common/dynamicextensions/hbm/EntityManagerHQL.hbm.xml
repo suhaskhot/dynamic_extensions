@@ -240,6 +240,9 @@
    <query name="getEntityId">
    		select entity.id from Entity entity where entity.entityGroup.id = ? and entity.name = ?
    </query>
+   <query name="getEntityIdentifier">
+   		select entity.id from Entity entity where entity.name = ?
+   </query>
    <query name="getAttributeId">
    		select absAttr.id from AbstractAttribute absAttr where absAttr.entity.id = ? and absAttr.name = ?
    </query>

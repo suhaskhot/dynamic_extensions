@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Stylesheet to turn the XML output of CPD into a nice-looking HTML page -->
-<!-- $Id: cpdhtml.xslt,v 1.1.10.1 2008/10/21 09:55:31 pavan_kalantri Exp $ -->
+<!-- $Id: cpdhtml.xslt,v 1.1.10.2 2008/10/21 12:57:43 pavan_kalantri Exp $ -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method="html" encoding="UTF-8" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN" 
 	doctype-system="http://www.w3.org/TR/html4/loose.dtd" indent="yes"/>
@@ -64,7 +64,8 @@
         	<td>
         		<table>
         			<xsl:for-each select="file">
-					<tr><td><a><xsl:attribute name="href"><xsl:value-of select="@path"/></xsl:attribute><xsl:value-of select="@path"/></a></td><td> line <xsl:value-of select="@line"/></td></tr>
+<!--        				<tr><td><a><xsl:attribute name="href">../src/<xsl:value-of select="@path"/>.html#<xsl:value-of select="@line"/></xsl:attribute><xsl:value-of select="@path"/></a></td><td> line <xsl:value-of select="@line"/></td></tr>-->
+							<tr><td><a><xsl:value-of select="@path"/></a></td><td> line <xsl:value-of select="@line"/></td></tr>
         			</xsl:for-each>
         		</table>
         	</td>

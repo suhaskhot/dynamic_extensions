@@ -1517,17 +1517,18 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 */
 	private List<CategoryEntityInterface> getParentEntityList(CategoryEntityInterface categoryEntity)
 	{
-
 		//As here the parent category entity whose table is not created  is blocked so its not added in list
 		List<CategoryEntityInterface> categoryEntityList = new ArrayList<CategoryEntityInterface>();
 		categoryEntityList.add(categoryEntity);
-		CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity.getParentCategoryEntity();
-		while (objCategoryEntity != null && objCategoryEntity.isCreateTable())
+		//bug # 10265 -modified as per code review comment.
+		//reviewer name - Rajesh Patil
+		CategoryEntityInterface objCategoryEntity = categoryEntity.getParentCategoryEntity();
+		while (objCategoryEntity != null && ((CategoryEntity) objCategoryEntity).isCreateTable())
 		{
-			categoryEntityList.add(0, categoryEntity.getParentCategoryEntity());
-			categoryEntity = categoryEntity.getParentCategoryEntity();
-		}
+			categoryEntityList.add(0, objCategoryEntity);
+			objCategoryEntity = objCategoryEntity.getParentCategoryEntity();
 
+		}
 		return categoryEntityList;
 	}
 

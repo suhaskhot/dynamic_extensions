@@ -243,13 +243,13 @@ public class CategoryGenerator
 							if (userDefinedDE == null)
 							{
 								throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-										+ ApplicationProperties.getValue("noPVForAttribute") + attributeName);
+										+ ApplicationProperties.getValue(CategoryConstants.NO_PV_FOR_ATTR) + attributeName);
 							}
 						}
 
 						CategoryValidator.checkForNullRefernce(attribute, ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-								+ categoryFileParser.getLineNumber() + ApplicationProperties.getValue("attribute") + " " + attributeName
-								+ ApplicationProperties.getValue("attributeNotPresent") + entityInterface.getName());
+								+ categoryFileParser.getLineNumber() + " " + ApplicationProperties.getValue(CategoryConstants.ATTR) + attributeName
+								+ " " + ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT) + entityInterface.getName());
 
 						if (previousEntityName != null && !previousEntityName.equals(containerInterface.getAbstractEntity().getName()))
 						{
@@ -610,9 +610,10 @@ public class CategoryGenerator
 			CategoryValidator.checkForNullRefernce(entity.getAttributeByName(attributeName), ApplicationProperties
 					.getValue(CategoryConstants.LINE_NUMBER)
 					+ categoryFileParser.getLineNumber()
-					+ ApplicationProperties.getValue("attribute")
+					+ " "
+					+ ApplicationProperties.getValue(CategoryConstants.ATTR)
 					+ attributeName
-					+ ApplicationProperties.getValue("attributeNotPresent") + entity.getName());
+					+ " " + ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT) + entity.getName());
 
 			// Added for category inheritance.
 			boolean isAttributePresent = entity.isAttributePresent(attributeName);

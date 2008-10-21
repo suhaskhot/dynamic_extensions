@@ -38,5 +38,11 @@ public class CategoryConstants
 	public final static String INCORRECT_MINMAX = "incorrectMinMax";
 	
 	public final static String INCORRECT_MINMAX_DATE = "incorrectMinMaxDate";
+	
+	public final static String NO_PV_FOR_ATTR = "noPVForAttribute";
+	
+	public final static String ATTR_NOT_PRESENT = "attributeNotPresent";
+	
+	public final static String ATTR = "attribute";
 
 }

@@ -35,7 +35,7 @@
 		<property name="hibernate.jdbc.batch_size">0</property>
        	<property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">root</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost/dynext</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost/dyext</property>
 		       
 <!-- My sql settings end -->   
 

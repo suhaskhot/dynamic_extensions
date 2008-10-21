@@ -47,7 +47,14 @@
 
 	<property name="junit.report.dir" value="${base.dir}/junit"/>
 
-
+	<property name="cpd.dir" value="${base.dir}/cpd-3.8"/>
+	<property name="cpd.minimumTokenCount" value="100"/>
+	<property name="cpd.report.name" value="DyExt_CPD_Report.xml"/>
+	<property name="cpd.language" value="java"/>
+	<property name="cpd.ignoreLiterals" value="true"/>
+	<property name="cpd.ignoreIdentifiers" value="true"/>
+	
+	
 	<path id="app.classpath">
 		<pathelement location="${base.dir}/lib/postgresql-8.1-405.jdbc3.jar"/>
 		<fileset dir="${lib.dir}">
@@ -94,8 +101,28 @@
 
   	</target>
 
+	<target name="cpd.setup">
+			<delete dir="${cpd.dir}"></delete>
+	        <mkdir dir="${cpd.dir}"></mkdir>
+	</target>
 
-	<target name="checkstyle" depends="init" description="Generates a report of code convention violations.">
+
+	<target name="cpd" depends="cpd.setup">
+		<taskdef name="cpd" classpath="${pmd.dir}/lib/pmd-3.8.jar" classname="net.sourceforge.pmd.cpd.CPDTask"/>
+	    <mkdir dir="${cpd.dir}"></mkdir>
+	    <cpd ignoreLiterals="${cpd.ignoreLiterals}" ignoreIdentifiers="${cpd.ignoreIdentifiers}"
+	    	language="${cpd.language}" minimumTokenCount="${cpd.minimumTokenCount}"
+	        outputFile="${cpd.dir}/${cpd.report.name}" format="xml">
+	    	<fileset dir="${src.dir}">
+	    		<include name="**/*.java"/>
+	    	</fileset>
+	    </cpd>
+	    <xslt in="${cpd.dir}/${cpd.report.name}" style="${pmd.dir}/etc/xslt/cpdhtml.xslt" out="${cpd.dir}/DyExt_CPD_Report.html" />
+	</target>
+	
+	
+
+   	<target name="checkstyle" depends="init" description="Generates a report of code convention violations.">
 		<taskdef resource="checkstyletask.properties" classpath="${extra_lib.dir}/checkstyle-all-4.2.jar"/>
 
 	    <checkstyle config="${checkstyle.rules.file}" failureProperty="checkstyle.failed" failOnViolation="false">

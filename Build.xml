@@ -29,32 +29,11 @@
 	<property name="oracle.dir" value="${base.dir}/SQL/Oracle"/>
 	<property name="common.dir" value="${base.dir}/SQL/Common"/>
 
-	<!--Properties set for checkstyle "Tools that generate report of code convention violations"-->
-	<property name="checkstyle.dir" value="${base.dir}/checkstyle"/>
-	<property name="checkstyle.rules.file" value="${checkstyle.dir}/CheckStyleRules.xml"/>
-	<property name="checkstyle.report.formatter" value="${checkstyle.dir}/report_formatter/checkstyle-simple.xsl"/>
-	<property name="checkstyle.report.dir" value="${checkstyle.dir}/checkstyle_reports"/>
-	<property name="checkstyle.unformatted.report" value="${checkstyle.report.dir}/checkstyle_report.xml"/>
-	<property name="checkstyle.formatted.report" value="${checkstyle.report.dir}/checkstyle_report.html"/>
-
-	<!--Properties set for checkstyle "PMD scans Java source code and looks for potential code problems"-->
-	<!--Read for more details http://pmd.sourceforge.net/cpd.html -->
-	<property name="pmd.dir" value="${base.dir}/pmd-3.8"/>
-	<property name="pmd.report.dir" value="${pmd.dir}/reports"/>
-	<property name="pmd.report.html" value="${pmd.report.dir}/DyExt_PMD_Report.html"/>
 
 	<property name="temp.hdoclet.dir" value="${base.dir}/temp"/>
 
 	<property name="junit.report.dir" value="${base.dir}/junit"/>
 
-	<property name="cpd.dir" value="${base.dir}/cpd-3.8"/>
-	<property name="cpd.minimumTokenCount" value="100"/>
-	<property name="cpd.report.name" value="DyExt_CPD_Report.xml"/>
-	<property name="cpd.language" value="java"/>
-	<property name="cpd.ignoreLiterals" value="true"/>
-	<property name="cpd.ignoreIdentifiers" value="true"/>
-	
-	
 	<path id="app.classpath">
 		<pathelement location="${base.dir}/lib/postgresql-8.1-405.jdbc3.jar"/>
 		<fileset dir="${lib.dir}">
@@ -91,76 +70,8 @@
 
 		<mkdir dir="${target.dir}"/>
 	    <mkdir dir="${build.dir}"/>
-
-		<!-- Create the checkstyle report directory-->
-		<delete dir="${checkstyle.report.dir}"/>
-		<mkdir dir="${checkstyle.report.dir}"/>
-
-		<delete dir="${pmd.report.dir}"/>
-		<mkdir dir="${pmd.report.dir}"/>
-
+		
   	</target>
-
-	<target name="cpd.setup">
-			<delete dir="${cpd.dir}"></delete>
-	        <mkdir dir="${cpd.dir}"></mkdir>
-	</target>
-
-
-	<target name="cpd" depends="cpd.setup">
-		<taskdef name="cpd" classpath="${pmd.dir}/lib/pmd-3.8.jar" classname="net.sourceforge.pmd.cpd.CPDTask"/>
-	    <mkdir dir="${cpd.dir}"></mkdir>
-	    <cpd ignoreLiterals="${cpd.ignoreLiterals}" ignoreIdentifiers="${cpd.ignoreIdentifiers}"
-	    	language="${cpd.language}" minimumTokenCount="${cpd.minimumTokenCount}"
-	        outputFile="${cpd.dir}/${cpd.report.name}" format="xml">
-	    	<fileset dir="${src.dir}">
-	    		<include name="**/*.java"/>
-	    	</fileset>
-	    </cpd>
-	    <xslt in="${cpd.dir}/${cpd.report.name}" style="${pmd.dir}/etc/xslt/cpdhtml.xslt" out="${cpd.dir}/DyExt_CPD_Report.html" />
-	</target>
-	
-	
-
-   	<target name="checkstyle" depends="init" description="Generates a report of code convention violations.">
-		<taskdef resource="checkstyletask.properties" classpath="${extra_lib.dir}/checkstyle-all-4.2.jar"/>
-
-	    <checkstyle config="${checkstyle.rules.file}" failureProperty="checkstyle.failed" failOnViolation="false">
-	    	<formatter type="xml" tofile="${checkstyle.unformatted.report}"/>
-	      	<fileset dir="${src.dir}" includes="**/*.java"/>
-	    </checkstyle>
-
-	    <style in="${checkstyle.unformatted.report}" out="${checkstyle.formatted.report}" style="${checkstyle.report.formatter}"/>
-	</target>
-
-	<!-- ,,,,,junit,logging-jakarta-commons,logging-java,migrating,,optimizations,strictexception,,,"-->
-	<target name="pmd" depends="init" description="PMD scans Java source code and looks for potential code problems.">
-		<taskdef name="pmd" classpath="${pmd.dir}/lib/pmd-3.8.jar" classname="net.sourceforge.pmd.ant.PMDTask"/>
-		<pmd shortFilenames="true">
-			<ruleset>basic</ruleset>
-			<ruleset>braces</ruleset>
-			<ruleset>clone</ruleset>
-			<ruleset>codesize</ruleset>
-			<ruleset>controversial</ruleset>
-			<ruleset>coupling</ruleset>
-			<ruleset>design</ruleset>
-			<ruleset>finalizers</ruleset>
-			<ruleset>imports</ruleset>
-			<ruleset>j2ee</ruleset>
-			<!--ruleset>javabeans</ruleset-->
-			<ruleset>migrating</ruleset>
-			<ruleset>naming</ruleset>
-			<ruleset>strings</ruleset>
-			<ruleset>unusedcode</ruleset>
-			<ruleset>sunsecure</ruleset>
-
-			<formatter type="html" toFile="${pmd.report.html}"/>
-			<fileset dir="${src.dir}" includes="**/*.java"/>
-		</pmd>
-	</target>
-
-	<target name="checkstyle_wrapper" depends="checkstyle" description="Breaks the build is checkstyle detected code conventions violations.">
-	</target>
 
 	<!-- Compile all files, generated and hand-written -->
     <target name="compile" depends="init">
@@ -660,13 +571,7 @@
 		<ant target="run_junit"/>
 		<ant antfile="cobertura.xml" target="coverage.report"/>
 		<ant antfile="cobertura.xml" target="coverage.check"/>
-
 	</target>
-
-	<target name="checkin_process">
-		<ant target="generate_codecoverage_report"/>
-	</target>
-
 
 	<target name="de_release" depends="build_app_war,create_dyn_ext_interface_jar,create_dyn_ext_interface_sourcezip,javadoc,generate_schema">
 		<property name="de_release_dir" value="${base.dir}/de_release"/>

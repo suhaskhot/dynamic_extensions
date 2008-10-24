@@ -42,7 +42,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	 * This method returns the Collection of PermissibleValues.
 	 *
 	 * @hibernate.set name="permissibleValueCollection" table="DYEXTN_USERDEF_DE_VALUE_REL"
-	 * cascade="all" inverse="false" lazy="false"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="USER_DEF_DE_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.PermissibleValue" column="PERMISSIBLE_VALUE_ID"
@@ -73,7 +73,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 		}
 		this.permissibleValueCollection.add(permissibleValue);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface#clearPermissibleValues()
 	 */
@@ -81,7 +81,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	{
 		this.permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
 	}
-	
+
 	/**
 	 * @param permissibleValueColl
 	 */

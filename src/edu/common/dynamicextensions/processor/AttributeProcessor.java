@@ -218,6 +218,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				associationInterface.setConstraintProperties(constraintProperties);
 			}
 			//populate information specific to attribute type
+
 			populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
 
 			//populate information common to attributes
@@ -430,7 +431,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 	}
-
 	/**
 	 * @param information
 	 * @param attributeUIBeanInformationIntf
@@ -932,7 +932,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private void populateBooleanAttributeInterface(BooleanAttributeTypeInformation booleanAttributeIntf,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		BooleanValueInterface booleanValue = DomainObjectFactory.getInstance().createBooleanValue();
+		BooleanValueInterface booleanValue = (BooleanValueInterface) booleanAttributeIntf.getDefaultValue();
+		if (booleanValue == null)
+		{
+			booleanValue = DomainObjectFactory.getInstance().createBooleanValue();
+		}
 		booleanValue.setValue(new Boolean(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
 		booleanAttributeIntf.setDefaultValue(booleanValue);
 	}
@@ -1008,7 +1012,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf) throws DynamicExtensionsApplicationException
 	{
 		//Default Value
-		StringValueInterface stringValue = DomainObjectFactory.getInstance().createStringValue();
+		StringValueInterface stringValue = (StringValueInterface) stringAttributeIntf.getDefaultValue();
+		if (stringValue == null)
+		{
+			stringValue = DomainObjectFactory.getInstance().createStringValue();
+		}
 		stringValue.setValue(attributeUIBeanInformationIntf.getAttributeDefaultValue());
 		stringAttributeIntf.setDefaultValue(stringValue);
 
@@ -1076,8 +1084,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-
-			ShortValueInterface shortValue = DomainObjectFactory.getInstance().createShortValue();
+			ShortValueInterface shortValue = (ShortValueInterface) shortAttributeTypeInfo.getDefaultValue();
+			if (shortValue == null)
+			{
+				shortValue = DomainObjectFactory.getInstance().createShortValue();
+			}
 			if (defaultValue != null)
 			{
 				shortValue.setValue(new Short(defaultValue));
@@ -1132,8 +1143,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-
-			IntegerValueInterface integerValue = DomainObjectFactory.getInstance().createIntegerValue();
+			IntegerValueInterface integerValue = (IntegerValueInterface) integerAttributeTypeInfo.getDefaultValue();
+			if (integerValue == null)
+			{
+				integerValue = DomainObjectFactory.getInstance().createIntegerValue();
+			}
 			if (defaultValue != null)
 			{
 				integerValue.setValue(defaultValue);
@@ -1186,8 +1200,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-
-			LongValueInterface longValue = DomainObjectFactory.getInstance().createLongValue();
+			LongValueInterface longValue = (LongValueInterface) longAttributeTypeInfo.getDefaultValue();
+			if (longValue == null)
+			{
+				longValue = DomainObjectFactory.getInstance().createLongValue();
+			}
 			if (defaultValue != null)
 			{
 				longValue.setValue(new Long(defaultValue));
@@ -1241,8 +1258,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-
-			FloatValueInterface floatValue = DomainObjectFactory.getInstance().createFloatValue();
+			FloatValueInterface floatValue = (FloatValueInterface) floatAttributeTypeInfo.getDefaultValue();
+			if (floatValue == null)
+			{
+				floatValue = DomainObjectFactory.getInstance().createFloatValue();
+			}
 			if (defaultValue != null)
 			{
 				floatValue.setValue(new Float(defaultValue));
@@ -1296,8 +1316,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				verifyDefaultValueIsInRange(attribute, attributeUIBeanInformationIntf, defaultValue);
 			}
-
-			DoubleValueInterface doubleValue = DomainObjectFactory.getInstance().createDoubleValue();
+			DoubleValueInterface doubleValue = (DoubleValueInterface) doubleAttributeInterface.getDefaultValue();
+			if (doubleValue == null)
+			{
+				doubleValue = DomainObjectFactory.getInstance().createDoubleValue();
+			}
 			if (defaultValue != null)
 			{
 				doubleValue.setValue(new Double(defaultValue));

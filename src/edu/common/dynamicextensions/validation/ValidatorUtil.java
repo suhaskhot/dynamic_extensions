@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -67,7 +68,7 @@ public class ValidatorUtil
 								.get(abstractAttribute);
 						for (Map<BaseAbstractAttributeInterface, Object> subAttributeValueMap : valueObject)
 						{
-							errorList.addAll(validateEntityAttributes(subAttributeValueMap,getContainerForAbstractAttribute(associationInterface)));
+							errorList.addAll(validateEntityAttributes(subAttributeValueMap, getContainerForAbstractAttribute(associationInterface)));
 						}
 					}
 				}
@@ -111,6 +112,7 @@ public class ValidatorUtil
 		return control;
 
 	}
+
 	/**
 	 *
 	 * @param abstractAttribute
@@ -167,7 +169,7 @@ public class ValidatorUtil
 			if (abstractAttribute instanceof AttributeMetadataInterface)
 			{
 				ControlInterface control = getControlForAbstractAttribute((AttributeMetadataInterface) abstractAttribute, containerInterface);
-				if(control != null)
+				if (control != null)
 				{
 					errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 				}
@@ -177,6 +179,13 @@ public class ValidatorUtil
 		return errorList;
 	}
 
+	/**
+	 * @param attributeValueNode
+	 * @param controlCaption
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsValidationException
+	 */
 	private static List<String> validateAttributes(Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode, String controlCaption)
 			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
@@ -184,7 +193,9 @@ public class ValidatorUtil
 
 		BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 		AttributeMetadataInterface attribute = (AttributeMetadataInterface) abstractAttribute;
-		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
+		//Bug: 9778 : modified to get explicit and implicit rules also in case of CategoryAttribute.
+		//Reviewer: Rajesh Patil
+		Collection<RuleInterface> attributeRuleCollection = getRuleCollection(abstractAttribute);
 		if (attributeRuleCollection != null || !attributeRuleCollection.isEmpty())
 		{
 			Long recordId = attribute.getId();
@@ -221,7 +232,7 @@ public class ValidatorUtil
 					}
 					try
 					{
-						checkUniqueValidationForAttribute( attribute, valueObject, recordId, controlCaption);
+						checkUniqueValidationForAttribute(attribute, valueObject, recordId, controlCaption);
 					}
 					catch (DynamicExtensionsValidationException e)
 					{
@@ -233,6 +244,22 @@ public class ValidatorUtil
 		}
 
 		return errorList;
+	}
+
+	/**
+	 * @param abstractAttribute
+	 * @return
+	 */
+	private static Collection<RuleInterface> getRuleCollection(BaseAbstractAttributeInterface abstractAttribute)
+	{
+		AttributeMetadataInterface attribute = (AttributeMetadataInterface) abstractAttribute;
+		Collection<RuleInterface> attributeRuleCollection = attribute.getRuleCollection();
+		if (attribute instanceof CategoryAttributeInterface)
+		{
+			Collection<RuleInterface> implicitRuleCollection = ((CategoryAttributeInterface) attribute).getAbstractAttribute().getRuleCollection();
+			attributeRuleCollection.addAll(implicitRuleCollection);
+		}
+		return attributeRuleCollection;
 	}
 
 	public static void checkUniqueValidationForAttribute(AttributeMetadataInterface attribute, Object valueObject, Long recordId,

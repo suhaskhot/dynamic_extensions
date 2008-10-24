@@ -111,7 +111,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		
 		 htmlString = htmlString
 		+ "});</script>" + "<div id='auto_complete_dropdown'>"
-		+ "<input type='text' id='" + htmlComponentName + "' " + " name='" + htmlComponentName + "' size='20'/>"
+		+ "<input type='text' onmouseover=\"showToolTip('"+htmlComponentName+"')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName + "' size='20'/>"
 		+ "<div name='comboScript' style='display:none'>" + "Ext.onReady(function(){ " + "var myUrl='ComboDataAction.do?controlId= "
 		+ id + "~containerIdentifier=" + parentContainerId + "';var ds = new Ext.data.Store({"
 		+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
@@ -121,7 +121,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
 		+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
 		+ "selectOnFocus:true,applyTo: '" + htmlComponentName + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
-		+ "<div>" + "<input type='text' id='" + htmlComponentName + "' " + " name='" + htmlComponentName
+		+ "<div>" + "<input type='text' onmouseover=\"showToolTip('"+htmlComponentName+"')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
 		+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";
 						
 		

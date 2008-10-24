@@ -2148,3 +2148,90 @@ function resetTimeoutCounter()
 		}
 	}
 }
+
+//==========================tool tip code started=========
+var timeInterval=100;
+var interval;
+var objID="";
+
+function showStatus(sMsg) 
+{
+	 window.status = sMsg ;
+}
+ 
+function showToolTip(objId)
+{
+	objID = objId;
+	interval = self.setInterval("setTip()",timeInterval);
+}
+
+function showGivenTip(objId, toolTipTxt)
+{
+	objID = objId;
+	setGivenTip(toolTipTxt);
+}
+
+function hideTip(objId)
+{
+	var obj = document.getElementById(objId);
+	var browser=navigator.appName;
+	if(browser=="Microsoft Internet Explorer")
+	{
+		showStatus(' ');
+	}
+	else
+	{
+		obj.title = "";
+	}
+	interval = window.clearInterval(interval);
+}     
+
+function setTip()
+{
+	var obj = document.getElementById(objID);
+	if(obj != null)
+	{
+		if(obj.type == 'text')
+		{
+			var tip="";
+			tip = obj.value;
+			obj.title = ""+tip;
+		}
+		else
+		{
+			var tip="";
+			if(obj.selectedIndex == -1)
+				tip="";
+			else
+				tip = obj.options[obj.selectedIndex].text;
+			
+			var browser=navigator.appName;
+			if(browser=="Microsoft Internet Explorer")
+			{
+				showStatus(tip);
+			}
+			else
+			{
+				obj.title = tip;
+			}
+		}
+	}
+}
+
+ 
+function setGivenTip(tooltipValue)
+{
+	var obj = document.getElementById(objID);
+    obj.title = ""+tooltipValue;
+	var browser=navigator.appName;
+	if(browser=="Microsoft Internet Explorer")
+	{
+		showStatus(""+tooltipValue);
+	}
+	else
+	{
+		obj.title = ""+tooltipValue;
+	}
+}
+
+//==================tool tip code ends===============================

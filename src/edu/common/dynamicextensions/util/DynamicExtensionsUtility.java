@@ -1613,8 +1613,9 @@ public class DynamicExtensionsUtility
 		formattedvalue = Variables.strTodateFunction + "('" + simpleDateFormat.format(date) + "','" + ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT
 				+ "')";
 
-		return formattedvalue;	
+		return formattedvalue;
 	}
+
 	/**
 	 * getFormattedStringForCapitalization.
 	 * @param entityName
@@ -1624,14 +1625,14 @@ public class DynamicExtensionsUtility
 	{
 		return Utility.getDisplayLabel(entityName.trim());
 	}
+
 	/**
 	 *
 	 * @param containerInterface
 	 * @param inContextContainerInterface
 	 * @param processedContainersList
 	 */
-	public static void setAllInContextContainers(ContainerInterface containerInterface,
-			List<ContainerInterface> processedContainersList)
+	public static void setAllInContextContainers(ContainerInterface containerInterface, List<ContainerInterface> processedContainersList)
 	{
 		if (processedContainersList.contains(containerInterface))
 		{
@@ -1644,21 +1645,19 @@ public class DynamicExtensionsUtility
 
 			if (containerInterface.getBaseContainer() != null)
 			{
-				setAllInContextContainers(containerInterface.getBaseContainer(),
-						processedContainersList);
+				setAllInContextContainers(containerInterface.getBaseContainer(), processedContainersList);
 			}
 			for (ControlInterface controlInterface : containerInterface.getControlCollection())
 			{
 				if (controlInterface instanceof AbstractContainmentControlInterface)
 				{
 					AbstractContainmentControlInterface containmentAssociationControl = (AbstractContainmentControlInterface) controlInterface;
-					setAllInContextContainers(containmentAssociationControl.getContainer(),
-							processedContainersList);
+					setAllInContextContainers(containmentAssociationControl.getContainer(), processedContainersList);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * This method checks if an entity with the same name exists in the entity group.
 	 * @param entityGroup
@@ -1666,8 +1665,8 @@ public class DynamicExtensionsUtility
 	 * @param formDefinitionForm
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup, ContainerInterface container, String formName, ContainerInterface... mainFormContainer)
-			throws DynamicExtensionsApplicationException
+	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup, ContainerInterface container, String formName,
+			ContainerInterface... mainFormContainer) throws DynamicExtensionsApplicationException
 	{
 		if (entityGroup == null)
 		{
@@ -1698,7 +1697,7 @@ public class DynamicExtensionsUtility
 			checkIfEntityPreExists(entityGroup, container.getCaption(), formName);
 		}
 	}
-	
+
 	/**
 	 * If a sub-form is selected using the XML tree, and its name is changed, 
 	 * and if an entity already exists with the same name, then throw an exception.
@@ -1716,7 +1715,8 @@ public class DynamicExtensionsUtility
 	 * @param formName
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, String formName) throws DynamicExtensionsApplicationException
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, String formName)
+			throws DynamicExtensionsApplicationException
 	{
 		if (caption != null && !caption.equals(formName))
 		{
@@ -1726,7 +1726,7 @@ public class DynamicExtensionsUtility
 			}
 		}
 	}
-	
+
 	/**
 	 * If a new sub-form is being added, and if an entity with the same name 
 	 * already exists in the entity group, then throw an exception.
@@ -1743,13 +1743,14 @@ public class DynamicExtensionsUtility
 	 * @param mainContainer
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, ContainerInterface mainContainer) throws DynamicExtensionsApplicationException
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, ContainerInterface mainContainer)
+			throws DynamicExtensionsApplicationException
 	{
 		if (mainContainer != null && mainContainer.getCaption().equals(caption))
 		{
 			reportDuplicateEntityName();
 		}
-		
+
 		EntityInterface existingEntity = entityGroup.getEntityByName(caption);
 		if (existingEntity != null)
 		{
@@ -1799,13 +1800,29 @@ public class DynamicExtensionsUtility
 	 * @throws ClassNotFoundException
 	 *             ClassNotFoundException
 	 */
-	public static List executeQuery(String hql) throws DAOException, ClassNotFoundException 
+	public static List executeQuery(String hql) throws DAOException, ClassNotFoundException
 	{
-		HibernateDAO dao = (HibernateDAO) DAOFactory.getInstance().getDAO(
-				Constants.HIBERNATE_DAO);
+		HibernateDAO dao = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
 		dao.openSession(null);
 		List list = dao.executeQuery(hql, null, false, null);
 		dao.closeSession();
 		return list;
+	}
+
+	/**
+	 * Replace any single and double quotes value with proper escape character	in HTML
+	 * @param value
+	 * @return
+	 */
+	public static String getEscapedStringValue(String value)
+	{
+
+		value = replaceUtil(value, "'", "&#39");
+		value = replaceUtil(value, "\"", "&#34");
+		if (value != null)
+		{
+			value = value.trim();
+		}
+		return value;
 	}
 }

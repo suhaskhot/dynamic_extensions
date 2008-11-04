@@ -919,7 +919,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				}
 				else if (primitiveAttribute.getAttributeTypeInformation() instanceof StringAttributeTypeInformation)
 				{
-					value = queryBuilder.getEscapedStringValue(value.toString());
+					value = DynamicExtensionsUtility.getEscapedStringValue(value.toString());
 				}
 				if (value == null || value.toString().length() == 0)
 				{

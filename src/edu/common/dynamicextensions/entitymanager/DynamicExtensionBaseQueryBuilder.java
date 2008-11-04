@@ -20,8 +20,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.ibm.db2.jcc.b.db;
-
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -259,8 +257,8 @@ class DynamicExtensionBaseQueryBuilder
 				String foreignConstraintRollbackQuery = "";
 				if (databaseCopy.getParentEntity() != null)
 				{
-					String foreignConstraintRemoveQuery = QueryBuilderFactory.getQueryBuilder().getForeignKeyRemoveConstraintQueryForInheritance(databaseCopy, databaseCopy
-							.getParentEntity());
+					String foreignConstraintRemoveQuery = QueryBuilderFactory.getQueryBuilder().getForeignKeyRemoveConstraintQueryForInheritance(
+							databaseCopy, databaseCopy.getParentEntity());
 					foreignConstraintRollbackQuery = getForeignKeyConstraintQueryForInheritance(databaseCopy);
 					queryList.add(foreignConstraintRemoveQuery);
 					attributeRollbackQueryList.add(foreignConstraintRollbackQuery);
@@ -923,7 +921,8 @@ class DynamicExtensionBaseQueryBuilder
 			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + activityStatusString + COMMA);
 			if (!EntityManagerUtil.isIdAttributePresent(entity))
 			{
-				query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD).append(COMMA);
+				query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(NOT_KEYWORD).append(WHITESPACE).append(
+						NULL_KEYWORD).append(COMMA);
 			}
 			Collection<AttributeInterface> attributeCollection = entity.getAttributeCollection();
 
@@ -1019,7 +1018,8 @@ class DynamicExtensionBaseQueryBuilder
 
 			String tableName = categoryEntity.getTableProperties().getName();
 			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " " + OPENING_BRACKET + " " + activityStatusString + COMMA);
-			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD).append(COMMA);
+			query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier()).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE)
+					.append(NULL_KEYWORD).append(COMMA);
 			query = query.append("record_Id" + WHITESPACE + getDataTypeForIdentifier() + WHITESPACE + "NOT NULL" + COMMA);
 			query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
 			queryList.add(query.toString());
@@ -2423,7 +2423,7 @@ class DynamicExtensionBaseQueryBuilder
 					{
 						throw new DynamicExtensionsSystemException("Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
 					}
-					
+
 				}
 			}
 		}
@@ -2754,11 +2754,11 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				if (((List) value).size() > 0)
 				{
-					formattedvalue = "'" + getEscapedStringValue((String) ((List) value).get(0)) + "'";
+					formattedvalue = "'" + DynamicExtensionsUtility.getEscapedStringValue((String) ((List) value).get(0)) + "'";
 				}
 			}
 			else
-				formattedvalue = "'" + getEscapedStringValue((String) value) + "'";
+				formattedvalue = "'" + DynamicExtensionsUtility.getEscapedStringValue((String) value) + "'";
 		}
 		else if (attributeInformation instanceof DateAttributeTypeInformation)
 		{
@@ -2883,19 +2883,6 @@ class DynamicExtensionBaseQueryBuilder
 		}
 		Logger.out.debug("getFormattedValue The formatted value for attribute " + attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
-	}
-
-	/**
-	 * Replace any single and double quotes value with proper escape character	in HTML
-	 * @param value
-	 * @return
-	 */
-	protected String getEscapedStringValue(String value)
-	{
-
-		value = DynamicExtensionsUtility.replaceUtil(value, "'", "&#39");
-		value = DynamicExtensionsUtility.replaceUtil(value, "\"", "&#34");
-		return value.trim();
 	}
 
 	/**

@@ -685,8 +685,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			}
 
 			// Replace any single and double quotes value with a proper escape character.
-			defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "'", "&#39");
-			defaultValue = DynamicExtensionsUtility.replaceUtil(defaultValue, "\"", "&#34");
+			defaultValue = DynamicExtensionsUtility.getEscapedStringValue(defaultValue);
 
 			if (Variables.databaseName.equals(Constants.ORACLE_DATABASE) && attributeInformation instanceof DateAttributeTypeInformation)
 			{

@@ -28,171 +28,202 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class ControlsForm extends AbstractActionForm implements ControlUIBeanInterface, AbstractAttributeUIBeanInterface
+public class ControlsForm extends AbstractActionForm
+		implements
+			ControlUIBeanInterface,
+			AbstractAttributeUIBeanInterface
 {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Attribute Name
 	 */
-	AbstractAttributeInterface abstractAttribute;
+	private AbstractAttributeInterface abstractAttribute;
+
 	/**
 	 *
 	 */
-	String description;
+	private String description;
+
 	/**
 	 * Concept code
 	 */
-
-	String attributeConceptCode;
-
-	/**
-	 *
-	 */
-	String dataType;
+	private String attributeConceptCode;
 
 	/**
 	 *
 	 */
-	List dataTypeList;
+	private String dataType;
 
 	/**
 	 *
 	 */
-	String attributeSize;
+	private List dataTypeList;
 
 	/**
 	 *
 	 */
-	String attributeDefaultValue;
+	private String attributeSize;
 
 	/**
 	 *
 	 */
-	String format;
-	/**
-	 *
-	 */
-	String attributeValidationRules;
+	private String attributeDefaultValue;
 
 	/**
 	 *
 	 */
-	String attributeDisplayUnits;
+	private String format;
 
 	/**
 	 *
 	 */
-	String referenceValues;
+	private String attributeValidationRules;
+
 	/**
 	 *
 	 */
+	private String attributeDisplayUnits;
 
-	String displayChoice;
+	/**
+	 *
+	 */
+	private String referenceValues;
+
+	/**
+	 *
+	 */
+	private String displayChoice;
+
 	/**
 	 *  number of decimal places
 	 */
-	String attributeDecimalPlaces;
+	private String attributeDecimalPlaces;
+
 	/**
 	 * Number of digits in number
 	 */
-	String attributeDigits;
+	private String attributeDigits;
 
 	/**
 	 *
 	 */
-	String htmlFile;
+	private String htmlFile;
+
 	/**
 	 * Data type changed
 	 */
-	String dataTypeChanged;
+	private String dataTypeChanged;
+
 	/**
 	 * Attribute identifier
 	 */
-	String attributeIdentifier;
+	private String attributeIdentifier;
+
 	/**
 	 *
 	 */
-	String caption;
+	private String caption;
+
 	/**
 	 *
 	 */
-	String attributeIsPassword;
+	private String attributeIsPassword;
+
 	/**
 	 *
 	 */
-	Boolean isPassword;
+	private Boolean isPassword;
+
 	/**
 	 *
 	 */
-	Boolean isUrl;
+	private Boolean isUrl;
+
 	/**
 	 *
 	 */
-	List toolsList = new ArrayList();
+	private List toolsList = new ArrayList();
+
 	/**
 	 *
 	 */
-	Boolean isHidden;
+	private Boolean isHidden;
+
 	/**
 	 *
 	 */
-	Integer sequenceNumber;
+	private Integer sequenceNumber;
+
 	/**
 	 * order of controls on the form
 	 */
-	String controlsSequenceNumbers;
+	private String controlsSequenceNumbers;
+
 	/**
 	 *
 	 */
 	protected String cssClass;
+
 	/**
 	 *
 	 */
 	protected String name;
+
 	/**
 	 *
 	 */
 	protected String tooltip;
+
 	/**
 	 *
 	 */
 	protected String attributeNoOfRows;
+
 	/**
 	 *
 	 */
 	protected String attributenoOfCols;
+
 	/**
 	 *
 	 */
 	protected String attributeMultiSelect;
+
 	/**
 	 *
 	 */
 	protected String attributeSequenceNumber;
+
 	/**
 	 *
 	 */
 	protected String attributeMeasurementUnits;
+
 	/**
 	 *
 	 */
 	protected String attributeScale;
+
 	/**
 	 *
 	 */
 	protected String userSelectedTool;
+
 	/**
 	 *
 	 */
 	protected Integer columns;
+
 	/**
 	 *
 	 */
 	protected Integer rows;
+
 	/**
 	 *
 	 */
@@ -221,14 +252,17 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 *
 	 */
 	protected String linesType;
+
 	/**
 	 *
 	 */
 	protected String dateValueType;
+
 	/**
 	 *
 	 */
 	protected String[] validationRules = new String[0];
+
 	/**
 	 *
 	 */
@@ -243,34 +277,52 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * option names
 	 */
 	protected String[] optionNames;
+
+	/**
+	 * 
+	 */
 	protected String[] optionDescriptions;
+
+	/**
+	 * 
+	 */
 	protected String[] optionConceptCodes;
 
+	/**
+	 * 
+	 */
 	protected List optionDetails;
+
 	/**
 	 *
 	 */
 	protected String min;
+
 	/**
 	 *
 	 */
 	protected String max;
+
 	/**
 	 *
 	 */
 	protected String minTemp;
+
 	/**
 	 *
 	 */
 	protected String maxTemp;
+
 	/**
 	 *
 	 */
 	protected Map controlRuleMap;
+
 	/**
 	 *
 	 */
 	protected String selectedControlCaption;
+
 	/**
 	 * is attribute identified
 	 */
@@ -280,6 +332,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * is attribute mandatory
 	 */
 	protected String attributeMandatory;
+
 	/**
 	 * List of measurement units
 	 */
@@ -294,32 +347,75 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 * list of file formats
 	 */
 	protected List<String> supportedFileFormatsList;
+
 	/**
 	 * display as url
 	 */
 	protected String attributeDisplayAsURL;
+
 	/**
 	 * type of form selected for lookup
 	 */
 	protected String formTypeForLookup;
+
 	/**
 	 * Public domain ID for CDE
 	 */
 	protected String publicDomainId;
+
+	/**
+	 * 
+	 */
 	protected List groupNames;
+
+	/**
+	 * 
+	 */
 	protected List separatorList;
+
+	/**
+	 * 
+	 */
 	protected String groupName;
+
+	/**
+	 * 
+	 */
 	protected String formName;
+
+	/**
+	 * 
+	 */
 	protected String separator;
+
+	/**
+	 * 
+	 */
 	protected List selectedAttributes;
+
+	/**
+	 * 
+	 */
 	protected String[] selectedAttributeIds;
-	//Current container name
+
+	/**
+	 * 
+	 */
 	protected String currentContainerName;
 
+	/**
+	 * 
+	 */
 	protected FormFile csvFile;
 
+	/**
+	 * 
+	 */
 	protected FormFile tempcsvFile;
 
+	/**
+	 * 
+	 */
 	protected String csvString;
 
 	/**
@@ -412,8 +508,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.selectedControlCaption = selectedControlCaption;
 	}
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see edu.wustl.common.actionForm.AbstractActionForm#reset()
 	 */
 	public void reset()
 	{
@@ -709,7 +805,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		this.attributeMultiSelect = attributeMultiSelect;
 		if (attributeMultiSelect != null)
 		{
-			isMultiSelect = new Boolean(attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT));
+			isMultiSelect = Boolean.valueOf(attributeMultiSelect
+					.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT));
 		}
 	}
 
@@ -874,11 +971,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		if ((attributenoOfCols != null) && (attributenoOfCols.trim().equals("")))
 		{
-			columns = new Integer(0); //blank values will be considered as 0
+			columns = Integer.valueOf(0); //blank values will be considered as 0
 		}
 		else
 		{
-			columns = new Integer(attributenoOfCols);
+			columns = Integer.valueOf(attributenoOfCols);
 		}
 		return columns;
 	}
@@ -909,11 +1006,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		if ((attributeNoOfRows != null) && (attributeNoOfRows.trim().equals("")))
 		{
-			rows = new Integer(0); //blank values will be considered as 0
+			rows = Integer.valueOf(0); //blank values will be considered as 0
 		}
 		else
 		{
-			rows = new Integer(attributeNoOfRows);
+			rows = Integer.valueOf(attributeNoOfRows);
 		}
 
 		return rows;
@@ -927,11 +1024,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		if ((attributeSequenceNumber != null) && (attributeSequenceNumber.trim().equals("")))
 		{
-			sequenceNumber = new Integer(0); //blank values will be considered as 0
+			sequenceNumber = Integer.valueOf(0); //blank values will be considered as 0
 		}
 		else
 		{
-			sequenceNumber = new Integer(attributeSequenceNumber);
+			sequenceNumber = Integer.valueOf(attributeSequenceNumber);
 		}
 		return sequenceNumber;
 	}
@@ -1062,7 +1159,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeIsPassword(String attributeIsPassword)
 	{
 		this.attributeIsPassword = attributeIsPassword;
-		isPassword = new Boolean(attributeIsPassword);
+		isPassword = Boolean.valueOf(attributeIsPassword);
 	}
 
 	/**
@@ -1128,24 +1225,6 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		this.rootName = rootName;
 	}
-
-	/**
-	 * @return Returns the showPreview.
-	 */
-	/*
-	 public String getShowPreview()
-	 {
-	 return showPreview;
-	 }
-
-	 *//**
-			 * @param showPreview The showPreview to set.
-			 */
-	/*
-	 public void setShowPreview(String showPreview)
-	 {
-	 this.showPreview = showPreview;
-	 }*/
 
 	/**
 	 * @return the linesType
@@ -1299,11 +1378,18 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 		if (caption == null || validator.isEmpty(String.valueOf(caption)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.Label")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.Label")));
 		}
 
-		if (caption.contains(","))
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.label.containsComma", ApplicationProperties.getValue("eav.att.Label")));
+		if (caption != null)
+		{
+			if (caption.contains(","))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.label.containsComma",
+						ApplicationProperties.getValue("eav.att.Label")));
+			}
+		}
 
 		validateControlFields(validator, errors);
 		return errors;
@@ -1352,11 +1438,12 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 	private void getErrorsForRadioButtonControl(Validator validator, ActionErrors errors)
 	{
-		if (displayChoice != null && displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED) && csvString.length() == 0
-				|| csvString.equalsIgnoreCase("0\t0\t\t\t\r\n"))
+		if (displayChoice != null
+				&& displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED)
+				&& csvString.length() == 0 || csvString.equalsIgnoreCase("0\t0\t\t\t\r\n"))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
-					.getValue("dynExtn.validation.radio.NoPV")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("dynExtn.validation.radio.NoPV")));
 		}
 	}
 
@@ -1369,8 +1456,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		// Radio button checked status 
 		if (attributeDefaultValue == null)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
-					.getValue("dynExtn.validation.radio.notChecked")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("dynExtn.validation.radio.notChecked")));
 		}
 
 	}
@@ -1381,16 +1468,18 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	 */
 	private void getErrorsForFileUploadControl(Validator validator, ActionErrors errors)
 	{
-		//Numeric default value
+		// Numeric default value.
 		if (!(isNaturalNumber(attributeSize, validator) || (validator.isDouble(attributeSize))))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-					.getValue("eav.att.MaximumFileSize")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.naturalNumericField", ApplicationProperties
+							.getValue("eav.att.MaximumFileSize")));
 		}
 		if (!isNaturalNumber(attributenoOfCols, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-					.getValue("eav.att.TextFieldWidth")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.naturalNumericField", ApplicationProperties
+							.getValue("eav.att.TextFieldWidth")));
 		}
 	}
 
@@ -1408,19 +1497,21 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			if (dateValueType.trim().equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
 			{
-				if ((attributeDefaultValue == null) || (DynamicExtensionsUtility.isDateValid(dateFormat, attributeDefaultValue) == false))
+				if ((attributeDefaultValue == null)
+						|| (DynamicExtensionsUtility.isDateValid(dateFormat, attributeDefaultValue) == false))
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format", ApplicationProperties
-							.getValue("eav.att.DefaultValue")));
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
+							ApplicationProperties.getValue("eav.att.DefaultValue")));
 				}
 			}
 		}
 		else
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DefaultValue")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.DefaultValue")));
 		}
 
-		// Perform validation checks on date range
+		// Perform validation checks on date range.
 		dateRangeValidion(dateFormat, errors);
 
 	}
@@ -1428,35 +1519,49 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	private void dateRangeValidion(String dateFormat, ActionErrors errors)
 	{
 		boolean isValid = true;
+
+		if ((min != null) && !(min.equals("")) || (max != null) && !(max.equals("")))
+		{
+			if (validationRules == null
+					|| (validationRules.length == 1 && validationRules[0].length() == 0))
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+						"errors.dateRange.EnteredNotChecked", ApplicationProperties
+								.getValue("eav.att.Range")));
+			}
+		}
+
 		for (String validationName : validationRules)
 		{
-			if (validationName.equals("dateRange"))
+			if ("dateRange".equals(validationName))
 			{
 				if ((min != null) && !(min.equals("")) && (max != null) && !(max.equals("")))
 				{
 					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.min) == false))
 					{
-						errors.add(ActionErrors.GLOBAL_ERROR,
-								new ActionError("errors.date.format", ApplicationProperties.getValue("eav.att.Minimum")));
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
+								ApplicationProperties.getValue("eav.att.Minimum")));
 						isValid = false;
 					}
 
 					if ((DynamicExtensionsUtility.isDateValid(dateFormat, this.max) == false))
 					{
-						errors.add(ActionErrors.GLOBAL_ERROR,
-								new ActionError("errors.date.format", ApplicationProperties.getValue("eav.att.Maximum")));
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.format",
+								ApplicationProperties.getValue("eav.att.Maximum")));
 						isValid = false;
 					}
 
-					if (DynamicExtensionsUtility.compareDates(this.min, this.max, dateFormat) > 0 && isValid)
+					if (DynamicExtensionsUtility.compareDates(this.min, this.max, dateFormat) > 0
+							&& isValid)
 					{
-						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range", ApplicationProperties.getValue("eav.att.Range")));
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.date.range",
+								ApplicationProperties.getValue("eav.att.Range")));
 					}
 				}
 				else
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR,
-							new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DateRange")));
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+							ApplicationProperties.getValue("eav.att.DateRange")));
 				}
 				break;
 			}
@@ -1471,31 +1576,37 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	{
 		if (attributeMultiSelect == null || validator.isEmpty(String.valueOf(attributeMultiSelect)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.ListBoxType")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.ListBoxType")));
 		}
 
 		if (attributeMultiSelect != null && attributeMultiSelect.equalsIgnoreCase("SingleSelect")
 				|| attributeMultiSelect.equalsIgnoreCase("MultiSelect"))
 		{
-			if (displayChoice != null && displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED) && csvString.length() == 0
-					|| csvString.equalsIgnoreCase("0\t0\t\t\t\r\n"))
+			if (displayChoice != null
+					&& displayChoice
+							.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED)
+					&& csvString.length() == 0 || csvString.equalsIgnoreCase("0\t0\t\t\t\r\n"))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
-						.getValue("dynExtn.validation.listCombo.NoPV")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+						ApplicationProperties.getValue("dynExtn.validation.listCombo.NoPV")));
 			}
 		}
 
 		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.DataInput")));
 		}
 		//NUMBER OF ROWS SHLD BE NUMERIC
-		if ((attributeMultiSelect != null) && (attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT)))
+		if ((attributeMultiSelect != null)
+				&& (attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT)))
 		{
 			if (!isNaturalNumber(attributeNoOfRows, validator))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-						.getValue("eav.att.ListBoxDisplayLines")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+						"errors.item.naturalNumericField", ApplicationProperties
+								.getValue("eav.att.ListBoxDisplayLines")));
 			}
 		}
 	}
@@ -1512,20 +1623,25 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		//1. Check for text field width
 		if (!isNaturalNumber(attributenoOfCols, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-					.getValue("eav.att.TextFieldWidth")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.naturalNumericField", ApplicationProperties
+							.getValue("eav.att.TextFieldWidth")));
 		}
 		//Text field width cannot be more than 3 characters i.e 999
-		if ((attributenoOfCols != null) && (attributenoOfCols.length() > ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH))
+		if ((attributenoOfCols != null)
+				&& (attributenoOfCols.length() > ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded",
+					ApplicationProperties.getValue("eav.att.Description"),
 					ProcessorConstants.MAX_LENGTH_DISPLAY_WIDTH));
 		}
 
 		//max number of characters cannot be more than 3 digits long : max value 999
-		if ((attributeSize != null) && (attributeSize.length() > ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS))
+		if ((attributeSize != null)
+				&& (attributeSize.length() > ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded", ApplicationProperties.getValue("eav.att.Description"),
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.maxlength.exceeded",
+					ApplicationProperties.getValue("eav.att.Description"),
 					ProcessorConstants.MAX_LENGTH_MAX_CHARACTERS));
 		}
 		//check errors if datatype is String
@@ -1552,13 +1668,19 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		}
 		if (!isNaturalNumber(attributeDecimalPlaces, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-					.getValue("eav.att.AttributeDecimalPlaces")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.naturalNumericField", ApplicationProperties
+							.getValue("eav.att.AttributeDecimalPlaces")));
 		}
 		else if (Integer.parseInt(this.attributeDecimalPlaces) > edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.maximumPrecision", String
-					.valueOf(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)));
+			errors
+					.add(
+							ActionErrors.GLOBAL_ERROR,
+							new ActionError(
+									"errors.item.maximumPrecision",
+									String
+											.valueOf(edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION)));
 		}
 
 		/*
@@ -1568,34 +1690,40 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		 */
 		if (attributeDecimalPlaces.contains("."))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.precisionNotInteger", ApplicationProperties
-					.getValue("eav.att.AttributeDecimalPlaces")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.precisionNotInteger", ApplicationProperties
+							.getValue("eav.att.AttributeDecimalPlaces")));
 		}
 
 		//Numeric default value
-		if (!(isNumeric(attributeDefaultValue, validator) || (validator.isDouble(attributeDefaultValue))))
+		if (!(isNumeric(attributeDefaultValue, validator) || (validator
+				.isDouble(attributeDefaultValue))))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-					.getValue("eav.att.DefaultValue")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.naturalNumericField", ApplicationProperties
+							.getValue("eav.att.DefaultValue")));
 		}
 
 		boolean isMinValid = isNumeric(min, validator);
 		if (!isMinValid)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.Minimum")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
+					ApplicationProperties.getValue("eav.att.Minimum")));
 		}
 
 		boolean isMaxValid = isNumeric(max, validator);
 		if (!isMaxValid)
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties.getValue("eav.att.Maximum")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
+					ApplicationProperties.getValue("eav.att.Maximum")));
 		}
 
 		if (isMinValid && isMaxValid)
 		{
 			if (!isRangeValid(min, max))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericRange", ApplicationProperties.getValue("eav.att.Range")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericRange",
+						ApplicationProperties.getValue("eav.att.Range")));
 			}
 		}
 	}
@@ -1616,14 +1744,16 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		//Atleast one of singleline/ multiline should be selected
 		if (linesType == null || validator.isEmpty(String.valueOf(linesType)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.control.type")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.control.type")));
 		}
 
 		//Size : maximum characters shld be numeric
 		if (!isNaturalNumber(attributeSize, validator))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-					.getValue("eav.att.MaxCharacters")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+					"errors.item.naturalNumericField", ApplicationProperties
+							.getValue("eav.att.MaxCharacters")));
 		}
 
 		//Number of lines for multiline textbox shld be numeric
@@ -1631,8 +1761,9 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			if (!isNaturalNumber(attributeNoOfRows, validator))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.naturalNumericField", ApplicationProperties
-						.getValue("eav.text.noOfLines")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+						"errors.item.naturalNumericField", ApplicationProperties
+								.getValue("eav.text.noOfLines")));
 			}
 		}
 	}
@@ -1645,16 +1776,16 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		//Data type either numeric or string should be selected
 		if (dataType == null || validator.isEmpty(String.valueOf(dataType)))
 		{
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.att.DataInput")));
+			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+					ApplicationProperties.getValue("eav.att.DataInput")));
 		}
 		//If displayasURL is checked then default value is mandatory
 		if (attributeDisplayAsURL != null && attributeDisplayAsURL.equals("true"))
 		{
 			if (attributeDefaultValue == null || validator.isEmpty(attributeDefaultValue))
 			{
-				errors
-						.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties
-								.getValue("eav.att.defaultValue")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+						ApplicationProperties.getValue("eav.att.defaultValue")));
 			}
 		}
 
@@ -1662,8 +1793,8 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 		{
 			if (!DynamicExtensionsUtility.isNumeric(attributeDefaultValue))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField", ApplicationProperties
-						.getValue("eav.att.DefaultValue")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
+						ApplicationProperties.getValue("eav.att.DefaultValue")));
 			}
 			else
 			{
@@ -1671,11 +1802,11 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 						&& !min.equals("")
 						&& max != null
 						&& !max.equals("")
-						&& (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float.parseFloat(attributeDefaultValue) > Float
-								.parseFloat(max)))
+						&& (Float.parseFloat(attributeDefaultValue) < Float.parseFloat(min) || Float
+								.parseFloat(attributeDefaultValue) > Float.parseFloat(max)))
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item", ApplicationProperties
-							.getValue("eav.att.defaultValueExceedsRange")));
+					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item",
+							ApplicationProperties.getValue("eav.att.defaultValueExceedsRange")));
 				}
 			}
 		}
@@ -1730,7 +1861,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 
 		for (String validationName : validationRules)
 		{
-			if (validationName.equals("range"))
+			if ("range".equals(validationName))
 			{
 				rangeRule = validationName;
 				break;
@@ -1801,7 +1932,7 @@ public class ControlsForm extends AbstractActionForm implements ControlUIBeanInt
 	public void setAttributeDisplayAsURL(String attributeDisplayAsURL)
 	{
 		this.attributeDisplayAsURL = attributeDisplayAsURL;
-		this.isUrl = new Boolean(attributeDisplayAsURL);
+		this.isUrl = Boolean.valueOf(attributeDisplayAsURL);
 	}
 
 	public String[] getOptionConceptCodes()

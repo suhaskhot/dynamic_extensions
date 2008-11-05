@@ -209,6 +209,27 @@ public class Entity extends AbstractEntity implements EntityInterface
 	}
 
 	/**
+	 * This method return the Collection of Association excluding collection attribute.
+	 * @return the Collection of Association.
+	 */
+	public Collection<AssociationInterface> getAssociationCollectionExcludingCollectionAttributes()
+	{
+		Collection<AssociationInterface> AssociationsCollection = getAssociationCollection();
+		Collection<AssociationInterface> entityAssociations=new ArrayList<AssociationInterface>();
+		if(AssociationsCollection!=null)
+		{
+			for(AssociationInterface association : AssociationsCollection)
+			{
+				if(!association.getIsCollection())
+				{
+					entityAssociations.add(association);
+				}
+			}
+		}
+		return entityAssociations;
+	}
+
+	/**
 	 * This method removes an AbstractAttribute from the Entity's Collection of AbstractAttribute.
 	 * @param abstractAttribute an AbstractAttribute to be removed.
 	 */

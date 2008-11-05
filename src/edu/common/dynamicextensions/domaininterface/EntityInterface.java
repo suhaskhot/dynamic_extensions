@@ -207,5 +207,9 @@ public interface EntityInterface  extends AbstractEntityInterface
 	 * @return
 	 */
 	public boolean isMultiselectAttributePresent(String attributeName);
-
+	/**
+	 * This method return the Collection of Association excluding collection attributes.
+	 * @return the Collection of Association.
+	 */
+	Collection<AssociationInterface> getAssociationCollectionExcludingCollectionAttributes();
 }

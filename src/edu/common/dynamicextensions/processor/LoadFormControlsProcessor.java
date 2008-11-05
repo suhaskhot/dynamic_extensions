@@ -33,7 +33,6 @@ public class LoadFormControlsProcessor
 
 	/**
 	 * Protected constructor for entity processor
-	 *
 	 */
 	protected LoadFormControlsProcessor()
 	{
@@ -52,15 +51,15 @@ public class LoadFormControlsProcessor
 	/**
 	 * 
 	 * @param controlsForm ControlsForm
-	 * @param containerInterface ContainerInterface
+	 * @param container ContainerInterface
 	 * @return redirection page path
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public void loadFormControls(ControlsForm controlsForm, ContainerInterface containerInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public void loadFormControls(ControlsForm controlsForm, ContainerInterface container)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		if ((containerInterface != null) && (controlsForm != null))
+		if ((container != null) && (controlsForm != null))
 		{
 			String controlOperation = controlsForm.getControlOperation();
 
@@ -69,47 +68,52 @@ public class LoadFormControlsProcessor
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 				controlsForm.setControlOperation(controlOperation);
 			}
+
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{
 				addControl(controlsForm);
 			}
-
 			else if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT))
 			{
-				ControlInterface selectedControl = getSelectedControl(controlsForm, containerInterface);
+				ControlInterface selectedControl = getSelectedControl(controlsForm, container);
 				editControl(selectedControl, controlsForm, controlsForm);
 			}
-			//Initialize default values for controls
-			initializeControlDefaultValues(controlsForm, containerInterface);
-			//initialize form attribute values
-			initializeFormAttributeValues(controlsForm, containerInterface);
+
+			// Initialize default values for controls.
+			initializeControlDefaultValues(controlsForm, container);
+
+			// initialize form attribute values.
+			initializeFormAttributeValues(controlsForm, container);
 		}
 	}
 
 	/**
 	 * @param controlsForm
-	 * @throws DynamicExtensionsSystemException 
+	 * @param container
+	 * @throws DynamicExtensionsSystemException
 	 */
-	private void initializeFormAttributeValues(ControlsForm controlsForm, ContainerInterface containerInterface)
-			throws DynamicExtensionsSystemException
+	private void initializeFormAttributeValues(ControlsForm controlsForm,
+			ContainerInterface container) throws DynamicExtensionsSystemException
 	{
-		ControlConfigurationsFactory controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
+		ControlConfigurationsFactory ctrlCfgFact = ControlConfigurationsFactory.getInstance();
 		String userSelectedTool = controlsForm.getUserSelectedTool();
-		//	List of tools/controls
-		controlsForm.setToolsList(controlConfigurationsFactory.getListOfControls());
-		controlsForm.setSelectedControlCaption(ControlsUtility.getControlCaption(controlConfigurationsFactory
+
+		// List of tools/controls.
+		controlsForm.setToolsList(ctrlCfgFact.getListOfControls());
+		controlsForm.setSelectedControlCaption(ControlsUtility.getControlCaption(ctrlCfgFact
 				.getControlDisplayLabel(userSelectedTool)));
-		String jspName = controlConfigurationsFactory.getControlJspName(userSelectedTool);
+		String jspName = ctrlCfgFact.getControlJspName(userSelectedTool);
 		if (jspName == null)
 		{
 			jspName = "";
 		}
 		controlsForm.setHtmlFile(jspName);
-		//Data types for selected control
-		controlsForm.setDataTypeList(controlConfigurationsFactory.getControlsDataTypes(userSelectedTool));
 
-		//Set Entity Name as root
-		EntityInterface entity = (EntityInterface) containerInterface.getAbstractEntity();
+		// Data types for selected control.
+		controlsForm.setDataTypeList(ctrlCfgFact.getControlsDataTypes(userSelectedTool));
+
+		// Set Entity Name as root.
+		EntityInterface entity = (EntityInterface) container.getAbstractEntity();
 		if (entity != null)
 		{
 			controlsForm.setRootName(entity.getName());
@@ -118,8 +122,8 @@ public class LoadFormControlsProcessor
 		{
 			controlsForm.setRootName("");
 		}
-		controlsForm.setCurrentContainerName(containerInterface.getCaption());
-		controlsForm.setChildList(ControlsUtility.getChildList(containerInterface));
+		controlsForm.setCurrentContainerName(container.getCaption());
+		controlsForm.setChildList(ControlsUtility.getChildList(container));
 		controlsForm.setControlRuleMap(getControlRulesMap(userSelectedTool));
 	}
 
@@ -133,42 +137,48 @@ public class LoadFormControlsProcessor
 		{
 			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 		}
+
 		controlsForm.setUserSelectedTool(userSelectedTool);
 	}
 
 	/**
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * @param control
+	 * @param controlUIBean
+	 * @param attributeUIBean
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	public void editControl(ControlInterface controlInterface, ControlUIBeanInterface controlUIBeanInterface,
-			AbstractAttributeUIBeanInterface attributeUIBeanInterface) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void editControl(ControlInterface control, ControlUIBeanInterface controlUIBean,
+			AbstractAttributeUIBeanInterface attributeUIBean)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
-		controlProcessor.populateControlUIBeanInterface(controlInterface, controlUIBeanInterface);
+		controlProcessor.populateControlUIBeanInterface(control, controlUIBean);
 
-		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
-		if (controlInterface != null)
+		AttributeProcessor attrPrcr = AttributeProcessor.getInstance();
+		if (control != null)
 		{
-			attributeProcessor.populateAttributeUIBeanInterface((AbstractAttributeInterface) controlInterface.getBaseAbstractAttribute(),
-					attributeUIBeanInterface);
+			attrPrcr.populateAttributeUIBeanInterface((AbstractAttributeInterface) control
+					.getBaseAbstractAttribute(), attributeUIBean);
 		}
 
-		String userSelectedTool = DynamicExtensionsUtility.getControlName(controlInterface);
+		String userSelectedTool = DynamicExtensionsUtility.getControlName(control);
 		if (userSelectedTool == null || userSelectedTool.equals(""))
 		{
 			userSelectedTool = ProcessorConstants.DEFAULT_SELECTED_CONTROL;
 		}
-		controlUIBeanInterface.setUserSelectedTool(userSelectedTool);
+
+		controlUIBean.setUserSelectedTool(userSelectedTool);
 	}
 
 	/**
-	 * @param userSelectedTool 
 	 * @param controlsForm
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @param container
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void initializeControlDefaultValues(ControlsForm controlsForm, ContainerInterface container) throws DynamicExtensionsSystemException,
+	private void initializeControlDefaultValues(ControlsForm controlsForm,
+			ContainerInterface container) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		String userSelectedTool = controlsForm.getUserSelectedTool();
@@ -202,7 +212,7 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * 
+	 * @param controlsForm
 	 */
 	private void initializeFileUploadControlDefaultValues(ControlsForm controlsForm)
 	{
@@ -214,73 +224,87 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * This method will separate out the file formats explicitly specified by the user
-	 * from the supported file format list. 
+	 * This method will separate out the file formats explicitly 
+	 * specified by the user from the supported file format list. 
 	 * @param controlsForm
 	 */
 	private void initializeFileFormats(ControlsForm controlsForm)
 	{
-		String unsupportedFileFormatList = null;
-		List<String> supportedFileFormats = controlsForm.getSupportedFileFormatsList();
-		String[] userSelectedFileFormats = controlsForm.getFileFormats();
-		if (userSelectedFileFormats != null)
+		String unsupFileFrmts = null;
+		List<String> supFileFrmts = controlsForm.getSupportedFileFormatsList();
+		String[] usrSelFileFrmts = controlsForm.getFileFormats();
+		if (usrSelFileFrmts != null)
 		{
-			int noOfSelectedFormats = userSelectedFileFormats.length;
-			String selectedFileFormat = null;
-			for (int i = 0; i < noOfSelectedFormats; i++)
+			int noOfSelFrmts = usrSelFileFrmts.length;
+			String selFileFrmts = null;
+			for (int i = 0; i < noOfSelFrmts; i++)
 			{
-				selectedFileFormat = userSelectedFileFormats[i];
-				if (!DynamicExtensionsUtility.isStringInList(selectedFileFormat, supportedFileFormats))
+				selFileFrmts = usrSelFileFrmts[i];
+				if (!DynamicExtensionsUtility.isStringInList(selFileFrmts, supFileFrmts))
 				{
-					if ((unsupportedFileFormatList == null) || (unsupportedFileFormatList.equals("")))
+					if ((unsupFileFrmts == null) || (unsupFileFrmts.equals("")))
 					{
-						unsupportedFileFormatList = selectedFileFormat;
+						unsupFileFrmts = selFileFrmts;
 					}
 					else
 					{
-						unsupportedFileFormatList = unsupportedFileFormatList + ProcessorConstants.FILE_FORMATS_SEPARATOR + selectedFileFormat;
+						unsupFileFrmts = unsupFileFrmts + ProcessorConstants.FILE_FORMATS_SEPARATOR
+								+ selFileFrmts;
 					}
 				}
 			}
 		}
-		controlsForm.setFormat(unsupportedFileFormatList);
+
+		controlsForm.setFormat(unsupFileFrmts);
 	}
 
 	/**
-	 * @return list of file formats available for file control
+	 * @return List<String> list of file formats available for file control.
 	 */
 	private List<String> getFileFormatsList()
 	{
+		// Initialize the DynamicExtensionsFileFormats.properties file.
 		ApplicationProperties.initBundle("DynamicExtensionsFileFormats");
-		ArrayList<String> fileFormatsList = new ArrayList<String>();
-		String fileExtensionsString = ApplicationProperties.getValue("fileExtensions");
-		StringTokenizer st = new StringTokenizer(fileExtensionsString, ",");
-		while (st.hasMoreTokens())
+		ArrayList<String> fileFormats = new ArrayList<String>();
+		String fileExtns = ApplicationProperties.getValue("fileExtensions");
+		StringTokenizer strTknizer = new StringTokenizer(fileExtns, ",");
+		while (strTknizer.hasMoreTokens())
 		{
-			fileFormatsList.add(st.nextToken());
+			fileFormats.add(strTknizer.nextToken());
 		}
-		return fileFormatsList;
+
+		// Initialize the ApplicationResources.properties file once the purpose of file formats is complete.
+		ApplicationProperties.initBundle("ApplicationResources");
+
+		return fileFormats;
 	}
 
 	/**
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * @param controlsForm
+	 * @param container
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm, ContainerInterface container)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void initializeOptionButtonControlDefaultValues(ControlsForm controlsForm,
+			ContainerInterface container) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		//Set default display choice	 
-		if ((controlsForm.getDisplayChoice() == null) || (controlsForm.getDisplayChoice().equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
+		// Set default display choice. 
+		if ((controlsForm.getDisplayChoice() == null)
+				|| (controlsForm.getDisplayChoice()
+						.equals(ProcessorConstants.DISPLAY_CHOICE_LOOKUP)))
 		{
 			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 		}
+
 		controlsForm.setGroupNames(getGroupNamesList(container));
 		controlsForm.setSeparatorList(getSeparatorsList());
+
 		if (controlsForm.getSelectedAttributes() == null)
 		{
 			controlsForm.setSelectedAttributes(new ArrayList<NameValueBean>());
 		}
+
 		if (controlsForm.getOptionDetails() == null)
 		{
 			controlsForm.setOptionDetails(new ArrayList());
@@ -288,27 +312,28 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * 
+	 * @param controlsForm
 	 */
 	private void initializeCheckBoxControlDefaultValues(ControlsForm controlsForm)
 	{
-		if ((controlsForm.getAttributeDefaultValue() == null) || ((controlsForm.getAttributeDefaultValue().trim().equals(""))))
+		if (controlsForm.getAttributeDefaultValue() == null
+				|| controlsForm.getAttributeDefaultValue().trim().equals(""))
 		{
 			controlsForm.setAttributeDefaultValue(ProcessorConstants.DEFAULT_CHECKBOX_VALUE);
 		}
 	}
 
 	/**
-	 * 
+	 * @param controlsForm
 	 */
 	private void initializeDatePickerControlDefaultValues(ControlsForm controlsForm)
 	{
-		//Date value type
+		// Date value type.
 		if (controlsForm.getDateValueType() == null)
 		{
 			controlsForm.setDateValueType(ProcessorConstants.DEFAULT_DATE_VALUE);
 		}
-		//Date format
+		// Date format.
 		if (controlsForm.getFormat() == null)
 		{
 			controlsForm.setFormat(ProcessorConstants.DEFAULT_DATE_FORMAT);
@@ -316,29 +341,35 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * @param controlsForm
+	 * @param container
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm, ContainerInterface container)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private void initializeComboboxControlDefaultValues(ControlsForm controlsForm,
+			ContainerInterface container) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		//Set default display choice
+		// Set default display choice.
 		if (controlsForm.getDisplayChoice() == null)
 		{
 			controlsForm.setDisplayChoice(ProcessorConstants.DEFAULT_DISPLAY_CHOICE_TYPE);
 		}
-		//Default list type
+
+		// Default list type.
 		if (controlsForm.getAttributeMultiSelect() == null)
 		{
 			controlsForm.setAttributeMultiSelect(ProcessorConstants.DEFAULT_LIST_TYPE);
 		}
+
 		if (controlsForm.getFormTypeForLookup() == null)
 		{
 			controlsForm.setFormTypeForLookup(ProcessorConstants.DEFAULT_LOOKUP_TYPE);
 		}
+
 		controlsForm.setGroupNames(getGroupNamesList(container));
 		controlsForm.setSeparatorList(getSeparatorsList());
+
 		if (controlsForm.getSelectedAttributes() == null)
 		{
 			controlsForm.setSelectedAttributes(new ArrayList<NameValueBean>());
@@ -350,58 +381,59 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * @return
+	 * @return List<NameValueBean> list of name value beans
 	 */
 	private List<NameValueBean> getSeparatorsList()
 	{
-		ArrayList<NameValueBean> separatorList = new ArrayList<NameValueBean>();
-		separatorList.add(new NameValueBean("Comma", ","));
-		separatorList.add(new NameValueBean("Colon", ":"));
-		separatorList.add(new NameValueBean("Space", " "));
-		separatorList.add(new NameValueBean("Dot", "."));
-		DynamicExtensionsUtility.sortNameValueBeanListByName(separatorList);
-		return separatorList;
+		ArrayList<NameValueBean> sprtrs = new ArrayList<NameValueBean>();
+		sprtrs.add(new NameValueBean("Comma", ","));
+		sprtrs.add(new NameValueBean("Colon", ":"));
+		sprtrs.add(new NameValueBean("Space", " "));
+		sprtrs.add(new NameValueBean("Dot", "."));
+		DynamicExtensionsUtility.sortNameValueBeanListByName(sprtrs);
+		return sprtrs;
 	}
 
 	/**
-	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @param container
+	 * @return List<NameValueBean> list of name value beans
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<NameValueBean> getGroupNamesList(ContainerInterface container) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private List<NameValueBean> getGroupNamesList(ContainerInterface container)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ArrayList<NameValueBean> groupNamesList = new ArrayList<NameValueBean>();
-		EntityGroupInterface entityGroup = ((Entity) container.getAbstractEntity()).getEntityGroup();
+		ArrayList<NameValueBean> groupNames = new ArrayList<NameValueBean>();
+		EntityGroupInterface entityGroup = ((Entity) container.getAbstractEntity())
+				.getEntityGroup();
 		NameValueBean groupName = null;
 
 		if (entityGroup.getId() != null)
 		{
 			groupName = new NameValueBean(entityGroup.getName(), entityGroup.getId());
-			groupNamesList.add(groupName);
+			groupNames.add(groupName);
 		}
 
-		DynamicExtensionsUtility.sortNameValueBeanListByName(groupNamesList);
-		return groupNamesList;
+		DynamicExtensionsUtility.sortNameValueBeanListByName(groupNames);
+		return groupNames;
 	}
 
 	/**
-	 * 
+	 * @param controlsForm
 	 */
 	private void initializeTextControlDefaultValues(ControlsForm controlsForm)
 	{
-		//Default Data type
+		// Default Data type.
 		if ((controlsForm.getDataType() == null) || (controlsForm.getDataType().equals("")))
 		{
 			controlsForm.setDataType(ProcessorConstants.DEFAULT_DATA_TYPE);
 		}
-		//Default single line type
+		// Default single line type.
 		if (controlsForm.getLinesType() == null)
 		{
 			controlsForm.setLinesType(ProcessorConstants.DEFAULT_LINE_TYPE);
 		}
-
-		//measurement units list
+		// Measurement units list.
 		if (controlsForm.getMeasurementUnitsList() == null)
 		{
 			controlsForm.setMeasurementUnitsList(getListOfMeasurementUnits());
@@ -409,7 +441,7 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * Gets List of Measurement Units
+	 * Get a List of measurement units.
 	 * @return List<String>
 	 */
 	private List<String> getListOfMeasurementUnits()
@@ -426,29 +458,34 @@ public class LoadFormControlsProcessor
 	}
 
 	/**
-	 * 
-	 * @param controlName name of the control
-	 * @param dataTypeName name of datatype
+	 * @param controlName Name of the control
 	 * @return Map ControlRulesMap
-	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private Map getControlRulesMap(String controlName) throws DynamicExtensionsSystemException
 	{
-		ControlConfigurationsFactory ccf = ControlConfigurationsFactory.getInstance();
-		return ccf.getRulesMap(controlName);
+		ControlConfigurationsFactory ctrlCfgFact = ControlConfigurationsFactory.getInstance();
+		return ctrlCfgFact.getRulesMap(controlName);
 	}
 
-	public ControlInterface getSelectedControl(ControlsForm controlsForm, ContainerInterface containerInterface)
+	/**
+	 * @param controlsForm
+	 * @param container
+	 * @return ControlInterface selected control.
+	 */
+	public ControlInterface getSelectedControl(ControlsForm controlsForm,
+			ContainerInterface container)
 	{
 		ControlInterface selectedControl = null;
-		if ((containerInterface != null) && (controlsForm != null))
+		if ((container != null) && (controlsForm != null))
 		{
 			String selectedControlId = controlsForm.getSelectedControlId();
 			if ((selectedControlId != null) && (!selectedControlId.trim().equals("")))
 			{
-				selectedControl = containerInterface.getControlInterfaceBySequenceNumber(selectedControlId);
+				selectedControl = container.getControlInterfaceBySequenceNumber(selectedControlId);
 			}
 		}
+
 		return selectedControl;
 	}
 }

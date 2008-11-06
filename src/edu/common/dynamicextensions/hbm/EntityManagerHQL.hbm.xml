@@ -256,6 +256,11 @@
 		where container.caption=?
 	
 	</query>
-   
+	
+    <query name="getRootCategoryEntityCaptionById">
+		select category.name
+		from edu.common.dynamicextensions.domain.Category category
+		where category.rootCategoryElement.id =?
+	</query>
 
 </hibernate-mapping>

@@ -2440,7 +2440,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return containerCaption.iterator().next().toString();
 
 	}
-
+	/**
+	 * @param containerId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getCategoryCaption(Long categoryId) throws DynamicExtensionsSystemException
+	{
+		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
+		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", categoryId));
+		Collection containerCaption = executeHQL("getRootCategoryEntityCaptionById", substitutionParameterMap);
+		return containerCaption.iterator().next().toString();
+	}
 	/** (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */

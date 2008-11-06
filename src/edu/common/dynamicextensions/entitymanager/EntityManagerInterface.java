@@ -617,4 +617,10 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getContainerIdByCaption(String containerCaption) throws DynamicExtensionsSystemException;
+	/**
+	 * @param containerId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getCategoryCaption(Long categoryId) throws DynamicExtensionsSystemException;
 }

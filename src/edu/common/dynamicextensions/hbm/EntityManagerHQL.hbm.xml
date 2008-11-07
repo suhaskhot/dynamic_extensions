@@ -246,15 +246,16 @@
    <query name="getAttributeId">
    		select absAttr.id from AbstractAttribute absAttr where absAttr.entity.id = ? and absAttr.name = ?
    </query>
+   <query name="getMultiSelAttrId">
+   		select absAttr.id from AbstractAttribute absAttr where absAttr.entity.id = ? and absAttr.name like ?
+   </query>
    <query name="getAttributeTypeObject">
    		select attr.attributeTypeInformationCollection from Attribute attr where attr.id = ?
    </query>
-   
-   	<query name="getContainerIdByName">
+   <query name="getContainerIdByName">
 		select container.id
 		from edu.common.dynamicextensions.domain.userinterface.Container container
 		where container.caption=?
-	
 	</query>
 	
     <query name="getRootCategoryEntityCaptionById">
@@ -262,5 +263,10 @@
 		from edu.common.dynamicextensions.domain.Category category
 		where category.rootCategoryElement.id =?
 	</query>
-
+	
+	<query name="getTargetEntityIdForCollAttribute">
+   		select association.targetEntity.id	
+		from Association association
+        where  association.id = ? AND association.isCollection = ?
+    </query>
 </hibernate-mapping>

@@ -10,7 +10,6 @@
 
 package edu.common.dynamicextensions.util.global;
 
-
 /**
  * This class stores the constants used in the operations in the application.
  * @author Sujay Narkar
@@ -62,35 +61,36 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String EDIT_SUB_FORM_OPR = "EditSubForm";
 	public static final String INSERT_DATA = "insertData";
 	public static final String CALLBACK_URL = "callbackURL";
-    public static final String JANUARY = "Jan";
-    public static final String FEBRUARY= "Feb";
-    public static final String MARCH= "Mar";
-    public static final String APRIL= "Apr";
-    public static final String MAY= "May";
-    public static final String JUNE= "Jun";
-    public static final String JULY= "Jul";
-    public static final String AUGUST= "Aug";
-    public static final String SEPTEMBER= "Sep";
-    public static final String OCTOBER= "Oct";
-    public static final String NOVEMBER= "Nov";
-    public static final String DECEMBER= "Dec";
+	public static final String JANUARY = "Jan";
+	public static final String FEBRUARY = "Feb";
+	public static final String MARCH = "Mar";
+	public static final String APRIL = "Apr";
+	public static final String MAY = "May";
+	public static final String JUNE = "Jun";
+	public static final String JULY = "Jul";
+	public static final String AUGUST = "Aug";
+	public static final String SEPTEMBER = "Sep";
+	public static final String OCTOBER = "Oct";
+	public static final String NOVEMBER = "Nov";
+	public static final String DECEMBER = "Dec";
 
 	//Constant for groupName prefix
 
 	public static final String GROUP_PREFIX = "Group_";
 
 	//public static final int DATA_TABLE_STATE_CREATED = 1;
-    public static final int DATA_TABLE_STATE_CREATED = 1;
+	public static final int DATA_TABLE_STATE_CREATED = 1;
 	public static final int DATA_TABLE_STATE_NOT_CREATED = 2;
 	public static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
-	
+
 	public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
 
 	public static final String ID = "id";
 	public static final String IDENTIFIER = "identifier";
-	public static final String LIST_OF_CONTAINER="listofContainer";
-    public static final String ISCATEGORY = "_IsCategory";
-    
+	public static final String LIST_OF_CONTAINER = "listofContainer";
+	public static final String ISCATEGORY = "_IsCategory";
+	public static final String COLLECTIONATTRIBUTE = "CollectionAttribute";
+
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);
 
@@ -213,8 +213,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 			return null;
 		}
 	}
-	
-	
+
 	public enum ValueDomainType {
 		ENUMERATED("ENUMERATED"), NON_ENUMERATED("NON_ENUMERATED");
 
@@ -234,7 +233,7 @@ public class Constants extends edu.wustl.common.util.global.Constants
 		{
 			ValueDomainType[] valueDomainTypes = ValueDomainType.values();
 
-			for (ValueDomainType valueDomainType : valueDomainTypes )
+			for (ValueDomainType valueDomainType : valueDomainTypes)
 			{
 				if (valueDomainType.getValue().equalsIgnoreCase(value))
 				{

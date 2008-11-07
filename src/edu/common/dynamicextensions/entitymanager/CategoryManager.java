@@ -120,9 +120,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		CategoryInterface category = (CategoryInterface) persistDynamicExtensionObject(categoryInterface);
 
 		// Update the dynamic extension cache for all containers within entity group
-		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
-		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
-		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
+//		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
+//		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
+//		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return category;
 	}
 
@@ -137,9 +137,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		CategoryInterface category = (CategoryInterface) persistDynamicExtensionObjectMetdata(categoryInterface);
 
 		// Update the dynamic extension cache for all containers within entity group
-		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
-		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
-		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
+//		CategoryEntityInterface catEntityInterface = category.getRootCategoryElement();
+//		EntityGroupInterface entityGroupInterface = catEntityInterface.getEntity().getEntityGroup();
+//		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
 		return category;
 	}
 

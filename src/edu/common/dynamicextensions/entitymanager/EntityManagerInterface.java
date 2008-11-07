@@ -33,6 +33,7 @@ import edu.wustl.common.util.dbManager.DAOException;
  */
 public interface EntityManagerInterface
 {
+
 	/**
 	 * Saves the entity into the database.Also prepares the dynamic tables and associations
 	 * between those tables using the metadata information in the entity object.
@@ -42,8 +43,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface persistEntity(EntityInterface entityInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public EntityInterface persistEntity(EntityInterface entityInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method is used to save the metadata information of the given entity without creating it's data
@@ -51,8 +52,8 @@ public interface EntityManagerInterface
 	 *
 	 * @param entityInterface entity to be persisted
 	 */
-	public EntityInterface persistEntityMetadata(EntityInterface entity) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public EntityInterface persistEntityMetadata(EntityInterface entity)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of association objects given the source entity id and
@@ -63,8 +64,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<AssociationInterface> getAssociations(Long sourceEntityId, Long targetEntityId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection<AssociationInterface> getAssociations(Long sourceEntityId, Long targetEntityId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns an entity object given the entity name;
@@ -73,7 +74,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns an association object given the entity name and source role name.
@@ -83,8 +85,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 *
@@ -95,10 +97,12 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	AssociationInterface getAssociation(String sourceEntityName, String sourceRoleName, String targetEntityName)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	AssociationInterface getAssociation(String sourceEntityName, String sourceRoleName,
+			String targetEntityName) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
-	AssociationInterface getAssociationByName(String associationName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	AssociationInterface getAssociationByName(String associationName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a collection of entities given the entity concept code.
@@ -107,8 +111,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<EntityInterface> getEntitiesByConceptCode(String entityConceptCode) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection<EntityInterface> getEntitiesByConceptCode(String entityConceptCode)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns all entities in the whole system
@@ -116,7 +120,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns a single  entity for given identifier
@@ -124,7 +129,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface getEntityByIdentifier(String identifier) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public EntityInterface getEntityByIdentifier(String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns the entity based on the id passed.
@@ -133,7 +139,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException thrown in case of fatal system exceptions
 	 * @throws DynamicExtensionsApplicationException thrown in case application specific errors.
 	 */
-	EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns all Containers in the whole system
@@ -141,7 +148,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection<ContainerInterface> getAllContainers() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Retrieve all containers from a particular group.
@@ -150,21 +158,23 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method inserts one record for the entity.
 	 */
-	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue, Long... userId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue,
+			Long... userId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException;
 
 	/**
 	 * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing
 	 * is persisted.
 	 * It returns the record id in the same sequence as that of input maps in dataValueMapList.
 	 */
-	List<Long> insertData(EntityInterface entity, List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long... userId)
+	List<Long> insertData(EntityInterface entity,
+			List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -177,8 +187,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, Long... userId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue,
+			Long recordId, Long... userId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException;
 
 	/**
 	 * @param entity
@@ -187,7 +198,8 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	EntityRecordResultInterface getEntityRecords(EntityInterface entity, List<? extends AbstractAttributeInterface> abstractAttributeCollection,
+	EntityRecordResultInterface getEntityRecords(EntityInterface entity,
+			List<? extends AbstractAttributeInterface> abstractAttributeCollection,
 			List<Long> recordIdList) throws DynamicExtensionsSystemException;
 
 	/**
@@ -197,8 +209,8 @@ public interface EntityManagerInterface
 	 * @return Map key - attribute name
 	 *             value - attribute value
 	 */
-	Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method deletes a particular record for an entity.
@@ -208,7 +220,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	boolean deleteRecord(EntityInterface entity, Long recordId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	boolean deleteRecord(EntityInterface entity, Long recordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * Method deletes the passed records of the passed container.
@@ -218,7 +231,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	void deleteRecords(Long containerId, List<Long> recordIdList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	void deleteRecords(Long containerId, List<Long> recordIdList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method returns the all the record for the given control of the
@@ -228,22 +242,15 @@ public interface EntityManagerInterface
 	 *    key   recordId
 	 *    value List<String> list of column values
 	 */
-	Map<Long, List<String>> getRecordsForAssociationControl(AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
+	Map<Long, List<String>> getRecordsForAssociationControl(
+			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 *
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public List<ContainerInformationObject> getAllContainerInformationObjects() throws DynamicExtensionsSystemException,
+	List<NameValueBean> getAllContainerBeans() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -252,34 +259,47 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public List<ContainerInformationObject> getAllContainerInformationObjects()
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
+	/**
+	 *
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * returns all the records for a given entity
 	 */
-	List<EntityRecord> getAllRecords(AbstractEntityInterface entity) throws DynamicExtensionsSystemException;
+	List<EntityRecord> getAllRecords(AbstractEntityInterface entity)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * This method returns all the children entities of givens entity.
 	 * @return Collection of EntityInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	Collection<EntityInterface> getChildrenEntities(EntityInterface entity) throws DynamicExtensionsSystemException;
+	Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param associationId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	AssociationInterface getAssociationByIdentifier(Long associationId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	AssociationInterface getAssociationByIdentifier(Long associationId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method returns collection of the association for a given target entity.
 	 * @param entity
 	 * @return
 	 */
-	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity) throws DynamicExtensionsSystemException;
+	Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param containerId
@@ -292,7 +312,8 @@ public interface EntityManagerInterface
 	 * @param association
 	 * @throws DynamicExtensionsSystemException
 	 */
-	void addAssociationColumn(AssociationInterface association) throws DynamicExtensionsSystemException;
+	void addAssociationColumn(AssociationInterface association)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param associationInterface
@@ -300,7 +321,8 @@ public interface EntityManagerInterface
 	 * @param TargetEntityRecordId
 	 * @throws DynamicExtensionsSystemException
 	 */
-	void associateEntityRecords(AssociationInterface associationInterface, Long sourceEntityRecordId, Long TargetEntityRecordId)
+	void associateEntityRecords(AssociationInterface associationInterface,
+			Long sourceEntityRecordId, Long TargetEntityRecordId)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -318,14 +340,16 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct) throws DynamicExtensionsSystemException;
+	public Long checkContainerForAbstractEntity(Long entityIdentifier, boolean isAbstarct)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param entityIdentifier
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long checkContainerForAbstractCategoryEntity(Long entityIdentifier) throws DynamicExtensionsSystemException;
+	public Long checkContainerForAbstractCategoryEntity(Long entityIdentifier)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * Get entity id for entity. This method fires direct SQL query and does not use hibernate for
@@ -352,7 +376,8 @@ public interface EntityManagerInterface
 	 * @return :  Next identifier that can be assigned to a entity record
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getNextIdentifierForEntity(String entityName) throws DynamicExtensionsSystemException;
+	public Long getNextIdentifierForEntity(String entityName)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * Returns an attribute given the entity name and attribute name.
@@ -362,21 +387,23 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeInterface getAttribute(String entityName, String attributeName) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public AttributeInterface getAttribute(String entityName, String attributeName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns all entitiy groups in the whole system
 	 * @return Collection Entity group Beans Collection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
+	public Collection<NameValueBean> getAllEntityGroupBeans()
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * validateEntityGroup.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean validateEntity(EntityInterface entity) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	public boolean validateEntity(EntityInterface entity)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 *
@@ -385,7 +412,8 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId) throws DynamicExtensionsSystemException;
+	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * This method returns the container interface given the entity identifier.
@@ -394,15 +422,16 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier) throws DynamicExtensionsSystemException;
+	public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param attribute
@@ -414,8 +443,9 @@ public interface EntityManagerInterface
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute, Long recordId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, DAOException, SQLException, IOException;
+	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
+			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, DAOException, SQLException, IOException;
 
 	public Long isCategory(Long containerId) throws DynamicExtensionsSystemException;
 
@@ -424,7 +454,8 @@ public interface EntityManagerInterface
 	 * @param hookEntityId
 	 * @return the container Id of the DE entities that are associated with given static hook entity
 	 */
-	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException;
+	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(
+			Long hookEntityId) throws DynamicExtensionsSystemException;
 
 	/**
 	 *
@@ -432,7 +463,8 @@ public interface EntityManagerInterface
 	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId) throws DynamicExtensionsSystemException;
+	public Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 *
@@ -448,28 +480,31 @@ public interface EntityManagerInterface
 	 * @param staticRecId
 	 * @return the record id of the category depending on hook entity record id.
 	 */
-	public String getColumnNameForAssociation(Long hookEntityId, Long containerId) throws DynamicExtensionsSystemException;
+	public String getColumnNameForAssociation(Long hookEntityId, Long containerId)
+			throws DynamicExtensionsSystemException;
 
-	public Long getCategoryRootContainerId(Long containerId) throws DynamicExtensionsSystemException;
+	public Long getCategoryRootContainerId(Long containerId)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param entityGroupIdentifier
 	 * @return
 	 */
-	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface, boolean isDataTablePresent,
-			boolean copyDataTableState, AssociationInterface association) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+			boolean isDataTablePresent, boolean copyDataTableState, AssociationInterface association)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationsForTargetEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
-	public Collection<Long> getIncomingAssociationIds(EntityInterface entity) throws DynamicExtensionsSystemException;
+	public Collection<Long> getIncomingAssociationIds(EntityInterface entity)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param entityGroupName
@@ -477,7 +512,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityGroupInterface getEntityGroupByName(String entityGroupName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	EntityGroupInterface getEntityGroupByName(String entityGroupName)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method returns the EntityGroupInterface given the short name for the
@@ -486,7 +522,8 @@ public interface EntityManagerInterface
 	 * @return entityGroupInterface entity group interface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName) throws DynamicExtensionsSystemException;
+	EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * Returns all entityGroups in the system.
@@ -494,7 +531,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection<EntityGroupInterface> getAllEntitiyGroups() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * This method returns the control given the attribute identifier
@@ -503,8 +541,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstractAttributeIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entityGroupId
@@ -512,11 +550,12 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
-
-	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity, Long recordId)
+	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
+	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
@@ -527,8 +566,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, JDBCDAO jdbcDao, Long parentRecordId, Long... userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, JDBCDAO jdbcDao,
+			Long parentRecordId, Long... userId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
@@ -539,8 +579,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId, JDBCDAO jdbcDAO, Long... userId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
+			JDBCDAO jdbcDAO, Long... userId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
@@ -551,7 +592,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Long insertDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDAO, Long... id)
+	public Long insertDataForHeirarchy(EntityInterface entity,
+			Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDAO, Long... id)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -564,8 +606,10 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean editDataForHeirarchy(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
-			Long... userId) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
+	public boolean editDataForHeirarchy(EntityInterface entity,
+			Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
+			Long... userId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException;
 
 	/**
 	 * This method updates attribute type info object
@@ -574,7 +618,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public AttributeTypeInformationInterface updateAttributeTypeInfo(AttributeTypeInformationInterface attrTypeInfo)
+	public AttributeTypeInformationInterface updateAttributeTypeInfo(
+			AttributeTypeInformationInterface attrTypeInfo)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -592,7 +637,8 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getEntityId(String entityName, Long entityGroupId) throws DynamicExtensionsSystemException;
+	public Long getEntityId(String entityName, Long entityGroupId)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * This method retrieves the attribute id for the entity and the given attribute name.
@@ -601,7 +647,8 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getAttributeId(String attributeName, Long entityId) throws DynamicExtensionsSystemException;
+	public Long getAttributeId(String attributeName, Long entityId)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * This method retrives the AttributeTypeInformation object given the attribute id.
@@ -609,18 +656,28 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public AttributeTypeInformationInterface getAttributeTypeInformation(Long attributeId) throws DynamicExtensionsSystemException;
+	public AttributeTypeInformationInterface getAttributeTypeInformation(Long attributeId)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param containerCaption
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getContainerIdByCaption(String containerCaption) throws DynamicExtensionsSystemException;
+	public Long getContainerIdByCaption(String containerCaption)
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * @param containerId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String getCategoryCaption(Long categoryId) throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param attributeId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getAssociationAttributeId(Long attributeId) throws DynamicExtensionsSystemException;
 }

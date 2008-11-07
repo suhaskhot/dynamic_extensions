@@ -2440,6 +2440,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return containerCaption.iterator().next().toString();
 
 	}
+
 	/**
 	 * @param containerId
 	 * @return
@@ -2449,9 +2450,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", categoryId));
-		Collection containerCaption = executeHQL("getRootCategoryEntityCaptionById", substitutionParameterMap);
+		Collection containerCaption = executeHQL("getRootCategoryEntityCaptionById",
+				substitutionParameterMap);
 		return containerCaption.iterator().next().toString();
 	}
+
 	/** (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
@@ -3553,7 +3556,37 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 
 		return containerId;
-
 	}
 
+	/**
+	 * @param attributeId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+
+	public Long getAssociationAttributeId(Long attributeId) throws DynamicExtensionsSystemException
+	{
+		Long associationAttrId = null;
+		Map<String, HQLPlaceHolderObject> substParaMap = new HashMap<String, HQLPlaceHolderObject>();
+		substParaMap.put("0", new HQLPlaceHolderObject("long", attributeId));
+		substParaMap.put("1", new HQLPlaceHolderObject("boolean", true));
+		Collection targetEntityIdCol = executeHQL("getTargetEntityIdForCollAttribute", substParaMap);
+		if (targetEntityIdCol != null && !targetEntityIdCol.isEmpty())
+		{
+			Long targetEntityId = (Long) targetEntityIdCol.iterator().next();
+			if (targetEntityId != null)
+			{
+				Map<String, HQLPlaceHolderObject> subParamMap = new HashMap<String, HQLPlaceHolderObject>();
+				subParamMap.put("0", new HQLPlaceHolderObject("long", targetEntityId));
+				subParamMap.put("1", new HQLPlaceHolderObject("string",
+						Constants.COLLECTIONATTRIBUTE + "%"));
+				Collection attributeIdCollection = executeHQL("getMultiSelAttrId", subParamMap);
+				if (attributeIdCollection != null && !attributeIdCollection.isEmpty())
+				{
+					associationAttrId = (Long) attributeIdCollection.iterator().next();
+				}
+			}
+		}
+		return associationAttrId;
+	}
 }

@@ -66,7 +66,7 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		for (int i = startFetch; i < total && i < querySpecificNVBeans.size(); i++)
 		{
 			JSONObject jsonObject = new JSONObject();
-			if (query == null || querySpecificNVBeans.get(i).getName().toLowerCase().startsWith(query.toLowerCase()) || query.length() == 0)
+			if (query == null || querySpecificNVBeans.get(i).getName().toLowerCase().contains(query.toLowerCase()) || query.length() == 0)
 			{
 				jsonObject.put("id", querySpecificNVBeans.get(i).getValue());
 				jsonObject.put("field", querySpecificNVBeans.get(i).getName());
@@ -93,7 +93,7 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 	{
 		for (NameValueBean nvb : nameValueBeans)
 		{
-			if (nvb.getName().toLowerCase().startsWith(query.toLowerCase()))
+			if (nvb.getName().toLowerCase().contains(query.toLowerCase()))
 			{
 				querySpecificNVBeans.add(nvb);
 			}

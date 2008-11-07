@@ -49,7 +49,8 @@ public class ImportPermissibleValues
 	 * @throws DynamicExtensionsSystemException
 	 * @throws FileNotFoundException
 	 */
-	public ImportPermissibleValues(String filePath) throws DynamicExtensionsSystemException, FileNotFoundException
+	public ImportPermissibleValues(String filePath) throws DynamicExtensionsSystemException,
+			FileNotFoundException
 	{
 		this.categoryCSVFileParser = new CategoryCSVFileParser(filePath);
 	}
@@ -61,7 +62,8 @@ public class ImportPermissibleValues
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws ParseException
 	 */
-	public void importValues() throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, ParseException
+	public void importValues() throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException, ParseException
 	{
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
@@ -69,19 +71,21 @@ public class ImportPermissibleValues
 		{
 			while (categoryCSVFileParser.readNext())
 			{
-				EntityManagerInterface entityManager = EntityManager.getInstance(); 
+				EntityManagerInterface entityManager = EntityManager.getInstance();
 				//first line in the categopry file is Category_Definition
 				if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
 				{
 					continue;
 				}
 				//1:read the entity group
-				Long entityGroupId = entityManager.getEntityGroupId(categoryCSVFileParser.getEntityGroupName());
-				CategoryValidator.checkForNullRefernce(entityGroupId, " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
-						+ " ENTITY GROUP WITH NAME " + categoryCSVFileParser.getEntityGroupName() + " DOES NOT");
-				
+				Long entityGroupId = entityManager.getEntityGroupId(categoryCSVFileParser
+						.getEntityGroupName());
+				CategoryValidator.checkForNullRefernce(entityGroupId, " ERROR AT LINE:"
+						+ categoryCSVFileParser.getLineNumber() + " ENTITY GROUP WITH NAME "
+						+ categoryCSVFileParser.getEntityGroupName() + " DOES NOT");
+
 				categoryCSVFileParser.getCategoryValidator().setEntityGroupId(entityGroupId);
-				
+
 				while (categoryCSVFileParser.readNext())
 				{
 					boolean overridePv = categoryCSVFileParser.isOverridePermissibleValues();
@@ -90,22 +94,35 @@ public class ImportPermissibleValues
 						break;
 					}
 					String entityName = categoryCSVFileParser.getEntityName();
-					Long entityId = entityManager.getEntityId(entityName, entityGroupId);				
-					CategoryValidator.checkForNullRefernce(entityId, " ERROR AT LINE:" + categoryCSVFileParser.getLineNumber()
-							+ " ENTITY WITH NAME " + entityName + " DOES NOT EXIST");
-					
+					Long entityId = entityManager.getEntityId(entityName, entityGroupId);
+					CategoryValidator.checkForNullRefernce(entityId, " ERROR AT LINE:"
+							+ categoryCSVFileParser.getLineNumber() + " ENTITY WITH NAME "
+							+ entityName + " DOES NOT EXIST");
+
 					String attributeName = categoryCSVFileParser.getAttributeName();
 
-					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser.getPermissibleValues();
+					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser
+							.getPermissibleValues();
 					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String, Collection<SemanticPropertyInterface>>();
 					Long attributeId = entityManager.getAttributeId(attributeName, entityId);
-					
+					//Bug #10432,10382
+					//If this attribute id is of type association (as in case of multiselect) 
+					//It is required to fetch association's target entity's attribute id 
+					Long assonAttriId = entityManager.getAssociationAttributeId(attributeId);
+					if (assonAttriId != null)
+					{
+						attributeId = assonAttriId;
+					}
+
 					CategoryValidator.checkForNullRefernce(attributeId, " ERROR AT LINE:"
-							+ categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME " + attributeName + " DOES NOT EXIST");
-										
-					AttributeTypeInformationInterface attributeTypeInformation = entityManager.getAttributeTypeInformation(attributeId);
-		
-					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation.getDataElement();
+							+ categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME "
+							+ attributeName + " DOES NOT EXIST");
+
+					AttributeTypeInformationInterface attributeTypeInformation = entityManager
+							.getAttributeTypeInformation(attributeId);
+
+					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation
+							.getDataElement();
 
 					if (userDefinedDE == null)
 					{
@@ -121,7 +138,8 @@ public class ImportPermissibleValues
 						}
 
 						List<String> list = new ArrayList<String>();
-						for (PermissibleValueInterface permissibleValue : userDefinedDE.getPermissibleValueCollection())
+						for (PermissibleValueInterface permissibleValue : userDefinedDE
+								.getPermissibleValueCollection())
 						{
 							list.add(permissibleValue.getValueAsObject().toString());
 						}
@@ -135,36 +153,40 @@ public class ImportPermissibleValues
 						}
 					}
 
-					List<PermissibleValueInterface> list = categoryHelper.getPermissibleValueList(attributeTypeInformation, finalPvList);
-					
+					List<PermissibleValueInterface> list = categoryHelper.getPermissibleValueList(
+							attributeTypeInformation, finalPvList);
+
 					userDefinedDE.addAllPermissibleValues(list);
-									
+
 					if (list != null && !list.isEmpty())
 					{
 						//set the first value in the list as the default value
 						attributeTypeInformation.setDefaultValue(list.get(0));
 					}
 					entityManager.updateAttributeTypeInfo(attributeTypeInformation);
-				}				
+				}
 			}
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE:" + categoryCSVFileParser.getLineNumber(), e);
+			throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE:"
+					+ categoryCSVFileParser.getLineNumber(), e);
 		}
 		catch (Exception e)
 		{
 			if (!(e instanceof DynamicExtensionsSystemException))
 			{
-				throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE: " + categoryCSVFileParser.getLineNumber() + "READING FILE "
+				throw new DynamicExtensionsSystemException("FATAL ERROR AT LINE: "
+						+ categoryCSVFileParser.getLineNumber() + "READING FILE "
 						+ categoryCSVFileParser.getFilePath(), e);
 			}
 			throw new DynamicExtensionsSystemException("", e);
 		}
 
 	}
-	
-	public static void main(String args[]) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+
+	public static void main(String args[]) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		try
 		{

@@ -1,16 +1,16 @@
-/**
- *<p>Title: </p>
- *<p>Description:  </p>
- *<p>Copyright:TODO</p>
- *@author Vishvesh Mulay
- *@version 1.0
- */
+
 package edu.common.dynamicextensions.entitymanager;
 
-
-
-public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityManagerConstantsInterface
+/**
+ * @author vishwesh_mulay
+ * @author mandar_shidhore
+ *
+ */
+public interface DynamicExtensionsQueryBuilderConstantsInterface
+		extends
+			EntityManagerConstantsInterface
 {
+
 	String TABLE_NAME_PREFIX = "DE_E";
 	String CATEGORY_TABLE_NAME_PREFIX = "DE_C";
 	String UNDERSCORE = "_";
@@ -35,8 +35,6 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String UPDATE_KEYWORD = " UPDATE ";
 	String JOIN_KEYWORD = " JOIN ";
 	String ON_KEYWORD = " ON ";
-
-
 	String CONSTRAINT_KEYWORD = " CONSTRAINT ";
 	String UNIQUE_KEYWORD = " UNIQUE ";
 	String COLUMN_KEYWORD = " COLUMN ";
@@ -59,11 +57,10 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface extends EntityM
 	String FOREIGN_KEY_KEYWORD = " foreign key ";
 	String AND_KEYWORD = "AND";
 	String LIKE_KEYWORD = "LIKE";
-
 	String FILE_NAME = "file_name";
 	String CONTENT_TYPE = "content_type";
-
 	String VALUES_KEYWORD = "VALUES";
 	String RECORD_ID = "RECORD_ID";
+	String ASTERIX = "*";
 
 }

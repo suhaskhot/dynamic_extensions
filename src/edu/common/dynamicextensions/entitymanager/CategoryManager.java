@@ -804,7 +804,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				}
 			}
 		}
-		else
+		//if all attributes are  invisible type related attribute then only insert explicitly ,in all other case the catentity name must available in recordsMap 
+		else if(recordsMap.get(categoryEntity.getName()) == null && isAllRelatedInvisibleCategoryAttributesCollection(categoryEntity))
 		{
 			//insertRelatedAttributeRecordsForCategoryEntitiesInPath(recordsMap, categoryEntity, columnNames, columnValues, categoryEntityForeignKey, sourceEntityId, rootRecordId, entityTableName, categoryEntityTableName, userId, hibernateDAO);
 			PathInterface path = categoryEntity.getPath();

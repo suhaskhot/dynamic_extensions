@@ -303,7 +303,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack,
 			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException
 	{
-		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack, hibernateDAO);
+		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
 	}
 
 	/**
@@ -2470,7 +2470,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			List queryList = new ArrayList();
 			queryList.add(query);
-			stack = queryBuilder.executeQueries(queryList, list, stack, null);
+			stack = queryBuilder.executeQueries(queryList, list, stack);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{

@@ -332,10 +332,7 @@ public class CategoryGenerator
 						setControlsOptions(lastControl);
 						setDefaultValue(lastControl);
 
-						if (lastControl != null && lastControl instanceof ListBoxInterface)
-						{
-							CategoryValidator.checkIsMultiSelectValid(entityInterface, attributeName, lastControl);
-						}
+						CategoryValidator.checkIsMultiSelectValid(entityInterface, attributeName, lastControl);
 
 						// Check for isReadOnly option.
 						if (lastControl.getIsReadOnly())

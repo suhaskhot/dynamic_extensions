@@ -680,4 +680,12 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getAssociationAttributeId(Long attributeId) throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param categoryEntityId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getEntityIdByCategorEntityId(Long categoryEntityId)
+			throws DynamicExtensionsSystemException;
 }

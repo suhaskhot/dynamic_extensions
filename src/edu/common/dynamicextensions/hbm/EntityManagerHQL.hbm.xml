@@ -3,7 +3,7 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
- <hibernate-mapping>
+ <hibernate-mapping>"src/edu/common/dynamicextensions/entitymanager/EntityManager.java"
 
     <query name="getEntitiesByConceptCode">
        from Entity entity
@@ -263,7 +263,11 @@
 		from edu.common.dynamicextensions.domain.Category category
 		where category.rootCategoryElement.id =?
 	</query>
-	
+	<query name="getEntityIdByCategoryEntityId">
+		select entity.id
+		from edu.common.dynamicextensions.domain.CategoryEntity categoryEntity
+		where categoryEntity.id=?
+	</query>
 	<query name="getTargetEntityIdForCollAttribute">
    		select association.targetEntity.id	
 		from Association association

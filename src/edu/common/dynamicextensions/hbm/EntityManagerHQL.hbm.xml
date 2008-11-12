@@ -3,8 +3,7 @@
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
- <hibernate-mapping>"src/edu/common/dynamicextensions/entitymanager/EntityManager.java"
-
+ <hibernate-mapping>
     <query name="getEntitiesByConceptCode">
        from Entity entity
 		   	join entity.semanticPropertyCollection semanticProperty

@@ -101,11 +101,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static ControlInterface getControlByIdentifier(String controlIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static ControlInterface getControlByIdentifier(String controlIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
-		controlInterface = (ControlInterface) getObjectByIdentifier(ControlInterface.class.getName(), controlIdentifier);
+		controlInterface = (ControlInterface) getObjectByIdentifier(ControlInterface.class
+				.getName(), controlIdentifier);
 		return controlInterface;
 	}
 
@@ -116,11 +117,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
-		entityGroupInterface = (EntityGroupInterface) getObjectByIdentifier(EntityGroupInterface.class.getName(), entityGroupIdentifier);
+		entityGroupInterface = (EntityGroupInterface) getObjectByIdentifier(
+				EntityGroupInterface.class.getName(), entityGroupIdentifier);
 		return entityGroupInterface;
 	}
 
@@ -131,11 +133,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static ContainerInterface getContainerByIdentifier(String containerIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
-		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class.getName(), containerIdentifier);
+		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class
+				.getName(), containerIdentifier);
 		return containerInterface;
 	}
 
@@ -146,11 +149,12 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static AttributeInterface getAttributeByIdentifier(String attributeIdentifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public static AttributeInterface getAttributeByIdentifier(String attributeIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = null;
-		attributeInterface = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class.getName(), attributeIdentifier);
+		attributeInterface = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class
+				.getName(), attributeIdentifier);
 		return attributeInterface;
 	}
 
@@ -162,8 +166,8 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	private static Object getObjectByIdentifier(String objectName, String identifier) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private static Object getObjectByIdentifier(String objectName, String identifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Object object = null;
@@ -206,7 +210,8 @@ public class DynamicExtensionsUtility
 				Control objControl = (Control) iterator.next();
 				if (objControl instanceof AbstractContainmentControl)
 				{
-					ContainerInterface subContainer = ((AbstractContainmentControl) objControl).getContainer();
+					ContainerInterface subContainer = ((AbstractContainmentControl) objControl)
+							.getContainer();
 					if (subContainer != null)
 					{
 						subContainer.getContainerValueMap().clear();
@@ -275,7 +280,8 @@ public class DynamicExtensionsUtility
 	 * @param sequenceNumber
 	 * @return
 	 */
-	public static ControlInterface getControlBySequenceNumber(Collection controlCollection, int sequenceNumber)
+	public static ControlInterface getControlBySequenceNumber(Collection controlCollection,
+			int sequenceNumber)
 	{
 		ControlInterface controlInterface = null;
 		if (controlCollection != null)
@@ -284,7 +290,8 @@ public class DynamicExtensionsUtility
 			while (controlIterator.hasNext())
 			{
 				controlInterface = (ControlInterface) controlIterator.next();
-				if (controlInterface.getSequenceNumber() != null && controlInterface.getSequenceNumber() == sequenceNumber
+				if (controlInterface.getSequenceNumber() != null
+						&& controlInterface.getSequenceNumber() == sequenceNumber
 				/*&& !controlInterface.getSequenceNumberChanged()*/)
 				{
 					controlInterface.setSequenceNumberChanged(true);
@@ -295,7 +302,8 @@ public class DynamicExtensionsUtility
 		return null;
 	}
 
-	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection, int sequenceNumber)
+	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection,
+			int sequenceNumber)
 	{
 		ControlInterface controlInterface = null;
 		if (controlCollection != null)
@@ -304,7 +312,8 @@ public class DynamicExtensionsUtility
 			for (int i = 0; i < noOfControls; i++)
 			{
 				controlInterface = controlCollection[i];
-				if (controlInterface.getSequenceNumber() != null && controlInterface.getSequenceNumber() == sequenceNumber)
+				if (controlInterface.getSequenceNumber() != null
+						&& controlInterface.getSequenceNumber() == sequenceNumber)
 				{
 					controlInterface.setSequenceNumberChanged(true);
 					return controlInterface;
@@ -391,14 +400,16 @@ public class DynamicExtensionsUtility
 		}
 	}
 
-	public static AttributeTypeInformationInterface getAttributeTypeInformation(AbstractAttributeInterface abstractAttributeInterface)
+	public static AttributeTypeInformationInterface getAttributeTypeInformation(
+			AbstractAttributeInterface abstractAttributeInterface)
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = null;
 		if (abstractAttributeInterface != null)
 		{
 			if (abstractAttributeInterface instanceof AttributeInterface)
 			{
-				attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface).getAttributeTypeInformation();
+				attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface)
+						.getAttributeTypeInformation();
 			}
 		}
 		return attributeTypeInformation;
@@ -423,7 +434,8 @@ public class DynamicExtensionsUtility
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static int convertStringToInt(String string) throws DynamicExtensionsApplicationException
+	public static int convertStringToInt(String string)
+			throws DynamicExtensionsApplicationException
 	{
 		int intValue = 0;
 		if (string != null)
@@ -664,7 +676,8 @@ public class DynamicExtensionsUtility
 	 * @param entity
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static void validateEntityForSaving(EntityInterface entity) throws DynamicExtensionsApplicationException
+	public static void validateEntityForSaving(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
 	{
 
 		validateName(entity.getName());
@@ -674,38 +687,44 @@ public class DynamicExtensionsUtility
 			Iterator iterator = collection.iterator();
 			while (iterator.hasNext())
 			{
-				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator.next();
+				AbstractMetadataInterface abstractMetadataInterface = (AbstractMetadataInterface) iterator
+						.next();
 				validateName(abstractMetadataInterface.getName());
 			}
 		}
 
 		if (entity.getDescription() != null && entity.getDescription().length() > 1000)
 		{
-			throw new DynamicExtensionsApplicationException("Entity description size exceeded ", null,
-					EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
+			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
+					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
 		}
 		//This validation is already in place in ApplyFormControlsProcessor
 		//(entity, entity.getName());
 
-		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY) && entity.getParentEntity() != null)
+		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY)
+				&& entity.getParentEntity() != null)
 		{
-			if (entity.getDiscriminatorColumn() == null || entity.getDiscriminatorColumn().equals(""))
+			if (entity.getDiscriminatorColumn() == null
+					|| entity.getDiscriminatorColumn().equals(""))
 			{
-				throw new DynamicExtensionsApplicationException("Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy", null,
-						EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
+				throw new DynamicExtensionsApplicationException(
+						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy",
+						null, EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
 
 			}
 
 			if (entity.getDiscriminatorValue() == null || entity.getDiscriminatorValue().equals(""))
 			{
-				throw new DynamicExtensionsApplicationException("Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy", null,
-						EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
+				throw new DynamicExtensionsApplicationException(
+						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy",
+						null, EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
 			}
 		}
 		return;
 	}
 
-	public static void validateDuplicateNamesWithinEntity(EntityInterface entity, String attributeName) throws DynamicExtensionsApplicationException
+	public static void validateDuplicateNamesWithinEntity(EntityInterface entity,
+			String attributeName) throws DynamicExtensionsApplicationException
 	{
 		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
 		if (collection != null || !collection.isEmpty())
@@ -714,7 +733,8 @@ public class DynamicExtensionsUtility
 			{
 				if (attribute.getName().equals(attributeName))
 				{
-					throw new DynamicExtensionsApplicationException("Attribute names should be unique for the entity ", null,
+					throw new DynamicExtensionsApplicationException(
+							"Attribute names should be unique for the entity ", null,
 							EntityManagerExceptionConstantsInterface.DYEXTN_A_006);
 
 				}
@@ -735,12 +755,13 @@ public class DynamicExtensionsUtility
 
 		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
 		{
-			throw new DynamicExtensionsApplicationException("Object name invalid", null, EntityManagerExceptionConstantsInterface.DYEXTN_A_003);
+			throw new DynamicExtensionsApplicationException("Object name invalid", null,
+					EntityManagerExceptionConstantsInterface.DYEXTN_A_003);
 		}
 		if (name.trim().length() > 1000)
 		{
-			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit", null,
-					EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
+			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
+					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
 		}
 	}
 
@@ -764,7 +785,8 @@ public class DynamicExtensionsUtility
 		EntityInterface targetEntity = association.getTargetEntity();
 		if (entityList.contains(targetEntity))
 		{
-			association.setTargetEntity((EntityInterface) entityList.get(entityList.indexOf(targetEntity)));
+			association.setTargetEntity((EntityInterface) entityList.get(entityList
+					.indexOf(targetEntity)));
 			return;
 		}
 		for (AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection())
@@ -772,7 +794,8 @@ public class DynamicExtensionsUtility
 			EntityInterface entity = tagretEntityAssociation.getTargetEntity();
 			if (entityList.contains(entity))
 			{
-				tagretEntityAssociation.setTargetEntity((EntityInterface) entityList.get(entityList.indexOf(entity)));
+				tagretEntityAssociation.setTargetEntity((EntityInterface) entityList.get(entityList
+						.indexOf(entity)));
 			}
 		}
 	}
@@ -953,7 +976,8 @@ public class DynamicExtensionsUtility
 	public static String getValueForCheckBox(boolean ischecked)
 	{
 		String checkboxValue = "";
-		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE) || Variables.databaseName.equals(Constants.MYSQL_DATABASE))
+		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE)
+				|| Variables.databaseName.equals(Constants.MYSQL_DATABASE))
 		{
 			if (ischecked)
 			{
@@ -1017,7 +1041,8 @@ public class DynamicExtensionsUtility
 
 		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
-			if (Integer.parseInt(date1.substring(3, date1.length()).trim()) > Integer.parseInt(date2.substring(3, date2.length()).trim()))
+			if (Integer.parseInt(date1.substring(3, date1.length()).trim()) > Integer
+					.parseInt(date2.substring(3, date2.length()).trim()))
 			{
 				result = 1;
 				return result;
@@ -1112,7 +1137,8 @@ public class DynamicExtensionsUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static ContainerInterface getContainerByCaption(String caption) throws DynamicExtensionsSystemException
+	public static ContainerInterface getContainerByCaption(String caption)
+			throws DynamicExtensionsSystemException
 	{
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 		List objectList = new ArrayList();
@@ -1142,7 +1168,8 @@ public class DynamicExtensionsUtility
 	 * @param containerColl
 	 * @return
 	 */
-	public static List<String> getMainContainerNamesList(Collection<ContainerInterface> containerColl)
+	public static List<String> getMainContainerNamesList(
+			Collection<ContainerInterface> containerColl)
 	{
 		List<String> mainContainerNames = new ArrayList<String>();
 		for (ContainerInterface container : containerColl)
@@ -1156,7 +1183,8 @@ public class DynamicExtensionsUtility
 	 * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
 	 * @param entity
 	 */
-	private static void correctCardinalities(EntityInterface entity) throws DynamicExtensionsApplicationException
+	private static void correctCardinalities(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
 	{
 		Collection associationCollection = entity.getAssociationCollection();
 		if (associationCollection != null && !associationCollection.isEmpty())
@@ -1175,10 +1203,12 @@ public class DynamicExtensionsUtility
 	 * @param role
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void swapCardinality(RoleInterface role) throws DynamicExtensionsApplicationException
+	private static void swapCardinality(RoleInterface role)
+			throws DynamicExtensionsApplicationException
 	{
 		// make Min cardinality < Max cardinality
-		if (role.getMinimumCardinality().equals(Cardinality.MANY) || role.getMaximumCardinality().equals(Cardinality.ZERO))
+		if (role.getMinimumCardinality().equals(Cardinality.MANY)
+				|| role.getMaximumCardinality().equals(Cardinality.ZERO))
 		{
 			Cardinality e = role.getMinimumCardinality();
 			role.setMinimumCardinality(role.getMaximumCardinality());
@@ -1187,8 +1217,8 @@ public class DynamicExtensionsUtility
 
 		if (role.getMaximumCardinality().equals(Cardinality.ZERO))
 		{
-			throw new DynamicExtensionsApplicationException("Cardinality constraint violated", null,
-					EntityManagerExceptionConstantsInterface.DYEXTN_A_005);
+			throw new DynamicExtensionsApplicationException("Cardinality constraint violated",
+					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_005);
 		}
 	}
 
@@ -1199,7 +1229,8 @@ public class DynamicExtensionsUtility
 	 *
 	 * @param entity entity
 	 */
-	public static void validateEntity(EntityInterface entity) throws DynamicExtensionsApplicationException
+	public static void validateEntity(EntityInterface entity)
+			throws DynamicExtensionsApplicationException
 	{
 		validateEntityForSaving(entity);// chk if entity is valid or not.
 
@@ -1227,7 +1258,8 @@ public class DynamicExtensionsUtility
 		{
 			tableName = association.getConstraintProperties().getName();
 		}
-		else if (sourceMaxCardinality == Cardinality.MANY && targetMaxCardinality == Cardinality.ONE)
+		else if (sourceMaxCardinality == Cardinality.MANY
+				&& targetMaxCardinality == Cardinality.ONE)
 		{
 			tableName = association.getEntity().getTableProperties().getName();
 		}
@@ -1252,7 +1284,8 @@ public class DynamicExtensionsUtility
 		try
 		{
 			// Fetch the entity group from the database.
-			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", name);
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName",
+					name);
 
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
@@ -1289,15 +1322,18 @@ public class DynamicExtensionsUtility
 			}
 
 			// getting instance of catissueCoreCacheManager and adding containerMap to cache
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
+					.getInstance();
 			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
 			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER, (HashMap) containerMap);
-			System.out.println("ON Startup caching containers.Size of Container ----------" + containerList.size());
+			System.out.println("ON Startup caching containers.Size of Container ----------"
+					+ containerList.size());
 
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			throw new DynamicExtensionsSystemException(e.getMessage());
 
 		}
@@ -1307,14 +1343,16 @@ public class DynamicExtensionsUtility
 	 * This method updates the DynamicExtensions cache of all container within Entitygroup
 	 *
 	 */
-	public static void updateDynamicExtensionsCache(Long entityGroupId) throws DynamicExtensionsSystemException
+	public static void updateDynamicExtensionsCache(Long entityGroupId)
+			throws DynamicExtensionsSystemException
 	{
 
 		try
 		{
 			// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
 			EntityManagerInterface entityManager = EntityManager.getInstance();
-			ArrayList containerSet = (ArrayList) entityManager.getAllContainersByEntityGroupId(entityGroupId);
+			ArrayList containerSet = (ArrayList) entityManager
+					.getAllContainersByEntityGroupId(entityGroupId);
 			Iterator itr = containerSet.iterator();
 			while (itr.hasNext())
 			{
@@ -1325,7 +1363,8 @@ public class DynamicExtensionsUtility
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			throw new DynamicExtensionsSystemException(e.getMessage());
 		}
 	}
@@ -1334,13 +1373,15 @@ public class DynamicExtensionsUtility
 	 * This method updates the DynamicExtensions cache with updated container
 	 * @param updatedContainer
 	 */
-	public static void updateDynamicExtensionsCache(ContainerInterface updatedContainer) throws DynamicExtensionsSystemException
+	public static void updateDynamicExtensionsCache(ContainerInterface updatedContainer)
+			throws DynamicExtensionsSystemException
 	{
 
 		try
 		{
 			// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
+			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
+					.getInstance();
 			Map containerMap = new HashMap();
 			containerMap = (HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
 			if (containerMap != null)
@@ -1353,7 +1394,8 @@ public class DynamicExtensionsUtility
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			throw new DynamicExtensionsSystemException(e.getMessage());
 		}
 	}
@@ -1364,9 +1406,12 @@ public class DynamicExtensionsUtility
 	public static boolean isDataTypeNumeric(String dataType)
 	{
 		boolean isDataTypeNumber = false;
-		if (dataType.equals(ProcessorConstants.DATATYPE_SHORT) || dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
-				|| dataType.equals(ProcessorConstants.DATATYPE_LONG) || dataType.equals(ProcessorConstants.DATATYPE_FLOAT)
-				|| dataType.equals(ProcessorConstants.DATATYPE_DOUBLE) || dataType.equals(ProcessorConstants.DATATYPE_NUMBER))
+		if (dataType.equals(ProcessorConstants.DATATYPE_SHORT)
+				|| dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
+				|| dataType.equals(ProcessorConstants.DATATYPE_LONG)
+				|| dataType.equals(ProcessorConstants.DATATYPE_FLOAT)
+				|| dataType.equals(ProcessorConstants.DATATYPE_DOUBLE)
+				|| dataType.equals(ProcessorConstants.DATATYPE_NUMBER))
 		{
 			isDataTypeNumber = true;
 		}
@@ -1379,7 +1424,8 @@ public class DynamicExtensionsUtility
 	 * @param objCategoryMap
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void getUnsavedCategoryEntityList(CategoryEntityInterface categoryEntity, HashMap<String, CategoryEntityInterface> objCategoryMap)
+	public static void getUnsavedCategoryEntityList(CategoryEntityInterface categoryEntity,
+			HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
 		if (categoryEntity != null)
@@ -1390,12 +1436,15 @@ public class DynamicExtensionsUtility
 			}
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 			if (objCategoryEntity.getParentCategoryEntity() != null
-					&& !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity().getName()))
+					&& !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity()
+							.getName()))
 			{
 				if (((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
-					getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(), objCategoryMap);
+					getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),
+							objCategoryMap);
 			}
-			if (!objCategoryMap.containsKey(categoryEntity.getName()) && objCategoryEntity.isCreateTable())
+			if (!objCategoryMap.containsKey(categoryEntity.getName())
+					&& objCategoryEntity.isCreateTable())
 			{
 				if (objCategoryEntity.getId() == null)
 				{
@@ -1408,12 +1457,16 @@ public class DynamicExtensionsUtility
 			{
 				return;
 			}
-			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity.getCategoryAssociationCollection())
+			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
+					.getCategoryAssociationCollection())
 			{
-				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface.getTargetCategoryEntity();
+				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
+						.getTargetCategoryEntity();
 				if (objCEntity != null && objCEntity.isCreateTable())
-					if (!objCategoryMap.containsKey(categoryAssociationInterface.getTargetCategoryEntity().getName()))
-						getUnsavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(), objCategoryMap);
+					if (!objCategoryMap.containsKey(categoryAssociationInterface
+							.getTargetCategoryEntity().getName()))
+						getUnsavedCategoryEntityList(categoryAssociationInterface
+								.getTargetCategoryEntity(), objCategoryMap);
 			}
 		}
 	}
@@ -1423,7 +1476,8 @@ public class DynamicExtensionsUtility
 	 * @param objCategoryMap
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void getSavedCategoryEntityList(CategoryEntityInterface categoryEntity, HashMap<String, CategoryEntityInterface> objCategoryMap)
+	public static void getSavedCategoryEntityList(CategoryEntityInterface categoryEntity,
+			HashMap<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
 		if (categoryEntity != null)
@@ -1433,10 +1487,13 @@ public class DynamicExtensionsUtility
 				return;
 			}
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
-			if (categoryEntity.getParentCategoryEntity() != null && !objCategoryMap.containsKey(categoryEntity.getParentCategoryEntity().getName()))
+			if (categoryEntity.getParentCategoryEntity() != null
+					&& !objCategoryMap.containsKey(categoryEntity.getParentCategoryEntity()
+							.getName()))
 			{
 				if (((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
-					getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(), objCategoryMap);
+					getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
+							objCategoryMap);
 			}
 			if (!objCategoryMap.containsKey(categoryEntity.getName()))
 			{
@@ -1449,12 +1506,16 @@ public class DynamicExtensionsUtility
 			{
 				return;
 			}
-			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity.getCategoryAssociationCollection())
+			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
+					.getCategoryAssociationCollection())
 			{
-				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface.getTargetCategoryEntity();
+				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
+						.getTargetCategoryEntity();
 				if (objCEntity != null && objCEntity.isCreateTable() && objCEntity.getId() != null)
-					if (!objCategoryMap.containsKey(categoryAssociationInterface.getTargetCategoryEntity().getName()))
-						getSavedCategoryEntityList(categoryAssociationInterface.getTargetCategoryEntity(), objCategoryMap);
+					if (!objCategoryMap.containsKey(categoryAssociationInterface
+							.getTargetCategoryEntity().getName()))
+						getSavedCategoryEntityList(categoryAssociationInterface
+								.getTargetCategoryEntity(), objCategoryMap);
 			}
 		}
 	}
@@ -1465,7 +1526,8 @@ public class DynamicExtensionsUtility
 	 * @param association
 	 * @return ConstraintPropertiesInterface
 	 */
-	public static ConstraintPropertiesInterface getConstraintProperties(AssociationInterface association)
+	public static ConstraintPropertiesInterface getConstraintProperties(
+			AssociationInterface association)
 	{
 		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
 
@@ -1491,7 +1553,8 @@ public class DynamicExtensionsUtility
 	 * @param sequenceNumber
 	 * @return
 	 */
-	public static List<Long> getDeletedAssociationIds(ControlInterface[] controlCollection, Integer[] sequenceNumbers)
+	public static List<Long> getDeletedAssociationIds(ControlInterface[] controlCollection,
+			Integer[] sequenceNumbers)
 	{
 		List<Long> listOfIds = new ArrayList<Long>();
 		boolean isPresent = false;
@@ -1506,7 +1569,8 @@ public class DynamicExtensionsUtility
 					{
 						for (Integer sequenceNumber : sequenceNumbers)
 						{
-							if (control.getSequenceNumber() != null && control.getSequenceNumber().equals(sequenceNumber))
+							if (control.getSequenceNumber() != null
+									&& control.getSequenceNumber().equals(sequenceNumber))
 							{
 								isPresent = true;
 							}
@@ -1520,29 +1584,6 @@ public class DynamicExtensionsUtility
 			}
 		}
 		return listOfIds;
-	}
-
-	/**
-	 * @param attribute
-	 * @param defaultValue
-	 * @param min
-	 * @param max
-	 * @param attributeName
-	 * @throws DynamicExtensionsValidationException
-	 * @throws DataTypeFactoryInitializationException
-	 */
-	public static void verifyDefaultValueIsInRange(AbstractAttributeInterface attribute, String defaultValue, String min, String max,
-			String attributeName) throws DynamicExtensionsValidationException, DataTypeFactoryInitializationException
-	{
-		if (defaultValue != null && min != null && max != null)
-		{
-			Map<String, String> parameterMap = new HashMap<String, String>();
-			parameterMap.put("min", min);
-			parameterMap.put("max", max);
-
-			RangeValidator rangeValidator = new RangeValidator();
-			rangeValidator.validate((AttributeMetadataInterface) attribute, defaultValue, parameterMap, attributeName);
-		}
 	}
 
 	/**
@@ -1579,12 +1620,14 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException
 	 * @throws ParseException
 	 */
-	public static String getDefaultDateForRelatedCategoryAttribute(AttributeInterface attr, Object value) throws DynamicExtensionsSystemException
+	public static String getDefaultDateForRelatedCategoryAttribute(AttributeInterface attr,
+			Object value) throws DynamicExtensionsSystemException
 	{
 		String formattedvalue = null;
 		Date date = null;
 
-		String dateFormat = ((DateAttributeTypeInformation) attr.getAttributeTypeInformation()).getFormat();
+		String dateFormat = ((DateAttributeTypeInformation) attr.getAttributeTypeInformation())
+				.getFormat();
 		if (dateFormat == null)
 		{
 			dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
@@ -1600,7 +1643,8 @@ public class DynamicExtensionsUtility
 			str = (String) value;
 		}
 
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ProcessorConstants.SDF_ORCL_CAT_REL_ATTR);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR);
 		try
 		{
 			date = simpleDateFormat.parse(str);
@@ -1610,8 +1654,8 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsSystemException("Unable to parse given date.");
 		}
 
-		formattedvalue = Variables.strTodateFunction + "('" + simpleDateFormat.format(date) + "','" + ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT
-				+ "')";
+		formattedvalue = Variables.strTodateFunction + "('" + simpleDateFormat.format(date) + "','"
+				+ ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";
 
 		return formattedvalue;
 	}
@@ -1632,7 +1676,8 @@ public class DynamicExtensionsUtility
 	 * @param inContextContainerInterface
 	 * @param processedContainersList
 	 */
-	public static void setAllInContextContainers(ContainerInterface containerInterface, List<ContainerInterface> processedContainersList)
+	public static void setAllInContextContainers(ContainerInterface containerInterface,
+			List<ContainerInterface> processedContainersList)
 	{
 		if (processedContainersList.contains(containerInterface))
 		{
@@ -1645,14 +1690,16 @@ public class DynamicExtensionsUtility
 
 			if (containerInterface.getBaseContainer() != null)
 			{
-				setAllInContextContainers(containerInterface.getBaseContainer(), processedContainersList);
+				setAllInContextContainers(containerInterface.getBaseContainer(),
+						processedContainersList);
 			}
 			for (ControlInterface controlInterface : containerInterface.getControlCollection())
 			{
 				if (controlInterface instanceof AbstractContainmentControlInterface)
 				{
 					AbstractContainmentControlInterface containmentAssociationControl = (AbstractContainmentControlInterface) controlInterface;
-					setAllInContextContainers(containmentAssociationControl.getContainer(), processedContainersList);
+					setAllInContextContainers(containmentAssociationControl.getContainer(),
+							processedContainersList);
 				}
 			}
 		}
@@ -1665,12 +1712,14 @@ public class DynamicExtensionsUtility
 	 * @param formDefinitionForm
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup, ContainerInterface container, String formName,
-			ContainerInterface... mainFormContainer) throws DynamicExtensionsApplicationException
+	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup,
+			ContainerInterface container, String formName, ContainerInterface... mainFormContainer)
+			throws DynamicExtensionsApplicationException
 	{
 		if (entityGroup == null)
 		{
-			throw new DynamicExtensionsApplicationException("Null entity group!", null, "Entity group is null!");
+			throw new DynamicExtensionsApplicationException("Null entity group!", null,
+					"Entity group is null!");
 		}
 
 		if (container == null || container.getId() == null)
@@ -1715,8 +1764,8 @@ public class DynamicExtensionsUtility
 	 * @param formName
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, String formName)
-			throws DynamicExtensionsApplicationException
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption,
+			String formName) throws DynamicExtensionsApplicationException
 	{
 		if (caption != null && !caption.equals(formName))
 		{
@@ -1743,8 +1792,8 @@ public class DynamicExtensionsUtility
 	 * @param mainContainer
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption, ContainerInterface mainContainer)
-			throws DynamicExtensionsApplicationException
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption,
+			ContainerInterface mainContainer) throws DynamicExtensionsApplicationException
 	{
 		if (mainContainer != null && mainContainer.getCaption().equals(caption))
 		{
@@ -1770,7 +1819,8 @@ public class DynamicExtensionsUtility
 	 * @param formName
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String formName) throws DynamicExtensionsApplicationException
+	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String formName)
+			throws DynamicExtensionsApplicationException
 	{
 		EntityInterface entity = entityGroup.getEntityByName(formName);
 		if (entity != null && entity.getId() != null)
@@ -1784,7 +1834,8 @@ public class DynamicExtensionsUtility
 	 */
 	private static void reportDuplicateEntityName() throws DynamicExtensionsApplicationException
 	{
-		throw new DynamicExtensionsApplicationException("Duplicate form name within same entity group!", null,
+		throw new DynamicExtensionsApplicationException(
+				"Duplicate form name within same entity group!", null,
 				EntityManagerExceptionConstantsInterface.DYEXTN_A_019);
 	}
 

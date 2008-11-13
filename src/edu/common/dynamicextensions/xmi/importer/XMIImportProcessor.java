@@ -2474,8 +2474,6 @@ public class XMIImportProcessor
 					{
 						controlModel.setDateValueType(ProcessorConstants.DATE_VALUE_SELECT);
 					}
-					attributeProcessor.populateDateAttributeInterface(
-							(DateAttributeTypeInformation) attributeTypeInformation, controlModel);
 
 					//PHI
 					String strIsIdentified = getPHIAttributeTagValue(taggedValueMap);
@@ -2484,9 +2482,13 @@ public class XMIImportProcessor
 						attributeProcessor.populateIsIdentifiedInfo(attributeInterface,
 								strIsIdentified);
 					}
+
 					//Set Explicit Validation Rules
 					setExplicitValidationRules(taggedValueMap, controlModel);
-					//populate rules
+
+					attributeProcessor.populateDateAttributeInterface(attributeInterface,
+							(DateAttributeTypeInformation) attributeTypeInformation, controlModel);
+					//					//populate rules
 					attributeProcessor.populateRules(userSelectedControlName, attributeInterface,
 							controlModel);
 					String[] ruleNamesString = new String[0];

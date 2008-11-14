@@ -5,6 +5,7 @@ var calformelement;
 var calpattern;
 var calweekstart;
 var shouldUseTime;
+var currentDivId=null;
 
 /**
 Changes done by Jitendra on 18/09/2006 to fix the bug when more than one DateTimeComponent tag included in the Jsp.<b> 
@@ -342,7 +343,16 @@ function showCalendar(id,year, month, day, pattern, formName, formProperty, even
     //alert("month ="+month);
     //alert("day ="+day);
     //alert("id = "+id);
-    
+	//Suhas : bugid: 8180 : - Two date pickers are opening without getting closed automatically.
+    if (currentDivId!=null)
+    {
+		hideCalendar(currentDivId);
+		currentDivId=id;       
+    }
+    else 
+    {
+    	currentDivId=id;
+    }
     var divId ="slcalcod"+id;
     var calmoisId="calmois"+id;
     var calyearId="calyear"+id;
@@ -662,7 +672,8 @@ function padNumber(number,length) {
     return str;
 }
 
-function hideCalendar(id) {     
+function hideCalendar(id) {  
+	currentDivId=null;
     var divId = "slcalcod"+id;
     if(document.all) {
         // IE.

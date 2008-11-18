@@ -31,7 +31,7 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 	public String getDataType()
 	{
 
-		return EntityManagerConstantsInterface.FLOAT_ATTR_TYPE;
+		return EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE;
 	}
 
 	/**

@@ -31,7 +31,7 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 	public String getDataType()
 	{
 
-		return EntityManagerConstantsInterface.DOUBLE_ATTR_TYPE;
+		return EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE;
 	}
 
 	/**

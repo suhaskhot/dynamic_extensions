@@ -30,7 +30,7 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public String getDataType()
 	{
-		return EntityManagerConstantsInterface.BOOL_ATTR_TYPE;
+		return EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE;
 	}
 
 	/**

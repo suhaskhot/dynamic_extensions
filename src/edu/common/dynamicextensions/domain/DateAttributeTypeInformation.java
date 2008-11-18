@@ -64,7 +64,7 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 	public String getDataType()
 	{
 
-		return EntityManagerConstantsInterface.DATE_ATTR_TYPE;
+		return EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE;
 	}
 
 	/**

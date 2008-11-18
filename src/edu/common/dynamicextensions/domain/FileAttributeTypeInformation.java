@@ -116,7 +116,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public String getDataType()
 	{
-		return EntityManagerConstantsInterface.FILE_ATTR_TYPE;
+		return EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE;
 	}
 
 	/**

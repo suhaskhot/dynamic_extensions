@@ -1,20 +1,22 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * This class represents a collection of all the records present for the given entity.
- * @author Rahul Ner
- * @author Vishvesh Mulay
+ * This is an interface to operate on the entity record result object.
+ * @author rahul_ner
+ * @author vishvesh_mulay
  *
  */
-public class EntityRecordResult implements EntityRecordResultInterface,Serializable
+public class EntityRecordResult implements EntityRecordResultInterface, Serializable
 {
-    /**
-     * Serial Version Unique Identifier
-     */
-    private static final long serialVersionUID = -552600540977483821L;
+
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = -552600540977483821L;
 
 	/**
 	 * List of entity records
@@ -26,7 +28,6 @@ public class EntityRecordResult implements EntityRecordResultInterface,Serializa
 	 */
 	EntityRecordMetadata entityRecordMetadata;
 
-	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordResultInterface#getEntityRecordList()
 	 */
@@ -35,7 +36,6 @@ public class EntityRecordResult implements EntityRecordResultInterface,Serializa
 		return entityRecordList;
 	}
 
-	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordResultInterface#setEntityRecordList(java.util.List)
 	 */
@@ -44,7 +44,6 @@ public class EntityRecordResult implements EntityRecordResultInterface,Serializa
 		this.entityRecordList = entityRecordList;
 	}
 
-	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordResultInterface#getEntityRecordMetadata()
 	 */
@@ -53,7 +52,6 @@ public class EntityRecordResult implements EntityRecordResultInterface,Serializa
 		return entityRecordMetadata;
 	}
 
-	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordResultInterface#setEntityRecordMetadata(edu.common.dynamicextensions.entitymanager.EntityRecordMetadata)
 	 */
@@ -61,7 +59,7 @@ public class EntityRecordResult implements EntityRecordResultInterface,Serializa
 	{
 		this.entityRecordMetadata = entityRecordMetadata;
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
@@ -70,6 +68,7 @@ public class EntityRecordResult implements EntityRecordResultInterface,Serializa
 		StringBuffer str = new StringBuffer();
 		str.append(entityRecordMetadata.getAttributeList());
 		str.append(entityRecordList);
+
 		return str.toString();
 	}
 }

@@ -353,6 +353,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
      */
     private Association getSystemGeneratedAssociation(Association association)
     {
+    	Association associationInterface = null;
         EntityInterface targetEnetity = association.getTargetEntity();
         Collection associationCollection = targetEnetity.getAssociationCollection();
         if (associationCollection != null && !associationCollection.isEmpty())
@@ -360,16 +361,16 @@ public class Association extends AbstractAttribute implements AssociationInterfa
             Iterator associationIterator = associationCollection.iterator();
             while (associationIterator.hasNext())
             {
-                Association associationInterface = (Association) associationIterator.next();
+                associationInterface = (Association) associationIterator.next();
                 if (associationInterface.getIsSystemGenerated()
                         && associationInterface.getSourceRole().equals(association.getTargetRole())
                         && associationInterface.getTargetRole().equals(association.getSourceRole()))
                 {
-                    return associationInterface;
+                    break;
                 }
             }
         }
-        return null;
+        return associationInterface;
     }
 
 	public AssociationType getAssociationType()

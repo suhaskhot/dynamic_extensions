@@ -40,7 +40,7 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		BooleanValueInterface booleanValue = factory.createBooleanValue();
-		booleanValue.setValue(new Boolean(value));
+		booleanValue.setValue(Boolean.valueOf(value));
 		
 		return booleanValue;
 	}

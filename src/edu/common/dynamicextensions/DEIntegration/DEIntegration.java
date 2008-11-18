@@ -204,8 +204,8 @@ public class DEIntegration implements IntegrationInterface
     public boolean isCategory(Long containerId)
             throws DynamicExtensionsSystemException
     {
+    	boolean isCategory = false;
         Long contId = null;
-
         if (categoryEntityMap.containsKey((containerId + Constants.ISCATEGORY)))
         {
             contId = (Long) categoryEntityMap.get(containerId
@@ -218,9 +218,10 @@ public class DEIntegration implements IntegrationInterface
             categoryEntityMap.put(containerId + Constants.ISCATEGORY, contId);
         }
         if (contId != null)
-            return true;
-        return false;
-
+        {
+        	isCategory = true;
+        }
+        return isCategory;
     }
 
     /**
@@ -301,12 +302,12 @@ public class DEIntegration implements IntegrationInterface
         if (isCategory(containerId))
         {
             recIdList = getCategoryRecIdBasedOnHookEntityRecId(containerId,
-                    new Long(recEntryId), new Long(hookEntityId));
+            		Long.valueOf(recEntryId), Long.valueOf(hookEntityId));
         }
         else
         {
             recIdList = getDynamicEntityRecordIdFromHookEntityRecordId(
-                    recEntryId, containerId, new Long(hookEntityId));
+                    recEntryId, containerId, Long.valueOf(hookEntityId));
         }
         return recIdList;
     }

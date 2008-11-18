@@ -39,12 +39,12 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	/**
 	 * Specifies whether this is a primary key.
 	 */
-	protected Boolean isPrimaryKey = new Boolean(false);
+	protected Boolean isPrimaryKey = Boolean.FALSE;
 
 	/**
 	 * Specifies whether the column is nullable or not
 	 */
-	protected Boolean isNullable = new Boolean(true);
+	protected Boolean isNullable = Boolean.TRUE;
 
 	/**
 	 * Column property associated to this primitive attribute.
@@ -87,16 +87,13 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 */
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
 	{
+		AttributeTypeInformationInterface attributeTypeInformationInterface = null;
 		if (attributeTypeInformationCollection != null)
 		{
 			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection.iterator();
-			return (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
+			attributeTypeInformationInterface = (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
 		}
-		else
-		{
-			return null;
-		}
-
+		return attributeTypeInformationInterface;
 	}
 
 	/**
@@ -242,15 +239,12 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 */
 	public String getDataType()
 	{
+		String dataType = null;
 		if (getAttributeTypeInformation() != null)
 		{
-			return getAttributeTypeInformation().getDataType();
+			dataType = getAttributeTypeInformation().getDataType();
 		}
-		else
-		{
-			return null;
-		}
-
+		return dataType;
 	}
 
 	/**
@@ -280,16 +274,13 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 */
 	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo()
 	{
+		CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = null;
 		if (caDSRValueDomainInfoCollection != null)
 		{
 			Iterator caDSRValueDomainInfoIterator = caDSRValueDomainInfoCollection.iterator();
-			return (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator.next();
+			caDSRValueDomainInfoInterface = (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator.next();
 		}
-		else
-		{
-			return null;
-		}
-
+		return caDSRValueDomainInfoInterface;
 	}
 
 	/**
@@ -320,6 +311,7 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 */
 	public int getMaxSize()
 	{
+		int maxSize = -1;
 		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
 		if (attributeTypeInformationInterface != null)
 		{
@@ -330,12 +322,12 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 				{
 					if (stringAttributeTypeInformation.getSize() != null)
 					{
-						return stringAttributeTypeInformation.getSize().intValue();
+						maxSize = stringAttributeTypeInformation.getSize().intValue();
 					}
 				}
 			}
 		}
-		return -1;
+		return maxSize;
 	}
 
 	/* (non-Javadoc)
@@ -366,12 +358,13 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 */
 	public int getDecimalPlaces()
 	{
+		int decimalPlaces = -1;
 		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
 		if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
 		{
-			return ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
+			decimalPlaces = ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
 		}
-		return -1;
+		return decimalPlaces;
 	}
 
 	/**

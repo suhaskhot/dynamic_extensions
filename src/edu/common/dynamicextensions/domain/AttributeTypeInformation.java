@@ -81,15 +81,16 @@ AttributeTypeInformationInterface
 	 */
 	public DataElementInterface getDataElement()
 	{
+		DataElementInterface dataElementInterface = null;
 		if (dataElementCollection != null)
 		{
 			Iterator dataElementIterator = dataElementCollection.iterator();
 			if(dataElementIterator.hasNext())
 			{
-				return (DataElement) dataElementIterator.next();
+				dataElementInterface = (DataElement) dataElementIterator.next();
 			}
 		}
-		return null;
+		return dataElementInterface;
 	}
 
 	/**
@@ -143,16 +144,13 @@ AttributeTypeInformationInterface
 	 */
 	public PermissibleValueInterface getDefaultValue()
 	{
+		PermissibleValueInterface permissibleValueInterface = null;
 		if (defaultValueCollection != null && !defaultValueCollection.isEmpty())
 		{
 			Iterator dataElementIterator = defaultValueCollection.iterator();
-			return (PermissibleValueInterface) dataElementIterator.next();
+			permissibleValueInterface =  (PermissibleValueInterface) dataElementIterator.next();
 		}
-		else
-		{
-			return null;
-		}
-
+		return permissibleValueInterface;
 	}
 
 	/**

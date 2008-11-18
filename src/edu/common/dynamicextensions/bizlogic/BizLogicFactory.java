@@ -32,19 +32,14 @@ public class BizLogicFactory
 	{
 		AbstractBizLogic abstractBizLogic = null;
 		
-		switch(FORM_TYPE)
+		if(FORM_TYPE == Constants.QUERY_INTERFACE_ID)
 		{
-        case Constants.QUERY_INTERFACE_ID:
             abstractBizLogic = new QueryBizLogic();
-        break;
-        
-    
-    
-		default:
-			abstractBizLogic = new DefaultBizLogic();
-		break;
 		}
-		
+		else
+		{
+			abstractBizLogic = new DefaultBizLogic();
+		}
 		return abstractBizLogic;
 	}
 	

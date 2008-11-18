@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationExcep
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterface;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
@@ -35,7 +36,6 @@ public class XMIImportValidator
 			AbstractAttributeUIBeanInterface controlsForm, Number defaultValue)
 			throws DynamicExtensionsApplicationException
 	{
-		
 
 		if (controlsForm.getMin() != null && controlsForm.getMin().length() != 0
 				&& controlsForm.getMax() != null && controlsForm.getMax().length() != 0
@@ -137,4 +137,32 @@ public class XMIImportValidator
 		}
 	}
 
+	/**
+	 * @param attribute
+	 * @param booleanVal
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static String validateDefBooleanValue(AbstractAttributeInterface attribute,
+			String booleanVal) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
+	{
+
+		if (!(booleanVal.trim().equalsIgnoreCase(ProcessorConstants.TRUE) || booleanVal.trim()
+				.equalsIgnoreCase(ProcessorConstants.FALSE)))
+		{
+			ApplicationProperties.initBundle("ApplicationResources");
+			List<String> placeHolders = new ArrayList<String>();
+			placeHolders.add(booleanVal);
+			placeHolders.add(attribute.getName());
+			System.out.println(ApplicationProperties.getValue("validationError")
+					+ ApplicationProperties.getValue("defValueBoolInvalid", placeHolders));
+
+			throw new DynamicExtensionsApplicationException("Validation failed");
+
+		}
+		return booleanVal;
+
+	}
 }

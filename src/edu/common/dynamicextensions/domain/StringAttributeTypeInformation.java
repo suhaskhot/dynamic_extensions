@@ -12,7 +12,9 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterfac
  * @hibernate.joined-subclass table="DYEXTN_STRING_TYPE_INFO" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class StringAttributeTypeInformation extends AttributeTypeInformation implements StringTypeInformationInterface
+public class StringAttributeTypeInformation extends AttributeTypeInformation
+		implements
+			StringTypeInformationInterface
 {
 
 	/**
@@ -64,17 +66,19 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation imp
 	 */
 	public String getDataType()
 	{
-		
 		return EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		StringValueInterface stringValueInterface = domainObjectFactory.createStringValue();
-		stringValueInterface.setValue(value);
-		return stringValueInterface;
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		StringValueInterface stringValue = factory.createStringValue();
+		stringValue.setValue(value);
+		
+		return stringValue;
 	}
+	
 }

@@ -108,7 +108,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
-	 * @param containerIdentifier The Idetifier of the Container.
+	 * @param containerIdentifier The identifier of the container.
 	 * @return the ContainerInterface
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
@@ -818,53 +818,40 @@ public class DynamicExtensionsUtility
 	 * @param entity
 	 * @param entitySet
 	 */
-	public static List getUnsavedEntities(EntityGroupInterface entityGroup)
+	public static List<EntityInterface> getUnsavedEntities(EntityGroupInterface entityGroup)
 	{
-		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
-		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-		for (EntityInterface entity : entityCollection)
+		List<EntityInterface> entities = new ArrayList<EntityInterface>();
+
+		Collection<EntityInterface> entitiesInGrp = entityGroup.getEntityCollection();
+		for (EntityInterface entity : entitiesInGrp)
 		{
 			if (entity.getId() == null)
 			{
-				entityList.add(entity);
+				entities.add(entity);
 			}
 		}
-		return entityList;
+
+		return entities;
 	}
 
 	/**
 	 * @param entity
 	 * @param entitySet
 	 */
-	public static List getSavedEntities(EntityGroupInterface entityGroup)
+	public static List<EntityInterface> getSavedEntities(EntityGroupInterface entityGroup)
 	{
-		List<EntityInterface> entityList = new ArrayList<EntityInterface>();
-		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-		for (EntityInterface entity : entityCollection)
+		List<EntityInterface> entities = new ArrayList<EntityInterface>();
+
+		Collection<EntityInterface> entitiesInGrp = entityGroup.getEntityCollection();
+		for (EntityInterface entity : entitiesInGrp)
 		{
 			if (entity.getId() != null)
 			{
-				entityList.add(entity);
+				entities.add(entity);
 			}
 		}
-		return entityList;
-	}
 
-	/**
-	 * @param processedEntityList
-	 * @param entity
-	 * @return
-	 */
-	private static boolean isEntityPresent(List<EntityInterface> entityList, EntityInterface entity)
-	{
-		for (EntityInterface entityInterface : entityList)
-		{
-			if (entityInterface.getName().equalsIgnoreCase(entity.getName()))
-			{
-				return true;
-			}
-		}
-		return false;
+		return entities;
 	}
 
 	/**

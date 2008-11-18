@@ -24,23 +24,25 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 	{
 
 	}
-	
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
 	{
-		
 		return EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		IntegerValueInterface integerValueInterface = domainObjectFactory.createIntegerValue();
-		integerValueInterface.setValue(new Integer(value));
-		return integerValueInterface;
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		IntegerValueInterface integerValue = factory.createIntegerValue();
+		integerValue.setValue(Integer.valueOf(value));
+
+		return integerValue;
 	}
+	
 }

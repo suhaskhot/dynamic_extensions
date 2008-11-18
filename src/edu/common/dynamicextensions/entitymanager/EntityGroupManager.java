@@ -28,7 +28,6 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -45,7 +44,8 @@ public class EntityGroupManager extends AbstractMetadataManager
 			EntityGroupManagerConstantsInterface
 {
 
-	private static EntityGroupManagerInterface entityGroupManager = null;
+	private static EntityGroupManagerInterface entGrpManager = null;
+
 	/**
 	 * Static instance of the queryBuilder.
 	 */
@@ -59,72 +59,67 @@ public class EntityGroupManager extends AbstractMetadataManager
 	}
 
 	/**
-	 * Returns the instance of the Entity Manager.
+	 * Returns the instance of the Entity Group Manager.
 	 * @return entityManager singleton instance of the Entity Manager.
 	 */
 	public static synchronized EntityGroupManagerInterface getInstance()
 	{
-		if (entityGroupManager == null)
+		if (entGrpManager == null)
 		{
-			entityGroupManager = new EntityGroupManager();
+			entGrpManager = new EntityGroupManager();
 			DynamicExtensionsUtility.initialiseApplicationVariables();
 			queryBuilder = QueryBuilderFactory.getQueryBuilder();
 		}
-		return entityGroupManager;
+
+		return entGrpManager;
 	}
 
 	/**
-	 * Save entity group which in turn saves the whole hierarchy.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DAOException
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DAOException
-	 * @throws DynamicExtensionsApplicationException
+	 *
+	 */
+	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
+	{
+		return queryBuilder;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#persistEntityGroup(edu.common.dynamicextensions.domaininterface.EntityGroupInterface)
 	 */
 	public EntityGroupInterface persistEntityGroup(EntityGroupInterface group)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObject(group);
+		EntityGroupInterface entityGroup = (EntityGroupInterface) persistDynamicExtensionObject(group);
 
-		//Update the dynamic extension cache for all containers within entitygroup
-		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
-		return entityGroupInterface;
+		// Update the dynamic extension cache for all containers within entity group.
+		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroup.getId());
+
+		return entityGroup;
 	}
 
-	/**
-	 * This method persists an entity group and the associated entities without creating the data table
-	 * for the entities.
-	 * @param entityGroupInterface entity group to be saved.
-	 * @return entityGroupInterface Saved  entity group.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#persistEntityGroupMetadata(edu.common.dynamicextensions.domaininterface.EntityGroupInterface)
 	 */
 	public EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		addTaggedValue(entityGroup);
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
-		//Update the dynamic extension cache for all containers within entitygroup
-		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroupInterface.getId());
-		return entityGroupInterface;
+		EntityGroupInterface entGroup = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
+
+		// Update the dynamic extension cache for all containers within entity group.
+		DynamicExtensionsUtility.updateDynamicExtensionsCache(entGroup.getId());
+
+		return entGroup;
 	}
 
-	/**
-	 * This method creates dynamic table queries for the entities within a group.
-	 * @param group EntityGroup
-	 * @param reverseQueryList List of queries to be executed in case any problem occurs at DB level.
-	 * @param hibernateDAO
-	 * @param queryList List of queries to be executed to created dynamicn tables.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#preProcess(edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface, java.util.List, java.util.List)
 	 */
-	protected void preProcess(
-			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObject,
-			List reverseQueryList, HibernateDAO hibernateDAO, List queryList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	protected void preProcess(DynamicExtensionBaseDomainObjectInterface dyExtBsDmnObj,
+			List<String> revQueries, List<String> queries) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		EntityGroupInterface entityGroup = (EntityGroupInterface) dynamicExtensionBaseDomainObject;
-		getDynamicQueryList(addTaggedValue(entityGroup), reverseQueryList, hibernateDAO, queryList);
+		EntityGroupInterface entityGroup = (EntityGroupInterface) dyExtBsDmnObj;
+		getDynamicQueryList(addTaggedValue(entityGroup), revQueries, queries);
 	}
 
 	/**
@@ -137,187 +132,178 @@ public class EntityGroupManager extends AbstractMetadataManager
 		addTaggedValue(entityGroup, CAB2B_ENTITY_GROUP, CAB2B_ENTITY_GROUP);
 		addTaggedValue(entityGroup, PACKAGE_NAME, entityGroup.getName());
 		addTaggedValue(entityGroup, METADATA_ENTITY_GROUP, METADATA_ENTITY_GROUP);
+
 		return entityGroup;
 	}
 
 	/**
-	 * This method adds caB2BEntityGroup tagged value to the entity group
+	 * This method adds caB2BEntityGroup tagged value to the entity group.
 	 * @param entityGroup
+	 * @param key
+	 * @param value
 	 * @return
 	 */
 	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup, String key,
 			String value)
 	{
-		Collection<TaggedValueInterface> taggedValueCollection = entityGroup
-				.getTaggedValueCollection();
-		boolean isTaggedValueAdded = false;
-		for (TaggedValueInterface taggedValue : taggedValueCollection)
+		Collection<TaggedValueInterface> taggedValues = entityGroup.getTaggedValueCollection();
+		boolean isTgdValAdded = false;
+
+		for (TaggedValueInterface taggedValue : taggedValues)
 		{
 			if (taggedValue.getKey().equalsIgnoreCase(key))
 			{
-				isTaggedValueAdded = true;
+				isTgdValAdded = true;
 			}
 		}
-		if (!isTaggedValueAdded)
+
+		if (!isTgdValAdded)
 		{
-			TaggedValueInterface taggedValueInterface = DomainObjectFactory.getInstance()
+			TaggedValueInterface taggedValue = DomainObjectFactory.getInstance()
 					.createTaggedValue();
-			taggedValueInterface.setKey(key);
-			taggedValueInterface.setValue(value);
-			entityGroup.addTaggedValue(taggedValueInterface);
+			taggedValue.setKey(key);
+			taggedValue.setValue(value);
+			entityGroup.addTaggedValue(taggedValue);
 		}
+
 		return entityGroup;
 	}
 
-	/**
-	 * This method executes dynamic table queries created for all the entities within a group.
-	 * @param queryList List of queries to be executed to created dynamicn tables.
-	 * @param reverseQueryList List of queries to be executed in case any problem occurs at DB level.
-	 * @param rollbackQueryStack Stack to undo any changes done beforehand at DB level.
-	 * @throws DynamicExtensionsSystemException
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#postProcess(java.util.List, java.util.List, java.util.Stack)
 	 */
-	protected void postProcess(List queryList, List reverseQueryList, Stack rollbackQueryStack,
-			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException
+	protected void postProcess(List<String> queries, List<String> revQueries,
+			Stack<String> rlbkQryStack) throws DynamicExtensionsSystemException
 	{
-		queryBuilder.executeQueries(queryList, reverseQueryList, rollbackQueryStack);
+		queryBuilder.executeQueries(queries, revQueries, rlbkQryStack);
 	}
 
-	/**
-	 * This method is called when exception occurs while executing the rollback queries
-	 * or reverse queries. When this method is called , it signifies that the database state
-	 * and the metadata state for the entity are not in synchronisation and administrator
-	 * needs some database correction.
-	 * @param e The exception that took place.
-	 * @param entity Entity for which data tables are out of sync.
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#logFatalError(java.lang.Exception, edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface)
 	 */
-	protected void LogFatalError(Exception e, AbstractMetadataInterface abstractMetadata)
+	protected void logFatalError(Exception exception, AbstractMetadataInterface abstrMetadata)
 	{
-		String table = "";
 		String name = "";
-		if (abstractMetadata != null)
+		if (abstrMetadata != null)
 		{
-			EntityGroupInterface entityGroup = (EntityGroupInterface) abstractMetadata;
+			EntityGroupInterface entityGroup = (EntityGroupInterface) abstrMetadata;
 			name = entityGroup.getName();
 		}
+
 		Logger.out
 				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
 						+ name + "***");
-		Logger.out.error("The cause of the exception is - " + e.getMessage());
+		Logger.out.error("The cause of the exception is - " + exception.getMessage());
 		Logger.out.error("The detailed log is : ");
-		e.printStackTrace();
+
+		exception.printStackTrace();
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#getEntityGroupByShortName(java.lang.String)
 	 */
-	public EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
+	public EntityGroupInterface getEntityGroupByShortName(String shortName)
 			throws DynamicExtensionsSystemException
 	{
-		EntityGroupInterface entityGroupInterface = null;
-		Collection entityGroupCollection = new HashSet();
-		if (entityGroupShortName == null || entityGroupShortName.equals(""))
+		EntityGroupInterface entityGroup = null;
+		Collection entityGroups = new HashSet();
+
+		if (shortName == null || shortName.equals(""))
 		{
-			return entityGroupInterface;
+			return entityGroup;
 		}
-		//Getting the instance of the default biz logic class which has the method that returns the particular object
-		//depending on the value of a particular column of the associated table.
-		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+
+		// Get the instance of the default biz logic class which has the method 
+		// that returns the particular object depending on the value of a particular 
+		// column of the associated table.
+		DefaultBizLogic defBizLogic = BizLogicFactory.getDefaultBizLogic();
 
 		try
 		{
-			//Calling retrieve method to  get the entity group object based on the given value of short name.
-			//Passed parameters are the class name of the entity group class, the name of the hibernate object member variable
-			// and the value of that member variable.
-			entityGroupCollection = defaultBizLogic.retrieve(EntityGroup.class.getName(),
-					"shortName", entityGroupShortName);
-			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			// Call retrieve method to get the entity group object based on the given value of short name.
+			entityGroups = defBizLogic
+					.retrieve(EntityGroup.class.getName(), "shortName", shortName);
+			if (entityGroups != null && entityGroups.size() > 0)
 			{
-				entityGroupInterface = (EntityGroupInterface) entityGroupCollection.iterator()
-						.next();
+				entityGroup = (EntityGroupInterface) entityGroups.iterator().next();
 			}
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		return entityGroupInterface;
 
+		return entityGroup;
 	}
 
-	/**
-	 * This method returns the EntityInterface given the entity name.
-	 * @param entityGroupShortName
-	 * @return
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#getEntityGroupByName(java.lang.String)
 	 */
-	public EntityGroupInterface getEntityGroupByName(String entityGroupName)
+	public EntityGroupInterface getEntityGroupByName(String name)
 			throws DynamicExtensionsSystemException
 	{
-		EntityGroupInterface entityGroupInterface = (EntityGroupInterface) getObjectByName(
-				EntityGroup.class.getName(), entityGroupName);
-		return entityGroupInterface;
+		EntityGroupInterface entityGroup = (EntityGroupInterface) getObjectByName(EntityGroup.class
+				.getName(), name);
+
+		return entityGroup;
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#getMainContainer(java.lang.Long)
 	 */
-	public Collection<NameValueBean> getMainContainer(Long entityGroupIdentifier)
+	public Collection<NameValueBean> getMainContainer(Long identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Map<String, HQLPlaceHolderObject> substitutionParameterMap = new HashMap<String, HQLPlaceHolderObject>();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", entityGroupIdentifier));
-		return executeHQL("getMainContainers", substitutionParameterMap);
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("long", identifier));
+
+		return executeHQL("getMainContainers", substParams);
 	}
 
-	/**
-	 * Returns all entitiy groups in the whole system
-	 * @return Collection Entity group Beans Collection
-	 * @throws DynamicExtensionsSystemException
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#getAllEntityGroupBeans()
 	 */
 	public Collection<NameValueBean> getAllEntityGroupBeans()
 			throws DynamicExtensionsSystemException
 	{
-
-		Collection<NameValueBean> entityGroupBeansCollection = new ArrayList<NameValueBean>();
-		Collection groupBeansCollection = executeHQL("getAllGroupBeans", new HashMap());
-		Iterator groupBeansIterator = groupBeansCollection.iterator();
+		Collection<NameValueBean> entGroupBeans = new ArrayList<NameValueBean>();
 		Object[] objectArray;
 
-		while (groupBeansIterator.hasNext())
+		Collection groupBeans = executeHQL("getAllGroupBeans", new HashMap());
+		Iterator grpBeansIter = groupBeans.iterator();
+		while (grpBeansIter.hasNext())
 		{
-			objectArray = (Object[]) groupBeansIterator.next();
-			NameValueBean entityGroupNameValue = new NameValueBean();
-			entityGroupNameValue.setName(objectArray[0]);
-			entityGroupNameValue.setValue(objectArray[1]);
-			entityGroupBeansCollection.add(entityGroupNameValue);
+			objectArray = (Object[]) grpBeansIter.next();
+
+			NameValueBean nameValueBean = new NameValueBean();
+			nameValueBean.setName(objectArray[0]);
+			nameValueBean.setValue(objectArray[1]);
+
+			entGroupBeans.add(nameValueBean);
 		}
 
-		return entityGroupBeansCollection;
+		return entGroupBeans;
 	}
 
-	/**
-	 *
-	 * @param entityGroupInterface
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#getAssociationTree()
 	 */
 	public Collection<AssociationTreeObject> getAssociationTree()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Collection associationTreeObjectCollection = new HashSet();
+		Collection<AssociationTreeObject> assTreeObjects = new HashSet<AssociationTreeObject>();
 
-		Collection groupBeansCollection = getAllEntityGroupBeans();
-		Iterator groupBeansIterator = groupBeansCollection.iterator();
-		AssociationTreeObject associationTreeObject;
+		AssociationTreeObject assoTreeObject;
 
-		while (groupBeansIterator.hasNext())
+		Collection<NameValueBean> groupBeans = getAllEntityGroupBeans();
+		Iterator<NameValueBean> grpBeansIter = groupBeans.iterator();
+		while (grpBeansIter.hasNext())
 		{
-			associationTreeObject = processGroupBean((NameValueBean) groupBeansIterator.next());
-			associationTreeObjectCollection.add(associationTreeObject);
+			assoTreeObject = processGroupBean(grpBeansIter.next());
+			assTreeObjects.add(assoTreeObject);
 		}
 
-		return associationTreeObjectCollection;
+		return assTreeObjects;
 	}
 
 	/**
@@ -330,33 +316,26 @@ public class EntityGroupManager extends AbstractMetadataManager
 	private AssociationTreeObject processGroupBean(NameValueBean groupBean)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		AssociationTreeObject associationTreeObjectForGroup = new AssociationTreeObject(new Long(
-				groupBean.getValue()), groupBean.getName());
+		AssociationTreeObject assoTreeObject = new AssociationTreeObject(Long.valueOf(groupBean
+				.getValue()), groupBean.getName());
 
-		Map substitutionParameterMap = new HashMap();
-		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long",
-				associationTreeObjectForGroup.getId()));
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("long", assoTreeObject.getId()));
 
-		Collection containersBeansCollection = executeHQL("getAllContainersBeansByEntityGroupId",
-				substitutionParameterMap);
+		Object[] contBeans;
+		AssociationTreeObject contAssoTreeObj;
 
-		Iterator containerBeansIterator = containersBeansCollection.iterator();
-		Object[] objectArrayForContainerBeans;
-		AssociationTreeObject associationTreeObjectForContainer;
-
-		while (containerBeansIterator.hasNext())
+		Collection containerBeans = executeHQL("getAllContainersBeansByEntityGroupId", substParams);
+		Iterator contBeansIter = containerBeans.iterator();
+		while (contBeansIter.hasNext())
 		{
-			objectArrayForContainerBeans = (Object[]) containerBeansIterator.next();
-			associationTreeObjectForContainer = new AssociationTreeObject(
-					(Long) objectArrayForContainerBeans[0],
-					(String) objectArrayForContainerBeans[1]);
-			//processForChildContainer(associationTreeObjectForContainer);
-			associationTreeObjectForGroup
-					.addAssociationTreeObject(associationTreeObjectForContainer);
+			contBeans = (Object[]) contBeansIter.next();
+			contAssoTreeObj = new AssociationTreeObject((Long) contBeans[0], (String) contBeans[1]);
 
+			assoTreeObject.addAssociationTreeObject(contAssoTreeObj);
 		}
 
-		return associationTreeObjectForGroup;
+		return assoTreeObject;
 	}
 
 	/**
@@ -382,26 +361,27 @@ public class EntityGroupManager extends AbstractMetadataManager
 	public boolean validateEntityGroup(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		EntityGroup databaseCopyEntityGroup = (EntityGroup) DBUtil.loadCleanObj(EntityGroup.class,
-				entityGroup.getId());
-		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-		for (EntityInterface entityInterface : entityCollection)
+		EntityGroup dbaseCopy = (EntityGroup) DBUtil.loadCleanObj(EntityGroup.class, entityGroup
+				.getId());
+
+		Collection<EntityInterface> entities = entityGroup.getEntityCollection();
+		for (EntityInterface entObject : entities)
 		{
-			Entity entity = (Entity) entityInterface;
+			Entity entity = (Entity) entObject;
 			if (entity.getId() == null)
 			{
 				DynamicExtensionsUtility.validateEntity(entity);
 			}
 			else
 			{
-				EntityInterface databaseCopy = getEntityFromGroup(databaseCopyEntityGroup, entity
-						.getId());
-				if (queryBuilder.isParentChanged((Entity) entity, (Entity) databaseCopy))
+				EntityInterface dbaseCpy = getEntityFromGroup(dbaseCopy, entity.getId());
+				if (queryBuilder.isParentChanged((Entity) entity, (Entity) dbaseCpy))
 				{
 					checkParentChangeAllowed(entity);
 				}
 			}
 		}
+
 		return true;
 	}
 
@@ -413,30 +393,20 @@ public class EntityGroupManager extends AbstractMetadataManager
 	 */
 	private EntityInterface getEntityFromGroup(EntityGroupInterface entityGroup, Long entityId)
 	{
-		Collection<EntityInterface> entityCollection = entityGroup.getEntityCollection();
-		for (EntityInterface entityInterface : entityCollection)
+		Collection<EntityInterface> entities = entityGroup.getEntityCollection();
+		for (EntityInterface entity : entities)
 		{
-			if (entityInterface.getId() != null && entityInterface.getId().equals(entityId))
+			if (entity.getId() != null && entity.getId().equals(entityId))
 			{
-				return entityInterface;
+				return entity;
 			}
 		}
+
 		return null;
 	}
 
-	/**
-	 *
-	 */
-	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
-	{
-		return queryBuilder;
-	}
-
-	/**
-	 * This method checks if the entity group can be created with the given name or not.
-	 * @param entityGroup
-	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#checkForDuplicateEntityGroupName(edu.common.dynamicextensions.domaininterface.EntityGroupInterface)
 	 */
 	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -454,8 +424,8 @@ public class EntityGroupManager extends AbstractMetadataManager
 				List count = (List) result.get(0);
 				if (count != null && !count.isEmpty())
 				{
-					int numberOfOccurence = new Integer((String) count.get(0)).intValue();
-					if (numberOfOccurence > 0)
+					int noOfOccurnces = new Integer((String) count.get(0)).intValue();
+					if (noOfOccurnces > 0)
 					{
 						throw new DynamicExtensionsApplicationException(
 								"Duplicate Entity Group name", null, DYEXTN_A_015);
@@ -484,4 +454,5 @@ public class EntityGroupManager extends AbstractMetadataManager
 			}
 		}
 	}
+
 }

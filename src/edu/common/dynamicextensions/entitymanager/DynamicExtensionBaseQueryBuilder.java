@@ -61,7 +61,6 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.dbManager.DBUtil;
@@ -100,8 +99,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<String> getCreateEntityQueryList(Entity entity, List<String> revQueries,
-			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
+	public List<String> getCreateEntityQueryList(Entity entity, List<String> revQueries) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		List<String> queries = new ArrayList<String>();
@@ -122,8 +120,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<String> getUpdateEntityQueryList(Entity entity, List<String> revQueries,
-			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
+	public List<String> getUpdateEntityQueryList(Entity entity, List<String> revQueries) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		List<String> queries = new ArrayList<String>();
@@ -142,13 +139,12 @@ class DynamicExtensionBaseQueryBuilder
 	 * create the data table for the entity and its associations.
 	 * @param catEntity category entity for which the queries are formed.
 	 * @param revQueries for every data table query this method creates a reverse query.
-	 * @param hibernateDAO
 	 * @return List<String> list of queries
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public List<String> getUpdateCategoryEntityQueryList(CategoryEntityInterface catEntity,
-			List<String> revQueries, HibernateDAO hibernateDAO)
+			List<String> revQueries)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<String> queries = new ArrayList<String>();
@@ -333,8 +329,8 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		Collection<AssociationInterface> associations = entity.getAssociationCollection();
 		Iterator<AssociationInterface> assocIter = associations.iterator();
-		StringBuffer manyToOneAssoRecQry = new StringBuffer();
-		manyToOneAssoRecQry.append(SELECT_KEYWORD + WHITESPACE);
+		StringBuffer mnyToOneAssQry = new StringBuffer();
+		mnyToOneAssQry.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssocns = new ArrayList<Association>();
 
 		Map<Association, List<?>> assocValues = new HashMap<Association, List<?>>();
@@ -368,9 +364,9 @@ class DynamicExtensionBaseQueryBuilder
 				// create a single query to get values for the target records.
 				if (manyToOneAssocns.size() != 0)
 				{
-					manyToOneAssoRecQry.append(COMMA);
+					mnyToOneAssQry.append(COMMA);
 				}
-				manyToOneAssoRecQry.append(WHITESPACE + sourceKey + WHITESPACE);
+				mnyToOneAssQry.append(WHITESPACE + sourceKey + WHITESPACE);
 				manyToOneAssocns.add(association);
 			}
 			else
@@ -408,9 +404,9 @@ class DynamicExtensionBaseQueryBuilder
 			}
 		}
 
-		manyToOneAssoRecQry.append(WHITESPACE + FROM_KEYWORD + WHITESPACE
+		mnyToOneAssQry.append(WHITESPACE + FROM_KEYWORD + WHITESPACE
 				+ entity.getTableProperties().getName() + WHITESPACE);
-		manyToOneAssoRecQry.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL
+		mnyToOneAssQry.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL
 				+ recordId);
 
 		int noOfMany2OneAsso = manyToOneAssocns.size();
@@ -422,7 +418,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				Connection conn = DBUtil.getConnection();
 				statement = conn.createStatement();
-				resultSet = statement.executeQuery(manyToOneAssoRecQry.toString());
+				resultSet = statement.executeQuery(mnyToOneAssQry.toString());
 
 				resultSet.next();
 				for (int i = 0; i < noOfMany2OneAsso; i++)
@@ -472,8 +468,8 @@ class DynamicExtensionBaseQueryBuilder
 			throws DynamicExtensionsSystemException, IOException, ClassNotFoundException
 	{
 		Iterator<AssociationInterface> assocIter = associations.iterator();
-		StringBuffer manyToOneAssoRecQry = new StringBuffer();
-		manyToOneAssoRecQry.append(SELECT_KEYWORD + WHITESPACE);
+		StringBuffer mnyToOneAssQry = new StringBuffer();
+		mnyToOneAssQry.append(SELECT_KEYWORD + WHITESPACE);
 		List<Association> manyToOneAssocns = new ArrayList<Association>();
 
 		while (assocIter.hasNext())
@@ -510,9 +506,9 @@ class DynamicExtensionBaseQueryBuilder
 				// to get values for the target records.
 				if (manyToOneAssocns.size() != 0)
 				{
-					manyToOneAssoRecQry.append(COMMA);
+					mnyToOneAssQry.append(COMMA);
 				}
-				manyToOneAssoRecQry.append(WHITESPACE + sourceKey + WHITESPACE);
+				mnyToOneAssQry.append(WHITESPACE + sourceKey + WHITESPACE);
 				manyToOneAssocns.add(association);
 			}
 			else
@@ -548,15 +544,14 @@ class DynamicExtensionBaseQueryBuilder
 		if (manyToOneAssocns.size() != 0)
 		{
 			String srcEntName = manyToOneAssocns.get(0).getEntity().getTableProperties().getName();
-			manyToOneAssoRecQry.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + srcEntName
-					+ WHITESPACE);
-			manyToOneAssoRecQry.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL
+			mnyToOneAssQry.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + srcEntName + WHITESPACE);
+			mnyToOneAssQry.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + IDENTIFIER + EQUAL
 					+ recordId);
 
 			ResultSet resultSet = null;
 			try
 			{
-				resultSet = EntityManagerUtil.executeQuery(manyToOneAssoRecQry.toString());
+				resultSet = EntityManagerUtil.executeQuery(mnyToOneAssQry.toString());
 				resultSet.next();
 				for (int i = 0; i < manyToOneAssocns.size(); i++)
 				{
@@ -628,7 +623,8 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 		{
-			Long id = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties().getName());
+			Long identifier = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
+					.getName());
 
 			// For many to many, insert into middle table.
 			for (int i = 0; i < recIds.size(); i++)
@@ -638,13 +634,13 @@ class DynamicExtensionBaseQueryBuilder
 						+ " ( ");
 				query.append(IDENTIFIER + "," + sourceKey + "," + targetKey);
 				query.append(" ) VALUES ( ");
-				query.append(id.toString());
+				query.append(identifier.toString());
 				query.append(COMMA);
 				query.append(srcRecId.toString());
 				query.append(COMMA);
 				query.append(recIds.get(i));
 				query.append(CLOSING_BRACKET);
-				id++; //TODO this is not thread safe ,so needs to find a another solution.
+				identifier++; //TODO this is not thread safe ,so needs to find a another solution.
 
 				queries.add(query.toString());
 			}
@@ -1415,9 +1411,8 @@ class DynamicExtensionBaseQueryBuilder
 					continue;
 				}
 
-				boolean isAddAssociationQuery = true;
-				String assoQuery = getQueryPartForAssociation(association, revQueries,
-						isAddAssociationQuery);
+				boolean isAddAssoQry = true;
+				String assoQuery = getQueryPartForAssociation(association, revQueries, isAddAssoQry);
 				assoQueries.add(assoQuery);
 			}
 		}
@@ -1444,9 +1439,8 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			for (CategoryAssociationInterface catAsso : associations)
 			{
-				boolean isAddAssociationQuery = true;
-				String assoQuery = getQueryPartForAssociation(catAsso, revQueries,
-						isAddAssociationQuery);
+				boolean isAddAssoQry = true;
+				String assoQuery = getQueryPartForAssociation(catAsso, revQueries, isAddAssoQry);
 				assoQueries.add(assoQuery);
 			}
 		}
@@ -1562,11 +1556,11 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param columnName
 	 * @param dataType
 	 * @param revQueries
-	 * @param isAddAssociationQuery
+	 * @param isAddAssoQry
 	 * @return
 	 */
 	protected String getAddAttributeQuery(String tableName, String columnName, String dataType,
-			List<String> revQueries, boolean isAddAssociationQuery)
+			List<String> revQueries, boolean isAddAssoQry)
 	{
 		StringBuffer query = new StringBuffer();
 		query.append(ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD + WHITESPACE);
@@ -1574,7 +1568,7 @@ class DynamicExtensionBaseQueryBuilder
 		String rollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
 				+ WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
 
-		if (isAddAssociationQuery)
+		if (isAddAssoQry)
 		{
 			revQueries.add(rollbackQuery);
 			return query.toString();
@@ -1758,7 +1752,7 @@ class DynamicExtensionBaseQueryBuilder
 		Logger.out.debug("Entering getUpdateAssociationsQueryList method");
 
 		List<String> assoQueries = new ArrayList<String>();
-		boolean isAddAssociationQuery = true;
+		boolean isAddAssoQry = true;
 
 		Collection<CategoryAssociationInterface> associations = catEntity
 				.getCategoryAssociationCollection();
@@ -1772,9 +1766,9 @@ class DynamicExtensionBaseQueryBuilder
 
 				if (isAbstarctAttributeColumnToBeAdded(catAsso, assoDbaseCopy))
 				{
-					isAddAssociationQuery = true;
+					isAddAssoQry = true;
 					String newAssoQuery = getQueryPartForAssociation(catAsso, attrRlbkQries,
-							isAddAssociationQuery);
+							isAddAssoQry);
 					assoQueries.add(newAssoQuery);
 				}
 			}
@@ -1976,10 +1970,10 @@ class DynamicExtensionBaseQueryBuilder
 		Cardinality srcMaxCard = association.getSourceRole().getMaximumCardinality();
 		Cardinality tgtMaxCard = association.getTargetRole().getMaximumCardinality();
 
-		Cardinality srcMaxCardDbaseCopy = dbaseCopy.getSourceRole().getMaximumCardinality();
-		Cardinality tgtMaxCardDbaseCopy = dbaseCopy.getTargetRole().getMaximumCardinality();
+		Cardinality srcMaxCardDbCpy = dbaseCopy.getSourceRole().getMaximumCardinality();
+		Cardinality tgtMaxCardDbCpy = dbaseCopy.getTargetRole().getMaximumCardinality();
 
-		if (!srcMaxCard.equals(srcMaxCardDbaseCopy) || !tgtMaxCard.equals(tgtMaxCardDbaseCopy))
+		if (!srcMaxCard.equals(srcMaxCardDbCpy) || !tgtMaxCard.equals(tgtMaxCardDbCpy))
 		{
 			return true;
 		}
@@ -2415,22 +2409,21 @@ class DynamicExtensionBaseQueryBuilder
 		mdfyAttrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
 				+ WHITESPACE + mdfyAttrRlbkQry;
 
-		String nullQueryKeyword = "";
-		String nullQueryRollbackKeyword = "";
+		String nullQryKewrd = "";
+		String nullQryRlbkKewrd = "";
 		List<String> mdfyAttrQries = new ArrayList<String>();
 		mdfyAttrQries.add(ALTER_TABLE + tableName + DROP_KEYWORD + COLUMN_KEYWORD
 				+ savedAttr.getColumnProperties().getName());
 
 		if (attribute.getIsNullable() && !savedAttr.getIsNullable())
 		{
-			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD
-					+ WHITESPACE;
+			nullQryKewrd = WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQryRlbkKewrd = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
 		}
 		else if (!attribute.getIsNullable() && savedAttr.getIsNullable())
 		{
-			nullQueryKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRollbackKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQryKewrd = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQryRlbkKewrd = WHITESPACE + NULL_KEYWORD + WHITESPACE;
 
 		}
 
@@ -2444,8 +2437,8 @@ class DynamicExtensionBaseQueryBuilder
 					+ dropExtraColumnQueryStringForFileAttribute(attribute);
 		}
 
-		mdfyAttrQuery = mdfyAttrQuery + nullQueryKeyword;
-		mdfyAttrRlbkQry = mdfyAttrRlbkQry + nullQueryRollbackKeyword;
+		mdfyAttrQuery = mdfyAttrQuery + nullQryKewrd;
+		mdfyAttrRlbkQry = mdfyAttrRlbkQry + nullQryRlbkKewrd;
 		mdfyAttrRlbkQries.add(mdfyAttrRlbkQry);
 
 		mdfyAttrQuery += CLOSING_BRACKET;

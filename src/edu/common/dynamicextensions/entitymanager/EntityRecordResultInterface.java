@@ -1,10 +1,3 @@
-/**
- *<p>Title: </p>
- *<p>Description:  </p>
- *<p>Copyright:TODO</p>
- *@author 
- *@version 1.0
- */
 
 package edu.common.dynamicextensions.entitymanager;
 
@@ -12,8 +5,8 @@ import java.util.List;
 
 /**
  * This is an interface to operate on the entity record result object.
- * @author Rahul Ner
- * @author vishvesh Mulay
+ * @author rahul_ner
+ * @author vishvesh_mulay
  *
  */
 public interface EntityRecordResultInterface
@@ -25,9 +18,9 @@ public interface EntityRecordResultInterface
 	List<EntityRecordInterface> getEntityRecordList();
 
 	/**
-	 * @param entityRecordList The entityRecordList to set.
+	 * @param entityRecords The entityRecordList to set.
 	 */
-	void setEntityRecordList(List<EntityRecordInterface> entityRecordList);
+	void setEntityRecordList(List<EntityRecordInterface> entityRecords);
 
 	/**
 	 * @return Returns the entityRecordMetadata.
@@ -35,8 +28,8 @@ public interface EntityRecordResultInterface
 	EntityRecordMetadata getEntityRecordMetadata();
 
 	/**
-	 * @param entityRecordMetadata The entityRecordMetadata to set.
+	 * @param entRecMetadata The entityRecordMetadata to set.
 	 */
-	void setEntityRecordMetadata(EntityRecordMetadata entityRecordMetadata);
+	void setEntityRecordMetadata(EntityRecordMetadata entRecMetadata);
 
 }

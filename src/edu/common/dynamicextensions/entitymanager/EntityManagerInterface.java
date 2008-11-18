@@ -35,21 +35,19 @@ public interface EntityManagerInterface
 {
 
 	/**
-	 * Saves the entity into the database.Also prepares the dynamic tables and associations
-	 * between those tables using the metadata information in the entity object.
-	 * EntityInterface can be obtained from DomainObjectFactory.
-	 * @param entityInterface
+	 * Persists the entity to the database. Also creates the dynamic tables and associations
+	 * between those tables using the meta data information in the entity object.
+	 * @param entity
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityInterface persistEntity(EntityInterface entityInterface)
+	public EntityInterface persistEntity(EntityInterface entity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
-	 * This method is used to save the metadata information of the given entity without creating it's data
-	 * table.
-	 *
+	 * This method is used to save the meta data information  
+	 * of the given entity without creating its data table.
 	 * @param entityInterface entity to be persisted
 	 */
 	public EntityInterface persistEntityMetadata(EntityInterface entity)
@@ -80,12 +78,12 @@ public interface EntityManagerInterface
 	/**
 	 * Returns an association object given the entity name and source role name.
 	 * @param entityName
-	 * @param sourceRoleName
+	 * @param srcRoleName
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<AssociationInterface> getAssociation(String entityName, String sourceRoleName)
+	Collection<AssociationInterface> getAssociation(String entityName, String srcRoleName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -101,7 +99,14 @@ public interface EntityManagerInterface
 			String targetEntityName) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
-	AssociationInterface getAssociationByName(String associationName)
+	/**
+	 * Returns an association object given the association name.
+	 * @param associationName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	AssociationInterface getAssociationByName(String assoName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -192,15 +197,16 @@ public interface EntityManagerInterface
 			DynamicExtensionsSystemException;
 
 	/**
+	 * The method returns the entity records for the given entity, attribute and records.
 	 * @param entity
-	 * @param abstractAttributeCollection
-	 * @param recordIdList
+	 * @param abstrAttributes
+	 * @param recordIds
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
 	EntityRecordResultInterface getEntityRecords(EntityInterface entity,
-			List<? extends AbstractAttributeInterface> abstractAttributeCollection,
-			List<Long> recordIdList) throws DynamicExtensionsSystemException;
+			List<? extends AbstractAttributeInterface> abstrAttributes, List<Long> recordIds)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId
@@ -416,13 +422,11 @@ public interface EntityManagerInterface
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * This method returns the container interface given the entity identifier.
-	 * @param EntityInterface
+	 * @param entityId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
 	 */
-	public ContainerInterface getContainerByEntityIdentifier(Long entityIdentifier)
+	public ContainerInterface getContainerByEntityIdentifier(Long entityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -566,9 +570,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Long insertDataForSingleEntity(EntityInterface entity, Map dataValue, JDBCDAO jdbcDao,
-			Long parentRecordId, Long... userId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public Long insertDataForSingleEntity(EntityInterface entity, Map<?, ?> dataValue,
+			JDBCDAO jdbcDao, Long parentRecordId, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity
@@ -579,9 +583,9 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public boolean editDataForSingleEntity(EntityInterface entity, Map dataValue, Long recordId,
-			JDBCDAO jdbcDAO, Long... userId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	public boolean editDataForSingleEntity(EntityInterface entity, Map<?, ?> dataValue,
+			Long recordId, JDBCDAO jdbcDAO, Long... userId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * @param entity

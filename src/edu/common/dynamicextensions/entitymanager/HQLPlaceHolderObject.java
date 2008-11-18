@@ -1,35 +1,43 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
+/**
+ * 
+ * @author mandar_shidhore
+ *
+ */
 public class HQLPlaceHolderObject
 {
+
 	/**
 	 * 
 	 */
-	String type;
+	private String type;
+
 	/**
 	 * 
 	 */
-	Object value;
+	private Object value;
+
 	/**
 	 * 
 	 *
 	 */
 	public HQLPlaceHolderObject()
 	{
-		
 	}
+
 	/**
 	 * 
 	 * @param type
 	 * @param value
 	 */
-	public HQLPlaceHolderObject(String type,Object value)
+	public HQLPlaceHolderObject(String type, Object value)
 	{
 		this.type = type;
 		this.value = value;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return
@@ -38,6 +46,7 @@ public class HQLPlaceHolderObject
 	{
 		return type;
 	}
+
 	/**
 	 * 
 	 * @param type
@@ -46,6 +55,7 @@ public class HQLPlaceHolderObject
 	{
 		this.type = type;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -54,7 +64,7 @@ public class HQLPlaceHolderObject
 	{
 		return value;
 	}
-	
+
 	/**
 	 * 
 	 * @param value
@@ -63,9 +73,5 @@ public class HQLPlaceHolderObject
 	{
 		this.value = value;
 	}
-	
-	
-	
-	
 
 }

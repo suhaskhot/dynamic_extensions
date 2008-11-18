@@ -24,22 +24,26 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 	{
 
 	}
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
 	{
-		
+
 		return EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		ShortValueInterface shortValueInterface = domainObjectFactory.createShortValue();
-		shortValueInterface.setValue(new Short(value));
-		return shortValueInterface;
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		ShortValueInterface shortValue = factory.createShortValue();
+		shortValue.setValue(Short.valueOf(value));
+
+		return shortValue;
 	}
+
 }

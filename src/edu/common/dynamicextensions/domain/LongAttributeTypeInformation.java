@@ -30,17 +30,19 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 	 */
 	public String getDataType()
 	{
-		
 		return EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		LongValueInterface longValueInterface = domainObjectFactory.createLongValue();
-		longValueInterface.setValue(new Long(value));
-		return longValueInterface;
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		LongValueInterface longValue = factory.createLongValue();
+		longValue.setValue(Long.valueOf(value));
+
+		return longValue;
 	}
+
 }

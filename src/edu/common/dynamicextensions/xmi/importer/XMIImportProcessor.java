@@ -2075,6 +2075,29 @@ public class XMIImportProcessor
 	}
 
 	/**
+	 * @param attributeInterface 
+	 * @param taggedValueMap
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private String getDefaultValueForBooleanTagValue(
+			AbstractAttributeInterface abstractAttributeInterface,
+			Map<String, String> taggedValueMap) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
+	{
+
+		String defaultValue = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DEFAULT_VALUE);
+		String boolValue = ProcessorConstants.FALSE;
+		if (defaultValue != null && !defaultValue.trim().equals(""))
+		{
+			XMIImportValidator.validateDefBooleanValue(abstractAttributeInterface, defaultValue);
+			boolValue = defaultValue;
+		}
+		return boolValue;
+	}
+
+	/**
 	 * By Prashant
 	 * @param taggedValueMap
 	 * @param attributeTypeInformation
@@ -2502,9 +2525,13 @@ public class XMIImportProcessor
 					String userSelectedControlName = ProcessorConstants.CHECKBOX_CONTROL;
 					controlModel.setDataType(ProcessorConstants.DATATYPE_BOOLEAN);
 					controlInterface = deFactory.createCheckBox();
+					String defaultValue = getDefaultValueForBooleanTagValue(attributeInterface,
+							taggedValueMap);
+
 					BooleanValueInterface booleanValue = DomainObjectFactory.getInstance()
 							.createBooleanValue();
-					booleanValue.setValue(new Boolean(false));
+					booleanValue.setValue(new Boolean(defaultValue));
+
 					((BooleanAttributeTypeInformation) attributeTypeInformation)
 							.setDefaultValue(booleanValue);
 					//Set Explicit Validation Rules

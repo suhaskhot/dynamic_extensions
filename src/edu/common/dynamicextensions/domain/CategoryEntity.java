@@ -78,7 +78,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * 
 	 */
-	protected Boolean isCreateTable = new Boolean(true);
+	protected Boolean isCreateTable = Boolean.TRUE;
 	/**
 	 *
 	 *

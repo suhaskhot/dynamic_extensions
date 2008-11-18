@@ -154,15 +154,16 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public DataElementInterface getDataElement()
 	{
+		DataElementInterface dataElementInterface = null;
 		if (dataElementCollection != null)
 		{
 			Iterator dataElementIterator = dataElementCollection.iterator();
 			if (dataElementIterator.hasNext())
 			{
-				return (DataElement) dataElementIterator.next();
+				dataElementInterface = (DataElement) dataElementIterator.next();
 			}
 		}
-		return null;
+		return dataElementInterface;
 	}
 
 	public void clearDataElementCollection()
@@ -272,15 +273,17 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 */
 	public String getDefaultValue()
 	{
+		String defaultValue = null;
 		if (defaultPermissibleValuesCollection != null && !defaultPermissibleValuesCollection.isEmpty())
 		{
 			Iterator<PermissibleValueInterface> dataElementIterator = defaultPermissibleValuesCollection.iterator();
-			return String.valueOf(dataElementIterator.next().getValueAsObject());
+			defaultValue = String.valueOf(dataElementIterator.next().getValueAsObject());
 		}
 		else
 		{
-			return ((AttributeMetadataInterface) this.abstractAttribute).getDefaultValue();
+			defaultValue = ((AttributeMetadataInterface) this.abstractAttribute).getDefaultValue();
 		}
+		return defaultValue;
 	}
 
 	/**

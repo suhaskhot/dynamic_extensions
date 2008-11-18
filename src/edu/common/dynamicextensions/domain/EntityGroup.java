@@ -41,7 +41,7 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	/**
 	 * isSystemGenerated.
 	 */
-	protected Boolean isSystemGenerated = new Boolean(true);
+	protected Boolean isSystemGenerated = Boolean.TRUE;
 
 	/**
 	 * Collection of Entity in this Entity group.
@@ -252,16 +252,21 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 		this.isSystemGenerated = isSystemGenerated;
 	}
 
+	/**
+	 * @param entityName
+	 */
 	public EntityInterface getEntityByName(String entityName)
 	{
+		EntityInterface entityInterface = null;
 		for(EntityInterface entity : entityCollection)
 		{
 			if(entity.getName().equalsIgnoreCase(entityName))
 			{
-				return entity;
+				entityInterface = entity;
+				break;
 			}
 		}
-		return null;
+		return entityInterface;
 	}
 
 }

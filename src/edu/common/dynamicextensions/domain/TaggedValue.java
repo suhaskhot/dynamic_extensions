@@ -89,8 +89,8 @@ public class TaggedValue extends DynamicExtensionBaseDomainObject implements Tag
 	public TaggedValue clone()
 	{
 		TaggedValue taggedValue = new TaggedValue();
-		taggedValue.setKey(new String(this.key));
-		taggedValue.setValue(new String(this.value));
+		taggedValue.setKey(String.valueOf(this.key));
+		taggedValue.setValue(String.valueOf(this.value));
 		return taggedValue;
 	}
 }

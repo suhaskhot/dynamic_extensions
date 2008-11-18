@@ -353,6 +353,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
      */
     private Association getSystemGeneratedAssociation(Association association)
     {
+    	boolean found = false;
     	Association associationInterface = null;
         EntityInterface targetEnetity = association.getTargetEntity();
         Collection associationCollection = targetEnetity.getAssociationCollection();
@@ -366,11 +367,12 @@ public class Association extends AbstractAttribute implements AssociationInterfa
                         && associationInterface.getSourceRole().equals(association.getTargetRole())
                         && associationInterface.getTargetRole().equals(association.getSourceRole()))
                 {
+                    found = true;
                     break;
                 }
             }
         }
-        return associationInterface;
+        return found ? associationInterface :null;
     }
 
 	public AssociationType getAssociationType()

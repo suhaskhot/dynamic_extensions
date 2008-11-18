@@ -290,21 +290,23 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 */
 	public ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber)
 	{
-		Collection controlsCollection = this.getControlCollection();
+		boolean found = false;
+		ControlInterface controlInterface = null;
+		Collection<ControlInterface> controlsCollection = this.getControlCollection();
 		if (controlsCollection != null)
 		{
-			Iterator controlsIterator = controlsCollection.iterator();
-			ControlInterface controlInterface;
+			Iterator<ControlInterface> controlsIterator = controlsCollection.iterator();
 			while (controlsIterator.hasNext())
 			{
-				controlInterface = (ControlInterface) controlsIterator.next();
-				if (controlInterface.getSequenceNumber().equals(new Integer(sequenceNumber)))
+				controlInterface = controlsIterator.next();
+				if (controlInterface.getSequenceNumber().equals(Integer.valueOf(sequenceNumber)))
 				{
-					return controlInterface;
+					found = true;
+					break;
 				}
 			}
 		}
-		return null;
+		return found ? controlInterface : null;
 	}
 
 	/**

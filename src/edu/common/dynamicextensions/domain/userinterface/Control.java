@@ -338,13 +338,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		//		{
 		//			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
 		//		}
-
+		String htmlComponentName = null;
 		ContainerInterface parentContainer = this.getParentContainer();
 		if (this.getSequenceNumber() != null)
 		{
-			return "Control_" + parentContainer.getIncontextContainer().getId() + "_" + parentContainer.getId() + "_" + this.getSequenceNumber();
+			htmlComponentName = "Control_" + parentContainer.getIncontextContainer().getId() + "_" + parentContainer.getId() + "_" + this.getSequenceNumber();
 		}
-		return null;
+		return htmlComponentName;
 	}
 
 	/**
@@ -433,11 +433,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	public AttributeMetadataInterface getAttibuteMetadataInterface()
 	{
+		AttributeMetadataInterface attributeMetadataInterface = null;
 		if (baseAbstractAttribute instanceof AttributeMetadataInterface)
 		{
-			return (AttributeMetadataInterface) baseAbstractAttribute;
+			attributeMetadataInterface = (AttributeMetadataInterface) baseAbstractAttribute;
 		}
-		return null;
+		return attributeMetadataInterface;
 
 	}
 

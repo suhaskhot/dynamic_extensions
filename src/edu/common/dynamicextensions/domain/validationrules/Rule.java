@@ -36,7 +36,7 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	/**
 	 * 
 	 */
-	protected Boolean isImplicitRule = new Boolean(true);
+	protected Boolean isImplicitRule = Boolean.TRUE;
 
 	/**
 	 * Empty Constructor.

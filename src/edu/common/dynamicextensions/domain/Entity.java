@@ -619,21 +619,16 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public boolean isMultiselectAttributePresent(String attributeName)
 	{
 		boolean isAttributePresent = false;
-		AbstractAttributeInterface abstractAttribute = null;
-		for (AbstractAttributeInterface attr: this.getAllAbstractAttributes())
+		for (AbstractAttributeInterface abstractAttribute: this.getAllAbstractAttributes())
 		{
-			if (attr.getName().trim().equals(attributeName))
+			if (abstractAttribute.getName().trim().equals(attributeName) && abstractAttribute instanceof AssociationInterface)
 			{
-				abstractAttribute = attr;
-				break;
-			}
-		}
-		if (abstractAttribute != null && abstractAttribute instanceof AssociationInterface)
-		{
-			AssociationInterface association = (AssociationInterface) abstractAttribute;
-			if (association.getIsCollection())
-			{
-				isAttributePresent = true;
+				AssociationInterface association = (AssociationInterface) abstractAttribute;
+				if (association.getIsCollection())
+				{
+					isAttributePresent = true;
+					break;
+				}
 			}
 		}
 		return isAttributePresent;

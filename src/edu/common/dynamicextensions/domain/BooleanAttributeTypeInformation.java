@@ -24,23 +24,25 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	{
 
 	}
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
 	{
-		return EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE;
+		return EntityManagerConstantsInterface.BOOL_ATTR_TYPE;
 	}
 
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		BooleanValueInterface booleanValue = factory.createBooleanValue();
+		booleanValue.setValue(new Boolean(value));
 		
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		BooleanValueInterface booleanValueInterface = domainObjectFactory.createBooleanValue();
-		booleanValueInterface.setValue(new Boolean(value));
-		return booleanValueInterface;
+		return booleanValue;
 	}
 
 }

@@ -24,23 +24,26 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 	{
 
 	}
-	
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
 	{
-		
-		return EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE;
+
+		return EntityManagerConstantsInterface.FLOAT_ATTR_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		FloatValueInterface floatValueInterface = domainObjectFactory.createFloatValue();
-		floatValueInterface.setValue(new Float(value));
-		return floatValueInterface ;
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		FloatValueInterface floatValue = factory.createFloatValue();
+		floatValue.setValue(new Float(value));
+		
+		return floatValue;
 	}
+	
 }

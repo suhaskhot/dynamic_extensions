@@ -18,7 +18,9 @@ import edu.wustl.common.util.Utility;
  * @hibernate.joined-subclass table="DYEXTN_DATE_TYPE_INFO"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class DateAttributeTypeInformation extends AttributeTypeInformation implements DateTypeInformationInterface
+public class DateAttributeTypeInformation extends AttributeTypeInformation
+		implements
+			DateTypeInformationInterface
 {
 
 	/**
@@ -62,24 +64,27 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation imple
 	public String getDataType()
 	{
 
-		return EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE;
+		return EntityManagerConstantsInterface.DATE_ATTR_TYPE;
 	}
 
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+			throws ParseException
 	{
 		value = value.replace("/", "-");
 
 		if (value.length() != format.length())
 		{
-			throw new ParseException("DATE VALUE " + value + " INVALID FOR " + format + " DATE FORMAT.", 0);
+			throw new ParseException("DATE VALUE " + value + " INVALID FOR " + format
+					+ " DATE FORMAT.", 0);
 		}
 
 		if (value.endsWith("0000") || value.contains("."))
 		{
-			throw new ParseException("DATE VALUE " + value + " INVALID FOR " + format + " DATE FORMAT.", 0);
+			throw new ParseException("DATE VALUE " + value + " INVALID FOR " + format
+					+ " DATE FORMAT.", 0);
 		}
 
 		DateValueInterface dateValue = DomainObjectFactory.getInstance().createDateValue();
@@ -106,6 +111,7 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation imple
 		}
 
 		dateValue.setValue(date);
+		
 		return dateValue;
 	}
 

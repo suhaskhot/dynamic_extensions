@@ -22,7 +22,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	/**
 	 * maximum file size (in MB)
 	 */
-	Float maxFileSize;
+	private Float maxFileSize;
 
 	/**
 	 * allowed file types for this attribute
@@ -98,7 +98,6 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 		{
 			this.fileExtensionCollection.remove(fileExtension);
 		}
-
 	}
 
 	/**
@@ -111,22 +110,21 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 			this.fileExtensionCollection.clear();
 		}
 	}
-	
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
 	{
-		
-		return EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE;
+		return EntityManagerConstantsInterface.FILE_ATTR_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
 		return null;
 	}
-	
-	
+
 }

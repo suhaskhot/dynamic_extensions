@@ -24,24 +24,26 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 	{
 
 	}
-	
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
 	{
-		
-		return EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE;
+
+		return EntityManagerConstantsInterface.DOUBLE_ATTR_TYPE;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
-		
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		DoubleValueInterface doubleValueInterface = domainObjectFactory.createDoubleValue();
-		doubleValueInterface.setValue(new Double(value));
-		return doubleValueInterface ;
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		DoubleValueInterface doubleValue = factory.createDoubleValue();
+		doubleValue.setValue(new Double(value));
+
+		return doubleValue;
 	}
+
 }

@@ -3162,6 +3162,7 @@ class DynamicExtensionBaseQueryBuilder
 				try
 				{
 					resultSet.close();
+					DBUtil.closeConnection();
 				}
 				catch (SQLException e)
 				{

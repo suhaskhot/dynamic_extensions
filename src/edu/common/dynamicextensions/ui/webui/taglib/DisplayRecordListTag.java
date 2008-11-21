@@ -44,12 +44,13 @@ public class DisplayRecordListTag extends TagSupport
 	 */
 	private boolean isDataValid()
 	{
+		boolean isDataValid = true;
 		if (this.getEntityRecordList() == null)
 		{
 			Logger.out.debug("Container interface is null");
-			return false;
+			isDataValid = false;
 		}
-		return true;
+		return isDataValid;
 	}
 
 	/**

@@ -15,8 +15,8 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class TreeData
 {
-	private final String EXPANDED_CLASS_NAME = "folderOpen";
-	private final String COLLAPSED_CLASS_NAME = "folder";
+	private static final String EXPANDED_CLASS_NAME = "folderOpen";
+	private static final String COLLAPSED_CLASS_NAME = "folder";
 
 	private String folder = "/images";
 	private String color = "navy";
@@ -60,7 +60,7 @@ public class TreeData
 	 */
 	public String getImagesUrl()
 	{
-		return (this.folder);
+		return this.folder;
 	}
 
 	/**

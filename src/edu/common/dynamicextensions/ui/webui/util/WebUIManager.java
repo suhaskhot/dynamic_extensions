@@ -6,11 +6,12 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * This class acts as an interface to the external systems.The dynamic extensions can be delivered
- * as a seperate war.
+ * as a separate war.
  * This class provides URLs for various action classes as well as parameter names.Those parameters can be 
  * send along with query String.  
  * @author sujay_narkar
@@ -21,7 +22,7 @@ public class WebUIManager implements WebUIManagerConstants
 {
 
 	/**
-	 * The URL for action class wich creates container.
+	 * The URL for action class which creates container.
 	 * @return
 	 */
 	public static String getCreateContainerURL()
@@ -113,16 +114,19 @@ public class WebUIManager implements WebUIManagerConstants
 		//If the current container name is not null, get the container for corresponding name from cache
 		//if null, return default container from cache.
 		ContainerInterface currentContainer = null;
-		String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+		String currentContainerName = (String) CacheManager.getObjectFromCache(request,
+				Constants.CURRENT_CONTAINER_NAME);
 		if ((currentContainerName != null) && (!currentContainerName.trim().equals("")))
 		{
 			//container for current container name
-			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, currentContainerName);
+			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
+					currentContainerName);
 		}
 		else
 		{
 			//return default container
-			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
+					Constants.CONTAINER_INTERFACE);
 		}
 		return currentContainer;
 	}
@@ -130,11 +134,11 @@ public class WebUIManager implements WebUIManagerConstants
 	public static Integer getSequenceNumberForNextControl(ContainerInterface container)
 	{
 		Integer nextSequenceNumber = null;
-		Collection controlCollection = container.getControlCollection();
+		Collection<ControlInterface> controlCollection = container.getControlCollection();
 		if (controlCollection != null)
 		{
 			int noOfElts = controlCollection.size();
-			nextSequenceNumber = new Integer(noOfElts + 1);
+			nextSequenceNumber = Integer.valueOf(noOfElts + 1);
 		}
 		return nextSequenceNumber;
 	}

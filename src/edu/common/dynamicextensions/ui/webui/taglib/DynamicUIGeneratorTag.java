@@ -12,6 +12,7 @@ import edu.wustl.common.util.logger.Logger;
 
 public class DynamicUIGeneratorTag extends TagSupport
 {
+
 	/**
 	 * 
 	 */
@@ -47,12 +48,13 @@ public class DynamicUIGeneratorTag extends TagSupport
 	 */
 	private boolean isDataValid()
 	{
+		boolean isDataValid = true;
 		if (this.getContainerInterface() == null)
 		{
 			Logger.out.debug("Container interface is null");
-			return false;
+			isDataValid = false;
 		}
-		return true;
+		return isDataValid;
 	}
 
 	/**
@@ -91,6 +93,5 @@ public class DynamicUIGeneratorTag extends TagSupport
 		}
 		return EVAL_PAGE;
 	}
-
 
 }

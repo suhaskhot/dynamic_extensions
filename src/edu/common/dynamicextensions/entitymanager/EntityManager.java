@@ -2291,6 +2291,48 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return catCaptions.iterator().next().toString();
 	}
 
+	public Long getRootCategoryEntityIdByCategoryName(String categoryName)
+			throws DynamicExtensionsSystemException
+	{
+		// Create a map of substitution parameters.
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("string", categoryName));
+		Collection<Long> rootCategoryEntityId = null;
+		rootCategoryEntityId = executeHQL("getRootCategoryEntityId", substParams);
+		if (rootCategoryEntityId != null && !rootCategoryEntityId.isEmpty())
+		{
+			return (Long) rootCategoryEntityId.iterator().next();
+		}
+		return null;
+	}
+
+	public Long getContainerIdFromEntityId(Long entityId)
+			throws DynamicExtensionsSystemException
+	{
+		// Create a map of substitution parameters.
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("long", entityId));
+		Collection<Long> containerIds = null;
+		containerIds = executeHQL("getContainerIdFromEntityId", substParams);
+		if (containerIds != null && !containerIds.isEmpty())
+		{
+			return (Long) containerIds.iterator().next();
+		}
+		return null;
+	}
+
+	public Collection<Long> getAllEntityIdsForEntityGroup(Long entityGroupId)
+			throws DynamicExtensionsSystemException
+	{
+		// Create a map of substitution parameters.
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("long", entityGroupId));
+
+		Collection<Long> entityIds = executeHQL(null, "getAllEntityIdsForEntityGroup", substParams);
+
+		return entityIds;
+	}
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */

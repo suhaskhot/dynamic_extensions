@@ -267,6 +267,21 @@
 		from edu.common.dynamicextensions.domain.CategoryEntity categoryEntity
 		where categoryEntity.id=?
 	</query>
+	<query name="getRootCategoryEntityId">
+		select category.rootCategoryElement.id
+		from edu.common.dynamicextensions.domain.Category category
+		where category.name =?
+	</query>
+	<query name="getAllEntityIdsForEntityGroup">
+	   select entity.id
+	   	from edu.common.dynamicextensions.domain.Entity entity
+	      where entity.entityGroup.id = ?
+	</query>
+	<query name="getContainerIdFromEntityId">
+	   select container.id
+	   	from edu.common.dynamicextensions.domain.userinterface.Container container
+	    where container.abstractEntity.id = ?
+	</query>
 	<query name="getTargetEntityIdForCollAttribute">
    		select association.targetEntity.id	
 		from Association association

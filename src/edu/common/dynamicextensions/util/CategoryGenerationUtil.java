@@ -228,21 +228,23 @@ public class CategoryGenerationUtil
 		Map<String, List<AssociationInterface>> listOfPath = new HashMap<String, List<AssociationInterface>>();
 
 		Set<String> entityNames = paths.keySet();
+		List<AssociationInterface> assocaitionList = new ArrayList<AssociationInterface>();
+		
 		for (String entityName : entityNames)
 		{
 
 			//Path stored is from the root. 
 			List<String> list = paths.get(entityName);
-			List<AssociationInterface> assocaitionList = new ArrayList<AssociationInterface>();
-			Iterator<String> entityNamesIterator = list.iterator();
 
-			String sourceEntityName = entityNamesIterator.next();
+			Iterator<String> namesIterator = list.iterator();
+			assocaitionList.clear();
+			String sourceEntityName = namesIterator.next();
 			EntityInterface sourceEntity = entityGroup.getEntityByName(sourceEntityName);
 			CategoryValidator.checkForNullRefernce(sourceEntity, "ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
 					+ sourceEntityName + " DOES NOT EXIST");
-			while (entityNamesIterator.hasNext())
+			while (namesIterator.hasNext())
 			{
-				EntityInterface targetEntity = entityGroup.getEntityByName(entityNamesIterator.next());
+				EntityInterface targetEntity = entityGroup.getEntityByName(namesIterator.next());
 				for (AssociationInterface associationInterface : sourceEntity.getAssociationCollection())
 				{
 					if (associationInterface.getTargetEntity() == targetEntity)
@@ -288,7 +290,7 @@ public class CategoryGenerationUtil
 	public static List<String> getRelativePath(List<String> entityNameList, Map<String, List<String>> pathMap)
 	{
 		List<String> newEntityNameList = new ArrayList<String>();
-		String lastProcessedEntityName = null;
+		String lastEntityName = null;
 		for (String entityName : entityNameList)
 		{
 			if (pathMap.get(entityName) == null)
@@ -297,12 +299,12 @@ public class CategoryGenerationUtil
 			}
 			else
 			{
-				lastProcessedEntityName = entityName;
+				lastEntityName = entityName;
 			}
 		}
-		if (lastProcessedEntityName != null && !newEntityNameList.contains(lastProcessedEntityName))
+		if (lastEntityName != null && !newEntityNameList.contains(lastEntityName))
 		{
-			newEntityNameList.add(0, lastProcessedEntityName);
+			newEntityNameList.add(0, lastEntityName);
 		}
 
 		return newEntityNameList;

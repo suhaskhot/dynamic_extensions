@@ -90,6 +90,8 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String LIST_OF_CONTAINER = "listofContainer";
 	public static final String ISCATEGORY = "_IsCategory";
 	public static final String COLLECTIONATTRIBUTE = "CollectionAttribute";
+	public static final String TRUE = "true";
+	public static final String FALSE = "false";
 
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);

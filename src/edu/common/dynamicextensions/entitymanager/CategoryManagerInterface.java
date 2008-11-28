@@ -103,5 +103,17 @@ public interface CategoryManagerInterface
 	 */
 	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE,
 			Map<String, Collection<SemanticPropertyInterface>> desiredPVs);
+	/**
+	 * getEntityRecordIdByRootCategoryEntityRecordId.
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public Long getEntityRecordIdByRootCategoryEntityRecordId(Long rootCategoryEntityRecordId,
+			String rootCategoryTableName) throws DynamicExtensionsSystemException;
+	/**
+	 * getEntityRecordIdByRootCategoryEntityRecordId.
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,
+			String rootCategoryTableName) throws DynamicExtensionsSystemException;
 
 }

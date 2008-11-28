@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.entitymanager;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -1978,6 +1979,65 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		return recordIds;
 	}
 
+	/**
+	 * getEntityRecordIdByRootCategoryEntityRecordId.
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public Long getEntityRecordIdByRootCategoryEntityRecordId(Long rootCategoryEntityRecordId,String rootCategoryTableName) throws DynamicExtensionsSystemException
+	{
+		String query = "select record_Id from " + rootCategoryTableName + " where IDENTIFIER =" + rootCategoryEntityRecordId;
+		return getEntityRecordId(query);
+	}
+	/**
+	 * getEntityRecordIdByRootCategoryEntityRecordId.
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,String rootCategoryTableName) throws DynamicExtensionsSystemException
+	{
+		String	query = "select IDENTIFIER from " + rootCategoryTableName + " where record_Id =" + rootCategoryEntityRecordId;
+		return getEntityRecordId(query);
+	}
+	/**
+	 * 
+	 * @param query
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private Long getEntityRecordId(String query) throws DynamicExtensionsSystemException
+	{
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+		Connection conn = null;
+		Long entityRecordId = null;
+		try
+		{
+			conn = DBUtil.getConnection();
+			statement = conn.prepareStatement(query);
+			resultSet = statement.executeQuery();
+			resultSet.next();
+			entityRecordId = resultSet.getLong(1);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException("Exception in query execution", e);
+		}
+		finally
+		{
+			try
+			{
+				resultSet.close();
+				statement.close();
+				DBUtil.closeConnection();
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+				throw new DynamicExtensionsSystemException("Exception in query execution", e);
+			}
+		}
+		return entityRecordId;
+	}
 	/**
 	 * This method executes a SQL query.
 	 * @param query

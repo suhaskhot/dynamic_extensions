@@ -113,15 +113,19 @@ public class LoadDataEntryFormProcessor
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
 			//Quic fix:
-			if(entityInterface instanceof EntityInterface){
+			if(entityInterface instanceof EntityInterface)
+			{
 				EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 				Map map= entityManagerInterface.getRecordById((EntityInterface)entityInterface, Long.valueOf(recordIdentifier));
 				recordMap = map;
-			}else{
-			CategoryManagerInterface categoryManagerInterface = CategoryManager.getInstance();
-			recordMap = categoryManagerInterface.getRecordById((CategoryEntityInterface)entityInterface, Long.valueOf(recordIdentifier));
 			}
-
+			else
+			{
+				CategoryManagerInterface categoryManagerInterface = CategoryManager.getInstance();
+				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) entityInterface;
+				Long recordId = categoryManagerInterface.getRootCategoryEntityRecordIdByEntityRecordId(Long.valueOf(recordIdentifier),categoryEntityInterface.getTableProperties().getName());
+				recordMap = categoryManagerInterface.getRecordById(categoryEntityInterface,recordId );
+			}
 		}
 		return recordMap;
 	}

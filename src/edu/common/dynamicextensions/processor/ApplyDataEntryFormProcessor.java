@@ -92,8 +92,9 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 		{
 			CategoryInterface categoryInterface = ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-
-			recordIdentifier = categoryManager.insertData(categoryInterface, attributeValueMap, userId);
+			Long categoryRecordId = categoryManager.insertData(categoryInterface, attributeValueMap, userId);
+			recordIdentifier = categoryManager.getEntityRecordIdByRootCategoryEntityRecordId(categoryRecordId, 
+					categoryInterface.getRootCategoryElement().getTableProperties().getName());
 		}
 		else
 		{

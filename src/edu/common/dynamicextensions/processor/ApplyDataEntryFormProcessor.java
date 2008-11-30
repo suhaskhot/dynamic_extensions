@@ -128,10 +128,16 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map map = attributeValueMap;
 			Boolean edited = entityManager.editData(entity, map, recordIdentifier, userId);
 			return edited;
-
 		}
-		return CategoryManager.getInstance().editData((CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap, recordIdentifier,
+		else
+		{
+			CategoryInterface categoryInterface = ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			Long categoryRecordId =  categoryManager.getRootCategoryEntityRecordIdByEntityRecordId(recordIdentifier, 
+					categoryInterface.getRootCategoryElement().getTableProperties().getName());
+			return CategoryManager.getInstance().editData((CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap, categoryRecordId,
 				userId);
+		}
 
 	}
 

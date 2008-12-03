@@ -225,60 +225,61 @@ public class CategoryGenerationUtil
 	public static Map<String, List<AssociationInterface>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException
 	{
-		Map<String, List<AssociationInterface>> listOfPath = new HashMap<String, List<AssociationInterface>>();
-
-		Set<String> entityNames = paths.keySet();
-		List<AssociationInterface> assocaitionList = new ArrayList<AssociationInterface>();
+		Map<String, List<AssociationInterface>> entityPaths = new HashMap<String, List<AssociationInterface>>();
 		
-		for (String entityName : entityNames)
+		Set<String> entitiesNames = paths.keySet();
+		for (String entityName : entitiesNames)
 		{
-
-			//Path stored is from the root. 
-			List<String> list = paths.get(entityName);
-
-			Iterator<String> namesIterator = list.iterator();
-			assocaitionList.clear();
-			String sourceEntityName = namesIterator.next();
-			EntityInterface sourceEntity = entityGroup.getEntityByName(sourceEntityName);
+			// Path stored is from the root. 
+			List<String> pathsForEntity = paths.get(entityName);
+			
+			List<AssociationInterface> assocaitions = new ArrayList<AssociationInterface>();
+			Iterator<String> entNamesIter = pathsForEntity.iterator();
+		
+			String srcEntityName = entNamesIter.next();
+			EntityInterface sourceEntity = entityGroup.getEntityByName(srcEntityName);
 			CategoryValidator.checkForNullRefernce(sourceEntity, "ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
-					+ sourceEntityName + " DOES NOT EXIST");
-			while (namesIterator.hasNext())
+					+ srcEntityName + " DOES NOT EXIST");
+			
+			while (entNamesIter.hasNext())
 			{
-				EntityInterface targetEntity = entityGroup.getEntityByName(namesIterator.next());
-				for (AssociationInterface associationInterface : sourceEntity.getAssociationCollection())
+				EntityInterface targetEntity = entityGroup.getEntityByName(entNamesIter.next());
+				for (AssociationInterface association : sourceEntity.getAssociationCollection())
 				{
-					if (associationInterface.getTargetEntity() == targetEntity)
+					if (association.getTargetEntity() == targetEntity)
 					{
-						assocaitionList.add(associationInterface);
+						assocaitions.add(association);
 					}
 				}
-				//Add all parententity association also to the list
-
+				
+				// Add all parent entity associations also to the list.
 				EntityInterface parentEntity = sourceEntity.getParentEntity();
 				while (parentEntity != null)
 				{
-					for (AssociationInterface associationInterface : parentEntity.getAssociationCollection())
+					for (AssociationInterface association : parentEntity.getAssociationCollection())
 					{
-						if (associationInterface.getTargetEntity() == targetEntity)
+						if (association.getTargetEntity() == targetEntity)
 						{
-							assocaitionList.add(associationInterface);
+							assocaitions.add(association);
 						}
-
 					}
+					
 					parentEntity = parentEntity.getParentEntity();
 				}
-				//end
+				
+				// Source entity should now be target entity.
 				sourceEntity = targetEntity;
-
 			}
-			listOfPath.put(entityName, assocaitionList);
-			if (list.size() > 1 && assocaitionList.size() == 0)
+			
+			entityPaths.put(entityName, assocaitions);
+			
+			if (pathsForEntity.size() > 1 && assocaitions.size() == 0)
 			{
 				CategoryValidator.checkForNullRefernce(null, "ERROR: PATH DEFINED FOR THE ENTITY " + entityName + " IS NOT CORRECT");
 			}
 		}
-
-		return listOfPath;
+	
+		return entityPaths;
 	}
 
 	/**

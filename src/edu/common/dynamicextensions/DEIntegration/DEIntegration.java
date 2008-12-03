@@ -9,7 +9,6 @@
 package edu.common.dynamicextensions.DEIntegration;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -142,32 +141,8 @@ public class DEIntegration implements IntegrationInterface
             Iterator recIt = recIdList.iterator();
             while (recIt.hasNext())
             {
-                String catSql = "select identifier from " + catTableName
-                        + " where RECORD_ID= " + recIt.next();
-                ResultSet catRecResultSet = null;
-                PreparedStatement preparedStmt = null;
-                try
-                {
-                    preparedStmt = connection.prepareStatement(catSql);
-                    catRecResultSet = preparedStmt.executeQuery();
-                    while (catRecResultSet.next())
-                    {
-                        catRecIds.add(catRecResultSet.getLong(1));
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw new DynamicExtensionsSystemException(
-                            "Error while executing query", e);
-                }
-                finally
-                {
-                    catRecResultSet.close();
-                    preparedStmt.close();
-                }
-
+            	catRecIds.add(recIt.next());
             }
-
         }
         finally
         {

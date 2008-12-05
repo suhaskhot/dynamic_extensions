@@ -99,7 +99,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	}
 
 	/**
-	 * @hibernate.property name="caption" type="string" column="CAPTION"
+	 * @hibernate.property name="caption" type="string" column="CAPTION" length="800"
 	 * @return Returns the caption.
 	 */
 	public String getCaption()

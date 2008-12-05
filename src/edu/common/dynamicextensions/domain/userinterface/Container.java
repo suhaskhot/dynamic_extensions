@@ -147,7 +147,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	}
 
 	/**
-	 * @hibernate.property name="caption" type="string" column="CAPTION"
+	 * @hibernate.property name="caption" type="string" column="CAPTION" length="800"
 	 * @return Returns the caption.
 	 */
 	public String getCaption()

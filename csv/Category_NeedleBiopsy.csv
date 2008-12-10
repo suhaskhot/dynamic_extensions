@@ -5,7 +5,7 @@ NeedleBiopsyProstatePathologyAnnotation~NeedleBiopsyProstatePathologyAnnotation,
 
 Display_Label:Histologic Type,show=false
 instance:NeedleBiopsyProstatePathologyAnnotation[1]->HistologicType[1]
-HistologicType:type,listBox,Histologic Type
+HistologicType:type,listBox,Histologic Type,PermVal_Options~IsOrdered=false
 
 Display_Label:Histologic Variant Type,show=false
 instance:NeedleBiopsyProstatePathologyAnnotation[1]->HistologicType[1]->HistologicVariantType[1]
@@ -18,7 +18,7 @@ GleasonScore:secondaryPatternScore,listBox,Gleason Score - Secondary (Predominan
 
 Display_Label:Invasion,show=false
 instance:NeedleBiopsyProstatePathologyAnnotation[1]->Invasion[1]
-Invasion:perineuralInvasion,listBox,Perineural Invasion
+Invasion:perineuralInvasion,listBox,Perineural Invasion,PermVal_Options~IsOrdered=false
 Invasion:lymphaticInvasion,listBox,Lymphatic (Small Vessel) Invasion
 
 Display_Label:Finding,show=false
@@ -41,8 +41,8 @@ NeedleBiopsyProstatePathologyAnnotation:coreLengthInMillimeter,textField,Length 
 NeedleBiopsyProstatePathologyAnnotation:otherQuantitiation,textField,Other quantitation (specify)
 NeedleBiopsyProstatePathologyAnnotation:numberOfPositiveCores,textField,Number of positive cores
 NeedleBiopsyProstatePathologyAnnotation:totalNumberOfCores,textField,Total number of cores
-NeedleBiopsyProstatePathologyAnnotation:periprostaticFatInvasion,listBox,Periprostatic Fat Invasion
-NeedleBiopsyProstatePathologyAnnotation:seminalVesicleInvasion,listBox,Seminal Vesical Invasion
+NeedleBiopsyProstatePathologyAnnotation:periprostaticFatInvasion,listBox,Periprostatic Fat Invasion,PermVal_Options~IsOrdered=false
+NeedleBiopsyProstatePathologyAnnotation:seminalVesicleInvasion,listBox,Seminal Vesical Invasion,PermVal_Options~IsOrdered=false
 subcategory:Invasion:single
 subcategory:Finding:single
 subcategory:detail:single

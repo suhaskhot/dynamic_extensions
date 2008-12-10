@@ -201,7 +201,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			return null;
 		}
 
-		Map<String, Collection<SemanticPropertyInterface>> pvVsSemanticPropertyCollection = new HashMap<String, Collection<SemanticPropertyInterface>>();
+		Map<String, Collection<SemanticPropertyInterface>> pvVsSemanticPropertyCollection = new LinkedHashMap<String, Collection<SemanticPropertyInterface>>();
 
 		int indexOfTilda = nextLine[counter].indexOf("~");
 		String permissibleValueKey = nextLine[counter].substring(0, indexOfTilda);
@@ -332,7 +332,28 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 		return pvVsSemanticPropertyCollection;
 	}
+	/**
+	 * @return getPermissibleValueOptions
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Map<String, String> getPermissibleValueOptions()
+	{
+		Map<String, String> permissibleValueOptions = new HashMap<String, String>();
+		for (String string : readLine())
+		{
+			if (string.toLowerCase().startsWith(CategoryCSVConstants.PERMISSIBLE_VALUE_OPTIONS.toLowerCase() + "~"))
+			{
+				String[] controlOptionsValue = string.split("~")[1].split(":");
 
+				for (String optionValue : controlOptionsValue)
+				{
+					permissibleValueOptions.put(optionValue.split("=")[0], optionValue.split("=")[1]);
+				}
+
+			}
+		}
+		return permissibleValueOptions;
+	}
 	/**
 	 * @param semanticProperty
 	 * @param key

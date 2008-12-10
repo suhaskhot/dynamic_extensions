@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
@@ -47,7 +48,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 public class CategoryGenerator
 {
 	private CategoryFileParser categoryFileParser;
-	private static final String SET = "set";
+
 
 	private CategoryValidator categoryValidator;
 
@@ -205,6 +206,8 @@ public class CategoryGenerator
 						// Add control to the container.
 						Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser.getPermissibleValues();
 
+						Map<String, String> permissibleValueOptions = categoryFileParser.getPermissibleValueOptions();
+						
 						String attributeName = categoryFileParser.getAttributeName();
 
 						entityInterface = entityGroup.getEntityByName(categoryFileParser.getEntityName());
@@ -315,7 +318,7 @@ public class CategoryGenerator
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
-								.get(controlType), categoryFileParser.getControlCaption(), rules, permissibleValues);
+								.get(controlType), categoryFileParser.getControlCaption(), rules,permissibleValueOptions,categoryFileParser.getLineNumber(), permissibleValues);
 
 						// Set default value for attribute's IsRelatedAttribute and IsVisible property.
 						// This is required in case of edit of category entity.
@@ -329,7 +332,10 @@ public class CategoryGenerator
 						// Clear category entity from related attribute collection of root category entity.
 						category.removeRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface.getAbstractEntity());
 
-						setControlsOptions(lastControl);
+						Map<String, String> controlOptions = categoryFileParser.getControlOptions();
+						
+						categoryHelper.setOptions(lastControl,controlOptions,categoryFileParser.getLineNumber());
+						
 						setDefaultValue(lastControl);
 
 						CategoryValidator.checkIsMultiSelectValid(entityInterface, attributeName, lastControl);
@@ -729,112 +735,7 @@ public class CategoryGenerator
 		return containerInterface;
 	}
 
-	/**
-	 * @param control
-	 * @param nextLine
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private void setControlsOptions(ControlInterface control) throws DynamicExtensionsSystemException
-	{
-		try
-		{
-			Map<String, String> controlOptions = categoryFileParser.getControlOptions();
 
-			if (controlOptions.isEmpty())
-			{
-				return;
-			}
-			for (String optionString : controlOptions.keySet())
-			{
-				String methodName = SET + optionString;
-
-				Class[] types = getParameterType(methodName, control);
-				if (types.length < 1)
-				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
-							+ ApplicationProperties.getValue("incorrectControlOption") + optionString);
-				}
-				List<Object> values = new ArrayList<Object>();
-				values.add(getFormattedValues(types[0], controlOptions.get(optionString)));
-
-				Method method;
-
-				method = control.getClass().getMethod(methodName, types);
-
-				method.invoke(control, values.toArray());
-			}
-		}
-		catch (SecurityException e)
-		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
-		}
-		catch (NoSuchMethodException e)
-		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
-					+ ApplicationProperties.getValue("incorrectOption"), e);
-		}
-		catch (IllegalArgumentException e)
-		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
-		}
-		catch (IllegalAccessException e)
-		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
-		}
-		catch (InvocationTargetException e)
-		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
-		}
-		catch (InstantiationException e)
-		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
-		}
-	}
-
-	/**
-	 * This meth
-	 * @param methodName
-	 * @param object
-	 * @return
-	 */
-	private Class[] getParameterType(String methodName, Object object)
-	{
-		Class[] parameterTypes = new Class[0];
-		for (Method method : object.getClass().getMethods())
-		{
-			if (methodName.equals(method.getName()))
-			{
-				parameterTypes = method.getParameterTypes();
-			}
-		}
-
-		return parameterTypes;
-	}
-
-	/**
-	 * @param type
-	 * @param string
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 */
-	private Object getFormattedValues(Class type, String string) throws SecurityException, NoSuchMethodException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException
-	{
-		Method method = type.getMethod("valueOf", new Class[]{String.class});
-		return method.invoke(type, new Object[]{string});
-	}
 
 	/**
 	 * @param entityGroup

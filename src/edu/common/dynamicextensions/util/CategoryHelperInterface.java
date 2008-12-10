@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
@@ -117,7 +118,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, Map<String, Object> rulesMap, Map<String, Collection<SemanticPropertyInterface>>... permissibleValues)
+			String controlCaption, Map<String, Object> rulesMap,  Map<String, String> permValueOptions,long lineNumber,Map<String, Collection<SemanticPropertyInterface>>... permissibleValues)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -224,4 +225,10 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public void setDefaultControlsOptions(ControlInterface control, ControlEnum controlType) throws DynamicExtensionsSystemException;
+	/**
+	 * @param control
+	 * @param nextLine
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void setOptions(DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObjectInterface,Map<String, String> options,long lineNumber) throws DynamicExtensionsSystemException;
 }

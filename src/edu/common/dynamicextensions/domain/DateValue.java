@@ -4,6 +4,8 @@ package edu.common.dynamicextensions.domain;
 import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 
 /**
  * This Class represents the per-defined Date value of the Attribute.
@@ -50,5 +52,13 @@ public class DateValue extends PermissibleValue implements DateValueInterface
 	{
 		return value;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		DateValueInterface dateValueInterface = DomainObjectFactory.getInstance().createDateValue();
+		dateValueInterface.setValue(this.value);
+		return dateValueInterface;
+	}
 }

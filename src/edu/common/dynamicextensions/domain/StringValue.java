@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 
 /**
@@ -47,6 +48,15 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 	public Object getValueAsObject()
 	{
 		return value;
+	}
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		StringValueInterface stringValue = DomainObjectFactory.getInstance().createStringValue();
+		stringValue.setValue(this.value);
+		return stringValue;
 	}
 	
 }

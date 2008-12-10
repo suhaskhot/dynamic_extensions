@@ -1,9 +1,12 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
@@ -23,11 +26,14 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = 1148563078444213122L;
-
+	/**
+	 * By default the permissible values are ordered alphabetically.
+	 */
+	protected Boolean isOrdered = true;
 	/**
 	 * Collection of PermissibleValues
 	 */
-	Collection<PermissibleValueInterface> permissibleValueCollection = new HashSet<PermissibleValueInterface>();
+	Collection<PermissibleValueInterface> permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
 
 	/**
 	 * Set all values from the form
@@ -92,5 +98,50 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 			this.permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
 		}
 		this.permissibleValueCollection.addAll(permissibleValueColl);
+	}
+	/**
+	 *
+	 * @param permissibleValueList
+	 */
+	private Collection<PermissibleValueInterface> sortPermissibleValuesList(Collection<PermissibleValueInterface> permissibleValues)
+	{
+		List <PermissibleValueInterface> permissibleValuesList = new ArrayList <PermissibleValueInterface>();
+		permissibleValuesList.addAll(permissibleValues);
+		if (permissibleValuesList != null && !permissibleValuesList.isEmpty())
+		{
+			Collections.sort(permissibleValuesList, new Comparator<PermissibleValueInterface>()
+			{
+				public int compare(PermissibleValueInterface permissibleValueInterface1, PermissibleValueInterface permissibleValueInterface2)
+				{
+					return permissibleValueInterface1.getId().compareTo(permissibleValueInterface2.getId());
+				}
+			});
+		}
+		return permissibleValuesList;
+	}
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface#isOrdered()
+	 *
+	 * @hibernate.property name="isOrdered" type="boolean" column="IS_ORDERED"
+	 */
+	public Boolean getIsOrdered()
+	{
+		return isOrdered;
+	}
+
+	/**
+	 * This private method is for hibernate to set parent
+	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface#setOrdered(boolean)
+	 */
+	public void setIsOrdered(Boolean isOrdered)
+	{
+		this.isOrdered = isOrdered;
+	}
+	/**
+	 * getPermissibleValues.
+	 */
+	public Collection<PermissibleValueInterface> getPermissibleValues()
+	{
+		return ( this.id != null ) ? sortPermissibleValuesList(permissibleValueCollection) : permissibleValueCollection;
 	}
 }

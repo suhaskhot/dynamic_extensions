@@ -28,6 +28,10 @@ public interface CategoryCSVConstants
 	 * This keyword is used before defining the options available for a control. 
 	 */
 	String OPTIONS = "options";
+	/**
+	 * This keyword is used before defining the options available for a control. 
+	 */
+	String PERMISSIBLE_VALUE_OPTIONS = "PermVal_Options";
 
 	/**
 	 * Defines rules for a particular category attribute.

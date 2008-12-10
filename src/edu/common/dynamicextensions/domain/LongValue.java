@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 
 /**
  * @author sujay_narkar
@@ -48,5 +50,13 @@ public class LongValue extends PermissibleValue implements LongValueInterface
 	{
 		return value;
 	}
-	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		LongValueInterface longValueInterface = DomainObjectFactory.getInstance().createLongValue();
+		longValueInterface.setValue(this.value);
+		return longValueInterface;
+	}
 }

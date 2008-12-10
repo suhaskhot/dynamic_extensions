@@ -137,5 +137,10 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 		}
 		return semanticPropertyList;
 	}
-
+	/**
+	 * 
+	 * @param stringValue
+	 * @return
+	 */
+	public abstract PermissibleValueInterface clone();
 }

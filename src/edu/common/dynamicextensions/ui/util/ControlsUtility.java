@@ -311,6 +311,7 @@ public class ControlsUtility
 	 */
 	public static List<NameValueBean> populateListOfValues(ControlInterface control)
 	{
+		AttributeMetadataInterface attributeMetadataInterface =null;
 		List<NameValueBean> nameValueBeanList = null;
 		try
 		{
@@ -319,7 +320,9 @@ public class ControlsUtility
 			{
 				if (attribute instanceof AttributeMetadataInterface)
 				{
-					nameValueBeanList = getListOfPermissibleValues((AttributeMetadataInterface) attribute);
+					attributeMetadataInterface = (AttributeMetadataInterface) attribute;
+					
+					nameValueBeanList = getListOfPermissibleValues(attributeMetadataInterface);
 				}
 				else if (attribute instanceof AssociationInterface)
 				{
@@ -330,7 +333,10 @@ public class ControlsUtility
 						Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
 						List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
 								filteredAttributeCollection);
-						nameValueBeanList = getListOfPermissibleValues((AttributeMetadataInterface) attributesList.get(0));
+						
+						attributeMetadataInterface = (AttributeMetadataInterface) attributesList.get(0);
+
+						nameValueBeanList = getListOfPermissibleValues(attributeMetadataInterface);
 					}
 					else
 					{
@@ -344,6 +350,8 @@ public class ControlsUtility
 						displayAttributeMap = entityManager.getRecordsForAssociationControl(associationControl);
 
 						nameValueBeanList = getTargetEntityDisplayAttributeList(displayAttributeMap, sepatator);
+						
+						sortNameValueList(nameValueBeanList);
 					}
 				}
 			}
@@ -352,7 +360,18 @@ public class ControlsUtility
 		{
 			throw new RuntimeException(exception);
 		}
-		sortNameValueList(nameValueBeanList);
+		if (attributeMetadataInterface != null)
+		{
+			DataElementInterface dataElement = attributeMetadataInterface.getDataElement();
+			if (dataElement != null && dataElement instanceof UserDefinedDEInterface)
+			{
+				UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElement;
+				if (userDefinedDEInterface != null && userDefinedDEInterface.getIsOrdered())
+				{
+					sortNameValueList(nameValueBeanList);
+				}
+			}
+		}
 		return nameValueBeanList;
 	}
 
@@ -363,59 +382,58 @@ public class ControlsUtility
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static List<NameValueBean> getListOfPermissibleValues(AttributeMetadataInterface attribute) throws DynamicExtensionsSystemException,
+	private static List<NameValueBean> getListOfPermissibleValues(
+			AttributeMetadataInterface attribute) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		DataElementInterface dataElement = attribute.getDataElement();
 
-		if (dataElement != null)
+		if (dataElement != null && dataElement instanceof UserDefinedDEInterface)
 		{
-			if (dataElement instanceof UserDefinedDEInterface)
+			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElement;
+			Collection<PermissibleValueInterface> permissibleValueList = userDefinedDEInterface
+					.getPermissibleValues();
+			if (permissibleValueList != null)
 			{
-				Collection<PermissibleValueInterface> permissibleValueCollection = ((UserDefinedDEInterface) dataElement)
-						.getPermissibleValueCollection();
-				if (permissibleValueCollection != null)
+				nameValueBeanList = new ArrayList<NameValueBean>();
+				NameValueBean nameValueBean = null;
+				for (PermissibleValueInterface permissibleValue : permissibleValueList)
 				{
-					nameValueBeanList = new ArrayList<NameValueBean>();
-					NameValueBean nameValueBean = null;
-					for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
+					if (permissibleValue instanceof StringValueInterface)
 					{
-						if (permissibleValue instanceof StringValueInterface)
-						{
-							nameValueBean = getPermissibleStringValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof DateValueInterface)
-						{
-							DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
-							nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
-						}
-						else if (permissibleValue instanceof DoubleValueInterface)
-						{
-							nameValueBean = getPermissibleDoubleValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof FloatValueInterface)
-						{
-							nameValueBean = getPermissibleFloatValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof LongValueInterface)
-						{
-							nameValueBean = getPermissibleLongValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof IntegerValueInterface)
-						{
-							nameValueBean = getPermissibleIntegerValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof ShortValueInterface)
-						{
-							nameValueBean = getPermissibleShortValue(permissibleValue);
-						}
-						else if (permissibleValue instanceof BooleanValueInterface)
-						{
-							nameValueBean = getPermissibleBooleanValue(permissibleValue);
-						}
-						nameValueBeanList.add(nameValueBean);
+						nameValueBean = getPermissibleStringValue(permissibleValue);
 					}
+					else if (permissibleValue instanceof DateValueInterface)
+					{
+						DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
+						nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
+					}
+					else if (permissibleValue instanceof DoubleValueInterface)
+					{
+						nameValueBean = getPermissibleDoubleValue(permissibleValue);
+					}
+					else if (permissibleValue instanceof FloatValueInterface)
+					{
+						nameValueBean = getPermissibleFloatValue(permissibleValue);
+					}
+					else if (permissibleValue instanceof LongValueInterface)
+					{
+						nameValueBean = getPermissibleLongValue(permissibleValue);
+					}
+					else if (permissibleValue instanceof IntegerValueInterface)
+					{
+						nameValueBean = getPermissibleIntegerValue(permissibleValue);
+					}
+					else if (permissibleValue instanceof ShortValueInterface)
+					{
+						nameValueBean = getPermissibleShortValue(permissibleValue);
+					}
+					else if (permissibleValue instanceof BooleanValueInterface)
+					{
+						nameValueBean = getPermissibleBooleanValue(permissibleValue);
+					}
+					nameValueBeanList.add(nameValueBean);
 				}
 			}
 		}

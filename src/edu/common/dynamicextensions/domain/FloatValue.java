@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author sujay_narkar
@@ -49,5 +51,13 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 	{
 		return value;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		FloatValueInterface floatValueInterface = DomainObjectFactory.getInstance().createFloatValue();
+		floatValueInterface.setValue(this.value);
+		return floatValueInterface;
+	}
 }

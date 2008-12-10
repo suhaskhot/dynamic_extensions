@@ -17,7 +17,6 @@ public interface UserDefinedDEInterface extends DataElementInterface
 	 * @return the Collection of PermissibleValues.
 	 */
 	Collection<PermissibleValueInterface> getPermissibleValueCollection();
-
 	/**
 	 * This method adds a PermissibleValue to the Collection of PermissibleValues.
 	 * @param permissibleValue the PermissibleValue to be added.
@@ -33,5 +32,21 @@ public interface UserDefinedDEInterface extends DataElementInterface
 	 * @param permissibleValueColl
 	 */
 	public void addAllPermissibleValues(Collection<PermissibleValueInterface> permissibleValueColl);
+	/**
+	 * 
+	 * @return
+	 */
+	public Boolean getIsOrdered();
+	/**
+	 * 
+	 * @param isOrdered
+	 */
+	public void setIsOrdered(Boolean isOrdered);
+	/**
+	 * 
+	 * @return
+	 */
+	public Collection<PermissibleValueInterface> getPermissibleValues();
+	
 
 }

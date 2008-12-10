@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 
 /**
@@ -23,5 +24,11 @@ public interface PermissibleValueInterface extends SemanticAnnotatableInterface
 	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	Object getValueAsObject();
+	/**
+	 * 
+	 * @param permissibleValue
+	 * @return
+	 */
+	PermissibleValueInterface clone();
 
 }

@@ -64,6 +64,14 @@
 
         </set>
 
+        <property
+            name="isOrdered"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_ORDERED"
+        />
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.CaDSRDE"

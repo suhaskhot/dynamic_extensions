@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.LongValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 
 /**
@@ -48,5 +50,13 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 	{
 		return value;
 	}
-	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		ShortValueInterface shortValueInterface = DomainObjectFactory.getInstance().createShortValue();
+		shortValueInterface.setValue(this.value);
+		return shortValueInterface;
+	}
 }

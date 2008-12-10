@@ -94,6 +94,11 @@ public abstract class CategoryFileParser extends FileReader
 	 * value as value for the property
 	 */
 	public abstract Map<String, String> getControlOptions();
+	/**
+	 * @return getPermissibleValueOptions
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public abstract Map<String, String> getPermissibleValueOptions();
 
 	/**
 	 * Return a map of rules belonging to a category attribute.

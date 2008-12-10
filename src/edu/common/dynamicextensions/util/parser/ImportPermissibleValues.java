@@ -6,30 +6,23 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
-import edu.common.dynamicextensions.entitymanager.HQLPlaceHolderObject;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
-import edu.wustl.common.bizlogic.DefaultBizLogic;
 
 /**
  * @author kunal_kamble
@@ -103,7 +96,7 @@ public class ImportPermissibleValues
 
 					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser
 							.getPermissibleValues();
-					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new HashMap<String, Collection<SemanticPropertyInterface>>();
+					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new LinkedHashMap<String, Collection<SemanticPropertyInterface>>();
 					Long attributeId = entityManager.getAttributeId(attributeName, entityId);
 					//Bug #10432,10382
 					//If this attribute id is of type association (as in case of multiselect) 

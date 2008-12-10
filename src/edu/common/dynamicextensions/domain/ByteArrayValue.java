@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @hibernate.joined-subclass table="DYEXTN_BARR_CONCEPT_VALUE" 
@@ -24,5 +26,11 @@ public class ByteArrayValue extends PermissibleValue implements ByteArrayValueIn
 	{
 		return null;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		return null;
+	}
 }

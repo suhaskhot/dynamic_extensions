@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,18 +12,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domain.BooleanValue;
+import edu.common.dynamicextensions.domain.ByteArrayValue;
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.CategoryAssociation;
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DateValue;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.DoubleValue;
+import edu.common.dynamicextensions.domain.FloatValue;
+import edu.common.dynamicextensions.domain.IntegerValue;
+import edu.common.dynamicextensions.domain.LongValue;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domain.PermissibleValue;
+import edu.common.dynamicextensions.domain.ShortValue;
+import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
-import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -31,6 +41,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
@@ -56,7 +67,9 @@ import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author kunal_kamble
@@ -158,7 +171,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#addControl(edu.common.dynamicextensions.domaininterface.AttributeInterface, edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface, edu.common.dynamicextensions.categoryManager.CategoryHelperInterface.ControlEnum, java.util.List<edu.common.dynamicextensions.domaininterface.PermissibleValueInterface>[])
 	 */
 	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, Map<String, Object> rulesMap, Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
+			String controlCaption, Map<String, Object> rulesMap, Map<String, String> permValueOptions,long lineNumber,Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		if (controlType == null)
@@ -176,12 +189,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		Map<String, Collection<SemanticPropertyInterface>> permissibleValueNameList = (permissibleValueList.length == 0
 				? null
 				: permissibleValueList[0]);
-		control = createOrUpdateControl(controlType, controlCaption, container, categoryAttribute, permissibleValueNameList);
+		control = createOrUpdateControl(controlType, controlCaption, container, categoryAttribute,permValueOptions, lineNumber,permissibleValueNameList);
 		control.setCaption(controlCaption);
 		updateCommonControlProperties(control, controlCaption, container);
 		return control;
 	}
-
 	/**
 	 * This method applies the explicit rules mentioned in CSV file to a category attribute.
 	 * @param categoryAttribute
@@ -321,7 +333,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private ControlInterface createOrUpdateControl(ControlEnum controlType, String controlCaption, ContainerInterface container,
-			CategoryAttributeInterface categoryAttribute, Map<String, Collection<SemanticPropertyInterface>> permissibleValueNameList)
+			CategoryAttributeInterface categoryAttribute, Map<String, String> permValueOptions,long lineNumber,Map<String, Collection<SemanticPropertyInterface>> permissibleValueNameList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		ControlInterface control = null;
@@ -334,11 +346,11 @@ public class CategoryHelper implements CategoryHelperInterface
 				break;
 			case LIST_BOX_CONTROL :
 				control = createOrUpdateSelectControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
-						permissibleValueNameList), controlType);
+						permissibleValueNameList), controlType,permValueOptions,lineNumber);
 				break;
 			case COMBO_BOX_CONTROL :
 				control = createOrUpdateSelectControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
-						permissibleValueNameList), controlType);
+						permissibleValueNameList), controlType,permValueOptions,lineNumber);
 				break;
 			case DATE_PICKER_CONTROL :
 				control = createOrUpdateDatePickerControl(container, categoryAttribute);
@@ -351,7 +363,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				break;
 			case RADIO_BUTTON_CONTROL :
 				control = createOrUpdateRadioButtonControl(container, categoryAttribute, createPermissibleValuesList(entity, attributeName,
-						permissibleValueNameList));
+						permissibleValueNameList),permValueOptions,lineNumber);
 				break;
 			case CHECK_BOX_CONTROL :
 				control = createOrUpdateCheckBoxControl(container, categoryAttribute);
@@ -714,9 +726,10 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param baseAbstractAttribute category attribute
 	 * @param permissibleValues list of permissible values
 	 * @return list box object
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private SelectInterface createOrUpdateSelectControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
-			List<PermissibleValueInterface> permissibleValues, ControlEnum controlType)
+			List<PermissibleValueInterface> permissibleValues, ControlEnum controlType, Map<String, String> permValueOptions,long lineNumber) throws DynamicExtensionsSystemException
 	{
 		CategoryAttribute categoryAttribute = (CategoryAttribute) baseAbstractAttribute;
 		ControlInterface control = getControl(container, baseAbstractAttribute);
@@ -760,9 +773,12 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			userDefinedDE.addPermissibleValue(pv);
 		}
-
+		
 		//add new permissible values
 		categoryAttribute.setDataElement(userDefinedDE);
+		
+		setOptions(userDefinedDE, permValueOptions, lineNumber);
+		
 		AttributeInterface attribute = categoryAttribute.getAbstractAttribute()
 				.getEntity().getAttributeByName(
 						categoryAttribute.getAbstractAttribute().getName());
@@ -775,7 +791,109 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		return selectControl;
 	}
+	/**
+	 * @param control
+	 * @param nextLine
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void setOptions(DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObjectInterface,Map<String, String> options,long lineNumber) throws DynamicExtensionsSystemException
+	{
+		try
+		{
+			if (options.isEmpty())
+			{
+				return;
+			}
+			for (String optionString : options.keySet())
+			{
+				String methodName = CategoryConstants.SET + optionString;
 
+				Class[] types = getParameterType(methodName, dynamicExtensionBaseDomainObjectInterface);
+				if (types.length < 1)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + lineNumber
+							+ ApplicationProperties.getValue("incorrectControlOption") + optionString);
+				}
+				List<Object> values = new ArrayList<Object>();
+				values.add(getFormattedValues(types[0], options.get(optionString)));
+
+				Method method;
+
+				method = dynamicExtensionBaseDomainObjectInterface.getClass().getMethod(methodName, types);
+
+				method.invoke(dynamicExtensionBaseDomainObjectInterface, values.toArray());
+			}
+		}
+		catch (SecurityException e)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
+		}
+		catch (NoSuchMethodException e)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + lineNumber
+					+ ApplicationProperties.getValue("incorrectOption"), e);
+		}
+		catch (IllegalArgumentException e)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
+		}
+		catch (InstantiationException e)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.CONTACT_ADMIN), e);
+		}
+	}
+	/**
+	 * This meth
+	 * @param methodName
+	 * @param object
+	 * @return
+	 */
+	private Class[] getParameterType(String methodName, Object object)
+	{
+		Class[] parameterTypes = new Class[0];
+		for (Method method : object.getClass().getMethods())
+		{
+			if (methodName.equals(method.getName()))
+			{
+				parameterTypes = method.getParameterTypes();
+			}
+		}
+
+		return parameterTypes;
+	}
+
+	/**
+	 * @param type
+	 * @param string
+	 * @return
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 * @throws InvocationTargetException
+	 * @throws IllegalArgumentException
+	 */
+	private Object getFormattedValues(Class type, String string) throws SecurityException, NoSuchMethodException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	{
+		Method method = type.getMethod("valueOf", new Class[]{String.class});
+		return method.invoke(type, new Object[]{string});
+	}
 	/**
 	 * @param container
 	 * @param control
@@ -911,7 +1029,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @return RadioButtonInterface radio button object
 	 */
 	private RadioButtonInterface createOrUpdateRadioButtonControl(ContainerInterface container, BaseAbstractAttributeInterface baseAbstractAttribute,
-			List<PermissibleValueInterface> permissibleValues)
+			List<PermissibleValueInterface> permissibleValues, Map<String, String> permValueOptions,long lineNumber)
 	{
 		ControlInterface control = getControl(container, baseAbstractAttribute);
 		RadioButtonInterface radioButton = null;
@@ -1028,7 +1146,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		//of the original attribute
 		if (desiredPermissibleValues == null)
 		{
-			permissibleValues.addAll(userDefinedDE.getPermissibleValueCollection());
+			permissibleValues.addAll(userDefinedDE.getPermissibleValues());
 		}
 		else if (categoryManager.isPermissibleValuesSubsetValid(userDefinedDE, desiredPermissibleValues))
 		{
@@ -1063,50 +1181,54 @@ public class CategoryHelper implements CategoryHelperInterface
 			}
 			if(allFloatValues && desiredPermissibleValues != null)
 			{
-				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
-				{
 					if (desiredPermissibleValues != null)
 					{
 						Set<String> permissibleValueString = desiredPermissibleValues.keySet();
-						if (permissibleValueString.contains(Float.parseFloat(pv.getValueAsObject().toString())))
+						for (String permValue :permissibleValueString)
 						{
-							permissibleValues.add(pv);
+							for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+							{
+								if (((Float)pv.getValueAsObject()).floatValue() == Float.parseFloat(permValue))
+								{
+									permissibleValues.add(pv);
+									break;
+								}
+							}
 						}
 					}
-				}
 			}
-
 			else if(allDoubleValues && desiredPermissibleValues != null)
 			{
-				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+				if (desiredPermissibleValues != null)
 				{
-					if (desiredPermissibleValues != null)
+					Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+					for (String permValue :permissibleValueString)
 					{
-						Set<String> permissibleValueString = desiredPermissibleValues.keySet();
-						Iterator itrDouble =  permissibleValueString.iterator();
-						while(itrDouble.hasNext())
+						for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 						{
-						  if (((Double)pv.getValueAsObject()).doubleValue() ==  Double.parseDouble(itrDouble.next().toString()) )
+						  if (((Double)pv.getValueAsObject()).doubleValue() ==  Double.parseDouble(permValue) )
 						  {
 							  	permissibleValues.add(pv);
+							  	break;
 						  }
-
 						}
 					}
 				}
-
 			}
 			else
 			{
-
-				for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
+				if (desiredPermissibleValues != null)
 				{
-					if (desiredPermissibleValues != null)
+					Set<String> permissibleValueString = desiredPermissibleValues.keySet();
+					for (String permValue :permissibleValueString)
 					{
-						Set<String> permissibleValueString = desiredPermissibleValues.keySet();
-						if (permissibleValueString.contains(pv.getValueAsObject().toString()))
+						for (PermissibleValueInterface pv : userDefinedDE.getPermissibleValueCollection())
 						{
-							permissibleValues.add(pv);
+							if (permValue.equalsIgnoreCase(pv.getValueAsObject().toString()))
+							{
+								permissibleValues.add(pv);
+								break;
+							}
 						}
 					}
 				}
@@ -1119,9 +1241,22 @@ public class CategoryHelper implements CategoryHelperInterface
 							+ " OF THE ENTITY " + entityName + " IS DIFFERENT.");
 		}
 
-		return permissibleValues;
+		return clonePermissibleValueList(permissibleValues);
 	}
-
+	/**
+	 * clonePermissibleValueList.
+	 * @param permissibleValues
+	 * @return
+	 */
+	private List<PermissibleValueInterface> clonePermissibleValueList(List<PermissibleValueInterface> permissibleValues)
+	{
+		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
+		for (PermissibleValueInterface permissibleValueInterface : permissibleValues)
+		{
+			permissibleValueList.add(permissibleValueInterface.clone());
+		}
+		return permissibleValueList;
+	}
 	/**
 	 *
 	 * @param attributeTypeInformation

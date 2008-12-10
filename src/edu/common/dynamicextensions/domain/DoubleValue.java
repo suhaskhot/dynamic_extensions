@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author sujay_narkar
@@ -48,5 +50,13 @@ public class DoubleValue extends PermissibleValue implements DoubleValueInterfac
 	{
 		return value;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		DoubleValueInterface doubleValueInterface = DomainObjectFactory.getInstance().createDoubleValue();
+		doubleValueInterface.setValue(this.value);
+		return doubleValueInterface;
+	}
 }

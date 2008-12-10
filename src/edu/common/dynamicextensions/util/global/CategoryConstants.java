@@ -7,6 +7,8 @@ package edu.common.dynamicextensions.util.global;
  */
 public class CategoryConstants
 {
+	public static final String SET = "set";
+	
 	public final static String CREATE_CAT_FAILS = "categoryCreationFailure";
 
 	public final static String CONTACT_ADMIN = "contactAdmin";

@@ -1,7 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author sujay_narkar
@@ -48,5 +50,13 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	{
 		return value;
 	}
-	
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface clone()
+	{
+		IntegerValueInterface integerValueInterface = DomainObjectFactory.getInstance().createIntegerValue();
+		integerValueInterface.setValue(this.value);
+		return integerValueInterface;
+	}
 }

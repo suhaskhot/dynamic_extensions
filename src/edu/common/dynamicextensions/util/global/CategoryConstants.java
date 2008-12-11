@@ -48,5 +48,9 @@ public class CategoryConstants
 	public final static String ATTR_NOT_PRESENT = "attributeNotPresent";
 	
 	public final static String ATTR = "attribute";
+	
+	public final static String HEADING = "HEADING";
+	
+	public final static String NOTE = "NOTE";
 
 }

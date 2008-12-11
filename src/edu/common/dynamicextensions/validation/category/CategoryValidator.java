@@ -16,7 +16,6 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
@@ -403,6 +402,50 @@ public class CategoryValidator
 					}
 				}
 			}
+		}
+	}
+	
+	/**
+	 * This method checks if the heading information has been repeated and
+	 * throws an exception if it is repeated.
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void checkHeadingInfoRepeatation(String lineAfterHeading, long lineNumber) throws DynamicExtensionsSystemException
+	{
+		if (lineAfterHeading.startsWith(CategoryConstants.HEADING))
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue("headingInfoRepeted") + lineNumber); 
+		}
+	}
+	
+	/**
+	 * This method checks if the note is appropriate.
+	 * @param note
+	 * @param lineNumber
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void checkIfNoteIsAppropriate(String note, long lineNumber) throws DynamicExtensionsSystemException
+	{
+		if (note.trim().split("~").length != 2 || note.trim().split("~")[1].length() > 255 || note.contains(":"))
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue("noteNotAppropriate") + lineNumber); 
+		}
+	}
+	
+	/**
+	 * This method checks if the heading is appropriate.
+	 * @param note
+	 * @param lineNumber
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void checkIfHeadingIsAppropriate(String heading, long lineNumber) throws DynamicExtensionsSystemException
+	{
+		if (heading.split("~").length != 2 || heading.split("~")[1].length() > 255 || heading.contains(":") || heading.contains(","))
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue("headingNotAppropriate") + lineNumber); 
 		}
 	}
 	

@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -54,9 +55,9 @@ public class UserInterfaceiUtility
 			rowCount = valueMapList.size();
 		}
 
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(subContainer.getAllControls());
+		List<ControlInterface> controls = new ArrayList<ControlInterface>(subContainer.getAllControls());
 
-		// Do not sort the controls list; it jumbles up the attribute order
+		// Do not sort the controls list; it jumbles up the attributes order.
 		//Collections.sort(controlsList);
 
 		stringBuffer.append("<tr width='100%'><td colspan='3'");
@@ -93,12 +94,34 @@ public class UserInterfaceiUtility
 		}
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td colspan='3'>");
+		stringBuffer.append("<td colspan='3' width='100%'>");
+		
+		// For category attribute controls, if heading and/or notes are specified, then
+		// render the UI that displays heading followed by notes for particular
+		// category attribute controls.
+		for (ControlInterface control : controls)
+		{
+			if (control.getHeading() != null && control.getHeading().length() != 0)
+			{
+				stringBuffer.append("<div width=100% class='td_color_6e81a6' align='left'>"+control.getHeading()+"</div>");
+			}
+			
+			if (control.getFormNotes() != null && control.getFormNotes().size() != 0)
+			{
+				stringBuffer.append("<div style='width:100%'>&nbsp</div>");
+				
+				for (FormControlNotesInterface fcNote: control.getFormNotes())
+				{
+					stringBuffer.append("<div style='width:100%' class='notes' align='left'>"+fcNote.getNote()+"</div>");
+				}
+			}
+		}
+		
 		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'>");
-
+		
 		stringBuffer.append("<tr width='100%' class='formLabel_withoutBorder'>");
 		stringBuffer.append("<th width='1%'>&nbsp;</th>");
-		for (ControlInterface control : controlsList)
+		for (ControlInterface control : controls)
 		{
 			boolean isControlRequired = isControlRequired(control);
 

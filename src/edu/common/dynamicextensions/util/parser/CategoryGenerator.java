@@ -3,13 +3,12 @@ package edu.common.dynamicextensions.util.parser;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +22,12 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
-import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
@@ -205,8 +203,13 @@ public class CategoryGenerator
 					{
 						// Add control to the container.
 						Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser.getPermissibleValues();
-
+						
 						Map<String, String> permissibleValueOptions = categoryFileParser.getPermissibleValueOptions();
+
+						String heading = categoryFileParser.getHeading();
+						
+						List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
+						categoryFileParser.getFormControlNotes(controlNotes);
 						
 						String attributeName = categoryFileParser.getAttributeName();
 
@@ -318,7 +321,7 @@ public class CategoryGenerator
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface, attributeName, containerInterface, ControlEnum
-								.get(controlType), categoryFileParser.getControlCaption(), rules,permissibleValueOptions,categoryFileParser.getLineNumber(), permissibleValues);
+								.get(controlType), categoryFileParser.getControlCaption(), heading, controlNotes, rules,permissibleValueOptions,categoryFileParser.getLineNumber(), permissibleValues);
 
 						// Set default value for attribute's IsRelatedAttribute and IsVisible property.
 						// This is required in case of edit of category entity.

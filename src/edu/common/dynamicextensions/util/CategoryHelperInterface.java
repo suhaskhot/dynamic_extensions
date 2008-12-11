@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
@@ -117,8 +118,8 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, Map<String, Object> rulesMap,  Map<String, String> permValueOptions,long lineNumber,Map<String, Collection<SemanticPropertyInterface>>... permissibleValues)
+		public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
+			String controlCaption, String heading, List<FormControlNotesInterface> controlNotes, Map<String, Object> rulesMap, Map<String, String> permValueOptions,long lineNumber,Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -165,7 +166,7 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName,
+	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName, Long lineNo, 
 			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException;
 

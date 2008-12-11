@@ -1636,3 +1636,11 @@ padding: 0;
 	height:expression(parent.document.body.clientHeight);
 	width:expression(parent.document.body.clientWidth);
 }
+.notes{ /* for the form control notes */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:left;
+}

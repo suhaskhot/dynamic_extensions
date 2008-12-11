@@ -30,6 +30,7 @@
             update="true"
             insert="true"
             column="CAPTION"
+            length="800"
         />
 
         <property
@@ -99,6 +100,36 @@
             insert="true"
             column="READ_ONLY"
         />
+
+        <property
+            name="heading"
+            type="string"
+            update="true"
+            insert="true"
+            column="HEADING"
+        />
+
+        <list
+            name="formNotes"
+            table="DYEXTN_FORM_CTRL_NOTES"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+        >
+
+              <key
+                  column="FORM_CONTROL_ID"
+              />
+
+              <index
+                  column="INSERTION_ORDER"
+                  type="long"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.FormControlNotes"
+              />
+        </list>
 
         <!--
             To add non XDoclet property mappings, create a file named

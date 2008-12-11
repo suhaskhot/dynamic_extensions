@@ -1,10 +1,13 @@
 
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
@@ -164,5 +167,29 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param isReadOnly
 	 */
 	public void setIsReadOnly(Boolean isReadOnly);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getHeading();
+	
+	/**
+	 * 
+	 * @param heading
+	 */
+	public void setHeading(String heading);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<FormControlNotesInterface> getFormNotes();
+	
+	/**
+	 * 
+	 * @param formNotes
+	 */
+	public void setFormNotes(List<FormControlNotesInterface> formNotes);
 
 }

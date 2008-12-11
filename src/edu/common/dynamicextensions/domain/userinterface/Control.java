@@ -2,11 +2,14 @@
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -90,7 +93,17 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 *
 	 */
 	protected boolean isSubControl = false;
-
+	
+	/**
+	 * 
+	 */
+	protected String heading;
+	
+	/**
+	 * 
+	 */
+	protected List<FormControlNotesInterface> formNotes = new LinkedList<FormControlNotesInterface>();
+	
 	/**
 	 * Empty Constructor
 	 */
@@ -237,8 +250,36 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<tr valign='top'>");
 		stringBuffer.append("<tr>");
-		stringBuffer.append("<td>");
-		stringBuffer.append("</td>");
+		
+		// For category attribute controls, if heading and/or notes are specified, then
+		// render the UI that displays heading followed by notes for particular
+		// category attribute controls.
+		if ((this.heading != null) || (this.getFormNotes() != null && this.getFormNotes().size() != 0))
+		{
+			stringBuffer.append("<td width='100%' colspan='3' align='left'>");
+			
+			if (this.heading != null && this.heading.length() != 0)
+			{
+				stringBuffer.append("<div style='width:100%' class='td_color_6e81a6'>"+this.getHeading()+"</div>");
+			}
+			
+			if (this.getFormNotes() != null && this.getFormNotes().size() != 0)
+			{
+				stringBuffer.append("<div style='width:100%'>&nbsp</div>");
+				
+				for (FormControlNotesInterface fcNote: this.getFormNotes())
+				{
+					stringBuffer.append("<div style='width:100%' class='notes'>"+fcNote.getNote()+"</div>");
+				}
+			}
+			
+			stringBuffer.append("</td>");
+		}
+		else
+		{
+			stringBuffer.append("<td>");
+			stringBuffer.append("</td>");
+		}
 		stringBuffer.append("</tr>");
 
 		stringBuffer.append("<td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
@@ -457,6 +498,45 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public void setIsReadOnly(Boolean isReadOnly)
 	{
 		this.isReadOnly = isReadOnly;
+	}
+	
+	/**
+	 * @hibernate.property name="heading" type="string" column="HEADING"
+	 * @return Returns the caption.
+	 */
+	public String getHeading()
+	{
+		return heading;
+	}
+	
+	/**
+	 * @param heading the heading to set
+	 */
+	public void setHeading(String heading)
+	{
+		this.heading = heading;
+	}
+	
+	/**
+	 * This method Returns the formNotes.
+	 * @hibernate.list name="formNotes" table="DYEXTN_FORM_CTRL_NOTES"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="FORM_CONTROL_ID"
+	 * @hibernate.collection-index column="INSERTION_ORDER" type="long"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.FormControlNotes" 
+	 * @return Returns the formNotes.
+	 */
+	public List<FormControlNotesInterface> getFormNotes()
+	{
+		return formNotes;
+	}
+	
+	/**
+	 * @param formNotes the formNotes to set
+	 */
+	public void setFormNotes(List<FormControlNotesInterface> formNotes)
+	{
+		this.formNotes = formNotes;
 	}
 
 }

@@ -18,6 +18,8 @@ import java.util.StringTokenizer;
 
 import au.com.bytecode.opencsv.CSVReader;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.FormControlNotes;
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -623,4 +625,56 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		}
 		return defaultValue;
 	}
+
+	@Override
+	public List<FormControlNotesInterface> getFormControlNotes(List<FormControlNotesInterface> controlNotes) throws DynamicExtensionsSystemException, IOException 
+	{
+		// Check if the heading information has been repeated.
+		CategoryValidator.checkHeadingInfoRepeatation(readLine()[0], lineNumber);
+
+		if (readLine()[0].startsWith(CategoryConstants.NOTE))
+		{
+			for (String string : readLine())
+			{
+				CategoryValidator.checkIfNoteIsAppropriate(string, lineNumber);
+				
+				String [] notes = string.trim().split("~")[1].split(":");
+				FormControlNotesInterface formControlNote = new FormControlNotes();
+				formControlNote.setNote(notes[0]);
+				controlNotes.add(formControlNote);
+			}
+			
+			if (readNext())
+			{
+				String [] nextLine = readLine();
+				if (nextLine!= null && nextLine.length != 0)
+				{
+					getFormControlNotes(controlNotes);
+				}
+			}
+		}
+		
+		return controlNotes;
+	}
+
+	@Override
+	public String getHeading() throws DynamicExtensionsSystemException, IOException
+	{
+		String heading = "";
+		
+		String [] headingDetails = readLine();
+		if (headingDetails != null && headingDetails.length != 0)
+		{
+			if (headingDetails[0].startsWith(CategoryConstants.HEADING))
+			{
+				CategoryValidator.checkIfHeadingIsAppropriate(headingDetails[0], lineNumber);
+			
+				heading = headingDetails[0].split("~")[1];
+				readNext();
+			}
+		}
+		
+		return heading;
+	}
+	
 }

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.FileReader;
@@ -186,4 +187,14 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 */
 	public abstract String getDefaultValue();
+	
+	/**
+	 * @return
+	 */
+	public abstract List<FormControlNotesInterface> getFormControlNotes(List<FormControlNotesInterface> controlNotes) throws DynamicExtensionsSystemException, IOException; 
+	
+	/**
+	 * 
+	 */
+	public abstract String getHeading() throws DynamicExtensionsSystemException, IOException;
 }

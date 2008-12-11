@@ -39,6 +39,7 @@
             update="true"
             insert="true"
             column="CAPTION"
+            length="800"
         />
 
         <set

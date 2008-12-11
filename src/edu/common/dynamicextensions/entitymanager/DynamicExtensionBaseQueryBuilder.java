@@ -623,12 +623,12 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 		{
-			Long identifier = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
-					.getName());
-
+			Long identifier;
 			// For many to many, insert into middle table.
 			for (int i = 0; i < recIds.size(); i++)
 			{
+				 identifier = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
+							.getName());
 				query = new StringBuffer();
 				query.append("INSERT INTO " + association.getConstraintProperties().getName()
 						+ " ( ");
@@ -640,8 +640,6 @@ class DynamicExtensionBaseQueryBuilder
 				query.append(COMMA);
 				query.append(recIds.get(i));
 				query.append(CLOSING_BRACKET);
-				identifier++; //TODO this is not thread safe ,so needs to find a another solution.
-
 				queries.add(query.toString());
 			}
 

@@ -145,8 +145,7 @@ public class DomainObjectFactory
 	 */
 	public EntityGroupInterface createEntityGroup()
 	{
-		EntityGroup entityGroup = new EntityGroup();
-		return entityGroup;
+		return new EntityGroup();
 	}
 
 	/**
@@ -168,8 +167,7 @@ public class DomainObjectFactory
 	 */
 	public RoleInterface createRole()
 	{
-		Role role = new Role();
-		return role;
+		return new Role();
 	}
 
 	/**
@@ -179,8 +177,7 @@ public class DomainObjectFactory
 	 */
 	public SemanticPropertyInterface createSemanticProperty()
 	{
-		SemanticProperty semanticProperty = new SemanticProperty();
-		return semanticProperty;
+		return new SemanticProperty();
 	}
 
 	/**
@@ -263,8 +260,7 @@ public class DomainObjectFactory
 	 */
 	public ByteArrayValueInterface createByteArrayValue()
 	{
-		ByteArrayValue byteArrayValue = new ByteArrayValue();
-		return byteArrayValue;
+		return  new ByteArrayValue();
 	}
 
 	/**
@@ -439,8 +435,7 @@ public class DomainObjectFactory
 	 */
 	public BooleanValueInterface createBooleanValue()
 	{
-		BooleanValue booleanValue = new BooleanValue();
-		return booleanValue;
+		return  new BooleanValue();
 	}
 
 	/**
@@ -450,8 +445,7 @@ public class DomainObjectFactory
 	 */
 	public DateValueInterface createDateValue()
 	{
-		DateValue dateValue = new DateValue();
-		return dateValue;
+		return new DateValue();
 	}
 
 	/**
@@ -461,8 +455,7 @@ public class DomainObjectFactory
 	 */
 	public DoubleValueInterface createDoubleValue()
 	{
-		DoubleValue doubleValue = new DoubleValue();
-		return doubleValue;
+		return  new DoubleValue();
 	}
 
 	/**
@@ -472,8 +465,7 @@ public class DomainObjectFactory
 	 */
 	public FloatValueInterface createFloatValue()
 	{
-		FloatValue floatValue = new FloatValue();
-		return floatValue;
+		return new FloatValue();
 	}
 
 	/**
@@ -483,8 +475,7 @@ public class DomainObjectFactory
 	 */
 	public IntegerValueInterface createIntegerValue()
 	{
-		IntegerValue integerValue = new IntegerValue();
-		return integerValue;
+		return new IntegerValue();
 	}
 
 	/**
@@ -494,8 +485,7 @@ public class DomainObjectFactory
 	 */
 	public LongValueInterface createLongValue()
 	{
-		LongValue longValue = new LongValue();
-		return longValue;
+		return  new LongValue();
 	}
 
 	/**
@@ -505,8 +495,7 @@ public class DomainObjectFactory
 	 */
 	public ShortValueInterface createShortValue()
 	{
-		ShortValue shortValue = new ShortValue();
-		return shortValue;
+		return new ShortValue();
 	}
 
 	/**
@@ -516,8 +505,7 @@ public class DomainObjectFactory
 	 */
 	public StringValueInterface createStringValue()
 	{
-		StringValue stringValue = new StringValue();
-		return stringValue;
+		return new StringValue();
 	}
 
 	/**
@@ -527,8 +515,7 @@ public class DomainObjectFactory
 	 */
 	public CheckBoxInterface createCheckBox()
 	{
-		CheckBox checkBox = new CheckBox();
-		return checkBox;
+		return new CheckBox();
 	}
 
 	/**
@@ -538,8 +525,7 @@ public class DomainObjectFactory
 	 */
 	public ComboBoxInterface createComboBox()
 	{
-		ComboBox comboBox = new ComboBox();
-		return comboBox;
+		return new ComboBox();
 	}
 
 	/**
@@ -549,8 +535,7 @@ public class DomainObjectFactory
 	 */
 	public ContainerInterface createContainer()
 	{
-		Container container = new Container();
-		return container;
+		return  new Container();
 	}
 
 	/**
@@ -560,8 +545,7 @@ public class DomainObjectFactory
 	 */
 	public DataGridInterface createDataGrid()
 	{
-		DataGrid dataGrid = new DataGrid();
-		return dataGrid;
+		return new DataGrid();
 	}
 
 	/**
@@ -571,8 +555,7 @@ public class DomainObjectFactory
 	 */
 	public DatePickerInterface createDatePicker()
 	{
-		DatePicker datePicker = new DatePicker();
-		return datePicker;
+		return new DatePicker();
 	}
 
 	/**
@@ -582,8 +565,7 @@ public class DomainObjectFactory
 	 */
 	public ListBoxInterface createListBox()
 	{
-		ListBox listBox = new ListBox();
-		return listBox;
+		return new ListBox();
 	}
 
 	/**
@@ -593,8 +575,7 @@ public class DomainObjectFactory
 	 */
 	public RadioButtonInterface createRadioButton()
 	{
-		RadioButton radioButton = new RadioButton();
-		return radioButton;
+		return  new RadioButton();
 	}
 
 	/**
@@ -604,8 +585,7 @@ public class DomainObjectFactory
 	 */
 	public TextAreaInterface createTextArea()
 	{
-		TextArea textArea = new TextArea();
-		return textArea;
+		return new TextArea();
 	}
 
 	/**
@@ -615,8 +595,7 @@ public class DomainObjectFactory
 	 */
 	public TextFieldInterface createTextField()
 	{
-		TextField textField = new TextField();
-		return textField;
+		return new TextField();
 	}
 
 	/**
@@ -626,8 +605,7 @@ public class DomainObjectFactory
 	 */
 	public FileUploadInterface createFileUploadControl()
 	{
-		FileUploadControl fileUpload = new FileUploadControl();
-		return fileUpload;
+		return  new FileUploadControl();
 	}
 
 	/**
@@ -637,8 +615,7 @@ public class DomainObjectFactory
 	 */
 	public ViewInterface createView()
 	{
-		View view = new View();
-		return view;
+		return new View();
 	}
 
 	/**
@@ -648,8 +625,7 @@ public class DomainObjectFactory
 	 */
 	public RuleInterface createRule()
 	{
-		Rule rule = new Rule();
-		return rule;
+		return  new Rule();
 	}
 
 	/**
@@ -659,8 +635,8 @@ public class DomainObjectFactory
 	 */
 	public RuleParameterInterface createRuleParameter()
 	{
-		RuleParameter ruleParameter = new RuleParameter();
-		return ruleParameter;
+		
+		return new RuleParameter();
 	}
 
 	/**
@@ -670,8 +646,7 @@ public class DomainObjectFactory
 	 */
 	public CaDSRDEInterface createCaDSRDE()
 	{
-		CaDSRDE caDSRDE = new CaDSRDE();
-		return caDSRDE;
+		return new CaDSRDE();
 	}
 
 	/**
@@ -681,8 +656,7 @@ public class DomainObjectFactory
 	 */
 	public UserDefinedDE createUserDefinedDE()
 	{
-		UserDefinedDE userDefinedDE = new UserDefinedDE();
-		return userDefinedDE;
+		return new UserDefinedDE();
 	}
 
 	/**
@@ -692,8 +666,7 @@ public class DomainObjectFactory
 	 */
 	public TaggedValueInterface createTaggedValue()
 	{
-		TaggedValueInterface taggedValueInterface = new TaggedValue();
-		return taggedValueInterface;
+		return new TaggedValue();
 	}
 
 	/**
@@ -775,8 +748,8 @@ public class DomainObjectFactory
 	 */
 	public ContainmentAssociationControlInterface createContainmentAssociationControl()
 	{
-		ContainmentAssociationControlInterface containmentAssociationControlInterface = new ContainmentAssociationControl();
-		return containmentAssociationControlInterface;
+		
+		return new ContainmentAssociationControl();
 	}
 
 	/**
@@ -785,8 +758,8 @@ public class DomainObjectFactory
 	 */
 	public CaDSRValueDomainInfoInterface createCaDSRValueDomainInfo()
 	{
-		CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface = new CaDSRValueDomainInfo();
-		return caDSRValueDomainInfoInterface;
+		
+		return new CaDSRValueDomainInfo();
 	}
 
 	/**

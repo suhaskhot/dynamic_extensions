@@ -5,7 +5,6 @@ import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 
 /**
  * This Class represents the per-defined Date value of the Attribute.

@@ -1,7 +1,5 @@
 package edu.common.dynamicextensions.domain;
 
-import java.io.Serializable;
-
 
 /**
  * This Class represents the a single value for multi select attribute.

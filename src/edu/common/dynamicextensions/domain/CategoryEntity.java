@@ -239,7 +239,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void removeCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
 	{
-
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void addPath(PathInterface pathInterface)
 	{
-
+		// TODO Auto-generated method stub	
 	}
 
 	/**
@@ -255,7 +255,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void removePath(PathInterface pathInterface)
 	{
-
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void removeAllPaths()
 	{
-
+		// TODO Auto-generated method stub
 	}
 
 	public void removeAllCategoryAttributes()
@@ -422,17 +422,17 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	
 	/**
 	 * This method returns the attribute for the given corresponding identifier.
-	 * @param id identifier of the desired AbstractAttribute.
+	 * @param identifier identifier of the desired AbstractAttribute.
 	 * @return the matched instance of AbstractAttribute.
 	 */
-	public CategoryAttributeInterface getAttributeByIdentifier(Long id)
+	public CategoryAttributeInterface getAttributeByIdentifier(Long identifier)
 	{
 		CategoryAttributeInterface categoryAttribute = null;
 		Collection<CategoryAttributeInterface> attributeCollection = getCategoryAttributeCollection();
 
 		for (CategoryAttributeInterface categoryAttributeInterface : attributeCollection)
 		{
-			if (categoryAttributeInterface.getId() != null && categoryAttributeInterface.getId().equals(id))
+			if (categoryAttributeInterface.getId() != null && categoryAttributeInterface.getId().equals(identifier))
 			{
 				categoryAttribute = categoryAttributeInterface;
 				break;
@@ -442,17 +442,17 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 	/**
 	 * This method returns the attribute for the given corresponding identifier.
-	 * @param id identifier of the desired AbstractAttribute.
+	 * @param identifier identifier of the desired AbstractAttribute.
 	 * @return the matched instance of AbstractAttribute.
 	 */
-	public CategoryAssociationInterface getAssociationByIdentifier(Long id)
+	public CategoryAssociationInterface getAssociationByIdentifier(Long identifier)
 	{
 		CategoryAssociationInterface association = null;
 		Collection<CategoryAssociationInterface> associationCollection = getCategoryAssociationCollection();
 
 		for (CategoryAssociationInterface categoryAssociationInterface : associationCollection)
 		{
-			if (categoryAssociationInterface.getId() != null && categoryAssociationInterface.getId().equals(id))
+			if (categoryAssociationInterface.getId() != null && categoryAssociationInterface.getId().equals(identifier))
 			{
 				association = categoryAssociationInterface;
 				break;

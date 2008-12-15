@@ -31,12 +31,12 @@ public class TaggedValue extends DynamicExtensionBaseDomainObject implements Tag
 	/**
 	 * Key part of the tagged value.
 	 */
-	String key;
+	private String key;
 
 	/**
 	 * Value part of the tagged value
 	 */
-	String value;
+	private String value;
 
 	/**
 	 * This method returns the Unique identifier.

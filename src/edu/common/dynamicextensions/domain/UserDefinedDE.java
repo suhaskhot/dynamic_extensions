@@ -33,7 +33,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	/**
 	 * Collection of PermissibleValues
 	 */
-	Collection<PermissibleValueInterface> permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
+	protected Collection<PermissibleValueInterface> permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
 
 	/**
 	 * Set all values from the form
@@ -42,6 +42,7 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	 */
 	public void setAllValues(AbstractActionForm abstractActionForm) throws AssignDataException
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

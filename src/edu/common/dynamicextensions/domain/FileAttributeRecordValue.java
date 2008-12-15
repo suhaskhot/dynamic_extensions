@@ -1,8 +1,6 @@
 package edu.common.dynamicextensions.domain; 
 
 import java.io.Serializable;
-
-import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.FileAttributeRecordValueInterface;
 
 
@@ -18,17 +16,17 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 	/**
 	 * content of the file.
 	 */
-	byte[] fileContent;
+	private byte[] fileContent;
 	
 	/**
 	 * this is the name of the file 
 	 */
-	String fileName;
+	private String fileName;
 	
 	/**
 	 * file content e.g. MIME text etc.
 	 */
-	String contentType;
+	private String contentType;
 	
 	
 	/**

@@ -87,6 +87,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 }

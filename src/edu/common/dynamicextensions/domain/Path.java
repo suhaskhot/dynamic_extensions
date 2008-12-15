@@ -24,7 +24,7 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 	/**
 	 *
 	 */
-	Collection<PathAssociationRelationInterface> pathAssociationRelationCollection = new HashSet<PathAssociationRelationInterface>();
+	protected Collection<PathAssociationRelationInterface> pathAssociationRelationCollection = new HashSet<PathAssociationRelationInterface>();
 
 	/**
 	 *

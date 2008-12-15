@@ -161,10 +161,11 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject {
      * @return Returns the fileRecord.
      */
     public FileAttributeRecordValue getFileRecord() {
+    	FileAttributeRecordValue value=null;
         if (fileRecordCollection != null && !fileRecordCollection.isEmpty()) {
-            return fileRecordCollection.iterator().next();
+            value= fileRecordCollection.iterator().next();
         }
-        return null;
+        return value;
     }
 
     /**
@@ -211,10 +212,11 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject {
      * @return Returns the fileRecord.
      */
     public ObjectAttributeRecordValue getObjectRecord() {
+    	ObjectAttributeRecordValue value=null;
         if (objectRecordCollection != null && !objectRecordCollection.isEmpty()) {
-            return objectRecordCollection.iterator().next();
+            value = objectRecordCollection.iterator().next();
         }
-        return null;
+        return value;
     }
 
 }

@@ -313,18 +313,12 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	{
 		int maxSize = -1;
 		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
-		if (attributeTypeInformationInterface != null)
+		if (attributeTypeInformationInterface != null && attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
 		{
-			if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
+			if (stringAttributeTypeInformation != null && stringAttributeTypeInformation.getSize() != null) 
 			{
-				StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
-				if (stringAttributeTypeInformation != null)
-				{
-					if (stringAttributeTypeInformation.getSize() != null)
-					{
-						maxSize = stringAttributeTypeInformation.getSize().intValue();
-					}
-				}
+				maxSize = stringAttributeTypeInformation.getSize().intValue();
 			}
 		}
 		return maxSize;

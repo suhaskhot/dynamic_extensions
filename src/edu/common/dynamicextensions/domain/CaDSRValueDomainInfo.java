@@ -14,15 +14,15 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	/**
 	 * 
 	 */
-	String name;
+	private String name;
 	/**
 	 * 
 	 */
-	String datatype;
+	private String datatype;
 	/**
 	 * 
 	 */
-	String type;
+	private String type;
 	
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"

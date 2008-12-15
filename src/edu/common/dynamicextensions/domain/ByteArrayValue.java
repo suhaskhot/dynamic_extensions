@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 

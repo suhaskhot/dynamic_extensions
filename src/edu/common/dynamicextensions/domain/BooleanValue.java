@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 
 /**
  * @hibernate.joined-subclass table="DYEXTN_BOOLEAN_CONCEPT_VALUE" 

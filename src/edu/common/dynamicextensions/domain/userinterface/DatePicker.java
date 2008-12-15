@@ -32,7 +32,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	String dateValueType = null;
+	private String dateValueType = null;
 
 	/**
 	 * Empty Constructor

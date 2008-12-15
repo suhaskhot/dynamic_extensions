@@ -6,37 +6,37 @@ public interface FileAttributeRecordValueInterface extends DynamicExtensionBaseD
 	 * 
 	 * @return
 	 */
-	public Long getId();
+	Long getId();
 	
 	/**
 	 * @return Returns the contentType.
 	 */
-	public String getContentType();
+	String getContentType();
 	
 	/**
 	 * @param contentType The contentType to set.
 	 */
-	public void setContentType(String contentType);
+	void setContentType(String contentType);
 	
 	/**
 	 * @return Returns the fileContent.
 	 */
-	public byte[] getFileContent();
+	byte[] getFileContent();
 	
 	/**
 	 * @param fileContent The fileContent to set.
 	 */
-	public void setFileContent(byte[] fileContent);
+	void setFileContent(byte[] fileContent);
 	
 	/**
 	 * @return Returns the fileName.
 	 */
-	public String getFileName();
+	String getFileName();
 		
 	/**
 	 * @param fileName The fileName to set.
 	 */
-	public void setFileName(String fileName);
+	void setFileName(String fileName);
 	
 	
 }

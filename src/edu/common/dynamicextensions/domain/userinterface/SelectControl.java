@@ -15,9 +15,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterfac
  */
 public abstract class SelectControl extends Control implements AssociationControlInterface, SelectInterface
 {
-	String separator = "";
+	protected String separator = "";
 
-	Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection = new HashSet<AssociationDisplayAttributeInterface>();
+	protected Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeCollection = new HashSet<AssociationDisplayAttributeInterface>();
 
 	/**
 	 * This method Returns the associationDisplayAttributeCollection.

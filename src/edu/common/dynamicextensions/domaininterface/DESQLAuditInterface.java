@@ -11,30 +11,30 @@ public interface DESQLAuditInterface
 	/**
 	 * @return audit date
 	 */
-	public Date getAuditDate();
+	Date getAuditDate();
 	
 	/**
 	 * @param auditDate
 	 */
-	public void setAuditDate(Date auditDate);
+	void setAuditDate(Date auditDate);
 
 	/**
 	 * @return sql query executed
 	 */
-	public String getQueryExecuted();
+	String getQueryExecuted();
 	
 	/**
 	 * @param queryExecuted
 	 */
-	public void setQueryExecuted(String queryExecuted);
+	void setQueryExecuted(String queryExecuted);
 
 	/**
 	 * @return user id
 	 */
-	public Long getUserId();
+	Long getUserId();
 
 	/**
 	 * @param userId
 	 */
-	public void setUserId(Long userId);
+	void setUserId(Long userId);
 }

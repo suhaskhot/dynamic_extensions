@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 
 /**

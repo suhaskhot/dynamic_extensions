@@ -147,6 +147,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface attribute)
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	

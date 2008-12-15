@@ -96,17 +96,17 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 	/**
 	 * @return the publicId
 	 */
-	public String getPublicId();
+	String getPublicId();
 
 	/**
 	 * This method stores public id of metadata object
 	 * @param publicId the publicId to set
 	 */
-	public void setPublicId(String publicId);
+	void setPublicId(String publicId);
 	
 	/**
 	 * @param semanticPropertyCollection
 	 */
-	public void setSemanticPropertyCollection(Collection<SemanticPropertyInterface> semanticPropertyCollection);
+	void setSemanticPropertyCollection(Collection<SemanticPropertyInterface> semanticPropertyCollection);
 
 }

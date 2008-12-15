@@ -8,36 +8,36 @@ public interface CaDSRValueDomainInfoInterface extends DynamicExtensionBaseDomai
 	/**
 	 * @return Returns the id.
 	 */
-	public Long getId();
+	Long getId();
 	
 	/**
 	 * @return the datatype
 	 */
-	public String getDatatype();
+	String getDatatype();
 		
 	/**
 	 * @param datatype the datatype to set
 	 */
-	public void setDatatype(String datatype);
+	void setDatatype(String datatype);
 		
 	/**
 	 * @return the name
 	 */
-	public String getName();
+	String getName();
 		
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name);
+	void setName(String name);
 	
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#getAssociationDirection()
 	 */
-	public ValueDomainType getValueDomainType();
+	ValueDomainType getValueDomainType();
 	
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.Constants.AssociationDirection)
 	 */
-	public void setValueDomainType(ValueDomainType valueDomainType);
+	void setValueDomainType(ValueDomainType valueDomainType);
 	
 }

@@ -17,24 +17,24 @@ public interface PathInterface extends DynamicExtensionBaseDomainObjectInterface
 	 * 
 	 * @return
 	 */
-	public Collection<PathAssociationRelationInterface> getPathAssociationRelationCollection();
+	Collection<PathAssociationRelationInterface> getPathAssociationRelationCollection();
 
 	/**
 	 * 
 	 * @param pathAssociationRelationCollection
 	 */
-	public void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection);
+	void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public List<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection();
+	List<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection();
 	
 	/**
 	 * 
 	 * @param pathAssociationRelationInterface
 	 */
-	public void addPathAssociationRelation(PathAssociationRelationInterface pathAssociationRelationInterface);
+	void addPathAssociationRelation(PathAssociationRelationInterface pathAssociationRelationInterface);
 
 }

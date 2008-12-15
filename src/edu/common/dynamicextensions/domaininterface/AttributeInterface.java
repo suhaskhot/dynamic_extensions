@@ -80,11 +80,11 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	 *
 	 * @return AttributeTypeInformationInterface
 	 */
-	public CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo();
+	CaDSRValueDomainInfoInterface getCaDSRValueDomainInfo();
 
 	/**
 	 *
 	 * @return AttributeTypeInformationInterface
 	 */
-	public void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface);
+	void setCaDSRValueDomainInfo(CaDSRValueDomainInfoInterface caDSRValueDomainInfoInterface);
 }

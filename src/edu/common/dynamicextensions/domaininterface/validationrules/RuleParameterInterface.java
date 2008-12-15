@@ -14,30 +14,30 @@ public interface RuleParameterInterface extends DynamicExtensionBaseDomainObject
 	 * This method returns the Unique Identifier of the Object.
 	 * @return the Unique Identifier of the Object.
 	 */
-	public Long getId();
+	Long getId();
 
 	/**
 	 * This method returns the name of the parameter of the Rule.
 	 * @return the name of the Rule.
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * This method sets the name of the parameter of the Rule.
 	 * @param name the name to be set.
 	 */
-	public void setName(String name);
+	void setName(String name);
 
 	/**
 	 * This method returns the value of the parameter of the Rule.
 	 * @return the value of the parameter of the Rule.
 	 */
-	public String getValue();
+	String getValue();
 
 	/**
 	 * This method sets the value of the parameter of the Rule.
 	 * @return the value of the parameter to be set.
 	 */
-	public void setValue(String value);
+	void setValue(String value);
 
 }

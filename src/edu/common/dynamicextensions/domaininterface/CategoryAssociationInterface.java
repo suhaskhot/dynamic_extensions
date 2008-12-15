@@ -15,34 +15,34 @@ public interface CategoryAssociationInterface extends BaseAbstractAttributeInter
 	 *
 	 * @return
 	 */
-	public CategoryEntityInterface getCategoryEntity();
+	CategoryEntityInterface getCategoryEntity();
 
 	/**
 	 *
 	 * @param categoryEntity
 	 */
-	public void setCategoryEntity(CategoryEntityInterface categoryEntity);
+	void setCategoryEntity(CategoryEntityInterface categoryEntity);
 
 	/**
 	 *
 	 * @return
 	 */
-	public CategoryEntityInterface getTargetCategoryEntity();
+	CategoryEntityInterface getTargetCategoryEntity();
 
 	/**
 	 *
 	 * @param targetCategoryEntity
 	 */
-	public void setTargetCategoryEntity(CategoryEntityInterface targetCategoryEntity);
+	void setTargetCategoryEntity(CategoryEntityInterface targetCategoryEntity);
 	/**
 	 * This method returns the ConstraintProperties of the Association.
 	 * @return the ConstraintProperties of the Association.
 	 */
-	public ConstraintPropertiesInterface getConstraintProperties();
+	ConstraintPropertiesInterface getConstraintProperties();
 	/**
 	 * This method sets the constraintProperties to the given ContraintProperties.
 	 * @param constraintProperties the constraintProperties to be set.
 	 */
-	public void setConstraintProperties(ConstraintPropertiesInterface constraintProperties);
+	void setConstraintProperties(ConstraintPropertiesInterface constraintProperties);
 
 }

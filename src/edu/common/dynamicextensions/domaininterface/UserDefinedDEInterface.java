@@ -26,27 +26,27 @@ public interface UserDefinedDEInterface extends DataElementInterface
 	/**
 	 * clears the permissible value collection
 	 */
-	public void clearPermissibleValues();
+	void clearPermissibleValues();
 	
 	/**
 	 * @param permissibleValueColl
 	 */
-	public void addAllPermissibleValues(Collection<PermissibleValueInterface> permissibleValueColl);
+	void addAllPermissibleValues(Collection<PermissibleValueInterface> permissibleValueColl);
 	/**
 	 * 
 	 * @return
 	 */
-	public Boolean getIsOrdered();
+	Boolean getIsOrdered();
 	/**
 	 * 
 	 * @param isOrdered
 	 */
-	public void setIsOrdered(Boolean isOrdered);
+	void setIsOrdered(Boolean isOrdered);
 	/**
 	 * 
 	 * @return
 	 */
-	public Collection<PermissibleValueInterface> getPermissibleValues();
+	Collection<PermissibleValueInterface> getPermissibleValues();
 	
 
 }

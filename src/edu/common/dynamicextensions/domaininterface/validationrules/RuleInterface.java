@@ -17,34 +17,34 @@ public interface RuleInterface extends DynamicExtensionBaseDomainObjectInterface
 	 * This method returns the Unique Identifier of the Object.
 	 * @return the Unique Identifier of the Object.
 	 */
-	public Long getId();
+	Long getId();
 
 	/**
 	 * This method returns the name of the Rule.
 	 * @return the name of the Rule.
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * This method sets the name of the Rule.
 	 * @param name the name to be set.
 	 */
-	public void setName(String name);
+	void setName(String name);
 
 	/**
 	 * This method returns the Collection of RuleParameters.
 	 * @return the Collection of RuleParameters.
 	 */
-	public Collection<RuleParameterInterface> getRuleParameterCollection();
+	Collection<RuleParameterInterface> getRuleParameterCollection();
 
 	/**
 	 * This method sets ruleParameterCollection to the Collection of RuleParmeters.
 	 * @param ruleParameterCollection the the Collection of RuleParmeters to be set.
 	 */
-	public void setRuleParameterCollection(Collection<RuleParameterInterface> ruleParameterCollection);
+	void setRuleParameterCollection(Collection<RuleParameterInterface> ruleParameterCollection);
 	
-	public Boolean getIsImplicitRule();
+	Boolean getIsImplicitRule();
 	
-	public void setIsImplicitRule(Boolean isImplicitRule);
+	void setIsImplicitRule(Boolean isImplicitRule);
 
 }

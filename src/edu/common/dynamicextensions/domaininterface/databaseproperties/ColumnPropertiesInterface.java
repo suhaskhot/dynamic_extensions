@@ -13,5 +13,5 @@ public interface ColumnPropertiesInterface extends DatabasePropertiesInterface
 	 *
 	 * @return
 	 */
-	public String getConstraintName();
+	String getConstraintName();
 }

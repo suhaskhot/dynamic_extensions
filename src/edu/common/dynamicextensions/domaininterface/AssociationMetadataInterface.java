@@ -13,5 +13,5 @@ public interface AssociationMetadataInterface extends BaseAbstractAttributeInter
 	/**
 	 * @return type of the association
 	 */
-	public AssociationType getAssociationType();
+	AssociationType getAssociationType();
 }

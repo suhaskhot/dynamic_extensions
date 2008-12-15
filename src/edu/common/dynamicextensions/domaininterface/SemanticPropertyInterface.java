@@ -64,11 +64,11 @@ public interface SemanticPropertyInterface extends DynamicExtensionBaseDomainObj
 	 * This method returns the tem i.e. concept name. 
 	 * @return the conceptDefinition
 	 */
-	public String getConceptDefinition();
+	String getConceptDefinition();
 		
 	/**
 	 * @param conceptDefinition the conceptDefinition to set
 	 */
-	public void setConceptDefinition(String conceptDefinition);
+	void setConceptDefinition(String conceptDefinition);
 
 }

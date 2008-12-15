@@ -33,7 +33,7 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 * 
 	 * @param categoryEntityInterface
 	 */
-	public void addChildCategory(CategoryEntityInterface categoryEntityInterface);
+	void addChildCategory(CategoryEntityInterface categoryEntityInterface);
 
 	/**
 	 *
@@ -95,39 +95,39 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 */
 	void setCategory(CategoryInterface categoryInterface);
 
-	public PathInterface getPath();
+	PathInterface getPath();
 
-	public void setPath(PathInterface path);
+	void setPath(PathInterface path);
 
-	public Integer getNumberOfEntries();
+	Integer getNumberOfEntries();
 
-	public void setNumberOfEntries(Integer numberOfEntries);
+	void setNumberOfEntries(Integer numberOfEntries);
 
-	public Collection<CategoryAssociationInterface> getCategoryAssociationCollection();
+	Collection<CategoryAssociationInterface> getCategoryAssociationCollection();
 
-	public void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection);
+	void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection);
 
-	public CategoryEntityInterface getParentCategoryEntity();
+	CategoryEntityInterface getParentCategoryEntity();
 
-	public void setParentCategoryEntity(CategoryEntityInterface parentCategoryEntity);
+	void setParentCategoryEntity(CategoryEntityInterface parentCategoryEntity);
 
-	public Collection<CategoryAttributeInterface> getAllCategoryAttributes();
+	Collection<CategoryAttributeInterface> getAllCategoryAttributes();
 
 	/**
 	 * @param associationName
 	 * @return
 	 */
-	public CategoryAssociationInterface getAssociationByName(String associationName);
+	CategoryAssociationInterface getAssociationByName(String associationName);
 	
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
-	public CategoryAttributeInterface getAttributeByName(String attributeName);
+	CategoryAttributeInterface getAttributeByName(String attributeName);
 	
-	public CategoryEntityInterface getTreeParentCategoryEntity();
+	CategoryEntityInterface getTreeParentCategoryEntity();
 	
-	public void setTreeParentCategoryEntity(CategoryEntityInterface treeParentCategoryEntity);
+	void setTreeParentCategoryEntity(CategoryEntityInterface treeParentCategoryEntity);
 
 }

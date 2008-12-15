@@ -21,17 +21,17 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface {
     *
     * @return
     */
-   public Collection getContainerCollection();
+   Collection getContainerCollection();
    /**
     *
     * @param containerCollection
     */
-   public void setContainerCollection(Collection containerCollection);
+   void setContainerCollection(Collection containerCollection);
    /**
     * 
     * @param containerInterface
     */
-   public void addContainer(ContainerInterface containerInterface );
+   void addContainer(ContainerInterface containerInterface );
    
    /**
 	 * @return Returns the isAbstract.
@@ -41,7 +41,7 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface {
 	/**
 	 * Clears the attibute list.
 	 */
-	public void removeAllAttributes();
+	void removeAllAttributes();
 
 
 }

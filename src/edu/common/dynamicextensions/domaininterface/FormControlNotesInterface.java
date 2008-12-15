@@ -7,8 +7,8 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface FormControlNotesInterface
 {
-	public String getNote();
+	String getNote();
 	
-	public void setNote(String note);
+	void setNote(String note);
 
 }

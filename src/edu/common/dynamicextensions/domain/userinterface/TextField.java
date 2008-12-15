@@ -164,6 +164,7 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface abstractAttributeInterface)
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -191,7 +192,7 @@ public class TextField extends Control implements TextFieldInterface
 		String htmlString = "&nbsp;";
 		if (defaultValue != null)
 		{
-			if (isUrl != null && isUrl.booleanValue() == true)
+			if (isUrl != null && (isUrl.booleanValue()))
 			{
 				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
 						+ defaultValue
@@ -218,7 +219,7 @@ public class TextField extends Control implements TextFieldInterface
 			defaultValue = String.valueOf(this.value);
 		}
 
-		if (isUrl != null && isUrl.booleanValue() == true)
+		if (isUrl != null && (isUrl.booleanValue()))
 		{
 			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
 		}

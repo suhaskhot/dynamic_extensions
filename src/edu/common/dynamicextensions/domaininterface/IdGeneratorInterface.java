@@ -9,16 +9,16 @@ public interface IdGeneratorInterface extends DynamicExtensionBaseDomainObjectIn
 	/**
 	 * @return the next available unique id 
 	 */
-	public Long getNextAvailableId();
+	Long getNextAvailableId();
 	
 	/**
 	 * @param nextAvailableId 
 	 */
-	public void setNextAvailableId(Long nextAvailableId);
+	void setNextAvailableId(Long nextAvailableId);
 	
 	/**
 	 * @param id
 	 */
-	public void setId(Long id) ;
+	void setId(Long id) ;
 
 }

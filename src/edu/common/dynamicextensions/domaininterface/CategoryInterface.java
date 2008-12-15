@@ -8,33 +8,33 @@ public interface CategoryInterface extends AbstractMetadataInterface {
      *
      * @return
      */
-    public CategoryEntityInterface getRootCategoryElement();
+    CategoryEntityInterface getRootCategoryElement();
     /**
      *
      * @param rootCategoryElement
      */
-    public void setRootCategoryElement(CategoryEntityInterface rootCategoryElement);
+    void setRootCategoryElement(CategoryEntityInterface rootCategoryElement);
     
     /**
      * @param categoryEntityName
      * @return
      */
-    public CategoryEntityInterface getCategoryEntityByName(String categoryEntityName);
+    CategoryEntityInterface getCategoryEntityByName(String categoryEntityName);
     
     /**
      * @return
      */
-    public Collection<CategoryEntityInterface> getRelatedAttributeCategoryEntityCollection();
+    Collection<CategoryEntityInterface> getRelatedAttributeCategoryEntityCollection();
     
     /**
      * @param relatedAttributeCategoryEntityCollection
      */
-    public void setRelatedAttributeCategoryEntityCollection(Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection);
+    void setRelatedAttributeCategoryEntityCollection(Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection);
     
     /**
      * @param categoryEntity
      */
-    public void addRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity);
+    void addRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity);
     
-    public void removeRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity);
+    void removeRelatedAttributeCategoryEntity(CategoryEntityInterface categoryEntity);
 }

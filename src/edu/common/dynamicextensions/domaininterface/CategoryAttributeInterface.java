@@ -17,79 +17,79 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 *
 	 * @return
 	 */
-	public AbstractAttributeInterface getAbstractAttribute();
+	AbstractAttributeInterface getAbstractAttribute();
 
 	/**
 	 *
 	 * @param attribute
 	 */
-	public void setAbstractAttribute(AbstractAttributeInterface attribute);
+	void setAbstractAttribute(AbstractAttributeInterface attribute);
 
 	/**
 	 *
 	 * @return
 	 */
-	public CategoryEntityInterface getCategoryEntity();
+	CategoryEntityInterface getCategoryEntity();
 
 	/**
 	 *
 	 * @param categoryEntityInterface
 	 */
-	public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface);
+	void setCategoryEntity(CategoryEntityInterface categoryEntityInterface);
 
 	/**
 	 *
 	 * @return
 	 */
-	public String getDefaultValue();
+	String getDefaultValue();
 
 	/**
 	 *
 	 * @param permissibleValueInterface
 	 */
-	public void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
+	void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
 
 	/**
 	 *
 	 * @param dataElementInterface
 	 */
-	public void setDataElement(DataElementInterface dataElementInterface);
+	void setDataElement(DataElementInterface dataElementInterface);
 	/**
 	 * This method returns the ColumnProperties of the Attribute.
 	 * @return the ColumnProperties of the Attribute.
 	 */
-	public ColumnPropertiesInterface getColumnProperties();
+	ColumnPropertiesInterface getColumnProperties();
 	/**
 	 * This method sets the ColumnProperties of the Attribute.
 	 * @param columnProperties the ColumnProperties to be set.
 	 */
-	public void setColumnProperties(ColumnPropertiesInterface columnProperties);
+	void setColumnProperties(ColumnPropertiesInterface columnProperties);
 
 	/**
 	 *
 	 */
-	public Boolean getIsVisible();
+	Boolean getIsVisible();
 
 	/**
 	 *
 	 */
-	public void setIsVisible(Boolean isVisible);
+	void setIsVisible(Boolean isVisible);
 
-	public Set<RuleInterface> getRuleCollection();
+	Set<RuleInterface> getRuleCollection();
 
 	/**
 	 * @param ruleCollection the ruleCollection to set
 	 */
-	public void setRuleCollection(Set<RuleInterface> ruleCollection);
+	void setRuleCollection(Set<RuleInterface> ruleCollection);
 
 	/**
 	 *
 	 */
-	public Boolean getIsRelatedAttribute();
+	Boolean getIsRelatedAttribute();
 
 	/**
 	 *
 	 */
-	public void setIsRelatedAttribute(Boolean isRelatedAttribute);
+	void setIsRelatedAttribute(Boolean isRelatedAttribute);
 
 }

@@ -38,7 +38,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	/**
 	 * @param abstractAttributeInterface The attribute to set.
 	 */
-	public AttributeMetadataInterface getAttibuteMetadataInterface();
+	AttributeMetadataInterface getAttibuteMetadataInterface();
 
 	/**
 	 * Caption/Title for the control.
@@ -161,35 +161,35 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	/**
 	 * @return 
 	 */
-	public Boolean getIsReadOnly();
+	Boolean getIsReadOnly();
 
 	/**
 	 * @param isReadOnly
 	 */
-	public void setIsReadOnly(Boolean isReadOnly);
+	void setIsReadOnly(Boolean isReadOnly);
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public String getHeading();
+	String getHeading();
 	
 	/**
 	 * 
 	 * @param heading
 	 */
-	public void setHeading(String heading);
+	void setHeading(String heading);
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public List<FormControlNotesInterface> getFormNotes();
+	List<FormControlNotesInterface> getFormNotes();
 	
 	/**
 	 * 
 	 * @param formNotes
 	 */
-	public void setFormNotes(List<FormControlNotesInterface> formNotes);
+	void setFormNotes(List<FormControlNotesInterface> formNotes);
 
 }

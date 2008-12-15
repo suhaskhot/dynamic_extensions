@@ -93,5 +93,6 @@ public class View extends DynamicExtensionBaseDomainObject implements Serializab
 	 */
 	public void addContainer(ContainerInterface container)
 	{
+		// TODO Auto-generated constructor stub
 	}
 }

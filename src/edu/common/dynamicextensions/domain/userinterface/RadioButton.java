@@ -80,7 +80,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 		nameValueBeanList = ControlsUtility.populateListOfValues(this);
 
 		String htmlComponentName = getHTMLComponentName();
-		if (nameValueBeanList != null || nameValueBeanList.size() > 0)
+		if (nameValueBeanList != null )
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
@@ -115,6 +115,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	public String generateViewModeHTML() throws DynamicExtensionsSystemException

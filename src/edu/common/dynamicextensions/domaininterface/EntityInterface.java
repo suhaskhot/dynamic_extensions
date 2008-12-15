@@ -160,53 +160,53 @@ public interface EntityInterface  extends AbstractEntityInterface
     /**
      * Get all attributes for query
      */
-    public Collection<AttributeInterface> getEntityAttributesForQuery();
+    Collection<AttributeInterface> getEntityAttributesForQuery();
 
     /**
      *
      * @return
      */
-    public int getDataTableState();
+    int getDataTableState();
     /**
      *
      * @param dataTableState
      */
-    public void setDataTableState(int dataTableState);
+    void setDataTableState(int dataTableState);
     /**
      *
      * @return
      */
-    public EntityGroupInterface getEntityGroup();
+    EntityGroupInterface getEntityGroup();
     /**
      *
      * @param entityGroup
      */
-    public void setEntityGroup(EntityGroupInterface entityGroup);
+    void setEntityGroup(EntityGroupInterface entityGroup);
 
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
-	public AttributeInterface getAttributeByName(String attributeName);
+	AttributeInterface getAttributeByName(String attributeName);
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
-	public AbstractAttributeInterface getAbstractAttributeByName(String attributeName);
+	AbstractAttributeInterface getAbstractAttributeByName(String attributeName);
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
-	public boolean isAttributePresent(String attributeName);
+	boolean isAttributePresent(String attributeName);
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
-	public boolean isMultiselectAttributePresent(String attributeName);
+	boolean isMultiselectAttributePresent(String attributeName);
 	/**
 	 * This method return the Collection of Association excluding collection attributes.
 	 * @return the Collection of Association.

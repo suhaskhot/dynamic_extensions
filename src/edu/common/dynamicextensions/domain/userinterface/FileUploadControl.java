@@ -23,7 +23,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	 * 
 	 */
 	private static final long serialVersionUID = 3211268406984504475L;
-	Integer columns = null;
+	private Integer columns = null;
 
 	/**
 	 * @return 

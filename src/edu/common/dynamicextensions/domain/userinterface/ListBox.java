@@ -121,7 +121,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 
 		String strMultiSelect = "";
-		if ((isMultiSelect != null) && (isMultiSelect.booleanValue() == true))
+		if ((isMultiSelect != null) && (isMultiSelect.booleanValue()))
 		{
 			strMultiSelect = "MULTIPLE ";
 		}

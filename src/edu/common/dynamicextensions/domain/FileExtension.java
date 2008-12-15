@@ -24,7 +24,7 @@ public class FileExtension extends DynamicExtensionBaseDomainObject
 	/**
 	 * allowed file extension for the attribute.
 	 */
-	String fileExtension;
+	private String fileExtension;
 
 
 	/**

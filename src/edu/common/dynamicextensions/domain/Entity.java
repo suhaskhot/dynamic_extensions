@@ -235,13 +235,10 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	public void removeAbstractAttribute(AbstractAttributeInterface abstractAttribute)
 	{
-		if (abstractAttributeCollection != null)
+		if (abstractAttributeCollection != null && abstractAttributeCollection.contains(abstractAttribute))
 		{
-			if (abstractAttributeCollection.contains(abstractAttribute))
-			{
-				abstractAttributeCollection.remove(abstractAttribute);
-				abstractAttribute.setEntity(null);
-			}
+			abstractAttributeCollection.remove(abstractAttribute);
+			abstractAttribute.setEntity(null);
 		}
 	}
 
@@ -502,6 +499,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 		Collection<AttributeInterface> theAttributeCollection = new ArrayList<AttributeInterface>();
 		Set<String> attributeNames = new HashSet<String>();
+		DomainObjectFactory factory=DomainObjectFactory.getInstance();
 		Collection<AttributeInterface> attributeCollection = getAttributeCollection();
 		theAttributeCollection.addAll(attributeCollection);
 		for(AttributeInterface attribute:attributeCollection)
@@ -527,7 +525,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 					}
 					if (!isDerivedTagPresent)
 					{
-						TaggedValueInterface tag = new TaggedValue();
+						TaggedValueInterface tag = factory.createTaggedValue();
 						tag.setKey(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED);
 						tag.setValue(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED);
 						parentAttribute.addTaggedValue(tag);

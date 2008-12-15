@@ -51,7 +51,7 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	/**
 	 * isCurrent.
 	 */
-	boolean isCurrent = false;
+	protected boolean isCurrent = false;
 
 	/**
 	 * mainContainerCollection.

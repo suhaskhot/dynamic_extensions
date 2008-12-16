@@ -123,7 +123,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 				&& (createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW))
 				&& operationMode.equals(Constants.EDIT_FORM))
 		{
-			//This is the case where Form is alredy is within one group.But in Edit mode the form Group is created newly
+			//This is the case where Form is already is within one group.But in Edit mode the form Group is created newly
 			//In this case ,new group requires to create ,the entity and container set to it
 			//Remove container and entity from old group 
 			if (container != null)
@@ -135,7 +135,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 				{
 					//check whether groupname already exist
 					DynamicExtensionsUtility.validateName(groupUIBean.getGroupNameText());
-					//Remove entity form existing gourp 
+					//Remove entity form existing group 
 					existingEntityGroup.removeEntity(entity);
 					existingEntityGroup.removeMainContainer(container);
 

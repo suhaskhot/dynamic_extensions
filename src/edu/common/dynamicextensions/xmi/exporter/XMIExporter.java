@@ -453,11 +453,11 @@ public class XMIExporter implements XMIExportInterface
 	/**
 	 * @return
 	 */
-	private Parameter createParameter(String paramterName, Classifier parameterType,
+	private Parameter createParameter(String parameterName, Classifier parameterType,
 			ParameterDirectionKindEnum direction)
 	{
 		//Return parameter
-		Parameter parameter = umlPackage.getCore().getParameter().createParameter(paramterName,
+		Parameter parameter = umlPackage.getCore().getParameter().createParameter(parameterName,
 				VisibilityKindEnum.VK_PUBLIC, false, null, direction);
 		parameter.setType(parameterType);
 		return parameter;
@@ -566,7 +566,7 @@ public class XMIExporter implements XMIExportInterface
 		//Create attribute if does not exist
 		if (foreignKeyAttribute == null)
 		{
-			//Datatype of foreign key and prmary key will be same
+			//Datatype of foreign key and primary key will be same
 			AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
 			foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
 			foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
@@ -1605,7 +1605,7 @@ public class XMIExporter implements XMIExportInterface
 	}
 
 	/***
-	 * Creates a tagged value given the specfied <code>name</code>.
+	 * Creates a tagged value given the specified <code>name</code>.
 	 *
 	 * @param name the name of the tagged value to create.
 	 * @param value the value to populate on the tagged value.
@@ -2300,7 +2300,7 @@ public class XMIExporter implements XMIExportInterface
 		EntityInterface recordEntryEntity = domainObjectFactory.createEntity();
 		recordEntryEntity.setName("RecordEntry");
 		TablePropertiesInterface tp = domainObjectFactory.createTableProperties();
-		tp.setName("CATISUE_CLIN_STUDY_RECORD_NTRY");
+		tp.setName("CATISUE_CLIN_STUDY_RECORD_ENTRY");
 		recordEntryEntity.setTableProperties(tp);
 		//Id
 		AttributeInterface attributeRecEntryId = domainObjectFactory.createLongAttribute();

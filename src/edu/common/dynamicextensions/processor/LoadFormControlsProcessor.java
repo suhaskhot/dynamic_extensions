@@ -155,10 +155,10 @@ public class LoadFormControlsProcessor
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 		controlProcessor.populateControlUIBeanInterface(control, controlUIBean);
 
-		AttributeProcessor attrPrcr = AttributeProcessor.getInstance();
+		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		if (control != null)
 		{
-			attrPrcr.populateAttributeUIBeanInterface((AbstractAttributeInterface) control
+			attributeProcessor.populateAttributeUIBeanInterface((AbstractAttributeInterface) control
 					.getBaseAbstractAttribute(), attributeUIBean);
 		}
 
@@ -267,10 +267,10 @@ public class LoadFormControlsProcessor
 		ApplicationProperties.initBundle("DynamicExtensionsFileFormats");
 		ArrayList<String> fileFormats = new ArrayList<String>();
 		String fileExtns = ApplicationProperties.getValue("fileExtensions");
-		StringTokenizer strTknizer = new StringTokenizer(fileExtns, ",");
-		while (strTknizer.hasMoreTokens())
+		StringTokenizer strTokenizer = new StringTokenizer(fileExtns, ",");
+		while (strTokenizer.hasMoreTokens())
 		{
-			fileFormats.add(strTknizer.nextToken());
+			fileFormats.add(strTokenizer.nextToken());
 		}
 
 		// Initialize the ApplicationResources.properties file once the purpose of file formats is complete.

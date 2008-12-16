@@ -8,7 +8,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 /**
  * This interface is extended by AssociationInterface and PrimitiveAttributeInterface.
  * Associations are also treated as attributes.
- *      Using the information of Attribute object coulmns are perpared in the dynamically create tables.
+ *      Using the information of Attribute object columns are prepared in the dynamically create tables.
  * @author geetika_bangard
  */
 public interface AbstractAttributeInterface extends BaseAbstractAttributeInterface

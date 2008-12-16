@@ -61,7 +61,7 @@ public class Association extends AbstractAttribute
 	public Collection<ConstraintPropertiesInterface> constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
 
 	/**
-	 * Specifies whether this abstarct attribute is a collection or not.
+	 * Specifies whether this abstract attribute is a collection or not.
 	 */
 	protected Boolean isCollection = false;
 	/**
@@ -275,7 +275,7 @@ public class Association extends AbstractAttribute
 	 * So we create a replica of the original association (which we call as system generated association)
 	 * and this association is added to the target entity's attribute collection.
 	 * 2. The method also removes the system generated association from the target entity
-	 * when the association direction of the assciation is changed from "bi-directional" to "SRC-Destination".
+	 * when the association direction of the association is changed from "bi-directional" to "SRC-Destination".
 	 * In this case we no longer need the system generated association.
 	 * So if the sys. generated association is present , it is removed.
 	 * @param association

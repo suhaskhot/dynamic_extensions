@@ -55,7 +55,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	protected Boolean isHidden = null;
 
 	/**
-	 * Decides whether the control should be desabled or not
+	 * Decides whether the control should be disabled or not
 	 */
 	protected Boolean isReadOnly = false;
 

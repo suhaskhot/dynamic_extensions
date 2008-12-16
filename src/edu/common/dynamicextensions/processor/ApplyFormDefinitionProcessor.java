@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.processor;
 
 /**
  * This processor class mainly helps the action class to call the related Object driven processors
- * to update the Actionforms by retriving data form Cache.
+ * to update the Actionforms by Retrieving  data form Cache.
  * @author deepti_shelar
  */
 import java.util.ArrayList;

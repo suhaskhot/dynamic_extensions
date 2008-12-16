@@ -93,7 +93,7 @@ public class DatabaseCleaner
 	}
 
 	/**
-	 * It will execute the qiven query using provided connection.
+	 * It will execute the given query using provided connection.
 	 * @param query
 	 * @param conn
 	 * @return

@@ -376,7 +376,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 
 		Logger.out
-				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
+				.error("***Fatal Error.. Inconsistent data table and metadata information for the entity -"
 						+ name + "***");
 		Logger.out.error("Please check the table -" + table);
 		Logger.out.error("The cause of the exception is - " + exception.getMessage());
@@ -1200,23 +1200,23 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				query.append(WHITESPACE + EQUAL + WHITESPACE);
 				query.append(recordId);
 
-				PreparedStatement prepStatement;
+				PreparedStatement preparedStatement;
 
-				prepStatement = conn.prepareStatement(query.toString());
+				preparedStatement = conn.prepareStatement(query.toString());
 
 				int colCount = 1;
 
 				for (Object columnValue : columnValues)
 				{
-					prepStatement.setObject(colCount++, columnValue);
+					preparedStatement.setObject(colCount++, columnValue);
 					auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?") + 1,
 							columnValue == null ? "" : columnValue.toString());
 				}
 
-				prepStatement.setMaxFieldSize(1);
+				preparedStatement.setMaxFieldSize(1);
 				try
 				{
-					prepStatement.executeUpdate();
+					preparedStatement.executeUpdate();
 				}
 				catch (SQLException e)
 				{
@@ -1226,7 +1226,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				{
 					try
 					{
-						prepStatement.close();
+						preparedStatement.close();
 					}
 					catch (SQLException e)
 					{
@@ -1557,10 +1557,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Map<String, AttributeInterface> columnNames = new HashMap<String, AttributeInterface>();
 
-		Iterator<AttributeInterface> attriIter = attributes.iterator();
-		while (attriIter.hasNext())
+		Iterator<AttributeInterface> attributeIter = attributes.iterator();
+		while (attributeIter.hasNext())
 		{
-			AttributeInterface attribute = (AttributeInterface) attriIter.next();
+			AttributeInterface attribute = (AttributeInterface) attributeIter.next();
 
 			// For the other attributes, create select query.
 			String dbColumnName = attribute.getColumnProperties().getName();
@@ -1728,12 +1728,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		catch (DynamicExtensionsApplicationException e)
 		{
 			throw (DynamicExtensionsApplicationException) handleRollback(e,
-					"Error while retriving data", hibernateDAO, false);
+					"Error while Retrieving  data", hibernateDAO, false);
 		}
 		catch (Exception e)
 		{
 			throw (DynamicExtensionsSystemException) handleRollback(e,
-					"Error while retriving data", hibernateDAO, true);
+					"Error while Retrieving  data", hibernateDAO, true);
 		}
 		finally
 		{
@@ -1924,7 +1924,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		String fromClause = FROM_KEYWORD + tgtEntityTable + ", ";
 		String whereClause = WHERE_KEYWORD;
 		// Clause for multiple columns.
-		String multipleColClaus = SELECT_KEYWORD + tgtEntityTable + "." + IDENTIFIER + ", ";
+		String multipleColClause = SELECT_KEYWORD + tgtEntityTable + "." + IDENTIFIER + ", ";
 
 		List associationAttr = new ArrayList(assoAttributes);
 		Collections.sort(associationAttr);
@@ -1977,7 +1977,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			else
 			{
 				areMultipleAttr = true;
-				multipleColClaus += columnName + ", ";
+				multipleColClause += columnName + ", ";
 				tableNames.add(tableName);
 			}
 
@@ -2009,7 +2009,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		if (((AssociationInterface) ((SelectControl) assoControl).getBaseAbstractAttribute())
 				.getTargetEntity().getParentEntity() == null)
 		{
-			multipleColClaus = multipleColClaus.substring(0, multipleColClaus.length() - 2)
+			multipleColClause = multipleColClause.substring(0, multipleColClause.length() - 2)
 					+ FROM_KEYWORD + tgtEntityTable;
 		}
 
@@ -2021,7 +2021,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		else
 		{
-			query.append(multipleColClaus);
+			query.append(multipleColClause);
 			query.append(WHERE_KEYWORD
 					+ queryBuilder.getRemoveDisbledRecordsQuery(tableNames.get(0)));
 		}
@@ -3177,13 +3177,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
 	 */
-	public EntityGroupInterface getEntityGroupByShortName(String shrtName)
+	public EntityGroupInterface getEntityGroupByShortName(String shortName)
 			throws DynamicExtensionsSystemException
 	{
 		EntityGroupInterface entityGroup = null;
 
 		Collection entityGroups = new HashSet();
-		if (shrtName == null || shrtName.equals(""))
+		if (shortName == null || shortName.equals(""))
 		{
 			return entityGroup;
 		}
@@ -3196,7 +3196,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			// Calling retrieve method to  get the entity group object based on the 
 			// given value of short name.
-			entityGroups = defBizLogic.retrieve(EntityGroup.class.getName(), "shortName", shrtName);
+			entityGroups = defBizLogic.retrieve(EntityGroup.class.getName(), "shortName", shortName);
 			if (entityGroups != null && entityGroups.size() > 0)
 			{
 				entityGroup = (EntityGroupInterface) entityGroups.iterator().next();

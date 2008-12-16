@@ -46,7 +46,7 @@ public interface AttributeTypeInformationInterface
 
 	/**
 	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.
-	 * @return Strin attribute type
+	 * @return String attribute type
 	 */
 	String getDataType();
 

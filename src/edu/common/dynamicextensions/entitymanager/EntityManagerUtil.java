@@ -194,8 +194,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			Long identifier = null;
 			if (idMap.containsKey(tableName))
 			{
-				Long idntifier = (Long) idMap.get(tableName);
-				identifier = idntifier + 1;
+				Long newIdentifier = (Long) idMap.get(tableName);
+				identifier = newIdentifier + 1;
 			}
 			else
 			{
@@ -325,16 +325,16 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public static List<AbstractAttributeInterface> filterSystemAttributes(
 			List<AbstractAttributeInterface> attributes)
 	{
-		List<AbstractAttributeInterface> attribtes = new ArrayList<AbstractAttributeInterface>();
+		List<AbstractAttributeInterface> attributeList = new ArrayList<AbstractAttributeInterface>();
 		for (AbstractAttributeInterface attribute : attributes)
 		{
 			if (!attribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
 			{
-				attribtes.add(attribute);
+				attributeList.add(attribute);
 			}
 		}
 
-		return attribtes;
+		return attributeList;
 	}
 
 	/**

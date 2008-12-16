@@ -101,10 +101,10 @@ public class ImportPermissibleValues
 					//Bug #10432,10382
 					//If this attribute id is of type association (as in case of multiselect) 
 					//It is required to fetch association's target entity's attribute id 
-					Long assonAttriId = entityManager.getAssociationAttributeId(attributeId);
-					if (assonAttriId != null)
+					Long associationAttributeId = entityManager.getAssociationAttributeId(attributeId);
+					if (associationAttributeId != null)
 					{
-						attributeId = assonAttriId;
+						attributeId = associationAttributeId;
 					}
 
 					CategoryValidator.checkForNullRefernce(attributeId, " ERROR AT LINE:"

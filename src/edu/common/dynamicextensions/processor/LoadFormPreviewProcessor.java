@@ -31,7 +31,7 @@ public class LoadFormPreviewProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * This method populates the data from the PrewiewForm action
+	 * This method populates the data from the PreviewForm action
 	 * @param containerInterface The Container Interface
 	 * @param previewForm The PreviewForm action form 
 	 * @throws DynamicExtensionsApplicationException : if Conatainer does not exists.

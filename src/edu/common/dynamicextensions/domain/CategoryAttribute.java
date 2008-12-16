@@ -273,7 +273,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 
 	/**
 	 * This method return the default value for the category attribute if set otherwise
-	 * return the default value for the original atttribute
+	 * return the default value for the original attribute
 	 * @return
 	 */
 	public String getDefaultValue()

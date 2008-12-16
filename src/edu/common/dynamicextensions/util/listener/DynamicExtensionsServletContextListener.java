@@ -56,7 +56,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		}
 
 		/**
-		 * setting system property catissue.home which can be ustilized 
+		 * setting system property catissue.home which can be utilized 
 		 * by the Logger for creating log file
 		 */
 		System.setProperty("dynamicExtensions.home", Variables.dynamicExtensionsHome + "/Logs");

@@ -232,7 +232,7 @@ public class XMIImportProcessor
 			//			markInheritedAttributes(entityGroup);
 		}
 
-		//Retriving all containers corresponding to the given entity group.
+		//Retrieving  all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
 		{
 			//retrievedContainerList populated by containerCollection of each entity
@@ -1391,7 +1391,7 @@ public class XMIImportProcessor
 
 	/**
 	 * @param sourceEntity Entity to which a association is to be attached
-	 * @return A assocition attached to given entity.
+	 * @return A association attached to given entity.
 	 */
 	private AssociationInterface getAssociation(EntityInterface sourceEntity, String associationName)
 	{

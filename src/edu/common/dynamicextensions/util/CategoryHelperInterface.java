@@ -226,7 +226,7 @@ public interface CategoryHelperInterface
 	 * @param numberOfentries
 	 * @param entityGroup
 	 * @param associationList
-	 * @param insatnce
+	 * @param instance
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException

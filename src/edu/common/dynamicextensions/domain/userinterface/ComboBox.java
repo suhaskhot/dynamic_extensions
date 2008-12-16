@@ -37,7 +37,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	}
 
 	/**
-	 * This method generates the HTML code for ComboxBox control on the HTML form
+	 * This method generates the HTML code for ComboBox control on the HTML form
 	 * @return HTML code for ComboBox
 	 * @throws DynamicExtensionsSystemException if HTMLComponentName() fails.
 	 */

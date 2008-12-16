@@ -21,7 +21,7 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 
 	/**
 	 * This method returns the length if the attribute is of type
-	 * string otheriwse returns -1.
+	 * string otherwise returns -1.
 	 * @return
 	 */
 	int getMaxSize();

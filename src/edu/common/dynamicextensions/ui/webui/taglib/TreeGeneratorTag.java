@@ -102,7 +102,7 @@ public class TreeGeneratorTag extends TagSupport
 			}
 			else
 			{
-				jspWriter.print("Tree Data obect null Please check");
+				jspWriter.print("Tree Data object null Please check");
 			}
 		}
 		catch (IOException e)

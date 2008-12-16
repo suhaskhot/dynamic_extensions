@@ -127,7 +127,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it.
+	 * This method gets the Callback URL from cache, reforms it and redirect the response to it.
 	 * @param request HttpServletRequest to obtain session
 	 * @param response HttpServletResponse to redirect the CallbackURL
 	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL

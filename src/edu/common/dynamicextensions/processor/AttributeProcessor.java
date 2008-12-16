@@ -940,7 +940,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param attributeUIBeanInformationIntf : attribute UI Information
 	 * @param permissibleValue : Permissible values
-	 * @return PermissibleValueInterface for numberic field
+	 * @return PermissibleValueInterface for numeric field
 	 * @throws DynamicExtensionsApplicationException :Exception
 	 */
 	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(
@@ -951,7 +951,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 
 		PermissibleValueInterface permissibleValueIntf = null;
-		//If it is numberic it can either be float, simple integer, etc based on number of decimals
+		//If it is numeric it can either be float, simple integer, etc based on number of decimals
 		int noOfDecimalPlaces = 0;
 		//Number of decimal places
 		String strNoOfDecimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();

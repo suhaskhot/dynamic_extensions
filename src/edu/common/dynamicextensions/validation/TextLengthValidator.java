@@ -34,7 +34,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		String attributeName = attribute.getName();
 
 		//If control of type TextField is changed to the 
-		//ListBox while creating catgory. These validations should be 
+		//ListBox while creating category. These validations should be 
 		//skipped in that case. 
 		if (valueObject instanceof List)
 		{

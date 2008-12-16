@@ -208,7 +208,7 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	void setIncontextContainer(ContainerInterface incontextContainer);
 
 	/**
-	 * This method is used to decide whtere caption is to be added to the table or not
+	 * This method is used to decide where caption is to be added to the table or not
 	 * @return
 	 */
 	Boolean getAddCaption();

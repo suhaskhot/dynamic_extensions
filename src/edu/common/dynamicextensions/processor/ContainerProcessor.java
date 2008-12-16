@@ -251,7 +251,7 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	public ContainerInterface saveContainer(ContainerInterface containerInterface)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		//metadata createion needs to run incase of entity only
+		//metadata creation needs to run incase of entity only
 		EntityGroupInterface entityGroup = ((EntityInterface) containerInterface
 				.getAbstractEntity()).getEntityGroup();
 		entityGroup.addMainContainer(containerInterface);

@@ -17,7 +17,7 @@ import java.util.List;
  *<BR> Duplicate name for the entity is found. 
  *<BR> Backend Validation is failed <BR>
  * When these exceptions are caught , they are supposed to be processed so that user is shown
- * approprite error message which is extracted from the exception. In such exception cases user 
+ * appropriate error message which is extracted from the exception. In such exception cases user 
  * should not be shown error page.
  *</p>
  *@author Vishvesh Mulay

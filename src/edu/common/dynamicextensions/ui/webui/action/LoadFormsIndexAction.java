@@ -17,7 +17,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 
 /**
  * A call to LoadFormsIndexProcessor will get all the existing forms' list.
- * This action class populates the action form with the reaquired data.And forwards action to 
+ * This action class populates the action form with the required data.And forwards action to 
  * DynamicExtensionsHomepgae.jsp.  
  * @author chetan_patil
  */

@@ -35,9 +35,9 @@ public final class ControlConfigurationsFactory
 
 	/**
 	 * private constructor for ControlConfigurationsFactory.
-	 * This will initialise maps for controls and their appropriate rules.
-	 * The call to pareseXML will parse two configuration files in order to 
-	 * fill the data in thier objects.
+	 * This will initialize maps for controls and their appropriate rules.
+	 * The call to parseXML will parse two configuration files in order to 
+	 * fill the data in their objects.
 	 * @throws DynamicExtensionsSystemException  dynamicExtensionsSystemException
 	 */
 	private ControlConfigurationsFactory() throws DynamicExtensionsSystemException
@@ -115,7 +115,7 @@ public final class ControlConfigurationsFactory
 	}
 
 	/**
-	 * This method wil parese the ruleConfiguraions xml file and wil populate the ruleConfigurationObject.
+	 * This method wil parse the ruleConfigurations xml file and wil populate the ruleConfigurationObject.
 	 * @param document to be pared
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 */
@@ -229,7 +229,7 @@ public final class ControlConfigurationsFactory
 	}
 
 	/**
-	 * This method wil parese the ControlConfigurations xml file and will populate the controlsConfigurationObject
+	 * This method wil parse the ControlConfigurations xml file and will populate the controlsConfigurationObject
 	 * @param document to be parsed.
 	 */
 	private void loadControlConfigurations(Document document)
@@ -508,7 +508,7 @@ public final class ControlConfigurationsFactory
 	}
 
 	/**
-	 * This method converts the the passed list into namevalue beans objects list in order to hepl in rendering Ui.
+	 * This method converts the the passed list into namevalue beans objects list in order to help in rendering Ui.
 	 * @param dataTypesList list Of all dataTypes
 	 * @return List NameValueBeansList
 	 */

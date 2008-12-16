@@ -45,7 +45,7 @@ public class BinaryBlobType implements CompositeUserType
 {
 
 	/**
-	 * Default bufer size in order to copy InputStream to byte[]
+	 * Default buffer size in order to copy InputStream to byte[]
 	 */
 	protected static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
 

@@ -95,7 +95,7 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject
 	/**
 	 * This method returns the Attribute associated with this collectionRecord.
 	 * @hibernate.many-to-one column="ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.Attribute" constrained="true"
-	 * @return AttributeInterface the Attribut associated with the collectionRecord.
+	 * @return AttributeInterface the Attribute associated with the collectionRecord.
 	 */
 	public AttributeInterface getAttribute()
 	{
@@ -113,7 +113,7 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject
 	/**
 	 * This method returns the record associated with this collectionRecord.
 	 * @hibernate.property column="RECORD_ID" class="long" constrained="true"
-	 * @return AttributeInterface the Attribut associated with the collectionRecord.
+	 * @return AttributeInterface the Attribute associated with the collectionRecord.
 	 */
 	public Long getRecordId()
 	{

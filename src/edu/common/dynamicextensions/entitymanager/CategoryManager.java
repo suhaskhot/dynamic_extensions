@@ -126,15 +126,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 	/**
 	 * Method to persist category meta-data.
-	 * @param categry interface for Category
+	 * @param category interface for Category
 	 * @throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	 */
-	public CategoryInterface persistCategoryMetadata(CategoryInterface categry)
+	public CategoryInterface persistCategoryMetadata(CategoryInterface category)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		CategoryInterface category = (CategoryInterface) persistDynamicExtensionObjectMetdata(categry);
+		CategoryInterface savedCategory = (CategoryInterface) persistDynamicExtensionObjectMetdata(category);
 
-		return category;
+		return savedCategory;
 	}
 
 	/* (non-Javadoc)
@@ -195,17 +195,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		}
 
 		// Use HashMap instead of List to ensure entity list contains unique entity only.
-		List<CategoryEntityInterface> svedCatEntities = new ArrayList<CategoryEntityInterface>();
+		List<CategoryEntityInterface> savedCatEntities = new ArrayList<CategoryEntityInterface>();
 		catEntObjects = new HashMap<String, CategoryEntityInterface>();
 		DynamicExtensionsUtility.getSavedCategoryEntityList(category.getRootCategoryElement(),
 				catEntObjects);
 		keySetIter = catEntObjects.keySet().iterator();
 		while (keySetIter.hasNext())
 		{
-			svedCatEntities.add(catEntObjects.get(keySetIter.next()));
+			savedCatEntities.add(catEntObjects.get(keySetIter.next()));
 		}
 
-		for (CategoryEntityInterface categoryEntity : svedCatEntities)
+		for (CategoryEntityInterface categoryEntity : savedCatEntities)
 		{
 			CategoryEntity dbaseCopy = (CategoryEntity) DBUtil.loadCleanObj(CategoryEntity.class,
 					categoryEntity.getId());

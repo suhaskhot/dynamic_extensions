@@ -20,7 +20,7 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 {
 
 	/**
-	 * This mathod will forward the request to LoadFormDefinitionAction.java.
+	 * This method will forward the request to LoadFormDefinitionAction.java.
 	 * 
 	 * @param mapping ActionMapping mapping
 	 * @param form ActionForm form

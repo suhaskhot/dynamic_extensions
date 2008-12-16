@@ -23,7 +23,7 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	void setIsIdentified(Boolean isIdentified);
 
 	/**
-	 * This method retunrs whehter the Attribute is a primary key or not.
+	 * This method returns whehter the Attribute is a primary key or not.
 	 * @return whehter the Attribute is a primary key or not.
 	 */
 	Boolean getIsPrimaryKey();
@@ -35,7 +35,7 @@ public interface AttributeInterface extends AbstractAttributeInterface
 	void setIsPrimaryKey(Boolean isPrimaryKey);
 
 	/**
-	 * This method retunrs whehter the Attribute is a nullable or not.
+	 * This method returns whehter the Attribute is a nullable or not.
 	 * @return whehter the Attribute is a nullable or not.
 	 */
 	Boolean getIsNullable();
@@ -71,7 +71,7 @@ public interface AttributeInterface extends AbstractAttributeInterface
 
 	/**
 	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.
-	 * @return Strin attribute type
+	 * @return String attribute type
 	 */
 	String getDataType();
 

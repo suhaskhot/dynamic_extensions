@@ -61,7 +61,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	protected EntityInterface parentEntity = null;
 
 	/**
-	 * indicates if this enitity is abstract or not.
+	 * indicates if this entity is abstract or not.
 	 */
 	protected boolean isAbstract = false;
 

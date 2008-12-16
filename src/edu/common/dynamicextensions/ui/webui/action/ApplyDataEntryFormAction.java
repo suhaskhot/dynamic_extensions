@@ -161,7 +161,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method gets the Callback URL from cahce, reforms it and redirect the response to it.
+	 * This method gets the Callback URL from cache, reforms it and redirect the response to it.
 	 * @param request HttpServletRequest to obtain session
 	 * @param response HttpServletResponse to redirect the CallbackURL
 	 * @param recordIdentifier Identifier of the record to reconstruct the CallbackURL
@@ -173,22 +173,22 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws IOException
 	{
 		boolean isCallbackURL = false;
-		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+		String callbackURL = (String) CacheManager.getObjectFromCache(request,
 				Constants.CALLBACK_URL);
-		if (calllbackURL != null && !calllbackURL.equals(""))
+		if (callbackURL != null && !callbackURL.equals(""))
 		{
-			calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
+			callbackURL = callbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
 					+ "=" + recordIdentifier + "&" + WebUIManager.getOperationStatusParameterName()
 					+ "=" + webUIManagerConstant + "&containerId=" + containerId;
 			CacheManager.clearCache(request);
-			response.sendRedirect(calllbackURL);
+			response.sendRedirect(callbackURL);
 			isCallbackURL = true;
 		}
 		return isCallbackURL;
 	}
 
 	/**
-	 * This method gets the ActionForwad on the Exception.
+	 * This method gets the ActionForward on the Exception.
 	 * @param exception Exception instance
 	 * @param mapping ActionMapping to get ActionForward
 	 * @param request HttpServletRequest to save error messages in.

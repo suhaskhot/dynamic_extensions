@@ -90,13 +90,13 @@ public interface EntityInterface extends AbstractEntityInterface
 	Collection<AssociationInterface> getAllAssociations();
 
 	/**
-	 * This method returns attributs for all the hierarchy.
+	 * This method returns attributes for all the hierarchy.
 	 * @return  Collection of AttributeInterface
 	 */
 	Collection<AttributeInterface> getAllAttributes();
 
 	/**
-	 * This method returns attributs ONLY for the entity. It does not traverse the heirarchy
+	 * This method returns attributes ONLY for the entity. It does not traverse the heirarchy
 	 * @return  Collection of AttributeInterface
 	 */
 	Collection<AttributeInterface> getEntityAttributes();

@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.processor;
 
 /**
  * This processor class mainly helps the action class to call the related Object driven processors 
- * to update the Actionforms by retriving data form Cache.
+ * to update the Actionforms by Retrieving  data form Cache.
  * @author deepti_shelar
  * @author chetan_patil
  * @version 2.0
@@ -85,7 +85,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * This method returns the populated Container instance form the database having corresponding Container identifier.
-	 * @param containerIdentifier the Identifier of the Conatiner to be fetched from database.
+	 * @param containerIdentifier the Identifier of the Container to be fetched from database.
 	 * @throws DynamicExtensionsApplicationException if Application level exception occurs.
 	 * @throws DynamicExtensionsSystemException if System level or run-time exception occurs.
 	 * @return the populated Container instance.

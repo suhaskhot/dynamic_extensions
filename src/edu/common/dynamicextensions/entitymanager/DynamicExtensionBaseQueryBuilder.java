@@ -1205,8 +1205,8 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	protected String getDataTypeForIdentifier() throws DynamicExtensionsSystemException
 	{
-		DataTypeFactory dataTypFactry = DataTypeFactory.getInstance();
-		return dataTypFactry.getDatabaseDataType("Integer");
+		DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
+		return dataTypeFactory.getDatabaseDataType("Integer");
 	}
 
 	/**
@@ -1216,8 +1216,8 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	protected String getDataTypeForStatus() throws DynamicExtensionsSystemException
 	{
-		DataTypeFactory dataTypFactry = DataTypeFactory.getInstance();
-		return dataTypFactry.getDatabaseDataType("String");
+		DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
+		return dataTypeFactory.getDatabaseDataType("String");
 	}
 
 	/**
@@ -1304,17 +1304,17 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		try
 		{
-			DataTypeFactory dataTypFactry = DataTypeFactory.getInstance();
+			DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
 
 			AttributeTypeInformationInterface attrTypeInfo = attribute
 					.getAttributeTypeInformation();
 			if (attrTypeInfo instanceof StringAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("String");
+				return dataTypeFactory.getDatabaseDataType("String");
 			}
 			else if (attrTypeInfo instanceof IntegerAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Integer");
+				return dataTypeFactory.getDatabaseDataType("Integer");
 			}
 			else if (attrTypeInfo instanceof DateAttributeTypeInformation)
 			{
@@ -1323,40 +1323,40 @@ class DynamicExtensionBaseQueryBuilder
 				String format = dateAttrTypInfo.getFormat();
 				if (format != null && format.equalsIgnoreCase(ProcessorConstants.DATE_TIME_FORMAT))
 				{
-					return dataTypFactry.getDatabaseDataType("DateTime");
+					return dataTypeFactory.getDatabaseDataType("DateTime");
 				}
 				else
 				{
-					return dataTypFactry.getDatabaseDataType("Date");
+					return dataTypeFactory.getDatabaseDataType("Date");
 				}
 			}
 			else if (attrTypeInfo instanceof FloatAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Float");
+				return dataTypeFactory.getDatabaseDataType("Float");
 			}
 			else if (attrTypeInfo instanceof BooleanAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Boolean");
+				return dataTypeFactory.getDatabaseDataType("Boolean");
 			}
 			else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Double");
+				return dataTypeFactory.getDatabaseDataType("Double");
 			}
 			else if (attrTypeInfo instanceof LongAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Long");
+				return dataTypeFactory.getDatabaseDataType("Long");
 			}
 			else if (attrTypeInfo instanceof ShortAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Short");
+				return dataTypeFactory.getDatabaseDataType("Short");
 			}
 			if (attrTypeInfo instanceof FileAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("File");
+				return dataTypeFactory.getDatabaseDataType("File");
 			}
 			else if (attrTypeInfo instanceof ObjectAttributeTypeInformation)
 			{
-				return dataTypFactry.getDatabaseDataType("Object");
+				return dataTypeFactory.getDatabaseDataType("Object");
 			}
 		}
 		catch (DataTypeFactoryInitializationException e)
@@ -1468,7 +1468,7 @@ class DynamicExtensionBaseQueryBuilder
 		Cardinality srcMaxCard = sourceRole.getMaximumCardinality();
 		Cardinality tgtMaxCard = targetRole.getMaximumCardinality();
 
-		ConstraintPropertiesInterface cnstrnPrprties = association.getConstraintProperties();
+		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
 		String tableName = "";
 
 		String dataType = getDataTypeForIdentifier();
@@ -1476,13 +1476,13 @@ class DynamicExtensionBaseQueryBuilder
 		if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 		{
 			// For many to many, a middle table is created.
-			tableName = cnstrnPrprties.getName();
+			tableName = constraintProperties.getName();
 
 			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET
 					+ WHITESPACE + IDENTIFIER + WHITESPACE + dataType + WHITESPACE + NOT_KEYWORD
 					+ WHITESPACE + NULL_KEYWORD + COMMA);
-			query.append(cnstrnPrprties.getSourceEntityKey() + WHITESPACE + dataType + COMMA);
-			query.append(cnstrnPrprties.getTargetEntityKey() + WHITESPACE + dataType + COMMA
+			query.append(constraintProperties.getSourceEntityKey() + WHITESPACE + dataType + COMMA);
+			query.append(constraintProperties.getTargetEntityKey() + WHITESPACE + dataType + COMMA
 					+ WHITESPACE);
 			query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + CLOSING_BRACKET);
 			String rollbackQuery = DROP_KEYWORD + WHITESPACE + TABLE_KEYWORD + WHITESPACE
@@ -1502,7 +1502,7 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			// For many to one, a column is added into source entity table.
 			tableName = srcEntity.getTableProperties().getName();
-			String columnName = cnstrnPrprties.getSourceEntityKey();
+			String columnName = constraintProperties.getSourceEntityKey();
 			query.append(getAddAttributeQuery(tableName, columnName, dataType, revQueries,
 					isAddAssoQuery));
 		}
@@ -1510,7 +1510,7 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			// For one to one and one to many, a column is added into target entity table.
 			tableName = tgtEntity.getTableProperties().getName();
-			String columnName = cnstrnPrprties.getTargetEntityKey();
+			String columnName = constraintProperties.getTargetEntityKey();
 			query.append(getAddAttributeQuery(tableName, columnName, dataType, revQueries,
 					isAddAssoQuery));
 		}
@@ -1616,9 +1616,9 @@ class DynamicExtensionBaseQueryBuilder
 				else
 				{
 					// Check for other modification in the attributes such a unique constraint change.
-					List<String> mdfdAttrQueries = processModifyAttribute(attribute,
+					List<String> modifiedAttrQueries = processModifyAttribute(attribute,
 							savedAttribute, attrRlbkQries);
-					attrQueries.addAll(mdfdAttrQueries);
+					attrQueries.addAll(modifiedAttrQueries);
 				}
 			}
 		}
@@ -2407,21 +2407,21 @@ class DynamicExtensionBaseQueryBuilder
 		mdfyAttrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
 				+ WHITESPACE + mdfyAttrRlbkQry;
 
-		String nullQryKewrd = "";
-		String nullQryRlbkKewrd = "";
+		String nullQueryKeyword = "";
+		String nullQueryRlbkKeyword = "";
 		List<String> mdfyAttrQries = new ArrayList<String>();
 		mdfyAttrQries.add(ALTER_TABLE + tableName + DROP_KEYWORD + COLUMN_KEYWORD
 				+ savedAttr.getColumnProperties().getName());
 
 		if (attribute.getIsNullable() && !savedAttr.getIsNullable())
 		{
-			nullQryKewrd = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQryRlbkKewrd = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryRlbkKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
 		}
 		else if (!attribute.getIsNullable() && savedAttr.getIsNullable())
 		{
-			nullQryKewrd = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQryRlbkKewrd = WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryRlbkKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
 
 		}
 
@@ -2435,8 +2435,8 @@ class DynamicExtensionBaseQueryBuilder
 					+ dropExtraColumnQueryStringForFileAttribute(attribute);
 		}
 
-		mdfyAttrQuery = mdfyAttrQuery + nullQryKewrd;
-		mdfyAttrRlbkQry = mdfyAttrRlbkQry + nullQryRlbkKewrd;
+		mdfyAttrQuery = mdfyAttrQuery + nullQueryKeyword;
+		mdfyAttrRlbkQry = mdfyAttrRlbkQry + nullQueryRlbkKeyword;
 		mdfyAttrRlbkQries.add(mdfyAttrRlbkQry);
 
 		mdfyAttrQuery += CLOSING_BRACKET;
@@ -2665,7 +2665,7 @@ class DynamicExtensionBaseQueryBuilder
 		catch (HibernateException e1)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Unable to exectute the queries .....Cannot access connection from sesesion",
+					"Unable to exectute the queries .....Cannot access connection from session",
 					e1, DYEXTN_S_002);
 		}
 		try

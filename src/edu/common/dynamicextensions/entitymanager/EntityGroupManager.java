@@ -191,7 +191,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 		}
 
 		Logger.out
-				.error("***Fatal Error.. Incosistent data table and metadata information for the entity -"
+				.error("***Fatal Error.. Inconsistent data table and metadata information for the entity -"
 						+ name + "***");
 		Logger.out.error("The cause of the exception is - " + exception.getMessage());
 		Logger.out.error("The detailed log is : ");
@@ -424,8 +424,8 @@ public class EntityGroupManager extends AbstractMetadataManager
 				List count = (List) result.get(0);
 				if (count != null && !count.isEmpty())
 				{
-					int noOfOccurnces = new Integer((String) count.get(0)).intValue();
-					if (noOfOccurnces > 0)
+					int noOfOccurances = new Integer((String) count.get(0)).intValue();
+					if (noOfOccurances > 0)
 					{
 						throw new DynamicExtensionsApplicationException(
 								"Duplicate Entity Group name", null, DYEXTN_A_015);

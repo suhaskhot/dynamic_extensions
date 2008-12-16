@@ -38,8 +38,8 @@ public interface RuleInterface extends DynamicExtensionBaseDomainObjectInterface
 	Collection<RuleParameterInterface> getRuleParameterCollection();
 
 	/**
-	 * This method sets ruleParameterCollection to the Collection of RuleParmeters.
-	 * @param ruleParameterCollection the the Collection of RuleParmeters to be set.
+	 * This method sets ruleParameterCollection to the Collection of RuleParameters.
+	 * @param ruleParameterCollection the the Collection of RuleParameters to be set.
 	 */
 	void setRuleParameterCollection(Collection<RuleParameterInterface> ruleParameterCollection);
 

@@ -496,7 +496,7 @@ public class CategoryGenerator
 		//    class B:B1
 		//    DL: root
 		//    subcategory:XXX
-		//  So here both attributs will be shown under same display label XXX ,so we need to change
+		//  So here both attributes will be shown under same display label XXX ,so we need to change
 		//category association B's sequence number such that its after class A on UI
 		//
 		List<ControlInterface> listControl = containerObject.getAllControls();
@@ -1015,7 +1015,7 @@ public class CategoryGenerator
 	}
 
 	/**
-	 * This method popoulate the main form list for the given entity group
+	 * This method populate the main form list for the given entity group
 	 * @param entityGroup
 	 */
 	private void populateMainFormList(EntityGroupInterface entityGroup)

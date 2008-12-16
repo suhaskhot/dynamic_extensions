@@ -124,7 +124,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
-	 * @param containerIdentifier The Idetifier of the Container.
+	 * @param containerIdentifier The Identifier of the Container.
 	 * @return the ContainerInterface
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
@@ -140,7 +140,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
-	 * @param containerIdentifier The Idetifier of the Container.
+	 * @param containerIdentifier The Identifier of the Container.
 	 * @return the ContainerInterface
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
@@ -272,7 +272,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 *
-	 * @param controlCollectio
+	 * @param controlCollection
 	 * @param sequenceNumber
 	 * @return
 	 */
@@ -1570,7 +1570,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method used to replace escape characters such as singel and double quote
+	 * This method used to replace escape characters such as single and double quote
 	 * @param str
 	 * @param one
 	 * @param another

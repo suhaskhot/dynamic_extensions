@@ -58,7 +58,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		cacheCallBackURL(request);
 
-		ContainerInterface containerInterface = getConatinerInterface(request);
+		ContainerInterface containerInterface = getContainerInterface(request);
 
 		String recordId = request.getParameter("recordIdentifier");
 		if (recordId != null && !recordId.equals(""))
@@ -171,7 +171,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private ContainerInterface getConatinerInterface(HttpServletRequest request)
+	private ContainerInterface getContainerInterface(HttpServletRequest request)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager

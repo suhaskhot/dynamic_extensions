@@ -51,7 +51,7 @@ public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 		List<EntityRecord> entityRecordList = null;
 
 		//Quick fix:
-		//Method getall records should be invoked with commom managers instance
+		//Method getall records should be invoked with common managers instance
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		if (container != null)
 		{

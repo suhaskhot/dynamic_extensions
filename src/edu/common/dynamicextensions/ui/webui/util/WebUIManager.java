@@ -131,14 +131,18 @@ public class WebUIManager implements WebUIManagerConstants
 		return currentContainer;
 	}
 
+	/**
+	 * @param container
+	 * @return
+	 */
 	public static Integer getSequenceNumberForNextControl(ContainerInterface container)
 	{
 		Integer nextSequenceNumber = null;
 		Collection<ControlInterface> controlCollection = container.getControlCollection();
 		if (controlCollection != null)
 		{
-			int noOfElts = controlCollection.size();
-			nextSequenceNumber = Integer.valueOf(noOfElts + 1);
+			int noOfControls = controlCollection.size();
+			nextSequenceNumber = Integer.valueOf(noOfControls + 1);
 		}
 		return nextSequenceNumber;
 	}

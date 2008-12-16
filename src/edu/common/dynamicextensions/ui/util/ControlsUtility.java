@@ -279,7 +279,7 @@ public class ControlsUtility
 		 * will throw a class cast exception
 		 * In this case use DATE_ONLY_FORMAT as a date format
 		 * Fixed by: Rajesh
-		 * Revied by : Sujay
+		 * Reviewed by : Sujay
 		 */
 		if (dateAttribute instanceof DateTypeInformationInterface)
 			dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();

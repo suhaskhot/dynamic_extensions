@@ -45,7 +45,7 @@ public class ToolBoxTag extends TagSupport
 	protected List toolsList = null;
 
 	/**
-	 * JavaScript Function Name which has to be called whenwver
+	 * JavaScript Function Name which has to be called whenever
 	 * user clicks on any selection item.
 	 */
 	protected String onClick = null;

@@ -72,24 +72,24 @@ public class DEIntegration implements IntegrationInterface
 		String columnName = "";
 		String catTableName = "";//EntityManager.getInstance().getDynamicTableName(
 		//  categoryContainerId);
-		Long enitityContainerId = null;
+		Long entityContainerId = null;
 
 		if (categoryEntityMap.containsKey(categoryContainerId.toString()))
 		{
-			enitityContainerId = (Long) categoryEntityMap.get(categoryContainerId.toString());
+			entityContainerId = (Long) categoryEntityMap.get(categoryContainerId.toString());
 		}
 
 		else
 		{
-			enitityContainerId = EntityManager.getInstance().getCategoryRootContainerId(
+			entityContainerId = EntityManager.getInstance().getCategoryRootContainerId(
 					categoryContainerId);
-			categoryEntityMap.put(categoryContainerId.toString(), enitityContainerId);
+			categoryEntityMap.put(categoryContainerId.toString(), entityContainerId);
 		}
 
-		if (entityMap.containsKey(enitityContainerId.toString()))
+		if (entityMap.containsKey(entityContainerId.toString()))
 		{
-			entityTableName = (String) entityMap.get(enitityContainerId.toString());
-			columnName = (String) entityMap.get(hookEntityId + "_" + enitityContainerId);
+			entityTableName = (String) entityMap.get(entityContainerId.toString());
+			columnName = (String) entityMap.get(hookEntityId + "_" + entityContainerId);
 			/*
 			 * Checked for categoryContainerId in the entityMap if present then get the Category Table Name from the Map
 			 * else get it from DB.
@@ -108,13 +108,13 @@ public class DEIntegration implements IntegrationInterface
 		else
 		//if(entityTableName==null)
 		{
-			entityTableName = EntityManager.getInstance().getDynamicTableName(enitityContainerId);
+			entityTableName = EntityManager.getInstance().getDynamicTableName(entityContainerId);
 			columnName = EntityManager.getInstance().getColumnNameForAssociation(hookEntityId,
-					enitityContainerId);
+					entityContainerId);
 			catTableName = EntityManager.getInstance().getDynamicTableName(categoryContainerId);
 
-			entityMap.put(enitityContainerId.toString(), entityTableName);
-			entityMap.put(hookEntityId + "_" + enitityContainerId, columnName);
+			entityMap.put(entityContainerId.toString(), entityTableName);
+			entityMap.put(hookEntityId + "_" + entityContainerId, columnName);
 			entityMap.put(categoryContainerId.toString(), catTableName);
 
 		}

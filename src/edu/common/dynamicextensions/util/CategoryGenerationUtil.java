@@ -154,7 +154,7 @@ public class CategoryGenerationUtil
 		}
 		//If category is edited and no attributes from the main form of the model are not selected
 		//rootContainer will be null
-		//keep the root container unchanged in this case. Just use the root entity of the catgeory
+		//keep the root container unchanged in this case. Just use the root entity of the category
 		if (rootContainer == null)
 		{
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
@@ -167,7 +167,7 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * Retunrs the container having container caption as one passed to this method.
+	 * Returns the container having container caption as one passed to this method.
 	 * @param containerCollection
 	 * @param containerCaption
 	 * @return
@@ -386,11 +386,11 @@ public class CategoryGenerationUtil
 
 	/**
 	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param catgeoryNameInCSV
+	 * @param categoryNameInCSV
 	 * @return
 	 */
-	public static String getEntityName(String catgeoryNameInCSV)
+	public static String getEntityName(String categoryNameInCSV)
 	{
-		return catgeoryNameInCSV.substring(0, catgeoryNameInCSV.indexOf("["));
+		return categoryNameInCSV.substring(0, categoryNameInCSV.indexOf("["));
 	}
 }

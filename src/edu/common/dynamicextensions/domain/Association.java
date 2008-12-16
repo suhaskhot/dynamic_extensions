@@ -24,7 +24,10 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationType;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public class Association extends AbstractAttribute implements AssociationInterface,AssociationMetadataInterface
+public class Association extends AbstractAttribute
+		implements
+			AssociationInterface,
+			AssociationMetadataInterface
 {
 
 	/**
@@ -72,6 +75,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	public Association()
 	{
 	}
+
 	/**
 	 * This method returns whether the Attribute is a Collection or not.
 	 * @hibernate.property name="isCollection" type="boolean" column="IS_COLLECTION"
@@ -90,6 +94,7 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	{
 		this.isCollection = isCollection;
 	}
+
 	/**
 	 * This method returns the direction of the Association.
 	 * @hibernate.property name="direction" type="string" column="DIRECTION"
@@ -229,7 +234,8 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 		this.constraintPropertiesCollection.add(constraintProperties);
 	}
 
-	/**
+	
+	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#getAssociationDirection()
 	 */
 	public AssociationDirection getAssociationDirection()
@@ -237,8 +243,8 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 		return AssociationDirection.get(getDirection());
 	}
 
-	/**
-	 * @throws DynamicExtensionsApplicationException
+	
+	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.Constants.AssociationDirection)
 	 */
 	public void setAssociationDirection(AssociationDirection direction)
@@ -264,121 +270,125 @@ public class Association extends AbstractAttribute implements AssociationInterfa
 	{
 		this.isSystemGenerated = isSystemGenerated;
 	}
-    /**This method is used for following purposes.
-     * 1. The method creates a system generated association in case when the association is bidirectional.
-     * Bi directional association is supposed to be a part of the target entity's attributes.
-     * So we create a replica of the original association (which we call as system generated association)
-     * and this association is added to the target entity's attribute collection.
-     * 2. The method also removes the system generated association from the target entity
-     * when the association direction of the assciation is changed from "bi-directional" to "SRC-Destination".
-     * In this case we no longer need the system generated association.
-     * So if the sys. generated association is present , it is removed.
-     * @param association
-     */
-    private void populateSystemGeneratedAssociation(Association association)
-    {
-        //Getting the sys.generated association for the given original association.
-        if (association.getIsSystemGenerated())
-        {
-            return;
-        }
-        else
-        {
-            Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
-            if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
-            {
-                ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
-                if (systemGeneratedAssociation == null)
-                {
-                    systemGeneratedAssociation = new Association();
-                }
-                else
-                {
-                    constraintPropertiesSysGen = systemGeneratedAssociation
-                            .getConstraintProperties();
-                }
-                constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
-                //Swapping the source and target keys.
-                constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
-                        .getTargetEntityKey());
-                constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
-                        .getSourceEntityKey());
-                //Populating the sys. generated association.
-                //systemGeneratedAssociation.setName(association.getName());
 
-                //For XMI import, we can get self referencing bi directional associations. Hence creating unique name for the sys generated association.
-                systemGeneratedAssociation.setName(association.getName()
-                        + association.getEntity().getId());
+	/**This method is used for following purposes.
+	 * 1. The method creates a system generated association in case when the association is bidirectional.
+	 * Bi directional association is supposed to be a part of the target entity's attributes.
+	 * So we create a replica of the original association (which we call as system generated association)
+	 * and this association is added to the target entity's attribute collection.
+	 * 2. The method also removes the system generated association from the target entity
+	 * when the association direction of the assciation is changed from "bi-directional" to "SRC-Destination".
+	 * In this case we no longer need the system generated association.
+	 * So if the sys. generated association is present , it is removed.
+	 * @param association
+	 */
+	private void populateSystemGeneratedAssociation(Association association)
+	{
+		//Getting the sys.generated association for the given original association.
+		if (association.getIsSystemGenerated())
+		{
+			return;
+		}
+		else
+		{
+			Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
+			if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
+			{
+				ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
+				if (systemGeneratedAssociation == null)
+				{
+					systemGeneratedAssociation = new Association();
+				}
+				else
+				{
+					constraintPropertiesSysGen = systemGeneratedAssociation
+							.getConstraintProperties();
+				}
+				constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
+				//Swapping the source and target keys.
+				constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
+						.getTargetEntityKey());
+				constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
+						.getSourceEntityKey());
+				//Populating the sys. generated association.
+				//systemGeneratedAssociation.setName(association.getName());
 
-                systemGeneratedAssociation.setDescription(association.getDescription());
-                systemGeneratedAssociation.setTargetEntity(association.getEntity());
-                systemGeneratedAssociation.setEntity(association.getTargetEntity());
-                //Swapping the source and target roles.
-                systemGeneratedAssociation.setSourceRole(association.getTargetRole());
-                systemGeneratedAssociation.setTargetRole(association.getSourceRole());
-                systemGeneratedAssociation.setIsSystemGenerated(true);
-                systemGeneratedAssociation
-                        .setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+				//For XMI import, we can get self referencing bi directional associations. Hence creating unique name for the sys generated association.
+				systemGeneratedAssociation.setName(association.getName()
+						+ association.getEntity().getId());
 
-                systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
+				systemGeneratedAssociation.setDescription(association.getDescription());
+				systemGeneratedAssociation.setTargetEntity(association.getEntity());
+				systemGeneratedAssociation.setEntity(association.getTargetEntity());
+				//Swapping the source and target roles.
+				systemGeneratedAssociation.setSourceRole(association.getTargetRole());
+				systemGeneratedAssociation.setTargetRole(association.getSourceRole());
+				systemGeneratedAssociation.setIsSystemGenerated(true);
+				systemGeneratedAssociation
+						.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 
-                for (TaggedValueInterface taggedValue : association.getTaggedValueCollection())
-                {
-                    systemGeneratedAssociation.addTaggedValue(((TaggedValue) taggedValue).clone());
-                }
+				systemGeneratedAssociation.setConstraintProperties(constraintPropertiesSysGen);
 
-                //Adding the sys.generated association to the target entity.
-                association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
-            }
-            else
-            {
-                //Removing the not required sys. generated association because the direction has been changed
-                //from "bi directional" to "src-destination".
-                if (systemGeneratedAssociation != null)
-                {
-                    association.getTargetEntity().removeAbstractAttribute(
-                            systemGeneratedAssociation);
-                }
-            }
-        }
-    }
-    /**This method is used to get the system generated association given the original association.
-     * System generated association is searched based on the following criteria
-     * 1. The flag "isSystemGenerated" should be set.
-     * 2. The source and target roles are swapped. So original association's source role should be the target role
-     * of the sys.generated association and vice versa.
-     * @param association
-     * @return
-     */
-    private Association getSystemGeneratedAssociation(Association association)
-    {
-    	boolean found = false;
-    	Association associationInterface = null;
-        EntityInterface targetEnetity = association.getTargetEntity();
-        Collection associationCollection = targetEnetity.getAssociationCollection();
-        if (associationCollection != null && !associationCollection.isEmpty())
-        {
-            Iterator associationIterator = associationCollection.iterator();
-            while (associationIterator.hasNext())
-            {
-                associationInterface = (Association) associationIterator.next();
-                if (associationInterface.getIsSystemGenerated()
-                        && associationInterface.getSourceRole().equals(association.getTargetRole())
-                        && associationInterface.getTargetRole().equals(association.getSourceRole()))
-                {
-                    found = true;
-                    break;
-                }
-            }
-        }
-        return found ? associationInterface :null;
-    }
+				for (TaggedValueInterface taggedValue : association.getTaggedValueCollection())
+				{
+					systemGeneratedAssociation.addTaggedValue(((TaggedValue) taggedValue).clone());
+				}
 
+				//Adding the sys.generated association to the target entity.
+				association.getTargetEntity().addAbstractAttribute(systemGeneratedAssociation);
+			}
+			else
+			{
+				//Removing the not required sys. generated association because the direction has been changed
+				//from "bi directional" to "src-destination".
+				if (systemGeneratedAssociation != null)
+				{
+					association.getTargetEntity().removeAbstractAttribute(
+							systemGeneratedAssociation);
+				}
+			}
+		}
+	}
+
+	/**This method is used to get the system generated association given the original association.
+	 * System generated association is searched based on the following criteria
+	 * 1. The flag "isSystemGenerated" should be set.
+	 * 2. The source and target roles are swapped. So original association's source role should be the target role
+	 * of the sys.generated association and vice versa.
+	 * @param association
+	 * @return
+	 */
+	private Association getSystemGeneratedAssociation(Association association)
+	{
+		boolean found = false;
+		Association associationInterface = null;
+		EntityInterface targetEnetity = association.getTargetEntity();
+		Collection associationCollection = targetEnetity.getAssociationCollection();
+		if (associationCollection != null && !associationCollection.isEmpty())
+		{
+			Iterator associationIterator = associationCollection.iterator();
+			while (associationIterator.hasNext())
+			{
+				associationInterface = (Association) associationIterator.next();
+				if (associationInterface.getIsSystemGenerated()
+						&& associationInterface.getSourceRole().equals(association.getTargetRole())
+						&& associationInterface.getTargetRole().equals(association.getSourceRole()))
+				{
+					found = true;
+					break;
+				}
+			}
+		}
+		return found ? associationInterface : null;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface#getAssociationType()
+	 */
 	public AssociationType getAssociationType()
 	{
 		RoleInterface roleInterface = this.getTargetRole();
 		return roleInterface.getAssociationsType();
 	}
-
 
 }

@@ -111,7 +111,7 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 		}
 
 		dateValue.setValue(date);
-		
+
 		return dateValue;
 	}
 

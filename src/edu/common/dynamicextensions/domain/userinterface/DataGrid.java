@@ -21,8 +21,6 @@ public class DataGrid extends Control implements DataGridInterface
 	{
 	}
 
-	
-
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */
@@ -31,13 +29,11 @@ public class DataGrid extends Control implements DataGridInterface
 		// TODO Auto-generated method stub
 	}
 
-
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		// TODO Auto-generated method stub
 		return "";
 	}
-
 
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{

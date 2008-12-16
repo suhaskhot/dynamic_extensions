@@ -44,7 +44,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static ResultSet executeQuery(String query, boolean... useClnSession) throws DynamicExtensionsSystemException
+	public static ResultSet executeQuery(String query, boolean... useClnSession)
+			throws DynamicExtensionsSystemException
 	{
 		Connection conn = null;
 		Session session = null;
@@ -59,7 +60,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			{
 				conn = DBUtil.getConnection();
 			}
-			
+
 			conn.setAutoCommit(false);
 			Statement statement = null;
 			statement = conn.createStatement();
@@ -156,10 +157,11 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDMLQueryList(JDBCDAO jdbcDAO, List<String> queries) throws DynamicExtensionsSystemException
+	public int executeDMLQueryList(JDBCDAO jdbcDAO, List<String> queries)
+			throws DynamicExtensionsSystemException
 	{
 		int result = -1;
-		
+
 		for (String query : queries)
 		{
 			try
@@ -172,7 +174,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			}
 			result = executeDML(jdbcDAO, query);
 		}
-		
+
 		return result;
 	}
 
@@ -182,7 +184,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	synchronized public static Long getNextIdentifier(String tableName) throws DynamicExtensionsSystemException
+	synchronized public static Long getNextIdentifier(String tableName)
+			throws DynamicExtensionsSystemException
 	{
 		// Query to get next identifier.
 		StringBuffer query = new StringBuffer("SELECT MAX(IDENTIFIER) FROM " + tableName);
@@ -220,12 +223,13 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				}
 			}
 			idMap.put(tableName, identifier);
-			
+
 			return identifier;
 		}
 		catch (SQLException e)
 		{
-			throw new DynamicExtensionsSystemException("Could not fetch the next identifier for table " + tableName);
+			throw new DynamicExtensionsSystemException(
+					"Could not fetch the next identifier for table " + tableName);
 		}
 	}
 
@@ -291,8 +295,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param prcesdEntities
 	 * @param prcesdEntGroup
 	 */
-	public static void getAllEntityGroups(EntityInterface entity, Set<EntityInterface> prcesdEntities,
-			Set<EntityGroupInterface> prcesdEntGroup)
+	public static void getAllEntityGroups(EntityInterface entity,
+			Set<EntityInterface> prcesdEntities, Set<EntityGroupInterface> prcesdEntGroup)
 	{
 		if (prcesdEntities.contains(entity))
 		{
@@ -308,7 +312,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static boolean isValuePresent(AttributeInterface attribute, Object value) throws DynamicExtensionsSystemException
+	public static boolean isValuePresent(AttributeInterface attribute, Object value)
+			throws DynamicExtensionsSystemException
 	{
 		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
 	}
@@ -317,7 +322,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param attributes
 	 * @return
 	 */
-	public static List<AbstractAttributeInterface> filterSystemAttributes(List<AbstractAttributeInterface> attributes)
+	public static List<AbstractAttributeInterface> filterSystemAttributes(
+			List<AbstractAttributeInterface> attributes)
 	{
 		List<AbstractAttributeInterface> attribtes = new ArrayList<AbstractAttributeInterface>();
 		for (AbstractAttributeInterface attribute : attributes)
@@ -327,7 +333,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				attribtes.add(attribute);
 			}
 		}
-		
+
 		return attribtes;
 	}
 
@@ -335,7 +341,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param attributes
 	 * @return
 	 */
-	public static Collection<AbstractAttributeInterface> filterSystemAttributes(Collection<AbstractAttributeInterface> attributes)
+	public static Collection<AbstractAttributeInterface> filterSystemAttributes(
+			Collection<AbstractAttributeInterface> attributes)
 	{
 		return filterSystemAttributes(new ArrayList(attributes));
 	}
@@ -369,7 +376,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public static boolean isIdAttributePresent(EntityInterface entity)
 	{
 		boolean isAttrPresent = false;
-		
+
 		Collection<AbstractAttributeInterface> attributes = entity.getAbstractAttributeCollection();
 		if (attributes != null && !attributes.isEmpty())
 		{
@@ -382,7 +389,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				}
 			}
 		}
-		
+
 		return isAttrPresent;
 	}
 
@@ -395,33 +402,37 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<String> getDynamicQueryList(EntityGroupInterface entityGroup, List<String> revQueries, HibernateDAO hibernateDAO, List<String> queries)
+	public List<String> getDynamicQueryList(EntityGroupInterface entityGroup,
+			List<String> revQueries, HibernateDAO hibernateDAO, List<String> queries)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
-		
+
 		List<EntityInterface> entities = DynamicExtensionsUtility.getUnsavedEntities(entityGroup);
 		for (EntityInterface entity : entities)
 		{
-			List<String> createQueries = queryBuilder.getCreateEntityQueryList((Entity) entity, revQueries);
+			List<String> createQueries = queryBuilder.getCreateEntityQueryList((Entity) entity,
+					revQueries);
 			if (createQueries != null && !createQueries.isEmpty())
 			{
 				queries.addAll(createQueries);
 			}
 		}
 
-		List<EntityInterface> savedEntities = DynamicExtensionsUtility.getSavedEntities(entityGroup);
+		List<EntityInterface> savedEntities = DynamicExtensionsUtility
+				.getSavedEntities(entityGroup);
 		for (EntityInterface savedEntity : savedEntities)
 		{
 			Entity dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity.getId());
 
-			List<String> updateQueries = queryBuilder.getUpdateEntityQueryList((Entity) savedEntity, (Entity) dbaseCopy, revQueries);
+			List<String> updateQueries = queryBuilder.getUpdateEntityQueryList(
+					(Entity) savedEntity, (Entity) dbaseCopy, revQueries);
 			if (updateQueries != null && !updateQueries.isEmpty())
 			{
 				queries.addAll(updateQueries);
 			}
 		}
-		
+
 		return queries;
 	}
 
@@ -434,7 +445,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
 	{
 		boolean isDataPrsent = false;
-		
+
 		try
 		{
 			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
@@ -445,7 +456,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			DBUtil.closeConnection();
 
 		}
-		
+
 		return isDataPrsent;
 	}
 
@@ -457,15 +468,16 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param maxCard
 	 * @return
 	 */
-	public static RoleInterface getRole(AssociationType assoType, String name, Cardinality minCard, Cardinality maxCard)
+	public static RoleInterface getRole(AssociationType assoType, String name, Cardinality minCard,
+			Cardinality maxCard)
 	{
 		RoleInterface role = DomainObjectFactory.getInstance().createRole();
 		role.setAssociationsType(assoType);
 		role.setName(name);
 		role.setMinimumCardinality(minCard);
 		role.setMaximumCardinality(maxCard);
-		
+
 		return role;
 	}
-	
+
 }

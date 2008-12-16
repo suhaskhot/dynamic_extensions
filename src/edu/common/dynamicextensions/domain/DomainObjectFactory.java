@@ -188,7 +188,8 @@ public class DomainObjectFactory
 	public ColumnPropertiesInterface createColumnProperties()
 	{
 		ColumnProperties columnProperties = new ColumnProperties();
-		columnProperties.setName(COLUMN_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		columnProperties
+				.setName(COLUMN_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 		return columnProperties;
 	}
 
@@ -203,7 +204,8 @@ public class DomainObjectFactory
 
 		tableProperties.setName(TABLE_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
-		tableProperties.setConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		tableProperties.setConstraintName(CONSTRAINT + UNDERSCORE
+				+ IdGeneratorUtil.getNextUniqeId());
 
 		return tableProperties;
 	}
@@ -217,15 +219,20 @@ public class DomainObjectFactory
 	{
 		ConstraintProperties constraintProperties = new ConstraintProperties();
 
-		constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE
+				+ IdGeneratorUtil.getNextUniqeId());
 
-		constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S"
+				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
-		constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T"
+				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
-		constraintProperties.setSourceEntityKeyConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		constraintProperties.setSourceEntityKeyConstraintName(CONSTRAINT + UNDERSCORE
+				+ IdGeneratorUtil.getNextUniqeId());
 
-		constraintProperties.setTargetEntityKeyConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		constraintProperties.setTargetEntityKeyConstraintName(CONSTRAINT + UNDERSCORE
+				+ IdGeneratorUtil.getNextUniqeId());
 
 		return constraintProperties;
 	}
@@ -260,7 +267,7 @@ public class DomainObjectFactory
 	 */
 	public ByteArrayValueInterface createByteArrayValue()
 	{
-		return  new ByteArrayValue();
+		return new ByteArrayValue();
 	}
 
 	/**
@@ -435,7 +442,7 @@ public class DomainObjectFactory
 	 */
 	public BooleanValueInterface createBooleanValue()
 	{
-		return  new BooleanValue();
+		return new BooleanValue();
 	}
 
 	/**
@@ -455,7 +462,7 @@ public class DomainObjectFactory
 	 */
 	public DoubleValueInterface createDoubleValue()
 	{
-		return  new DoubleValue();
+		return new DoubleValue();
 	}
 
 	/**
@@ -485,7 +492,7 @@ public class DomainObjectFactory
 	 */
 	public LongValueInterface createLongValue()
 	{
-		return  new LongValue();
+		return new LongValue();
 	}
 
 	/**
@@ -535,7 +542,7 @@ public class DomainObjectFactory
 	 */
 	public ContainerInterface createContainer()
 	{
-		return  new Container();
+		return new Container();
 	}
 
 	/**
@@ -575,7 +582,7 @@ public class DomainObjectFactory
 	 */
 	public RadioButtonInterface createRadioButton()
 	{
-		return  new RadioButton();
+		return new RadioButton();
 	}
 
 	/**
@@ -605,7 +612,7 @@ public class DomainObjectFactory
 	 */
 	public FileUploadInterface createFileUploadControl()
 	{
-		return  new FileUploadControl();
+		return new FileUploadControl();
 	}
 
 	/**
@@ -625,7 +632,7 @@ public class DomainObjectFactory
 	 */
 	public RuleInterface createRule()
 	{
-		return  new Rule();
+		return new Rule();
 	}
 
 	/**
@@ -635,7 +642,7 @@ public class DomainObjectFactory
 	 */
 	public RuleParameterInterface createRuleParameter()
 	{
-		
+
 		return new RuleParameter();
 	}
 
@@ -748,7 +755,7 @@ public class DomainObjectFactory
 	 */
 	public ContainmentAssociationControlInterface createContainmentAssociationControl()
 	{
-		
+
 		return new ContainmentAssociationControl();
 	}
 
@@ -758,7 +765,7 @@ public class DomainObjectFactory
 	 */
 	public CaDSRValueDomainInfoInterface createCaDSRValueDomainInfo()
 	{
-		
+
 		return new CaDSRValueDomainInfo();
 	}
 
@@ -797,7 +804,8 @@ public class DomainObjectFactory
 		CategoryEntity categoryEntity = new CategoryEntity();
 		categoryEntity.setCreatedDate(new Date());
 		categoryEntity.setLastUpdated(categoryEntity.getCreatedDate());
-		categoryEntity.setTableProperties(createTableProperties(CATEGORY_TABLE_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId()));
+		categoryEntity.setTableProperties(createTableProperties(CATEGORY_TABLE_NAME_PREFIX
+				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId()));
 		return categoryEntity;
 	}
 
@@ -840,7 +848,7 @@ public class DomainObjectFactory
 	{
 		return new CategoryAssociationControl();
 	}
-	
+
 	/**
 	 * @param userId
 	 * @param queryExecuted

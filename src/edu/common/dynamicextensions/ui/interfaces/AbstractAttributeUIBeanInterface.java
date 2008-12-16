@@ -25,155 +25,154 @@ public interface AbstractAttributeUIBeanInterface
 	/**
 	 * @return Returns the attributeFormat.
 	 */
-	 String getFormat();
+	String getFormat();
 
 	/**
 	 * @param attributeFormat The attributeFormat to set.
 	 */
-	 void setFormat(String attributeFormat);
+	void setFormat(String attributeFormat);
 
 	/**
 	 * @return Returns the attributeDefaultValue.
 	 */
-	 String getAttributeDefaultValue();
+	String getAttributeDefaultValue();
 
 	/**
 	 * @param attributeDefaultValue The attributeDefaultValue to set.
 	 */
-	 void setAttributeDefaultValue(String attributeDefaultValue);
+	void setAttributeDefaultValue(String attributeDefaultValue);
 
 	/**
 	 * @return Returns the attributeDisplayUnits.
 	 */
-	 String getAttributeDisplayUnits();
+	String getAttributeDisplayUnits();
 
 	/**
 	 * @param attributeDisplayUnits The attributeDisplayUnits to set.
 	 */
-	 void setAttributeDisplayUnits(String attributeDisplayUnits);
+	void setAttributeDisplayUnits(String attributeDisplayUnits);
 
 	/**
 	 * @return Returns the attributeDecimalPlaces.
 	 */
-	 String getAttributeDecimalPlaces();
+	String getAttributeDecimalPlaces();
 
 	/**
 	 * @param attributeDecimalPlaces The attributeDecimalPlaces to set.
 	 */
-	 void setAttributeDecimalPlaces(String attributeDecimalPlaces);
+	void setAttributeDecimalPlaces(String attributeDecimalPlaces);
 
 	/**
 	 * @return Returns the attributeIdentifier.
 	 */
-	 String getAttributeIdentifier();
+	String getAttributeIdentifier();
 
 	/**
 	 * @param attributeIdentifier The attributeIdentifier to set.
 	 */
-	 void setAttributeIdentifier(String attributeIdentifier);
+	void setAttributeIdentifier(String attributeIdentifier);
 
 	/**
 	 * @return the attributeMeasurementUnits
 	 */
-	 String getAttributeMeasurementUnits();
+	String getAttributeMeasurementUnits();
 
 	/**
 	 * @param attributeMeasurementUnits the attributeMeasurementUnits to set
 	 */
-	 void setAttributeMeasurementUnits(String attributeMeasurementUnits);
+	void setAttributeMeasurementUnits(String attributeMeasurementUnits);
 
 	/**
 	 * @return Returns the dataType.
 	 */
 
-	 String getDataType();
+	String getDataType();
 
 	/**
 	 * @param dataType The dataType to set.
 	 */
-	 void setDataType(String dataType);
+	void setDataType(String dataType);
 
 	/**
 	 * Number of digits before decimal 
 	 * @return String AttributeDigits
 	 */
-	 String getAttributeDigits();
+	String getAttributeDigits();
 
 	/**
 	 * @param attributeDigits : Number of digits before decimal
 	 */
-	 void setAttributeDigits(String attributeDigits);
+	void setAttributeDigits(String attributeDigits);
 
 	/**
 	 * 
 	 * @return Name
 	 */
-	 String getName();
+	String getName();
 
 	/**
 	 * 
 	 * @param name Name
 	 */
-	 void setName(String name);
+	void setName(String name);
 
 	/**
 	 * 
 	 * @return Description
 	 */
-	 String getDescription();
+	String getDescription();
 
 	/**
 	 * 
 	 * @param name Description
 	 */
-	 void setDescription(String name);
+	void setDescription(String name);
 
-	
 	/**
 	 * @return Returns the displayChoice.
 	 */
-	 String getDisplayChoice();
+	String getDisplayChoice();
 
 	/**
 	 * @param displayChoice The displayChoice to set.
 	 */
-	 void setDisplayChoice(String displayChoice);
+	void setDisplayChoice(String displayChoice);
 
 	/**
 	 * 
 	 * @return Concept code
 	 */
-	 String getAttributeConceptCode();
+	String getAttributeConceptCode();
 
 	/**
 	 * 
 	 * @param conceptCode Concept code
 	 */
-	 void setAttributeConceptCode(String conceptCode);
+	void setAttributeConceptCode(String conceptCode);
 
 	/**
 	 * 
 	 * @return String DateValueType
 	 */
-	 String getDateValueType();
+	String getDateValueType();
 
 	/**
 	 * 
 	 * @param dateValueType dateValueType
 	 */
-	 void setDateValueType(String dateValueType);
+	void setDateValueType(String dateValueType);
 
 	/**
 	 * 
 	 * @return String AttributeIdentified
 	 */
-	 String getAttributeIdentified();
+	String getAttributeIdentified();
 
 	/**
 	 * 
 	 * @param attributeIdentified attributeIdentified
 	 */
-	 void setAttributeIdentified(String attributeIdentified);
+	void setAttributeIdentified(String attributeIdentified);
 
 	/**
 	 * Returns validationRules : value of checkbox fields selected by user
@@ -196,12 +195,11 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param max the max to set
 	 */
 	void setMax(String max);
-	
+
 	/**
 	 * @param max the max to set
 	 */
 	void setMaxTemp(String maxTemp);
-
 
 	/**
 	 * @return the min
@@ -212,12 +210,12 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param min the min to set
 	 */
 	void setMin(String min);
-	
+
 	/**
 	 * @param min the min to set
 	 */
 	void setMinTemp(String minTemp);
-	
+
 	/**
 	 * @return the tempValidationRules
 	 */
@@ -227,13 +225,13 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param tempValidationRules the tempValidationRules to set
 	 */
 	public void setTempValidationRules(String[] tempValidationRules);
-	
+
 	/**
 	 * get the list of concept codes for a particular attribute 
 	 * @return list of concept codes for each option of attribute
 	 */
 	public String[] getOptionConceptCodes();
-	
+
 	/**
 	 * set the list of concept codes for a particular attribute 
 	 * @param list of concept codes for each option of attribute
@@ -251,7 +249,7 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param optionDescriptions : list of description for each option of attribute
 	 */
 	public void setOptionDescriptions(String[] optionDescriptions);
-	
+
 	/**
 	 * 
 	 * @return list of names for each option of attribute
@@ -263,19 +261,19 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param optionNames list of names for each option of attribute
 	 */
 	public void setOptionNames(String[] optionNames);
-	
+
 	/**
 	 * 
 	 * @return OptionDetailObject list containing option name, description and concept code for each option
 	 */
 	public List getOptionDetails();
-	
+
 	/**
 	 * 
 	 * @param OptionDetailObject list containing option name, description and concept code for each option
 	 */
 	public void setOptionDetails(List optionDetails);
-	
+
 	/**
 	 * 
 	 * @return List of file formats supported for a file control/attribute.
@@ -287,13 +285,40 @@ public interface AbstractAttributeUIBeanInterface
 	 * @param fileFormats List of file formats supported for a file control/attribute.
 	 */
 	public void setFileFormats(String[] fileFormats);
+
+	/**
+	 * @return group name 
+	 */
 	public String getGroupName();
+
+	/**
+	 * @param groupName
+	 */
 	public void setGroupName(String groupName);
+
+	/**
+	 * @return form name
+	 */
 	public String getFormName();
+
+	/**
+	 * @param formName
+	 */
 	public void setFormName(String formName);
+
+	/**
+	 * @return CsvString
+	 */
 	public String getCsvString();
+
+	/**
+	 * @param csvString
+	 */
 	public void setCsvString(String csvString);
-	
+
 	//Added by Ashish
+	/**
+	 * @return measurementUnitOther
+	 */
 	public String getMeasurementUnitOther();
 }

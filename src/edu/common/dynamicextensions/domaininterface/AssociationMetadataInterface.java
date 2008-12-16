@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface;
 
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;

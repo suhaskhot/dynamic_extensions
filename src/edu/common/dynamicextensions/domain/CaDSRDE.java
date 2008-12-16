@@ -16,7 +16,7 @@ public class CaDSRDE extends DataElement implements CaDSRDEInterface
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = -5908788817639522056L;
-	
+
 	/**
 	 * Public Identifier from CaDSR.
 	 */
@@ -40,5 +40,5 @@ public class CaDSRDE extends DataElement implements CaDSRDEInterface
 	{
 		this.publicId = publicId;
 	}
-	
+
 }

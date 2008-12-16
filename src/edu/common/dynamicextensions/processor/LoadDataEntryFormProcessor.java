@@ -56,8 +56,9 @@ public class LoadDataEntryFormProcessor
 	 */
 	public ContainerInterface loadDataEntryForm(AbstractActionForm actionForm,
 			ContainerInterface containerInterface,
-			Map<BaseAbstractAttributeInterface, Object> valueMap, String mode, String recordIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			Map<BaseAbstractAttributeInterface, Object> valueMap, String mode,
+			String recordIdentifier) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		DataEntryForm dataEntryForm = (DataEntryForm) actionForm;
 
@@ -106,25 +107,31 @@ public class LoadDataEntryFormProcessor
 	 * @throws SQLException
 	 */
 	public Map<BaseAbstractAttributeInterface, Object> getValueMapFromRecordId(
-			AbstractEntityInterface entityInterface, String recordIdentifier) throws NumberFormatException,
-			DynamicExtensionsSystemException, DynamicExtensionsApplicationException, SQLException
+			AbstractEntityInterface entityInterface, String recordIdentifier)
+			throws NumberFormatException, DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException, SQLException
 	{
 		Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
 			//Quic fix:
-			if(entityInterface instanceof EntityInterface)
+			if (entityInterface instanceof EntityInterface)
 			{
 				EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-				Map map= entityManagerInterface.getRecordById((EntityInterface)entityInterface, Long.valueOf(recordIdentifier));
+				Map map = entityManagerInterface.getRecordById((EntityInterface) entityInterface,
+						Long.valueOf(recordIdentifier));
 				recordMap = map;
 			}
 			else
 			{
 				CategoryManagerInterface categoryManagerInterface = CategoryManager.getInstance();
 				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) entityInterface;
-				Long recordId = categoryManagerInterface.getRootCategoryEntityRecordIdByEntityRecordId(Long.valueOf(recordIdentifier),categoryEntityInterface.getTableProperties().getName());
-				recordMap = categoryManagerInterface.getRecordById(categoryEntityInterface,recordId );
+				Long recordId = categoryManagerInterface
+						.getRootCategoryEntityRecordIdByEntityRecordId(Long
+								.valueOf(recordIdentifier), categoryEntityInterface
+								.getTableProperties().getName());
+				recordMap = categoryManagerInterface.getRecordById(categoryEntityInterface,
+						recordId);
 			}
 		}
 		return recordMap;

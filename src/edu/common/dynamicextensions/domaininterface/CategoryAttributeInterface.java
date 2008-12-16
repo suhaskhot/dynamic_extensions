@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  */
 public interface CategoryAttributeInterface extends BaseAbstractAttributeInterface
 {
+
 	/**
 	 *
 	 * @return
@@ -54,11 +55,13 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * @param dataElementInterface
 	 */
 	void setDataElement(DataElementInterface dataElementInterface);
+
 	/**
 	 * This method returns the ColumnProperties of the Attribute.
 	 * @return the ColumnProperties of the Attribute.
 	 */
 	ColumnPropertiesInterface getColumnProperties();
+
 	/**
 	 * This method sets the ColumnProperties of the Attribute.
 	 * @param columnProperties the ColumnProperties to be set.

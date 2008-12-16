@@ -125,8 +125,8 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows + " class='font_bl_s' name='" + getHTMLComponentName() + "' id='"
-				+ name + "' ";
+		String htmlString = "<SELECT " + strMultiSelect + " size=" + this.noOfRows
+				+ " class='font_bl_s' name='" + getHTMLComponentName() + "' id='" + name + "' ";
 
 		if (this.isReadOnly != null && this.isReadOnly)
 		{
@@ -139,12 +139,14 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			String defaultValue = null;
 			valueList = new ArrayList<String>();
 
-			AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
+			AttributeMetadataInterface attributeMetadataInterface = this
+					.getAttibuteMetadataInterface();
 			if (attributeMetadataInterface != null)
 			{
 				if (attributeMetadataInterface instanceof CategoryAttributeInterface)
 				{
-					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadataInterface).getAbstractAttribute();
+					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadataInterface)
+							.getAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
 						defaultValue = attributeMetadataInterface.getDefaultValue();
@@ -171,13 +173,16 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
-				if (valueList != null && !valueList.isEmpty() && valueList.contains(nameValueBean.getValue()))
+				if (valueList != null && !valueList.isEmpty()
+						&& valueList.contains(nameValueBean.getValue()))
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>" + nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "' SELECTED>"
+							+ nameValueBean.getName();
 				}
 				else
 				{
-					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>" + nameValueBean.getName();
+					htmlString += "<OPTION VALUE='" + nameValueBean.getValue() + "'>"
+							+ nameValueBean.getName();
 				}
 			}
 		}
@@ -237,9 +242,12 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	{
 		if (association.getIsCollection())
 		{
-			Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
-			Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
-			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(filteredAttributeCollection);
+			Collection<AbstractAttributeInterface> attributeCollection = association
+					.getTargetEntity().getAllAbstractAttributes();
+			Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
+					.filterSystemAttributes(attributeCollection);
+			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+					filteredAttributeCollection);
 			List<Map> values = (List<Map>) this.value;
 			if (values != null)
 			{
@@ -282,10 +290,12 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			association = (AssociationInterface) baseAbstractAttribute;
 		}
-		else if (baseAbstractAttribute != null && baseAbstractAttribute instanceof CategoryAttributeInterface)
+		else if (baseAbstractAttribute != null
+				&& baseAbstractAttribute instanceof CategoryAttributeInterface)
 		{
 			CategoryAttributeInterface categoryAttributeInterface = (CategoryAttributeInterface) baseAbstractAttribute;
-			AbstractAttributeInterface abstractAttributeInterface = categoryAttributeInterface.getAbstractAttribute();
+			AbstractAttributeInterface abstractAttributeInterface = categoryAttributeInterface
+					.getAbstractAttribute();
 			if (abstractAttributeInterface instanceof AssociationInterface)
 			{
 				association = (AssociationInterface) abstractAttributeInterface;

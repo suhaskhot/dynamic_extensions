@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  */
 public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 {
+
 	/**
 	 * Constructor
 	 */
@@ -46,8 +47,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException dynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException DynamicExtensionsApplicationException
 	 */
-	public void addControlToForm(ContainerInterface container, ControlUIBeanInterface controlUIBean, AbstractAttributeUIBeanInterface attrUIBean,
-			EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void addControlToForm(ContainerInterface container,
+			ControlUIBeanInterface controlUIBean, AbstractAttributeUIBeanInterface attrUIBean,
+			EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		if ((container != null) && (controlUIBean != null) && (attrUIBean != null))
 		{
@@ -65,11 +68,13 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 			{
 				controlOperation = ProcessorConstants.OPERATION_ADD;
 			}
-			if ((attrUIBean.getDataType() != null) && DynamicExtensionsUtility.isDataTypeNumeric(attrUIBean.getDataType()))
+			if ((attrUIBean.getDataType() != null)
+					&& DynamicExtensionsUtility.isDataTypeNumeric(attrUIBean.getDataType()))
 			{
 				initializeMeasurementUnits(attrUIBean);
 			}
-			ControlsUtility.reinitializeSequenceNumbers(container.getControlCollection(), controlUIBean.getControlsSequenceNumbers());
+			ControlsUtility.reinitializeSequenceNumbers(container.getControlCollection(),
+					controlUIBean.getControlsSequenceNumbers());
 
 			//Add new control
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
@@ -84,16 +89,19 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				controlUIBean.setName(attributeName);
 
 				//Create Attribute
-				abstractAttribute = attributeProcessor.createAndPopulateAttribute(controlUIBean.getUserSelectedTool(), attrUIBean, entityGroup);
+				abstractAttribute = attributeProcessor.createAndPopulateAttribute(controlUIBean
+						.getUserSelectedTool(), attrUIBean, entityGroup);
 
 				//Set permissible values
-				setPermissibleValues(attributeProcessor, abstractAttribute, controlUIBean, attrUIBean);
+				setPermissibleValues(attributeProcessor, abstractAttribute, controlUIBean,
+						attrUIBean);
 
 				//Set attribute in controlInformationInterface object(controlsForm)
 				controlUIBean.setAbstractAttribute(abstractAttribute);
 
 				//Control Interface : Add control
-				control = controlProcessor.createAndPopulateControl(controlUIBean.getUserSelectedTool(), controlUIBean, entityGroup);
+				control = controlProcessor.createAndPopulateControl(controlUIBean
+						.getUserSelectedTool(), controlUIBean, entityGroup);
 				control.setSequenceNumber(WebUIManager.getSequenceNumberForNextControl(container));
 
 				//Entity Interface  : Add attribute
@@ -136,8 +144,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				//***********New Code starts here*********
 				abstractAttribute = (AbstractAttributeInterface) control.getBaseAbstractAttribute();
-				abstractAttribute = attributeProcessor.updateAttributeInformation(controlUIBean.getUserSelectedTool(), abstractAttribute, attrUIBean, entityGroup);
-				setPermissibleValues(attributeProcessor, abstractAttribute, controlUIBean, attrUIBean);
+				abstractAttribute = attributeProcessor.updateAttributeInformation(controlUIBean
+						.getUserSelectedTool(), abstractAttribute, attrUIBean, entityGroup);
+				setPermissibleValues(attributeProcessor, abstractAttribute, controlUIBean,
+						attrUIBean);
 
 				//update in control interface
 				control.setBaseAbstractAttribute(abstractAttribute);
@@ -151,11 +161,13 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 
 				if (!oldControlType.equals(newControlType))
 				{
-					newControl = controlProcessor.createAndPopulateControl(newControlType, controlUIBean, entityGroup);
+					newControl = controlProcessor.createAndPopulateControl(newControlType,
+							controlUIBean, entityGroup);
 				}
 				else
 				{
-					newControl = controlProcessor.populateControlInterface(controlUIBean.getUserSelectedTool(), control, controlUIBean, entityGroup);
+					newControl = controlProcessor.populateControlInterface(controlUIBean
+							.getUserSelectedTool(), control, controlUIBean, entityGroup);
 				}
 
 				//update control
@@ -183,21 +195,27 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlsForm
 	 * @throws DynamicExtensionsApplicationException :Exception
 	 */
-	private void setPermissibleValues(AttributeProcessor attributeProcessor, AbstractAttributeInterface abstractAttribute,
-			ControlUIBeanInterface controlUIBean, AbstractAttributeUIBeanInterface attributeUIBean) throws DynamicExtensionsApplicationException
+	private void setPermissibleValues(AttributeProcessor attributeProcessor,
+			AbstractAttributeInterface abstractAttribute, ControlUIBeanInterface controlUIBean,
+			AbstractAttributeUIBeanInterface attributeUIBean)
+			throws DynamicExtensionsApplicationException
 	{
 		//if combobox/optionbutton control has been selected then set the DataElement object for set of permissible values
 		String userSelectedControl = controlUIBean.getUserSelectedTool();
 		if (userSelectedControl != null)
 		{
 			if ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
-					|| (userSelectedControl.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
+					|| (userSelectedControl
+							.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
 			{
-				AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility.getAttributeTypeInformation(abstractAttribute);
+				AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
+						.getAttributeTypeInformation(abstractAttribute);
 				if (attributeTypeInformation != null)
 				{
-					attributeTypeInformation.removeDataElement(attributeTypeInformation.getDataElement());
-					attributeTypeInformation.setDataElement(attributeProcessor.getDataElementInterface(attributeUIBean));
+					attributeTypeInformation.removeDataElement(attributeTypeInformation
+							.getDataElement());
+					attributeTypeInformation.setDataElement(attributeProcessor
+							.getDataElementInterface(attributeUIBean));
 				}
 			}
 		}
@@ -243,7 +261,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 		//Handle special case of measurement units
 		//If measurement unit is other, value of measurement unit is value of txtMeasurementUnit.
 		if ((attrUIBean.getAttributeMeasurementUnits() != null)
-				&& (attrUIBean.getAttributeMeasurementUnits().equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
+				&& (attrUIBean.getAttributeMeasurementUnits()
+						.equalsIgnoreCase(ProcessorConstants.MEASUREMENT_UNIT_OTHER)))
 		{
 			attrUIBean.setAttributeMeasurementUnits(attrUIBean.getMeasurementUnitOther());
 		}

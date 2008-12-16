@@ -1,17 +1,17 @@
 
 package edu.common.dynamicextensions.exception;
 
-
 /**
  * @author chetan_patil
  */
 public class DataTypeFactoryInitializationException extends DynamicExtensionsSystemException
 {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * 
 	 */
@@ -59,7 +59,7 @@ public class DataTypeFactoryInitializationException extends DynamicExtensionsSys
 	 */
 	public void setWrapException(Exception wrapException)
 	{
-		this.wrapException = wrapException;		
+		this.wrapException = wrapException;
 	}
-	
+
 }

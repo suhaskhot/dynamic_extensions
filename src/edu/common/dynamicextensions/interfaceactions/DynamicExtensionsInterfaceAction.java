@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 
 public class DynamicExtensionsInterfaceAction extends HttpServlet implements WebUIManagerConstants
 {
+
 	/**
 	 * Do get method calls do post method
 	 * @param req HttpServletRequest
@@ -31,7 +32,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 	 * @throws ServletException servlet exception
 	 * @throws IOException io exception
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,
+			IOException
 	{
 		doPost(req, res);
 	}
@@ -43,10 +45,12 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 	 * @throws ServletException servlet exception
 	 * @throws IOException io exception
 	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,
+			IOException
 	{
 
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(req
+				.getInputStream()));
 		Object json = null;
 		JSONArray entityInterfaceJSONArray = new JSONArray();
 		try
@@ -73,7 +77,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 			Collection containerCollection = null;
 			try
 			{
-				containerCollection  = entityManager.getAllContainers();
+				containerCollection = entityManager.getAllContainers();
 			}
 			catch (DynamicExtensionsSystemException e)
 			{
@@ -87,19 +91,21 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 				generateOutput(res, entityInterfaceJSONArray);
 			}
 
-			if (containerCollection  != null)
+			if (containerCollection != null)
 			{
-				Iterator entityIterator = containerCollection .iterator();
-				ContainerInterface containerInterface ;
+				Iterator entityIterator = containerCollection.iterator();
+				ContainerInterface containerInterface;
 
 				while (entityIterator.hasNext())
 				{
 					JSONObject containerInterfaceJSONObject = new JSONObject();
-					containerInterface  = (ContainerInterface) entityIterator.next();
-					containerInterfaceJSONObject.put(CONTAINER_NAME, containerInterface.getCaption());
-					containerInterfaceJSONObject.put(CONTAINER_IDENTIFIER, containerInterface .getId());
+					containerInterface = (ContainerInterface) entityIterator.next();
+					containerInterfaceJSONObject.put(CONTAINER_NAME, containerInterface
+							.getCaption());
+					containerInterfaceJSONObject.put(CONTAINER_IDENTIFIER, containerInterface
+							.getId());
 
-					entityInterfaceJSONArray.put(containerInterfaceJSONObject );
+					entityInterfaceJSONArray.put(containerInterfaceJSONObject);
 				}
 			}
 
@@ -114,7 +120,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 	 * @param entityInterfaceJSONArray JSONArray
 	 * @throws IOException IOException
 	 */
-	private void generateOutput(HttpServletResponse res, JSONArray entityInterfaceJSONArray) throws IOException
+	private void generateOutput(HttpServletResponse res, JSONArray entityInterfaceJSONArray)
+			throws IOException
 	{
 		res.setContentType("text/javascript");
 		PrintWriter out = res.getWriter();

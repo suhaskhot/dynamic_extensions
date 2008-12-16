@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleParamete
  */
 public class RuleConfigurationObject
 {
+
 	private String displayLabel;
 	private String ruleName;
 	private String ruleClassName;

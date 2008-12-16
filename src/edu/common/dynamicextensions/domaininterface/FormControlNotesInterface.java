@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface;
 
 /**
@@ -7,8 +8,9 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface FormControlNotesInterface
 {
+
 	String getNote();
-	
+
 	void setNote(String note);
 
 }

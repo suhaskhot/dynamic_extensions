@@ -1,4 +1,6 @@
+
 package edu.common.dynamicextensions.exception;
+
 /**
  *<p>Title:Interface for all the exceptions for dynamic extensions </p>
  *<p>Description: This interface will act as a 

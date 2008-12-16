@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  */
 public interface AttributeMetadataInterface extends AbstractMetadataInterface
 {
+
 	/**
 	 * This method returns the default value of the PrimitiveAttribute for displaying in corresponding controls on UI. 
 	 * @param abstractAttribute the PrimitiveAttribute

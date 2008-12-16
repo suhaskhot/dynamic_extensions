@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.entitymanager;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
  * This class provides the methods that builds the queries that are specific to ORACLE database 
@@ -14,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQueryBuilder
 {
+
 	/**
 	 * This method returns the query to add foreign key constraint in the given child entity
 	 * that refers to identifier column of the parent.
@@ -26,8 +26,9 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 	 * thus it is changed to match. Thus it can be overriden correctly
 	 * 
 	 */
-	 
-	protected String getForeignKeyRemoveConstraintQueryForInheritance(AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
+
+	protected String getForeignKeyRemoveConstraintQueryForInheritance(
+			AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
 	{
 		StringBuffer foreignKeyConstraint = new StringBuffer();
 		/*changed by :- pavan
@@ -37,10 +38,12 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 		 */
 		//String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
 		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
-		+ parentEntity.getTableProperties().getConstraintName();
+				+ parentEntity.getTableProperties().getConstraintName();
 
-		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(entity.getTableProperties().getName()).append(WHITESPACE).append(
-				DROP_KEYWORD).append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(foreignConstraintName);
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
+				entity.getTableProperties().getName()).append(WHITESPACE).append(DROP_KEYWORD)
+				.append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(
+						foreignConstraintName);
 
 		return foreignKeyConstraint.toString();
 	}

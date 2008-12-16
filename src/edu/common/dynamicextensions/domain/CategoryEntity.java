@@ -41,7 +41,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 * 
 	 */
 	protected CategoryEntityInterface parentCategoryEntity;
-	
+
 	/**
 	 * 
 	 */
@@ -79,6 +79,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 * 
 	 */
 	protected Boolean isCreateTable = Boolean.TRUE;
+
 	/**
 	 *
 	 *
@@ -124,7 +125,8 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * @param categoryAttributeCollection the categoryAttributeCollection to set
 	 */
-	public void setCategoryAttributeCollection(Collection<CategoryAttributeInterface> categoryAttributeCollection)
+	public void setCategoryAttributeCollection(
+			Collection<CategoryAttributeInterface> categoryAttributeCollection)
 	{
 		this.categoryAttributeCollection = categoryAttributeCollection;
 	}
@@ -340,7 +342,8 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * @param categoryAssociationCollection the categoryAssociationCollection to set
 	 */
-	public void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection)
+	public void setCategoryAssociationCollection(
+			Collection<CategoryAssociationInterface> categoryAssociationCollection)
 	{
 		CategoryAssociationCollection = categoryAssociationCollection;
 	}
@@ -419,7 +422,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 
 		return association;
 	}
-	
+
 	/**
 	 * This method returns the attribute for the given corresponding identifier.
 	 * @param identifier identifier of the desired AbstractAttribute.
@@ -432,7 +435,8 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 
 		for (CategoryAttributeInterface categoryAttributeInterface : attributeCollection)
 		{
-			if (categoryAttributeInterface.getId() != null && categoryAttributeInterface.getId().equals(identifier))
+			if (categoryAttributeInterface.getId() != null
+					&& categoryAttributeInterface.getId().equals(identifier))
 			{
 				categoryAttribute = categoryAttributeInterface;
 				break;
@@ -440,6 +444,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		}
 		return categoryAttribute;
 	}
+
 	/**
 	 * This method returns the attribute for the given corresponding identifier.
 	 * @param identifier identifier of the desired AbstractAttribute.
@@ -452,7 +457,8 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 
 		for (CategoryAssociationInterface categoryAssociationInterface : associationCollection)
 		{
-			if (categoryAssociationInterface.getId() != null && categoryAssociationInterface.getId().equals(identifier))
+			if (categoryAssociationInterface.getId() != null
+					&& categoryAssociationInterface.getId().equals(identifier))
 			{
 				association = categoryAssociationInterface;
 				break;
@@ -460,6 +466,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 		}
 		return association;
 	}
+
 	/**
 	 *
 	 * @param attributeName
@@ -469,7 +476,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		CategoryAttributeInterface attribute = null;
 
-		for (CategoryAttributeInterface attr: this.getCategoryAttributeCollection())
+		for (CategoryAttributeInterface attr : this.getCategoryAttributeCollection())
 		{
 			if (attr.getName().equals(attributeName))
 			{
@@ -481,9 +488,9 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 
 	/**
-     * @hibernate.many-to-one column="TREE_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @hibernate.many-to-one column="TREE_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
 	 * @return the parentCategoryEntity
-     */
+	 */
 	public CategoryEntityInterface getTreeParentCategoryEntity()
 	{
 		return treeParentCategoryEntity;
@@ -496,6 +503,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		this.treeParentCategoryEntity = treeParentCategoryEntity;
 	}
+
 	/**
 	 * This method returns the create table
 	 * @hibernate.property name="isCreateTable" type="boolean" column="IS_CREATETABLE"
@@ -505,6 +513,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	{
 		return isCreateTable;
 	}
+
 	/**
 	 * @param isTableCreated The isTableCreated to set.
 	 */

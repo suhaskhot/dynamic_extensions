@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface ComboBoxInterface extends SelectInterface
 {
+
 	/**
 	 * This method returns the list of values that are displayed as choices.
 	 * @return the list of values that are displayed as choices.

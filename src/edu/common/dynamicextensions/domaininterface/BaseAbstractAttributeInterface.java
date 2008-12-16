@@ -1,6 +1,5 @@
+
 package edu.common.dynamicextensions.domaininterface;
-
-
 
 /**
  * This is an interface extended by CategoryAttribute, AbstractAttribute.
@@ -8,5 +7,5 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface BaseAbstractAttributeInterface extends AbstractMetadataInterface
 {
-	
+
 }

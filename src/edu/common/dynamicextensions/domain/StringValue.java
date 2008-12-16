@@ -49,6 +49,7 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */
@@ -58,5 +59,5 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 		stringValue.setValue(this.value);
 		return stringValue;
 	}
-	
+
 }

@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
  */
 public interface PathInterface extends DynamicExtensionBaseDomainObjectInterface
 {
+
 	/**
 	 * 
 	 * @return
@@ -23,18 +24,20 @@ public interface PathInterface extends DynamicExtensionBaseDomainObjectInterface
 	 * 
 	 * @param pathAssociationRelationCollection
 	 */
-	void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection);
+	void setPathAssociationRelationCollection(
+			Collection<PathAssociationRelationInterface> pathAssociationRelationCollection);
 
 	/**
 	 * 
 	 * @return
 	 */
 	List<PathAssociationRelationInterface> getSortedPathAssociationRelationCollection();
-	
+
 	/**
 	 * 
 	 * @param pathAssociationRelationInterface
 	 */
-	void addPathAssociationRelation(PathAssociationRelationInterface pathAssociationRelationInterface);
+	void addPathAssociationRelation(
+			PathAssociationRelationInterface pathAssociationRelationInterface);
 
 }

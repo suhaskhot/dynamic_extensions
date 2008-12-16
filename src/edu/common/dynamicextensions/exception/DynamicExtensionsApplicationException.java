@@ -8,7 +8,6 @@
 
 package edu.common.dynamicextensions.exception;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,7 +40,7 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 	public DynamicExtensionsApplicationException(String message, Exception wrapException,
 			String errorCode)
 	{
-		super(message, wrapException,errorCode);
+		super(message, wrapException, errorCode);
 	}
 
 	/**
@@ -61,8 +60,8 @@ public class DynamicExtensionsApplicationException extends BaseDynamicExtensions
 	public DynamicExtensionsApplicationException(String message, Exception wrapException,
 			String errorCode, List<String> placeHolders)
 	{
-		super(message, wrapException,errorCode);
-		for(String placeHolder: placeHolders)
+		super(message, wrapException, errorCode);
+		for (String placeHolder : placeHolders)
 		{
 			this.placeHolderList.add(placeHolder);
 		}

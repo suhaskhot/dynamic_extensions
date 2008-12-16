@@ -5,6 +5,7 @@ import java.util.List;
 
 public interface ContainerUIBeanInterface
 {
+
 	/**
 	 * css style for the main table.
 	 * @return Returns the mainTableCss.
@@ -80,26 +81,28 @@ public interface ContainerUIBeanInterface
 	 * @param formName FormName
 	 */
 	void setFormName(String formName);
+
 	/**
 	 * 
 	 * @return
 	 */
 	List getFormList();
+
 	/**
 	 * 
 	 * @param formList
 	 */
 	void setFormList(List formList);
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	 String getParentForm();
-	 
-	 /**
-	  * 
-	  * @param parentForm
-	  */
-	 void setParentForm(String parentForm);
+	String getParentForm();
+
+	/**
+	 * 
+	 * @param parentForm
+	 */
+	void setParentForm(String parentForm);
 }

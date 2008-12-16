@@ -22,7 +22,10 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAttribute extends BaseAbstractAttribute implements CategoryAttributeInterface, AttributeMetadataInterface
+public class CategoryAttribute extends BaseAbstractAttribute
+		implements
+			CategoryAttributeInterface,
+			AttributeMetadataInterface
 {
 
 	/**
@@ -91,7 +94,8 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	 * This method sets the columnPropertiesCollection to given Collection of the ColumnProperties.
 	 * @param columnPropertiesCollection the Collection of the ColumnProperties to be set.
 	 */
-	private void setColumnPropertiesCollection(Set<ColumnPropertiesInterface> columnPropertiesCollection)
+	private void setColumnPropertiesCollection(
+			Set<ColumnPropertiesInterface> columnPropertiesCollection)
 	{
 		this.columnPropertiesCollection = columnPropertiesCollection;
 	}
@@ -261,7 +265,8 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	/**
 	 * @param defaultPermissibleValuesCollection the defaultPermissibleValuesCollection to set
 	 */
-	private void setDefaultPermissibleValuesCollection(Collection<PermissibleValueInterface> defaultPermissibleValuesCollection)
+	private void setDefaultPermissibleValuesCollection(
+			Collection<PermissibleValueInterface> defaultPermissibleValuesCollection)
 	{
 		this.defaultPermissibleValuesCollection = defaultPermissibleValuesCollection;
 	}
@@ -274,9 +279,11 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 	public String getDefaultValue()
 	{
 		String defaultValue = null;
-		if (defaultPermissibleValuesCollection != null && !defaultPermissibleValuesCollection.isEmpty())
+		if (defaultPermissibleValuesCollection != null
+				&& !defaultPermissibleValuesCollection.isEmpty())
 		{
-			Iterator<PermissibleValueInterface> dataElementIterator = defaultPermissibleValuesCollection.iterator();
+			Iterator<PermissibleValueInterface> dataElementIterator = defaultPermissibleValuesCollection
+					.iterator();
 			defaultValue = String.valueOf(dataElementIterator.next().getValueAsObject());
 		}
 		else
@@ -295,9 +302,11 @@ public class CategoryAttribute extends BaseAbstractAttribute implements Category
 		{
 			defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 		}
-		if (defaultPermissibleValuesCollection != null && !defaultPermissibleValuesCollection.isEmpty())
+		if (defaultPermissibleValuesCollection != null
+				&& !defaultPermissibleValuesCollection.isEmpty())
 		{
-			Iterator<PermissibleValueInterface> iterator = defaultPermissibleValuesCollection.iterator();
+			Iterator<PermissibleValueInterface> iterator = defaultPermissibleValuesCollection
+					.iterator();
 			PermissibleValueInterface pv = iterator.next();
 			defaultPermissibleValuesCollection.remove(pv);
 		}

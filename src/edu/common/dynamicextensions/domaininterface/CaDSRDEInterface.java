@@ -23,5 +23,5 @@ public interface CaDSRDEInterface extends DataElementInterface
 	 * @param publicId the public identifier to be set.
 	 */
 	void setPublicId(String publicId);
-	
+
 }

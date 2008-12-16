@@ -11,7 +11,7 @@ import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
  * @author sujay_narkar
  *
  */
-public interface EntityInterface  extends AbstractEntityInterface
+public interface EntityInterface extends AbstractEntityInterface
 {
 
 	/**
@@ -68,7 +68,6 @@ public interface EntityInterface  extends AbstractEntityInterface
 	 */
 	void removeAssociation(AssociationInterface associationInterface);
 
-
 	/**
 	 * @param isAbstract The isAbstract to set.
 	 */
@@ -95,6 +94,7 @@ public interface EntityInterface  extends AbstractEntityInterface
 	 * @return  Collection of AttributeInterface
 	 */
 	Collection<AttributeInterface> getAllAttributes();
+
 	/**
 	 * This method returns attributs ONLY for the entity. It does not traverse the heirarchy
 	 * @return  Collection of AttributeInterface
@@ -134,8 +134,9 @@ public interface EntityInterface  extends AbstractEntityInterface
 	/**
 	 *
 	 *
-	 *//*
-	void removeAllAbstractAttributes();*/
+	 */
+	/*
+		void removeAllAbstractAttributes();*/
 
 	/**
 	 * @return
@@ -157,31 +158,34 @@ public interface EntityInterface  extends AbstractEntityInterface
 	 */
 	void setDiscriminatorValue(String discriminatorValue);
 
-    /**
-     * Get all attributes for query
-     */
-    Collection<AttributeInterface> getEntityAttributesForQuery();
+	/**
+	 * Get all attributes for query
+	 */
+	Collection<AttributeInterface> getEntityAttributesForQuery();
 
-    /**
-     *
-     * @return
-     */
-    int getDataTableState();
-    /**
-     *
-     * @param dataTableState
-     */
-    void setDataTableState(int dataTableState);
-    /**
-     *
-     * @return
-     */
-    EntityGroupInterface getEntityGroup();
-    /**
-     *
-     * @param entityGroup
-     */
-    void setEntityGroup(EntityGroupInterface entityGroup);
+	/**
+	 *
+	 * @return
+	 */
+	int getDataTableState();
+
+	/**
+	 *
+	 * @param dataTableState
+	 */
+	void setDataTableState(int dataTableState);
+
+	/**
+	 *
+	 * @return
+	 */
+	EntityGroupInterface getEntityGroup();
+
+	/**
+	 *
+	 * @param entityGroup
+	 */
+	void setEntityGroup(EntityGroupInterface entityGroup);
 
 	/**
 	 *
@@ -189,24 +193,28 @@ public interface EntityInterface  extends AbstractEntityInterface
 	 * @return
 	 */
 	AttributeInterface getAttributeByName(String attributeName);
+
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
 	AbstractAttributeInterface getAbstractAttributeByName(String attributeName);
+
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
 	boolean isAttributePresent(String attributeName);
+
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
 	boolean isMultiselectAttributePresent(String attributeName);
+
 	/**
 	 * This method return the Collection of Association excluding collection attributes.
 	 * @return the Collection of Association.

@@ -27,16 +27,16 @@ public interface EntityManagerExceptionConstantsInterface
 
 	// Exception constant in case of entity name is invalid for saving.
 	String DYEXTN_A_003 = "DYEXTN_A_003";
-	
+
 	// Exception constant in case of entity description exceeds maximum length.
 	String DYEXTN_A_004 = "DYEXTN_A_004";
-	
+
 	// Exception constant in case of association's cardinalities are invalid.
 	String DYEXTN_A_005 = "DYEXTN_A_005";
-	
+
 	// Exception constant in case of attributes share the same name.
 	String DYEXTN_A_006 = "DYEXTN_A_006";
-	
+
 	// Exception constant in case of name exceeds maximum limit.
 	String DYEXTN_A_007 = "DYEXTN_A_007";
 
@@ -45,16 +45,16 @@ public interface EntityManagerExceptionConstantsInterface
 
 	// Exception constant in case when user can not change the data type of an attribute.
 	String DYEXTN_A_009 = "DYEXTN_A_009";
-	
+
 	// In case when parent can not be changed for the entity.
 	String DYEXTN_A_010 = "DYEXTN_A_010";
-	
+
 	// In case when parent is not saved for the entity.
 	String DYEXTN_A_011 = "DYEXTN_A_011";
-	
+
 	// Exception constant in case of discriminatorValue or discriminatorColumn not specified for TABLE_PER_HEIRARCHY.
 	String DYEXTN_A_012 = "DYEXTN_A_012";
-	
+
 	// In case when attribute is deleted having data present for it.
 	String DYEXTN_A_013 = "DYEXTN_A_013";
 
@@ -69,7 +69,7 @@ public interface EntityManagerExceptionConstantsInterface
 
 	// In case when form name is duplicate in entity group.
 	String DYEXTN_A_019 = "DYEXTN_A_019";
-	
+
 	// In case a sub form added forms a circular hierarchy.
 	String DYEXTN_A_020 = "DYEXTN_A_020";
 

@@ -18,7 +18,9 @@ import edu.common.dynamicextensions.util.global.Constants.Cardinality;
  * @hibernate.joined-subclass table="DYEXTN_CONTAINMENT_CONTROL"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class ContainmentAssociationControl extends AbstractContainmentControl implements ContainmentAssociationControlInterface
+public class ContainmentAssociationControl extends AbstractContainmentControl
+		implements
+			ContainmentAssociationControlInterface
 {
 
 	/**
@@ -50,7 +52,8 @@ public class ContainmentAssociationControl extends AbstractContainmentControl im
 	public boolean isCardinalityOneToMany()
 	{
 		boolean isOneToMany = false;
-		AssociationInterface associationInterface = (AssociationInterface) this.getBaseAbstractAttribute();
+		AssociationInterface associationInterface = (AssociationInterface) this
+				.getBaseAbstractAttribute();
 		RoleInterface targetRole = associationInterface.getTargetRole();
 		if (targetRole.getMaximumCardinality() == Cardinality.MANY)
 		{
@@ -59,4 +62,3 @@ public class ContainmentAssociationControl extends AbstractContainmentControl im
 		return isOneToMany;
 	}
 }
-

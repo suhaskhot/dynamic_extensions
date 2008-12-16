@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
@@ -7,14 +8,16 @@ import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_FORM_CTRL_NOTES"
  */
-public class FormControlNotes extends DynamicExtensionBaseDomainObject implements FormControlNotesInterface
+public class FormControlNotes extends DynamicExtensionBaseDomainObject
+		implements
+			FormControlNotesInterface
 {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4L;
-	
+
 	protected String note;
 
 	/**
@@ -28,7 +31,6 @@ public class FormControlNotes extends DynamicExtensionBaseDomainObject implement
 		return id;
 	}
 
-	
 	/**
 	 * @hibernate.property name="note" type="string" column="NOTE" length="255"
 	 * @return Returns the note.
@@ -38,7 +40,6 @@ public class FormControlNotes extends DynamicExtensionBaseDomainObject implement
 		return note;
 	}
 
-	
 	/**
 	 * @param note the note to set
 	 */

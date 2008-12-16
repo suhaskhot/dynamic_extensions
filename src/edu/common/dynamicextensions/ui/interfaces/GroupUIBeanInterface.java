@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.ui.interfaces;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 public interface GroupUIBeanInterface
 {
+
 	/**
 	 * 
 	 * @return group description
@@ -38,17 +40,19 @@ public interface GroupUIBeanInterface
 	 * @param groupName : Name of group
 	 */
 	public void setGroupName(String groupName);
+
 	/**
 	 * 
 	 * @return Group operation performed :  Save or show next page
 	 */
 	public String getGroupOperation();
+
 	/**
 	 * 
 	 * @param groupOperation : Group operation performed - Save or show next page
 	 */
 	public void setGroupOperation(String groupOperation);
-	
+
 	/**
 	 * 
 	 * @return create new group or use existing
@@ -60,7 +64,7 @@ public interface GroupUIBeanInterface
 	 * @param createGroupAs Create group or use existing
 	 */
 	public void setCreateGroupAs(String createGroupAs);
-	
+
 	/**
 	 * @return
 	 */
@@ -71,18 +75,17 @@ public interface GroupUIBeanInterface
 	 * @param groupList
 	 */
 	public void setGroupList(List groupList);
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public String getGroupNameText();
-	
+
 	/**
 	 * 
 	 * @param groupNameText
 	 */
 	public void setGroupNameText(String groupNameText);
-	
 
 }

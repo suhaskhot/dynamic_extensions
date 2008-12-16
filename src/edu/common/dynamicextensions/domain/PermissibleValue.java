@@ -16,7 +16,8 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
  *
  */
 public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
-		implements PermissibleValueInterface
+		implements
+			PermissibleValueInterface
 {
 
 	/**
@@ -47,7 +48,6 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	{
 		this.description = description;
 	}
-
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.PermissibleValueInterface#getValueAsObject()
@@ -85,7 +85,7 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	{
 		this.semanticPropertyCollection = semanticPropertyCollection;
 	}
-	
+
 	/**
 	 * This method adds a SemanticProperty to the AbstractMetadata.
 	 * @param semanticPropertyInterface A SemanticProperty to be added.
@@ -137,6 +137,7 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 		}
 		return semanticPropertyList;
 	}
+
 	/**
 	 * 
 	 * @param stringValue

@@ -39,10 +39,9 @@ public interface EntityRecordInterface
 	 */
 	void setRecordValueList(List recordValueList);
 
-	
 	/**
 	 * @param index index
 	 * @param value value
 	 */
-	void addRecordValue(int index,Object value);
+	void addRecordValue(int index, Object value);
 }

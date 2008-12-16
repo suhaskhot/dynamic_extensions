@@ -34,7 +34,8 @@ public class SemanticPropertyBuilderUtil
 	 * @param conceptCodes Comma separated string of concept codes.
 	 * @return Collection collection of semantic property objects.
 	 */
-	public static Collection<SemanticPropertyInterface> getSymanticPropertyCollection(String conceptCodes)
+	public static Collection<SemanticPropertyInterface> getSymanticPropertyCollection(
+			String conceptCodes)
 	{
 		if (conceptCodes == null || conceptCodes.trim().length() == 0)
 		{
@@ -69,26 +70,34 @@ public class SemanticPropertyBuilderUtil
 	 */
 	public static String getConceptCodeString(AbstractMetadataInterface abstractMetadataInterface)
 	{
-		if (abstractMetadataInterface == null || abstractMetadataInterface.getSemanticPropertyCollection() == null
+		if (abstractMetadataInterface == null
+				|| abstractMetadataInterface.getSemanticPropertyCollection() == null
 				|| abstractMetadataInterface.getSemanticPropertyCollection().isEmpty())
 		{
 			return "";
 		}
 		else
 		{
-			return getConceptCodeString(abstractMetadataInterface.getOrderedSemanticPropertyCollection());
+			return getConceptCodeString(abstractMetadataInterface
+					.getOrderedSemanticPropertyCollection());
 		}
 	}
-	
-	public  static String getConceptCodeString(Collection<SemanticPropertyInterface> semanticPropertyCollection)
+
+	/**
+	 * @param semanticPropertyCollection
+	 * @return conceptCode
+	 */
+	public static String getConceptCodeString(
+			Collection<SemanticPropertyInterface> semanticPropertyCollection)
 	{
 		StringBuffer conceptCode = new StringBuffer();
-		if(semanticPropertyCollection!=null)
+		if (semanticPropertyCollection != null)
 		{
 			Iterator iterator = semanticPropertyCollection.iterator();
 			while (iterator.hasNext())
 			{
-				SemanticPropertyInterface semanticPropertyInterface = (SemanticPropertyInterface) iterator.next();
+				SemanticPropertyInterface semanticPropertyInterface = (SemanticPropertyInterface) iterator
+						.next();
 				conceptCode.append(semanticPropertyInterface.getConceptCode());
 				if (iterator.hasNext())
 				{

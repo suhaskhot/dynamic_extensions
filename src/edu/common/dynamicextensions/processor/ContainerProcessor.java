@@ -68,7 +68,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateContainerInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface)
+	public void populateContainerInterface(ContainerInterface containerInterface,
+			ContainerUIBeanInterface containerUIBeanInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (containerInterface != null && containerUIBeanInterface != null)
@@ -79,12 +80,15 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 			//containerInterface.setRequiredFieldIndicatior(containerUIBeanInterface.getRequiredFieldIndicatior());
 			//containerInterface.setRequiredFieldWarningMessage(containerUIBeanInterface.getRequiredFieldWarningMessage());
 			containerInterface.setRequiredFieldIndicatior(Constants.REQUIRED_FIELD_INDICATOR);
-			containerInterface.setRequiredFieldWarningMessage(Constants.REQUIRED_FIELD_WARNING_MESSAGE);
+			containerInterface
+					.setRequiredFieldWarningMessage(Constants.REQUIRED_FIELD_WARNING_MESSAGE);
 			containerInterface.setTitleCss(containerUIBeanInterface.getTitleCss());
-			if (containerUIBeanInterface.getParentForm() != null && !containerUIBeanInterface.getParentForm().equals("")
+			if (containerUIBeanInterface.getParentForm() != null
+					&& !containerUIBeanInterface.getParentForm().equals("")
 					&& !containerUIBeanInterface.getParentForm().equals("0"))
 			{
-				ContainerInterface parentContainer = DynamicExtensionsUtility.getContainerByIdentifier(containerUIBeanInterface.getParentForm());
+				ContainerInterface parentContainer = DynamicExtensionsUtility
+						.getContainerByIdentifier(containerUIBeanInterface.getParentForm());
 				containerInterface.setBaseContainer(parentContainer);
 			}
 			//Added for bug 6068
@@ -95,7 +99,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 		}
 	}
 
-	public void populateContainer(ContainerInterface container, ContainerUIBeanInterface containerUIBean, EntityGroupInterface entityGroup)
+	public void populateContainer(ContainerInterface container,
+			ContainerUIBeanInterface containerUIBean, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (container != null && containerUIBean != null)
@@ -107,19 +112,22 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 			container.setRequiredFieldWarningMessage(Constants.REQUIRED_FIELD_WARNING_MESSAGE);
 			container.setTitleCss(containerUIBean.getTitleCss());
 
-			if (containerUIBean.getParentForm() != null && !containerUIBean.getParentForm().equals("")
+			if (containerUIBean.getParentForm() != null
+					&& !containerUIBean.getParentForm().equals("")
 					&& !containerUIBean.getParentForm().equals("0"))
 			{
 				ContainerInterface parentContainer = null;
 
 				for (EntityInterface entity : entityGroup.getEntityCollection())
 				{
-					Collection<ContainerInterface> containerCollection = entity.getContainerCollection();
+					Collection<ContainerInterface> containerCollection = entity
+							.getContainerCollection();
 					for (ContainerInterface currentContainer : containerCollection)
 					{
 						if (currentContainer.getId() != null)
 						{
-							if (currentContainer.getId().toString().equals(containerUIBean.getParentForm()))
+							if (currentContainer.getId().toString().equals(
+									containerUIBean.getParentForm()))
 							{
 								parentContainer = currentContainer;
 							}
@@ -147,20 +155,26 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 */
 
-	public void populateContainerUIBeanInterface(ContainerInterface containerInterface, ContainerUIBeanInterface containerUIBeanInterface,
-			EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public void populateContainerUIBeanInterface(ContainerInterface containerInterface,
+			ContainerUIBeanInterface containerUIBeanInterface, EntityGroupInterface entityGroup)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formList = new ArrayList<NameValueBean>();
 		NameValueBean formTobeRemoved = null;
 		if (containerInterface != null && containerUIBeanInterface != null)
 		{
-			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface.getButtonCss()));
+			containerUIBeanInterface.setButtonCss(Utility.toString(containerInterface
+					.getButtonCss()));
 			//containerUIBeanInterface.setFormCaption(Utility.toString(containerInterface.getCaption()));
 			containerUIBeanInterface.setFormName(containerInterface.getCaption());
-			containerUIBeanInterface.setMainTableCss(Utility.toString(containerInterface.getMainTableCss()));
-			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface.getRequiredFieldIndicatior()));
-			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility.toString(containerInterface.getRequiredFieldWarningMessage()));
-			containerUIBeanInterface.setTitleCss(Utility.toString(containerInterface.getTitleCss()));
+			containerUIBeanInterface.setMainTableCss(Utility.toString(containerInterface
+					.getMainTableCss()));
+			containerUIBeanInterface.setRequiredFieldIndicatior(Utility.toString(containerInterface
+					.getRequiredFieldIndicatior()));
+			containerUIBeanInterface.setRequiredFieldWarningMessage(Utility
+					.toString(containerInterface.getRequiredFieldWarningMessage()));
+			containerUIBeanInterface
+					.setTitleCss(Utility.toString(containerInterface.getTitleCss()));
 
 			if (entityGroup.getId() != null)
 			{
@@ -170,7 +184,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 
 				for (NameValueBean form : formList)
 				{
-					if (containerUIBeanInterface.getFormName() != null && form.getName().equals(containerUIBeanInterface.getFormName()))
+					if (containerUIBeanInterface.getFormName() != null
+							&& form.getName().equals(containerUIBeanInterface.getFormName()))
 					{
 						formTobeRemoved = form;
 					}
@@ -186,7 +201,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 
 			if (containerInterface.getBaseContainer() != null)
 			{
-				containerUIBeanInterface.setParentForm(containerInterface.getBaseContainer().getId().toString());
+				containerUIBeanInterface.setParentForm(containerInterface.getBaseContainer()
+						.getId().toString());
 			}
 			else
 			{
@@ -201,7 +217,8 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<NameValueBean> getFormsList(Long groupId) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public List<NameValueBean> getFormsList(Long groupId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		List<NameValueBean> containerList = new ArrayList<NameValueBean>();
@@ -231,11 +248,12 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException : Exception thrown by Entity Manager
 	 * @throws DynamicExtensionsSystemException :  Exception thrown by Entity Manager
 	 */
-	public ContainerInterface saveContainer(ContainerInterface containerInterface) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	public ContainerInterface saveContainer(ContainerInterface containerInterface)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		//metadata createion needs to run incase of entity only
-		EntityGroupInterface entityGroup = ((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup();
+		EntityGroupInterface entityGroup = ((EntityInterface) containerInterface
+				.getAbstractEntity()).getEntityGroup();
 		entityGroup.addMainContainer(containerInterface);
 		EntityGroupManager.getInstance().persistEntityGroup(entityGroup);
 		return containerInterface;

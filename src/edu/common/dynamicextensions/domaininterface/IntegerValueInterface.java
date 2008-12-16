@@ -19,5 +19,5 @@ public interface IntegerValueInterface extends PermissibleValueInterface
 	 * @param value the value to be set.
 	 */
 	void setValue(Integer value);
-	
+
 }

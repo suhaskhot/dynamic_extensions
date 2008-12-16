@@ -8,6 +8,7 @@ package edu.common.dynamicextensions.ui.interfaces;
  */
 public interface EntityUIBeanInterface
 {
+
 	/**
 	 * @return Returns the name.
 	 */

@@ -9,7 +9,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssoci
  * @hibernate.joined-subclass table="DYEXTN_CAT_ASSO_CTL"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAssociationControl extends AbstractContainmentControl implements CategoryAssociationControlInterface
+public class CategoryAssociationControl extends AbstractContainmentControl
+		implements
+			CategoryAssociationControlInterface
 {
 
 	/**
@@ -32,7 +34,8 @@ public class CategoryAssociationControl extends AbstractContainmentControl imple
 	public boolean isCardinalityOneToMany()
 	{
 		boolean isOneToMany = false;
-		CategoryAssociationInterface associationInterface = (CategoryAssociationInterface) this.getBaseAbstractAttribute();
+		CategoryAssociationInterface associationInterface = (CategoryAssociationInterface) this
+				.getBaseAbstractAttribute();
 		if (associationInterface.getTargetCategoryEntity().getNumberOfEntries() == -1)
 		{
 			isOneToMany = true;

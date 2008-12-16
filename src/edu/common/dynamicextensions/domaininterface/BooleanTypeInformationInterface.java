@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface;
 
 /**
@@ -7,7 +8,4 @@ package edu.common.dynamicextensions.domaininterface;
 public interface BooleanTypeInformationInterface extends AttributeTypeInformationInterface
 {
 
-    
-
-  
 }

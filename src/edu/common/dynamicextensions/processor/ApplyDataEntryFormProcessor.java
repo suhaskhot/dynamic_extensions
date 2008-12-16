@@ -52,9 +52,11 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeValueMap
 	 * @return
 	 */
-	public Map<BaseAbstractAttributeInterface, Object> removeNullValueEntriesFormMap(Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
+	public Map<BaseAbstractAttributeInterface, Object> removeNullValueEntriesFormMap(
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
 	{
-		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap.entrySet();
+		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeValueSet = attributeValueMap
+				.entrySet();
 		Iterator attributeValueSetIterator = attributeValueSet.iterator();
 		while (attributeValueSetIterator.hasNext())
 		{
@@ -83,24 +85,29 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @return recordIdentifier Record identifier of the last saved record. 
 	 */
-	public String insertDataEntryForm(ContainerInterface container, Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
+	public String insertDataEntryForm(ContainerInterface container,
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Long recordIdentifier = null;
 		//quick fix: common manager interface should be used here
 		if (container.getAbstractEntity() instanceof CategoryEntityInterface)
 		{
-			CategoryInterface categoryInterface = ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
+			CategoryInterface categoryInterface = ((CategoryEntityInterface) container
+					.getAbstractEntity()).getCategory();
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			Long categoryRecordId = categoryManager.insertData(categoryInterface, attributeValueMap, userId);
-			recordIdentifier = categoryManager.getEntityRecordIdByRootCategoryEntityRecordId(categoryRecordId, 
-					categoryInterface.getRootCategoryElement().getTableProperties().getName());
+			Long categoryRecordId = categoryManager.insertData(categoryInterface,
+					attributeValueMap, userId);
+			recordIdentifier = categoryManager.getEntityRecordIdByRootCategoryEntityRecordId(
+					categoryRecordId, categoryInterface.getRootCategoryElement()
+							.getTableProperties().getName());
 		}
 		else
 		{
 			Map map = attributeValueMap;
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container.getAbstractEntity(), map, userId);
+			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container
+					.getAbstractEntity(), map, userId);
 		}
 
 		return recordIdentifier.toString();
@@ -116,8 +123,10 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException 
 	 */
-	public Boolean editDataEntryForm(ContainerInterface container, Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			Long recordIdentifier) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
+	public Boolean editDataEntryForm(ContainerInterface container,
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
+			SQLException
 	{
 		//Quick fix:
 		if (container.getAbstractEntity() instanceof EntityInterface)
@@ -131,12 +140,15 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 		}
 		else
 		{
-			CategoryInterface categoryInterface = ((CategoryEntityInterface) container.getAbstractEntity()).getCategory();
+			CategoryInterface categoryInterface = ((CategoryEntityInterface) container
+					.getAbstractEntity()).getCategory();
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
-			Long categoryRecordId =  categoryManager.getRootCategoryEntityRecordIdByEntityRecordId(recordIdentifier, 
-					categoryInterface.getRootCategoryElement().getTableProperties().getName());
-			return CategoryManager.getInstance().editData((CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap, categoryRecordId,
-				userId);
+			Long categoryRecordId = categoryManager.getRootCategoryEntityRecordIdByEntityRecordId(
+					recordIdentifier, categoryInterface.getRootCategoryElement()
+							.getTableProperties().getName());
+			return CategoryManager.getInstance().editData(
+					(CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap,
+					categoryRecordId, userId);
 		}
 
 	}

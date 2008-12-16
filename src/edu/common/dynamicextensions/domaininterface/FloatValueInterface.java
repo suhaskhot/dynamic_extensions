@@ -19,5 +19,5 @@ public interface FloatValueInterface extends PermissibleValueInterface
 	 * @param value the value to be set.
 	 */
 	void setValue(Float value);
-	
+
 }

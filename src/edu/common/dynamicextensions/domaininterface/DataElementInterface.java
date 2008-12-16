@@ -8,17 +8,17 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface DataElementInterface extends DynamicExtensionBaseDomainObjectInterface
 {
-    
+
 	/**
 	 * This method returns the unique identifier of DataElement.
 	 * @return the unique identifier of DataElement.
 	 */
-    Long getId();
-    
-    /**
+	Long getId();
+
+	/**
 	 * This method sets the unique identifier of DataElement.
 	 * @param id the unique identifier to be set.
 	 */
 	void setId(Long id);
-    
+
 }

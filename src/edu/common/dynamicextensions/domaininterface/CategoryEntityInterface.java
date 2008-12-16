@@ -5,6 +5,7 @@ import java.util.Collection;
 
 public interface CategoryEntityInterface extends AbstractEntityInterface
 {
+
 	/**
 	 *
 	 * @return
@@ -15,7 +16,8 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 *
 	 * @param categoryAttributeCollection
 	 */
-	void setCategoryAttributeCollection(Collection<CategoryAttributeInterface> categoryAttributeCollection);
+	void setCategoryAttributeCollection(
+			Collection<CategoryAttributeInterface> categoryAttributeCollection);
 
 	/**
 	 *
@@ -105,7 +107,8 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 
 	Collection<CategoryAssociationInterface> getCategoryAssociationCollection();
 
-	void setCategoryAssociationCollection(Collection<CategoryAssociationInterface> categoryAssociationCollection);
+	void setCategoryAssociationCollection(
+			Collection<CategoryAssociationInterface> categoryAssociationCollection);
 
 	CategoryEntityInterface getParentCategoryEntity();
 
@@ -118,16 +121,16 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	 * @return
 	 */
 	CategoryAssociationInterface getAssociationByName(String associationName);
-	
+
 	/**
 	 *
 	 * @param attributeName
 	 * @return
 	 */
 	CategoryAttributeInterface getAttributeByName(String attributeName);
-	
+
 	CategoryEntityInterface getTreeParentCategoryEntity();
-	
+
 	void setTreeParentCategoryEntity(CategoryEntityInterface treeParentCategoryEntity);
 
 }

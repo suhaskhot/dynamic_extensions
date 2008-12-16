@@ -63,45 +63,40 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
 	 */
 	void removeEntity(EntityInterface entityInterface);
 
-	
 	/**
 	 * @return
 	 */
 	Collection<ContainerInterface> getMainContainerCollection();
 
-	
 	/**
 	 * @param mainContainerCollection The mainContainerCollection to set.
 	 */
 	void setMainContainerCollection(Collection<ContainerInterface> mainContainerCollection);
-	
-	
+
 	/**
 	 * @param containerInterface
 	 */
 	void addMainContainer(ContainerInterface containerInterface);
-	
-	
+
 	/**
 	 * @param containerInterface
 	 */
 	void removeMainContainer(ContainerInterface containerInterface);
-	
+
 	/**
 	 * @return
 	 */
 	Boolean getIsSystemGenerated();
 
-	
 	/**
 	 * @param isSystemGenerated
 	 */
 	void setIsSystemGenerated(Boolean isSystemGenerated);
-	
+
 	/**
 	 * @param entityName
 	 * @return
 	 */
 	EntityInterface getEntityByName(String entityName);
-	
+
 }

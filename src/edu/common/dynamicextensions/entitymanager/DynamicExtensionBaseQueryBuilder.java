@@ -99,8 +99,8 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<String> getCreateEntityQueryList(Entity entity, List<String> revQueries) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public List<String> getCreateEntityQueryList(Entity entity, List<String> revQueries)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<String> queries = new ArrayList<String>();
 
@@ -120,8 +120,8 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List<String> getUpdateEntityQueryList(Entity entity, List<String> revQueries) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	public List<String> getUpdateEntityQueryList(Entity entity, List<String> revQueries)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<String> queries = new ArrayList<String>();
 
@@ -144,8 +144,8 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public List<String> getUpdateCategoryEntityQueryList(CategoryEntityInterface catEntity,
-			List<String> revQueries)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			List<String> revQueries) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		List<String> queries = new ArrayList<String>();
 
@@ -627,8 +627,8 @@ class DynamicExtensionBaseQueryBuilder
 			// For many to many, insert into middle table.
 			for (int i = 0; i < recIds.size(); i++)
 			{
-				 identifier = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
-							.getName());
+				identifier = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
+						.getName());
 				query = new StringBuffer();
 				query.append("INSERT INTO " + association.getConstraintProperties().getName()
 						+ " ( ");

@@ -7,6 +7,7 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface ShortValueInterface extends PermissibleValueInterface
 {
+
 	/**
 	 * This method returns the predefined value of ShortValue.
 	 * @return the predefined value of ShortValue.
@@ -18,5 +19,5 @@ public interface ShortValueInterface extends PermissibleValueInterface
 	 * @param value the value to be set.
 	 */
 	void setValue(Short value);
-	
+
 }

@@ -9,7 +9,10 @@ import edu.common.dynamicextensions.domaininterface.PathInterface;
  * @author mandar_shidhore
  *
  */
-public class PathAssociationRelation extends DynamicExtensionBaseDomainObject implements PathAssociationRelationInterface, Comparable
+public class PathAssociationRelation extends DynamicExtensionBaseDomainObject
+		implements
+			PathAssociationRelationInterface,
+			Comparable
 {
 
 	/**
@@ -30,17 +33,17 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 * 
 	 */
 	protected int pathSequenceNumber;
-	
+
 	/**
 	 * 
 	 */
 	protected Long sourceInstanceId;
-	
+
 	/**
 	 * 
 	 */
 	protected Long targetInstanceId;
-	
+
 	public PathAssociationRelation()
 	{
 		super();
@@ -58,8 +61,6 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 		return id;
 	}
 
-
-
 	/**
 	 * @hibernate.many-to-one column="PATH_ID" class="edu.common.dynamicextensions.domain.Path" cascade="save-update"
 	 * @return the path
@@ -74,7 +75,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 */
 	public void setPath(PathInterface path)
 	{
-		this.path = (Path)path;
+		this.path = (Path) path;
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 */
 	public AssociationInterface getAssociation()
 	{
-		return (AssociationInterface)association;
+		return (AssociationInterface) association;
 	}
 
 	/**
@@ -91,7 +92,7 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject im
 	 */
 	public void setAssociation(AssociationInterface associationInterface)
 	{
-		this.association = (Association)associationInterface;
+		this.association = (Association) associationInterface;
 	}
 
 	/**

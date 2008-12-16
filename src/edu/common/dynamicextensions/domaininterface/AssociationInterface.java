@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
  */
 public interface AssociationInterface extends AbstractAttributeInterface
 {
+
 	/**
 	 * This method returns whether the Attribute is a Collection or not.
 	 * @return whether the Attribute is a Collection or not.
@@ -27,6 +28,7 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	 * @param isCollection the Boolean value to be set.
 	 */
 	void setIsCollection(Boolean isCollection);
+
 	/**
 	 * This method returns the direction of the Association.
 	 * It can be Source to Destination or vice versa or bidirectional.
@@ -87,12 +89,10 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	 */
 	ConstraintPropertiesInterface getConstraintProperties();
 
-
 	/**
 	 * @param constraintProperties constraintProperties
 	 */
 	void setConstraintProperties(ConstraintPropertiesInterface constraintProperties);
-
 
 	/**
 	 * @return BOOLEAN

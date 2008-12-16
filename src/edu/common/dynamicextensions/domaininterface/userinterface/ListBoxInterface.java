@@ -35,6 +35,7 @@ public interface ListBoxInterface extends SelectInterface
 	 * @param noOfRows the Number of rows to be set for ListBox.
 	 */
 	void setNoOfRows(Integer noOfRows);
+
 	/**
 	 *
 	 * This method returns AssociationInterface

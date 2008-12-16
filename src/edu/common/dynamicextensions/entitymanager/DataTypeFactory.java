@@ -48,15 +48,17 @@ public class DataTypeFactory
 	 * @return DataTypeFactory instance
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public static synchronized DataTypeFactory getInstance() throws DataTypeFactoryInitializationException
+	public static synchronized DataTypeFactory getInstance()
+			throws DataTypeFactoryInitializationException
 	{
 		if (dataTypeFactory == null)
 		{
 			dataTypeFactory = new DataTypeFactory();
-			String dataTypeMappingFileName = "PrimitiveAttributeDataTypes" + "_" + Variables.databaseName + ".xml";
+			String dataTypeMappingFileName = "PrimitiveAttributeDataTypes" + "_"
+					+ Variables.databaseName + ".xml";
 			dataTypeFactory.populateDataTypeMap(dataTypeMappingFileName);
 		}
-		
+
 		return dataTypeFactory;
 	}
 
@@ -66,7 +68,8 @@ public class DataTypeFactory
 	 * @return dataType Map
 	 * @throws DataTypeFactoryInitializationException on Exception
 	 */
-	public final Map<String, Object> populateDataTypeMap(String xmlFileName) throws DataTypeFactoryInitializationException
+	public final Map<String, Object> populateDataTypeMap(String xmlFileName)
+			throws DataTypeFactoryInitializationException
 	{
 		dataTypeMap = new HashMap<String, Object>();
 
@@ -84,7 +87,8 @@ public class DataTypeFactory
 			Element digitsAfterDecimal = null;
 
 			Element primitiveAttributesElement = document.getRootElement();
-			Iterator primitiveAttributeElementIterator = primitiveAttributesElement.elementIterator("Primitive-Attribute");
+			Iterator primitiveAttributeElementIterator = primitiveAttributesElement
+					.elementIterator("Primitive-Attribute");
 
 			Element primitiveAttributeElement = null;
 
@@ -96,11 +100,11 @@ public class DataTypeFactory
 				databaseDataType = primitiveAttributeElement.element("database-datatype");
 				digitsBeforeDecimal = primitiveAttributeElement.element("digits-before-decimal");
 				digitsAfterDecimal = primitiveAttributeElement.element("digits-after-decimal");
-				
+
 				DataTypeInformation dataTypeInfo = new DataTypeInformation();
 				dataTypeInfo.setName(name.getStringValue());
 				dataTypeInfo.setDatabaseDataType(databaseDataType.getStringValue());
-				
+
 				if (digitsBeforeDecimal != null && digitsAfterDecimal != null)
 				{
 					dataTypeInfo.setDigitsBeforeDecimal(digitsBeforeDecimal.getStringValue());
@@ -125,19 +129,21 @@ public class DataTypeFactory
 	 * @return String The name of Database data type
 	 * @throws DataTypeFactoryInitializationException If dataTypeMap is not populated
 	 */
-	public String getDatabaseDataType(String primitiveAttribute) throws DataTypeFactoryInitializationException
+	public String getDatabaseDataType(String primitiveAttribute)
+			throws DataTypeFactoryInitializationException
 	{
 		String databaseDataType = null;
 		if (dataTypeMap != null)
 		{
-			DataTypeInformation dataTypeInfo = (DataTypeInformation) dataTypeMap.get(primitiveAttribute);
+			DataTypeInformation dataTypeInfo = (DataTypeInformation) dataTypeMap
+					.get(primitiveAttribute);
 			databaseDataType = (dataTypeInfo != null) ? dataTypeInfo.getDatabaseDataType() : null;
 		}
 		else
 		{
 			throw new DataTypeFactoryInitializationException("Cannot find populated dataType Map.");
 		}
-		
+
 		return databaseDataType;
 	}
 
@@ -148,8 +154,10 @@ public class DataTypeFactory
 	public DataTypeInformation getDataTypePrecisionScaleInformation(String dataType)
 	{
 		DataTypeInformation dataTypeInfo = null;
-		dataTypeInfo = (dataTypeMap != null) ? (DataTypeInformation) dataTypeMap.get(dataType) : null;
-		
+		dataTypeInfo = (dataTypeMap != null)
+				? (DataTypeInformation) dataTypeMap.get(dataType)
+				: null;
+
 		return dataTypeInfo;
 	}
 

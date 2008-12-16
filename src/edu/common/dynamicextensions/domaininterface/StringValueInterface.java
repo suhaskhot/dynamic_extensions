@@ -19,5 +19,5 @@ public interface StringValueInterface extends PermissibleValueInterface
 	 * @param value the value to be set.
 	 */
 	void setValue(String value);
-	
+
 }

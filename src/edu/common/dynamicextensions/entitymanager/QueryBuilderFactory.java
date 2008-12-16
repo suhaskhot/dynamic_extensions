@@ -44,7 +44,7 @@ public class QueryBuilderFactory
 		{
 			queryBuilder = new DynamicExtensionDb2QueryBuilder();
 		}
-		
+
 		return queryBuilder;
 	}
 

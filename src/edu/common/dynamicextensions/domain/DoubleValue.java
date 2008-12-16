@@ -49,12 +49,14 @@ public class DoubleValue extends PermissibleValue implements DoubleValueInterfac
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */
 	public PermissibleValueInterface clone()
 	{
-		DoubleValueInterface doubleValueInterface = DomainObjectFactory.getInstance().createDoubleValue();
+		DoubleValueInterface doubleValueInterface = DomainObjectFactory.getInstance()
+				.createDoubleValue();
 		doubleValueInterface.setValue(this.value);
 		return doubleValueInterface;
 	}

@@ -53,26 +53,29 @@ public class RadioButton extends Control implements RadioButtonInterface
 				defaultValue = "";
 			}
 		}
-		if(defaultValue.length() >0 && this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof DoubleTypeInformationInterface)
+		if (defaultValue.length() > 0
+				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof DoubleTypeInformationInterface)
 		{
-			double doubleValue  = Double.parseDouble(defaultValue);
-		    defaultValue = doubleValue +"";
+			double doubleValue = Double.parseDouble(defaultValue);
+			defaultValue = doubleValue + "";
 		}
-		else if(defaultValue.length() >0 && this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof LongTypeInformationInterface)
+		else if (defaultValue.length() > 0
+				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof LongTypeInformationInterface)
 		{
 			long longValue = Long.parseLong(defaultValue);
-		    defaultValue = longValue +"";
+			defaultValue = longValue + "";
 
 		}
-		else if(defaultValue.length() >0 && this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof FloatTypeInformationInterface)
+		else if (defaultValue.length() > 0
+				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof FloatTypeInformationInterface)
 		{
 			float floatValue = Float.parseFloat(defaultValue);
-		    defaultValue = floatValue +"";
+			defaultValue = floatValue + "";
 
 		}
 		String disabled = "";
 		//If control is defined as readonly through category CSV file,make it Disabled
-		if(this.isReadOnly!=null && getIsReadOnly())
+		if (this.isReadOnly != null && getIsReadOnly())
 		{
 			disabled = ProcessorConstants.DISABLED;
 		}
@@ -80,7 +83,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 		nameValueBeanList = ControlsUtility.populateListOfValues(this);
 
 		String htmlComponentName = getHTMLComponentName();
-		if (nameValueBeanList != null )
+		if (nameValueBeanList != null)
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{
@@ -90,17 +93,16 @@ public class RadioButton extends Control implements RadioButtonInterface
 				{
 					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "' checked "+ disabled + "  >"
-							 + "<label for=\"" + htmlComponentName + "\">"
-							+ optionName
+							+ optionName + "' checked " + disabled + "  >" + "<label for=\""
+							+ htmlComponentName + "\">" + optionName
 							+ "</label> <img src='images/spacer.gif' width='2' height='2'>";
 				}
 				else
 				{
 					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "' " +disabled +" >"
-							+ "<label for=\"" + htmlComponentName + "\">" + optionName
+							+ optionName + "' " + disabled + " >" + "<label for=\""
+							+ htmlComponentName + "\">" + optionName
 							+ "</label> <img src='images/spacer.gif' width='2' height='2'>";
 				}
 			}

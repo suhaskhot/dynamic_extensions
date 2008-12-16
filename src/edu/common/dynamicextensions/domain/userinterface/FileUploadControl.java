@@ -35,13 +35,14 @@ public class FileUploadControl extends Control implements FileUploadInterface
 		ApplicationProperties.initBundle("ApplicationResources");
 		if (this.value != null)
 		{
-			htmlString = ApplicationProperties.getValue("eav.file.fileName") + "&nbsp;"
+			htmlString = ApplicationProperties.getValue("eav.file.fileName")
+					+ "&nbsp;"
 					+ " <A onclick='appendRecordId(this);' href='/dynamicExtensions/DownloadFileAction?attributeIdentifier="
 					+ this.baseAbstractAttribute.getId() + "'>" + this.value + "</A>";
 
 		}
-		htmlString = htmlString + "<input type=\"file\" " + "name=\"value(" + getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName()
-				+ "\"/>";
+		htmlString = htmlString + "<input type=\"file\" " + "name=\"value("
+				+ getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName() + "\"/>";
 		return htmlString;
 	}
 

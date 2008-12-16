@@ -49,6 +49,7 @@ public class LongValue extends PermissibleValue implements LongValueInterface
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */

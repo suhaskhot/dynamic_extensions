@@ -1,13 +1,15 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 public class DataTypeInformation
 {
+
 	public String name;
-	
+
 	public String digitsBeforeDecimal;
-	
+
 	public String digitsAfterDecimal;
-	
+
 	public String databaseDataType;
 
 	/**

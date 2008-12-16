@@ -42,9 +42,9 @@ public interface RuleInterface extends DynamicExtensionBaseDomainObjectInterface
 	 * @param ruleParameterCollection the the Collection of RuleParmeters to be set.
 	 */
 	void setRuleParameterCollection(Collection<RuleParameterInterface> ruleParameterCollection);
-	
+
 	Boolean getIsImplicitRule();
-	
+
 	void setIsImplicitRule(Boolean isImplicitRule);
 
 }

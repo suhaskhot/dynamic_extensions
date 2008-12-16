@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface;
 
 /**
@@ -5,7 +6,7 @@ package edu.common.dynamicextensions.domaininterface;
  * @author rahul_ner
  *
  */
-public interface ObjectTypeInformationInterface extends AttributeTypeInformationInterface {
-
+public interface ObjectTypeInformationInterface extends AttributeTypeInformationInterface
+{
 
 }

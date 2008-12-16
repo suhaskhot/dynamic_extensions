@@ -20,12 +20,10 @@ public class FileExtension extends DynamicExtensionBaseDomainObject
 		return this.id;
 	}
 
-
 	/**
 	 * allowed file extension for the attribute.
 	 */
 	private String fileExtension;
-
 
 	/**
 	 * @return Returns the fileExtension.

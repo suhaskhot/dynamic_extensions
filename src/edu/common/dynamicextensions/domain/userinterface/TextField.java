@@ -100,8 +100,8 @@ public class TextField extends Control implements TextFieldInterface
 		}
 		else
 		{
-			htmlString = "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' " + "id='" + htmlComponentName + "' value='"
-					+ defaultValue + "' ";
+			htmlString = "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' "
+					+ "id='" + htmlComponentName + "' value='" + defaultValue + "' ";
 
 			int columnSize = columns.intValue() - 2;
 			if (columnSize > 0)

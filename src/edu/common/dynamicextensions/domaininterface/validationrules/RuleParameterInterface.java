@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainOb
  */
 public interface RuleParameterInterface extends DynamicExtensionBaseDomainObjectInterface
 {
+
 	/**
 	 * This method returns the Unique Identifier of the Object.
 	 * @return the Unique Identifier of the Object.

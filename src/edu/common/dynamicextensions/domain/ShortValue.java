@@ -49,12 +49,14 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */
 	public PermissibleValueInterface clone()
 	{
-		ShortValueInterface shortValueInterface = DomainObjectFactory.getInstance().createShortValue();
+		ShortValueInterface shortValueInterface = DomainObjectFactory.getInstance()
+				.createShortValue();
 		shortValueInterface.setValue(this.value);
 		return shortValueInterface;
 	}

@@ -16,7 +16,9 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
  * @hibernate.joined-subclass table="DYEXTN_ABSTR_CONTAIN_CTR"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public abstract class AbstractContainmentControl extends Control implements AbstractContainmentControlInterface
+public abstract class AbstractContainmentControl extends Control
+		implements
+			AbstractContainmentControlInterface
 {
 
 	/**
@@ -58,7 +60,8 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 		{
 			if (value != null && ((List) value).size() > 0)
 			{
-				Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value).get(0);
+				Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value)
+						.get(0);
 				containerInterface.setContainerValueMap(displayContainerValueMap);
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
@@ -83,7 +86,8 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 		{
 			if (value != null && ((List) value).size() > 0)
 			{
-				Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value).get(0);
+				Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value)
+						.get(0);
 				this.getContainer().setContainerValueMap(displayContainerValueMap);
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
@@ -95,7 +99,6 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 		return subContainerHTML;
 	}
 
-
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
 	 */
@@ -103,7 +106,8 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 	{
 		String detailsString = "Details";
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
+		stringBuffer
+				.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
 		stringBuffer.append("<a href='#' style='cursor:hand' class='set1'");
 		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(this.getParentContainer().getIncontextContainer().getId() + ",this");
@@ -131,6 +135,5 @@ public abstract class AbstractContainmentControl extends Control implements Abst
 	{
 		this.container = container;
 	}
-
 
 }

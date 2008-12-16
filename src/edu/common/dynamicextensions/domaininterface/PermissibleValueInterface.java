@@ -23,6 +23,7 @@ public interface PermissibleValueInterface extends SemanticAnnotatableInterface
 	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	Object getValueAsObject();
+
 	/**
 	 * 
 	 * @param permissibleValue

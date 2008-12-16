@@ -16,7 +16,7 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = -1598647162647981710L;
-	
+
 	/**
 	 * The predefined Integer value.
 	 */
@@ -49,12 +49,14 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */
 	public PermissibleValueInterface clone()
 	{
-		IntegerValueInterface integerValueInterface = DomainObjectFactory.getInstance().createIntegerValue();
+		IntegerValueInterface integerValueInterface = DomainObjectFactory.getInstance()
+				.createIntegerValue();
 		integerValueInterface.setValue(this.value);
 		return integerValueInterface;
 	}

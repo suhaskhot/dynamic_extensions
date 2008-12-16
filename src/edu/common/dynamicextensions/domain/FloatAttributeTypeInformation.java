@@ -42,8 +42,8 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		FloatValueInterface floatValue = factory.createFloatValue();
 		floatValue.setValue(new Float(value));
-		
+
 		return floatValue;
 	}
-	
+
 }

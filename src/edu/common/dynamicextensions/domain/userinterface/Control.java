@@ -22,7 +22,10 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * @created 28-Sep-2006 12:20:07 PM
  * @hibernate.class table="DYEXTN_CONTROL"
  */
-public abstract class Control extends DynamicExtensionBaseDomainObject implements Serializable, ControlInterface
+public abstract class Control extends DynamicExtensionBaseDomainObject
+		implements
+			Serializable,
+			ControlInterface
 {
 
 	/**
@@ -93,17 +96,17 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	 *
 	 */
 	protected boolean isSubControl = false;
-	
+
 	/**
 	 * 
 	 */
 	protected String heading;
-	
+
 	/**
 	 * 
 	 */
 	protected List<FormControlNotesInterface> formNotes = new LinkedList<FormControlNotesInterface>();
-	
+
 	/**
 	 * Empty Constructor
 	 */
@@ -222,7 +225,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		String htmlString = "";
 
 		String innerHTML = "";
-		if (getParentContainer().getMode() != null && getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
+		if (getParentContainer().getMode() != null
+				&& getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
 			innerHTML = generateViewModeHTML();
 		}
@@ -250,29 +254,32 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("<tr valign='top'>");
 		stringBuffer.append("<tr>");
-		
+
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
 		// category attribute controls.
-		if ((this.heading != null) || (this.getFormNotes() != null && this.getFormNotes().size() != 0))
+		if ((this.heading != null)
+				|| (this.getFormNotes() != null && this.getFormNotes().size() != 0))
 		{
 			stringBuffer.append("<td width='100%' colspan='3' align='left'>");
-			
+
 			if (this.heading != null && this.heading.length() != 0)
 			{
-				stringBuffer.append("<div style='width:100%' class='td_color_6e81a6'>"+this.getHeading()+"</div>");
+				stringBuffer.append("<div style='width:100%' class='td_color_6e81a6'>"
+						+ this.getHeading() + "</div>");
 			}
-			
+
 			if (this.getFormNotes() != null && this.getFormNotes().size() != 0)
 			{
 				stringBuffer.append("<div style='width:100%'>&nbsp</div>");
-				
-				for (FormControlNotesInterface fcNote: this.getFormNotes())
+
+				for (FormControlNotesInterface fcNote : this.getFormNotes())
 				{
-					stringBuffer.append("<div style='width:100%' class='notes'>"+fcNote.getNote()+"</div>");
+					stringBuffer.append("<div style='width:100%' class='notes'>" + fcNote.getNote()
+							+ "</div>");
 				}
 			}
-			
+
 			stringBuffer.append("</td>");
 		}
 		else
@@ -282,7 +289,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		}
 		stringBuffer.append("</tr>");
 
-		stringBuffer.append("<td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
+		stringBuffer
+				.append("<td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
 			stringBuffer.append("<span class='font_red'>");
@@ -290,14 +298,16 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			stringBuffer.append("</span>");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
+			stringBuffer
+					.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
 		}
 		else
 		{
 			stringBuffer.append("&nbsp;");
 			stringBuffer.append("</td>");
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
+			stringBuffer
+					.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
 		}
 		if (this instanceof ComboBox)
 		{
@@ -383,7 +393,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		ContainerInterface parentContainer = this.getParentContainer();
 		if (this.getSequenceNumber() != null)
 		{
-			htmlComponentName = "Control_" + parentContainer.getIncontextContainer().getId() + "_" + parentContainer.getId() + "_" + this.getSequenceNumber();
+			htmlComponentName = "Control_" + parentContainer.getIncontextContainer().getId() + "_"
+					+ parentContainer.getId() + "_" + this.getSequenceNumber();
 		}
 		return htmlComponentName;
 	}
@@ -499,7 +510,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	{
 		this.isReadOnly = isReadOnly;
 	}
-	
+
 	/**
 	 * @hibernate.property name="heading" type="string" column="HEADING"
 	 * @return Returns the caption.
@@ -508,7 +519,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	{
 		return heading;
 	}
-	
+
 	/**
 	 * @param heading the heading to set
 	 */
@@ -516,7 +527,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	{
 		this.heading = heading;
 	}
-	
+
 	/**
 	 * This method Returns the formNotes.
 	 * @hibernate.list name="formNotes" table="DYEXTN_FORM_CTRL_NOTES"
@@ -530,7 +541,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	{
 		return formNotes;
 	}
-	
+
 	/**
 	 * @param formNotes the formNotes to set
 	 */

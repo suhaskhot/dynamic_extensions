@@ -22,25 +22,22 @@ public interface FileTypeInformationInterface extends AttributeTypeInformationIn
 	 * @param maxFileSize
 	 */
 	void setMaxFileSize(Float maxFileSize);
-	
-	
+
 	/**
 	 * @param fileExtension
 	 */
 	void addFileExtension(FileExtension fileExtension);
-	
 
 	/**
 	 * @param fileExtension
 	 */
 	void removeFileExtension(FileExtension fileExtension);
-	
-	
+
 	/**
 	 * 
 	 */
 	void removeAllFileExtensions();
-	
+
 	/**
 	 * @return
 	 */

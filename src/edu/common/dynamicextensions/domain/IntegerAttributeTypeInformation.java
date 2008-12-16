@@ -44,5 +44,5 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 
 		return integerValue;
 	}
-	
+
 }

@@ -4,26 +4,24 @@
  *<p>Copyright:TODO</p>
  *@author Vishvesh Mulay
  *@version 1.0
- */ 
+ */
+
 package edu.common.dynamicextensions.domaininterface;
-
-
 
 public interface AssociationDisplayAttributeInterface
 		extends
 			DynamicExtensionBaseDomainObjectInterface
 {
+
 	/**
 	 * @param sequenceNumber sequence number
 	 */
 	void setSequenceNumber(int sequenceNumber);
 
-
 	/**
 	 * @return sequence number 
 	 */
 	int getSequenceNumber();
-
 
 	/**
 	 * This method returns the source Role of the Association.
@@ -36,6 +34,5 @@ public interface AssociationDisplayAttributeInterface
 	 * @param attribute attribute
 	 */
 	void setAttribute(AttributeInterface attribute);
-	
 
 }

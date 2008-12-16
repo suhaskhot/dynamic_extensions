@@ -692,6 +692,7 @@ public interface EntityManagerInterface
 	 */
 	public Long getEntityIdByCategorEntityId(Long categoryEntityId)
 			throws DynamicExtensionsSystemException;
+
 	/**
 	 * getAllEntityIdsForEntityGroup.
 	 * @param entityGroupId
@@ -699,7 +700,8 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Collection<Long> getAllEntityIdsForEntityGroup(Long entityGroupId)
-	throws DynamicExtensionsSystemException;
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * getRootCategoryEntityIdByCategoryName.
 	 * @param categoryName
@@ -707,13 +709,12 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getRootCategoryEntityIdByCategoryName(String categoryName)
-	throws DynamicExtensionsSystemException;
-	
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * @param entityId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getContainerIdFromEntityId(Long entityId)
-	throws DynamicExtensionsSystemException;
+	public Long getContainerIdFromEntityId(Long entityId) throws DynamicExtensionsSystemException;
 }

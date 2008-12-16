@@ -46,7 +46,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		String defaultValue = "";
 		if (this.value == null)
 		{
-			AttributeMetadataInterface attributeMetadataInterface = this.getAttibuteMetadataInterface();
+			AttributeMetadataInterface attributeMetadataInterface = this
+					.getAttibuteMetadataInterface();
 			if (attributeMetadataInterface != null)
 			{
 				this.value = this.getAttibuteMetadataInterface().getDefaultValue();
@@ -79,8 +80,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		}
 		String htmlComponentName = getHTMLComponentName();
 		String parentContainerId = "";
-		if (this.getParentContainer() != null
-				&& this.getParentContainer().getId() != null)
+		if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
 		{
 			parentContainerId = this.getParentContainer().getId().toString();
 		}
@@ -94,39 +94,65 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		 * if default value is not empty loading the data store first, and then setting the value in 
 		 * combo box to default value.
 		 */
-		String textComponent = "combo"+htmlComponentName;
-		String htmlString = "<script>Ext.onReady(function(){ " + "var myUrl= 'ComboDataAction.do?controlId= " + id
-		+ "~containerIdentifier=" + parentContainerId + "';" + "var ds = new Ext.data.Store({"
-		+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
-		+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
-		+ "[{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,"
-		+ "hiddenName: '"+textComponent+"',displayField:'excerpt',valueField: 'id',"
-		+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-		+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
-		+ "selectOnFocus:true,applyTo: '" + htmlComponentName + "'});";
-		if(!defaultValue.equals(""))
+		String textComponent = "combo" + htmlComponentName;
+		String htmlString = "<script>Ext.onReady(function(){ "
+				+ "var myUrl= 'ComboDataAction.do?controlId= "
+				+ id
+				+ "~containerIdentifier="
+				+ parentContainerId
+				+ "';"
+				+ "var ds = new Ext.data.Store({"
+				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
+				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
+				+ "[{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});"
+				+ "var combo = new Ext.form.ComboBox({store: ds,"
+				+ "hiddenName: '"
+				+ textComponent
+				+ "',displayField:'excerpt',valueField: 'id',"
+				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'"
+				+ defaultValue + "'," + "selectOnFocus:true,applyTo: '" + htmlComponentName
+				+ "'});";
+		if (!defaultValue.equals(""))
 		{
-			htmlString= htmlString+"ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){combo.setValue('"+defaultValue+"',false);});";
+			htmlString = htmlString
+					+ "ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){combo.setValue('"
+					+ defaultValue + "',false);});";
 		}
-		
-		 htmlString = htmlString
-		+ "});</script>" + "<div id='auto_complete_dropdown'>"
-		+ "<input type='text' onmouseover=\"showToolTip('"+htmlComponentName+"')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName + "' size='20'/>"
-		+ "<div name='comboScript' style='display:none'>" + "Ext.onReady(function(){ " + "var myUrl='ComboDataAction.do?controlId= "
-		+ id + "~containerIdentifier=" + parentContainerId + "';var ds = new Ext.data.Store({"
-		+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
-		+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
-		+ "[{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});" + "var combo = new Ext.form.ComboBox({store: ds,"
-		+"hiddenName: '"+textComponent+"',displayField:'excerpt',valueField: 'id',"
-		+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-		+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'" + defaultValue + "',"
-		+ "selectOnFocus:true,applyTo: '" + htmlComponentName + "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>"
-		+ "<div>" + "<input type='text' onmouseover=\"showToolTip('"+htmlComponentName+"')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
-		+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";
-						
-		
 
-		
+		htmlString = htmlString
+				+ "});</script>"
+				+ "<div id='auto_complete_dropdown'>"
+				+ "<input type='text' onmouseover=\"showToolTip('"
+				+ htmlComponentName
+				+ "')\" id='"
+				+ htmlComponentName
+				+ "' "
+				+ " name='"
+				+ htmlComponentName
+				+ "' size='20'/>"
+				+ "<div name='comboScript' style='display:none'>"
+				+ "Ext.onReady(function(){ "
+				+ "var myUrl='ComboDataAction.do?controlId= "
+				+ id
+				+ "~containerIdentifier="
+				+ parentContainerId
+				+ "';var ds = new Ext.data.Store({"
+				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
+				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
+				+ "[{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});"
+				+ "var combo = new Ext.form.ComboBox({store: ds,"
+				+ "hiddenName: '"
+				+ textComponent
+				+ "',displayField:'excerpt',valueField: 'id',"
+				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'"
+				+ defaultValue + "'," + "selectOnFocus:true,applyTo: '" + htmlComponentName
+				+ "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div>"
+				+ "<input type='text' onmouseover=\"showToolTip('" + htmlComponentName
+				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
+				+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";
+
 		return htmlString;
 	}
 

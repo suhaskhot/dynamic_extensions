@@ -167,25 +167,25 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param isReadOnly
 	 */
 	void setIsReadOnly(Boolean isReadOnly);
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	String getHeading();
-	
+
 	/**
 	 * 
 	 * @param heading
 	 */
 	void setHeading(String heading);
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	List<FormControlNotesInterface> getFormNotes();
-	
+
 	/**
 	 * 
 	 * @param formNotes

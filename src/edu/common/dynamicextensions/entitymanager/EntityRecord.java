@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.io.Serializable;
@@ -10,33 +11,34 @@ import java.util.List;
  * @author Rahul Ner
  * @author vishvesh Mulay
  */
-public class EntityRecord implements EntityRecordInterface,Serializable 
+public class EntityRecord implements EntityRecordInterface, Serializable
 {
 
-    /**
-     * Serial Version Unique Identifier
-     */
-    private static final long serialVersionUID = -552600540977483821L;
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = -552600540977483821L;
 
-    /**
+	/**
 	 * 
 	 */
 	Long recordId;
-	
+
 	/**
 	 * 
 	 */
 	List recordValueList = new ArrayList();
-	
+
 	/**
 	 *
 	 */
 	public EntityRecord()
 	{
-		
+
 		super();
-		
+
 	}
+
 	/**
 	 * @param id id
 	 */
@@ -45,7 +47,6 @@ public class EntityRecord implements EntityRecordInterface,Serializable
 		recordId = id;
 	}
 
-
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#getRecordId()
 	 */
@@ -53,7 +54,7 @@ public class EntityRecord implements EntityRecordInterface,Serializable
 	{
 		return recordId;
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#setRecordId(java.lang.Long)
 	 */
@@ -62,8 +63,6 @@ public class EntityRecord implements EntityRecordInterface,Serializable
 		this.recordId = recordId;
 	}
 
-
-	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#getRecordValueList()
 	 */
@@ -72,8 +71,6 @@ public class EntityRecord implements EntityRecordInterface,Serializable
 		return recordValueList;
 	}
 
-
-	
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#setRecordValueList(java.util.List)
 	 */
@@ -81,17 +78,16 @@ public class EntityRecord implements EntityRecordInterface,Serializable
 	{
 		this.recordValueList = recordValueList;
 	}
-	
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.entitymanager.EntityRecordInterface#addRecordValue(java.lang.Object)
 	 */
-	public void addRecordValue(int index,Object value)
+	public void addRecordValue(int index, Object value)
 	{
-		this.recordValueList.add(index,value);
-		
+		this.recordValueList.add(index, value);
+
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
@@ -99,6 +95,5 @@ public class EntityRecord implements EntityRecordInterface,Serializable
 	{
 		return recordValueList.toString();
 	}
-	
-	
+
 }

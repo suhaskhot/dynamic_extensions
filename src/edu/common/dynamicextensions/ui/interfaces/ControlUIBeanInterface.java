@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 
 public interface ControlUIBeanInterface
 {
+
 	/**
 	 * 
 	 * @return String name
@@ -80,9 +81,10 @@ public interface ControlUIBeanInterface
 	 */
 	/*
 	 String getChoiceList() ;
-	 *//**
-	 * @param choiceList The choiceList to set.
 	 */
+	/**
+	* @param choiceList The choiceList to set.
+	*/
 	/*
 	 void setChoiceList(String choiceList) ;*/
 
@@ -127,7 +129,7 @@ public interface ControlUIBeanInterface
 	 * @param isPassword If it is a password field set as true
 	 */
 	void setIsPassword(Boolean isPassword);
-	
+
 	/**
 	 * 
 	 * @return If the control is a password field
@@ -147,19 +149,19 @@ public interface ControlUIBeanInterface
 	 List getToolsList(); 
 
 	 *//**
-	 * @param toolsList the toolsList to set
-	 */
+				 * @param toolsList the toolsList to set
+				 */
 	/*
 	 void setToolsList(List toolsList); 
 	 *//**
-	 * @return the userSelectedTool
-	 */
+				 * @return the userSelectedTool
+				 */
 	/*
 	 String getUserSelectedTool();
 
 	 *//**
-	 * @param userSelectedTool the userSelectedTool to set
-	 */
+				 * @param userSelectedTool the userSelectedTool to set
+				 */
 	/*
 	 void setUserSelectedTool(String userSelectedTool) ;*/
 	/**
@@ -198,8 +200,8 @@ public interface ControlUIBeanInterface
 	/*
 	 List getDisplayChoiceList(); 
 	 *//**
-	 * @param displayChoiceList The displayChoiceList to set.
-	 */
+				 * @param displayChoiceList The displayChoiceList to set.
+				 */
 	/*
 	 void setDisplayChoiceList(List displayChoiceList);*/
 	/**
@@ -241,7 +243,7 @@ public interface ControlUIBeanInterface
 	 * @return String[] ValidationRules
 	 */
 	String[] getValidationRules();
-	
+
 	/**
 	 * @return the attributeNoOfRows
 	 */
@@ -251,28 +253,63 @@ public interface ControlUIBeanInterface
 	 * @param attributeNoOfRows the attributeNoOfRows to set
 	 */
 	void setAttributeNoOfRows(String attributeNoOfRows);
-	
 
 	/**
 	 * 
 	 * @param validationRules value of checkbox fields
 	 */
 	void setValidationRules(String[] validationRules);
-	
+
 	//Selected form Attributes ids
+	/**
+	 * @return
+	 */
 	public String[] getSelectedAttributeIds();
+
+	/**
+	 * @param selectedFormAttributeList
+	 */
 	public void setSelectedAttributeIds(String[] selectedFormAttributeList);
-	
+
+	/**
+	 * @return
+	 */
 	public List getSelectedAttributes();
+
+	/**
+	 * @param selectedAttributes
+	 */
 	public void setSelectedAttributes(List selectedAttributes);
+
 	//Separator
+	/**
+	 * @return
+	 */
 	public String getSeparator();
+
+	/**
+	 * @param separator
+	 */
 	public void setSeparator(String separator);
-	
-	
+
 	//Added by Ashish
+	/**
+	 * @return
+	 */
 	public String getControlOperation();
+
+	/**
+	 * @return
+	 */
 	public String getSelectedControlId();
+
+	/**
+	 * @return
+	 */
 	public String getUserSelectedTool();
+
+	/**
+	 * @return
+	 */
 	public String getControlsSequenceNumbers();
 }

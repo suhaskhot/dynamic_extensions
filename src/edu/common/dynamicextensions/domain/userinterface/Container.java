@@ -29,7 +29,10 @@ import edu.wustl.common.util.global.ApplicationProperties;
  * @hibernate.class table="DYEXTN_CONTAINER"
  * @hibernate.cache  usage="read-write"
  */
-public class Container extends DynamicExtensionBaseDomainObject implements Serializable, ContainerInterface
+public class Container extends DynamicExtensionBaseDomainObject
+		implements
+			Serializable,
+			ContainerInterface
 {
 
 	/**
@@ -334,34 +337,35 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 		}
 	}
 
-    /**
-     * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
-     */
-    public List<ControlInterface> getAllControls()
-    {
-        List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
-                .getControlCollection());
-        Collections.sort(controlsList);
-        Collections.reverse(controlsList);
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.EntityInterface#getAllAttributes()
+	 */
+	public List<ControlInterface> getAllControls()
+	{
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+				.getControlCollection());
+		Collections.sort(controlsList);
+		Collections.reverse(controlsList);
 
-        List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
 
-        ContainerInterface baseContainer = this.baseContainer;
-        while (baseContainer != null)
-        {
-            baseControlsList = new ArrayList(baseContainer.getControlCollection());
-            Collections.sort(baseControlsList);
-            Collections.reverse(baseControlsList);
+		ContainerInterface baseContainer = this.baseContainer;
+		while (baseContainer != null)
+		{
+			baseControlsList = new ArrayList(baseContainer.getControlCollection());
+			Collections.sort(baseControlsList);
+			Collections.reverse(baseControlsList);
 
-            controlsList.addAll(baseControlsList);
+			controlsList.addAll(baseControlsList);
 
-            baseContainer.setIncontextContainer(this);
-            baseContainer = baseContainer.getBaseContainer();
+			baseContainer.setIncontextContainer(this);
+			baseContainer = baseContainer.getBaseContainer();
 
-        }
-        Collections.reverse(controlsList);
-        return controlsList;
-    }
+		}
+		Collections.reverse(controlsList);
+		return controlsList;
+	}
+
 	/**
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
@@ -370,9 +374,11 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	{
 		StringBuffer stringBuffer = new StringBuffer();
 
-		stringBuffer.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
+		stringBuffer
+				.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
-		if (this.getMode() != null && this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
+		if (this.getMode() != null
+				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
 		{
 			stringBuffer.append("<tr>");
 			stringBuffer.append("<td class='formMessage' colspan='3'>");
@@ -436,7 +442,7 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	{
 		stringBuffer.append("<tr>");
 		stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
-        stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
+		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
 				.getCaption()));
 		stringBuffer.append("</td>");
 		stringBuffer.append("</tr>");
@@ -448,7 +454,9 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMapList) throws DynamicExtensionsSystemException
+	public String generateControlsHTMLAsGrid(
+			List<Map<BaseAbstractAttributeInterface, Object>> valueMapList)
+			throws DynamicExtensionsSystemException
 	{
 		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMapList);
 	}
@@ -490,10 +498,12 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
 	 */
-	public String generateLink(ContainerInterface containerInterface) throws DynamicExtensionsSystemException
+	public String generateLink(ContainerInterface containerInterface)
+			throws DynamicExtensionsSystemException
 	{
 		String detailsString = "";
-		boolean isDataPresent = UserInterfaceiUtility.isDataPresent(containerInterface.getContainerValueMap());
+		boolean isDataPresent = UserInterfaceiUtility.isDataPresent(containerInterface
+				.getContainerValueMap());
 		if (isDataPresent)
 		{
 			if (mode.equals(WebUIManagerConstants.EDIT_MODE))
@@ -517,7 +527,8 @@ public class Container extends DynamicExtensionBaseDomainObject implements Seria
 			}
 		}
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
+		stringBuffer
+				.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
 		stringBuffer.append("<a href='#' style='cursor:hand' class='set1'");
 		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(containerInterface.getId() + ",this");

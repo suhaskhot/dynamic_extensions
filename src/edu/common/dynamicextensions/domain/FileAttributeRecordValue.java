@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import java.io.Serializable;
+
 import edu.common.dynamicextensions.domaininterface.FileAttributeRecordValueInterface;
 
 /**

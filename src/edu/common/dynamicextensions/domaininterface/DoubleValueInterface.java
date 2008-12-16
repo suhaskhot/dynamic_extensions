@@ -19,5 +19,5 @@ public interface DoubleValueInterface extends PermissibleValueInterface
 	 * @param value the value to be set.
 	 */
 	void setValue(Double value);
-	
+
 }

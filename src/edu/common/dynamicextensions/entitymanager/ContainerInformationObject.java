@@ -1,8 +1,9 @@
-package edu.common.dynamicextensions.entitymanager;
 
+package edu.common.dynamicextensions.entitymanager;
 
 public class ContainerInformationObject
 {
+
 	/**
 	 * 
 	 */
@@ -15,7 +16,7 @@ public class ContainerInformationObject
 	 * 
 	 */
 	String description;
-	
+
 	/**
 	 * @return the description
 	 */
@@ -23,7 +24,7 @@ public class ContainerInformationObject
 	{
 		return description;
 	}
-	
+
 	/**
 	 * @param description the description to set
 	 */
@@ -31,7 +32,7 @@ public class ContainerInformationObject
 	{
 		this.description = description;
 	}
-	
+
 	/**
 	 * @return the name
 	 */
@@ -39,7 +40,7 @@ public class ContainerInformationObject
 	{
 		return name;
 	}
-	
+
 	/**
 	 * @param name the name to set
 	 */
@@ -47,7 +48,7 @@ public class ContainerInformationObject
 	{
 		this.name = name;
 	}
-	
+
 	/**
 	 * @return the value
 	 */
@@ -55,7 +56,7 @@ public class ContainerInformationObject
 	{
 		return value;
 	}
-	
+
 	/**
 	 * @param value the value to set
 	 */
@@ -77,6 +78,5 @@ public class ContainerInformationObject
 		this.value = value;
 		this.description = description;
 	}
-	
 
 }

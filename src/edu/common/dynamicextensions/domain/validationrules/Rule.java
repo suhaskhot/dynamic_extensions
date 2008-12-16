@@ -22,7 +22,6 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	 */
 	private static final long serialVersionUID = 6495330944005526400L;
 
-
 	/**
 	 * Name of the rule.
 	 */
@@ -32,7 +31,7 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	 * The Collection of RuleParameter.
 	 */
 	protected Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
-	
+
 	/**
 	 * 
 	 */
@@ -93,11 +92,11 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	 * This method sets ruleParameterCollection to the Collection of RuleParmeters.
 	 * @param ruleParameterCollection the the Collection of RuleParmeters to be set.
 	 */
-	public void setRuleParameterCollection(Collection<RuleParameterInterface> ruleParameterCollection)
+	public void setRuleParameterCollection(
+			Collection<RuleParameterInterface> ruleParameterCollection)
 	{
 		this.ruleParameterCollection = ruleParameterCollection;
 	}
-
 
 	/**
 	 * This method adds a RuleParameter to the Collection of RuleParameter.

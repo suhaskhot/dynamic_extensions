@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.ui.util;
 
 import java.util.List;
@@ -10,19 +11,19 @@ import java.util.Map;
  */
 public class ControlsConfigurationObject
 {
+
 	private String controlName;
 	private String displayLabel;
 	private String jspName;
 	private String imageFilePath;
-	private List commonValidationRules ;
-	private List commonImplicitRules ;
-	private List commonExplicitRules ;
-	private Map dataTypeValidationRules ;
-	private List dataTypesList ;
-	private Map dataTypeImplicitRules ;
-	private Map dataTypeExplicitRules ;
-	
-	
+	private List commonValidationRules;
+	private List commonImplicitRules;
+	private List commonExplicitRules;
+	private Map dataTypeValidationRules;
+	private List dataTypesList;
+	private Map dataTypeImplicitRules;
+	private Map dataTypeExplicitRules;
+
 	/**
 	 * @return the controlName
 	 */
@@ -30,6 +31,7 @@ public class ControlsConfigurationObject
 	{
 		return controlName;
 	}
+
 	/**
 	 * @param controlName the controlName to set
 	 */
@@ -37,6 +39,7 @@ public class ControlsConfigurationObject
 	{
 		this.controlName = controlName;
 	}
+
 	/**
 	 * @return the displayLabel
 	 */
@@ -44,6 +47,7 @@ public class ControlsConfigurationObject
 	{
 		return displayLabel;
 	}
+
 	/**
 	 * @param displayLabel the displayLabel to set
 	 */
@@ -51,6 +55,7 @@ public class ControlsConfigurationObject
 	{
 		this.displayLabel = displayLabel;
 	}
+
 	/**
 	 * @return the jspName
 	 */
@@ -58,6 +63,7 @@ public class ControlsConfigurationObject
 	{
 		return jspName;
 	}
+
 	/**
 	 * @param jspName the jspName to set
 	 */
@@ -65,6 +71,7 @@ public class ControlsConfigurationObject
 	{
 		this.jspName = jspName;
 	}
+
 	/**
 	 * @return the dataTypes
 	 */
@@ -72,6 +79,7 @@ public class ControlsConfigurationObject
 	{
 		return dataTypesList;
 	}
+
 	/**
 	 * @param dataTypesList the dataTypes to set
 	 */
@@ -79,6 +87,7 @@ public class ControlsConfigurationObject
 	{
 		this.dataTypesList = dataTypesList;
 	}
+
 	/**
 	 * @return the commonValidationRules
 	 */
@@ -86,6 +95,7 @@ public class ControlsConfigurationObject
 	{
 		return commonValidationRules;
 	}
+
 	/**
 	 * @param commonValidationRules the commonValidationRules to set
 	 */
@@ -93,6 +103,7 @@ public class ControlsConfigurationObject
 	{
 		this.commonValidationRules = commonValidationRules;
 	}
+
 	/**
 	 * @return the dataTypeValidationRules
 	 */
@@ -100,6 +111,7 @@ public class ControlsConfigurationObject
 	{
 		return dataTypeValidationRules;
 	}
+
 	/**
 	 * @param dataTypeValidationRules the dataTypeValidationRules to set
 	 */
@@ -107,6 +119,7 @@ public class ControlsConfigurationObject
 	{
 		this.dataTypeValidationRules = dataTypeValidationRules;
 	}
+
 	/**
 	 * @return the dataTypeExplicitRules
 	 */
@@ -114,6 +127,7 @@ public class ControlsConfigurationObject
 	{
 		return dataTypeExplicitRules;
 	}
+
 	/**
 	 * @param dataTypeExplicitRules the dataTypeExplicitRules to set
 	 */
@@ -121,6 +135,7 @@ public class ControlsConfigurationObject
 	{
 		this.dataTypeExplicitRules = dataTypeExplicitRules;
 	}
+
 	/**
 	 * @return the dataTypeImplicitRules
 	 */
@@ -128,6 +143,7 @@ public class ControlsConfigurationObject
 	{
 		return dataTypeImplicitRules;
 	}
+
 	/**
 	 * @param dataTypeImplicitRules the dataTypeImplicitRules to set
 	 */
@@ -135,6 +151,7 @@ public class ControlsConfigurationObject
 	{
 		this.dataTypeImplicitRules = dataTypeImplicitRules;
 	}
+
 	/**
 	 * @return the commonExplicitRules
 	 */
@@ -142,6 +159,7 @@ public class ControlsConfigurationObject
 	{
 		return commonExplicitRules;
 	}
+
 	/**
 	 * @param commonExplicitRules the commonExplicitRules to set
 	 */
@@ -149,6 +167,7 @@ public class ControlsConfigurationObject
 	{
 		this.commonExplicitRules = commonExplicitRules;
 	}
+
 	/**
 	 * @return the commonImplicitRules
 	 */
@@ -156,6 +175,7 @@ public class ControlsConfigurationObject
 	{
 		return commonImplicitRules;
 	}
+
 	/**
 	 * @param commonImplicitRules the commonImplicitRules to set
 	 */
@@ -163,10 +183,18 @@ public class ControlsConfigurationObject
 	{
 		this.commonImplicitRules = commonImplicitRules;
 	}
+
+	/**
+	 * @return imageFilePath
+	 */
 	public String getImageFilePath()
 	{
 		return this.imageFilePath;
 	}
+
+	/**
+	 * @param imageFilePath
+	 */
 	public void setImageFilePath(String imageFilePath)
 	{
 		this.imageFilePath = imageFilePath;

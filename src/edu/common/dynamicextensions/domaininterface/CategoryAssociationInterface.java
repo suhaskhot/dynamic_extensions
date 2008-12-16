@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domaininterface;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 
-
 /**
  *
  * @author sujay_narkar
@@ -11,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
  */
 public interface CategoryAssociationInterface extends BaseAbstractAttributeInterface
 {
+
 	/**
 	 *
 	 * @return
@@ -34,11 +34,13 @@ public interface CategoryAssociationInterface extends BaseAbstractAttributeInter
 	 * @param targetCategoryEntity
 	 */
 	void setTargetCategoryEntity(CategoryEntityInterface targetCategoryEntity);
+
 	/**
 	 * This method returns the ConstraintProperties of the Association.
 	 * @return the ConstraintProperties of the Association.
 	 */
 	ConstraintPropertiesInterface getConstraintProperties();
+
 	/**
 	 * This method sets the constraintProperties to the given ContraintProperties.
 	 * @param constraintProperties the constraintProperties to be set.

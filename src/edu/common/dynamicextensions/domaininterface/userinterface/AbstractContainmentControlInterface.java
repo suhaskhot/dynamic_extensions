@@ -5,6 +5,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 public interface AbstractContainmentControlInterface extends ControlInterface
 {
+
 	/**
 	 * @return container
 	 */

@@ -34,7 +34,8 @@ public class DynamicExtensionsValidationException extends DynamicExtensionsAppli
 	 * @param wrapException wrapException
 	 * @param errorCode errorCode
 	 */
-	public DynamicExtensionsValidationException(String message, Exception wrapException, String errorCode)
+	public DynamicExtensionsValidationException(String message, Exception wrapException,
+			String errorCode)
 	{
 		super(message, wrapException, errorCode);
 	}
@@ -53,7 +54,8 @@ public class DynamicExtensionsValidationException extends DynamicExtensionsAppli
 	 * @param errorCode errorCode
 	 * @param placeHolders placeHolders
 	 */
-	public DynamicExtensionsValidationException(String message, Exception wrapException, String errorCode, List<String> placeHolders)
+	public DynamicExtensionsValidationException(String message, Exception wrapException,
+			String errorCode, List<String> placeHolders)
 	{
 		super(message, wrapException, errorCode, placeHolders);
 	}
@@ -64,7 +66,8 @@ public class DynamicExtensionsValidationException extends DynamicExtensionsAppli
 	 * @param errorCode errorCode
 	 * @param singlePlaceHolder singlePlaceHolder
 	 */
-	public DynamicExtensionsValidationException(String message, Exception wrapException, String errorCode, String singlePlaceHolder)
+	public DynamicExtensionsValidationException(String message, Exception wrapException,
+			String errorCode, String singlePlaceHolder)
 	{
 		super(message, wrapException, errorCode, singlePlaceHolder);
 	}

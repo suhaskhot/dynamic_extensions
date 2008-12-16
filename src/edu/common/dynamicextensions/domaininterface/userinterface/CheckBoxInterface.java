@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
 /**
@@ -5,9 +6,7 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  * dynamically generated user interface.  
  * @author geetika_bangard
  */
-public interface CheckBoxInterface extends ControlInterface 
+public interface CheckBoxInterface extends ControlInterface
 {
-    
-   
-    
+
 }

@@ -21,5 +21,5 @@ public interface DateValueInterface extends PermissibleValueInterface
 	 * @param value the value to be set.
 	 */
 	void setValue(Date value);
-	
+
 }

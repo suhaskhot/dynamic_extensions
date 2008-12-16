@@ -29,7 +29,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 * Number of rows in the text area.
 	 */
 	protected Integer rows;
-	
+
 	/**
 	 * Empty Constructor 
 	 */
@@ -87,17 +87,18 @@ public class TextArea extends Control implements TextAreaInterface
 
 		String htmlComponentName = getHTMLComponentName();
 
-		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' " + "id='" + htmlComponentName + "' ";
+		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName
+				+ "' " + "id='" + htmlComponentName + "' ";
 
 		//If control is defined as readonly through category CSV file,make it Disabled
 
-		if(this.isReadOnly != null && getIsReadOnly())
+		if (this.isReadOnly != null && getIsReadOnly())
 		{
 			htmlString += ProcessorConstants.DISABLED;
 		}
 		int noCols = columns.intValue();
 		int noRows = rows.intValue();
-		
+
 		if (noCols > 0)
 		{
 			htmlString += "cols='" + noCols + "' ";
@@ -150,7 +151,6 @@ public class TextArea extends Control implements TextAreaInterface
 		// TODO Auto-generated constructor stub
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */

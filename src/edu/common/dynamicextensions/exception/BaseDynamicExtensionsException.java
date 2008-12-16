@@ -18,7 +18,6 @@ import java.util.List;
  *
  */
 
-
 public abstract class BaseDynamicExtensionsException extends Exception
 		implements
 			DynamicExtensionExceptionInterface
@@ -29,29 +28,27 @@ public abstract class BaseDynamicExtensionsException extends Exception
 
 	protected List<String> placeHolderList = new ArrayList<String>();
 
-	 /**
-     * @param wrapException The wrapException to set.
-     * @param errorCode error code
-     * @param message message
-     */
-    public BaseDynamicExtensionsException(String message,
-            Exception wrapException, String errorCode)
-    {
-    	super(message,wrapException);
-        this.errorCode = errorCode;
-    }
-	
 	/**
-     * @param wrapException The wrapException to set.
-     * @param message message
-     */
-    public BaseDynamicExtensionsException(String message,
-            Exception wrapException)
-    {
-    	super(message,wrapException);
-    }
-    
-    /**
+	* @param wrapException The wrapException to set.
+	* @param errorCode error code
+	* @param message message
+	*/
+	public BaseDynamicExtensionsException(String message, Exception wrapException, String errorCode)
+	{
+		super(message, wrapException);
+		this.errorCode = errorCode;
+	}
+
+	/**
+	 * @param wrapException The wrapException to set.
+	 * @param message message
+	 */
+	public BaseDynamicExtensionsException(String message, Exception wrapException)
+	{
+		super(message, wrapException);
+	}
+
+	/**
 	 * @param message
 	 * @param wrapException
 	 * @param errorCode
@@ -59,17 +56,18 @@ public abstract class BaseDynamicExtensionsException extends Exception
 	public BaseDynamicExtensionsException(String message, Exception wrapException,
 			String errorCode, List<String> placeHolders)
 	{
-		this(message,wrapException,errorCode);
+		this(message, wrapException, errorCode);
 		this.placeHolderList = placeHolders;
 	}
-    /**
-     * 
-     * @param message message
-     */
-    public BaseDynamicExtensionsException(String message)
-    {
-       super(message);
-    }
+
+	/**
+	 * 
+	 * @param message message
+	 */
+	public BaseDynamicExtensionsException(String message)
+	{
+		super(message);
+	}
 
 	/**
 	 * Getter method for errorCode
@@ -97,7 +95,6 @@ public abstract class BaseDynamicExtensionsException extends Exception
 		return placeHolderList;
 	}
 
-	
 	/**
 	 * @param placeHolderList The placeHolderList to set.
 	 */

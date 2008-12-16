@@ -1983,20 +1983,26 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * getEntityRecordIdByRootCategoryEntityRecordId.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Long getEntityRecordIdByRootCategoryEntityRecordId(Long rootCategoryEntityRecordId,String rootCategoryTableName) throws DynamicExtensionsSystemException
+	public Long getEntityRecordIdByRootCategoryEntityRecordId(Long rootCategoryEntityRecordId,
+			String rootCategoryTableName) throws DynamicExtensionsSystemException
 	{
-		String query = "select record_Id from " + rootCategoryTableName + " where IDENTIFIER =" + rootCategoryEntityRecordId;
+		String query = "select record_Id from " + rootCategoryTableName + " where IDENTIFIER ="
+				+ rootCategoryEntityRecordId;
 		return getEntityRecordId(query);
 	}
+
 	/**
 	 * getEntityRecordIdByRootCategoryEntityRecordId.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,String rootCategoryTableName) throws DynamicExtensionsSystemException
+	public Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,
+			String rootCategoryTableName) throws DynamicExtensionsSystemException
 	{
-		String	query = "select IDENTIFIER from " + rootCategoryTableName + " where record_Id =" + rootCategoryEntityRecordId;
+		String query = "select IDENTIFIER from " + rootCategoryTableName + " where record_Id ="
+				+ rootCategoryEntityRecordId;
 		return getEntityRecordId(query);
 	}
+
 	/**
 	 * 
 	 * @param query
@@ -2038,6 +2044,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		}
 		return entityRecordId;
 	}
+
 	/**
 	 * This method executes a SQL query.
 	 * @param query

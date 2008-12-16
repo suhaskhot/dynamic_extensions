@@ -5,7 +5,10 @@ package edu.common.dynamicextensions.domaininterface;
  * For every abstract metadata object semantic properties are associated.
  * @author sujay_narkar
  */
-public interface SemanticPropertyInterface extends DynamicExtensionBaseDomainObjectInterface, Comparable
+public interface SemanticPropertyInterface
+		extends
+			DynamicExtensionBaseDomainObjectInterface,
+			Comparable
 {
 
 	/**
@@ -49,7 +52,7 @@ public interface SemanticPropertyInterface extends DynamicExtensionBaseDomainObj
 	 * @param thesaurasName the thesauras name to be set.
 	 */
 	void setThesaurasName(String thesaurasName);
-	
+
 	/**
 	 * @return int
 	 */
@@ -59,13 +62,13 @@ public interface SemanticPropertyInterface extends DynamicExtensionBaseDomainObj
 	 * @param sequenceNumber int
 	 */
 	void setSequenceNumber(int sequenceNumber);
-	
+
 	/**
 	 * This method returns the tem i.e. concept name. 
 	 * @return the conceptDefinition
 	 */
 	String getConceptDefinition();
-		
+
 	/**
 	 * @param conceptDefinition the conceptDefinition to set
 	 */

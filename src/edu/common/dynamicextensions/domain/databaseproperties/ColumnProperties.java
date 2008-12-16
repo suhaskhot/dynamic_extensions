@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain.databaseproperties;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
@@ -8,28 +9,34 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
  * @hibernate.joined-subclass table="DYEXTN_COLUMN_PROPERTIES"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class ColumnProperties extends DatabaseProperties implements ColumnPropertiesInterface{
+public class ColumnProperties extends DatabaseProperties implements ColumnPropertiesInterface
+{
+
 	/**
 	 * Name of the constraint property.
 	 */
 	protected String constraintName;
-    /**
-     * Empty constructor
-     */
-	public ColumnProperties(){
+
+	/**
+	 * Empty constructor
+	 */
+	public ColumnProperties()
+	{
 
 	}
-    /**
-     * @hibernate.property name="constraintName" type="string" column="CONSTRAINT_NAME"
-     * @return Returns the name.
-     */
+
+	/**
+	 * @hibernate.property name="constraintName" type="string" column="CONSTRAINT_NAME"
+	 * @return Returns the name.
+	 */
 	public String getConstraintName()
 	{
 		return constraintName;
 	}
-    /**
-     * @param name The name to set.
-     */
+
+	/**
+	 * @param name The name to set.
+	 */
 	public void setConstraintName(String constraintName)
 	{
 		this.constraintName = constraintName;

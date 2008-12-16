@@ -63,7 +63,8 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	 * This method sets the permissibleValueCollection to the given Collection of PermissibleValues.
 	 * @param permissibleValueCollection The permissibleValueCollection to set.
 	 */
-	public void setPermissibleValueCollection(Collection<PermissibleValueInterface> permissibleValueCollection)
+	public void setPermissibleValueCollection(
+			Collection<PermissibleValueInterface> permissibleValueCollection)
 	{
 		this.permissibleValueCollection = permissibleValueCollection;
 	}
@@ -100,26 +101,32 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 		}
 		this.permissibleValueCollection.addAll(permissibleValueColl);
 	}
+
 	/**
 	 *
 	 * @param permissibleValueList
 	 */
-	private Collection<PermissibleValueInterface> sortPermissibleValuesList(Collection<PermissibleValueInterface> permissibleValues)
+	private Collection<PermissibleValueInterface> sortPermissibleValuesList(
+			Collection<PermissibleValueInterface> permissibleValues)
 	{
-		List <PermissibleValueInterface> permissibleValuesList = new ArrayList <PermissibleValueInterface>();
+		List<PermissibleValueInterface> permissibleValuesList = new ArrayList<PermissibleValueInterface>();
 		permissibleValuesList.addAll(permissibleValues);
 		if (permissibleValuesList != null && !permissibleValuesList.isEmpty())
 		{
 			Collections.sort(permissibleValuesList, new Comparator<PermissibleValueInterface>()
 			{
-				public int compare(PermissibleValueInterface permissibleValueInterface1, PermissibleValueInterface permissibleValueInterface2)
+
+				public int compare(PermissibleValueInterface permissibleValueInterface1,
+						PermissibleValueInterface permissibleValueInterface2)
 				{
-					return permissibleValueInterface1.getId().compareTo(permissibleValueInterface2.getId());
+					return permissibleValueInterface1.getId().compareTo(
+							permissibleValueInterface2.getId());
 				}
 			});
 		}
 		return permissibleValuesList;
 	}
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface#isOrdered()
 	 *
@@ -138,11 +145,14 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	{
 		this.isOrdered = isOrdered;
 	}
+
 	/**
 	 * getPermissibleValues.
 	 */
 	public Collection<PermissibleValueInterface> getPermissibleValues()
 	{
-		return ( this.id != null ) ? sortPermissibleValuesList(permissibleValueCollection) : permissibleValueCollection;
+		return (this.id != null)
+				? sortPermissibleValuesList(permissibleValueCollection)
+				: permissibleValueCollection;
 	}
 }

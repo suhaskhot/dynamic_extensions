@@ -10,36 +10,39 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.text.ParseException;
 
-public interface AttributeTypeInformationInterface extends DynamicExtensionBaseDomainObjectInterface
+public interface AttributeTypeInformationInterface
+		extends
+			DynamicExtensionBaseDomainObjectInterface
 {
 
-    /**
-     * Returns the data element associated with the attribute.The data elment specify the
-     * source of permissible values.
-     * @return DataElementInterface
-     *
-     */
-    DataElementInterface getDataElement();
+	/**
+	 * Returns the data element associated with the attribute.The data elment specify the
+	 * source of permissible values.
+	 * @return DataElementInterface
+	 *
+	 */
+	DataElementInterface getDataElement();
 
-    /**
-     * @param dataElementInterface data element interface
-     */
-    void setDataElement(DataElementInterface dataElementInterface);
-    /**
-     * @param dataElementInterface data element interface
-     */
-    void removeDataElement(DataElementInterface dataElementInterface);
+	/**
+	 * @param dataElementInterface data element interface
+	 */
+	void setDataElement(DataElementInterface dataElementInterface);
 
-    /**
-     * @return return the default value for this attribute type.
-     */
-    PermissibleValueInterface getDefaultValue();
+	/**
+	 * @param dataElementInterface data element interface
+	 */
+	void removeDataElement(DataElementInterface dataElementInterface);
 
-    /**
-     * sets the default value for this attribute type.
-     * @param permissibleValueInterface  default value
-     */
-    void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
+	/**
+	 * @return return the default value for this attribute type.
+	 */
+	PermissibleValueInterface getDefaultValue();
+
+	/**
+	 * sets the default value for this attribute type.
+	 * @param permissibleValueInterface  default value
+	 */
+	void setDefaultValue(PermissibleValueInterface permissibleValueInterface);
 
 	/**
 	 * The method returns the attribute type of the attribute based on it's attributeTypeInformation object.

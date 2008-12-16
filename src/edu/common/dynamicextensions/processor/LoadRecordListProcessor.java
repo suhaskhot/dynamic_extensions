@@ -44,8 +44,9 @@ public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException  DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public void populateRecordIndex(RecordListForm recordListForm, ContainerInterface container, String mode)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void populateRecordIndex(RecordListForm recordListForm, ContainerInterface container,
+			String mode) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		List<EntityRecord> entityRecordList = null;
 
@@ -66,5 +67,5 @@ public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 		recordListForm.setEntityRecordList(entityRecordList);
 		recordListForm.setMode(mode);
 	}
-	
+
 }

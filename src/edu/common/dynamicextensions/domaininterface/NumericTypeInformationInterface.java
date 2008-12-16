@@ -5,10 +5,9 @@ package edu.common.dynamicextensions.domaininterface;
  * This is a primitive attribute of type integar.Using this information a column of type integer is prepared.
  * @author geetika_bangard
  */
-public interface NumericTypeInformationInterface extends AttributeTypeInformationInterface 
+public interface NumericTypeInformationInterface extends AttributeTypeInformationInterface
 {
 
-	
 	/**
 	 * This method returns the measurement units of this Attribute.
 	 * The measurement units are shown in the dynamically created user interface.
@@ -16,6 +15,7 @@ public interface NumericTypeInformationInterface extends AttributeTypeInformatio
 	 * @return the measurement units of this Attribute.
 	 */
 	String getMeasurementUnits();
+
 	/**
 	 * This method sets the measurement units of this Attribute.
 	 * @param measurementUnits the measurement units to be set.
@@ -32,17 +32,17 @@ public interface NumericTypeInformationInterface extends AttributeTypeInformatio
 	 * This method sets the places after the decimal point of the DoubleAttribue.
 	 * @param decimalPlaces the places after the decimal point to be set.
 	 */
-	 void setDecimalPlaces(Integer decimalPlaces);
+	void setDecimalPlaces(Integer decimalPlaces);
 
 	/**
 	 * This method returns the length of the number in digits.
 	 * @return the length of the number in digits. 
 	 */
-	 Integer getDigits();
+	Integer getDigits();
 
 	/**
 	 * This method sets the length of the number in digits.
 	 * @param digits the length of the number in digits.
 	 */
-	 void setDigits(Integer digits);
+	void setDigits(Integer digits);
 }

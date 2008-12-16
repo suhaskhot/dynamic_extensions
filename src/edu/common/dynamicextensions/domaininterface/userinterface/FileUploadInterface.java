@@ -3,8 +3,8 @@
  * @author
  *
  */
-package edu.common.dynamicextensions.domaininterface.userinterface;
 
+package edu.common.dynamicextensions.domaininterface.userinterface;
 
 /**
  * @author preeti_munot
@@ -12,13 +12,15 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public interface FileUploadInterface extends ControlInterface  
+public interface FileUploadInterface extends ControlInterface
 {
+
 	/**
 	 * 
 	 * @return Number of columns (size of text box shown on UI)
 	 */
 	Integer getColumns();
+
 	/**
 	 * 
 	 * @param columns  Number of columns (size of text box shown on UI)

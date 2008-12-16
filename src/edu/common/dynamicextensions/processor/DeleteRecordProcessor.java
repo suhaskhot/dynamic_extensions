@@ -36,7 +36,8 @@ public class DeleteRecordProcessor extends BaseDynamicExtensionsProcessor
 	public void deleteRecord(ContainerInterface container, Long recordIdentifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		EntityManager.getInstance().deleteRecord((Entity) container.getAbstractEntity(), recordIdentifier);
+		EntityManager.getInstance().deleteRecord((Entity) container.getAbstractEntity(),
+				recordIdentifier);
 	}
 
 }

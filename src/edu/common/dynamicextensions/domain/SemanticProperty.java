@@ -11,7 +11,9 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
  * @hibernate.class table="DYEXTN_SEMANTIC_PROPERTY"
  * @hibernate.cache  usage="read-write"
  */
-public class SemanticProperty extends DynamicExtensionBaseDomainObject implements SemanticPropertyInterface
+public class SemanticProperty extends DynamicExtensionBaseDomainObject
+		implements
+			SemanticPropertyInterface
 {
 
 	/**
@@ -33,17 +35,16 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 	 * Thesauras Name
 	 */
 	protected String thesaurasName;
-	
+
 	/**
 	 * 
 	 */
 	protected String conceptDefinition;
-	
+
 	/**
 	 * 
 	 */
 	protected int sequenceNumber = 0;
-	
 
 	/**
 	 * Empty Constructor.
@@ -121,7 +122,6 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 		this.thesaurasName = thesaurasName;
 	}
 
-	
 	/**
 	 * @hibernate.property name="sequenceNumber" type="int" column="SEQUENCE_NUMBER" 
 	 * @return sequence number
@@ -131,7 +131,6 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 		return sequenceNumber;
 	}
 
-	
 	/**
 	 * @param sequenceNumber sequence number
 	 */
@@ -151,7 +150,6 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 		return thisSequenceNumber.compareTo(otherSequenceNumber);
 	}
 
-	
 	/**
 	 * This method returns the tem i.e. concept name. 
 	 * @hibernate.property name="conceptDefinition" type="string" column="CONCEPT_DEFINITION" 
@@ -162,7 +160,6 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject implement
 		return conceptDefinition;
 	}
 
-	
 	/**
 	 * @param conceptDefinition the conceptDefinition to set
 	 */

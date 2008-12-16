@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Date;
@@ -8,11 +9,12 @@ import java.util.Date;
  */
 public interface DESQLAuditInterface
 {
+
 	/**
 	 * @return audit date
 	 */
 	Date getAuditDate();
-	
+
 	/**
 	 * @param auditDate
 	 */
@@ -22,7 +24,7 @@ public interface DESQLAuditInterface
 	 * @return sql query executed
 	 */
 	String getQueryExecuted();
-	
+
 	/**
 	 * @param queryExecuted
 	 */

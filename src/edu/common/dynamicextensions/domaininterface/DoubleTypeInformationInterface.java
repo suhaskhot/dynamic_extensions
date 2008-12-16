@@ -1,5 +1,5 @@
-package edu.common.dynamicextensions.domaininterface;
 
+package edu.common.dynamicextensions.domaininterface;
 
 /**
  * This is a primitive attribute of type double.Using this information a coulmn of type double
@@ -8,5 +8,5 @@ package edu.common.dynamicextensions.domaininterface;
  */
 public interface DoubleTypeInformationInterface extends NumericTypeInformationInterface
 {
-   
+
 }

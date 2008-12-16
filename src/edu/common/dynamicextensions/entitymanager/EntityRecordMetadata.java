@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
 import java.io.Serializable;
@@ -12,30 +13,33 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
  * @author Rahul Ner
  * @author Vishvesh Mulay
  */
-public class EntityRecordMetadata implements Serializable {
+public class EntityRecordMetadata implements Serializable
+{
 
-    /**
-     * Serial Version Unique Identifier
-     */
-    private static final long serialVersionUID = -552600540977483821L;
+	/**
+	 * Serial Version Unique Identifier
+	 */
+	private static final long serialVersionUID = -552600540977483821L;
 
-    /**
-     * List of attributes and associations
-     */
-    private List<? extends AbstractAttributeInterface> attributeList;
+	/**
+	 * List of attributes and associations
+	 */
+	private List<? extends AbstractAttributeInterface> attributeList;
 
-    /**
-     * @return List<AbstractAttributeInterface> List of attributes  and associations
-     */
-    public List<? extends AbstractAttributeInterface> getAttributeList() {
-        return attributeList;
-    }
+	/**
+	 * @return List<AbstractAttributeInterface> List of attributes  and associations
+	 */
+	public List<? extends AbstractAttributeInterface> getAttributeList()
+	{
+		return attributeList;
+	}
 
-    /**
-     * @param attributeList list to set.
-     */
-    public void setAttributeList(List<? extends AbstractAttributeInterface> attributeList) {
-        this.attributeList = attributeList;
-    }
+	/**
+	 * @param attributeList list to set.
+	 */
+	public void setAttributeList(List<? extends AbstractAttributeInterface> attributeList)
+	{
+		this.attributeList = attributeList;
+	}
 
 }

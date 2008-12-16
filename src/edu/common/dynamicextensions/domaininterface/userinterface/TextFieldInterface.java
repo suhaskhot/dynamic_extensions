@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
 /**
@@ -8,26 +9,26 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 public interface TextFieldInterface extends ControlInterface
 {
 
-    /**
+	/**
 	 * @return Returns the columns.
 	 */
 	Integer getColumns();
-	
+
 	/**
 	 * @param columns The columns to set.
 	 */
 	void setColumns(Integer columns);
-	
+
 	/**
 	 * @return Returns the isPassword.
 	 */
 	Boolean getIsPassword();
-	
+
 	/**
 	 * @param isPassword The isPassword to set.
 	 */
 	void setIsPassword(Boolean isPassword);
-	
+
 	/**
 	 * This method returns the Boolean value that decides whether the value of this control should be treated as normal text or URL.
 	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 

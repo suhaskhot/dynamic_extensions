@@ -154,13 +154,13 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap) throws DynamicExtensionsSystemException;
+	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
 	 */
 	Map<BaseAbstractAttributeInterface, Object> getContainerValueMap();
-
 
 	/**
 	 * @param containerValueMap
@@ -183,12 +183,14 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 *
 	 * @return
 	 */
-	List <ControlInterface> getAllControls();
+	List<ControlInterface> getAllControls();
+
 	/**
 	 *
 	 * @return
 	 */
 	ContainerInterface getBaseContainer();
+
 	/**
 	 *
 	 * @param baseContainer
@@ -204,7 +206,7 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @param incontextContainer the incontextContainer to set
 	 */
 	void setIncontextContainer(ContainerInterface incontextContainer);
-	
+
 	/**
 	 * This method is used to decide whtere caption is to be added to the table or not
 	 * @return
@@ -215,9 +217,10 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @param addCaption
 	 */
 	void setAddCaption(Boolean addCaption);
-	
-    /**
-     * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
-     */
-    String generateLink(ContainerInterface containerInterface)throws DynamicExtensionsSystemException;
+
+	/**
+	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
+	 */
+	String generateLink(ContainerInterface containerInterface)
+			throws DynamicExtensionsSystemException;
 }

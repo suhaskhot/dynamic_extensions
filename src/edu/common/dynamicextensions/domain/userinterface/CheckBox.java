@@ -41,26 +41,31 @@ public class CheckBox extends Control implements CheckBoxInterface
 			checked = this.getAttibuteMetadataInterface().getDefaultValue();
 		}
 		String disabled = "";
-//		If control is defined as readonly through category CSV file,make it Disabled
-		if(this.isReadOnly!=null && getIsReadOnly())
+		//		If control is defined as readonly through category CSV file,make it Disabled
+		if (this.isReadOnly != null && getIsReadOnly())
 		{
 			disabled = ProcessorConstants.DISABLED;
 		}
-		
+
 		String htmlComponentName = getHTMLComponentName();
-		if (checked != null &&(checked.equals("true") || checked.equals("1")))
+		if (checked != null && (checked.equals("true") || checked.equals("1")))
 		{
-			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='" + htmlComponentName + "' checkedValue='"
-					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='" + DynamicExtensionsUtility.getValueForCheckBox(false)
-					+ "'" + "value='" + DynamicExtensionsUtility.getValueForCheckBox(true) + "' " + "id='" + htmlComponentName + "'" + "checked" + disabled 
+			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='"
+					+ htmlComponentName + "' checkedValue='"
+					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='"
+					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
+					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' " + "id='"
+					+ htmlComponentName + "'" + "checked" + disabled
 					+ " onclick='changeValueForCheckBox(this);'>";
 		}
 		else
 		{
-			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='" + htmlComponentName + "' checkedValue='"
-					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='" + DynamicExtensionsUtility.getValueForCheckBox(false)
-					+ "'" + "value='" + DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + disabled  + "id='" + htmlComponentName
-					+ "' onclick='changeValueForCheckBox(this);'>";
+			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='"
+					+ htmlComponentName + "' checkedValue='"
+					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='"
+					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
+					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + disabled
+					+ "id='" + htmlComponentName + "' onclick='changeValueForCheckBox(this);'>";
 		}
 
 		return htmlString;
@@ -75,8 +80,8 @@ public class CheckBox extends Control implements CheckBoxInterface
 		if (value != null)
 		{
 			String checked = (String) this.value;
-			htmlString = "<input type='checkbox' class='" + cssClass + "' " + DynamicExtensionsUtility.getCheckboxSelectionValue(checked)
-					+ " disabled>";
+			htmlString = "<input type='checkbox' class='" + cssClass + "' "
+					+ DynamicExtensionsUtility.getCheckboxSelectionValue(checked) + " disabled>";
 		}
 		return htmlString;
 	}

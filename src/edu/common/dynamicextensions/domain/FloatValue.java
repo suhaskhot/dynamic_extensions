@@ -50,12 +50,14 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */
 	public PermissibleValueInterface clone()
 	{
-		FloatValueInterface floatValueInterface = DomainObjectFactory.getInstance().createFloatValue();
+		FloatValueInterface floatValueInterface = DomainObjectFactory.getInstance()
+				.createFloatValue();
 		floatValueInterface.setValue(this.value);
 		return floatValueInterface;
 	}

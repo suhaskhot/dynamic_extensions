@@ -1,5 +1,5 @@
-package edu.common.dynamicextensions.domaininterface;
 
+package edu.common.dynamicextensions.domaininterface;
 
 /**
  * This is a primitive attribute of type String.Using this information a column of type string is prepared.
@@ -8,16 +8,15 @@ package edu.common.dynamicextensions.domaininterface;
 public interface StringTypeInformationInterface extends AttributeTypeInformationInterface
 {
 
-    
-    /**
-     * Size of the string
-     * @return Returns the size.
-     */
-    Integer getSize();
-    /**
-     * @param size The size to set.
-     */
-    void setSize(Integer size);
+	/**
+	 * Size of the string
+	 * @return Returns the size.
+	 */
+	Integer getSize();
 
-    
+	/**
+	 * @param size The size to set.
+	 */
+	void setSize(Integer size);
+
 }

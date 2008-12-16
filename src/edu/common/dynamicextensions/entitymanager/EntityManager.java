@@ -134,8 +134,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		EntityManager.entityManager = entManager;
 	}
 
-	/**
-	 *
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#getQueryBuilderInstance()
 	 */
 	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
 	{
@@ -2306,8 +2306,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return null;
 	}
 
-	public Long getContainerIdFromEntityId(Long entityId)
-			throws DynamicExtensionsSystemException
+	public Long getContainerIdFromEntityId(Long entityId) throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();

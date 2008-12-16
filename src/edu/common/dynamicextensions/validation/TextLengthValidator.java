@@ -24,11 +24,13 @@ public class TextLengthValidator implements ValidatorRuleInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap,String controlCaption)
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap, String controlCaption)
 			throws DynamicExtensionsValidationException
 	{
 		boolean isValid = false;
-		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformation = attribute
+				.getAttributeTypeInformation();
 		String attributeName = attribute.getName();
 
 		//If control of type TextField is changed to the 
@@ -41,7 +43,8 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		if (valueObject != null)
 		{
 			String value = (String) valueObject;
-			if (attributeTypeInformation != null && attributeTypeInformation instanceof StringAttributeTypeInformation)
+			if (attributeTypeInformation != null
+					&& attributeTypeInformation instanceof StringAttributeTypeInformation)
 			{
 				ArrayList<String> placeHolders = new ArrayList<String>();
 
@@ -60,7 +63,8 @@ public class TextLengthValidator implements ValidatorRuleInterface
 				{
 					placeHolders.add(controlCaption);
 					placeHolders.add((new Long(size)).toString());
-					throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.TextLength", placeHolders);
+					throw new DynamicExtensionsValidationException("Validation failed", null,
+							"dynExtn.validation.TextLength", placeHolders);
 				}
 				else
 				{

@@ -15,6 +15,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  */
 public class FormsIndexForm extends AbstractActionForm
 {
+
 	/**
 	 * 
 	 */
@@ -106,6 +107,7 @@ public class FormsIndexForm extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomainObject)
 	{
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -122,7 +124,7 @@ public class FormsIndexForm extends AbstractActionForm
 	public void setOperationMode(String operationMode)
 	{
 		this.operationMode = operationMode;
-		if(operationMode==null)
+		if (operationMode == null)
 		{
 			this.operationMode = "";
 		}

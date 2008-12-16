@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.util.parser.CategoryGenerator;
  */
 public class CategoryCreator
 {
+
 	public static void main(String[] args)
 	{
 		createCategory(args);

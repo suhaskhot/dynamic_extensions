@@ -48,7 +48,8 @@ public class CategoryGenerationUtil
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static int getMultiplicityInNumbers(String multiplicity) throws DynamicExtensionsSystemException
+	public static int getMultiplicityInNumbers(String multiplicity)
+			throws DynamicExtensionsSystemException
 	{
 		int multiplicityI = 1;
 		if (multiplicity.equalsIgnoreCase(CategoryCSVConstants.MULTILINE))
@@ -61,8 +62,9 @@ public class CategoryGenerationUtil
 		}
 		else
 		{
-			throw new DynamicExtensionsSystemException("ERROR: WRONG KEYWORD USED FOR MULTIPLICITY " + multiplicity
-					+ ". VALID KEY WORDS ARE: 1- single 2-multiline");
+			throw new DynamicExtensionsSystemException(
+					"ERROR: WRONG KEYWORD USED FOR MULTIPLICITY " + multiplicity
+							+ ". VALID KEY WORDS ARE: 1- single 2-multiline");
 		}
 		return multiplicityI;
 	}
@@ -76,15 +78,18 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public static void setRootContainer(CategoryInterface category, List<ContainerInterface> containerCollection,
-			Map<String, List<AssociationInterface>> paths, Map<String, List<String>> absolutePath, Map<String, String> containerNameInstanceMap)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	public static void setRootContainer(CategoryInterface category,
+			List<ContainerInterface> containerCollection,
+			Map<String, List<AssociationInterface>> paths, Map<String, List<String>> absolutePath,
+			Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 
 		ContainerInterface rootContainer = null;
 		for (ContainerInterface containerInterface : containerCollection)
 		{
-			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
+			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface
+					.getAbstractEntity();
 			if (categoryEntityInterface.getTreeParentCategoryEntity() == null)
 			{
 				rootContainer = containerInterface;
@@ -99,22 +104,27 @@ public class CategoryGenerationUtil
 
 			if (absolutePath.get(entityName).size() == 1 && rootContainer != null)
 			{
-				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer.getAbstractEntity();
+				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer
+						.getAbstractEntity();
 				if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
 				{
-					ContainerInterface containerInterface = getContainerWithEntityName(containerCollection, entityName);
+					ContainerInterface containerInterface = getContainerWithEntityName(
+							containerCollection, entityName);
 					if (containerInterface == null)
 					{
-						EntityGroupInterface entityGroup = categoryEntityInterface.getEntity().getEntityGroup();
+						EntityGroupInterface entityGroup = categoryEntityInterface.getEntity()
+								.getEntityGroup();
 						EntityInterface entity = entityGroup.getEntityByName(entityName);
 
-						ContainerInterface newRootContainer = categoryHelper.createOrUpdateCategoryEntityAndContainer(entity, null, category,
-								entityName + "[1]");
+						ContainerInterface newRootContainer = categoryHelper
+								.createOrUpdateCategoryEntityAndContainer(entity, null, category,
+										entityName + "[1]");
 						newRootContainer.setAddCaption(false);
 
-						categoryHelper.associateCategoryContainers(category, entityGroup, newRootContainer, rootContainer, paths
-								.get(categoryEntityInterface.getEntity().getName()), 1, containerNameInstanceMap.get(rootContainer
-								.getAbstractEntity().getName()));
+						categoryHelper.associateCategoryContainers(category, entityGroup,
+								newRootContainer, rootContainer, paths.get(categoryEntityInterface
+										.getEntity().getName()), 1, containerNameInstanceMap
+										.get(rootContainer.getAbstractEntity().getName()));
 
 						rootContainer = newRootContainer;
 
@@ -130,13 +140,16 @@ public class CategoryGenerationUtil
 
 		for (ContainerInterface containerInterface : containerCollection)
 		{
-			CategoryEntityInterface categoryEntity = ((CategoryEntityInterface) containerInterface.getAbstractEntity());
+			CategoryEntityInterface categoryEntity = ((CategoryEntityInterface) containerInterface
+					.getAbstractEntity());
 			boolean isTableCreated = ((CategoryEntity) categoryEntity).isCreateTable();
-			if (rootContainer != containerInterface && categoryEntity.getTreeParentCategoryEntity() == null && isTableCreated)
+			if (rootContainer != containerInterface
+					&& categoryEntity.getTreeParentCategoryEntity() == null && isTableCreated)
 			{
-				categoryHelper.associateCategoryContainers(category, categoryEntity.getEntity().getEntityGroup(), rootContainer, containerInterface,
-						paths.get(categoryEntity.getEntity().getName()), 1, containerNameInstanceMap.get(containerInterface.getAbstractEntity()
-								.getName()));
+				categoryHelper.associateCategoryContainers(category, categoryEntity.getEntity()
+						.getEntityGroup(), rootContainer, containerInterface, paths
+						.get(categoryEntity.getEntity().getName()), 1, containerNameInstanceMap
+						.get(containerInterface.getAbstractEntity().getName()));
 			}
 		}
 		//If category is edited and no attributes from the main form of the model are not selected
@@ -145,7 +158,8 @@ public class CategoryGenerationUtil
 		if (rootContainer == null)
 		{
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-			rootContainer = entityManagerInterface.getContainerByEntityIdentifier(category.getRootCategoryElement().getId());
+			rootContainer = entityManagerInterface.getContainerByEntityIdentifier(category
+					.getRootCategoryElement().getId());
 		}
 		categoryHelper.setRootCategoryEntity(rootContainer, category);
 
@@ -158,7 +172,8 @@ public class CategoryGenerationUtil
 	 * @param containerCaption
 	 * @return
 	 */
-	public static ContainerInterface getContainer(List<ContainerInterface> containerCollection, String containerCaption)
+	public static ContainerInterface getContainer(List<ContainerInterface> containerCollection,
+			String containerCaption)
 	{
 		ContainerInterface container = null;
 		for (ContainerInterface containerInterface : containerCollection)
@@ -178,12 +193,14 @@ public class CategoryGenerationUtil
 	 * @param entityName
 	 * @return
 	 */
-	public static ContainerInterface getContainerWithEntityName(List<ContainerInterface> containerCollection, String entityName)
+	public static ContainerInterface getContainerWithEntityName(
+			List<ContainerInterface> containerCollection, String entityName)
 	{
 		ContainerInterface container = null;
 		for (ContainerInterface containerInterface : containerCollection)
 		{
-			CategoryEntityInterface categoryEntity = (CategoryEntityInterface) containerInterface.getAbstractEntity();
+			CategoryEntityInterface categoryEntity = (CategoryEntityInterface) containerInterface
+					.getAbstractEntity();
 			if (entityName.equals(categoryEntity.getEntity().getName()))
 			{
 				container = containerInterface;
@@ -200,7 +217,8 @@ public class CategoryGenerationUtil
 	 * @param categoryEntityName
 	 * @return
 	 */
-	public static ContainerInterface getContainerWithCategoryEntityName(List<ContainerInterface> containerCollection, String categoryEntityName)
+	public static ContainerInterface getContainerWithCategoryEntityName(
+			List<ContainerInterface> containerCollection, String categoryEntityName)
 	{
 		ContainerInterface container = null;
 
@@ -222,25 +240,27 @@ public class CategoryGenerationUtil
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static Map<String, List<AssociationInterface>> getAssociationList(Map<String, List<String>> paths, EntityGroupInterface entityGroup)
+	public static Map<String, List<AssociationInterface>> getAssociationList(
+			Map<String, List<String>> paths, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException
 	{
 		Map<String, List<AssociationInterface>> entityPaths = new HashMap<String, List<AssociationInterface>>();
-		
+
 		Set<String> entitiesNames = paths.keySet();
 		for (String entityName : entitiesNames)
 		{
 			// Path stored is from the root. 
 			List<String> pathsForEntity = paths.get(entityName);
-			
+
 			List<AssociationInterface> assocaitions = new ArrayList<AssociationInterface>();
 			Iterator<String> entNamesIter = pathsForEntity.iterator();
-		
+
 			String srcEntityName = entNamesIter.next();
 			EntityInterface sourceEntity = entityGroup.getEntityByName(srcEntityName);
-			CategoryValidator.checkForNullRefernce(sourceEntity, "ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
-					+ srcEntityName + " DOES NOT EXIST");
-			
+			CategoryValidator.checkForNullRefernce(sourceEntity,
+					"ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
+							+ srcEntityName + " DOES NOT EXIST");
+
 			while (entNamesIter.hasNext())
 			{
 				EntityInterface targetEntity = entityGroup.getEntityByName(entNamesIter.next());
@@ -251,7 +271,7 @@ public class CategoryGenerationUtil
 						assocaitions.add(association);
 					}
 				}
-				
+
 				// Add all parent entity associations also to the list.
 				EntityInterface parentEntity = sourceEntity.getParentEntity();
 				while (parentEntity != null)
@@ -263,22 +283,23 @@ public class CategoryGenerationUtil
 							assocaitions.add(association);
 						}
 					}
-					
+
 					parentEntity = parentEntity.getParentEntity();
 				}
-				
+
 				// Source entity should now be target entity.
 				sourceEntity = targetEntity;
 			}
-			
+
 			entityPaths.put(entityName, assocaitions);
-			
+
 			if (pathsForEntity.size() > 1 && assocaitions.size() == 0)
 			{
-				CategoryValidator.checkForNullRefernce(null, "ERROR: PATH DEFINED FOR THE ENTITY " + entityName + " IS NOT CORRECT");
+				CategoryValidator.checkForNullRefernce(null, "ERROR: PATH DEFINED FOR THE ENTITY "
+						+ entityName + " IS NOT CORRECT");
 			}
 		}
-	
+
 		return entityPaths;
 	}
 
@@ -288,7 +309,8 @@ public class CategoryGenerationUtil
 	 * @param pathMap 
 	 * @return
 	 */
-	public static List<String> getRelativePath(List<String> entityNameList, Map<String, List<String>> pathMap)
+	public static List<String> getRelativePath(List<String> entityNameList,
+			Map<String, List<String>> pathMap)
 	{
 		List<String> newEntityNameList = new ArrayList<String>();
 		String lastEntityName = null;
@@ -317,7 +339,8 @@ public class CategoryGenerationUtil
 	 * @param entityGroupName
 	 * @return
 	 */
-	public static EntityGroupInterface getEntityGroup(CategoryInterface category, String entityGroupName)
+	public static EntityGroupInterface getEntityGroup(CategoryInterface category,
+			String entityGroupName)
 	{
 		if (category.getRootCategoryElement() != null)
 		{

@@ -32,12 +32,15 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
  */
 public interface CategoryHelperInterface
 {
+
 	/**
 	 * These are constants to be used while creating controls.
 	 */
 	public enum ControlEnum {
-		TEXT_FIELD_CONTROL("textField"), LIST_BOX_CONTROL("listBox"), DATE_PICKER_CONTROL("datePicker"), FILE_UPLOAD_CONTROL("fileUpload"), RADIO_BUTTON_CONTROL(
-				"radioButton"), TEXT_AREA_CONTROL("textArea"), CHECK_BOX_CONTROL("checkBox"), COMBO_BOX_CONTROL("comboBox");
+		TEXT_FIELD_CONTROL("textField"), LIST_BOX_CONTROL("listBox"), DATE_PICKER_CONTROL(
+				"datePicker"), FILE_UPLOAD_CONTROL("fileUpload"), RADIO_BUTTON_CONTROL(
+				"radioButton"), TEXT_AREA_CONTROL("textArea"), CHECK_BOX_CONTROL("checkBox"), COMBO_BOX_CONTROL(
+				"comboBox");
 
 		String value;
 
@@ -85,7 +88,8 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Create category container and category entity from given entity.
@@ -95,8 +99,8 @@ public interface CategoryHelperInterface
 	 * @param categoryEntityName
 	 * @return container.
 	 */
-	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity, String containerCaption, CategoryInterface category,
-			String... categoryEntityName);
+	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity,
+			String containerCaption, CategoryInterface category, String... categoryEntityName);
 
 	/**
 	 * Set the root category entity of this category.
@@ -118,8 +122,11 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-		public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName, ContainerInterface container, ControlEnum controlType,
-			String controlCaption, String heading, List<FormControlNotesInterface> controlNotes, Map<String, Object> rulesMap, Map<String, String> permValueOptions,long lineNumber,Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
+	public ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName,
+			ContainerInterface container, ControlEnum controlType, String controlCaption,
+			String heading, List<FormControlNotesInterface> controlNotes,
+			Map<String, Object> rulesMap, Map<String, String> permValueOptions, long lineNumber,
+			Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
@@ -127,7 +134,8 @@ public interface CategoryHelperInterface
 	 * @param parentContainer parentForm
 	 * @param childContainer childForm
 	 */
-	public void setParentContainer(ContainerInterface parentContainer, ContainerInterface childContainer);
+	public void setParentContainer(ContainerInterface parentContainer,
+			ContainerInterface childContainer);
 
 	/**
 	 * Associate category containers with each other.
@@ -146,9 +154,11 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer, List<AssociationInterface> associationList, int noOfEntries,
-			String string) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	public CategoryAssociationControlInterface associateCategoryContainers(
+			CategoryInterface category, EntityGroupInterface entityGroup,
+			ContainerInterface sourceContainer, ContainerInterface targetContainer,
+			List<AssociationInterface> associationList, int noOfEntries, String string)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Method returns the next sequenceNumber
@@ -166,16 +176,18 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity, String attributeName, Long lineNo, 
-			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	public List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity,
+			String attributeName, Long lineNo,
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * @param path
 	 * @param instance
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void addInstanceInformationToPath(PathInterface path, String instance) throws DynamicExtensionsSystemException;
+	public void addInstanceInformationToPath(PathInterface path, String instance)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param attributeTypeInformation
@@ -184,8 +196,10 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws ParseException
 	 */
-	public List<PermissibleValueInterface> getPermissibleValueList(AttributeTypeInformationInterface attributeTypeInformation,
-			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues) throws DynamicExtensionsSystemException, ParseException;
+	public List<PermissibleValueInterface> getPermissibleValueList(
+			AttributeTypeInformationInterface attributeTypeInformation,
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			throws DynamicExtensionsSystemException, ParseException;
 
 	/**
 	 * @param category
@@ -193,7 +207,8 @@ public interface CategoryHelperInterface
 	 * @param categoryEntityName
 	 * @return
 	 */
-	public CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category, EntityInterface entity, String categoryEntityName);
+	public CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category,
+			EntityInterface entity, String categoryEntityName);
 
 	/**
 	 * @param entity
@@ -201,7 +216,8 @@ public interface CategoryHelperInterface
 	 * @param categoryEntity
 	 * @return
 	 */
-	public CategoryAttributeInterface createCategoryAttribute(EntityInterface entity, String attributeName, CategoryEntityInterface categoryEntity);
+	public CategoryAttributeInterface createCategoryAttribute(EntityInterface entity,
+			String attributeName, CategoryEntityInterface categoryEntity);
 
 	/**
 	 * @param sourceCategoryEntity
@@ -215,9 +231,11 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public CategoryAssociationInterface associateCategoryEntities(CategoryEntityInterface sourceCategoryEntity,
-			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries, EntityGroupInterface entityGroup,
-			List<AssociationInterface> associationList, String instance) throws DynamicExtensionsSystemException,
+	public CategoryAssociationInterface associateCategoryEntities(
+			CategoryEntityInterface sourceCategoryEntity,
+			CategoryEntityInterface targetCategoryEntity, String name, int numberOfentries,
+			EntityGroupInterface entityGroup, List<AssociationInterface> associationList,
+			String instance) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -225,11 +243,15 @@ public interface CategoryHelperInterface
 	 * @param controlType
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void setDefaultControlsOptions(ControlInterface control, ControlEnum controlType) throws DynamicExtensionsSystemException;
+	public void setDefaultControlsOptions(ControlInterface control, ControlEnum controlType)
+			throws DynamicExtensionsSystemException;
+
 	/**
 	 * @param control
 	 * @param nextLine
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void setOptions(DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObjectInterface,Map<String, String> options,long lineNumber) throws DynamicExtensionsSystemException;
+	public void setOptions(
+			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObjectInterface,
+			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException;
 }

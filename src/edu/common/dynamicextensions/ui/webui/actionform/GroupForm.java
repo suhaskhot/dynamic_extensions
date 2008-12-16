@@ -84,8 +84,8 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		return this.groupOperation;
 	}
 
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface#setGroupOperation(java.lang.String)
 	 */
 	public void setGroupOperation(String groupOperation)
 	{
@@ -120,15 +120,15 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	}
 
 	/**
-	 * 
+	 * @return 
 	 */
 	public String getCreateGroupAs()
 	{
 		return this.createGroupAs;
 	}
 
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface#setCreateGroupAs(java.lang.String)
 	 */
 	public void setCreateGroupAs(String createGroupAs)
 	{
@@ -136,15 +136,15 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	}
 
 	/**
-	 * 
+	 * @return
 	 */
 	public String getGroupDescription()
 	{
 		return this.groupDescription;
 	}
 
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface#setGroupDescription(java.lang.String)
 	 */
 	public void setGroupDescription(String groupDescription)
 	{
@@ -152,15 +152,15 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	}
 
 	/**
-	 * 
+	 * @return 
 	 */
 	public String getGroupName()
 	{
 		return this.groupName;
 	}
 
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface#setGroupName(java.lang.String)
 	 */
 	public void setGroupName(String groupName)
 	{
@@ -194,10 +194,8 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	@Override
 	//public void setAllValues(AbstractDomainObject arg0)
 	//{
-		// TODO Auto-generated method stub
-
+	// TODO Auto-generated method stub
 	//}
-
 	/**
 	 * Overrides the validate method of ActionForm.
 	 * @param mapping ActionMapping mapping
@@ -227,7 +225,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
 					ApplicationProperties.getValue("eav.att.NewGroup")));
 		}
-		
+
 		if ((groupDescription != null)
 				&& (groupDescription.length() > ProcessorConstants.MAX_LENGTH_DESCRIPTION))
 		{
@@ -235,7 +233,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 					ApplicationProperties.getValue("eav.att.Description"),
 					ProcessorConstants.MAX_LENGTH_DESCRIPTION));
 		}
-		
+
 		if ((groupNameText != null)
 				&& (groupNameText.length() > ProcessorConstants.MAX_LENGTH_NAME))
 		{
@@ -301,7 +299,6 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		this.groupNameText = groupNameText;
 	}
 
-	
 	/**
 	 * @return the tempgroupDescription
 	 */
@@ -310,7 +307,6 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		return tempgroupDescription;
 	}
 
-	
 	/**
 	 * @param tempgroupDescription the tempgroupDescription to set
 	 */
@@ -319,7 +315,6 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		this.tempgroupDescription = tempgroupDescription;
 	}
 
-	
 	/**
 	 * @return the tempgroupName
 	 */
@@ -328,7 +323,6 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		return tempgroupName;
 	}
 
-	
 	/**
 	 * @param tempgroupName the tempgroupName to set
 	 */
@@ -337,7 +331,6 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		this.tempgroupName = tempgroupName;
 	}
 
-	
 	/**
 	 * @return the tempgroupNameText
 	 */
@@ -346,7 +339,6 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		return tempgroupNameText;
 	}
 
-	
 	/**
 	 * @param tempgroupNameText the tempgroupNameText to set
 	 */
@@ -355,8 +347,9 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 		this.tempgroupNameText = tempgroupNameText;
 	}
 
-    public void setAllValues(AbstractDomainObject arg0) {
-        // TODO Auto-generated method stub
-        
-    }
+	public void setAllValues(AbstractDomainObject arg0)
+	{
+		// TODO Auto-generated method stub
+
+	}
 }

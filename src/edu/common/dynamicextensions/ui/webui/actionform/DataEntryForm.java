@@ -1,7 +1,6 @@
 
 package edu.common.dynamicextensions.ui.webui.actionform;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +16,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  */
 public class DataEntryForm extends AbstractActionForm
 {
+
 	/**
 	 * 
 	 */
@@ -67,22 +67,24 @@ public class DataEntryForm extends AbstractActionForm
 	 * 
 	 */
 	protected boolean isTopLevelEntity = true;
-	
+
 	protected String previewBack;
-	
+
 	protected String containerId;
-	
+
 	/**
 	 * @return the containerId
 	 */
-	public String getContainerId() {
+	public String getContainerId()
+	{
 		return containerId;
 	}
 
 	/**
 	 * @param containerId the containerId to set
 	 */
-	public void setContainerId(String containerId) {
+	public void setContainerId(String containerId)
+	{
 		this.containerId = containerId;
 	}
 
@@ -196,6 +198,9 @@ public class DataEntryForm extends AbstractActionForm
 		this.showFormPreview = showFormPreview;
 	}
 
+	/**
+	 * @return recordIdentifier
+	 */
 	public String getRecordIdentifier()
 	{
 		return recordIdentifier;
@@ -221,7 +226,7 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		this.errorList = errorList;
 	}
-	
+
 	/**
 	 * @return Returns the mode.
 	 */
@@ -229,7 +234,7 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		return mode;
 	}
-	
+
 	/**
 	 * @param mode The mode to set.
 	 */
@@ -255,7 +260,7 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		this.childContainerId = childContainerId;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -299,7 +304,7 @@ public class DataEntryForm extends AbstractActionForm
 	{
 		return isTopLevelEntity;
 	}
-	
+
 	/**
 	 * @param isTopLevelEntity The isTopLevelEntity to set.
 	 */
@@ -308,7 +313,6 @@ public class DataEntryForm extends AbstractActionForm
 		this.isTopLevelEntity = isTopLevelEntity;
 	}
 
-	
 	/**
 	 * @return the previewBack
 	 */
@@ -317,7 +321,6 @@ public class DataEntryForm extends AbstractActionForm
 		return previewBack;
 	}
 
-	
 	/**
 	 * @param previewBack the previewBack to set
 	 */

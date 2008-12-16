@@ -23,8 +23,12 @@ import edu.wustl.common.util.global.Validator;
  * @author deepti_shelar
  *
  */
-public class FormDefinitionForm extends AbstractActionForm implements EntityUIBeanInterface, ContainerUIBeanInterface
+public class FormDefinitionForm extends AbstractActionForm
+		implements
+			EntityUIBeanInterface,
+			ContainerUIBeanInterface
 {
+
 	/**
 	 * 
 	 */
@@ -108,6 +112,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 * 
 	 */
 	protected String isAbstract;
+
 	/**
 	 * 
 	 * @return
@@ -116,7 +121,7 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	{
 		return this.currentContainerName;
 	}
-	
+
 	/**
 	 * 
 	 * @param currentContainerName
@@ -135,16 +140,25 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		return this.selectedObjectId;
 	}
 
+	/**
+	 * @param selectedObjectId
+	 */
 	public void setSelectedObjectId(String selectedObjectId)
 	{
 		this.selectedObjectId = selectedObjectId;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getGroupName()
 	{
 		return this.groupName;
 	}
 
+	/**
+	 * @param groupName
+	 */
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
@@ -169,8 +183,8 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 }
 
 	 *//**
-	 * @param mode the mode to set
-	 */
+			 * @param mode the mode to set
+			 */
 	/*
 	 public void setMode(String mode)
 	 {
@@ -228,8 +242,8 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 
 	/*
 	 *//**
-	 * @return Returns the entityIdentifier.
-	 */
+			 * @return Returns the entityIdentifier.
+			 */
 	/*
 	 public String getEntityIdentifier()
 	 {
@@ -237,8 +251,8 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 }
 
 	 *//**
-	 * @param entityIdentifier The entityIdentifier to set.
-	 */
+			 * @param entityIdentifier The entityIdentifier to set.
+			 */
 	/*
 	 public void setEntityIdentifier(String entityIdentifier)
 	 {
@@ -300,20 +314,24 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		Validator validator = new Validator();
 		if ((operationMode != null) && (operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
 		{
-			if ((!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs)) && ((formName == null) || (validator.isEmpty(String.valueOf(formName)))))
+			if ((!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs))
+					&& ((formName == null) || (validator.isEmpty(String.valueOf(formName)))))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+						ApplicationProperties.getValue("eav.form.title")));
 			}
 
 			if ((createAs.equals(ProcessorConstants.CREATE_FROM_EXISTING))
 					&& ((getSelectedObjectId() == null) || (getSelectedObjectId().trim().equals(""))))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.title")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+						ApplicationProperties.getValue("eav.form.title")));
 			}
 
 			if ((createAs == null) || (validator.isEmpty(String.valueOf(createAs))))
 			{
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required", ApplicationProperties.getValue("eav.form.createAs")));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.required",
+						ApplicationProperties.getValue("eav.form.createAs")));
 			}
 		}
 		return errors;
@@ -345,8 +363,8 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 	 }
 
 	 *//**
-	 * @param containerIdentifier the containerIdentifier to set
-	 */
+			 * @param containerIdentifier the containerIdentifier to set
+			 */
 	/*
 	 public void setContainerIdentifier(String containerIdentifier)
 	 {
@@ -369,11 +387,17 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 		this.operationMode = operationMode;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getViewAs()
 	{
 		return this.viewAs;
 	}
 
+	/**
+	 * @param viewAs
+	 */
 	public void setViewAs(String viewAs)
 	{
 		this.viewAs = viewAs;
@@ -469,57 +493,81 @@ public class FormDefinitionForm extends AbstractActionForm implements EntityUIBe
 
 	}
 
+	/**
+	 * @return
+	 */
 	public String getCurrentEntityTreeXML()
 	{
 		return this.currentEntityTreeXML;
 	}
 
+	/**
+	 * @param currentEntityTreeXML
+	 */
 	public void setCurrentEntityTreeXML(String currentEntityTreeXML)
 	{
 		this.currentEntityTreeXML = currentEntityTreeXML;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getDefinedEntitiesTreeXML()
 	{
 		return this.definedEntitiesTreeXML;
 	}
 
+	/**
+	 * @param definedEntitiesTreeXML
+	 */
 	public void setDefinedEntitiesTreeXML(String definedEntitiesTreeXML)
 	{
 		this.definedEntitiesTreeXML = definedEntitiesTreeXML;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getFormList()
+	 */
 	public List getFormList()
 	{
 		return formList;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setFormList(java.util.List)
+	 */
 	public void setFormList(List formList)
 	{
 		this.formList = formList;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface#getIsAbstract()
+	 */
 	public String getIsAbstract()
 	{
 		return isAbstract;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface#setIsAbstract(java.lang.String)
+	 */
 	public void setIsAbstract(String isAbstract)
 	{
 		this.isAbstract = isAbstract;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#getParentForm()
+	 */
 	public String getParentForm()
 	{
 		return parentForm;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface#setParentForm(java.lang.String)
+	 */
 	public void setParentForm(String parentForm)
 	{
 		this.parentForm = parentForm;

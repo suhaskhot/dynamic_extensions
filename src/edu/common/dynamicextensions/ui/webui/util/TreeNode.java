@@ -1,6 +1,9 @@
+
 package edu.common.dynamicextensions.ui.webui.util;
+
 public class TreeNode
 {
+
 	private String text = "";
 	private String href;
 	private String target = "";
@@ -19,12 +22,12 @@ public class TreeNode
 	{
 		childNodes = new TreeNodesList();
 	}
-	
+
 	public TreeNode(String text)
 	{
-		this(text,0);
+		this(text, 0);
 	}
-	
+
 	/**
 	 * Create a new tree node with specified text and sequence number
 	 * @param text : Text for tree node 
@@ -161,6 +164,7 @@ public class TreeNode
 	{
 		return this.sequenceNumber;
 	}
+
 	/**
 	 * 
 	 * @param sequenceNumber Sequence number
@@ -224,11 +228,17 @@ public class TreeNode
 		this.toolTip = toolTip;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isShowRadioBtn()
 	{
 		return this.showRadioBtn;
 	}
 
+	/**
+	 * @param showRadioBtn
+	 */
 	public void setShowRadioBtn(boolean showRadioBtn)
 	{
 		this.showRadioBtn = showRadioBtn;

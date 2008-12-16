@@ -8,6 +8,7 @@ package edu.common.dynamicextensions.util.parser;
  */
 public interface CategoryCSVConstants
 {
+
 	/**
 	 * This keyword used to mark the beginning of the new category definition. 
 	 */

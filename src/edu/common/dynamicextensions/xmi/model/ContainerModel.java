@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
  */
 public class ContainerModel implements EntityUIBeanInterface, ContainerUIBeanInterface
 {
+
 	protected String conceptCode;
 	/**
 	 * CreateAs

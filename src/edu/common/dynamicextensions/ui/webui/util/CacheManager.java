@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class CacheManager
 {
+
 	/**
 	 * Create a new CacheManager instance
 	 *
@@ -32,8 +33,9 @@ public class CacheManager
 	 * @param key : Key to be used while storing object in cache
 	 * @param formDetailsObject : Object to be stored in cache
 	 */
-	
-	public static void addObjectToCache(HttpServletRequest request, String key, Object formDetailsObject)
+
+	public static void addObjectToCache(HttpServletRequest request, String key,
+			Object formDetailsObject)
 	{
 		HttpSession session = request.getSession();
 		cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
@@ -65,6 +67,7 @@ public class CacheManager
 		}
 		return result;
 	}
+
 	/**
 	 * Remove object from cache
 	 * @param request : HTTP request object
@@ -79,6 +82,7 @@ public class CacheManager
 			cacheMap.remove(key);
 		}
 	}
+
 	/**
 	 * Clear cache object
 	 * @param request HTTP Request object

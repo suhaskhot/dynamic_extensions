@@ -1,44 +1,48 @@
+
 package edu.common.dynamicextensions.util;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-
 public class AssociationTreeObject
 {
+
 	/**
 	 * 
 	 */
 	Long id;
-	
+
 	/**
 	 * 
 	 */
-	
+
 	String label;
+
 	/**
 	 * 
 	 * @param id
 	 * @param label
 	 */
-	public AssociationTreeObject(Long id,String label)
+	public AssociationTreeObject(Long id, String label)
 	{
 		this.id = id;
 		this.label = label;
 	}
+
 	/**
 	 * 
 	 *
 	 */
 	public AssociationTreeObject()
 	{
-	
+
 	}
-	
+
 	/**
 	 * 
 	 */
 	Collection associationTreeObjectCollection;
+
 	/**
 	 * 
 	 * @return
@@ -47,7 +51,7 @@ public class AssociationTreeObject
 	{
 		return associationTreeObjectCollection;
 	}
-	
+
 	/**
 	 * 
 	 * @param associationTreeObjectCollection
@@ -56,20 +60,20 @@ public class AssociationTreeObject
 	{
 		this.associationTreeObjectCollection = associationTreeObjectCollection;
 	}
-	
+
 	/**
 	 * 
 	 * @param associationTreeObject
 	 */
 	public void addAssociationTreeObject(AssociationTreeObject associationTreeObject)
 	{
-		if(this.associationTreeObjectCollection == null)
+		if (this.associationTreeObjectCollection == null)
 		{
 			associationTreeObjectCollection = new HashSet();
 		}
 		associationTreeObjectCollection.add(associationTreeObject);
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -78,7 +82,7 @@ public class AssociationTreeObject
 	{
 		return id;
 	}
-	
+
 	/**
 	 * 
 	 * @param id
@@ -87,7 +91,7 @@ public class AssociationTreeObject
 	{
 		this.id = id;
 	}
-	
+
 	/**
 	 * 
 	 * @return
@@ -96,7 +100,7 @@ public class AssociationTreeObject
 	{
 		return label;
 	}
-	
+
 	/**
 	 * 
 	 * @param label
@@ -104,6 +108,6 @@ public class AssociationTreeObject
 	public void setLabel(String label)
 	{
 		this.label = label;
-	} 
+	}
 
 }

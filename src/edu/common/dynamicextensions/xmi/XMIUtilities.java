@@ -190,30 +190,30 @@ public class XMIUtilities
 	{
 		return CollectionUtils.find(
 
-				modelPackage.getModelManagement().getModel().refAllOfType(), new Predicate()
-				{
+		modelPackage.getModelManagement().getModel().refAllOfType(), new Predicate()
+		{
 
-					public boolean evaluate(Object object)
-					{
-						return (((ModelElement) object).getName()).equals(name);
-					}
-				});
+			public boolean evaluate(Object object)
+			{
+				return (((ModelElement) object).getName()).equals(name);
+			}
+		});
 	}
 
-	public static void transform(String sourceXmiFileName, String targetXmiFileName,InputStream xsltFileStream)
-	throws TransformerException, FileNotFoundException
+	public static void transform(String sourceXmiFileName, String targetXmiFileName,
+			InputStream xsltFileStream) throws TransformerException, FileNotFoundException
 	{
 		if (sourceXmiFileName != null)
 		{
 			File sourceXmiFile = new File(sourceXmiFileName);
-			
+
 			Source xmlSource = new StreamSource(sourceXmiFile);
 			Source xsltSource = new StreamSource(xsltFileStream);
 			FileOutputStream targetFile = new FileOutputStream(targetXmiFileName);
 			Result result = new StreamResult(targetFile);
 			//create an instance of TransformerFactory 
 			TransformerFactory transFact = TransformerFactory.newInstance();
-			if((transFact!=null)&&(xsltSource!=null)&&(xmlSource!=null))
+			if ((transFact != null) && (xsltSource != null) && (xmlSource != null))
 			{
 
 				Transformer trans = transFact.newTransformer(xsltSource);
@@ -304,19 +304,20 @@ public class XMIUtilities
 		}
 		return superClasses;
 	}
+
 	/**
 	 * This method deletes unwanted repository files 
 	 */
 	public static void cleanUpRepository()
 	{
-		if((new File("mdr.btd")).exists())
+		if ((new File("mdr.btd")).exists())
 		{
 			(new File("mdr.btd")).delete();
 		}
-		if((new File("mdr.btx")).exists())
+		if ((new File("mdr.btx")).exists())
 		{
 			(new File("mdr.btx")).delete();
-		}		
+		}
 	}
 
 }

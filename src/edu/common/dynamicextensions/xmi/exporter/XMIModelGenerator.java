@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.xmi.exporter;
 
 import javax.jmi.reflect.RefPackage;
@@ -17,9 +18,10 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
  */
 public class XMIModelGenerator
 {
+
 	public RefPackage generateUMLModel(EntityGroupInterface entityGroup)
 	{
-		
+
 		return null;
 	}
 }

@@ -45,7 +45,8 @@ public class UserInterfaceiUtility
 	 * @param containerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static String generateHTMLforGrid(ContainerInterface subContainer, List<Map<BaseAbstractAttributeInterface, Object>> valueMapList)
+	public static String generateHTMLforGrid(ContainerInterface subContainer,
+			List<Map<BaseAbstractAttributeInterface, Object>> valueMapList)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
@@ -55,25 +56,29 @@ public class UserInterfaceiUtility
 			rowCount = valueMapList.size();
 		}
 
-		List<ControlInterface> controls = new ArrayList<ControlInterface>(subContainer.getAllControls());
+		List<ControlInterface> controls = new ArrayList<ControlInterface>(subContainer
+				.getAllControls());
 
 		// Do not sort the controls list; it jumbles up the attributes order.
 		//Collections.sort(controlsList);
 
 		stringBuffer.append("<tr width='100%'><td colspan='3'");
-		stringBuffer.append("<div style='display:none' id='" + subContainer.getId() + "_substitutionDiv'>");
+		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()
+				+ "_substitutionDiv'>");
 		stringBuffer.append("<table>");
 		subContainer.setContainerValueMap(new HashMap<BaseAbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
 		stringBuffer.append(getContainerHTMLAsARow(subContainer, -1));
 		stringBuffer.append("</table>");
 		stringBuffer.append("</div>");
 
-		stringBuffer.append("<input type='hidden' name='" + subContainer.getId() + "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='"
-				+ rowCount + "'/> ");
+		stringBuffer.append("<input type='hidden' name='" + subContainer.getId()
+				+ "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='" + rowCount
+				+ "'/> ");
 		stringBuffer.append("</td></tr>");
 
 		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td class='formFieldContainer_withoutBorder' colspan='3' align='center'>");
+		stringBuffer
+				.append("<td class='formFieldContainer_withoutBorder' colspan='3' align='center'>");
 		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		String tableHeaderClass = "formLabelWithTopBorder";
@@ -83,7 +88,7 @@ public class UserInterfaceiUtility
 		{
 			stringBuffer.append("<tr width='100%'>");
 			stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
-	        stringBuffer.append(DynamicExtensionsUtility
+			stringBuffer.append(DynamicExtensionsUtility
 					.getFormattedStringForCapitalization(subContainer.getCaption()));
 			stringBuffer.append("</td>");
 			stringBuffer.append("</tr>");
@@ -95,7 +100,7 @@ public class UserInterfaceiUtility
 
 		stringBuffer.append("<tr width='100%'>");
 		stringBuffer.append("<td colspan='3' width='100%'>");
-		
+
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
 		// category attribute controls.
@@ -103,22 +108,27 @@ public class UserInterfaceiUtility
 		{
 			if (control.getHeading() != null && control.getHeading().length() != 0)
 			{
-				stringBuffer.append("<div width=100% class='td_color_6e81a6' align='left'>"+control.getHeading()+"</div>");
+				stringBuffer.append("<div width=100% class='td_color_6e81a6' align='left'>"
+						+ control.getHeading() + "</div>");
 			}
-			
+
 			if (control.getFormNotes() != null && control.getFormNotes().size() != 0)
 			{
 				stringBuffer.append("<div style='width:100%'>&nbsp</div>");
-				
-				for (FormControlNotesInterface fcNote: control.getFormNotes())
+
+				for (FormControlNotesInterface fcNote : control.getFormNotes())
 				{
-					stringBuffer.append("<div style='width:100%' class='notes' align='left'>"+fcNote.getNote()+"</div>");
+					stringBuffer.append("<div style='width:100%' class='notes' align='left'>"
+							+ fcNote.getNote() + "</div>");
 				}
 			}
 		}
-		
-		stringBuffer.append("<table id='" + subContainer.getId() + "_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'>");
-		
+
+		stringBuffer
+				.append("<table id='"
+						+ subContainer.getId()
+						+ "_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'>");
+
 		stringBuffer.append("<tr width='100%' class='formLabel_withoutBorder'>");
 		stringBuffer.append("<th width='1%'>&nbsp;</th>");
 		for (ControlInterface control : controls)
@@ -165,14 +175,16 @@ public class UserInterfaceiUtility
 
 		if (subContainer.getMode().equals("edit"))
 		{
-			stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr>");
+			stringBuffer
+					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr>");
 
 			stringBuffer.append("<td align='left'>");
 			stringBuffer
 					.append("<img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('"
 							+ subContainer.getId() + "')\">");
 			stringBuffer.append("<map alt='Delete'>");
-			stringBuffer.append("<area href='javascript:removeCheckedRow('" + subContainer.getId() + "')' shape='default'>");
+			stringBuffer.append("<area href='javascript:removeCheckedRow('" + subContainer.getId()
+					+ "')' shape='default'>");
 			stringBuffer.append("</map>");
 			//stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
 			//		+ "')\">");
@@ -185,7 +197,8 @@ public class UserInterfaceiUtility
 					.append("<img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('"
 							+ subContainer.getId() + "')\">");
 			stringBuffer.append("<map alt='Add More'>");
-			stringBuffer.append("<area href='javascript:\"addRow('" + subContainer.getId() + "')' shape='default'>");
+			stringBuffer.append("<area href='javascript:\"addRow('" + subContainer.getId()
+					+ "')' shape='default'>");
 			stringBuffer.append("</map>");
 			//stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
@@ -214,7 +227,8 @@ public class UserInterfaceiUtility
 		{
 			return false;
 		}
-		AttributeMetadataInterface attributeMetadataInterface = (AttributeMetadataInterface) controlInterface.getBaseAbstractAttribute();
+		AttributeMetadataInterface attributeMetadataInterface = (AttributeMetadataInterface) controlInterface
+				.getBaseAbstractAttribute();
 		Collection<RuleInterface> ruleCollection = attributeMetadataInterface.getRuleCollection();
 		boolean required = false;
 		if (ruleCollection != null && !ruleCollection.isEmpty())
@@ -238,8 +252,10 @@ public class UserInterfaceiUtility
 	 * @param valueMapStack
 	 * @param valueMap
 	 */
-	public static void addContainerInfo(Stack<ContainerInterface> containerStack, ContainerInterface containerInterface,
-			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack, Map<BaseAbstractAttributeInterface, Object> valueMap)
+	public static void addContainerInfo(Stack<ContainerInterface> containerStack,
+			ContainerInterface containerInterface,
+			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack,
+			Map<BaseAbstractAttributeInterface, Object> valueMap)
 	{
 		containerStack.push(containerInterface);
 		valueMapStack.push(valueMap);
@@ -250,7 +266,8 @@ public class UserInterfaceiUtility
 	 * @param containerStack
 	 * @param valueMapStack
 	 */
-	public static void removeContainerInfo(Stack<ContainerInterface> containerStack, Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
+	public static void removeContainerInfo(Stack<ContainerInterface> containerStack,
+			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
 		containerStack.pop();
 		valueMapStack.pop();
@@ -261,7 +278,8 @@ public class UserInterfaceiUtility
 	 */
 	public static void clearContainerStack(HttpServletRequest request)
 	{
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		if (containerInterface != null && containerInterface.getId() != null)
 		{
 			request.setAttribute("containerIdentifier", containerInterface.getId().toString());
@@ -278,12 +296,15 @@ public class UserInterfaceiUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static String getContainerHTMLAsARow(ContainerInterface container, int rowId) throws DynamicExtensionsSystemException
+	private static String getContainerHTMLAsARow(ContainerInterface container, int rowId)
+			throws DynamicExtensionsSystemException
 	{
 
 		StringBuffer stringBuffer = new StringBuffer();
-		Map<BaseAbstractAttributeInterface, Object> containerValueMap = container.getContainerValueMap();
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container.getAllControls());
+		Map<BaseAbstractAttributeInterface, Object> containerValueMap = container
+				.getContainerValueMap();
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
+				.getAllControls());
 
 		// Do not sort the controls list; it jumbles up the attribute order
 		//Collections.sort(controlsList);
@@ -345,7 +366,8 @@ public class UserInterfaceiUtility
 	 * @param childContainerId
 	 * @return
 	 */
-	public static AbstractContainmentControlInterface getAssociationControl(ContainerInterface containerInterface, String childContainerId)
+	public static AbstractContainmentControlInterface getAssociationControl(
+			ContainerInterface containerInterface, String childContainerId)
 	{
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
@@ -363,8 +385,8 @@ public class UserInterfaceiUtility
 					}
 					else
 					{
-						abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(abstractContainmentControl.getContainer(),
-								childContainerId);
+						abstractContainmentControl = (AbstractContainmentControl) getAssociationControl(
+								abstractContainmentControl.getContainer(), childContainerId);
 						if (abstractContainmentControl != null)
 						{
 							return abstractContainmentControl;
@@ -391,7 +413,8 @@ public class UserInterfaceiUtility
 		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
-			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
+			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior()
+					+ "&nbsp;");
 			stringBuffer.append("</td>");
 
 			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
@@ -422,7 +445,8 @@ public class UserInterfaceiUtility
 	public static boolean isCardinalityOneToMany(AbstractContainmentControlInterface control)
 	{
 		boolean isOneToMany = false;
-		AssociationInterface associationInterface = (AssociationInterface) control.getBaseAbstractAttribute();
+		AssociationInterface associationInterface = (AssociationInterface) control
+				.getBaseAbstractAttribute();
 		RoleInterface targetRole = associationInterface.getTargetRole();
 		if (targetRole.getMaximumCardinality() == Cardinality.MANY)
 		{
@@ -441,7 +465,8 @@ public class UserInterfaceiUtility
 		boolean isDataPresent = false;
 		if (valueMap != null)
 		{
-			Set<Map.Entry<BaseAbstractAttributeInterface, Object>> mapEntrySet = valueMap.entrySet();
+			Set<Map.Entry<BaseAbstractAttributeInterface, Object>> mapEntrySet = valueMap
+					.entrySet();
 			for (Map.Entry<BaseAbstractAttributeInterface, Object> mapEntry : mapEntrySet)
 			{
 				Object value = mapEntry.getValue();
@@ -452,7 +477,8 @@ public class UserInterfaceiUtility
 						isDataPresent = true;
 						break;
 					}
-					else if ((value instanceof FileAttributeRecordValue) && (((FileAttributeRecordValue) value).getFileName().length() != 0))
+					else if ((value instanceof FileAttributeRecordValue)
+							&& (((FileAttributeRecordValue) value).getFileName().length() != 0))
 					{
 						isDataPresent = true;
 						break;

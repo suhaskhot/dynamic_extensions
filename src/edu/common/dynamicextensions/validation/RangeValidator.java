@@ -37,7 +37,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException if the value is not following the range Rule. 
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap, String controlCaption)
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap, String controlCaption)
 			throws DynamicExtensionsValidationException, DataTypeFactoryInitializationException
 	{
 		boolean valid = true;
@@ -45,15 +46,16 @@ public class RangeValidator implements ValidatorRuleInterface
 		/* Check for the validity of the number */
 		NumberValidator numberValidator = new NumberValidator();
 		//Quick fix 
-		if(valueObject!=null)
-		numberValidator.validate(attribute, valueObject, parameterMap, controlCaption);
+		if (valueObject != null)
+			numberValidator.validate(attribute, valueObject, parameterMap, controlCaption);
 
 		/* Check for the validity of the range of the number against the predefined range*/
 		if (valueObject != null)
 		{
 			if (!((String) valueObject).trim().equals(""))
 			{
-				AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+				AttributeTypeInformationInterface attributeTypeInformation = attribute
+						.getAttributeTypeInformation();
 
 				if (attributeTypeInformation != null)
 				{
@@ -97,8 +99,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value the value to be verified.
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkLongValidation(Map.Entry<String, String> parameter, String controlCaption, String value)
-			throws DynamicExtensionsValidationException
+	private void checkLongValidation(Map.Entry<String, String> parameter, String controlCaption,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -107,14 +109,16 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			if (Long.parseLong(value) < Long.parseLong(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Minimum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Minimum");
 			}
 		}
 		else if (parameterName.equals(Constants.MAX_VALUE))
 		{
 			if (Long.parseLong(value) > Long.parseLong(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Maximum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Maximum");
 			}
 		}
 	}
@@ -125,8 +129,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkIntegerValidation(Entry<String, String> parameter, String controlCaption, String value)
-			throws DynamicExtensionsValidationException
+	private void checkIntegerValidation(Entry<String, String> parameter, String controlCaption,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -135,14 +139,16 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			if (Integer.parseInt(value) < Integer.parseInt(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Minimum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Minimum");
 			}
 		}
 		else if (parameterName.equals(Constants.MAX_VALUE))
 		{
 			if (Integer.parseInt(value) > Integer.parseInt(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Maximum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Maximum");
 			}
 		}
 	}
@@ -153,8 +159,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkShortValidation(Entry<String, String> parameter, String controlCaption, String value)
-			throws DynamicExtensionsValidationException
+	private void checkShortValidation(Entry<String, String> parameter, String controlCaption,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -163,14 +169,16 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			if (Short.parseShort(value) < Short.parseShort(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Minimum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Minimum");
 			}
 		}
 		else if (parameterName.equals(Constants.MAX_VALUE))
 		{
 			if (Short.parseShort(value) > Short.parseShort(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Maximum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Maximum");
 			}
 		}
 	}
@@ -181,8 +189,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkDoubleValidation(Map.Entry<String, String> parameter, String controlCaption, String value)
-			throws DynamicExtensionsValidationException
+	private void checkDoubleValidation(Map.Entry<String, String> parameter, String controlCaption,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -191,14 +199,16 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			if (Double.parseDouble(value) < Double.parseDouble(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Minimum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Minimum");
 			}
 		}
 		else if (parameterName.equals(Constants.MAX_VALUE))
 		{
 			if (Double.parseDouble(value) > Double.parseDouble(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Maximum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Maximum");
 			}
 		}
 	}
@@ -209,8 +219,8 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param value
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkFloatValidation(Entry<String, String> parameter, String controlCaption, String value)
-			throws DynamicExtensionsValidationException
+	private void checkFloatValidation(Entry<String, String> parameter, String controlCaption,
+			String value) throws DynamicExtensionsValidationException
 	{
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
@@ -219,14 +229,16 @@ public class RangeValidator implements ValidatorRuleInterface
 		{
 			if (Float.parseFloat(value) < Float.parseFloat(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Minimum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Minimum");
 			}
 		}
 		else if (parameterName.equals(Constants.MAX_VALUE))
 		{
 			if (Float.parseFloat(value) > Float.parseFloat(parameterValue))
 			{
-				reportOutOfRangeInput(controlCaption, parameterValue, "dynExtn.validation.Range.Maximum");
+				reportOutOfRangeInput(controlCaption, parameterValue,
+						"dynExtn.validation.Range.Maximum");
 			}
 		}
 	}
@@ -237,12 +249,14 @@ public class RangeValidator implements ValidatorRuleInterface
 	 * @param errorKey
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void reportOutOfRangeInput(String controlCaption, String parameterValue, String errorKey) throws DynamicExtensionsValidationException
+	private void reportOutOfRangeInput(String controlCaption, String parameterValue, String errorKey)
+			throws DynamicExtensionsValidationException
 	{
 		List<String> placeHolders = new ArrayList<String>();
 		placeHolders.add(controlCaption);
 		placeHolders.add(parameterValue);
-		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey, placeHolders);
+		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey,
+				placeHolders);
 	}
 
 }

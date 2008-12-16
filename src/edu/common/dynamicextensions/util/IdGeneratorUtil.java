@@ -70,7 +70,8 @@ public class IdGeneratorUtil
 			if (list.size() == 0)
 			{
 				nextAvailableId = new Long(1);
-				IdGeneratorInterface idGeneratorObject = DomainObjectFactory.getInstance().createIdGenerator();
+				IdGeneratorInterface idGeneratorObject = DomainObjectFactory.getInstance()
+						.createIdGenerator();
 
 				idGeneratorObject.setNextAvailableId(new Long(2));
 				idGeneratorObject.setId(new Long(1));
@@ -104,7 +105,7 @@ public class IdGeneratorUtil
 		}
 		finally
 		{
-			if(session != null)
+			if (session != null)
 			{
 				session.close();
 			}

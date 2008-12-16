@@ -25,6 +25,7 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class ToolBoxTag extends TagSupport
 {
+
 	/**
 	 * 
 	 */
@@ -388,7 +389,7 @@ public class ToolBoxTag extends TagSupport
 	 */
 	public int doEndTag()
 	{
-		ControlConfigurationsFactory controlConfigurationsFactory=null;
+		ControlConfigurationsFactory controlConfigurationsFactory = null;
 		try
 		{
 			controlConfigurationsFactory = ControlConfigurationsFactory.getInstance();
@@ -404,10 +405,11 @@ public class ToolBoxTag extends TagSupport
 		}
 		Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
 		StringBuffer sb = new StringBuffer();
-		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height + "; width:" + width
-				+ ";  overflow-y: auto; \">");
-		sb.append("\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
-		
+		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height
+				+ "; width:" + width + ";  overflow-y: auto; \">");
+		sb
+				.append("\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
+
 		Iterator toolsListIterator = toolsList.iterator();
 		String toolName = null, toolCaption = null;
 		NameValueBean tool = null;
@@ -420,7 +422,7 @@ public class ToolBoxTag extends TagSupport
 			{
 				toolName = tool.getName();
 				toolCaption = getToolCaptionFromResourceBundle(resourceBundle, tool.getValue());
-				if(controlConfigurationsFactory!=null)
+				if (controlConfigurationsFactory != null)
 				{
 					imagePath = controlConfigurationsFactory.getControlImagePath(toolName);
 				}
@@ -430,7 +432,7 @@ public class ToolBoxTag extends TagSupport
 					sb.append("<tr><td width='100%' ");
 					if (selectedUserOption != null && toolName.equals(selectedUserOption))
 					{
-						classname="toolLabelTextSelected";
+						classname = "toolLabelTextSelected";
 						sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
 								+ "\" id='" + toolName + "' border=\"1\" />");
 					}
@@ -438,10 +440,11 @@ public class ToolBoxTag extends TagSupport
 					{
 						classname = "toolLabelText";
 						sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
-								+ "\" id='" + toolName + "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName + "');" + onClick
-								+ "('" + toolName + "','" + id + "')\"/>");
+								+ "\" id='" + toolName
+								+ "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName
+								+ "');" + onClick + "('" + toolName + "','" + id + "')\"/>");
 					}
-					if(imagePath!=null)
+					if (imagePath != null)
 					{
 						sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
 					}
@@ -458,7 +461,9 @@ public class ToolBoxTag extends TagSupport
 		sb.append("</tr>");
 		sb.append("\n</table> ");
 		sb.append("\n</div> ");
-		sb.append("<input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"" + selectedUserOption + "\"/>");
+		sb
+				.append("<input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\""
+						+ selectedUserOption + "\"/>");
 		try
 		{
 			JspWriter out = pageContext.getOut();

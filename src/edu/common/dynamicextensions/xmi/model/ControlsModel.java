@@ -1,6 +1,7 @@
 /**
  *
  */
+
 package edu.common.dynamicextensions.xmi.model;
 
 import java.util.ArrayList;
@@ -16,15 +17,13 @@ import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.domain.AbstractDomainObject;
 
-
 /**
  * @author ashish_gupta
  *
  */
-public class ControlsModel implements
-ControlUIBeanInterface,
-AbstractAttributeUIBeanInterface
+public class ControlsModel implements ControlUIBeanInterface, AbstractAttributeUIBeanInterface
 {
+
 	/**
 	 * Attribute Name
 	 */
@@ -1130,8 +1129,8 @@ AbstractAttributeUIBeanInterface
 	 }
 
 	 *//**
-	 * @param showPreview The showPreview to set.
-	 */
+		 * @param showPreview The showPreview to set.
+		 */
 	/*
 	 public void setShowPreview(String showPreview)
 	 {
@@ -1276,7 +1275,6 @@ AbstractAttributeUIBeanInterface
 	{
 		this.measurementUnitOther = measurementUnitOther;
 	}
-
 
 	/**
 	 * @return the tempValidationRules
@@ -1548,6 +1546,5 @@ AbstractAttributeUIBeanInterface
 	{
 		this.csvString = csvString;
 	}
-
 
 }

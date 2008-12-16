@@ -2,8 +2,6 @@
 package edu.common.dynamicextensions.util;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -48,10 +46,11 @@ public class FileReader
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static String getSystemIndependantFilePath(String path) throws DynamicExtensionsSystemException
+	public static String getSystemIndependantFilePath(String path)
+			throws DynamicExtensionsSystemException
 	{
 		path = path.replace(" ", "%20");
-			
+
 		File file = new File(path);
 		return file.getAbsolutePath();
 	}

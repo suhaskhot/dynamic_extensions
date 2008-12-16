@@ -18,7 +18,8 @@ public class RequiredValidator implements ValidatorRuleInterface
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map parameterMap,String controlCaption) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map parameterMap, String controlCaption) throws DynamicExtensionsValidationException
 	{
 		String attributeName = attribute.getName();
 		if (valueObject != null)
@@ -28,20 +29,23 @@ public class RequiredValidator implements ValidatorRuleInterface
 				List valueList = (List) valueObject;
 				if (valueList.isEmpty())
 				{
-					throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.RequiredValidator", controlCaption);
+					throw new DynamicExtensionsValidationException("Validation failed", null,
+							"dynExtn.validation.RequiredValidator", controlCaption);
 				}
 			}
 			else if (valueObject instanceof String)
 			{
 				if (((String) valueObject).trim().equals(""))
 				{
-					throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.RequiredValidator", controlCaption);
+					throw new DynamicExtensionsValidationException("Validation failed", null,
+							"dynExtn.validation.RequiredValidator", controlCaption);
 				}
 			}
 		}
 		else
 		{
-			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.RequiredValidator", controlCaption);
+			throw new DynamicExtensionsValidationException("Validation failed", null,
+					"dynExtn.validation.RequiredValidator", controlCaption);
 		}
 
 		return true;

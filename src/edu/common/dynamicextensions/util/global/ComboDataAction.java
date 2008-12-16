@@ -30,7 +30,9 @@ import edu.wustl.common.beans.NameValueBean;
  */
 public class ComboDataAction extends BaseDynamicExtensionsAction
 {
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
+
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String limit = request.getParameter("limit");
 		String query = request.getParameter("query");
@@ -45,8 +47,8 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		JSONObject mainJsonObject = new JSONObject();
 
 		DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
-		ContainerInterface container = (ContainerInterface) ((HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER)).get(Long
-				.parseLong(containerId));
+		ContainerInterface container = (ContainerInterface) ((HashMap) deCacheManager
+				.getObjectFromCache(Constants.LIST_OF_CONTAINER)).get(Long.parseLong(containerId));
 
 		List<NameValueBean> nameValueBeans = null;
 		for (ControlInterface control : container.getControlCollection())
@@ -66,7 +68,9 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		for (int i = startFetch; i < total && i < querySpecificNVBeans.size(); i++)
 		{
 			JSONObject jsonObject = new JSONObject();
-			if (query == null || querySpecificNVBeans.get(i).getName().toLowerCase().contains(query.toLowerCase()) || query.length() == 0)
+			if (query == null
+					|| querySpecificNVBeans.get(i).getName().toLowerCase().contains(
+							query.toLowerCase()) || query.length() == 0)
 			{
 				jsonObject.put("id", querySpecificNVBeans.get(i).getValue());
 				jsonObject.put("field", querySpecificNVBeans.get(i).getName());
@@ -89,7 +93,8 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 	 * @param nameValueBeans
 	 * @param query
 	 */
-	private void populateQuerySpecificNameValueBeansList(List<NameValueBean> querySpecificNVBeans, List<NameValueBean> nameValueBeans, String query)
+	private void populateQuerySpecificNameValueBeansList(List<NameValueBean> querySpecificNVBeans,
+			List<NameValueBean> nameValueBeans, String query)
 	{
 		for (NameValueBean nvb : nameValueBeans)
 		{

@@ -21,17 +21,17 @@ public class RecordListForm extends AbstractActionForm
 	 * 
 	 */
 	private static final long serialVersionUID = 0L;
-	
+
 	/**
 	 * 
 	 */
 	String containerIdentifier = null;
-	
+
 	/**
 	 * 
 	 */
 	List<EntityRecord> entityRecordList = null;
-	
+
 	/**
 	 * 
 	 */
@@ -44,7 +44,7 @@ public class RecordListForm extends AbstractActionForm
 	{
 		return entityRecordList;
 	}
-	
+
 	/**
 	 * @param recordSnippetList the recordSnippetList to set
 	 */
@@ -76,7 +76,7 @@ public class RecordListForm extends AbstractActionForm
 	public void setAllValues(AbstractDomainObject abstractDomainObject)
 	{
 	}
-	
+
 	/**
 	 * @return the containerIdentifier
 	 */

@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.xmi.exporter;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -12,7 +13,6 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterfac
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.util.global.Variables;
 
-
 /**
  * @author preeti_lodha
  *
@@ -21,50 +21,58 @@ import edu.common.dynamicextensions.util.global.Variables;
  */
 public enum DatatypeMappings {
 
-	STRING(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE){
+	STRING(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.String";
 		}
-		
-	}
-	, INTEGER(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE){
+
+	},
+	INTEGER(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.Integer";
 		}
 	},
-	BOOLEAN(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE){
+	BOOLEAN(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.Boolean";
 		}
 	},
-	LONG(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE){
+	LONG(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.Long";
 		}
 	},
-	SHORT(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE){
+	SHORT(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.Short";
 		}
 	},
-	DATE(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE){
+	DATE(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.util.Date";
 		}
 	},
-	FLOAT(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE){
+	FLOAT(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.Float";
 		}
 	},
-	DOUBLE(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE){
+	DOUBLE(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE) {
+
 		public String getJavaClassMapping()
 		{
 			return "java.lang.Double";
@@ -78,11 +86,18 @@ public enum DatatypeMappings {
 		this.value = value;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getValue()
 	{
 		return value;
 	}
 
+	/**
+	 * @param value
+	 * @return
+	 */
 	public static DatatypeMappings get(String value)
 	{
 		DatatypeMappings[] datatypeMappings = DatatypeMappings.values();
@@ -96,20 +111,33 @@ public enum DatatypeMappings {
 		}
 		return null;
 	}
+
+	/**
+	 * @return
+	 */
 	public String getJavaClassMapping()
 	{
 		System.out.println("Java Mapping for datatype not found");
 		return null;
 	}
-	public String getSQLClassMapping()   throws DataTypeFactoryInitializationException
+
+	/**
+	 * @return
+	 * @throws DataTypeFactoryInitializationException
+	 */
+	public String getSQLClassMapping() throws DataTypeFactoryInitializationException
 	{
 		return DataTypeFactory.getInstance().getDatabaseDataType(value);
 	}
-	
+
+	/**
+	 * @param args
+	 * @throws DataTypeFactoryInitializationException
+	 */
 	public static void main(String[] args) throws DataTypeFactoryInitializationException
 	{
 		AttributeInterface a = DomainObjectFactory.getInstance().createFloatAttribute();
-		Variables.databaseName="MYSQL";
+		Variables.databaseName = "MYSQL";
 		DatatypeMappings d = DatatypeMappings.get(a.getDataType());
 		//System.out.println(d.getJavaClassMapping());
 		//System.out.println(d.getSQLClassMapping());

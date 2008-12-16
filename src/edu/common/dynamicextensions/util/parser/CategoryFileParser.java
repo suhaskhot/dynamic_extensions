@@ -19,6 +19,7 @@ import edu.wustl.common.util.dbManager.DAOException;
  */
 public abstract class CategoryFileParser extends FileReader
 {
+
 	protected CategoryValidator categoryValidator;
 
 	/**
@@ -73,7 +74,8 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public abstract String getEntityName() throws DynamicExtensionsSystemException, DAOException, ClassNotFoundException;
+	public abstract String getEntityName() throws DynamicExtensionsSystemException, DAOException,
+			ClassNotFoundException;
 
 	/**
 	 * @return attribute name
@@ -95,6 +97,7 @@ public abstract class CategoryFileParser extends FileReader
 	 * value as value for the property
 	 */
 	public abstract Map<String, String> getControlOptions();
+
 	/**
 	 * @return getPermissibleValueOptions
 	 * @throws DynamicExtensionsSystemException
@@ -105,13 +108,15 @@ public abstract class CategoryFileParser extends FileReader
 	 * Return a map of rules belonging to a category attribute.
 	 * @return
 	 */
-	public abstract Map<String, Object> getRules(String attributeName) throws DynamicExtensionsSystemException;
+	public abstract Map<String, Object> getRules(String attributeName)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return list of permissible values
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public abstract Map<String, Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException;
+	public abstract Map<String, Collection<SemanticPropertyInterface>> getPermissibleValues()
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return 
@@ -187,12 +192,14 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 */
 	public abstract String getDefaultValue();
-	
+
 	/**
 	 * @return
 	 */
-	public abstract List<FormControlNotesInterface> getFormControlNotes(List<FormControlNotesInterface> controlNotes) throws DynamicExtensionsSystemException, IOException; 
-	
+	public abstract List<FormControlNotesInterface> getFormControlNotes(
+			List<FormControlNotesInterface> controlNotes) throws DynamicExtensionsSystemException,
+			IOException;
+
 	/**
 	 * 
 	 */

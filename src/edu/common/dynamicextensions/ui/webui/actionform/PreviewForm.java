@@ -11,6 +11,7 @@ import edu.wustl.common.domain.AbstractDomainObject;
  */
 public class PreviewForm extends AbstractActionForm
 {
+
 	private static final long serialVersionUID = -7828307676065035418L;
 
 	String entitySaved;

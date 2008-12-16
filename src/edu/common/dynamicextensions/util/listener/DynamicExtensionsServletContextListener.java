@@ -19,6 +19,7 @@ import edu.wustl.common.util.logger.Logger;
  * */
 public class DynamicExtensionsServletContextListener implements ServletContextListener
 {
+
 	/**
 	 * @param sce : Servlet Context Event
 	 */
@@ -27,14 +28,17 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		/**
 		 * Getting Application Properties file path
 		 */
-		String applicationResourcesPath = sce.getServletContext().getRealPath("WEB-INF") + System.getProperty("file.separator") + "classes"
-				+ System.getProperty("file.separator") + sce.getServletContext().getInitParameter("applicationproperties");
+		String applicationResourcesPath = sce.getServletContext().getRealPath("WEB-INF")
+				+ System.getProperty("file.separator") + "classes"
+				+ System.getProperty("file.separator")
+				+ sce.getServletContext().getInitParameter("applicationproperties");
 
 		/**
 		 * Initializing ApplicationProperties with the class 
 		 * corresponding to resource bundle of the application
 		 */
-		ApplicationProperties.initBundle(sce.getServletContext().getInitParameter("resourcebundleclass"));
+		ApplicationProperties.initBundle(sce.getServletContext().getInitParameter(
+				"resourcebundleclass"));
 
 		/**
 		 * Getting and storing Home path for the application
@@ -63,23 +67,26 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		 */
 		Logger.configure(applicationResourcesPath);
 
-		Logger.out.info(ApplicationProperties.getValue("dynamicExtensions.home") + Variables.dynamicExtensionsHome);
-		Logger.out.info(ApplicationProperties.getValue("logger.conf.filename") + applicationResourcesPath);
+		Logger.out.info(ApplicationProperties.getValue("dynamicExtensions.home")
+				+ Variables.dynamicExtensionsHome);
+		Logger.out.info(ApplicationProperties.getValue("logger.conf.filename")
+				+ applicationResourcesPath);
 
 		//QueryBizLogic.initializeQueryData();
 
 		DynamicExtensionsUtility.initialiseApplicationVariables();
-		
+
 		DynamicExtensionsUtility.initialiseApplicationInfo();
-		
+
 		try
 		{
 			DynamicExtensionsUtility.updateDynamicExtensionsCache();
 		}
-		catch (DynamicExtensionsSystemException e) 
+		catch (DynamicExtensionsSystemException e)
 		{
 			// TODO Auto-generated catch block
-			Logger.out.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
+			Logger.out
+					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
 			e.printStackTrace();
 		}
 	}
@@ -89,6 +96,6 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 	 */
 	public void contextDestroyed(ServletContextEvent sce)
 	{
-//	  
+		//	  
 	}
 }

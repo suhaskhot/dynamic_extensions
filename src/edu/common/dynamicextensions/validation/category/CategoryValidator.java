@@ -39,7 +39,8 @@ import edu.wustl.common.util.global.ApplicationProperties;
  *
  */
 public class CategoryValidator
-{	
+{
+
 	Long entityGroupId;
 
 	CategoryCSVFileParser categoryFileParser;
@@ -52,7 +53,8 @@ public class CategoryValidator
 	public CategoryValidator(CategoryCSVFileParser categoryFileParser)
 	{
 		this.categoryFileParser = categoryFileParser;
-		ApplicationProperties.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
+		ApplicationProperties
+				.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
 	}
 
 	/**
@@ -78,7 +80,9 @@ public class CategoryValidator
 	{
 		if (categoryFileParser.readLine()[0].split(":").length < 2)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS) + getErrorMessageStart()
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ getErrorMessageStart()
 					+ ApplicationProperties.getValue(CategoryConstants.MULT_UNDEFINED));
 		}
 	}
@@ -89,11 +93,14 @@ public class CategoryValidator
 	 * @throws ClassNotFoundException 
 	 * @throws DAOException 
 	 */
-	public void validateEntityName(String entityName) throws DynamicExtensionsSystemException, DAOException, ClassNotFoundException
+	public void validateEntityName(String entityName) throws DynamicExtensionsSystemException,
+			DAOException, ClassNotFoundException
 	{
-		String errorMessage = getErrorMessageStart() + ApplicationProperties.getValue(CategoryConstants.NO_ENTITY) + entityName;
-		
-		String entityHQL = "select id from Entity entity where entity.entityGroup.id = "+entityGroupId +" and entity.name = '" + entityName +"'";
+		String errorMessage = getErrorMessageStart()
+				+ ApplicationProperties.getValue(CategoryConstants.NO_ENTITY) + entityName;
+
+		String entityHQL = "select id from Entity entity where entity.entityGroup.id = "
+				+ entityGroupId + " and entity.name = '" + entityName + "'";
 		List entityIdList = DynamicExtensionsUtility.executeQuery(entityHQL);
 		checkForNullRefernce(entityIdList.get(0), errorMessage);
 	}
@@ -111,11 +118,14 @@ public class CategoryValidator
 	 * @param message
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkForNullRefernce(Object object, String message) throws DynamicExtensionsSystemException
+	public static void checkForNullRefernce(Object object, String message)
+			throws DynamicExtensionsSystemException
 	{
 		if (object == null)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS) + message);
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ message);
 		}
 	}
 
@@ -128,12 +138,13 @@ public class CategoryValidator
 	 * @throws ParseException
 	 * @throws DynamicExtensionsValidationException 
 	 */
-	public static void checkRangeAgainstAttributeValueRange(AttributeInterface attribute, Map<String, Object> rules)
-			throws DynamicExtensionsSystemException, ParseException
+	public static void checkRangeAgainstAttributeValueRange(AttributeInterface attribute,
+			Map<String, Object> rules) throws DynamicExtensionsSystemException, ParseException
 	{
 		if (attribute == null)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
 		}
 
@@ -147,7 +158,8 @@ public class CategoryValidator
 			}
 			else if (rules.containsKey(CategoryCSVConstants.RANGE.toLowerCase()))
 			{
-				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.RANGE.toLowerCase());
+				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.RANGE
+						.toLowerCase());
 			}
 
 			if (catMinMaxValues != null && !catMinMaxValues.isEmpty())
@@ -165,21 +177,24 @@ public class CategoryValidator
 	 * @param catMinMaxValues
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void validateRangeValues(AttributeInterface attribute, Map<String, Object> catMinMaxValues)
-			throws DynamicExtensionsSystemException
+	private static void validateRangeValues(AttributeInterface attribute,
+			Map<String, Object> catMinMaxValues) throws DynamicExtensionsSystemException
 	{
 		String minValue = (String) catMinMaxValues.get(CategoryCSVConstants.MIN.toLowerCase());
 		String maxValue = (String) catMinMaxValues.get(CategoryCSVConstants.MAX.toLowerCase());
 
 		Map<String, String> values = new HashMap<String, String>();
 
-		Set<RuleInterface> attributeRules = new HashSet<RuleInterface>(attribute.getRuleCollection());
+		Set<RuleInterface> attributeRules = new HashSet<RuleInterface>(attribute
+				.getRuleCollection());
 
 		for (RuleInterface rule : attributeRules)
 		{
-			if (rule.getName().equalsIgnoreCase(CategoryCSVConstants.RANGE) || rule.getName().equalsIgnoreCase(ProcessorConstants.DATE_RANGE))
+			if (rule.getName().equalsIgnoreCase(CategoryCSVConstants.RANGE)
+					|| rule.getName().equalsIgnoreCase(ProcessorConstants.DATE_RANGE))
 			{
-				Set<RuleParameterInterface> ruleParameters = new HashSet<RuleParameterInterface>(rule.getRuleParameterCollection());
+				Set<RuleParameterInterface> ruleParameters = new HashSet<RuleParameterInterface>(
+						rule.getRuleParameterCollection());
 
 				for (RuleParameterInterface ruleParameter : ruleParameters)
 				{
@@ -200,7 +215,7 @@ public class CategoryValidator
 				}
 			}
 		}
-		
+
 		validateCategoryAttributeRangeValues(minValue, maxValue, attribute);
 	}
 
@@ -211,20 +226,25 @@ public class CategoryValidator
 	 * @param attribute
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void validateAttributeTypeInformationMetadata(AttributeInterface attribute) throws DynamicExtensionsSystemException
+	private static void validateAttributeTypeInformationMetadata(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
 	{
 		AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
 
 		if (attrTypeInfo == null)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR_TYPE_INFO) + attribute.getName());
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR_TYPE_INFO)
+					+ attribute.getName());
 		}
 
 		if (!(attrTypeInfo instanceof NumericAttributeTypeInformation || attrTypeInfo instanceof DateAttributeTypeInformation))
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.NON_NUM_RANGE) + attribute.getName());
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.NON_NUM_RANGE)
+					+ attribute.getName());
 		}
 	}
 
@@ -236,8 +256,8 @@ public class CategoryValidator
 	 * @param values
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void validateRange(String catAttrValue, AttributeInterface attribute, Map<String, String> values)
-			throws DynamicExtensionsSystemException
+	private static void validateRange(String catAttrValue, AttributeInterface attribute,
+			Map<String, String> values) throws DynamicExtensionsSystemException
 	{
 		AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
 
@@ -247,11 +267,13 @@ public class CategoryValidator
 
 			try
 			{
-				rangeValidator.validate((AttributeMetadataInterface) attribute, catAttrValue, values, attribute.getName());
+				rangeValidator.validate((AttributeMetadataInterface) attribute, catAttrValue,
+						values, attribute.getName());
 			}
 			catch (DynamicExtensionsValidationException e)
 			{
-				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
 						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName());
 			}
 		}
@@ -261,11 +283,13 @@ public class CategoryValidator
 
 			try
 			{
-				dateRangeValidator.validate((AttributeMetadataInterface) attribute, catAttrValue, values, attribute.getName());
+				dateRangeValidator.validate((AttributeMetadataInterface) attribute, catAttrValue,
+						values, attribute.getName());
 			}
 			catch (DynamicExtensionsValidationException e)
 			{
-				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
 						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName());
 			}
 		}
@@ -277,21 +301,25 @@ public class CategoryValidator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws ParseException
 	 */
-	public static void checkRequiredRule(AttributeInterface attribute, Map<String, Object> rules) throws DynamicExtensionsSystemException,
-			ParseException
+	public static void checkRequiredRule(AttributeInterface attribute, Map<String, Object> rules)
+			throws DynamicExtensionsSystemException, ParseException
 	{
 		if (attribute == null)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
 		}
 
 		for (RuleInterface rule : attribute.getRuleCollection())
 		{
-			if (rule.getName().equalsIgnoreCase(CategoryCSVConstants.REQUIRED) && (rules == null || rules.isEmpty()))
+			if (rule.getName().equalsIgnoreCase(CategoryCSVConstants.REQUIRED)
+					&& (rules == null || rules.isEmpty()))
 			{
-				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(CategoryConstants.NO_OVERRIDE_REQ_RULE) + attribute.getName());
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(CategoryConstants.NO_OVERRIDE_REQ_RULE)
+						+ attribute.getName());
 			}
 		}
 	}
@@ -301,7 +329,8 @@ public class CategoryValidator
 	 */
 	private String getErrorMessageStart()
 	{
-		return ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber() + " ";
+		return ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+				+ categoryFileParser.getLineNumber() + " ";
 	}
 
 	/**
@@ -311,8 +340,8 @@ public class CategoryValidator
 	 * @param catEntNames
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void isRootEntityUsedTwice(String entityName, List<String> mainForms, Collection<String> catEntNames)
-			throws DynamicExtensionsSystemException
+	public void isRootEntityUsedTwice(String entityName, List<String> mainForms,
+			Collection<String> catEntNames) throws DynamicExtensionsSystemException
 	{
 		if (!mainForms.contains(entityName))
 		{
@@ -325,7 +354,9 @@ public class CategoryValidator
 			entName = CategoryGenerationUtil.getEntityName(categoryEntityName);
 			if (entName.equals(entityName))
 			{
-				String errorMessage = getErrorMessageStart() + ApplicationProperties.getValue(CategoryConstants.ROOT_ENT_TWICE) + entityName;
+				String errorMessage = getErrorMessageStart()
+						+ ApplicationProperties.getValue(CategoryConstants.ROOT_ENT_TWICE)
+						+ entityName;
 				throw new DynamicExtensionsSystemException(errorMessage);
 			}
 		}
@@ -337,16 +368,21 @@ public class CategoryValidator
 	 * @param attribute
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void isTextAreaForNumeric(String controlType, AttributeInterface attribute) throws DynamicExtensionsSystemException
+	public void isTextAreaForNumeric(String controlType, AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
 	{
 		if (CategoryCSVConstants.TEXT_AREA.equals(controlType))
 		{
-			AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
+			AttributeTypeInformationInterface attrTypeInfo = attribute
+					.getAttributeTypeInformation();
 			if (attrTypeInfo instanceof NumericAttributeTypeInformation)
 			{
-				throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + categoryFileParser.getLineNumber()
-						+ ApplicationProperties.getValue(CategoryConstants.NO_TEXTAREA) + attribute.getName());
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+						+ categoryFileParser.getLineNumber()
+						+ ApplicationProperties.getValue(CategoryConstants.NO_TEXTAREA)
+						+ attribute.getName());
 			}
 		}
 	}
@@ -358,31 +394,39 @@ public class CategoryValidator
 	 * @param control
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkIsMultiSelectValid(EntityInterface entity, String attributeName, ControlInterface control)
-			throws DynamicExtensionsSystemException
+	public static void checkIsMultiSelectValid(EntityInterface entity, String attributeName,
+			ControlInterface control) throws DynamicExtensionsSystemException
 	{
-		AbstractAttributeInterface abstractAttribute = entity.getAbstractAttributeByName(attributeName);
-		
+		AbstractAttributeInterface abstractAttribute = entity
+				.getAbstractAttributeByName(attributeName);
+
 		if (control != null && control instanceof ListBoxInterface)
 		{
 			Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
-	
+
 			if (isMultiSelect != null && isMultiSelect == true)
 			{
 				if (abstractAttribute != null)
 				{
 					if (!(abstractAttribute instanceof AssociationInterface))
 					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ ApplicationProperties.getValue(CategoryConstants.INVALID_MULTI_SELECT) + attributeName);
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ ApplicationProperties
+										.getValue(CategoryConstants.INVALID_MULTI_SELECT)
+								+ attributeName);
 					}
 					else
 					{
-						Boolean isCollection = ((AssociationInterface) abstractAttribute).getIsCollection();
+						Boolean isCollection = ((AssociationInterface) abstractAttribute)
+								.getIsCollection();
 						if (isCollection != null && isCollection == false)
 						{
-							throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-									+ ApplicationProperties.getValue(CategoryConstants.INVALID_MULTI_SELECT) + attributeName);
+							throw new DynamicExtensionsSystemException(ApplicationProperties
+									.getValue(CategoryConstants.CREATE_CAT_FAILS)
+									+ ApplicationProperties
+											.getValue(CategoryConstants.INVALID_MULTI_SELECT)
+									+ attributeName);
 						}
 					}
 				}
@@ -394,68 +438,81 @@ public class CategoryValidator
 			{
 				if (abstractAttribute instanceof AssociationInterface)
 				{
-					Boolean isCollection = ((AssociationInterface) abstractAttribute).getIsCollection();
+					Boolean isCollection = ((AssociationInterface) abstractAttribute)
+							.getIsCollection();
 					if (isCollection != null && isCollection == true)
 					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ ApplicationProperties.getValue(CategoryConstants.INVALID_CONTROL_FOR_MULTI_SELECT) + attributeName);
+						throw new DynamicExtensionsSystemException(
+								ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
+										+ ApplicationProperties
+												.getValue(CategoryConstants.INVALID_CONTROL_FOR_MULTI_SELECT)
+										+ attributeName);
 					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * This method checks if the heading information has been repeated and
 	 * throws an exception if it is repeated.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkHeadingInfoRepeatation(String lineAfterHeading, long lineNumber) throws DynamicExtensionsSystemException
+	public static void checkHeadingInfoRepeatation(String lineAfterHeading, long lineNumber)
+			throws DynamicExtensionsSystemException
 	{
 		if (lineAfterHeading.startsWith(CategoryConstants.HEADING))
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue("headingInfoRepeted") + lineNumber); 
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue("headingInfoRepeted") + lineNumber);
 		}
 	}
-	
+
 	/**
 	 * This method checks if the note is appropriate.
 	 * @param note
 	 * @param lineNumber
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkIfNoteIsAppropriate(String note, long lineNumber) throws DynamicExtensionsSystemException
+	public static void checkIfNoteIsAppropriate(String note, long lineNumber)
+			throws DynamicExtensionsSystemException
 	{
-		if (note.trim().split("~").length != 2 || note.trim().split("~")[1].length() > 255 || note.contains(":"))
+		if (note.trim().split("~").length != 2 || note.trim().split("~")[1].length() > 255
+				|| note.contains(":"))
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue("noteNotAppropriate") + lineNumber); 
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue("noteNotAppropriate") + lineNumber);
 		}
 	}
-	
+
 	/**
 	 * This method checks if the heading is appropriate.
 	 * @param note
 	 * @param lineNumber
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkIfHeadingIsAppropriate(String heading, long lineNumber) throws DynamicExtensionsSystemException
+	public static void checkIfHeadingIsAppropriate(String heading, long lineNumber)
+			throws DynamicExtensionsSystemException
 	{
-		if (heading.split("~").length != 2 || heading.split("~")[1].length() > 255 || heading.contains(":") || heading.contains(","))
+		if (heading.split("~").length != 2 || heading.split("~")[1].length() > 255
+				|| heading.contains(":") || heading.contains(","))
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue("headingNotAppropriate") + lineNumber); 
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue("headingNotAppropriate") + lineNumber);
 		}
 	}
-	
+
 	/**
 	 * @param minValue
 	 * @param maxValue
 	 * @param attribute
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void validateCategoryAttributeRangeValues(String minValue, String maxValue, AttributeInterface attribute) throws DynamicExtensionsSystemException
+	private static void validateCategoryAttributeRangeValues(String minValue, String maxValue,
+			AttributeInterface attribute) throws DynamicExtensionsSystemException
 	{
 		AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
 
@@ -465,18 +522,23 @@ public class CategoryValidator
 			{
 				if (Double.parseDouble(minValue) > Double.parseDouble(maxValue))
 				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.INCORRECT_MINMAX) + attribute.getName());
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.INCORRECT_MINMAX)
+							+ attribute.getName());
 				}
 			}
 			else
 			{
-				String dateFormat = ((DateAttributeTypeInformation)attrTypeInfo).getFormat();
+				String dateFormat = ((DateAttributeTypeInformation) attrTypeInfo).getFormat();
 				int result = DynamicExtensionsUtility.compareDates(minValue, maxValue, dateFormat);
 				if (result == 1 || result == -2)
 				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.INCORRECT_MINMAX_DATE) + attribute.getName());
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.INCORRECT_MINMAX_DATE)
+							+ attribute.getName());
 				}
 			}
 		}

@@ -45,7 +45,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 * @throws DynamicExtensionsSystemException
 	 * @throws FileNotFoundException 
 	 */
-	public CategoryCSVFileParser(String filePath) throws DynamicExtensionsSystemException, FileNotFoundException
+	public CategoryCSVFileParser(String filePath) throws DynamicExtensionsSystemException,
+			FileNotFoundException
 	{
 		super(filePath);
 		reader = new CSVReader(new FileReader(filePath));
@@ -71,7 +72,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		//To skip the blank lines
 		boolean flag = true;
 		line = reader.readNext();
-		while (line!= null)
+		while (line != null)
 		{
 			lineNumber++;
 			if (line[0].length() != 0 && !line[0].startsWith("##"))
@@ -110,7 +111,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			List<String> path = new ArrayList<String>();
 			String entityName = entityNameAndPath.split("~")[0];
 
-			StringTokenizer stringTokenizer = new StringTokenizer(entityNameAndPath.split("~")[1], ":");
+			StringTokenizer stringTokenizer = new StringTokenizer(entityNameAndPath.split("~")[1],
+					":");
 			while (stringTokenizer.hasMoreTokens())
 			{
 				path.add(stringTokenizer.nextToken());
@@ -149,7 +151,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 * @throws ClassNotFoundException 
 	 * @throws DAOException 
 	 */
-	public String getEntityName() throws DynamicExtensionsSystemException, DAOException, ClassNotFoundException
+	public String getEntityName() throws DynamicExtensionsSystemException, DAOException,
+			ClassNotFoundException
 	{
 		this.categoryValidator.validateEntityName(readLine()[0].split(":")[0].trim());
 		return readLine()[0].split(":")[0].trim();
@@ -183,7 +186,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 * @return permissible values collection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Map<String, Collection<SemanticPropertyInterface>> getPermissibleValues() throws DynamicExtensionsSystemException
+	public Map<String, Collection<SemanticPropertyInterface>> getPermissibleValues()
+			throws DynamicExtensionsSystemException
 	{
 		//counter for to locate the start of the permissible values
 		String[] nextLine = readLine();
@@ -191,8 +195,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		boolean permissibleValuesPresent = false;
 		for (counter = 0; counter < nextLine.length; counter++)
 		{
-			if (nextLine[counter].toLowerCase().startsWith(CategoryCSVConstants.PERMISSIBLE_VALUES.toLowerCase())
-					|| nextLine[counter].toLowerCase().startsWith(CategoryCSVConstants.PERMISSIBLE_VALUES_FILE.toLowerCase()))
+			if (nextLine[counter].toLowerCase().startsWith(
+					CategoryCSVConstants.PERMISSIBLE_VALUES.toLowerCase())
+					|| nextLine[counter].toLowerCase().startsWith(
+							CategoryCSVConstants.PERMISSIBLE_VALUES_FILE.toLowerCase()))
 			{
 				permissibleValuesPresent = true;
 				break;
@@ -217,7 +223,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			{
 				int indexOFColon = pvString.indexOf(":");
 				int indexOfConceptCodeStart = pvString.indexOf("<");
-				if (indexOFColon < indexOfConceptCodeStart || (indexOFColon == -1 && indexOfConceptCodeStart == -1))
+				if (indexOFColon < indexOfConceptCodeStart
+						|| (indexOFColon == -1 && indexOfConceptCodeStart == -1))
 				{
 					indexOfConceptCodeStart = -1;
 				}
@@ -235,7 +242,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					{
 						pvStringLength = pvStringLength + 1;
 					}
-					String tempCodesString = pvString.substring(indexOfConceptCodeStart + 1, conceptCodeEnd);
+					String tempCodesString = pvString.substring(indexOfConceptCodeStart + 1,
+							conceptCodeEnd);
 					pvStringLength = pvStringLength + 2;
 
 					String[] conceptString = tempCodesString.split(":");
@@ -243,14 +251,17 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					for (String conceptAttrString : conceptString)
 					{//All concept codes for the pv
 						int seqNo = 1;
-						SemanticPropertyInterface semanticProperty = DomainObjectFactory.getInstance().createSemanticProperty();
+						SemanticPropertyInterface semanticProperty = DomainObjectFactory
+								.getInstance().createSemanticProperty();
 						String[] conceptAttributes = conceptAttrString.split("#");
 						pvStringLength = pvStringLength + conceptAttributes.length - 1;
 						for (String conceptAttr : conceptAttributes)
 						{
 							String[] conceptCodeKeyValue = conceptAttr.split("~");
-							populateSemanticProperty(semanticProperty, conceptCodeKeyValue[0], conceptCodeKeyValue[1]);
-							pvStringLength = pvStringLength + conceptCodeKeyValue[0].length() + conceptCodeKeyValue[1].length() + 1;
+							populateSemanticProperty(semanticProperty, conceptCodeKeyValue[0],
+									conceptCodeKeyValue[1]);
+							pvStringLength = pvStringLength + conceptCodeKeyValue[0].length()
+									+ conceptCodeKeyValue[1].length() + 1;
 						}
 						semanticProperty.setSequenceNumber(seqNo);
 						seqNo++;
@@ -278,10 +289,12 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 		else if (CategoryCSVConstants.PERMISSIBLE_VALUES_FILE.equalsIgnoreCase(permissibleValueKey))
 		{//PV from File
-			String filePath = getSystemIndependantFilePath(nextLine[counter].substring(indexOfTilda + 1));
+			String filePath = getSystemIndependantFilePath(nextLine[counter]
+					.substring(indexOfTilda + 1));
 			try
 			{
-				BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						new FileInputStream(filePath)));
 				String line = null;
 				while ((line = reader.readLine()) != null)
 				{
@@ -296,17 +309,20 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						{
 							semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 							pv = pvString.substring(0, indexOfConceptCodeStart);
-							String tempCodesString = pvString.substring(indexOfConceptCodeStart + 1, conceptCodeEnd);
+							String tempCodesString = pvString.substring(
+									indexOfConceptCodeStart + 1, conceptCodeEnd);
 							String[] conceptString = tempCodesString.split(":");
 							for (String conceptAttrString : conceptString)
 							{//All concept codes for the pv
 								int seqNo = 1;
-								SemanticPropertyInterface semanticProperty = DomainObjectFactory.getInstance().createSemanticProperty();
+								SemanticPropertyInterface semanticProperty = DomainObjectFactory
+										.getInstance().createSemanticProperty();
 								String[] conceptAttributes = conceptAttrString.split("#");
 								for (String conceptAttr : conceptAttributes)
 								{
 									String[] conceptCodeKeyValue = conceptAttr.split("~");
-									populateSemanticProperty(semanticProperty, conceptCodeKeyValue[0], conceptCodeKeyValue[1]);
+									populateSemanticProperty(semanticProperty,
+											conceptCodeKeyValue[0], conceptCodeKeyValue[1]);
 								}
 								semanticProperty.setSequenceNumber(seqNo);
 								seqNo++;
@@ -323,17 +339,20 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			}
 			catch (FileNotFoundException e)
 			{
-				throw new DynamicExtensionsSystemException("Error while reading permissible values file " + filePath, e);
+				throw new DynamicExtensionsSystemException(
+						"Error while reading permissible values file " + filePath, e);
 			}
 			catch (IOException e)
 			{
-				throw new DynamicExtensionsSystemException("Error while reading permissible values file " + filePath, e);
+				throw new DynamicExtensionsSystemException(
+						"Error while reading permissible values file " + filePath, e);
 			}
 
 		}
 
 		return pvVsSemanticPropertyCollection;
 	}
+
 	/**
 	 * @return getPermissibleValueOptions
 	 * @throws DynamicExtensionsSystemException
@@ -343,25 +362,29 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		Map<String, String> permissibleValueOptions = new HashMap<String, String>();
 		for (String string : readLine())
 		{
-			if (string.toLowerCase().startsWith(CategoryCSVConstants.PERMISSIBLE_VALUE_OPTIONS.toLowerCase() + "~"))
+			if (string.toLowerCase().startsWith(
+					CategoryCSVConstants.PERMISSIBLE_VALUE_OPTIONS.toLowerCase() + "~"))
 			{
 				String[] controlOptionsValue = string.split("~")[1].split(":");
 
 				for (String optionValue : controlOptionsValue)
 				{
-					permissibleValueOptions.put(optionValue.split("=")[0], optionValue.split("=")[1]);
+					permissibleValueOptions.put(optionValue.split("=")[0],
+							optionValue.split("=")[1]);
 				}
 
 			}
 		}
 		return permissibleValueOptions;
 	}
+
 	/**
 	 * @param semanticProperty
 	 * @param key
 	 * @param value
 	 */
-	private void populateSemanticProperty(SemanticPropertyInterface semanticProperty, String key, String value)
+	private void populateSemanticProperty(SemanticPropertyInterface semanticProperty, String key,
+			String value)
 	{
 		if (key.equalsIgnoreCase(Constants.CONCEPT_CODE))
 		{
@@ -386,7 +409,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasDisplayLable()
 	{
-		if (readLine()[0].trim().toLowerCase().startsWith(CategoryCSVConstants.DISPLAY_LABLE.toLowerCase()))
+		if (readLine()[0].trim().toLowerCase().startsWith(
+				CategoryCSVConstants.DISPLAY_LABLE.toLowerCase()))
 		{
 			return true;
 		}
@@ -480,24 +504,28 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 * @return
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Map<String, Object> getRules(String attributeName) throws DynamicExtensionsSystemException
+	public Map<String, Object> getRules(String attributeName)
+			throws DynamicExtensionsSystemException
 	{
 		Map<String, Object> rules = new HashMap<String, Object>();
 
 		for (String string : readLine())
 		{
-			if (string.trim().toLowerCase().startsWith(CategoryCSVConstants.RULES.toLowerCase() + "~"))
+			if (string.trim().toLowerCase().startsWith(
+					CategoryCSVConstants.RULES.toLowerCase() + "~"))
 			{
 				String[] rulesValues = string.trim().split("~")[1].split(":");
 
 				for (String ruleValue : rulesValues)
 				{
-					if (ruleValue.trim().toLowerCase().startsWith(CategoryCSVConstants.RANGE.toLowerCase()))
+					if (ruleValue.trim().toLowerCase().startsWith(
+							CategoryCSVConstants.RANGE.toLowerCase()))
 					{
 						String[] rangeValues = ruleValue.trim().split("-");
 						for (String rangeValue : rangeValues)
 						{
-							if (!(rangeValue.trim().toLowerCase().startsWith(CategoryCSVConstants.RANGE.toLowerCase())))
+							if (!(rangeValue.trim().toLowerCase()
+									.startsWith(CategoryCSVConstants.RANGE.toLowerCase())))
 							{
 								String[] minMaxValues = rangeValue.trim().split("&");
 								boolean isDateRange = false;
@@ -506,12 +534,14 @@ public class CategoryCSVFileParser extends CategoryFileParser
 								{
 									if (value.trim().split("=")[1].contains("/"))
 									{
-										valuesMap.put(value.trim().split("=")[0], value.trim().split("=")[1].replace("/", "-"));
+										valuesMap.put(value.trim().split("=")[0], value.trim()
+												.split("=")[1].replace("/", "-"));
 										isDateRange = true;
 									}
 									else
 									{
-										valuesMap.put(value.trim().split("=")[0], value.trim().split("=")[1]);
+										valuesMap.put(value.trim().split("=")[0], value.trim()
+												.split("=")[1]);
 									}
 								}
 
@@ -527,10 +557,15 @@ public class CategoryCSVFileParser extends CategoryFileParser
 							else
 							{
 								// If rule name is not correctly spelled as 'range', then throw an exception.
-								if (!CategoryCSVConstants.RANGE.toLowerCase().equals(rangeValue.trim()))
+								if (!CategoryCSVConstants.RANGE.toLowerCase().equals(
+										rangeValue.trim()))
 								{
-									throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-											+ ApplicationProperties.getValue("incorrectRuleName") + attributeName);
+									throw new DynamicExtensionsSystemException(
+											ApplicationProperties
+													.getValue(CategoryConstants.CREATE_CAT_FAILS)
+													+ ApplicationProperties
+															.getValue("incorrectRuleName")
+													+ attributeName);
 								}
 							}
 						}
@@ -540,8 +575,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						// If rule name is not correctly spelled as 'required', then throw an exception.
 						if (!CategoryCSVConstants.REQUIRED.toLowerCase().equals(ruleValue.trim()))
 						{
-							throw new DynamicExtensionsSystemException(ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-									+ ApplicationProperties.getValue("incorrectRuleName") + attributeName);
+							throw new DynamicExtensionsSystemException(ApplicationProperties
+									.getValue(CategoryConstants.CREATE_CAT_FAILS)
+									+ ApplicationProperties.getValue("incorrectRuleName")
+									+ attributeName);
 						}
 
 						rules.put(ruleValue.trim().split("=")[0], null);
@@ -577,7 +614,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean hasRelatedAttributes()
 	{
 		boolean flag = false;
-		if (readLine()[0].trim().toLowerCase().startsWith(CategoryCSVConstants.RELATED_ATTIBUTE.toLowerCase()))
+		if (readLine()[0].trim().toLowerCase().startsWith(
+				CategoryCSVConstants.RELATED_ATTIBUTE.toLowerCase()))
 		{
 			flag = true;
 		}
@@ -590,9 +628,11 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean hasInsatanceInformation()
 	{
 		boolean flag = false;
-		if (readLine() != null && readLine()[0].trim().toLowerCase().startsWith(CategoryCSVConstants.INSTANCE.toLowerCase()))
+		if (readLine() != null
+				&& readLine()[0].trim().toLowerCase().startsWith(
+						CategoryCSVConstants.INSTANCE.toLowerCase()))
 		{
-			flag =  true;
+			flag = true;
 		}
 		return flag;
 	}
@@ -627,7 +667,9 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	}
 
 	@Override
-	public List<FormControlNotesInterface> getFormControlNotes(List<FormControlNotesInterface> controlNotes) throws DynamicExtensionsSystemException, IOException 
+	public List<FormControlNotesInterface> getFormControlNotes(
+			List<FormControlNotesInterface> controlNotes) throws DynamicExtensionsSystemException,
+			IOException
 	{
 		// Check if the heading information has been repeated.
 		CategoryValidator.checkHeadingInfoRepeatation(readLine()[0], lineNumber);
@@ -637,23 +679,23 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			for (String string : readLine())
 			{
 				CategoryValidator.checkIfNoteIsAppropriate(string, lineNumber);
-				
-				String [] notes = string.trim().split("~")[1].split(":");
+
+				String[] notes = string.trim().split("~")[1].split(":");
 				FormControlNotesInterface formControlNote = new FormControlNotes();
 				formControlNote.setNote(notes[0]);
 				controlNotes.add(formControlNote);
 			}
-			
+
 			if (readNext())
 			{
-				String [] nextLine = readLine();
-				if (nextLine!= null && nextLine.length != 0)
+				String[] nextLine = readLine();
+				if (nextLine != null && nextLine.length != 0)
 				{
 					getFormControlNotes(controlNotes);
 				}
 			}
 		}
-		
+
 		return controlNotes;
 	}
 
@@ -661,20 +703,20 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public String getHeading() throws DynamicExtensionsSystemException, IOException
 	{
 		String heading = "";
-		
-		String [] headingDetails = readLine();
+
+		String[] headingDetails = readLine();
 		if (headingDetails != null && headingDetails.length != 0)
 		{
 			if (headingDetails[0].startsWith(CategoryConstants.HEADING))
 			{
 				CategoryValidator.checkIfHeadingIsAppropriate(headingDetails[0], lineNumber);
-			
+
 				heading = headingDetails[0].split("~")[1];
 				readNext();
 			}
 		}
-		
+
 		return heading;
 	}
-	
+
 }

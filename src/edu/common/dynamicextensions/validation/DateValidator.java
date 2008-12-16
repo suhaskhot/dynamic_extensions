@@ -24,14 +24,16 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @see edu.common.dynamicextensions.validation.ValidatorRuleInterface#validate(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Object, java.util.Map)
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap, String controlCaption) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap, String controlCaption)
+			throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
 		valid = validateDate(attribute, valueObject, parameterMap, controlCaption);
-		
+
 		return valid;
 	}
-	
+
 	/**
 	 * Validate user input for permissible date values for date with range. 
 	 * @param attribute
@@ -42,11 +44,14 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @return
 	 * @throws DynamicExtensionsValidationException
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap, String controlCaption, boolean isFromDateRangeValidator) throws DynamicExtensionsValidationException
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap, String controlCaption,
+			boolean isFromDateRangeValidator) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
-		valid = validateDate(attribute, valueObject, parameterMap, controlCaption, isFromDateRangeValidator);
-				
+		valid = validateDate(attribute, valueObject, parameterMap, controlCaption,
+				isFromDateRangeValidator);
+
 		return valid;
 	}
 
@@ -60,13 +65,17 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @return
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private boolean validateDate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap, String controlCaption, boolean... isFromDateRangeValidator) throws DynamicExtensionsValidationException
+	private boolean validateDate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap, String controlCaption,
+			boolean... isFromDateRangeValidator) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
 
-		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformation = attribute
+				.getAttributeTypeInformation();
 
-		if (((valueObject != null) && (!((String) valueObject).trim().equals(""))) && ((attributeTypeInformation != null) && (attributeTypeInformation instanceof DateAttributeTypeInformation)))
+		if (((valueObject != null) && (!((String) valueObject).trim().equals("")))
+				&& ((attributeTypeInformation != null) && (attributeTypeInformation instanceof DateAttributeTypeInformation)))
 		{
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
@@ -77,7 +86,7 @@ public class DateValidator implements ValidatorRuleInterface
 			{
 				SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
 				sf.setLenient(false);
-				
+
 				if (isFromDateRangeValidator.length == 0)
 				{
 					tempDate = sf.parse(value);
@@ -91,7 +100,7 @@ public class DateValidator implements ValidatorRuleInterface
 			{
 				valid = false;
 			}
-			
+
 			// Validate if year is equal to '0000' or contains '.' symbol
 			if (value.endsWith("0000") || value.contains("."))
 			{
@@ -102,12 +111,13 @@ public class DateValidator implements ValidatorRuleInterface
 			{
 				valid = false;
 			}
-			
+
 			if (valid && isFromDateRangeValidator.length == 0)
 			{
 				if (tempDate.after(new Date()))
 				{
-					reportInvalidInput(controlCaption, "today's date.", "dynExtn.validation.Date.Max");
+					reportInvalidInput(controlCaption, "today's date.",
+							"dynExtn.validation.Date.Max");
 				}
 			}
 
@@ -116,7 +126,7 @@ public class DateValidator implements ValidatorRuleInterface
 				reportInvalidInput(controlCaption, dateFormat, "dynExtn.validation.Date");
 			}
 		}
-		
+
 		return valid;
 	}
 
@@ -127,11 +137,13 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @param errorKey
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void reportInvalidInput(String placeHolderOne, String placeHolderTwo, String errorKey) throws DynamicExtensionsValidationException
+	private void reportInvalidInput(String placeHolderOne, String placeHolderTwo, String errorKey)
+			throws DynamicExtensionsValidationException
 	{
 		List<String> placeHolders = new ArrayList<String>();
 		placeHolders.add(placeHolderOne);
 		placeHolders.add(placeHolderTwo);
-		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey, placeHolders);
+		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey,
+				placeHolders);
 	}
 }

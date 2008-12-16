@@ -15,6 +15,7 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class TreeData
 {
+
 	private static final String EXPANDED_CLASS_NAME = "folderOpen";
 	private static final String COLLAPSED_CLASS_NAME = "folder";
 
@@ -26,11 +27,17 @@ public class TreeData
 	private StringBuffer buf = null;
 	private String nodeClickedFunction = null;
 
+	/**
+	 * @return
+	 */
 	public String getNodeClickedFunction()
 	{
 		return this.nodeClickedFunction;
 	}
 
+	/**
+	 * @param nodeClickedFunction
+	 */
 	public void setNodeClickedFunction(String nodeClickedFunction)
 	{
 		this.nodeClickedFunction = nodeClickedFunction;
@@ -54,6 +61,7 @@ public class TreeData
 	{
 		this.folder = url;
 	}
+
 	/**
 	 * 
 	 * @return URL of image files
@@ -120,7 +128,8 @@ public class TreeData
 	 * 
 	 * @return : String having the HTML code for the tree like representation of the data
 	 */
-	public String getTree(String treeName,String fieldForSelectedObject,String strIsTreeExpanded,String nodeClickedFunction)
+	public String getTree(String treeName, String fieldForSelectedObject, String strIsTreeExpanded,
+			String nodeClickedFunction)
 	{
 		buf = new StringBuffer();
 
@@ -136,13 +145,13 @@ public class TreeData
 
 		this.setNodeClickedFunction(nodeClickedFunction);
 		boolean isTreeExpanded = false;
-		if((strIsTreeExpanded!=null)&&(strIsTreeExpanded.equals("true")))
+		if ((strIsTreeExpanded != null) && (strIsTreeExpanded.equals("true")))
 		{
 			isTreeExpanded = true;
 		}
 		if (nodes != null)
 		{
-			loopThru(nodes, "0",treeName,fieldForSelectedObject,isTreeExpanded);
+			loopThru(nodes, "0", treeName, fieldForSelectedObject, isTreeExpanded);
 		}
 		else
 		{
@@ -157,23 +166,24 @@ public class TreeData
 	 * @param nodeList :  List of tree nodes
 	 * @param parent : Name of parent node
 	 */
-	private void loopThru(TreeNodesList nodeList, String parent,String treeName,String fieldForSelectedObject,boolean isTreeExpanded)
+	private void loopThru(TreeNodesList nodeList, String parent, String treeName,
+			String fieldForSelectedObject, boolean isTreeExpanded)
 	{
 		if (nodeList != null)
 		{
 			boolean hasChild;
 			boolean displayRadioButton = false;
 			String defaultClassName = COLLAPSED_CLASS_NAME;
-			if(isTreeExpanded)
+			if (isTreeExpanded)
 			{
 				defaultClassName = EXPANDED_CLASS_NAME;
 			}
-			String style=null;
+			String style = null;
 			String id = "";
 			if (parent != "0")
 			{
 				id = treeName + "N" + parent;
-				if(isTreeExpanded)
+				if (isTreeExpanded)
 				{
 					print("<ul class=expandedTree id='" + id + "' >");
 				}
@@ -202,7 +212,7 @@ public class TreeData
 						hasChild = false;
 					}
 
-					if (node.getImageUrl()== "")
+					if (node.getImageUrl() == "")
 					{
 						style = "style = 'FONT-WEIGHT:normal;'";
 					}
@@ -213,51 +223,63 @@ public class TreeData
 					if (hasChild)
 					{
 						id = treeName + "P" + parent + i;
-						print("<li " + style + " class='"+defaultClassName+"' id='" + id + "'>");
-						if(displayRadioButton)
+						print("<li " + style + " class='" + defaultClassName + "' id='" + id + "'>");
+						if (displayRadioButton)
 						{
-							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='" + node.getSequenceNumber() +"' />");
+							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='"
+									+ node.getSequenceNumber() + "' />");
 						}
-						if(getNodeClickedFunction()!=null)
+						if (getNodeClickedFunction() != null)
 						{
-							print("<a class=treeview href=\"javascript:toggle('"+fieldForSelectedObject + "','"+treeName+"N" + parent + "_" + i
-								+ "','"+treeName+"P" + parent + i + "');"+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name') \">" + node.getText() + "</a>");
+							print("<a class=treeview href=\"javascript:toggle('"
+									+ fieldForSelectedObject + "','" + treeName + "N" + parent
+									+ "_" + i + "','" + treeName + "P" + parent + i + "');"
+									+ getNodeClickedFunction() + "('" + fieldForSelectedObject
+									+ "Name') \">" + node.getText() + "</a>");
 						}
 						else
 						{
-							print("<a class=treeview href=\"javascript:toggle('"+fieldForSelectedObject + "','"+treeName+"N" + parent + "_" + i
-									+ "','"+treeName+"P" + parent + i + "'); \">" + node.getText() + "</a>");
+							print("<a class=treeview href=\"javascript:toggle('"
+									+ fieldForSelectedObject + "','" + treeName + "N" + parent
+									+ "_" + i + "','" + treeName + "P" + parent + i + "'); \">"
+									+ node.getText() + "</a>");
 						}
 					}
 					else
-						//Means it is a leaf node
+					//Means it is a leaf node
 					{
-						id =treeName +  "L" + parent + i;
-						if(getNodeClickedFunction()!=null)
+						id = treeName + "L" + parent + i;
+						if (getNodeClickedFunction() != null)
 						{
-							node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "');"
-									+ getNodeClickedFunction()+"('"+ fieldForSelectedObject+"Name')");
+							node.setHref("javascript:changeSelection('" + fieldForSelectedObject
+									+ "','" + id + "','" + node.getSequenceNumber() + "');"
+									+ getNodeClickedFunction() + "('" + fieldForSelectedObject
+									+ "Name')");
 						}
 						else
 						{
-							node.setHref("javascript:changeSelection('"+fieldForSelectedObject+"','" + id + "','" + node.getSequenceNumber() + "');");
+							node.setHref("javascript:changeSelection('" + fieldForSelectedObject
+									+ "','" + id + "','" + node.getSequenceNumber() + "');");
 						}
 						if (node.getTarget() == "")
 						{
 							node.setTarget(target);
 						}
 						print("<li " + style + " class=file>");
-						if(displayRadioButton)
+						if (displayRadioButton)
 						{
-							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='" + node.getSequenceNumber() +"' />");
+							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='"
+									+ node.getSequenceNumber() + "' />");
 						}
-						print("<a class=treeview href=\"" + node.getHref() + "\"  title=\"" + node.getToolTip() + "\" id='"
-								+ id + "'>" + node.getText() + "</a>");
+						print("<a class=treeview href=\"" + node.getHref() + "\"  title=\""
+								+ node.getToolTip() + "\" id='" + id + "'>" + node.getText()
+								+ "</a>");
 					}
 
 					if (hasChild)
 					{
-						loopThru(node.getChildNodes(), parent + "_" + i,treeName,fieldForSelectedObject,isTreeExpanded);
+						loopThru(node.getChildNodes(), parent + "_" + i, treeName,
+								fieldForSelectedObject, isTreeExpanded);
 					}
 
 					print("</li>");
@@ -268,7 +290,3 @@ public class TreeData
 	}
 
 }
-
-
-
-

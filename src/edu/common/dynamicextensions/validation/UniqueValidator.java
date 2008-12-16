@@ -29,13 +29,16 @@ public class UniqueValidator implements ValidatorRuleInterface
 	 * @throws DynamicExtensionsValidationException
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public boolean validate(AttributeMetadataInterface attribute, Object valueObject, Map<String, String> parameterMap, String controlCaption)
+	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
+			Map<String, String> parameterMap, String controlCaption)
 			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
 		boolean isValid = true;
 		List<String> placeHolders = new ArrayList<String>();
-		AttributeTypeInformationInterface attributeTypeInformation = attribute.getAttributeTypeInformation();
-		if (attributeTypeInformation instanceof DoubleAttributeTypeInformation || attributeTypeInformation instanceof LongAttributeTypeInformation
+		AttributeTypeInformationInterface attributeTypeInformation = attribute
+				.getAttributeTypeInformation();
+		if (attributeTypeInformation instanceof DoubleAttributeTypeInformation
+				|| attributeTypeInformation instanceof LongAttributeTypeInformation
 				|| attributeTypeInformation instanceof IntegerAttributeTypeInformation
 				|| attributeTypeInformation instanceof ShortAttributeTypeInformation
 				|| attributeTypeInformation instanceof FloatAttributeTypeInformation)
@@ -48,7 +51,8 @@ public class UniqueValidator implements ValidatorRuleInterface
 		{
 			placeHolders.add(controlCaption);
 			placeHolders.add((String) valueObject);
-			throw new DynamicExtensionsValidationException("Validation failed", null, "dynExtn.validation.Unique", placeHolders);
+			throw new DynamicExtensionsValidationException("Validation failed", null,
+					"dynExtn.validation.Unique", placeHolders);
 		}
 		return isValid;
 	}

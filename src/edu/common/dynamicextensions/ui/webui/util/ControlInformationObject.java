@@ -15,6 +15,7 @@ package edu.common.dynamicextensions.ui.webui.util;
 
 public class ControlInformationObject
 {
+
 	private String controlName;
 
 	private String controlType;

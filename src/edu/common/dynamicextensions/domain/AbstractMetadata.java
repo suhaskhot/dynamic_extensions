@@ -23,7 +23,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		implements
 			AbstractMetadataInterface
-			
+
 {
 
 	/**
@@ -62,7 +62,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 * Created date for metadata object
 	 */
 	protected Date createdDate;
-	
+
 	/**
 	 * Public Identifier from CaDSR.
 	 */
@@ -72,14 +72,11 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 * Semantic property collection.
 	 */
 	protected Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
-	
+
 	/**
 	 * Semantic property collection.
 	 */
 	protected Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
-
-	
-	
 
 	/**
 	 * Empty Constructor
@@ -205,7 +202,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		taggedValueCollection.add(taggedValueInterface);
 
 	}
-	
+
 	/**
 	 * This method sets the semanticPropertyCollection to the given Collection of SemanticProperties.
 	 * @param semanticPropertyCollection the Collection of SemanticProperties to be set.
@@ -229,6 +226,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	{
 		return semanticPropertyCollection;
 	}
+
 	/**
 	 * This method adds a SemanticProperty to the AbstractMetadata.
 	 * @param semanticPropertyInterface A SemanticProperty to be added.
@@ -266,8 +264,9 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		}
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
+	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.SemanticAnnotatableInterface#getOrderedSemanticPropertyCollection()
 	 */
 	public List<SemanticPropertyInterface> getOrderedSemanticPropertyCollection()
 	{
@@ -281,7 +280,8 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		return semanticPropertyList;
 	}
 
-	/**
+	
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString()
@@ -289,8 +289,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		return "Name: " + name + "  Id :  " + id;
 	}
 
-	
-	
 	/**
 	 * @hibernate.property name="publicId" type="string" column="PUBLIC_ID"  
 	 * @return the publicId
@@ -300,7 +298,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		return publicId;
 	}
 
-	
 	/**
 	 * @param publicId the publicId to set
 	 */

@@ -186,7 +186,7 @@ public interface EntityManagerInterface
 	 * This method updates the existing record for the given entity.
 	 * @param entity       Entity for which record needs to be updated
 	 * @param dataValue    map that contains  name of the attribute whose value is changed and its new value
-	 *                     If it is multiselect attribute then valu should be List<string>
+	 *                     If it is multiselect attribute then value should be List<string>
 	 * @param recordId     Id of the record
 	 * @return true if success
 	 * @throws DynamicExtensionsApplicationException

@@ -122,7 +122,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * This method returns the Container Identifier form the givaen request.
+	 * This method returns the Container Identifier form the given request.
 	 * @param request HttpServletRequest
 	 * @return the Container Identifier
 	 */

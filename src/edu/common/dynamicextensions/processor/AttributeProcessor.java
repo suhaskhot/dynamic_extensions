@@ -137,7 +137,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				AssociationInterface association = (AssociationInterface) attribute;
 				association.setIsCollection(new Boolean(true));
 				//populate information common to attributes
-				populateAttributeCommomInfo(association, attributeUIBeanInformationIntf);
+				populateAttributeCommonInfo(association, attributeUIBeanInformationIntf);
 			}
 			else
 			{
@@ -231,7 +231,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			populateAttributeSpecificInfo(attributeInterface, attributeUIBeanInformationIntf);
 
 			//populate information common to attributes
-			populateAttributeCommomInfo(attributeInterface, attributeUIBeanInformationIntf);
+			populateAttributeCommonInfo(attributeInterface, attributeUIBeanInformationIntf);
 
 			//Set is identified
 			populateIsIdentifiedInfo(attributeInterface, attributeUIBeanInformationIntf
@@ -373,7 +373,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param attributeInterface
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateAttributeCommomInfo(AbstractAttributeInterface attributeInterface,
+	private void populateAttributeCommonInfo(AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		//Set name of attribute

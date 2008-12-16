@@ -15,7 +15,7 @@ public class ConstraintProperties extends DatabaseProperties
 {
 
 	/**
-	 * The source entity key through which constarint is related.
+	 * The source entity key through which constraint is related.
 	 * e.g. Used in case of foreign key constraint in one to many relation.
 	 */
 	protected String sourceEntityKey;
@@ -25,7 +25,7 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	protected String targetEntityKey;
 	/**
-	 * The source entity key through which constarint is related.
+	 * The source entity key through which constraint is related.
 	 * e.g. Used in case of foreign key constraint in one to many relation.
 	 */
 	protected String sourceEntityKeyConstraintName;

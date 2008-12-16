@@ -74,7 +74,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
 	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCtaegory(java.lang.String)
+	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategory(java.lang.String)
 	 */
 	public CategoryInterface getCategory(String name) throws DynamicExtensionsSystemException
 	{

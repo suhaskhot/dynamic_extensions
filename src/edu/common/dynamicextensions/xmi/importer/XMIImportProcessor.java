@@ -1621,7 +1621,7 @@ public class XMIImportProcessor
 				else
 				{//Add Attribute
 					addAttributeAndControl(controlModel, editedAttribute, containerInterface);
-					//					Duplicate attributes have been created since we have created attribute in the method createattribues also
+					//					Duplicate attributes have been created since we have created attribute in the method createattributes also
 					//Do not create attributes above but create them here.
 					if (!(editedAttribute instanceof AssociationInterface))
 					{

@@ -17,8 +17,12 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public abstract class AbstractAttribute extends BaseAbstractAttribute implements AbstractAttributeInterface,AbstractMetadataInterface
+public abstract class AbstractAttribute extends BaseAbstractAttribute
+		implements
+			AbstractAttributeInterface,
+			AbstractMetadataInterface
 {
+
 	/**
 	 * Serial Version Unique Identifier
 	 */
@@ -33,7 +37,6 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 	 * Collection of rules.
 	 */
 	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
-    
 
 	/**
 	 * Empty constructor
@@ -81,6 +84,7 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 	/**
 	 * This method removes the Rule form the Collection of Rules of this Attribute.
 	 * ruleInterface the Rule instance to be removed
+	 * @param ruleInterface A Rule instance
 	 */
 	public void removeRule(RuleInterface ruleInterface)
 	{
@@ -108,14 +112,10 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute implements
 	{
 		if (entityInterface != null)
 		{
-			this.entity = (Entity)entityInterface;
+			this.entity = (Entity) entityInterface;
 			//TODO //entityInterface.addAbstractAttribute(this);
 		}
 
 	}
-
-    
-
-
 
 }

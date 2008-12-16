@@ -9,7 +9,6 @@
 
 package edu.common.dynamicextensions.bizlogic;
 
-
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
@@ -22,7 +21,7 @@ import edu.wustl.common.bizlogic.QueryBizLogic;
  */
 public class BizLogicFactory
 {
-	
+
 	/**
 	 * Returns DAO instance according to the form bean type.
 	 * @param FORM_TYPE The form bean type.
@@ -31,10 +30,10 @@ public class BizLogicFactory
 	public static AbstractBizLogic getBizLogic(int FORM_TYPE)
 	{
 		AbstractBizLogic abstractBizLogic = null;
-		
-		if(FORM_TYPE == Constants.QUERY_INTERFACE_ID)
+
+		if (FORM_TYPE == Constants.QUERY_INTERFACE_ID)
 		{
-            abstractBizLogic = new QueryBizLogic();
+			abstractBizLogic = new QueryBizLogic();
 		}
 		else
 		{
@@ -42,12 +41,16 @@ public class BizLogicFactory
 		}
 		return abstractBizLogic;
 	}
-	
+
+	/**
+	 * Returns the BizLogic instance
+	 * @return the DefaultBizLogic instance
+	 */
 	public static DefaultBizLogic getDefaultBizLogic()
 	{
 		return new DefaultBizLogic();
 	}
-	
+
 	/**
 	 * Returns DAO instance according to the fully qualified class name.
 	 * @param className The name of the class.
@@ -56,12 +59,8 @@ public class BizLogicFactory
 	public static AbstractBizLogic getBizLogic(String className)
 	{
 		AbstractBizLogic abstractBizLogic = null;
-		
-		
-		
+
 		return abstractBizLogic;
 	}
-	
-	
-	
+
 }

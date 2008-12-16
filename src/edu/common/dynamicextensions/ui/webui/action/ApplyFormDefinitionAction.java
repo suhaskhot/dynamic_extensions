@@ -65,7 +65,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ActionForward actionForward = null;
 
@@ -134,13 +135,14 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void saveContainer(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException
+	private void saveContainer(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 
 		//ContainerInterface currentContainer = WebUIManager.getCurrentContainer(request);
-		ContainerInterface currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		ContainerInterface currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(
+				request, Constants.CONTAINER_INTERFACE);
 		if (currentContainer != null)
 		{
 			containerProcessor.saveContainer(currentContainer);
@@ -175,24 +177,27 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void editSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private void editSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((request != null) && (formDefinitionForm != null))
 		{
 			ContainerInterface currentContainer = WebUIManager.getCurrentContainer(request);
 			//update container
 
-			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(
+					request, Constants.ENTITYGROUP_INTERFACE);
 
-			DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, currentContainer, formDefinitionForm.getFormName());
+			DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, currentContainer,
+					formDefinitionForm.getFormName());
 
 			ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 			containerProcessor.populateContainer(currentContainer, formDefinitionForm, entityGroup);
 
 			//update entity
 			EntityProcessor entityProcessor = EntityProcessor.getInstance();
-			entityProcessor.addEntity(formDefinitionForm, (EntityInterface) currentContainer.getAbstractEntity());
+			entityProcessor.addEntity(formDefinitionForm, (EntityInterface) currentContainer
+					.getAbstractEntity());
 
 			//Update Associations
 			//Get parent container
@@ -200,7 +205,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			String parentContainerName = formDefinitionForm.getCurrentContainerName();
 			if (parentContainerName != null)
 			{
-				parentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request, parentContainerName);
+				parentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
+						parentContainerName);
 				updateAssociation(parentContainer, currentContainer, formDefinitionForm);
 			}
 		}
@@ -213,15 +219,16 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void updateAssociation(ContainerInterface parentContainer, ContainerInterface childContainer, FormDefinitionForm formDefinitionForm)
+	private void updateAssociation(ContainerInterface parentContainer,
+			ContainerInterface childContainer, FormDefinitionForm formDefinitionForm)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if ((parentContainer != null) && (childContainer != null))
 		{
 			if (childContainer.getId() != null)
 			{
-				AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility.getAssociationControl(parentContainer,
-						childContainer.getId().toString());
+				AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
+						.getAssociationControl(parentContainer, childContainer.getId().toString());
 
 				if (containmentAssociationControl != null)
 				{
@@ -229,11 +236,14 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 					AssociationInterface association = null;
 					AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
 							.getBaseAbstractAttribute();
-					if ((abstractAttributeInterface != null) && (abstractAttributeInterface instanceof AssociationInterface))
+					if ((abstractAttributeInterface != null)
+							&& (abstractAttributeInterface instanceof AssociationInterface))
 					{
 						association = (AssociationInterface) abstractAttributeInterface;
-						ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-						association = applyFormDefinitionProcessor.associateEntity(association, parentContainer, childContainer, formDefinitionForm);
+						ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
+								.getInstance();
+						association = applyFormDefinitionProcessor.associateEntity(association,
+								parentContainer, childContainer, formDefinitionForm);
 					}
 				}
 			}
@@ -246,64 +256,77 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private void addSubForm(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(request);
 
-		EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+		EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request,
+				Constants.ENTITYGROUP_INTERFACE);
 
-		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
-		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(formDefinitionForm, mainFormContainer, entityGroup);
+		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
+				.getInstance();
+		ContainerInterface subFormContainer = applyFormDefinitionProcessor.getSubFormContainer(
+				formDefinitionForm, mainFormContainer, entityGroup);
 
-		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, subFormContainer, formDefinitionForm.getFormName(), mainFormContainer);
+		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, subFormContainer,
+				formDefinitionForm.getFormName(), mainFormContainer);
 
 		AssociationInterface association = applyFormDefinitionProcessor.createAssociation();
-		association = applyFormDefinitionProcessor.associateEntity(association, mainFormContainer, subFormContainer, formDefinitionForm);
-		if(association.getTargetEntity() != null && association.getTargetEntity().getId()!=null)
+		association = applyFormDefinitionProcessor.associateEntity(association, mainFormContainer,
+				subFormContainer, formDefinitionForm);
+		if (association.getTargetEntity() != null && association.getTargetEntity().getId() != null)
 		{
 			List<AssociationInterface> traversedAssocioations = new ArrayList<AssociationInterface>();
 			traversedAssocioations.add(association);
-			isValidSubForm(association,traversedAssocioations);
+			isValidSubForm(association, traversedAssocioations);
 		}
-		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer, subFormContainer, association);
+		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,
+				subFormContainer, association);
 
 		if (isNewEnityCreated(formDefinitionForm))
 		{
 			//if new entity is created, set its container id in form and container interface in cache.
 			if (subFormContainer != null)
 			{
-				applyFormDefinitionProcessor.associateParentGroupToNewEntity(subFormContainer, mainFormContainer);
+				applyFormDefinitionProcessor.associateParentGroupToNewEntity(subFormContainer,
+						mainFormContainer);
 				updateCacheReferences(request, subFormContainer);
 			}
 		}
 	}
 
-	private void isValidSubForm(AssociationInterface association,List<AssociationInterface> traversedAssocioations) throws DynamicExtensionsApplicationException
+	private void isValidSubForm(AssociationInterface association,
+			List<AssociationInterface> traversedAssocioations)
+			throws DynamicExtensionsApplicationException
 	{
-	  if(traversedAssocioations.size()!=0)
-	  {
-		Collection<AssociationInterface> allAssociations = traversedAssocioations.get(0).getTargetEntity().getAssociationCollection();
-		Iterator<AssociationInterface> iterator = allAssociations.iterator();
-		while(iterator.hasNext())
+		if (traversedAssocioations.size() != 0)
 		{
-			AssociationInterface tempassociation = iterator.next();
-			traversedAssocioations.add(tempassociation);
-			if(tempassociation.getTargetEntity().getName().equals(association.getEntity().getName()))
+			Collection<AssociationInterface> allAssociations = traversedAssocioations.get(0)
+					.getTargetEntity().getAssociationCollection();
+			Iterator<AssociationInterface> iterator = allAssociations.iterator();
+			while (iterator.hasNext())
 			{
-				throw new DynamicExtensionsApplicationException("Cannot add Sub Form as it created Circular heirachy.",null,EntityManagerExceptionConstantsInterface.DYEXTN_A_020);
+				AssociationInterface tempassociation = iterator.next();
+				traversedAssocioations.add(tempassociation);
+				if (tempassociation.getTargetEntity().getName().equals(
+						association.getEntity().getName()))
+				{
+					throw new DynamicExtensionsApplicationException(
+							"Cannot add Sub Form as it created Circular heirachy.", null,
+							EntityManagerExceptionConstantsInterface.DYEXTN_A_020);
+				}
 			}
+			if (traversedAssocioations.size() != 0)
+			{
+				traversedAssocioations.remove(0);
+			}
+			isValidSubForm(association, traversedAssocioations);
 		}
-		if(traversedAssocioations.size()!=0)
+		else
 		{
-			traversedAssocioations.remove(0);
+			return;
 		}
-		isValidSubForm(association, traversedAssocioations);
-	  }
-	  else
-	  {
-		return;
-	  }
 	}
 
 	/**
@@ -314,7 +337,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if (container != null)
 		{
-			CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container.getCaption());
+			CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container
+					.getCaption());
 			CacheManager.addObjectToCache(request, container.getCaption(), container);
 		}
 	}
@@ -341,17 +365,22 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void applyFormDefinition(HttpServletRequest request, FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
+	private void applyFormDefinition(HttpServletRequest request,
+			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		ContainerInterface container = WebUIManager.getCurrentContainer(request);
-		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(
+				request, Constants.ENTITYGROUP_INTERFACE);
 
-		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor.getInstance();
+		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
+				.getInstance();
 
-		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, container, formDefinitionForm.getFormName());
+		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, container, formDefinitionForm
+				.getFormName());
 
-		container = applyFormDefinitionProcessor.addEntityToContainer(container, formDefinitionForm, entityGroup);
+		container = applyFormDefinitionProcessor.addEntityToContainer(container,
+				formDefinitionForm, entityGroup);
 
 		updateCacheReferences(request, container);
 		if (CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE) == null)
@@ -369,7 +398,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		ActionMessages actionMessages = new ActionMessages();
 		String formName = formDefinitionForm.getFormName();
-		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.entitySaveSuccessMessage", formName));
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
+				"app.entitySaveSuccessMessage", formName));
 		return actionMessages;
 	}
 
@@ -381,12 +411,15 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private String redirectCallbackURL(HttpServletRequest request, String webUIManagerConstant) throws IOException
+	private String redirectCallbackURL(HttpServletRequest request, String webUIManagerConstant)
+			throws IOException
 	{
-		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request, WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
+					WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
 			String associationIds = "";
 			if (deletedIdList != null)
 			{
@@ -399,13 +432,16 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 					}
 				}
 			}
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
-			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant + "&"
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager
+					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
+					+ "=" + webUIManagerConstant + "&"
 					+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
 			//Fix for bug 5176
 			if (containerInterface != null && containerInterface.getId() != null)
 			{
-				String containerIdUrl = "&" + WebUIManager.getContainerIdentifierParameterName() + "=" + containerInterface.getId().toString();
+				String containerIdUrl = "&" + WebUIManager.getContainerIdentifierParameterName()
+						+ "=" + containerInterface.getId().toString();
 				calllbackURL = calllbackURL + containerIdUrl;
 			}
 

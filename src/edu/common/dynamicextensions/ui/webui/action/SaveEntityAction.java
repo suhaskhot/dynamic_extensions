@@ -43,31 +43,37 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		ActionForward actionForward = null;
 		try
 		{
 			//Get container interface from cache
-			ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+			ContainerInterface containerInterface = (ContainerInterface) CacheManager
+					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 			ControlsForm controlsForm = (ControlsForm) form;
-			ContainerInterface currentContainerInterface = WebUIManager.getCurrentContainer(request);
+			ContainerInterface currentContainerInterface = WebUIManager
+					.getCurrentContainer(request);
 			if ((controlsForm != null) && (currentContainerInterface != null))
 			{
-				ControlsUtility.reinitializeSequenceNumbers(currentContainerInterface.getControlCollection(), controlsForm
-						.getControlsSequenceNumbers());
+				ControlsUtility.reinitializeSequenceNumbers(currentContainerInterface
+						.getControlCollection(), controlsForm.getControlsSequenceNumbers());
 			}
 
 			String formName = "";
-			((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup().addMainContainer(containerInterface);
-			EntityGroupManager.getInstance().persistEntityGroup(((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup());
+			((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup()
+					.addMainContainer(containerInterface);
+			EntityGroupManager.getInstance().persistEntityGroup(
+					((EntityInterface) containerInterface.getAbstractEntity()).getEntityGroup());
 
 			if ((containerInterface != null) && (containerInterface.getAbstractEntity() != null))
 			{
 				formName = containerInterface.getAbstractEntity().getName();
 			}
 			saveMessages(request, getSuccessMessage(formName));
-			String callbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+			String callbackURL = (String) CacheManager.getObjectFromCache(request,
+					Constants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
 				List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
@@ -85,10 +91,10 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 					}
 				}
 				callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName()
-				+ "=" + WebUIManagerConstants.SUCCESS + "&"
-				+ WebUIManager.getContainerIdentifierParameterName() + "="
-				+ containerInterface.getId().toString() + "&"
-				+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
+						+ "=" + WebUIManagerConstants.SUCCESS + "&"
+						+ WebUIManager.getContainerIdentifierParameterName() + "="
+						+ containerInterface.getId().toString() + "&"
+						+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
 
 				CacheManager.clearCache(request);
 				response.sendRedirect(callbackURL);
@@ -116,7 +122,8 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 	private ActionMessages getSuccessMessage(String formName)
 	{
 		ActionMessages actionMessages = new ActionMessages();
-		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("app.entitySaveSuccessMessage", formName));
+		actionMessages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage(
+				"app.entitySaveSuccessMessage", formName));
 		return actionMessages;
 	}
 }

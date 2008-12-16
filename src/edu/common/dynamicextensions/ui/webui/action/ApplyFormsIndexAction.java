@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 {
+
 	/**
 	 * This mathod will forward the request to LoadFormDefinitionAction.java.
 	 * 
@@ -27,13 +28,14 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		FormsIndexForm formsIndexForm = (FormsIndexForm) form;
 		ActionForward actionForward = null;
 		String mode = formsIndexForm.getOperationMode();
 		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)
-				&&	CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
+				&& CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
 		{
 			CacheManager.clearCache(request);
 		}
@@ -42,12 +44,12 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 		{
 			CacheManager.clearCache(request);
 		}
-		
-		
+
 		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
 		{
 			actionForward = mapping.findForward(Constants.SUCCESS);
-		}else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
+		}
+		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
 		{
 			actionForward = mapping.findForward(Constants.INSERT_DATA);
 		}

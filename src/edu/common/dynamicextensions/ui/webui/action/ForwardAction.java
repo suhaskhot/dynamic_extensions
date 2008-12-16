@@ -22,6 +22,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class ForwardAction extends BaseDynamicExtensionsAction
 {
+
 	/**
 	 * @param mapping ActionMapping mapping
 	 * @param form ActionForm form
@@ -29,7 +30,8 @@ public class ForwardAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		HttpSession session = request.getSession();
 		Map cacheMap = new HashMap();

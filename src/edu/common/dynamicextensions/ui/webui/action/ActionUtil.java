@@ -42,9 +42,9 @@ public class ActionUtil
 	 }
 
 	 *//**
-	 * 
-	 * @return
-	 */
+		 * 
+		 * @return
+		 */
 	/*
 	 public static List getDisplayChoiceList() {
 	 List displayChoiceList = new ArrayList();
@@ -55,7 +55,7 @@ public class ActionUtil
 	 displayChoiceList.add(nameValueBean2);
 	 return displayChoiceList;
 	 }*/
-	
+
 	/**
 	 * getExistingFormsList
 	 * @param formsList list of forms
@@ -71,7 +71,8 @@ public class ActionUtil
 			entity = (Entity) listIterator.next();
 			if (entity.getName() != null && entity.getId() != null)
 			{
-				NameValueBean nameValueBean = new NameValueBean(entity.getName(), entity.getId().toString());
+				NameValueBean nameValueBean = new NameValueBean(entity.getName(), entity.getId()
+						.toString());
 				existingFormsList.add(nameValueBean);
 			}
 		}

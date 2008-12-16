@@ -40,7 +40,8 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	 * @return ActionForward forward to next action
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 			throws DynamicExtensionsApplicationException
 	{
 		try
@@ -48,9 +49,10 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			//Get controls form
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
-			if((controlsForm!=null)&&(containerInterface!=null))
+			if ((controlsForm != null) && (containerInterface != null))
 			{
-				ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
+				ControlsUtility.reinitializeSequenceNumbers(containerInterface
+						.getControlCollection(), controlsForm.getControlsSequenceNumbers());
 			}
 			//Action can be either add sub-form or add control to form
 			if (isAddSubFormAction(controlsForm.getUserSelectedTool()))
@@ -63,16 +65,16 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			{
 				//Add form control
 				addControlToForm(containerInterface, controlsForm);
-				request.setAttribute("controlsList",controlsForm.getChildList());
+				request.setAttribute("controlsList", controlsForm.getChildList());
 				return mapping.findForward(Constants.SUCCESS);
 			}
 		}
 		catch (Exception e)
 		{
 			String actionForwardString = catchException(e, request);
-			if((actionForwardString==null)||(actionForwardString.equals("")))
+			if ((actionForwardString == null) || (actionForwardString.equals("")))
 			{
-				return mapping.getInputForward(); 
+				return mapping.getInputForward();
 			}
 			return (mapping.findForward(actionForwardString));
 		}
@@ -83,12 +85,13 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private void addControlToForm(ContainerInterface containerInterface, ControlsForm controlsForm)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String oldControlOperation = controlsForm.getControlOperation();
 		controlsForm.setControlOperation(ProcessorConstants.OPERATION_ADD);
-		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
+		LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor
+				.getInstance();
 		loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
 		controlsForm.setControlOperation(oldControlOperation);
 	}
@@ -99,7 +102,8 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 	 */
 	private boolean isAddSubFormAction(String userSelectedTool)
 	{
-		if ((userSelectedTool != null) && (userSelectedTool.equals(ProcessorConstants.ADD_SUBFORM_CONTROL)))
+		if ((userSelectedTool != null)
+				&& (userSelectedTool.equals(ProcessorConstants.ADD_SUBFORM_CONTROL)))
 		{
 			return true;
 		}

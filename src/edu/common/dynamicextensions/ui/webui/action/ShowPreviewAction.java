@@ -30,10 +30,11 @@ public class ShowPreviewAction extends BaseDynamicExtensionsAction
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
 				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		ControlsForm controlsForm = (ControlsForm) form;
-		
-		if((controlsForm!=null)&&(containerInterface!=null))
+
+		if ((controlsForm != null) && (containerInterface != null))
 		{
-			ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(),controlsForm.getControlsSequenceNumbers());
+			ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(),
+					controlsForm.getControlsSequenceNumbers());
 		}
 		return mapping.findForward("loadFormPreviewAction");
 	}

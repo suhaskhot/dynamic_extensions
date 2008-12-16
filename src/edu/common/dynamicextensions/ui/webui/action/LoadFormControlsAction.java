@@ -37,12 +37,14 @@ import edu.wustl.common.util.logger.Logger;
  */
 public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 {
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws IOException, DynamicExtensionsApplicationException
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws IOException,
+			DynamicExtensionsApplicationException
 	{
 		String actionForwardString = null;
 		try
@@ -52,22 +54,28 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 
 			//For edit operation reinitialize sequence numbers
 			String controlOperation = controlsForm.getControlOperation();
-			if ((controlOperation != null) && (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)))
+			if ((controlOperation != null)
+					&& (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)))
 			{
 				if (containerInterface != null && controlsForm != null)
 				{
-					ControlsUtility.reinitializeSequenceNumbers(containerInterface.getControlCollection(), controlsForm.getControlsSequenceNumbers());
+					ControlsUtility.reinitializeSequenceNumbers(containerInterface
+							.getControlCollection(), controlsForm.getControlsSequenceNumbers());
 				}
 			}
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
-			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor.getInstance();
+			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor
+					.getInstance();
 
-			ControlInterface selectedControl = loadFormControlsProcessor.getSelectedControl(controlsForm, containerInterface);
-			if ((selectedControl != null) && (selectedControl instanceof ContainmentAssociationControl))
+			ControlInterface selectedControl = loadFormControlsProcessor.getSelectedControl(
+					controlsForm, containerInterface);
+			if ((selectedControl != null)
+					&& (selectedControl instanceof ContainmentAssociationControl))
 			{
-				loadContainmentAssociationControl(request, (ContainmentAssociationControl) selectedControl, controlsForm);
+				loadContainmentAssociationControl(request,
+						(ContainmentAssociationControl) selectedControl, controlsForm);
 				String operationMode = request.getParameter("operationMode");
-				request.setAttribute("operationMode",operationMode);
+				request.setAttribute("operationMode", operationMode);
 				request.setAttribute("currentContainerName", containerInterface.getCaption());
 				actionForwardString = Constants.EDIT_SUB_FORM_PAGE;
 			}
@@ -77,7 +85,8 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				request.setAttribute("controlsList", controlsForm.getChildList());
 				actionForwardString = Constants.SHOW_BUILD_FORM_JSP;
 			}
-			if ((controlsForm.getDataType() != null) && DynamicExtensionsUtility.isDataTypeNumeric(controlsForm.getDataType()))
+			if ((controlsForm.getDataType() != null)
+					&& DynamicExtensionsUtility.isDataTypeNumeric(controlsForm.getDataType()))
 			{
 				initializeMeasurementUnits(controlsForm);
 			}
@@ -102,13 +111,15 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param request
 	 * @param selectedControl
 	 */
-	private void loadContainmentAssociationControl(HttpServletRequest request, ContainmentAssociationControl selectedControl,
-			ControlsForm controlsForm)
+	private void loadContainmentAssociationControl(HttpServletRequest request,
+			ContainmentAssociationControl selectedControl, ControlsForm controlsForm)
 	{
 		//controlsForm.setCurrentContainerName(currentContainerName)
 		//update cache refernces
-		CacheManager.addObjectToCache(request, selectedControl.getCaption(), selectedControl.getContainer());
-		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, selectedControl.getCaption());
+		CacheManager.addObjectToCache(request, selectedControl.getCaption(), selectedControl
+				.getContainer());
+		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, selectedControl
+				.getCaption());
 	}
 
 	/**
@@ -120,10 +131,12 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		if ((controlsForm != null) && (controlsForm.getAttributeMeasurementUnits() != null))
 		{
 			//If value is not contained in the list, make "other" option as selected and value in textbox
-			if (!containsValue(controlsForm.getMeasurementUnitsList(), controlsForm.getAttributeMeasurementUnits()))
+			if (!containsValue(controlsForm.getMeasurementUnitsList(), controlsForm
+					.getAttributeMeasurementUnits()))
 			{
 				controlsForm.setMeasurementUnitOther(controlsForm.getAttributeMeasurementUnits());
-				controlsForm.setAttributeMeasurementUnits(ProcessorConstants.MEASUREMENT_UNIT_OTHER);
+				controlsForm
+						.setAttributeMeasurementUnits(ProcessorConstants.MEASUREMENT_UNIT_OTHER);
 			}
 			else
 			{

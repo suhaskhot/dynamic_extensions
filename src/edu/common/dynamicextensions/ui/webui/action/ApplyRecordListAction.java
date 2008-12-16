@@ -30,5 +30,5 @@ public class ApplyRecordListAction extends BaseDynamicExtensionsAction
 	{
 		return mapping.findForward(Constants.SUCCESS);
 	}
-	
+
 }

@@ -27,6 +27,7 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class AddControlsAction extends BaseDynamicExtensionsAction
 {
+
 	/**
 	 * @param mapping ActionMapping mapping
 	 * @param form ActionForm form
@@ -34,7 +35,8 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
 	{
 		//Get controls form
 		ControlsForm controlsForm = (ControlsForm) form;
@@ -43,15 +45,18 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			//Get container interface from cache
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 
-			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request, Constants.ENTITYGROUP_INTERFACE);
+			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(
+					request, Constants.ENTITYGROUP_INTERFACE);
 
 			//Add control to form
-			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor.getInstance();
+			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor
+					.getInstance();
 			//Ashish - Changes done for XMI Edited XMI Import
-			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm, controlsForm, entityGroup);
+			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm,
+					controlsForm, entityGroup);
 
 			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
-			response.sendRedirect(request.getContextPath()+ actionForward.getPath());
+			response.sendRedirect(request.getContextPath() + actionForward.getPath());
 			return null;
 		}
 		catch (Exception e)

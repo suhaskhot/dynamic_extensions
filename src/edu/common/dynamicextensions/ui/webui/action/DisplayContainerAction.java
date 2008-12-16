@@ -41,11 +41,12 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 			CacheManager.clearCache(request);
 			actionForward = actionForward + "AddNewForm";
 		}
-		else {
-			actionForward = actionForward + "EditForm"+ "&containerIdentifier=" + id;
+		else
+		{
+			actionForward = actionForward + "EditForm" + "&containerIdentifier=" + id;
 		}
-		CacheManager.addObjectToCache(request,Constants.CALLBACK_URL,callbackUrl);
-		CacheManager.addObjectToCache(request,WebUIManagerConstants.USER_ID,userId);
+		CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callbackUrl);
+		CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
 		return new ActionForward(actionForward);
 	}
 

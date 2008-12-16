@@ -36,15 +36,16 @@ public class LoadRecordListAction extends BaseDynamicExtensionsAction
 	{
 		String containerIdentifier = request.getParameter("containerIdentifier");
 		String mode = request.getParameter("mode");
-		
-		ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
+
+		ContainerInterface container = DynamicExtensionsUtility
+				.getContainerByIdentifier(containerIdentifier);
 		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
-		
+
 		RecordListForm recordListForm = (RecordListForm) form;
 		LoadRecordListProcessor loadRecordListProcessor = LoadRecordListProcessor.getInstance();
 		loadRecordListProcessor.populateRecordIndex(recordListForm, container, mode);
-		
+
 		return mapping.findForward(Constants.SHOW_EDIT_RECORDS_PAGE);
 	}
-	
+
 }

@@ -51,8 +51,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	/* (non-Javadoc)
 	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException, NumberFormatException, SQLException
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
+			NumberFormatException, SQLException
 	{
 		cacheCallBackURL(request);
 
@@ -72,11 +74,14 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 		}
 
-		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor.getInstance();
-		Map<BaseAbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor.getValueMapFromRecordId(
-				(AbstractEntityInterface) containerInterface.getAbstractEntity(), recordId);
+		LoadDataEntryFormProcessor loadDataEntryFormProcessor = LoadDataEntryFormProcessor
+				.getInstance();
+		Map<BaseAbstractAttributeInterface, Object> recordMap = loadDataEntryFormProcessor
+				.getValueMapFromRecordId((AbstractEntityInterface) containerInterface
+						.getAbstractEntity(), recordId);
 
-		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager.getObjectFromCache(request, Constants.CONTAINER_STACK);
+		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_STACK);
 		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
 		if (containerStack == null)
@@ -85,13 +90,15 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, containerStack);
 			valueMapStack = new Stack<Map<BaseAbstractAttributeInterface, Object>>();
 			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, valueMapStack);
-			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface, valueMapStack, recordMap);
+			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
+					valueMapStack, recordMap);
 		}
 
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		Set<AttributeInterface> attributes = new HashSet<AttributeInterface>();
 		addPrecisionZeroes(recordMap, attributes);
-		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack, valueMapStack);
+		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack,
+				valueMapStack);
 
 		if ((!containerStack.isEmpty()) && (!valueMapStack.isEmpty()))
 		{
@@ -101,7 +108,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				mode = dataEntryForm.getMode();
 			}
 
-			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack.peek(), valueMapStack.peek(), mode, recordId);
+			loadDataEntryFormProcessor.loadDataEntryForm((AbstractActionForm) form, containerStack
+					.peek(), valueMapStack.peek(), mode, recordId);
 		}
 
 		updateTopLevelEntitiyInfo(containerStack, dataEntryForm);
@@ -163,10 +171,11 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private ContainerInterface getConatinerInterface(HttpServletRequest request) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private ContainerInterface getConatinerInterface(HttpServletRequest request)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		ContainerInterface containerInterface = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+		ContainerInterface containerInterface = (ContainerInterface) CacheManager
+				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		String containerIdentifier = getContainerId(request);
 		if (containerIdentifier != null || containerInterface == null)
 		{
@@ -188,11 +197,13 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else
 			{
-				containerInterface = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
+				containerInterface = DynamicExtensionsUtility
+						.getContainerByIdentifier(containerIdentifier);
 
 			}
 
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, containerInterface);
+			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE,
+					containerInterface);
 		}
 
 		return containerInterface;
@@ -203,7 +214,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param containerStack
 	 * @param dataEntryForm
 	 */
-	private void updateTopLevelEntitiyInfo(Stack<ContainerInterface> containerStack, DataEntryForm dataEntryForm)
+	private void updateTopLevelEntitiyInfo(Stack<ContainerInterface> containerStack,
+			DataEntryForm dataEntryForm)
 	{
 		if (containerStack.size() > 1)
 		{
@@ -224,27 +236,33 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param containerStack
 	 * @param valueMapStack
 	 */
-	private void updateStacks(HttpServletRequest request, DataEntryForm dataEntryForm, ContainerInterface containerInterface,
-			Map<BaseAbstractAttributeInterface, Object> recordMap, Stack<ContainerInterface> containerStack,
+	private void updateStacks(HttpServletRequest request, DataEntryForm dataEntryForm,
+			ContainerInterface containerInterface,
+			Map<BaseAbstractAttributeInterface, Object> recordMap,
+			Stack<ContainerInterface> containerStack,
 			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
 		String dataEntryOperation = dataEntryForm.getDataEntryOperation();
 
-		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData") && (dataEntryForm.getErrorList().isEmpty()))
+		if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertChildData")
+				&& (dataEntryForm.getErrorList().isEmpty()))
 		{
 			String childContainerId = dataEntryForm.getChildContainerId();
-			AbstractContainmentControlInterface associationControl = UserInterfaceiUtility.getAssociationControl((ContainerInterface) containerStack
-					.peek(), childContainerId);
+			AbstractContainmentControlInterface associationControl = UserInterfaceiUtility
+					.getAssociationControl((ContainerInterface) containerStack.peek(),
+							childContainerId);
 
 			Map<BaseAbstractAttributeInterface, Object> containerValueMap = valueMapStack.peek();
-			AssociationMetadataInterface association = (AssociationMetadataInterface) associationControl.getBaseAbstractAttribute();
+			AssociationMetadataInterface association = (AssociationMetadataInterface) associationControl
+					.getBaseAbstractAttribute();
 			List<Map<BaseAbstractAttributeInterface, Object>> childContainerValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) containerValueMap
 					.get(association);
 
 			Map<BaseAbstractAttributeInterface, Object> childContainerValueMap = null;
 			if (associationControl.isCardinalityOneToMany())
 			{
-				childContainerValueMap = childContainerValueMapList.get(Integer.parseInt(dataEntryForm.getChildRowId()) - 1);
+				childContainerValueMap = childContainerValueMapList.get(Integer
+						.parseInt(dataEntryForm.getChildRowId()) - 1);
 			}
 			else
 			{
@@ -252,13 +270,16 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 
 			ContainerInterface childContainer = associationControl.getContainer();
-			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack, childContainerValueMap);
+			UserInterfaceiUtility.addContainerInfo(containerStack, childContainer, valueMapStack,
+					childContainerValueMap);
 		}
-		else if (dataEntryOperation != null && dataEntryOperation.equalsIgnoreCase("insertParentData"))
+		else if (dataEntryOperation != null
+				&& dataEntryOperation.equalsIgnoreCase("insertParentData"))
 		{
 			List<String> errorList = dataEntryForm.getErrorList();
 			if (((errorList != null) && (errorList.isEmpty()))
-					&& (((containerStack != null) && !(containerStack.isEmpty())) && ((valueMapStack != null) && !(valueMapStack.isEmpty()))))
+					&& (((containerStack != null) && !(containerStack.isEmpty())) && ((valueMapStack != null) && !(valueMapStack
+							.isEmpty()))))
 			{
 				UserInterfaceiUtility.removeContainerInfo(containerStack, valueMapStack);
 			}
@@ -270,7 +291,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @param recordMap
 	 * @param processedAttributes 
 	 */
-	private void addPrecisionZeroes(Map<BaseAbstractAttributeInterface, Object> recordMap, Set<AttributeInterface> processedAttributes)
+	private void addPrecisionZeroes(Map<BaseAbstractAttributeInterface, Object> recordMap,
+			Set<AttributeInterface> processedAttributes)
 	{
 		// If the value is 1.48 and precision entered for it is 3, make it appear as 1.480
 		Set<BaseAbstractAttributeInterface> recordMapKeySet = recordMap.keySet();
@@ -284,7 +306,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				AttributeInterface currentAttribute = (AttributeInterface) object;
 
-				AttributeTypeInformationInterface attributeTypeInformation = ((AttributeInterface) currentAttribute).getAttributeTypeInformation();
+				AttributeTypeInformationInterface attributeTypeInformation = ((AttributeInterface) currentAttribute)
+						.getAttributeTypeInformation();
 
 				if (attributeTypeInformation instanceof NumericAttributeTypeInformation)
 				{
@@ -296,7 +319,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					{
 						processedAttributes.add(currentAttribute);
 					}
-					int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformation).getDecimalPlaces();
+					int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformation)
+							.getDecimalPlaces();
 					String value = (String) recordMap.get(currentAttribute);
 					if (value.contains(".") && !value.contains("E"))
 					{
@@ -341,7 +365,8 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					String associationType = association.getAssociationType().getValue();
 					if (associationType != null)
 					{
-						if (recordMap.get(object) != null && associationType.equals(AssociationType.CONTAINTMENT.getValue()))
+						if (recordMap.get(object) != null
+								&& associationType.equals(AssociationType.CONTAINTMENT.getValue()))
 						{
 							List<Map<BaseAbstractAttributeInterface, Object>> innerRecordsList = (List<Map<BaseAbstractAttributeInterface, Object>>) recordMap
 									.get(object);

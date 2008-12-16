@@ -39,7 +39,8 @@ public class DownloadFileAction extends HttpServlet
 	/**
 	 * 
 	 */
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,
+			IOException
 	{
 		doPost(req, res);
 	}
@@ -47,20 +48,23 @@ public class DownloadFileAction extends HttpServlet
 	/**
 	 * 
 	 */
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,
+			IOException
 	{
 
 		String attributeIdentifier = req.getParameter("attributeIdentifier");
 		AttributeInterface attributeInterface;
 		try
 		{
-			attributeInterface = DynamicExtensionsUtility.getAttributeByIdentifier(attributeIdentifier);
+			attributeInterface = DynamicExtensionsUtility
+					.getAttributeByIdentifier(attributeIdentifier);
 
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 			String recordIdentifier = req.getParameter("recordIdentifier");
 
-			FileAttributeRecordValue fileAttributeRecordValue = entityManagerInterface.getFileAttributeRecordValueByRecordId(attributeInterface,
-					new Long(recordIdentifier));
+			FileAttributeRecordValue fileAttributeRecordValue = entityManagerInterface
+					.getFileAttributeRecordValueByRecordId(attributeInterface, new Long(
+							recordIdentifier));
 
 			byte[] filedata = fileAttributeRecordValue.getFileContent();
 			String filename = fileAttributeRecordValue.getFileName();

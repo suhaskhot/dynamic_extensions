@@ -3,6 +3,7 @@
  * @author
  *
  */
+
 package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.ServletContext;
@@ -24,14 +25,16 @@ public class TestActionClass extends Action
 {
 
 	@Override
-	public ActionForward execute(ActionMapping arg0, ActionForm arg1, HttpServletRequest arg2, HttpServletResponse arg3) throws Exception
+	public ActionForward execute(ActionMapping arg0, ActionForm arg1, HttpServletRequest arg2,
+			HttpServletResponse arg3) throws Exception
 	{
 		super.execute(arg0, arg1, arg2, arg3);
 		ServletContext otherContext = getServlet().getServletContext().getContext("/catissuecore");
-		otherContext.setAttribute("a","abcd");
-		String t = "http://" + arg2.getServerName() + ":" + arg2.getServerPort() + "/catissuecore/DefineAnnotations.do";
+		otherContext.setAttribute("a", "abcd");
+		String t = "http://" + arg2.getServerName() + ":" + arg2.getServerPort()
+				+ "/catissuecore/DefineAnnotations.do";
 		arg3.sendRedirect(t);
 		return null;
 	}
-	 
+
 }

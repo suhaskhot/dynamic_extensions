@@ -35,29 +35,35 @@ import edu.common.dynamicextensions.util.global.Constants;
  */
 public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 {
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception
+
+	public ActionForward execute(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ActionForward actionForward = null;
 
 		GroupForm groupForm = (GroupForm) form;
-		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor.getInstance();
+		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor
+				.getInstance();
 
 		String operationMode = groupForm.getOperationMode();
 		EntityGroupInterface entityGroup = null;
 
 		try
 		{
-			
-			ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+
+			ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(
+					request, Constants.CONTAINER_INTERFACE);
 			//This is incase when dynamic exception shown on UI-eg. Group name already exist ,so in this case container object is not set in request
 			//So get container object by Containercaption ,which is available in request.
-			if(container == null && !(operationMode.equals(Constants.ADD_NEW_FORM)))
+			if (container == null && !(operationMode.equals(Constants.ADD_NEW_FORM)))
 			{
-				String containerCaption = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
+				String containerCaption = (String) CacheManager.getObjectFromCache(request,
+						Constants.CURRENT_CONTAINER_NAME);
 				container = DynamicExtensionsUtility.getContainerByCaption(containerCaption);
 			}
-		
-			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm, container, operationMode, request);
+
+			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm, container,
+					operationMode, request);
 
 			if ((operationMode != null) && (operationMode.equals(Constants.EDIT_FORM)))
 			{
@@ -99,7 +105,8 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 * @param operationPerformed : Operation performed
 	 * @return Action forward for redirection
 	 */
-	private ActionForward getNextPage(String operationPerformed, ActionMapping mapping, boolean isCallbackURL)
+	private ActionForward getNextPage(String operationPerformed, ActionMapping mapping,
+			boolean isCallbackURL)
 	{
 		ActionForward actionForward = null;
 		if (operationPerformed != null)
@@ -127,10 +134,12 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response, String webUIManagerConstant) throws IOException
+	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
+			String webUIManagerConstant) throws IOException
 	{
 		boolean isCallbackURL = false;
-		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
 			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
@@ -148,8 +157,8 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 				}
 			}
 			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
-			+ "=" + webUIManagerConstant + "&"
-			+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
+					+ "=" + webUIManagerConstant + "&"
+					+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;
 			CacheManager.clearCache(request);
 			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;

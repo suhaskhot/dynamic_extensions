@@ -379,7 +379,7 @@ class DynamicExtensionBaseQueryBuilder
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
 								+ recordId);
 
-				List<Long> reocordIds = getAssociationRecordValues(query.toString());
+				List<Long> recordIds = getAssociationRecordValues(query.toString());
 
 				if (association.getSourceRole().getAssociationsType().equals(
 						AssociationType.CONTAINTMENT)
@@ -388,7 +388,7 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					List<Map<AbstractAttributeInterface, Object>> cntnmntRecords = new ArrayList<Map<AbstractAttributeInterface, Object>>();
 
-					for (Long cntnmntRecId : reocordIds)
+					for (Long cntnmntRecId : recordIds)
 					{
 						Map<AbstractAttributeInterface, Object> recordMap = EntityManager
 								.getInstance().getRecordById(association.getTargetEntity(),
@@ -399,7 +399,7 @@ class DynamicExtensionBaseQueryBuilder
 				}
 				else
 				{
-					assocValues.put(association, reocordIds);
+					assocValues.put(association, recordIds);
 				}
 			}
 		}
@@ -2571,7 +2571,7 @@ class DynamicExtensionBaseQueryBuilder
 		catch (HibernateException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception occured while getting the new trasaction", e, DYEXTN_S_002);
+					"Exception occured while getting the new transaction", e, DYEXTN_S_002);
 		}
 
 		Iterator<String> revQryIter = revQueries.iterator();
@@ -2642,7 +2642,7 @@ class DynamicExtensionBaseQueryBuilder
 			catch (HibernateException e)
 			{
 				throw new DynamicExtensionsSystemException(
-						"Exception occured while commiting trasaction", e, DYEXTN_S_002);
+						"Exception occured while commiting transaction", e, DYEXTN_S_002);
 			}
 		}
 

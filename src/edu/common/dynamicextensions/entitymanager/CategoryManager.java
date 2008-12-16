@@ -330,12 +330,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Long parntCatRecId = null;
 		Long id = ((userId != null || userId.length > 0) ? userId[0] : null);
 
-		for (CategoryEntityInterface catgryEntity : catEntities)
+		for (CategoryEntityInterface categoryEntity : catEntities)
 		{
-			Map<BaseAbstractAttributeInterface, Object> valueMap = entityValMap.get(catgryEntity);
+			Map<BaseAbstractAttributeInterface, Object> valueMap = entityValMap.get(categoryEntity);
 
 			// If parent category entity table not created, then add its attribute map to value map.
-			CategoryEntity parntCatEntity = (CategoryEntity) catgryEntity.getParentCategoryEntity();
+			CategoryEntity parntCatEntity = (CategoryEntity) categoryEntity.getParentCategoryEntity();
 			while (parntCatEntity != null && !parntCatEntity.isCreateTable())
 			{
 				Map<BaseAbstractAttributeInterface, Object> innerValMap = entityValMap
@@ -349,9 +349,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				parntCatEntity = (CategoryEntity) parntCatEntity.getParentCategoryEntity();
 			}
 
-			parentRecId = insertDataForSingleCategoryEntity(catgryEntity, valueMap, jdbcDAO,
+			parentRecId = insertDataForSingleCategoryEntity(categoryEntity, valueMap, jdbcDAO,
 					parentRecId, id);
-			parntCatRecId = getRootCategoryRecordId(catgryEntity, parentRecId);
+			parntCatRecId = getRootCategoryRecordId(categoryEntity, parentRecId);
 		}
 
 		return parntCatRecId;

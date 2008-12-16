@@ -65,12 +65,12 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	{
 	}
 
-    //column="ENTITY_ID"
+	//column="ENTITY_ID"
 
 	/**
 	 * This method returns the Collection of the Entities in the group.
 	 * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY"
-     * cascade="save-update" inverse="false" lazy="false"
+	 * cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ENTITY_GROUP_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Entity"
@@ -147,36 +147,32 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 		this.version = version;
 	}
 
+	/**
+	*
+	*/
+	public void addEntity(EntityInterface entityInterface)
+	{
+		if (this.entityCollection == null)
+		{
+			entityCollection = new HashSet<EntityInterface>();
+		}
+		entityCollection.add(entityInterface);
 
+	}
 
-     /**
-     *
-     */
-    public void addEntity(EntityInterface entityInterface) {
-        if (this.entityCollection == null) {
-            entityCollection = new HashSet<EntityInterface>();
-        }
-        entityCollection.add(entityInterface);
+	/**
+	 *
+	 */
+	public void removeEntity(EntityInterface entityInterface)
+	{
 
-    }
-
-    /**
-     *
-     */
-    public void removeEntity(EntityInterface entityInterface) {
-
-    	if (entityCollection.contains(entityInterface))
+		if (entityCollection.contains(entityInterface))
 		{
 			entityCollection.remove(entityInterface);
-        }
-    }
+		}
+	}
 
-
-
-
-
-
-    /**
+	/**
 	 * This method returns the Collection of AbstractAttribute.
 	 * @hibernate.set name="mainContainerCollection" table="DYEXTN_CONTAINER"
 	 * cascade="save-update" inverse="false" lazy="false"
@@ -189,7 +185,6 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	{
 		return mainContainerCollection;
 	}
-
 
 	/**
 	 * @param mainContainerCollection The mainContainerCollection to set.
@@ -206,7 +201,6 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	{
 		return isCurrent;
 	}
-
 
 	/**
 	 * @param isCurrent The isCurrent to set.
@@ -232,7 +226,6 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 		this.mainContainerCollection.remove(containerInterface);
 	}
 
-
 	/**
 	 * This method returns whether the Attribute is a Collection or not.
 	 * @hibernate.property name="isSystemGenerated" type="boolean" column="IS_SYSTEM_GENERATED"
@@ -242,7 +235,6 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	{
 		return isSystemGenerated;
 	}
-
 
 	/**
 	 * @param isSystemGenerated
@@ -258,9 +250,9 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	public EntityInterface getEntityByName(String entityName)
 	{
 		EntityInterface entityInterface = null;
-		for(EntityInterface entity : entityCollection)
+		for (EntityInterface entity : entityCollection)
 		{
-			if(entity.getName().equalsIgnoreCase(entityName))
+			if (entity.getName().equalsIgnoreCase(entityName))
 			{
 				entityInterface = entity;
 				break;

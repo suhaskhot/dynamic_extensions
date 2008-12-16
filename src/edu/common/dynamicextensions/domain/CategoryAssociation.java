@@ -17,7 +17,10 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationType;
  * @hibernate.joined-subclass table="DYEXTN_CATEGORY_ASSOCIATION"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class CategoryAssociation extends BaseAbstractAttribute implements CategoryAssociationInterface, AssociationMetadataInterface
+public class CategoryAssociation extends BaseAbstractAttribute
+		implements
+			CategoryAssociationInterface,
+			AssociationMetadataInterface
 {
 
 	/**
@@ -45,7 +48,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	 */
 	public CategoryEntityInterface getCategoryEntity()
 	{
-		return (CategoryEntityInterface)categoryEntity;
+		return (CategoryEntityInterface) categoryEntity;
 	}
 
 	/**
@@ -54,7 +57,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	 */
 	public void setCategoryEntity(CategoryEntityInterface categoryEntityInterface)
 	{
-		this.categoryEntity = (CategoryEntity)categoryEntityInterface;
+		this.categoryEntity = (CategoryEntity) categoryEntityInterface;
 	}
 
 	/**
@@ -70,7 +73,8 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		return targetCategoryEntityCollection;
 	}
 
-	private void setTargetCategoryEntityCollection(Collection<CategoryEntity> targetCategoryEntityCollection)
+	private void setTargetCategoryEntityCollection(
+			Collection<CategoryEntity> targetCategoryEntityCollection)
 	{
 		this.targetCategoryEntityCollection = targetCategoryEntityCollection;
 	}
@@ -83,7 +87,8 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		CategoryEntity targetCategoryEntity = null;
 		if (targetCategoryEntityCollection != null && !targetCategoryEntityCollection.isEmpty())
 		{
-			Iterator<CategoryEntity> targetCategoryEntityCollectionIterator = targetCategoryEntityCollection.iterator();
+			Iterator<CategoryEntity> targetCategoryEntityCollectionIterator = targetCategoryEntityCollection
+					.iterator();
 			targetCategoryEntity = targetCategoryEntityCollectionIterator.next();
 		}
 		return targetCategoryEntity;
@@ -102,7 +107,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 		{
 			targetCategoryEntityCollection.clear();
 		}
-		targetCategoryEntityCollection.add((CategoryEntity)targetCategoryEntityInterface);
+		targetCategoryEntityCollection.add((CategoryEntity) targetCategoryEntityInterface);
 	}
 
 	/**
@@ -147,6 +152,7 @@ public class CategoryAssociation extends BaseAbstractAttribute implements Catego
 	{
 		this.constraintPropertiesCollection = constraintPropertiesCollection;
 	}
+
 	/**
 	 * This method returns the ConstraintProperties of the Association.
 	 * @return the ConstraintProperties of the Association.

@@ -159,7 +159,8 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 * This method sets the abstractAttributeCollection to the given Collection of AbstractAttribute.
 	 * @param abstractAttributeCollection The abstractAttributeCollection to set.
 	 */
-	public void setAbstractAttributeCollection(Collection<AbstractAttributeInterface> abstractAttributeCollection)
+	public void setAbstractAttributeCollection(
+			Collection<AbstractAttributeInterface> abstractAttributeCollection)
 	{
 		this.abstractAttributeCollection = abstractAttributeCollection;
 	}
@@ -215,12 +216,12 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public Collection<AssociationInterface> getAssociationCollectionExcludingCollectionAttributes()
 	{
 		Collection<AssociationInterface> AssociationsCollection = getAssociationCollection();
-		Collection<AssociationInterface> entityAssociations=new ArrayList<AssociationInterface>();
-		if(AssociationsCollection!=null)
+		Collection<AssociationInterface> entityAssociations = new ArrayList<AssociationInterface>();
+		if (AssociationsCollection != null)
 		{
-			for(AssociationInterface association : AssociationsCollection)
+			for (AssociationInterface association : AssociationsCollection)
 			{
-				if(!association.getIsCollection())
+				if (!association.getIsCollection())
 				{
 					entityAssociations.add(association);
 				}
@@ -235,7 +236,8 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	public void removeAbstractAttribute(AbstractAttributeInterface abstractAttribute)
 	{
-		if (abstractAttributeCollection != null && abstractAttributeCollection.contains(abstractAttribute))
+		if (abstractAttributeCollection != null
+				&& abstractAttributeCollection.contains(abstractAttribute))
 		{
 			abstractAttributeCollection.remove(abstractAttribute);
 			abstractAttribute.setEntity(null);
@@ -499,10 +501,10 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 		Collection<AttributeInterface> theAttributeCollection = new ArrayList<AttributeInterface>();
 		Set<String> attributeNames = new HashSet<String>();
-		DomainObjectFactory factory=DomainObjectFactory.getInstance();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		Collection<AttributeInterface> attributeCollection = getAttributeCollection();
 		theAttributeCollection.addAll(attributeCollection);
-		for(AttributeInterface attribute:attributeCollection)
+		for (AttributeInterface attribute : attributeCollection)
 		{
 			attributeNames.add(attribute.getName());
 			attribute.setEntity(this);
@@ -510,16 +512,19 @@ public class Entity extends AbstractEntity implements EntityInterface
 		EntityInterface parentEntity = this.parentEntity;
 		while (parentEntity != null)
 		{
-			Collection<AttributeInterface> parentAttributeCollection = parentEntity.getAttributeCollection();
-			for (AttributeInterface parentAttribute: parentAttributeCollection)
+			Collection<AttributeInterface> parentAttributeCollection = parentEntity
+					.getAttributeCollection();
+			for (AttributeInterface parentAttribute : parentAttributeCollection)
 			{
 				if (attributeNames.add(parentAttribute.getName()))
 				{
 
 					theAttributeCollection.add(parentAttribute);
 					boolean isDerivedTagPresent = false;
-					for (TaggedValueInterface tag : parentAttribute.getTaggedValueCollection()) {
-					if (tag.getKey().equals(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED)) {
+					for (TaggedValueInterface tag : parentAttribute.getTaggedValueCollection())
+					{
+						if (tag.getKey().equals(edu.wustl.cab2b.common.util.Constants.TYPE_DERIVED))
+						{
 							isDerivedTagPresent = true;
 						}
 					}
@@ -547,7 +552,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	{
 		AttributeInterface attribute = null;
 		AbstractAttributeInterface abstractAttribute = null;
-		for (AbstractAttributeInterface attr: this.getAllAbstractAttributes())
+		for (AbstractAttributeInterface attr : this.getAllAbstractAttributes())
 		{
 			if (attr.getName().trim().equals(attributeName))
 			{
@@ -560,8 +565,10 @@ public class Entity extends AbstractEntity implements EntityInterface
 			AssociationInterface association = (AssociationInterface) abstractAttribute;
 			if (association.getIsCollection())
 			{
-				Collection<AbstractAttributeInterface> attributeCollection = association.getTargetEntity().getAllAbstractAttributes();
-				Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil.filterSystemAttributes(attributeCollection);
+				Collection<AbstractAttributeInterface> attributeCollection = association
+						.getTargetEntity().getAllAbstractAttributes();
+				Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
+						.filterSystemAttributes(attributeCollection);
 				List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
 						filteredAttributeCollection);
 				attribute = (AttributeInterface) attributesList.get(0);
@@ -573,6 +580,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 		}
 		return attribute;
 	}
+
 	/**
 	 *
 	 * @param attributeName
@@ -581,7 +589,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public AbstractAttributeInterface getAbstractAttributeByName(String attributeName)
 	{
 		AbstractAttributeInterface abstractAttribute = null;
-		for (AbstractAttributeInterface attr: this.getAllAbstractAttributes())
+		for (AbstractAttributeInterface attr : this.getAllAbstractAttributes())
 		{
 			if (attr.getName().trim().equals(attributeName))
 			{
@@ -591,6 +599,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 		}
 		return abstractAttribute;
 	}
+
 	/**
 	 *
 	 * @param attributeName
@@ -599,7 +608,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public boolean isAttributePresent(String attributeName)
 	{
 		boolean isAttributePresent = false;
-		for (AbstractAttributeInterface attr: this.getAbstractAttributeCollection())
+		for (AbstractAttributeInterface attr : this.getAbstractAttributeCollection())
 		{
 			if (attr.getName().trim().equals(attributeName))
 			{
@@ -609,6 +618,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 		}
 		return isAttributePresent;
 	}
+
 	/**
 	 *
 	 * @param attributeName
@@ -617,9 +627,10 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public boolean isMultiselectAttributePresent(String attributeName)
 	{
 		boolean isAttributePresent = false;
-		for (AbstractAttributeInterface abstractAttribute: this.getAllAbstractAttributes())
+		for (AbstractAttributeInterface abstractAttribute : this.getAllAbstractAttributes())
 		{
-			if (abstractAttribute.getName().trim().equals(attributeName) && abstractAttribute instanceof AssociationInterface)
+			if (abstractAttribute.getName().trim().equals(attributeName)
+					&& abstractAttribute instanceof AssociationInterface)
 			{
 				AssociationInterface association = (AssociationInterface) abstractAttribute;
 				if (association.getIsCollection())

@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
@@ -15,91 +16,93 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 public class Category extends AbstractMetadata implements CategoryInterface
 {
 
-    /**
-     * Serial Version UID
-     */
-    private static final long serialVersionUID = 4234527890L;
+	/**
+	 * Serial Version UID
+	 */
+	private static final long serialVersionUID = 4234527890L;
 
-    /**
-     * rootCategoryElement.
-     */
-    protected CategoryEntity rootCategoryElement;
-    
-    /**
-     * 
-     */
-    protected Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
+	/**
+	 * rootCategoryElement.
+	 */
+	protected CategoryEntity rootCategoryElement;
 
-    /**
-     *
-     *
-     */
-    public Category()
-    {
-    	super();
-    }
+	/**
+	 * 
+	 */
+	protected Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
 
-    /**
-     * @hibernate.many-to-one column="ROOT_CATEGORY_ELEMENT" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
-     * @return the rootCategoryElement.
-     */
-    public CategoryEntityInterface getRootCategoryElement() {
-        return (CategoryEntityInterface)rootCategoryElement;
-    }
+	/**
+	 *
+	 *
+	 */
+	public Category()
+	{
+		super();
+	}
 
-    /**
-     * @param rootCategoryElement the rootCategoryElement to set
-     */
-    public void setRootCategoryElement(CategoryEntityInterface rootCategoryElement) {
-        this.rootCategoryElement = (CategoryEntity)rootCategoryElement;
-    }
-    
-    /**
-     * @param categoryEntityName
-     * @return
-     */
-    public CategoryEntityInterface getCategoryEntityByName(String categoryEntityName)
-    {
-    	return getCategoryEntity(this.getRootCategoryElement(),
-        		categoryEntityName);
-    }
-    
-    /**
-     * @param categoryEntity
-     * @param categoryEntityName
-     * @return
-     */
-    private CategoryEntityInterface getCategoryEntity(CategoryEntityInterface categoryEntity,
-    		String categoryEntityName)
-    {
-    	CategoryEntityInterface searchedCategoryEntity = null;
-    	if(categoryEntity == null)
-    	{
-    		return searchedCategoryEntity;
-    	}
-    	if(categoryEntity.getName().equals(categoryEntityName))
-    	{
-    		return categoryEntity;
-    	}
-    	for(CategoryEntityInterface categoryEntityInterface: categoryEntity.getChildCategories())
-    	{
-    		if(categoryEntityInterface.getName().equals(categoryEntityName))
-    		{
-    			return categoryEntityInterface;
-    		}
-    		
-    		if(categoryEntityInterface.getChildCategories().size() > 0)
-    		{
-    			searchedCategoryEntity =  getCategoryEntity(categoryEntityInterface, categoryEntityName);
-    			if(searchedCategoryEntity!=null)
-    				break;
-    			
-    		}
-    		
-    	}
-    	
-    	return searchedCategoryEntity;
-    }
+	/**
+	 * @hibernate.many-to-one column="ROOT_CATEGORY_ELEMENT" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
+	 * @return the rootCategoryElement.
+	 */
+	public CategoryEntityInterface getRootCategoryElement()
+	{
+		return (CategoryEntityInterface) rootCategoryElement;
+	}
+
+	/**
+	 * @param rootCategoryElement the rootCategoryElement to set
+	 */
+	public void setRootCategoryElement(CategoryEntityInterface rootCategoryElement)
+	{
+		this.rootCategoryElement = (CategoryEntity) rootCategoryElement;
+	}
+
+	/**
+	 * @param categoryEntityName
+	 * @return
+	 */
+	public CategoryEntityInterface getCategoryEntityByName(String categoryEntityName)
+	{
+		return getCategoryEntity(this.getRootCategoryElement(), categoryEntityName);
+	}
+
+	/**
+	 * @param categoryEntity
+	 * @param categoryEntityName
+	 * @return
+	 */
+	private CategoryEntityInterface getCategoryEntity(CategoryEntityInterface categoryEntity,
+			String categoryEntityName)
+	{
+		CategoryEntityInterface searchedCategoryEntity = null;
+		if (categoryEntity == null)
+		{
+			return searchedCategoryEntity;
+		}
+		if (categoryEntity.getName().equals(categoryEntityName))
+		{
+			return categoryEntity;
+		}
+		for (CategoryEntityInterface categoryEntityInterface : categoryEntity.getChildCategories())
+		{
+			if (categoryEntityInterface.getName().equals(categoryEntityName))
+			{
+				return categoryEntityInterface;
+			}
+
+			if (categoryEntityInterface.getChildCategories().size() > 0)
+			{
+				searchedCategoryEntity = getCategoryEntity(categoryEntityInterface,
+						categoryEntityName);
+				if (searchedCategoryEntity != null)
+					break;
+
+			}
+
+		}
+
+		return searchedCategoryEntity;
+	}
 
 	/**
 	 * @hibernate.set name="relAttrCategoryEntity" table="DYEXTN_CATEGORY_ENTITY"
@@ -117,11 +120,12 @@ public class Category extends AbstractMetadata implements CategoryInterface
 	/**
 	 * @param relatedAttributeCategoryEntityCollection the relatedAttributeCategoryEntityCollection to set
 	 */
-	public void setRelatedAttributeCategoryEntityCollection(Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection)
+	public void setRelatedAttributeCategoryEntityCollection(
+			Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection)
 	{
 		this.relatedAttributeCategoryEntityCollection = relatedAttributeCategoryEntityCollection;
 	}
-	
+
 	/**
 	 * @param categoryEntity
 	 */
@@ -129,6 +133,7 @@ public class Category extends AbstractMetadata implements CategoryInterface
 	{
 		this.relatedAttributeCategoryEntityCollection.add(categoryEntity);
 	}
+
 	/**
 	 * @param categoryEntity
 	 */

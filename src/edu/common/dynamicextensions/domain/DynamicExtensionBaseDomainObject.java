@@ -12,7 +12,8 @@ import edu.wustl.common.exception.AssignDataException;
  * @author Rahul Ner
  */
 public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObject
-		implements DynamicExtensionBaseDomainObjectInterface
+		implements
+			DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**
@@ -32,12 +33,12 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	{
 		//
 	}
-    
-    public void setAllValues(IValueObject arg0) throws AssignDataException
-    {
-    	//
-    }
-    
+
+	public void setAllValues(IValueObject arg0) throws AssignDataException
+	{
+		//
+	}
+
 	/** 
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setId(java.lang.Long)
 	 */
@@ -45,7 +46,7 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	{
 		this.id = id;
 	}
-	
+
 	/**
 	 * This method returns the System Identifier of the AbstractMetadata.
 	 * @return Long the unique System Identifier of the AbstractMetadata.
@@ -63,7 +64,7 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	{
 		this.id = systemIdentifier;
 	}
-	
+
 	/**
 	 * This method overrides the equals method of the Object Class.
 	 * This method checks the equality of the AbstractMetadata objects.
@@ -84,7 +85,7 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 		}
 		return equals;
 	}
-	
+
 	/**
 	 * This method overrides the equals method of the Object Class.
 	 * It returns the HashCode of this AttributeMetadata instance.
@@ -94,12 +95,12 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	{
 
 		return 1;
-//				int hashCode = 0;
-//
-//		if (getId() != null)
-//		{
-//			hashCode += getId().hashCode();
-//		}
-//		return hashCode;
+		//				int hashCode = 0;
+		//
+		//		if (getId() != null)
+		//		{
+		//			hashCode += getId().hashCode();
+		//		}
+		//		return hashCode;
 	}
 }

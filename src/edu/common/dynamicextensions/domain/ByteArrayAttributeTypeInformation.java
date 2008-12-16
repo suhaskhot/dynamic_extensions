@@ -10,8 +10,11 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
  * @hibernate.joined-subclass table="DYEXTN_BYTE_ARRAY_TYPE_INFO" 
  * @hibernate.joined-subclass-key column="IDENTIFIER" 
  */
-public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation implements ByteArrayTypeInformationInterface
+public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation
+		implements
+			ByteArrayTypeInformationInterface
 {
+
 	/**
 	 * Serial Version Unique Identifier
 	 */
@@ -50,14 +53,15 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation 
 
 	public String getDataType()
 	{
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValueForString(String value) {
+	public PermissibleValueInterface getPermissibleValueForString(String value)
+	{
 		return null;
 	}
 

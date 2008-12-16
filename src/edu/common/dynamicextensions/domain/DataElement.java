@@ -8,14 +8,15 @@ import edu.common.dynamicextensions.domaininterface.DataElementInterface;
  * @author sujay_narkar
  * @hibernate.class table="DYEXTN_DATA_ELEMENT"
  */
-public abstract class DataElement extends DynamicExtensionBaseDomainObject implements DataElementInterface
+public abstract class DataElement extends DynamicExtensionBaseDomainObject
+		implements
+			DataElementInterface
 {
 
 	/**
 	 * Serial Version Unique Identifier
 	 */
 	protected static final long serialVersionUID = 1234567890L;
-
 
 	/**
 	 * This method returns the unique identifier of DataElement.

@@ -234,7 +234,6 @@ public class Association extends AbstractAttribute
 		this.constraintPropertiesCollection.add(constraintProperties);
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#getAssociationDirection()
 	 */
@@ -243,7 +242,6 @@ public class Association extends AbstractAttribute
 		return AssociationDirection.get(getDirection());
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.Constants.AssociationDirection)
 	 */

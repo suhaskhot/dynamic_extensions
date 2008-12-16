@@ -1,5 +1,5 @@
-package edu.common.dynamicextensions.domain;
 
+package edu.common.dynamicextensions.domain;
 
 /**
  * This Class represents the a single value for multi select attribute.
@@ -14,9 +14,7 @@ public class CollectionAttributeRecordValue extends DynamicExtensionBaseDomainOb
 	 * 
 	 */
 	protected String value;
-	
-	
-	
+
 	/**
 	 * This method returns the name of the AbstractMetadata.
 	 * @hibernate.property name="value" type="string" column="RECORD_VALUE" length = "4000"
@@ -27,7 +25,6 @@ public class CollectionAttributeRecordValue extends DynamicExtensionBaseDomainOb
 		return value;
 	}
 
-	
 	/**
 	 * @param value The value to set.
 	 */
@@ -48,6 +45,4 @@ public class CollectionAttributeRecordValue extends DynamicExtensionBaseDomainOb
 		return id;
 	}
 
-	
-	
 }

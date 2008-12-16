@@ -77,8 +77,8 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		StringValueInterface stringValue = factory.createStringValue();
 		stringValue.setValue(value);
-		
+
 		return stringValue;
 	}
-	
+
 }

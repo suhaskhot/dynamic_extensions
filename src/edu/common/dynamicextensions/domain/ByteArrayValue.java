@@ -12,11 +12,12 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
  */
 public class ByteArrayValue extends PermissibleValue implements ByteArrayValueInterface
 {
+
 	/**
 	 * Sserial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = -5535531891478617220L;
-	
+
 	/**
 	 * This method returns the value of ByteArrayValue downcasted to the Object.
 	 * @return the value of ByteArrayValue downcasted to the Object.
@@ -25,6 +26,7 @@ public class ByteArrayValue extends PermissibleValue implements ByteArrayValueIn
 	{
 		return null;
 	}
+
 	/**
 	 * 
 	 */

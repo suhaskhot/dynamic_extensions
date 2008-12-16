@@ -17,7 +17,7 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
 	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = 6775534423957386289L;
-	
+
 	/**
 	 * The value to be stored.
 	 */
@@ -50,12 +50,14 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
 	{
 		return value;
 	}
+
 	/**
 	 * 
 	 */
 	public PermissibleValueInterface clone()
 	{
-		BooleanValueInterface booleanValueInterface = DomainObjectFactory.getInstance().createBooleanValue();
+		BooleanValueInterface booleanValueInterface = DomainObjectFactory.getInstance()
+				.createBooleanValue();
 		booleanValueInterface.setValue(this.value);
 		return booleanValueInterface;
 	}

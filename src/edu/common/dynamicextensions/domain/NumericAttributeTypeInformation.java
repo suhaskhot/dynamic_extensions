@@ -8,7 +8,9 @@ import edu.common.dynamicextensions.domaininterface.NumericTypeInformationInterf
  * @hibernate.joined-subclass table="DYEXTN_NUMERIC_TYPE_INFO" 
  * @hibernate.joined-subclass-key column="IDENTIFIER"  
  */
-public abstract class NumericAttributeTypeInformation extends AttributeTypeInformation implements NumericTypeInformationInterface
+public abstract class NumericAttributeTypeInformation extends AttributeTypeInformation
+		implements
+			NumericTypeInformationInterface
 {
 
 	/**
@@ -39,7 +41,6 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 
 	}
 
-
 	/**
 	 * This method returns the measurement units of this Attribute.
 	 * @hibernate.property name="measurementUnits" type="string" column="MEASUREMENT_UNITS"  
@@ -50,7 +51,6 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	{
 		return this.measurementUnits;
 	}
-	
 
 	/**
 	 * This method sets the measurement units of this Attribute.

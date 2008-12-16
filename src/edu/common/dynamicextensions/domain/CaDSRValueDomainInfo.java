@@ -1,16 +1,19 @@
+
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
-
 
 /**
  * This class stores value domain information of each attribute.
  * @author sujay_narkar
  * @hibernate.class table="DYEXTN_CADSR_VALUE_DOMAIN_INFO"
  */
-public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject implements CaDSRValueDomainInfoInterface
+public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject
+		implements
+			CaDSRValueDomainInfoInterface
 {
+
 	/**
 	 * 
 	 */
@@ -23,7 +26,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	 * 
 	 */
 	private String type;
-	
+
 	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
@@ -34,7 +37,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	{
 		return id;
 	}
-	
+
 	/**
 	 * 
 	 * @hibernate.property name="datatype" type="string" column="DATATYPE" 
@@ -44,7 +47,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	{
 		return datatype;
 	}
-	
+
 	/**
 	 * @param datatype the datatype to set
 	 */
@@ -52,7 +55,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	{
 		this.datatype = datatype;
 	}
-	
+
 	/**
 	 * @hibernate.property name="name" type="string" column="NAME" 
 	 * @return the name
@@ -61,7 +64,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	{
 		return name;
 	}
-	
+
 	/**
 	 * @param name the name to set
 	 */
@@ -78,7 +81,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	{
 		return type;
 	}
-	
+
 	/**
 	 * @param type the type to set
 	 */
@@ -86,7 +89,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject imple
 	{
 		this.type = type;
 	}
-	
+
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#getAssociationDirection()
 	 */

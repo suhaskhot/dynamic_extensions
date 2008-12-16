@@ -1,8 +1,8 @@
-package edu.common.dynamicextensions.domain; 
+
+package edu.common.dynamicextensions.domain;
 
 import java.io.Serializable;
 import edu.common.dynamicextensions.domaininterface.FileAttributeRecordValueInterface;
-
 
 /**
  * This Class represents the a single value for multi select attribute.
@@ -10,25 +10,27 @@ import edu.common.dynamicextensions.domaininterface.FileAttributeRecordValueInte
  * @author Rahul Ner 
  * @hibernate.class  table="DE_FILE_ATTR_RECORD_VALUES"
  */
-public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject implements Serializable,FileAttributeRecordValueInterface
+public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject
+		implements
+			Serializable,
+			FileAttributeRecordValueInterface
 {
 
 	/**
 	 * content of the file.
 	 */
 	private byte[] fileContent;
-	
+
 	/**
 	 * this is the name of the file 
 	 */
 	private String fileName;
-	
+
 	/**
 	 * file content e.g. MIME text etc.
 	 */
 	private String contentType;
-	
-	
+
 	/**
 	 * This method returns the unique identifier of the AbstractMetadata.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
@@ -41,8 +43,6 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		return id;
 	}
 
-
-	
 	/**
 	 * @return Returns the contentType.
 	 * @hibernate.property name="contentType" type="string" column="CONTENT_TYPE"
@@ -52,8 +52,6 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		return contentType;
 	}
 
-
-	
 	/**
 	 * @param contentType The contentType to set.
 	 */
@@ -62,8 +60,6 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		this.contentType = contentType;
 	}
 
-
-	
 	/**
 	 * @return Returns the fileContent.
 	 * @hibernate.property name="fileContent" type="edu.common.dynamicextensions.util.BinaryBlobType" column="FILE_CONTENT"
@@ -73,8 +69,6 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		return fileContent;
 	}
 
-
-	
 	/**
 	 * @param fileContent The fileContent to set.
 	 */
@@ -83,8 +77,6 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		this.fileContent = fileContent;
 	}
 
-
-	
 	/**
 	 * @return Returns the fileName.
 	 * @hibernate.property name="fileName" type="string" column="FILE_NAME" 
@@ -94,8 +86,6 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 		return fileName;
 	}
 
-
-	
 	/**
 	 * @param fileName The fileName to set.
 	 */
@@ -103,17 +93,18 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject i
 	{
 		this.fileName = fileName;
 	}
-	
+
 	/**
 	 * This method copies the values from one file record to another
 	 * @param fileRecordValue
 	 */
-	public void copyValues(FileAttributeRecordValue  fileRecordValue) {
+	public void copyValues(FileAttributeRecordValue fileRecordValue)
+	{
 		this.contentType = fileRecordValue.getContentType();
-		this.fileName =   fileRecordValue.getFileName();
+		this.fileName = fileRecordValue.getFileName();
 		this.fileContent = fileRecordValue.getFileContent();
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */

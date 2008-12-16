@@ -264,7 +264,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		}
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.SemanticAnnotatableInterface#getOrderedSemanticPropertyCollection()
 	 */
@@ -280,7 +279,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		return semanticPropertyList;
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

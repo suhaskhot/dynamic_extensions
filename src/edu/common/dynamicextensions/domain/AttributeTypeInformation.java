@@ -23,8 +23,8 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
  * @hibernate.class table="DYEXTN_ATTRIBUTE_TYPE_INFO"
  */
 public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomainObject
-implements
-AttributeTypeInformationInterface
+		implements
+			AttributeTypeInformationInterface
 {
 
 	/**
@@ -52,7 +52,6 @@ AttributeTypeInformationInterface
 	 *
 	 */
 	protected Collection<PermissibleValueInterface> defaultValueCollection = new HashSet<PermissibleValueInterface>();
-
 
 	/**
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT"
@@ -85,7 +84,7 @@ AttributeTypeInformationInterface
 		if (dataElementCollection != null)
 		{
 			Iterator dataElementIterator = dataElementCollection.iterator();
-			if(dataElementIterator.hasNext())
+			if (dataElementIterator.hasNext())
 			{
 				dataElementInterface = (DataElement) dataElementIterator.next();
 			}
@@ -105,16 +104,18 @@ AttributeTypeInformationInterface
 		}
 		this.dataElementCollection.add(dataElementInterface);
 	}
+
 	/**
 	 * @param dataElementInterface
 	 */
-    public void removeDataElement(DataElementInterface dataElementInterface)
-    {
+	public void removeDataElement(DataElementInterface dataElementInterface)
+	{
 		if (dataElementCollection != null && dataElementInterface != null)
 		{
 			this.dataElementCollection.remove(dataElementInterface);
 		}
-    }
+	}
+
 	/**
 	 * @hibernate.set name="defaultValueCollection" table="DYEXTN_PERMISSIBLE_VALUE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -136,8 +137,6 @@ AttributeTypeInformationInterface
 		this.defaultValueCollection = defaultValueCollection;
 	}
 
-
-
 	/**
 	 *
 	 * @return
@@ -148,7 +147,7 @@ AttributeTypeInformationInterface
 		if (defaultValueCollection != null && !defaultValueCollection.isEmpty())
 		{
 			Iterator dataElementIterator = defaultValueCollection.iterator();
-			permissibleValueInterface =  (PermissibleValueInterface) dataElementIterator.next();
+			permissibleValueInterface = (PermissibleValueInterface) dataElementIterator.next();
 		}
 		return permissibleValueInterface;
 	}
@@ -170,8 +169,6 @@ AttributeTypeInformationInterface
 		this.defaultValueCollection.add(permissibleValue);
 	}
 
-
-
 	/**
 	 *
 	 *
@@ -181,14 +178,14 @@ AttributeTypeInformationInterface
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
 	/**
 	 *
 	 * @param value
 	 * @return
 	 * @throws ParseException
 	 */
-	public abstract PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
-
-
+	public abstract PermissibleValueInterface getPermissibleValueForString(String value)
+			throws ParseException;
 
 }

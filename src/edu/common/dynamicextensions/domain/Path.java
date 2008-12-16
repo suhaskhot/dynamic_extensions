@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.PathInterface;
  */
 public class Path extends DynamicExtensionBaseDomainObject implements PathInterface
 {
+
 	/**
 	 * Serial Version Unique Identifier
 	 */
@@ -63,21 +64,23 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 	/**
 	 * @param pathAssociationRelation the pathAssociationRelation to set
 	 */
-	public void setPathAssociationRelationCollection(Collection<PathAssociationRelationInterface> pathAssociationRelationCollection)
+	public void setPathAssociationRelationCollection(
+			Collection<PathAssociationRelationInterface> pathAssociationRelationCollection)
 	{
 		this.pathAssociationRelationCollection = pathAssociationRelationCollection;
 	}
-	
+
 	/**
 	 * 
 	 * @param pathAssociationRelationInterface
 	 */
-	public void addPathAssociationRelation(PathAssociationRelationInterface pathAssociationRelationInterface)
+	public void addPathAssociationRelation(
+			PathAssociationRelationInterface pathAssociationRelationInterface)
 	{
-		if(this.pathAssociationRelationCollection == null)
+		if (this.pathAssociationRelationCollection == null)
 		{
-			pathAssociationRelationCollection  = new HashSet<PathAssociationRelationInterface>();
-			
+			pathAssociationRelationCollection = new HashSet<PathAssociationRelationInterface>();
+
 		}
 		pathAssociationRelationCollection.add(pathAssociationRelationInterface);
 	}

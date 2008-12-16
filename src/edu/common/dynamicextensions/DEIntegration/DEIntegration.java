@@ -230,7 +230,6 @@ public class DEIntegration implements IntegrationInterface
 		return recIdList;
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.DEIntegration.IntegrationInterface#associateRecords(java.lang.Long, java.lang.Long, java.lang.Long, java.lang.Long)
 	 */

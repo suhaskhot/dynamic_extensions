@@ -86,7 +86,6 @@ public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObjec
 		this.attribute = attribute;
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */

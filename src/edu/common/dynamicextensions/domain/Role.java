@@ -135,7 +135,6 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 		this.name = name;
 	}
 
-
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#getMaximumCardinality()
 	 */
@@ -169,7 +168,6 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 		setMinCardinality(minCardinality.getValue());
 	}
 
-
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#getAssociationsType()
 	 */
@@ -183,7 +181,7 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 	 */
 	public void setAssociationsType(AssociationType associationType)
 	{
-		 setAssociationType(associationType.getValue());
+		setAssociationType(associationType.getValue());
 	}
 
 }

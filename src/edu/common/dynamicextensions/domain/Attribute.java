@@ -23,7 +23,10 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  * @hibernate.cache  usage="read-write"
  */
-public class Attribute extends AbstractAttribute implements AttributeInterface, AttributeMetadataInterface
+public class Attribute extends AbstractAttribute
+		implements
+			AttributeInterface,
+			AttributeMetadataInterface
 {
 
 	/**
@@ -76,7 +79,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	/**
 	 * @param dataElementCollection The dataElementCollection to set.
 	 */
-	private void setAttributeTypeInformationCollection(Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection)
+	private void setAttributeTypeInformationCollection(
+			Collection<AttributeTypeInformationInterface> attributeTypeInformationCollection)
 	{
 		this.attributeTypeInformationCollection = attributeTypeInformationCollection;
 	}
@@ -90,8 +94,10 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 		AttributeTypeInformationInterface attributeTypeInformationInterface = null;
 		if (attributeTypeInformationCollection != null)
 		{
-			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection.iterator();
-			attributeTypeInformationInterface = (AttributeTypeInformationInterface) attributeTypeInformationIterator.next();
+			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection
+					.iterator();
+			attributeTypeInformationInterface = (AttributeTypeInformationInterface) attributeTypeInformationIterator
+					.next();
 		}
 		return attributeTypeInformationInterface;
 	}
@@ -100,7 +106,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 *
 	 * @return AttributeTypeInformationInterface
 	 */
-	public void setAttributeTypeInformation(AttributeTypeInformationInterface attributeTypeInformationInterface)
+	public void setAttributeTypeInformation(
+			AttributeTypeInformationInterface attributeTypeInformationInterface)
 	{
 		if (attributeTypeInformationCollection == null)
 		{
@@ -178,7 +185,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	 * This method sets the columnPropertiesCollection to given Collection of the ColumnProperties.
 	 * @param columnPropertiesCollection the Collection of the ColumnProperties to be set.
 	 */
-	private void setColumnPropertiesCollection(Collection<ColumnPropertiesInterface> columnPropertiesCollection)
+	private void setColumnPropertiesCollection(
+			Collection<ColumnPropertiesInterface> columnPropertiesCollection)
 	{
 		this.columnPropertiesCollection = columnPropertiesCollection;
 	}
@@ -263,7 +271,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	/**
 	 * @param caDSRValueDomainInfoCollection the caDSRValueDomainInfoCollection to set
 	 */
-	public void setCaDSRValueDomainInfoCollection(Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection)
+	public void setCaDSRValueDomainInfoCollection(
+			Collection<CaDSRValueDomainInfo> caDSRValueDomainInfoCollection)
 	{
 		this.caDSRValueDomainInfoCollection = caDSRValueDomainInfoCollection;
 	}
@@ -278,7 +287,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 		if (caDSRValueDomainInfoCollection != null)
 		{
 			Iterator caDSRValueDomainInfoIterator = caDSRValueDomainInfoCollection.iterator();
-			caDSRValueDomainInfoInterface = (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator.next();
+			caDSRValueDomainInfoInterface = (CaDSRValueDomainInfoInterface) caDSRValueDomainInfoIterator
+					.next();
 		}
 		return caDSRValueDomainInfoInterface;
 	}
@@ -297,7 +307,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 		{
 			caDSRValueDomainInfoCollection.clear();
 		}
-		this.caDSRValueDomainInfoCollection.add((CaDSRValueDomainInfo) caDSRValueDomainInfoInterface);
+		this.caDSRValueDomainInfoCollection
+				.add((CaDSRValueDomainInfo) caDSRValueDomainInfoInterface);
 	}
 
 	public String getDefaultValue()
@@ -312,11 +323,14 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	public int getMaxSize()
 	{
 		int maxSize = -1;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
-		if (attributeTypeInformationInterface != null && attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+		AttributeTypeInformationInterface attributeTypeInformationInterface = this
+				.getAttributeTypeInformation();
+		if (attributeTypeInformationInterface != null
+				&& attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
 		{
 			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
-			if (stringAttributeTypeInformation != null && stringAttributeTypeInformation.getSize() != null) 
+			if (stringAttributeTypeInformation != null
+					&& stringAttributeTypeInformation.getSize() != null)
 			{
 				maxSize = stringAttributeTypeInformation.getSize().intValue();
 			}
@@ -330,7 +344,8 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	public String getMeasurementUnit()
 	{
 		String measurementUnit = null;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility.getAttributeTypeInformation(this);
+		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+				.getAttributeTypeInformation(this);
 		if (attributeTypeInformationInterface != null)
 		{
 			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
@@ -353,10 +368,12 @@ public class Attribute extends AbstractAttribute implements AttributeInterface, 
 	public int getDecimalPlaces()
 	{
 		int decimalPlaces = -1;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = this.getAttributeTypeInformation();
+		AttributeTypeInformationInterface attributeTypeInformationInterface = this
+				.getAttributeTypeInformation();
 		if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
 		{
-			decimalPlaces = ((DoubleAttributeTypeInformation) attributeTypeInformationInterface).getDecimalPlaces();
+			decimalPlaces = ((DoubleAttributeTypeInformation) attributeTypeInformationInterface)
+					.getDecimalPlaces();
 		}
 		return decimalPlaces;
 	}

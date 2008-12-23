@@ -35,6 +35,9 @@
       <fileset dir="./WEB-INF/classes">
         	<include name="**/entitymanager/*.class"/>
       		<exclude name="**/entitymanager/*Test.class"/>
+      		<exclude name="**/entitymanager/DynamicExtensionDb2QueryBuilder.class"/>
+      		<exclude name="**/entitymanager/DynamicExtensionMySQLQueryBuilder.class"/>
+      		<exclude name="**/entitymanager/DynamicExtensionPostGreSQLQueryBuilder.class"/>
       	
        </fileset>
     </cobertura-instrument>
@@ -49,7 +52,7 @@
    	<mkdir dir="./cobertura/report"/>
   		
     <cobertura-report datafile="./cobertura/coverage.ser"
-                      srcdir="./src/**/entitymanager"
+                      srcdir="./src"
                       destdir="./cobertura/report"
                       format="html"/>
 

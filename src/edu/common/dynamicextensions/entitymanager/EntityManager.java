@@ -2320,6 +2320,26 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return null;
 	}
 
+	/**
+	 * @param entityId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getContainerCaptionFromEntityId(Long entityId)
+			throws DynamicExtensionsSystemException
+	{
+		// Create a map of substitution parameters.
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("string", entityId));
+		Collection<String> containerIds = null;
+		containerIds = executeHQL("getContainerCaptionFromEntityId", substParams);
+		if (containerIds != null && !containerIds.isEmpty())
+		{
+			return containerIds.iterator().next();
+		}
+		return null;
+	}
+
 	public Collection<Long> getAllEntityIdsForEntityGroup(Long entityGroupId)
 			throws DynamicExtensionsSystemException
 	{
@@ -3196,7 +3216,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			// Calling retrieve method to  get the entity group object based on the 
 			// given value of short name.
-			entityGroups = defBizLogic.retrieve(EntityGroup.class.getName(), "shortName", shortName);
+			entityGroups = defBizLogic
+					.retrieve(EntityGroup.class.getName(), "shortName", shortName);
 			if (entityGroups != null && entityGroups.size() > 0)
 			{
 				entityGroup = (EntityGroupInterface) entityGroups.iterator().next();

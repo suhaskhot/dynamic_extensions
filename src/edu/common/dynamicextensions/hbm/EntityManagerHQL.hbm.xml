@@ -287,4 +287,10 @@
 		from Association association
         where  association.id = ? AND association.isCollection = ?
     </query>
+    
+    <query name="getContainerCaptionFromEntityId">
+	   select container.caption
+	   	from edu.common.dynamicextensions.domain.userinterface.Container container
+	    where container.abstractEntity.id = ?
+	</query>
 </hibernate-mapping>

@@ -1145,6 +1145,8 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		((CategoryAttribute) baseAbstractAttribute).setDataElement(userDefinedDE);
 
+		setOptions(userDefinedDE, permValueOptions, lineNumber);
+
 		return radioButton;
 	}
 

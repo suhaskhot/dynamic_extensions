@@ -2381,6 +2381,13 @@ public class XMIImportProcessor
 			AssociationInterface associationInterface = (AssociationInterface) abstractAttributeInterface;
 			Map<String, String> taggedValueMap = associationVsMapTagValues
 					.get(associationInterface);
+			//If association is system generated,its taggedvaluemap is null ,so return null instead of processing further.
+			//This scenario occurs while importing static model's xmi,like catissuesuite through DE
+			if (associationInterface.getIsSystemGenerated())
+			{
+				return null;
+
+			}			
 			if (associationInterface.getSourceRole().getAssociationsType().compareTo(
 					AssociationType.CONTAINTMENT) == 0)
 			{

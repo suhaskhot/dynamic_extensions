@@ -46,6 +46,7 @@ import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.integration.EntityMapCondition;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -3461,5 +3462,47 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return containerId;
 
+	}
+
+	/**
+	 * @return SystemGenerated EntityGroup beans
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Collection<NameValueBean> getAllSystemGenEntityGroupBeans()
+			throws DynamicExtensionsSystemException
+	{
+		Collection<NameValueBean> entGroupBeans = new ArrayList<NameValueBean>();
+		Object[] objects;
+
+		Collection groupBeans = executeHQL("getAllSystemGenGroupBeans", new HashMap());
+		Iterator grpBeansIter = groupBeans.iterator();
+		while (grpBeansIter.hasNext())
+		{
+			objects = (Object[]) grpBeansIter.next();
+
+			NameValueBean nameValueBean = new NameValueBean();
+			nameValueBean.setName(objects[0]);
+			nameValueBean.setValue(objects[1]);
+
+			entGroupBeans.add(nameValueBean);
+		}
+
+		return entGroupBeans;
+	}
+
+	/**
+	 * @param staticRecordId Collection Protocol Id
+	 * @return entityMapCondition for the given staticRecordId
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId) throws DynamicExtensionsSystemException
+	{
+		// Create a map of substitution parameters.
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("long", staticRecordId));
+
+		Collection<EntityMapCondition> entityMapCondition = executeHQL("getAllEntityMapConditionByStaticRecordId", substParams);
+
+		return entityMapCondition;
 	}
 }

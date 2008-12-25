@@ -748,7 +748,7 @@ class DynamicExtensionBaseQueryBuilder
 		for (AssociationInterface tgtEntAsso : associations)
 		{
 			if (tgtEntAsso.getSourceRole().getAssociationsType().equals(
-					AssociationType.CONTAINTMENT))
+					AssociationType.CONTAINTMENT) || tgtEntAsso.getIsCollection())
 			{
 				getContenmentAssociationRemoveDataQueryList(tgtEntAsso, chldrnRecIds, queries,
 						isLogicalDeletion);

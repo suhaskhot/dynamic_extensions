@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
@@ -127,7 +128,7 @@ public class CategoryGenerator
 
 				List<ContainerInterface> containerCollection = new ArrayList<ContainerInterface>();
 
-				ContainerInterface containerInterface = null;
+				ContainerInterface container = null;
 				EntityInterface entityInterface = null;
 
 				// 5: Get the selected attributes and create the controls for them.
@@ -223,16 +224,16 @@ public class CategoryGenerator
 					else
 					{
 						// Add control to the container.
+						String heading = categoryFileParser.getHeading();
+
+						List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
+						categoryFileParser.getFormControlNotes(controlNotes);
+						
 						Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser
 								.getPermissibleValues();
 
 						Map<String, String> permissibleValueOptions = categoryFileParser
 								.getPermissibleValueOptions();
-
-						String heading = categoryFileParser.getHeading();
-
-						List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
-						categoryFileParser.getFormControlNotes(controlNotes);
 
 						String attributeName = categoryFileParser.getAttributeName();
 
@@ -251,29 +252,28 @@ public class CategoryGenerator
 										+ categoryEntityName
 										+ ApplicationProperties
 												.getValue("incorrectInstanceInformation"));
-						containerInterface = CategoryGenerationUtil
-								.getContainerWithCategoryEntityName(containerCollection,
-										getcategoryEntityName(categoryEntityName,
-												categoryFileParser.getEntityName()));
+						container = CategoryGenerationUtil.getContainerWithCategoryEntityName(
+								containerCollection, getcategoryEntityName(categoryEntityName,
+										categoryFileParser.getEntityName()));
 
 						//Set this flag when attribute is just after display label,and set previous entity name ,so that we can verify whether all attributes are of same entity or other entities also.
 						if (firstTimeinDisplayLabel)
 						{
 							firstTimeinDisplayLabel = false;
-							previousEntityName = ((CategoryEntityInterface) containerInterface
+							previousEntityName = ((CategoryEntityInterface) container
 									.getAbstractEntity()).getName();
 						}
 						if ((previousEntityName != null
-								&& !previousEntityName.equals(containerInterface
-										.getAbstractEntity().getName()) && !firstTimeinDisplayLabel))
+								&& !previousEntityName.equals(container.getAbstractEntity()
+										.getName()) && !firstTimeinDisplayLabel))
 						{
-							List listofEntities = sequenceMap.get(containerInterface
-									.getAbstractEntity().getName());
+							List listofEntities = sequenceMap.get(container.getAbstractEntity()
+									.getName());
 							if (listofEntities == null)
 							{
 								listofEntities = new ArrayList<String>();
 							}
-							listofEntities.add(containerInterface.getAbstractEntity().getName());
+							listofEntities.add(container.getAbstractEntity().getName());
 							sequenceMap.put(previousEntityName, listofEntities);
 						}
 						AttributeInterface attribute = entityInterface
@@ -305,10 +305,10 @@ public class CategoryGenerator
 								+ entityInterface.getName());
 
 						if (previousEntityName != null
-								&& !previousEntityName.equals(containerInterface
-										.getAbstractEntity().getName()))
+								&& !previousEntityName.equals(container.getAbstractEntity()
+										.getName()))
 						{
-							previousEntityName = containerInterface.getAbstractEntity().getName();
+							previousEntityName = container.getAbstractEntity().getName();
 						}
 						// If this is a parent attribute and currently the parent category entity is not created
 						// for given category entity, create parent category hierarchy up to where attribute is found.
@@ -316,7 +316,7 @@ public class CategoryGenerator
 						{
 							EntityInterface parentEntity = entityInterface.getParentEntity();
 							EntityInterface childEntity = entityInterface;
-							CategoryEntityInterface childCategoryEntity = (CategoryEntityInterface) containerInterface
+							CategoryEntityInterface childCategoryEntity = (CategoryEntityInterface) container
 									.getAbstractEntity();
 							CategoryEntityInterface parentCategoryEntity = childCategoryEntity
 									.getParentCategoryEntity();
@@ -381,7 +381,7 @@ public class CategoryGenerator
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface,
-								attributeName, containerInterface, ControlEnum.get(controlType),
+								attributeName, container, ControlEnum.get(controlType),
 								categoryFileParser.getControlCaption(), heading, controlNotes,
 								rules, permissibleValueOptions, categoryFileParser.getLineNumber(),
 								permissibleValues);
@@ -398,11 +398,6 @@ public class CategoryGenerator
 						categoryHelper.setDefaultControlsOptions(lastControl, ControlEnum
 								.get(categoryFileParser.getControlType()));
 
-						// Clear category entity from related attribute collection of root category entity.
-						category
-								.removeRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface
-										.getAbstractEntity());
-
 						Map<String, String> controlOptions = categoryFileParser.getControlOptions();
 
 						categoryHelper.setOptions(lastControl, controlOptions, categoryFileParser
@@ -413,6 +408,16 @@ public class CategoryGenerator
 						CategoryValidator.checkIsMultiSelectValid(entityInterface, attributeName,
 								lastControl);
 
+						// Clear category entity from related attribute collection of root category entity 
+						// only if no category attribute in this category entity is a related category attribute.
+						if (DynamicExtensionsUtility
+								.areNoRelatedCategoryAttributesPresent(container))
+						{
+							category
+									.removeRelatedAttributeCategoryEntity((CategoryEntityInterface) container
+											.getAbstractEntity());
+						}
+
 						// Check for isReadOnly option.
 						if (lastControl.getIsReadOnly())
 						{
@@ -421,10 +426,11 @@ public class CategoryGenerator
 							((CategoryAttributeInterface) lastControl
 									.getAttibuteMetadataInterface()).setIsVisible(true);
 							category
-									.addRelatedAttributeCategoryEntity((CategoryEntityInterface) containerInterface
+									.addRelatedAttributeCategoryEntity((CategoryEntityInterface) container
 											.getAbstractEntity());
 						}
 					}
+					
 					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 

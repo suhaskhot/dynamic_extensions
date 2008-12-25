@@ -67,6 +67,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
@@ -1859,4 +1860,36 @@ public class DynamicExtensionsUtility
 		}
 		return value;
 	}
+
+	/**
+	 * @param catEntity
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public static boolean areNoRelatedCategoryAttributesPresent(ContainerInterface container)
+			throws DynamicExtensionsSystemException
+	{
+		if (container == null)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ "Container is null");
+		}
+
+		Collection<ControlInterface> controls = container.getAllControls();
+
+		if (controls != null)
+		{
+			for (ControlInterface control : controls)
+			{
+				if (control.getIsReadOnly() != null && control.getIsReadOnly())
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 }

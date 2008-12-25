@@ -1113,11 +1113,12 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param baseAbstractAttribute category attribute
 	 * @param permissibleValues list of permissible values
 	 * @return RadioButtonInterface radio button object
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private RadioButtonInterface createOrUpdateRadioButtonControl(ContainerInterface container,
 			BaseAbstractAttributeInterface baseAbstractAttribute,
 			List<PermissibleValueInterface> permissibleValues,
-			Map<String, String> permValueOptions, long lineNumber)
+			Map<String, String> permValueOptions, long lineNumber) throws DynamicExtensionsSystemException
 	{
 		ControlInterface control = getControl(container, baseAbstractAttribute);
 		RadioButtonInterface radioButton = null;
@@ -1383,20 +1384,20 @@ public class CategoryHelper implements CategoryHelperInterface
 			throws DynamicExtensionsSystemException, ParseException
 	{
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-		PermissibleValue permissibleValueInterface = null;
+		PermissibleValue permissibleValue = null;
 		if (desiredPermissibleValues != null)
 		{
 			Set<String> permissibleValuString = desiredPermissibleValues.keySet();
 
 			for (String value : permissibleValuString)
 			{
-				permissibleValueInterface = (PermissibleValue) attributeTypeInformation
+				permissibleValue = (PermissibleValue) attributeTypeInformation
 						.getPermissibleValueForString(value);
 
-				permissibleValueInterface.setSemanticPropertyCollection(desiredPermissibleValues
+				permissibleValue.setSemanticPropertyCollection(desiredPermissibleValues
 						.get(value));
 
-				permissibleValues.add(permissibleValueInterface);
+				permissibleValues.add(permissibleValue);
 			}
 		}
 

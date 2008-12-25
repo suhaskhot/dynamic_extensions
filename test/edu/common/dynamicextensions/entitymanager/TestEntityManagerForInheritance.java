@@ -943,10 +943,11 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when parent is set null and data is  present
-	 *  for the child.
+	 *  This test case tests for meta data save of the inheritance
+	 *  when parent is set null and data is present for the child.
 	 *
-	 *  EXPECTED BEHAVIOUR: since data is present, should not allow chnage in the parent.ApplicationExcpetion is expected
+	 *  EXPECTED BEHAVIOUR: since data is present, should not allow change in the parent.
+	 *  ApplicationExcpetion is expected.
 	 *
 	 *  in the database. Appropriate changes in the data tables should occur without any exception.
 	 *
@@ -962,8 +963,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 
 	public void testInheritanceEditMetadataForMakeParentNullWithData()
 	{
-
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		EntityManagerInterface entityManager = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -973,13 +973,15 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			EntityInterface specimen = factory.createEntity();
 			specimen.setName("specimen");
 			specimen.setAbstract(true);
+			
 			AttributeInterface barcode = factory.createStringAttribute();
 			barcode.setName("barcode");
 			specimen.addAbstractAttribute(barcode);
+			
 			entityGroup.addEntity(specimen);
 			specimen.setEntityGroup(entityGroup);
 			//step 2
-			specimen = entityManagerInterface.persistEntity(specimen);
+			specimen = entityManager.persistEntity(specimen);
 
 			//step 3
 			EntityInterface tissueSpecimen = factory.createEntity();
@@ -992,7 +994,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			tissueSpecimen.setParentEntity(specimen);
 
 			//step 4
-			EntityInterface savedTissueSpecimen = entityManagerInterface
+			EntityInterface savedTissueSpecimen = entityManager
 					.persistEntity(tissueSpecimen);
 
 			//step 5
@@ -1000,11 +1002,11 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 			dataValue.put(barcode, "123456");
 			dataValue.put(quantityInCellCount, "45");
 
-			entityManagerInterface.insertData(tissueSpecimen, dataValue);
+			entityManager.insertData(tissueSpecimen, dataValue);
 
 			//step 6
 			tissueSpecimen.setParentEntity(null);
-			savedTissueSpecimen = entityManagerInterface.persistEntity(tissueSpecimen);
+			savedTissueSpecimen = entityManager.persistEntity(tissueSpecimen);
 
 			//step 7
 			fail();

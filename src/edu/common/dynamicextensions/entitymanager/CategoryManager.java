@@ -335,7 +335,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			Map<BaseAbstractAttributeInterface, Object> valueMap = entityValMap.get(categoryEntity);
 
 			// If parent category entity table not created, then add its attribute map to value map.
-			CategoryEntity parntCatEntity = (CategoryEntity) categoryEntity.getParentCategoryEntity();
+			CategoryEntity parntCatEntity = (CategoryEntity) categoryEntity
+					.getParentCategoryEntity();
 			while (parntCatEntity != null && !parntCatEntity.isCreateTable())
 			{
 				Map<BaseAbstractAttributeInterface, Object> innerValMap = entityValMap
@@ -666,7 +667,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			// Fetch column names and column values for related category attributes.
 			getColumnNamesAndValuesForRelatedCategoryAttributes(categoryEntity, columnNames,
-					columnValues, colNamesValues);
+					columnValues, colNamesValues, records, jdbcDAO, identifier);
 
 			CategoryAssociationInterface catAssociation = getCategoryAssociationWithRootCategoryEntity(
 					rootCatEntity, categoryEntity);
@@ -694,10 +695,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param columnValues
 	 * @param colNamesValues
 	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException 
 	 */
 	private void getColumnNamesAndValuesForRelatedCategoryAttributes(
 			CategoryEntityInterface catEntity, StringBuffer columnNames, StringBuffer columnValues,
-			StringBuffer colNamesValues) throws DynamicExtensionsSystemException
+			StringBuffer colNamesValues, Map<String, List<Long>> records, JDBCDAO jdbcDAO,
+			Long userId) throws DynamicExtensionsSystemException, SQLException
 	{
 		Collection<CategoryAttributeInterface> catAttributes = new HashSet<CategoryAttributeInterface>();
 		catAttributes = catEntity.getCategoryAttributeCollection();
@@ -709,9 +712,57 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				AttributeInterface attribute = catAttribute.getAbstractAttribute().getEntity()
 						.getAttributeByName(catAttribute.getAbstractAttribute().getName());
 
-				populateColumnNamesAndValues(attribute, catAttribute, columnNames, columnValues,
-						colNamesValues);
+				if (catAttribute.getAbstractAttribute() instanceof AssociationInterface)
+				{
+					populateAndInsertRecordForRelatedMultiSelectCategoryAttribute(catAttribute,
+							attribute, records, userId, jdbcDAO);
+				}
+				else
+				{
+					populateColumnNamesAndValues(attribute, catAttribute, columnNames,
+							columnValues, colNamesValues);
+				}
 			}
+		}
+	}
+
+	/**
+	 * This method populates and inserts records for related multiselect category attribute.
+	 * @param catAttribute
+	 * @param attribute
+	 * @param records
+	 * @param userId
+	 * @param jdbcDAO
+	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException
+	 */
+	private void populateAndInsertRecordForRelatedMultiSelectCategoryAttribute(
+			CategoryAttributeInterface catAttribute, AttributeInterface attribute,
+			Map<String, List<Long>> records, Long userId, JDBCDAO jdbcDAO)
+			throws DynamicExtensionsSystemException, SQLException
+	{
+		AssociationInterface association = (AssociationInterface) catAttribute
+				.getAbstractAttribute();
+		EntityInterface targetEntity = association.getTargetEntity();
+		String tgtEntTblName = targetEntity.getTableProperties().getName();
+		List<Long> ids = records.get(catAttribute.getCategoryEntity().getName());
+		for (Long id : ids)
+		{
+			Long identifier = entityManagerUtil.getNextIdentifier(tgtEntTblName);
+
+			// Query to insert record into entity table of multiselect attribute.
+			String insertQuery = "INSERT INTO " + tgtEntTblName + " (IDENTIFIER, ACTIVITY_STATUS, "
+					+ attribute.getColumnProperties().getName() + ") VALUES (" + identifier
+					+ ", 'ACTIVE', " + "'" + catAttribute.getDefaultValue() + "'" + ")";
+
+			executeUpdateQuery(insertQuery, userId, jdbcDAO);
+
+			// Query to update record in entity table of multiselect attribute.
+			String updateQuery = "UPDATE " + tgtEntTblName + " SET "
+					+ association.getConstraintProperties().getTargetEntityKey() + " = " + id
+					+ " WHERE IDENTIFIER = " + identifier;
+
+			executeUpdateQuery(updateQuery, userId, jdbcDAO);
 		}
 	}
 
@@ -1431,7 +1482,61 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			}
 		}
 
+		Map<BaseAbstractAttributeInterface, Object> curatedRecords = new HashMap<BaseAbstractAttributeInterface, Object>();
+		curateMapForRelatedAttributes(curatedRecords, dataValue);
+
+		dataValue = curatedRecords;
+
 		return dataValue;
+	}
+
+	/**
+	 * This method removes related invisible category attributes from the map.
+	 * @param curatedRecords
+	 * @param dataValue
+	 */
+	private void curateMapForRelatedAttributes(
+			Map<BaseAbstractAttributeInterface, Object> curatedRecords,
+			Map<BaseAbstractAttributeInterface, Object> dataValue)
+	{
+		Iterator<BaseAbstractAttributeInterface> iter = dataValue.keySet().iterator();
+		while (iter.hasNext())
+		{
+			Object obj = iter.next();
+
+			if (obj instanceof CategoryAttributeInterface)
+			{
+				CategoryAttributeInterface catAttr = (CategoryAttributeInterface) obj;
+
+				if (catAttr.getIsRelatedAttribute() != null && catAttr.getIsRelatedAttribute()
+						&& catAttr.getIsVisible() != null && catAttr.getIsVisible())
+				{
+					curatedRecords.put((BaseAbstractAttributeInterface) obj, dataValue.get(obj));
+				}
+				else if (catAttr.getIsRelatedAttribute() != null
+						&& !catAttr.getIsRelatedAttribute())
+				{
+					curatedRecords.put((BaseAbstractAttributeInterface) obj, dataValue.get(obj));
+				}
+			}
+			else
+			{
+				CategoryAssociationInterface catAssociation = (CategoryAssociationInterface) obj;
+
+				List<Map<BaseAbstractAttributeInterface, Object>> mapsOfCntdRec = (List) dataValue
+						.get(catAssociation);
+				List<Map<BaseAbstractAttributeInterface, Object>> innerRecList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+
+				for (Map<BaseAbstractAttributeInterface, Object> map : mapsOfCntdRec)
+				{
+					Map<BaseAbstractAttributeInterface, Object> innerRecords = new HashMap<BaseAbstractAttributeInterface, Object>();
+					curateMapForRelatedAttributes(innerRecords, map);
+					innerRecList.add(innerRecords);
+				}
+
+				curatedRecords.put(catAssociation, innerRecList);
+			}
+		}
 	}
 
 	/**

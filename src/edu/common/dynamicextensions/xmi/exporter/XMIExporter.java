@@ -58,14 +58,12 @@ import org.omg.uml.modelmanagement.Model;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 import org.openide.util.Lookup;
 
-import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.userinterface.SelectControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -87,6 +85,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
+import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
@@ -2251,36 +2251,18 @@ public class XMIExporter implements XMIExportInterface
 	 */
 	private static void generateXMIForIntegrationTables()
 	{
-		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		EntityGroupInterface entityGroup = domainObjectFactory.createEntityGroup();
-		entityGroup.setName("deintegration");
-
-		//Entity Map
-		EntityInterface entityMapEntity = getEntityMapEntity(domainObjectFactory);
-
-		//Form Context
-		EntityInterface formContextEntity = getFormContextEntity(domainObjectFactory);
-
-		//EntityMapCondition
-		EntityInterface entityMapConditionEntity = getEntityMapConditionEntity(domainObjectFactory);
-
-		//Entity Map Recrd
-		EntityInterface entityMapRecordEntity = getEntityMapRecordEntity(domainObjectFactory);
-		EntityInterface recordEntryEntity = getRecordEntryEntity(domainObjectFactory);
-		//EntityInterface clinicalStudyEventEntryEntity = getClinicalStudyEventEntryEntity(domainObjectFactory);
-
-		associateEntityMapAndFormContext(entityMapEntity, formContextEntity);
-		associateFormContextAndEntityMapCondn(formContextEntity, entityMapConditionEntity);
-		associateFormContextAndEntityMapRec(formContextEntity, entityMapRecordEntity);
-		//Add to grp
-		entityGroup.addEntity(entityMapEntity);
-		entityGroup.addEntity(formContextEntity);
-		entityGroup.addEntity(entityMapConditionEntity);
-		entityGroup.addEntity(entityMapRecordEntity);
-		entityGroup.addEntity(recordEntryEntity);
+		
+		EntityGroupInterface entityGroup=null;
+		EntityGroupManagerInterface entityGroupManager=EntityGroupManager.getInstance();
 		XMIExporter exporter = new XMIExporter();
+		
 		try
 		{
+			entityGroup = entityGroupManager.getEntityGroupByName("newsurgery");
+			if(entityGroup==null)
+			{
+				throw new DynamicExtensionsSystemException("Entity group newsurgery not found ,test case to import xmi is failed");
+			}
 			exporter.exportXMI("d://deintegration.xmi", entityGroup, XMIConstants.XMI_VERSION_1_1);
 		}
 		catch (Exception e)
@@ -2289,317 +2271,7 @@ public class XMIExporter implements XMIExportInterface
 		}
 	}
 
-	/**
-		 * @param domainObjectFactory
-		 * @return
-		 */
-	private static EntityInterface getRecordEntryEntity(DomainObjectFactory domainObjectFactory)
-	{
-
-		//EntityMapRecord
-		EntityInterface recordEntryEntity = domainObjectFactory.createEntity();
-		recordEntryEntity.setName("RecordEntry");
-		TablePropertiesInterface tp = domainObjectFactory.createTableProperties();
-		tp.setName("CATISUE_CLIN_STUDY_RECORD_ENTRY");
-		recordEntryEntity.setTableProperties(tp);
-		//Id
-		AttributeInterface attributeRecEntryId = domainObjectFactory.createLongAttribute();
-		attributeRecEntryId.setName("id");
-		attributeRecEntryId.setIsPrimaryKey(true);
-		ColumnPropertiesInterface cp1 = domainObjectFactory.createColumnProperties();
-		cp1.setName("IDENTIFIER");
-		attributeRecEntryId.setColumnProperties(cp1);
-		recordEntryEntity.addAttribute(attributeRecEntryId);
-		////Clinical study event entry Id
-		AttributeInterface attributeClinicalStudyEvtEntryId = domainObjectFactory
-				.createLongAttribute();
-		attributeClinicalStudyEvtEntryId.setName("clinicalStudyEventEntryId");
-		ColumnPropertiesInterface cp2 = domainObjectFactory.createColumnProperties();
-		cp2.setName("CLINICAL_STUDY_EVENT_ENTRY_ID");
-		attributeClinicalStudyEvtEntryId.setColumnProperties(cp2);
-		recordEntryEntity.addAttribute(attributeClinicalStudyEvtEntryId);
-
-		//Entity Map Record Id
-		AttributeInterface attributeEntityMapRecordId = domainObjectFactory.createLongAttribute();
-		attributeEntityMapRecordId.setName("entityMapRecordId");
-		ColumnPropertiesInterface cp3 = domainObjectFactory.createColumnProperties();
-		cp3.setName("DYEXTN_ENTITY_MAP_RECORD_ID");
-		attributeEntityMapRecordId.setColumnProperties(cp3);
-		recordEntryEntity.addAttribute(attributeEntityMapRecordId);
-
-		return recordEntryEntity;
-
-	}
-
-	/**
-	 * @param formContextEntity
-	 * @param entityMapRecordEntity
-	 */
-	private static void associateFormContextAndEntityMapRec(EntityInterface formContextEntity,
-			EntityInterface entityMapRecordEntity)
-	{
-		AssociationInterface assoc = new Association();
-		assoc.setEntity(formContextEntity);
-		assoc.setTargetEntity(entityMapRecordEntity);
-
-		assoc.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-
-		assoc.setSourceRole(getRole(AssociationType.ASSOCIATION, "formContext", Cardinality.ONE,
-				Cardinality.ONE));
-		assoc.setTargetRole(getRole(AssociationType.ASSOCIATION, "entityMapRecordCollection",
-				Cardinality.ZERO, Cardinality.MANY));
-		ConstraintPropertiesInterface cp = new ConstraintProperties();
-		cp.setSourceEntityKey("IDENTIFIER");
-		cp.setTargetEntityKey("FORM_CONTEXT_ID");
-		assoc.setConstraintProperties(cp);
-		formContextEntity.addAssociation(assoc);
-	}
-
-	/**
-	 * @param formContextEntity
-	 * @param entityMapConditionEntity
-	 */
-	private static void associateFormContextAndEntityMapCondn(EntityInterface formContextEntity,
-			EntityInterface entityMapConditionEntity)
-	{
-		AssociationInterface assoc = new Association();
-		assoc.setEntity(formContextEntity);
-		assoc.setTargetEntity(entityMapConditionEntity);
-
-		assoc.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-
-		assoc.setSourceRole(getRole(AssociationType.ASSOCIATION, "formContext", Cardinality.ONE,
-				Cardinality.ONE));
-		assoc.setTargetRole(getRole(AssociationType.ASSOCIATION, "entityMapConditionCollection",
-				Cardinality.ZERO, Cardinality.MANY));
-		ConstraintPropertiesInterface cp = new ConstraintProperties();
-		cp.setSourceEntityKey("IDENTIFIER");
-		cp.setTargetEntityKey("FORM_CONTEXT_ID");
-		assoc.setConstraintProperties(cp);
-		formContextEntity.addAssociation(assoc);
-	}
-
-	/**
-	 * @param entityMapEntity
-	 * @param formContextEntity
-	 */
-	private static void associateEntityMapAndFormContext(EntityInterface entityMapEntity,
-			EntityInterface formContextEntity)
-	{
-		AssociationInterface assoc = new Association();
-		assoc.setEntity(entityMapEntity);
-		assoc.setTargetEntity(formContextEntity);
-
-		assoc.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-
-		assoc.setSourceRole(getRole(AssociationType.ASSOCIATION, "entityMap", Cardinality.ONE,
-				Cardinality.ONE));
-		assoc.setTargetRole(getRole(AssociationType.ASSOCIATION, "formContextCollection",
-				Cardinality.ZERO, Cardinality.MANY));
-		ConstraintPropertiesInterface cp = new ConstraintProperties();
-		cp.setSourceEntityKey("IDENTIFIER");
-		cp.setTargetEntityKey("ENTITY_MAP_ID");
-		assoc.setConstraintProperties(cp);
-		entityMapEntity.addAssociation(assoc);
-	}
-
-	/**
-	 * @param domainObjectFactory
-	 * @return
-	 */
-	private static EntityInterface getEntityMapEntity(DomainObjectFactory domainObjectFactory)
-	{
-		EntityInterface entityMapEntity = domainObjectFactory.createEntity();
-		entityMapEntity.setName("EntityMap");
-		TablePropertiesInterface tableProperties = domainObjectFactory.createTableProperties();
-		tableProperties.setName("DYEXTN_ENTITY_MAP");
-		entityMapEntity.setTableProperties(tableProperties);
-		//ID
-		AttributeInterface attributeId = domainObjectFactory.createLongAttribute();
-		attributeId.setName("id");
-		attributeId.setIsPrimaryKey(true);
-		ColumnPropertiesInterface cp = domainObjectFactory.createColumnProperties();
-		cp.setName("IDENTIFIER");
-		attributeId.setColumnProperties(cp);
-		entityMapEntity.addAttribute(attributeId);
-		//STATIC ENTITY ID
-		AttributeInterface attributeStaticEntityId = domainObjectFactory.createLongAttribute();
-		attributeStaticEntityId.setName("staticEntityId");
-		ColumnPropertiesInterface cp1 = domainObjectFactory.createColumnProperties();
-		cp1.setName("STATIC_ENTITY_ID");
-		attributeStaticEntityId.setColumnProperties(cp1);
-		entityMapEntity.addAttribute(attributeStaticEntityId);
-		//LINk STATUS
-		AttributeInterface attributelinkStatus = domainObjectFactory.createStringAttribute();
-		attributelinkStatus.setName("linkStatus");
-		ColumnPropertiesInterface cp2 = domainObjectFactory.createColumnProperties();
-		cp2.setName("STATUS");
-		attributelinkStatus.setColumnProperties(cp2);
-		entityMapEntity.addAttribute(attributelinkStatus);
-		//CREATED BY
-		AttributeInterface attributeCreatedBy = domainObjectFactory.createStringAttribute();
-		attributeCreatedBy.setName("createdBy");
-		ColumnPropertiesInterface cp3 = domainObjectFactory.createColumnProperties();
-		cp3.setName("CREATED_BY");
-		attributeCreatedBy.setColumnProperties(cp3);
-		entityMapEntity.addAttribute(attributeCreatedBy);
-		//CREATION DATE
-		AttributeInterface attributeCreatedDate = domainObjectFactory.createDateAttribute();
-		attributeCreatedDate.setName("createdDate");
-		ColumnPropertiesInterface cp4 = domainObjectFactory.createColumnProperties();
-		cp4.setName("CREATED_DATE");
-		attributeCreatedDate.setColumnProperties(cp4);
-		entityMapEntity.addAttribute(attributeCreatedDate);
-		//DE CONTAINER ID 
-		AttributeInterface attributeContainerId = domainObjectFactory.createLongAttribute();
-		attributeContainerId.setName("containerId");
-		ColumnPropertiesInterface cp5 = domainObjectFactory.createColumnProperties();
-		cp5.setName("CONTAINER_ID");
-		attributeContainerId.setColumnProperties(cp5);
-		entityMapEntity.addAttribute(attributeContainerId);
-		return entityMapEntity;
-	}
-
-	/**
-	 * @param domainObjectFactory
-	 * @return
-	 */
-	private static EntityInterface getFormContextEntity(DomainObjectFactory domainObjectFactory)
-	{
-		EntityInterface formContextEntity = domainObjectFactory.createEntity();
-		formContextEntity.setName("FormContext");
-		TablePropertiesInterface tp = domainObjectFactory.createTableProperties();
-		tp.setName("DYEXTN_FORM_CONTEXT");
-		formContextEntity.setTableProperties(tp);
-		//Id
-		AttributeInterface attributeFormCtxId = domainObjectFactory.createLongAttribute();
-		attributeFormCtxId.setName("id");
-		attributeFormCtxId.setIsPrimaryKey(true);
-		ColumnPropertiesInterface cp = domainObjectFactory.createColumnProperties();
-		cp.setName("IDENTIFIER");
-		attributeFormCtxId.setColumnProperties(cp);
-		formContextEntity.addAttribute(attributeFormCtxId);
-		//No Of entries
-		AttributeInterface attributeNoOfEntries = domainObjectFactory.createIntegerAttribute();
-		attributeNoOfEntries.setName("noOfEntries");
-		ColumnPropertiesInterface cp2 = domainObjectFactory.createColumnProperties();
-		cp2.setName("NO_OF_ENTRIES");
-		attributeNoOfEntries.setColumnProperties(cp2);
-		formContextEntity.addAttribute(attributeNoOfEntries);
-		//study form label
-		AttributeInterface attributeFormLabel = domainObjectFactory.createStringAttribute();
-		attributeFormLabel.setName("studyFormLabel");
-		ColumnPropertiesInterface cp3 = domainObjectFactory.createColumnProperties();
-		cp3.setName("STUDY_FORM_LABEL");
-		attributeFormLabel.setColumnProperties(cp3);
-		formContextEntity.addAttribute(attributeFormLabel);
-		//Entity Map Id
-		AttributeInterface attributeEntityMapId = domainObjectFactory.createIntegerAttribute();
-		attributeEntityMapId.setName("entityMapId");
-		ColumnPropertiesInterface cp4 = domainObjectFactory.createColumnProperties();
-		cp4.setName("ENTITY_MAP_ID");
-		attributeEntityMapId.setColumnProperties(cp4);
-		formContextEntity.addAttribute(attributeEntityMapId);
-
-		//Infinite entries
-		AttributeInterface attributeIsInfiniteEntry = domainObjectFactory.createIntegerAttribute();
-		attributeIsInfiniteEntry.setName("isInfiniteEntry");
-		ColumnPropertiesInterface cp5 = domainObjectFactory.createColumnProperties();
-		cp5.setName("IS_INFINITE_ENTRY");
-		attributeIsInfiniteEntry.setColumnProperties(cp5);
-		formContextEntity.addAttribute(attributeIsInfiniteEntry);
-
-		return formContextEntity;
-	}
-
-	/**
-	 * @param domainObjectFactory
-	 * @return
-	 */
-	private static EntityInterface getEntityMapConditionEntity(
-			DomainObjectFactory domainObjectFactory)
-	{
-		EntityInterface entityMapConditionEntity = domainObjectFactory.createEntity();
-		entityMapConditionEntity.setName("EntityMapCondition");
-		TablePropertiesInterface tp = domainObjectFactory.createTableProperties();
-		tp.setName("DYEXTN_ENTITY_MAP_CONDNS");
-		entityMapConditionEntity.setTableProperties(tp);
-		//Id
-		AttributeInterface attributeEntMapCondnId = domainObjectFactory.createLongAttribute();
-		attributeEntMapCondnId.setName("id");
-		attributeEntMapCondnId.setIsPrimaryKey(true);
-		ColumnPropertiesInterface cp1 = domainObjectFactory.createColumnProperties();
-		cp1.setName("IDENTIFIER");
-		attributeEntMapCondnId.setColumnProperties(cp1);
-		entityMapConditionEntity.addAttribute(attributeEntMapCondnId);
-		//Type id
-		AttributeInterface attributeTypeId = domainObjectFactory.createLongAttribute();
-		attributeTypeId.setName("typeId");
-		ColumnPropertiesInterface cp2 = domainObjectFactory.createColumnProperties();
-		cp2.setName("TYPE_ID");
-		attributeTypeId.setColumnProperties(cp2);
-		entityMapConditionEntity.addAttribute(attributeTypeId);
-		//static record id for type id(condition entity)
-		AttributeInterface attributeStaticRecordId = domainObjectFactory.createLongAttribute();
-		attributeStaticRecordId.setName("staticRecordId");
-		ColumnPropertiesInterface cp3 = domainObjectFactory.createColumnProperties();
-		cp3.setName("STATIC_RECORD_ID");
-		attributeStaticRecordId.setColumnProperties(cp3);
-		entityMapConditionEntity.addAttribute(attributeStaticRecordId);
-
-		//Form context id
-		AttributeInterface attributeFormContextId = domainObjectFactory.createLongAttribute();
-		attributeFormContextId.setName("formContextId");
-		ColumnPropertiesInterface cp4 = domainObjectFactory.createColumnProperties();
-		cp4.setName("FORM_CONTEXT_ID");
-		attributeFormContextId.setColumnProperties(cp4);
-		entityMapConditionEntity.addAttribute(attributeFormContextId);
-		return entityMapConditionEntity;
-	}
-
-	/**
-	 * @param domainObjectFactory
-	 * @return
-	 */
-	private static EntityInterface getEntityMapRecordEntity(DomainObjectFactory domainObjectFactory)
-	{
-		//EntityMapRecord
-		EntityInterface entityMapRecordEntity = domainObjectFactory.createEntity();
-		entityMapRecordEntity.setName("EntityMapRecord");
-		TablePropertiesInterface tp = domainObjectFactory.createTableProperties();
-		tp.setName("DYEXTN_ENTITY_MAP_RECORD");
-		entityMapRecordEntity.setTableProperties(tp);
-		//Id
-		AttributeInterface attributeEntMapRecId = domainObjectFactory.createLongAttribute();
-		attributeEntMapRecId.setName("id");
-		attributeEntMapRecId.setIsPrimaryKey(true);
-		ColumnPropertiesInterface cp1 = domainObjectFactory.createColumnProperties();
-		cp1.setName("IDENTIFIER");
-		attributeEntMapRecId.setColumnProperties(cp1);
-		entityMapRecordEntity.addAttribute(attributeEntMapRecId);
-		//static entity record id
-		AttributeInterface attributeStaticEntityRecId = domainObjectFactory.createLongAttribute();
-		attributeStaticEntityRecId.setName("staticEntityRecordId");
-		ColumnPropertiesInterface cp2 = domainObjectFactory.createColumnProperties();
-		cp2.setName("STATIC_ENTITY_RECORD_ID");
-		attributeStaticEntityRecId.setColumnProperties(cp2);
-		entityMapRecordEntity.addAttribute(attributeStaticEntityRecId);
-		//dynamic entity record id
-		AttributeInterface attributeDynamicEntityRecId = domainObjectFactory.createLongAttribute();
-		attributeDynamicEntityRecId.setName("dynamicEntityRecordId");
-		ColumnPropertiesInterface cp3 = domainObjectFactory.createColumnProperties();
-		cp3.setName("DYNAMIC_ENTITY_RECORD_ID");
-		attributeDynamicEntityRecId.setColumnProperties(cp3);
-		entityMapRecordEntity.addAttribute(attributeDynamicEntityRecId);
-		//form context id
-		AttributeInterface attributeFormContextId = domainObjectFactory.createLongAttribute();
-		attributeFormContextId.setName("formContextId");
-		ColumnPropertiesInterface cp4 = domainObjectFactory.createColumnProperties();
-		cp4.setName("FORM_CONTEXT_ID");
-		attributeFormContextId.setColumnProperties(cp4);
-		entityMapRecordEntity.addAttribute(attributeFormContextId);
-		return entityMapRecordEntity;
-	}
+	
 
 	private static RoleInterface getRole(AssociationType associationType, String name,
 			Cardinality minCard, Cardinality maxCard)

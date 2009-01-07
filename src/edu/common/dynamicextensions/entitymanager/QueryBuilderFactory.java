@@ -46,7 +46,6 @@ public class QueryBuilderFactory
 		}
 		else if (Variables.databaseName.equalsIgnoreCase(Constants.MSSQLSERVER_DATABASE))
 		{
-			System.out.println("mssql");
 			queryBuilder = new DynamicExtensionMsSQLServerQueryBuilder();
 		}
 

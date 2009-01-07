@@ -44,6 +44,11 @@ public class QueryBuilderFactory
 		{
 			queryBuilder = new DynamicExtensionDb2QueryBuilder();
 		}
+		else if (Variables.databaseName.equalsIgnoreCase(Constants.MSSQLSERVER_DATABASE))
+		{
+			System.out.println("mssql");
+			queryBuilder = new DynamicExtensionMsSQLServerQueryBuilder();
+		}
 
 		return queryBuilder;
 	}

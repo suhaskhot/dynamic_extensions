@@ -1,9 +1,13 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This class provides the methods that builds the queries that are specific to ORACLE database 
@@ -74,6 +78,32 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 		}
 
 		return alterTableQuery.toString();
+	}
+	
+	/**
+	 * Converts value to Object data type for MySql database 
+	 * @param valueObj
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected Object convertValueToObject(Object valueObj) throws DynamicExtensionsSystemException
+	{
+		Object value = "";
+
+		ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) valueObj);
+		try
+		{
+			value = new ObjectInputStream(bais).readObject();
+		}
+		catch (IOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while converting the data", e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while converting the data", e);
+		}
+		return value;
 	}
 
 }

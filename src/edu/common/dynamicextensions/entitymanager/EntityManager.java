@@ -1,10 +1,8 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -65,7 +63,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
@@ -1470,7 +1467,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	private Object getValueFromResultSet(ResultSet resultSet,
 			Map<String, AttributeInterface> columnNames, String dbColumnName, int index)
-			throws SQLException, IOException, ClassNotFoundException
+			throws SQLException, IOException, ClassNotFoundException,
+			DynamicExtensionsSystemException
 	{
 		Attribute attribute = (Attribute) columnNames.get(dbColumnName);
 
@@ -1499,17 +1497,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				if (attribute.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 				{
-					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE)
-							|| Variables.databaseName.equals(Constants.DB2_DATABASE))
-					{
-						Blob blob = (Blob) valueObj;
-						value = new ObjectInputStream(blob.getBinaryStream()).readObject();
-					}
-					if (Variables.databaseName.equals(Constants.MYSQL_DATABASE))
-					{
-						ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) valueObj);
-						value = new ObjectInputStream(bais).readObject();
-					}
+					value = queryBuilder.convertValueToObject(valueObj);
 				}
 				else
 				{

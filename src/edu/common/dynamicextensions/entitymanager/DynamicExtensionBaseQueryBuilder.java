@@ -3301,5 +3301,15 @@ class DynamicExtensionBaseQueryBuilder
 
 		return alterQuery.toString();
 	}
+	/**
+	 * @param valueObj
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected Object convertValueToObject(Object valueObj) throws DynamicExtensionsSystemException
+	{
+		Object value = "";
+		return value;
+	}
 
 }

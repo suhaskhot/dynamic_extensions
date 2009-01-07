@@ -22,7 +22,8 @@ public class DatabaseCleaner
 	private static final String ORACLE_DRIVER = "oracle.jdbc.driver.OracleDriver";
 	private static final String MYSQL_DRIVER = "org.gjt.mm.mysql.Driver";
 	private static final String DB2_DRIVER = "com.ibm.db2.jcc.DB2Driver";
-
+	private static final String MSSQLSERVER_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+	
 	/**
 	 * 
 	 * @param args args[0]=Databae.type,args[1]=connection url
@@ -44,6 +45,10 @@ public class DatabaseCleaner
 			else if (args[0].equalsIgnoreCase(Constants.DB2_DATABASE))
 			{
 				cleanDb2(args);
+			}
+			else if (args[0].equalsIgnoreCase(Constants.MSSQLSERVER_DATABASE))
+			{
+				cleanMsSqlServer(args);
 			}
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -243,6 +248,43 @@ public class DatabaseCleaner
 		try
 		{
 			conn = getConnection(MYSQL_DRIVER, url + "/de_temp", args[2], args[3]);
+			query = "drop database " + databaseName;
+			executeUpdate(query, conn);
+			query = "create database " + databaseName;
+			executeUpdate(query, conn);
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"failed to execute the create datatbase query", e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new DynamicExtensionsSystemException("Driver Not found", e);
+		}
+		finally
+		{
+			closeConnection(conn);
+		}
+
+	}
+	/**
+	 * Drop database in mssqlserver & recreates it
+	 * @param args
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static void cleanMsSqlServer(String[] args) throws DynamicExtensionsSystemException
+	{
+		String query = null;
+		Connection conn = null;
+
+		int index = args[1].lastIndexOf("=");
+		String databaseName = args[1].substring(index + 1);
+		String url = args[1].substring(0, index);
+
+		try
+		{
+			conn = getConnection(MSSQLSERVER_DRIVER, url + "=de_temp", args[2], args[3]);
 			query = "drop database " + databaseName;
 			executeUpdate(query, conn);
 			query = "create database " + databaseName;

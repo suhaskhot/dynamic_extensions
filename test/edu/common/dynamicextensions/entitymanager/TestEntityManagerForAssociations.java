@@ -2296,22 +2296,19 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 			user = entityManager.persistEntity(user);
 
-			
-			assertEquals(noOfDefaultColumns + 2,getColumnCount("select * from "+ user.getTableProperties().getName()));
-			
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ study.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 2,getColumnCount("select * from "+ user.getTableProperties().getName()));
+					
 
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
 			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
 
 			user = entityManager.persistEntity(user);
-
 			
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ user.getTableProperties().getName()));
 			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ study.getTableProperties().getName()));
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ study.getTableProperties().getName()));
-
+		
 			EntityInterface savedUser = entityManager
 					.getEntityByIdentifier(user.getId().toString());
 			assertEquals(1, savedUser.getAssociationCollection().size());

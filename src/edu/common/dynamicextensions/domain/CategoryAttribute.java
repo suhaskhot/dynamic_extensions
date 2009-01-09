@@ -279,17 +279,23 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	public String getDefaultValue()
 	{
 		String defaultValue = null;
+		
 		if (defaultPermissibleValuesCollection != null
 				&& !defaultPermissibleValuesCollection.isEmpty())
 		{
-			Iterator<PermissibleValueInterface> dataElementIterator = defaultPermissibleValuesCollection
+			Iterator<PermissibleValueInterface> dataElementIter = defaultPermissibleValuesCollection
 					.iterator();
-			defaultValue = String.valueOf(dataElementIterator.next().getValueAsObject());
+			Object nextPV = dataElementIter.next().getValueAsObject();
+			if (nextPV != null)
+			{
+				defaultValue = String.valueOf(nextPV);
+			}
 		}
 		else
 		{
 			defaultValue = ((AttributeMetadataInterface) this.abstractAttribute).getDefaultValue();
 		}
+		
 		return defaultValue;
 	}
 

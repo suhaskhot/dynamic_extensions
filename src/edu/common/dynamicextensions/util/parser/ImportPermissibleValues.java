@@ -65,12 +65,14 @@ public class ImportPermissibleValues
 			while (categoryCSVFileParser.readNext())
 			{
 				EntityManagerInterface entityManager = EntityManager.getInstance();
-				//first line in the categopry file is Category_Definition
+
+				// First line in the category file is Category_Definition.
 				if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
 				{
 					continue;
 				}
-				//1:read the entity group
+
+				// Fetch the entity group id.
 				Long entityGroupId = entityManager.getEntityGroupId(categoryCSVFileParser
 						.getEntityGroupName());
 				CategoryValidator.checkForNullRefernce(entityGroupId, " ERROR AT LINE:"
@@ -81,11 +83,12 @@ public class ImportPermissibleValues
 
 				while (categoryCSVFileParser.readNext())
 				{
-					boolean overridePv = categoryCSVFileParser.isOverridePermissibleValues();
+					boolean isOverridePVs = categoryCSVFileParser.isOverridePermissibleValues();
 					if (ENTITY_GROUP.equals(categoryCSVFileParser.readLine()[0]))
 					{
 						break;
 					}
+
 					String entityName = categoryCSVFileParser.getEntityName();
 					Long entityId = entityManager.getEntityId(entityName, entityGroupId);
 					CategoryValidator.checkForNullRefernce(entityId, " ERROR AT LINE:"
@@ -96,12 +99,13 @@ public class ImportPermissibleValues
 
 					Map<String, Collection<SemanticPropertyInterface>> pvList = categoryCSVFileParser
 							.getPermissibleValues();
-					Map<String, Collection<SemanticPropertyInterface>> finalPvList = new LinkedHashMap<String, Collection<SemanticPropertyInterface>>();
+					Map<String, Collection<SemanticPropertyInterface>> finalPVs = new LinkedHashMap<String, Collection<SemanticPropertyInterface>>();
 					Long attributeId = entityManager.getAttributeId(attributeName, entityId);
-					//Bug #10432,10382
-					//If this attribute id is of type association (as in case of multiselect) 
-					//It is required to fetch association's target entity's attribute id 
-					Long associationAttributeId = entityManager.getAssociationAttributeId(attributeId);
+					// Bug # 10432,10382
+					// If this attribute is of type association (as in case of multi select),  
+					// it is required to fetch association's target entity's attribute id.
+					Long associationAttributeId = entityManager
+							.getAssociationAttributeId(attributeId);
 					if (associationAttributeId != null)
 					{
 						attributeId = associationAttributeId;
@@ -111,52 +115,48 @@ public class ImportPermissibleValues
 							+ categoryCSVFileParser.getLineNumber() + " ATTRIBUTE WITH NAME "
 							+ attributeName + " DOES NOT EXIST");
 
-					AttributeTypeInformationInterface attributeTypeInformation = entityManager
+					AttributeTypeInformationInterface attrTypeInfo = entityManager
 							.getAttributeTypeInformation(attributeId);
 
-					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation
+					UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attrTypeInfo
 							.getDataElement();
 
 					if (userDefinedDE == null)
 					{
 						userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
-						attributeTypeInformation.setDataElement(userDefinedDE);
-						finalPvList = pvList;
+						attrTypeInfo.setDataElement(userDefinedDE);
+						finalPVs = pvList;
 					}
 					else
 					{
-						if (overridePv)
+						if (isOverridePVs)
 						{
 							userDefinedDE.clearPermissibleValues();
 						}
 
-						List<String> list = new ArrayList<String>();
+						List<String> presentPVs = new ArrayList<String>();
 						for (PermissibleValueInterface permissibleValue : userDefinedDE
 								.getPermissibleValueCollection())
 						{
-							list.add(permissibleValue.getValueAsObject().toString());
+							presentPVs.add(permissibleValue.getValueAsObject().toString());
 						}
+
 						Set<String> pvListKeySet = pvList.keySet();
 						for (String string : pvListKeySet)
 						{
-							if (!list.contains(string))
+							if (!presentPVs.contains(string))
 							{
-								finalPvList.put(string, pvList.get(string));
+								finalPVs.put(string, pvList.get(string));
 							}
 						}
 					}
 
-					List<PermissibleValueInterface> list = categoryHelper.getPermissibleValueList(
-							attributeTypeInformation, finalPvList);
+					List<PermissibleValueInterface> permValues = categoryHelper
+							.getPermissibleValueList(attrTypeInfo, finalPVs);
 
-					userDefinedDE.addAllPermissibleValues(list);
+					userDefinedDE.addAllPermissibleValues(permValues);
 
-					if (list != null && !list.isEmpty())
-					{
-						//set the first value in the list as the default value
-						attributeTypeInformation.setDefaultValue(list.get(0));
-					}
-					entityManager.updateAttributeTypeInfo(attributeTypeInformation);
+					entityManager.updateAttributeTypeInfo(attrTypeInfo);
 				}
 			}
 		}
@@ -173,9 +173,9 @@ public class ImportPermissibleValues
 						+ categoryCSVFileParser.getLineNumber() + "READING FILE "
 						+ categoryCSVFileParser.getFilePath(), e);
 			}
+
 			throw new DynamicExtensionsSystemException("", e);
 		}
-
 	}
 
 	public static void main(String args[]) throws DynamicExtensionsSystemException,
@@ -187,18 +187,23 @@ public class ImportPermissibleValues
 			{
 				throw new Exception("Please Specify the path for .csv file");
 			}
+
 			String filePath = args[0];
 			System.out.println("---- The .csv file path is " + filePath + " ----");
+
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();
+
 			System.out.println("Added permissible values successfully!!!!");
 		}
 		catch (Exception ex)
 		{
+			System.out.println("\n----------");
+			System.out.println("Exception: ");
+			System.out.println("----------");
 			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		}
-
 	}
 
 }

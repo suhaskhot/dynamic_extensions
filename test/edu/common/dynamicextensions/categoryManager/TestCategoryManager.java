@@ -1328,19 +1328,19 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			
 			assertNotNull(category.getId());
 			assertNotNull(category.getRootCategoryElement());
-			assertEquals(category.getRootCategoryElement().getName(), "RadicalProstatectomyPathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category.getRootCategoryElement().getName()), "RadicalProstatectomyPathologyAnnotation[1]");
 			
 			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = category.getRootCategoryElement().getParentCategoryEntity();
 			assertNotNull(prostatePathologyAnnotationCategoryEntity);
-			assertEquals(prostatePathologyAnnotationCategoryEntity.getName(), "ProstatePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(prostatePathologyAnnotationCategoryEntity.getName()), "ProstatePathologyAnnotation[1]");
 			
 			CategoryEntityInterface baseSolidTissuePathologyAnnotation = prostatePathologyAnnotationCategoryEntity.getParentCategoryEntity();
 			assertNotNull(baseSolidTissuePathologyAnnotation);
-			assertEquals(baseSolidTissuePathologyAnnotation.getName(), "BaseSolidTissuePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(baseSolidTissuePathologyAnnotation.getName()), "BaseSolidTissuePathologyAnnotation[1]");
 			
 			CategoryEntityInterface basePathologyAnnotation = baseSolidTissuePathologyAnnotation.getParentCategoryEntity();
 			assertNotNull(basePathologyAnnotation);
-			assertEquals(basePathologyAnnotation.getName(), "BasePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(basePathologyAnnotation.getName()), "BasePathologyAnnotation[1]");
 			
 			assertNull(basePathologyAnnotation.getParentCategoryEntity());
 		}
@@ -1375,19 +1375,19 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			assertNotNull(category.getId());
 			assertNotNull(category.getRootCategoryElement());
 			assertEquals(category.getName(), "NeedleBiopsy_TestCaseCategory");
-			assertEquals(category.getRootCategoryElement().getName(), "NeedleBiopsyProstatePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category.getRootCategoryElement().getName()), "NeedleBiopsyProstatePathologyAnnotation[1]");
 			
 			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = category.getRootCategoryElement().getParentCategoryEntity();
 			assertNotNull(prostatePathologyAnnotationCategoryEntity);
-			assertEquals(prostatePathologyAnnotationCategoryEntity.getName(), "ProstatePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(prostatePathologyAnnotationCategoryEntity.getName()), "ProstatePathologyAnnotation[1]");
 			
 			CategoryEntityInterface baseSolidTissuePathologyAnnotation = prostatePathologyAnnotationCategoryEntity.getParentCategoryEntity();
 			assertNotNull(baseSolidTissuePathologyAnnotation);
-			assertEquals(baseSolidTissuePathologyAnnotation.getName(), "BaseSolidTissuePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(baseSolidTissuePathologyAnnotation.getName()), "BaseSolidTissuePathologyAnnotation[1]");
 			
 			CategoryEntityInterface basePathologyAnnotation = baseSolidTissuePathologyAnnotation.getParentCategoryEntity();
 			assertNotNull(basePathologyAnnotation);
-			assertEquals(basePathologyAnnotation.getName(), "BasePathologyAnnotation[1]");
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(basePathologyAnnotation.getName()), "BasePathologyAnnotation[1]");
 			
 			assertNull(basePathologyAnnotation.getParentCategoryEntity());
 		}

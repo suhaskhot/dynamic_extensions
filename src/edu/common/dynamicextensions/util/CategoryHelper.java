@@ -821,14 +821,23 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			if (controlType.equals(controlType.LIST_BOX_CONTROL))
 			{
-				selectControl = DomainObjectFactory.getInstance().createListBox();
+				if (categoryAttribute.getAbstractAttribute() instanceof AssociationInterface)
+				{
+					selectControl = DomainObjectFactory.getInstance().createListBox();
+				}
+				else
+				{
+					selectControl = DomainObjectFactory.getInstance().createComboBox();
+				}
 			}
 			else if (controlType.equals(controlType.COMBO_BOX_CONTROL))
 			{
 				selectControl = DomainObjectFactory.getInstance().createComboBox();
 			}
+			
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
+		
 		//clear old permissible values
 		categoryAttribute.clearDataElementCollection();
 

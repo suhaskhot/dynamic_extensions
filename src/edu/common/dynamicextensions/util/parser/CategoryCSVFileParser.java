@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.dbManager.DAOException;
@@ -109,16 +110,18 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		for (String entityNameAndPath : readLine())
 		{
 			List<String> path = new ArrayList<String>();
-			String entityName = entityNameAndPath.split("~")[0];
+			StringBuffer entityPath = new StringBuffer();
 
 			StringTokenizer stringTokenizer = new StringTokenizer(entityNameAndPath.split("~")[1],
 					":");
 			while (stringTokenizer.hasMoreTokens())
 			{
-				path.add(stringTokenizer.nextToken());
+				String entityName = stringTokenizer.nextToken();
+				path.add(entityName);
+				entityPath.append(entityName);
 			}
 
-			entityNamePath.put(entityName, path);
+			entityNamePath.put(entityPath.toString(), path);
 		}
 		return entityNamePath;
 	}
@@ -282,7 +285,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						pvStringLength = pvStringLength + permiValue.length();
 					}
 				}
-				pvVsSemanticPropertyCollection.put(permiValue, semanticPropertyCollection);
+				pvVsSemanticPropertyCollection.put(DynamicExtensionsUtility
+						.getEscapedStringValue(permiValue), semanticPropertyCollection);
 				pvString = originalPVString.substring(pvStringLength - 1);
 			}
 		}
@@ -333,7 +337,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						{
 							pv = pvString;
 						}
-						pvVsSemanticPropertyCollection.put(pv, semanticPropertyCollection);
+						pvVsSemanticPropertyCollection.put(DynamicExtensionsUtility
+								.getEscapedStringValue(pv), semanticPropertyCollection);
 					}
 				}
 			}

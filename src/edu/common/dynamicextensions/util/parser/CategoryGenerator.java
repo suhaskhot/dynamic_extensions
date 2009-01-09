@@ -133,7 +133,6 @@ public class CategoryGenerator
 
 				// 5: Get the selected attributes and create the controls for them.
 				String displayLabel = null;
-				List<String> categoryEntityName = null;
 				int sequenceNumber = 1;
 				ControlInterface lastControl = null;
 				Map<String, String> categoryEntityNameInstanceMap = new HashMap<String, String>();
@@ -159,7 +158,7 @@ public class CategoryGenerator
 					if (categoryFileParser.hasDisplayLable())
 					{
 						displayLabel = categoryFileParser.getDisplyLable();
-						categoryEntityName = createForm(entityGroup, containerCollection,
+						container = createForm(entityGroup, containerCollection,
 								entityNameAssociationMap, category, categoryEntityNameInstanceMap);
 
 						firstTimeinDisplayLabel = true;
@@ -178,9 +177,7 @@ public class CategoryGenerator
 						if (entityInterface != null)
 						{
 							// Always add sub-category to the container.
-							sourceContainer = CategoryGenerationUtil
-									.getContainerWithCategoryEntityName(containerCollection,
-											categoryEntityName.get(0));
+							sourceContainer = container;
 						}
 						else
 						{
@@ -201,14 +198,15 @@ public class CategoryGenerator
 
 						String multiplicity = categoryFileParser.getMultiplicity();
 
-						((CategoryEntityInterface) CategoryGenerationUtil.getContainer(
-								containerCollection, targetContainerCaption).getAbstractEntity())
-								.getEntity();
-						String entityName = ((CategoryEntityInterface) CategoryGenerationUtil
+						String categoryEntName = ((CategoryEntityInterface) CategoryGenerationUtil
 								.getContainer(containerCollection, targetContainerCaption)
-								.getAbstractEntity()).getEntity().getName();
+								.getAbstractEntity()).getName();
+
 						List<AssociationInterface> associationNameList = entityNameAssociationMap
-								.get(entityName);
+								.get(CategoryGenerationUtil
+										.getEntityNameForAssociationMap(categoryEntityNameInstanceMap
+												.get(categoryEntName)));
+
 						CategoryValidator.checkForNullRefernce(associationNameList,
 								ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
 										+ categoryFileParser.getLineNumber()
@@ -228,7 +226,7 @@ public class CategoryGenerator
 
 						List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
 						categoryFileParser.getFormControlNotes(controlNotes);
-						
+
 						Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser
 								.getPermissibleValues();
 
@@ -245,16 +243,17 @@ public class CategoryGenerator
 								.isAttributePresent(attributeName);
 
 						boolean isAttributeCategoryMatched = false;
+
 						CategoryValidator.checkForNullRefernce(getcategoryEntityName(
-								categoryEntityName, categoryFileParser.getEntityName()),
+								categoryEntityNameInstanceMap, categoryFileParser.getEntityName()),
 								ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
 										+ categoryFileParser.getLineNumber()
-										+ categoryEntityName
+										+ container.getAbstractEntity().getName()
 										+ ApplicationProperties
 												.getValue("incorrectInstanceInformation"));
-						container = CategoryGenerationUtil.getContainerWithCategoryEntityName(
-								containerCollection, getcategoryEntityName(categoryEntityName,
-										categoryFileParser.getEntityName()));
+
+						//						containerInterface = CategoryGenerationUtil.getContainerWithCategoryEntityName(containerCollection, getcategoryEntityName(
+						//								categoryEntityNameInstanceMap,categoryEntityName, categoryFileParser.getEntityName()));
 
 						//Set this flag when attribute is just after display label,and set previous entity name ,so that we can verify whether all attributes are of same entity or other entities also.
 						if (firstTimeinDisplayLabel)
@@ -264,11 +263,11 @@ public class CategoryGenerator
 									.getAbstractEntity()).getName();
 						}
 						if ((previousEntityName != null
-								&& !previousEntityName.equals(container.getAbstractEntity()
-										.getName()) && !firstTimeinDisplayLabel))
+								&& !previousEntityName.equals(container
+										.getAbstractEntity().getName()) && !firstTimeinDisplayLabel))
 						{
-							List listofEntities = sequenceMap.get(container.getAbstractEntity()
-									.getName());
+							List listofEntities = sequenceMap.get(container
+									.getAbstractEntity().getName());
 							if (listofEntities == null)
 							{
 								listofEntities = new ArrayList<String>();
@@ -305,8 +304,8 @@ public class CategoryGenerator
 								+ entityInterface.getName());
 
 						if (previousEntityName != null
-								&& !previousEntityName.equals(container.getAbstractEntity()
-										.getName()))
+								&& !previousEntityName.equals(container
+										.getAbstractEntity().getName()))
 						{
 							previousEntityName = container.getAbstractEntity().getName();
 						}
@@ -430,12 +429,12 @@ public class CategoryGenerator
 											.getAbstractEntity());
 						}
 					}
-					
 					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
-				CategoryGenerationUtil.setRootContainer(category, containerCollection,
-						entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
+				CategoryGenerationUtil.setRootContainer(category, container,
+						containerCollection, entityNameAssociationMap, paths,
+						categoryEntityNameInstanceMap);
 
 				if (hasRelatedAttributes)
 				{
@@ -484,6 +483,27 @@ public class CategoryGenerator
 	}
 
 	/**
+	 * @param categoryEntityNameList
+	 * @param entityName
+	 * @return
+	 */
+	private String getcategoryEntityName(Map<String, String> categoryEntityNameInstanceMap,
+			String entityName)
+	{
+		String categoryEntityName = null;
+		for (String name : categoryEntityNameInstanceMap.keySet())
+		{
+			if (entityName.equals(CategoryGenerationUtil
+					.getEntityNameFromCategoryEntityInstancePath(categoryEntityNameInstanceMap
+							.get(name))))
+			{
+				categoryEntityName = name;
+			}
+		}
+		return categoryEntityName;
+	}
+
+	/**
 	 * This function rearranges the sequences ,so that display is as per CSV file
 	 * @param containerObject
 	 * @param sequenceMap
@@ -491,19 +511,15 @@ public class CategoryGenerator
 	private void rearrangeControlSequence(ContainerInterface containerObject,
 			HashMap<String, List> sequenceMap)
 	{
-		//The sequencemap contains the keyentityname and list of categoryentity which requires to 
-		//set after this entity on UI
-		//See for eg. root categoryentity is having 4 controls(category association + othercontrol) ,
-		//its sequence number is assigned as  per their parsing
-		//But in one association is specified as with other association under one display label itself ,
-		//so only one subcategory name is under rootcategory in CSV
+		//The sequencemap contains the keyentityname and list of categoryentity which requires to set after this entity on UI
+		//See for eg. root categoryentity is having 4 controls(category association + othercontrol) ,its sequence number is assigned as  per their parsing
+		//But in one association is specified as with other association under one display label itself ,so only one subcategory name is under rootcategory in CSV
 		//eg. DL :XXX
 		//    class A:A1
 		//    class B:B1
 		//    DL: root
 		//    subcategory:XXX
-		//  So here both attributes will be shown under same display label XXX ,so we need to change
-		//category association B's sequence number such that its after class A on UI
+		//  So here both attributes will be shown under same display label XXX ,so we need to change category association B's sequence number such that its after class A on UI
 		//
 		List<ControlInterface> listControl = containerObject.getAllControls();
 		rearrangeSequenceMap(sequenceMap);
@@ -700,10 +716,15 @@ public class CategoryGenerator
 		while (categoryFileParser.readNext())
 		{
 			String[] categoryPaths = categoryFileParser.getCategoryPaths();
-			String[] categoryEntitysInPath = categoryPaths[0].split("->");
-			String categoryEntityName = categoryEntitysInPath[categoryEntitysInPath.length - 1];
+			String categoryEntityName = CategoryGenerationUtil
+					.getCategoryEntityName(categoryPaths[0]);
 
-			String entityName = categoryEntityName.substring(0, categoryEntityName.indexOf("["));
+			String entityName = CategoryGenerationUtil
+					.getEntityNameFromCategoryEntityInstancePath(categoryPaths[0]);
+
+			String entityNameForEntityAssociationMap = CategoryGenerationUtil
+					.getEntityNameForAssociationMap(categoryPaths[0]);
+
 			EntityInterface entity = entityGroup.getEntityByName(entityName);
 			categoryFileParser.readNext();
 			String attributeName = categoryFileParser.getRelatedAttributeName();
@@ -722,7 +743,7 @@ public class CategoryGenerator
 						+ categoryEntity.getName() + " association";
 				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(),
 						categoryEntity, associationName, 1, entityGroup, entityNameAssociationMap
-								.get(entityName), categoryPaths[0]);
+								.get(entityNameForEntityAssociationMap), categoryPaths[0]);
 			}
 			CategoryValidator.checkForNullRefernce(entity.getAttributeByName(attributeName),
 					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
@@ -797,7 +818,8 @@ public class CategoryGenerator
 
 			String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
 			categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName)
-					.getAttributeTypeInformation().getPermissibleValueForString(defaultValue));
+					.getAttributeTypeInformation().getPermissibleValueForString(
+							DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
 			categoryAttribute.setIsVisible(false);
 			categoryAttribute.setIsRelatedAttribute(true);
 			category.addRelatedAttributeCategoryEntity(categoryEntity);
@@ -808,27 +830,9 @@ public class CategoryGenerator
 						+ categoryEntity.getName() + " association";
 				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(),
 						categoryEntity, associationName, 1, entityGroup, entityNameAssociationMap
-								.get(entityName), categoryPaths[0]);
+								.get(entityNameForEntityAssociationMap), categoryPaths[0]);
 			}
 		}
-	}
-
-	/**
-	 * @param categoryEntityNameList
-	 * @param entityName
-	 * @return
-	 */
-	private String getcategoryEntityName(List<String> categoryEntityNameList, String entityName)
-	{
-		String categoryEntityName = null;
-		for (String string : categoryEntityNameList)
-		{
-			if (entityName.equals(string.substring(0, string.indexOf("["))))
-			{
-				categoryEntityName = string;
-			}
-		}
-		return categoryEntityName;
 	}
 
 	/**
@@ -868,12 +872,13 @@ public class CategoryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<String> createForm(EntityGroupInterface entityGroup,
+	private ContainerInterface createForm(EntityGroupInterface entityGroup,
 			List<ContainerInterface> containerCollection,
 			Map<String, List<AssociationInterface>> associationNamesMap,
 			CategoryInterface category, Map<String, String> categoryEntityNameInstanceMap)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		ContainerInterface container = null;
 		String displayLable = categoryFileParser.getDisplyLable();
 		Boolean showCaption = categoryFileParser.isShowCaption();
 
@@ -888,9 +893,10 @@ public class CategoryGenerator
 
 			for (String categoryPath : categoryPaths)
 			{
+				String categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath);
 				categoryEntitiesInPath = categoryPath.split("->");
 				String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
-				entityName = newCategoryEntityName.substring(0, newCategoryEntityName.indexOf("["));
+				entityName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
 
 				// Check if instance information is wrong, i.e. entity mentioned in
 				// the instance information exists in the entity group.
@@ -911,24 +917,22 @@ public class CategoryGenerator
 				}
 
 				categoryValidator.isRootEntityUsedTwice(entityName, mainFormList,
-						categoryEntityNameInstanceMap.keySet());
-				if (!categoryEntityName.contains(newCategoryEntityName))
+						categoryEntityNameInstanceMap);
+				if (!categoryEntityName.contains(categoryEntName))
 				{
-
-					ContainerInterface container = null;
-					container = SearchExistingCategoryEntityAndContainer(newCategoryEntityName,
+					container = SearchExistingCategoryEntityAndContainer(categoryEntName,
 							containerCollection);
 					if (container == null)
 					{
 						container = createCategoryEntityAndContainer(entityGroup
-								.getEntityByName(entityName), newCategoryEntityName, displayLable,
+								.getEntityByName(entityName), categoryEntName, displayLable,
 								showCaption, containerCollection, category);
 					}
 
 					categoryEntityNameInstanceMap.put(container.getAbstractEntity().getName(),
 							getCategoryPath(categoryPaths, newCategoryEntityName));
 
-					categoryEntityName.add(newCategoryEntityName);
+					categoryEntityName.add(categoryEntName);
 					showCaption = false;
 				}
 			}
@@ -942,7 +946,7 @@ public class CategoryGenerator
 					+ ApplicationProperties.getValue("errorReadingCategoryEntityPath"));
 		}
 
-		return categoryEntityName;
+		return container;
 	}
 
 	/**
@@ -1016,7 +1020,9 @@ public class CategoryGenerator
 					.getEntity().getAttributeByName(
 							categoryAttribute.getAbstractAttribute().getName());
 			categoryAttribute.setDefaultValue(attributeInterface.getAttributeTypeInformation()
-					.getPermissibleValueForString(categoryFileParser.getDefaultValue()));
+					.getPermissibleValueForString(
+							DynamicExtensionsUtility.getEscapedStringValue(categoryFileParser
+									.getDefaultValue())));
 		}
 	}
 

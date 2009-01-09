@@ -79,23 +79,22 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void setRootContainer(CategoryInterface category,
-			List<ContainerInterface> containerCollection,
+			ContainerInterface rootContainer, List<ContainerInterface> containerCollection,
 			Map<String, List<AssociationInterface>> paths, Map<String, List<String>> absolutePath,
 			Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 
-		ContainerInterface rootContainer = null;
-		for (ContainerInterface containerInterface : containerCollection)
-		{
-			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface
-					.getAbstractEntity();
-			if (categoryEntityInterface.getTreeParentCategoryEntity() == null)
-			{
-				rootContainer = containerInterface;
-				break;
-			}
-		}
+		//		ContainerInterface rootContainer = null;
+		//		for (ContainerInterface containerInterface : containerCollection)
+		//		{
+		//			CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
+		//			if (categoryEntityInterface.getTreeParentCategoryEntity() == null)
+		//			{
+		//				rootContainer = containerInterface;
+		//				break;
+		//			}
+		//		}
 
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 
@@ -106,25 +105,36 @@ public class CategoryGenerationUtil
 			{
 				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer
 						.getAbstractEntity();
-				if (!entityName.equals(categoryEntityInterface.getEntity().getName()))
+				String entityNameForAssociationMap = CategoryGenerationUtil
+						.getEntityNameForAssociationMap(containerNameInstanceMap
+								.get(categoryEntityInterface.getName()));
+				if (!entityName.equals(entityNameForAssociationMap))
 				{
+					String entName = entityName;
+					EntityInterface entity = CategoryGenerationUtil
+							.getEntityFromEntityAssociationMap(paths.get(entityName));
+					if (entity != null)
+					{
+						entName = entity.getName();
+					}
 					ContainerInterface containerInterface = getContainerWithEntityName(
-							containerCollection, entityName);
+							containerCollection, entName);
 					if (containerInterface == null)
 					{
 						EntityGroupInterface entityGroup = categoryEntityInterface.getEntity()
 								.getEntityGroup();
-						EntityInterface entity = entityGroup.getEntityByName(entityName);
+						entity = entityGroup.getEntityByName(entName);
 
 						ContainerInterface newRootContainer = categoryHelper
 								.createOrUpdateCategoryEntityAndContainer(entity, null, category,
-										entityName + "[1]");
+										entName + "[1]" + entName + "[1]");
 						newRootContainer.setAddCaption(false);
 
 						categoryHelper.associateCategoryContainers(category, entityGroup,
-								newRootContainer, rootContainer, paths.get(categoryEntityInterface
-										.getEntity().getName()), 1, containerNameInstanceMap
-										.get(rootContainer.getAbstractEntity().getName()));
+								newRootContainer, rootContainer, paths
+										.get(entityNameForAssociationMap), 1,
+								containerNameInstanceMap.get(rootContainer.getAbstractEntity()
+										.getName()));
 
 						rootContainer = newRootContainer;
 
@@ -148,8 +158,11 @@ public class CategoryGenerationUtil
 			{
 				categoryHelper.associateCategoryContainers(category, categoryEntity.getEntity()
 						.getEntityGroup(), rootContainer, containerInterface, paths
-						.get(categoryEntity.getEntity().getName()), 1, containerNameInstanceMap
-						.get(containerInterface.getAbstractEntity().getName()));
+						.get(CategoryGenerationUtil
+								.getEntityNameForAssociationMap(containerNameInstanceMap
+										.get(categoryEntity.getName()))), 1,
+						containerNameInstanceMap.get(containerInterface.getAbstractEntity()
+								.getName()));
 			}
 		}
 		//If category is edited and no attributes from the main form of the model are not selected
@@ -386,11 +399,81 @@ public class CategoryGenerationUtil
 
 	/**
 	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param categoryNameInCSV
+	 * @param catgeoryNameInCSV
 	 * @return
 	 */
-	public static String getEntityName(String categoryNameInCSV)
+	public static String getEntityName(String catgeoryNameInCSV)
 	{
-		return categoryNameInCSV.substring(0, categoryNameInCSV.indexOf("["));
+		return catgeoryNameInCSV.substring(0, catgeoryNameInCSV.indexOf("["));
+	}
+
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Nnmber]
+	 * @param catgeoryNameInCSV
+	 * @return
+	 */
+	public static String getEntityNameForAssociationMap(String categoryEntityInstancePath)
+	{
+		StringBuffer entityNameForAssociationMap = new StringBuffer();
+		String[] categoryEntityPathArray = categoryEntityInstancePath.split("->");
+
+		for (String instancePath : categoryEntityPathArray)
+		{
+			entityNameForAssociationMap
+					.append(instancePath.substring(0, instancePath.indexOf("[")));
+		}
+		return entityNameForAssociationMap.toString();
+	}
+
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Nnmber]
+	 * @param catgeoryNameInCSV
+	 * @return
+	 */
+	public static String getCategoryEntityName(String categoryEntityInstancePath)
+	{
+		StringBuffer entityNameForAssociationMap = new StringBuffer();
+		String[] categoryEntityPathArray = categoryEntityInstancePath.split("->");
+
+		for (String instancePath : categoryEntityPathArray)
+		{
+			entityNameForAssociationMap.append(instancePath);
+		}
+		return entityNameForAssociationMap.toString();
+	}
+
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Nnmber]
+	 * @param catgeoryNameInCSV
+	 * @return
+	 */
+	public static String getEntityNameFromCategoryEntityInstancePath(
+			String categoryEntityInstancePath)
+	{
+		String entityName = "";
+		if (categoryEntityInstancePath != null)
+		{
+			String[] categoryEntitiesInPath = categoryEntityInstancePath.split("->");
+			String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
+			entityName = getEntityName(newCategoryEntityName);
+		}
+		return entityName;
+	}
+
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Nnmber]
+	 * @param catgeoryNameInCSV
+	 * @return
+	 */
+	public static EntityInterface getEntityFromEntityAssociationMap(
+			List<AssociationInterface> assoList)
+	{
+		EntityInterface entityInterface = null;
+		if (assoList != null && !assoList.isEmpty())
+		{
+			AssociationInterface associationInterface = assoList.get(assoList.size() - 1);
+			entityInterface = associationInterface.getTargetEntity();
+		}
+		return entityInterface;
 	}
 }

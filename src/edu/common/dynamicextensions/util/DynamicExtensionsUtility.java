@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
@@ -1860,7 +1862,7 @@ public class DynamicExtensionsUtility
 		}
 		return value;
 	}
-
+	
 	/**
 	 * @param catEntity
 	 * @return
@@ -1891,5 +1893,32 @@ public class DynamicExtensionsUtility
 
 		return true;
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getCategoryEntityName(String categoryEntityName)
+	{
+		Pattern p = Pattern.compile("[]]");
+		if (categoryEntityName != null && categoryEntityName.length() > 0)
+		{
+			Matcher m = p.matcher(categoryEntityName);
+			StringBuffer sb = new StringBuffer();
+			boolean result = m.find();
+			// Loop through and create a new String
+			// with the replacements
+			while (result)
+			{
+				m.appendReplacement(sb, categoryEntityName.subSequence(m.start(), m.end()) + " ");
+				result = m.find();
+			}
+			//Add the last segment of input to
+			//the new String
+			m.appendTail(sb);
 
+			String[] categoryEntityNameArray = sb.toString().trim().split(" ");
+			categoryEntityName = categoryEntityNameArray[categoryEntityNameArray.length - 1];
+		}
+		return categoryEntityName;
+	}
 }

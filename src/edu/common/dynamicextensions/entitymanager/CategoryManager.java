@@ -423,7 +423,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		}
 
 		CategoryEntityInterface rootCatEntity = category.getRootCategoryElement();
-		String rootCatEntName = rootCatEntity.getName();
+		String rootCatEntName = DynamicExtensionsUtility.getCategoryEntityName(rootCatEntity
+				.getName());
 
 		// If root category entity does not have any attribute, or all its category attributes
 		// are related attributes, then explicitly insert identifier into entity table and
@@ -445,17 +446,19 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			while (catEntity.getParentCategoryEntity() != null)
 			{
-				keyMap.put(catEntity.getParentCategoryEntity().getName(), entityId);
-				fullKeyMap.put(catEntity.getParentCategoryEntity().getName(), entityId);
+				String parentCatEntName = DynamicExtensionsUtility.getCategoryEntityName(catEntity
+						.getParentCategoryEntity().getName());
+				keyMap.put(parentCatEntName, entityId);
+				fullKeyMap.put(parentCatEntName, entityId);
 
-				List<Long> recordIds = records.get(catEntity.getParentCategoryEntity().getName());
+				List<Long> recordIds = records.get(parentCatEntName);
 				if (recordIds == null)
 				{
 					recordIds = new ArrayList<Long>();
 				}
 
 				recordIds.add(entityId);
-				records.put(catEntity.getParentCategoryEntity().getName(), recordIds);
+				records.put(parentCatEntName, recordIds);
 				catEntity = catEntity.getParentCategoryEntity();
 			}
 
@@ -510,7 +513,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				areMultplRecrds, isNoCatAttrPrsnt, jdbcDAO, id);
 
 		Long rootCERecId = getRootCategoryEntityRecordId(category.getRootCategoryElement(),
-				(Long) fullKeyMap.get(rootCatEntity.getName()));
+				(Long) fullKeyMap.get(rootCatEntName));
 
 		insertRecordsForRelatedAttributes(rootCERecId, category.getRootCategoryElement(), records,
 				jdbcDAO, id);
@@ -521,7 +524,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		}
 		else
 		{
-			identifier = (Long) keyMap.get(rootCatEntity.getName());
+			identifier = (Long) keyMap.get(rootCatEntName);
 		}
 
 		return identifier;
@@ -565,7 +568,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							columnValues, columnNamesValues);
 
 					String entTableName = attribute.getEntity().getTableProperties().getName();
-					List<Long> recordIds = records.get(rootCatEntity.getName());
+					List<Long> recordIds = records.get(DynamicExtensionsUtility
+							.getCategoryEntityName(rootCatEntity.getName()));
 					if (recordIds != null && columnNamesValues.length() > 0)
 					{
 						for (Long identifer : recordIds)
@@ -869,7 +873,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			Map<String, List<Long>> records, JDBCDAO jdbcDAO, Long userId) throws SQLException
 	{
 		String entTableName = rootCatEntity.getEntity().getTableProperties().getName();
-		List<Long> recordIds = records.get(rootCatEntity.getName());
+		List<Long> recordIds = records.get(DynamicExtensionsUtility
+				.getCategoryEntityName(rootCatEntity.getName()));
 		if (recordIds != null && colNamesValues.length() > 0)
 		{
 			for (Long identifer : recordIds)
@@ -907,13 +912,14 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		String entTblName = catEntity.getEntity().getTableProperties().getName();
 		String catEntFK = catAssociation.getConstraintProperties().getTargetEntityKey();
 
-		List<Long> srcEntityId = records.get(catAssociation.getCategoryEntity().getName());
-
-		if (records.get(catEntity.getName()) != null)
+		List<Long> srcEntityId = records.get(DynamicExtensionsUtility
+				.getCategoryEntityName(catAssociation.getCategoryEntity().getName()));
+		String catEntityName = DynamicExtensionsUtility.getCategoryEntityName(catEntity.getName());
+		if (records.get(catEntityName) != null)
 		{
 			if (colNamesValues.length() > 0)
 			{
-				List<Long> recordIds = records.get(catEntity.getName());
+				List<Long> recordIds = records.get(catEntityName);
 				for (Long id : recordIds)
 				{
 					String updateEntQuery = "UPDATE " + entTblName + " SET " + colNamesValues
@@ -940,7 +946,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		}
 		// If all attributes are invisible type related attributes, then only insert explicitly, 
 		// in all other cases the category entity name must available in map of records.  
-		else if (records.get(catEntity.getName()) == null
+		else if (records.get(catEntityName) == null
 				&& isAllRelatedInvisibleCategoryAttributesCollection(catEntity))
 		{
 			PathInterface path = catEntity.getPath();
@@ -1053,12 +1059,13 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				Map<String, Long> keyMap = new HashMap<String, Long>();
 				Map<String, Long> fullKeyMap = new HashMap<String, Long>();
 				Map<String, List<Long>> recordsMap = new HashMap<String, List<Long>>();
-
-				keyMap.put(rootCatEntity.getName(), entityRecId);
-				fullKeyMap.put(rootCatEntity.getName(), entityRecId);
+				String catEntityName = DynamicExtensionsUtility.getCategoryEntityName(rootCatEntity
+						.getName());
+				keyMap.put(catEntityName, entityRecId);
+				fullKeyMap.put(catEntityName, entityRecId);
 				List<Long> identifiers = new ArrayList<Long>();
 				identifiers.add(entityRecId);
-				recordsMap.put(rootCatEntity.getName(), identifiers);
+				recordsMap.put(catEntityName, identifiers);
 
 				CategoryEntityInterface catEntity = rootCatEntity;
 
@@ -1066,17 +1073,18 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				// in editDataForHeirarchy method.
 				while (catEntity.getParentCategoryEntity() != null)
 				{
-					keyMap.put(catEntity.getParentCategoryEntity().getName(), entityRecId);
-					fullKeyMap.put(catEntity.getParentCategoryEntity().getName(), entityRecId);
+					String parentCateEntName = DynamicExtensionsUtility
+							.getCategoryEntityName(catEntity.getParentCategoryEntity().getName());
+					keyMap.put(parentCateEntName, entityRecId);
+					fullKeyMap.put(parentCateEntName, entityRecId);
 
-					List<Long> recordIds = recordsMap.get(catEntity.getParentCategoryEntity()
-							.getName());
+					List<Long> recordIds = recordsMap.get(parentCateEntName);
 					if (recordIds == null)
 					{
 						recordIds = new ArrayList<Long>();
 					}
 					recordIds.add(entityRecId);
-					recordsMap.put(catEntity.getParentCategoryEntity().getName(), recordIds);
+					recordsMap.put(parentCateEntName, recordIds);
 
 					catEntity = catEntity.getParentCategoryEntity();
 				}
@@ -1100,8 +1108,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						recordsMap, areMultplRecrds, isNoCatAttrPrsnt, jdbcDAO, id);
 
 				Long rootCatEntId = getRootCategoryEntityRecordId(
-						category.getRootCategoryElement(), (Long) fullKeyMap.get(rootCatEntity
-								.getName()));
+						category.getRootCategoryElement(), (Long) fullKeyMap.get(catEntityName));
 
 				insertRecordsForRelatedAttributes(rootCatEntId, category.getRootCategoryElement(),
 						recordsMap, jdbcDAO, id);
@@ -1200,12 +1207,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				{
 					attributes = createAttributeMap(dataValue);
 				}
-
-				if (keyMap.get(((CategoryAttribute) attribute).getCategoryEntity().getName()) != null
-						&& !areMultplRecrds)
+				String catEntName = DynamicExtensionsUtility
+						.getCategoryEntityName(((CategoryAttribute) attribute).getCategoryEntity()
+								.getName());
+				if (keyMap.get(catEntName) != null && !areMultplRecrds)
 				{
-					entityId = (Long) keyMap.get(((CategoryAttribute) attribute)
-							.getCategoryEntity().getName());
+					entityId = (Long) keyMap.get(catEntName);
 
 					// Edit data for entity hierarchy.
 					entityManager.editDataForHeirarchy(categoryEnt.getEntity(), attributes,
@@ -1251,30 +1258,34 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				}
 
 				CategoryEntityInterface catEntity = categoryEnt;
-				keyMap.put(catEntity.getName(), entityId);
-				fullKeyMap.put(catEntity.getName(), entityId);
+				String categoryEntName = DynamicExtensionsUtility.getCategoryEntityName(catEntity
+						.getName());
+				keyMap.put(categoryEntName, entityId);
+				fullKeyMap.put(categoryEntName, entityId);
 
-				List<Long> recordIds = records.get(catEntity.getName());
+				List<Long> recordIds = records.get(categoryEntName);
 				if (recordIds == null)
 				{
 					recordIds = new ArrayList<Long>();
 				}
 				recordIds.add(entityId);
 
-				records.put(catEntity.getName(), recordIds);
+				records.put(categoryEntName, recordIds);
 
 				while (catEntity.getParentCategoryEntity() != null)
 				{
-					keyMap.put(catEntity.getParentCategoryEntity().getName(), entityId);
-					fullKeyMap.put(catEntity.getParentCategoryEntity().getName(), entityId);
+					String parentCategoryEntName = DynamicExtensionsUtility
+							.getCategoryEntityName(catEntity.getParentCategoryEntity().getName());
+					keyMap.put(parentCategoryEntName, entityId);
+					fullKeyMap.put(parentCategoryEntName, entityId);
 
-					List<Long> recIds = records.get(catEntity.getParentCategoryEntity().getName());
+					List<Long> recIds = records.get(parentCategoryEntName);
 					if (recIds == null)
 					{
 						recIds = new ArrayList<Long>();
 					}
 					recIds.add(entityId);
-					records.put(catEntity.getParentCategoryEntity().getName(), recIds);
+					records.put(parentCategoryEntName, recIds);
 
 					catEntity = catEntity.getParentCategoryEntity();
 				}
@@ -1289,8 +1300,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				Collection<PathAssociationRelationInterface> pathAssoRel = path
 						.getSortedPathAssociationRelationCollection();
 
-				Long sourceEntityId = (Long) fullKeyMap.get(catAssociation.getCategoryEntity()
-						.getName());
+				Long sourceEntityId = (Long) fullKeyMap.get(DynamicExtensionsUtility
+						.getCategoryEntityName(catAssociation.getCategoryEntity().getName()));
 
 				// Foreign key column name.
 				String fKeyColName = new String();
@@ -1433,7 +1444,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					catAssociations.clear();
 
 					fullKeyMap.putAll(keyMap);
-					keyMap.remove(catAssociation.getTargetCategoryEntity().getName());
+					keyMap.remove(DynamicExtensionsUtility.getCategoryEntityName(catAssociation
+							.getTargetCategoryEntity().getName()));
 				}
 			}
 		}

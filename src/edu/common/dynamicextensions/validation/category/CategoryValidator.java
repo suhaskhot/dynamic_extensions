@@ -341,7 +341,8 @@ public class CategoryValidator
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public void isRootEntityUsedTwice(String entityName, List<String> mainForms,
-			Collection<String> catEntNames) throws DynamicExtensionsSystemException
+			Map<String, String> categoryEntityNameInstanceMap)
+			throws DynamicExtensionsSystemException
 	{
 		if (!mainForms.contains(entityName))
 		{
@@ -349,9 +350,13 @@ public class CategoryValidator
 		}
 
 		String entName = null;
-		for (String categoryEntityName : catEntNames)
+		String[] categoryEntitiesInPath = null;
+		for (String categoryEntityName : categoryEntityNameInstanceMap.keySet())
 		{
-			entName = CategoryGenerationUtil.getEntityName(categoryEntityName);
+			categoryEntitiesInPath = categoryEntityNameInstanceMap.get(categoryEntityName).split(
+					"->");
+			String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
+			entName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
 			if (entName.equals(entityName))
 			{
 				String errorMessage = getErrorMessageStart()

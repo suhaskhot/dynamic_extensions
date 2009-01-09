@@ -3493,4 +3493,27 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return entityMapCondition;
 	}
+
+	/**
+	 * @param entityName to get entityGroup
+	 * @return entityGroupName of a particular entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getEntityGroupNameByEntityName(String entityName)
+			throws DynamicExtensionsSystemException
+	{
+		String entityGroupName=null;
+		// Create a map of substitution parameters.
+		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
+		substParams.put("0", new HQLPlaceHolderObject("string", entityName));
+
+		// The following method takes the name of the query and
+		// the actual values for the place holders as the parameters.
+		Collection groupName = executeHQL("getEntityGroupNameByEntityName", substParams);
+		if(groupName!=null && groupName.size()>0)
+		{
+			entityGroupName= groupName.iterator().next().toString();
+		}
+		return entityGroupName;
+	}
 }

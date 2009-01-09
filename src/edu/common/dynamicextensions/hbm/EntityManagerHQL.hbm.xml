@@ -263,7 +263,7 @@
 		where category.rootCategoryElement.id =?
 	</query>
 	<query name="getEntityIdByCategoryEntityId">
-		select entity.id
+		select categoryEntity.entity.id
 		from edu.common.dynamicextensions.domain.CategoryEntity categoryEntity
 		where categoryEntity.id=?
 	</query>
@@ -302,4 +302,8 @@
 	   from EntityMapCondition entityMapCond
 	      where entityMapCond.staticRecordId = ?
 	</query>
+	<query name="getEntityGroupNameByEntityName">
+   		select entity.entityGroup.name 
+   			   from Entity entity where entity.name = ?
+   </query>
 </hibernate-mapping>

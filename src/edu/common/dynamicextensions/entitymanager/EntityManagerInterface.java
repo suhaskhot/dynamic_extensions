@@ -741,4 +741,11 @@ public interface EntityManagerInterface
 	 */
 	public Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId)
 			throws DynamicExtensionsSystemException;
+	/**
+	 * @param entityName to get entityGroup
+	 * @return entityGroupName of a particular entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getEntityGroupNameByEntityName(String entityName)
+			throws DynamicExtensionsSystemException;
 }

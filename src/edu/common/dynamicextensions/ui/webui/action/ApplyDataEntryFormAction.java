@@ -168,20 +168,26 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
-			String recordIdentifier, String webUIManagerConstant, String containerId)
-			throws IOException
+	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response, String recordIdentifier,
+			String webUIManagerConstant, String containerId) throws IOException
 	{
 		boolean isCallbackURL = false;
-		String callbackURL = (String) CacheManager.getObjectFromCache(request,
-				Constants.CALLBACK_URL);
-		if (callbackURL != null && !callbackURL.equals(""))
+		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			callbackURL = callbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
-					+ "=" + recordIdentifier + "&" + WebUIManager.getOperationStatusParameterName()
-					+ "=" + webUIManagerConstant + "&containerId=" + containerId;
+			if(calllbackURL.contains("?"))
+			{
+				calllbackURL = calllbackURL + "&" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier + "&"
+				+ WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant + "&containerId=" + containerId;
+			}
+			else
+			{
+				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier + "&"
+				+ WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant + "&containerId=" + containerId;
+			}
+			
 			CacheManager.clearCache(request);
-			response.sendRedirect(callbackURL);
+			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;
 		}
 		return isCallbackURL;

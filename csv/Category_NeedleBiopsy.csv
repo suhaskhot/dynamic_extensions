@@ -23,7 +23,7 @@ Invasion:lymphaticInvasion,listBox,Lymphatic (Small Vessel) Invasion
 
 Display_Label:Finding,show=false
 instance:NeedleBiopsyProstatePathologyAnnotation[1]->AdditionalFinding[1]
-AdditionalFinding:pathologicFinding,listBox,Additional Pathologic Findings (select all that apply),options~NoOfRows=5
+AdditionalFinding:pathologicFinding,listBox,Additional Pathologic Findings (select all that apply)
 
 Display_Label:detail,show=false
 instance:NeedleBiopsyProstatePathologyAnnotation[1]->AdditionalFinding[1]->Details[1]

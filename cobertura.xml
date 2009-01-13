@@ -36,6 +36,7 @@
         	<include name="**/entitymanager/*.class"/>
       		<exclude name="**/entitymanager/*Test.class"/>
       		<exclude name="**/entitymanager/DynamicExtensionDb2QueryBuilder.class"/>
+      		<exclude name="**/entitymanager/DynamicExtensionMsSQLServerQueryBuilder.class"/>
       		<exclude name="**/entitymanager/ContainerInformationObject.class"/>
       		<exclude name="**/entitymanager/DynamicExtensionMySQLQueryBuilder.class"/>
       		<exclude name="**/entitymanager/DynamicExtensionPostGreSQLQueryBuilder.class"/>

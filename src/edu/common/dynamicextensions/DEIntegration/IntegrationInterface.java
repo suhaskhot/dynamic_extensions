@@ -30,7 +30,7 @@ public interface IntegrationInterface
 	 * @param hookEntityId
 	 * @return the container Id of the DE entities that are associated with given static hook entity
 	 */
-	public Collection getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId)
+	Collection getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -39,7 +39,7 @@ public interface IntegrationInterface
 	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection getCategoriesContainerIdFromHookEntity(Long hookEntityId)
+	Collection getCategoriesContainerIdFromHookEntity(Long hookEntityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -49,7 +49,7 @@ public interface IntegrationInterface
 	 * @param hookEntityId
 	 * @return the category or form record id based on the containerId and hookentityRecId  
 	 */
-	public Collection getDynamicEntityRecordIdFromHookEntityRecordId(String hookEntityRecId,
+	Collection getDynamicEntityRecordIdFromHookEntityRecordId(String hookEntityRecId,
 			Long containerId, Long hookEntityId) throws DynamicExtensionsSystemException,
 			SQLException;
 
@@ -60,7 +60,7 @@ public interface IntegrationInterface
 	 * @param hookEntityId
 	 * @return the record id of the category depending on hook entity record id. 
 	 */
-	public Collection getCategoryRecIdBasedOnHookEntityRecId(Long categoryContainerId,
+	Collection getCategoryRecIdBasedOnHookEntityRecId(Long categoryContainerId,
 			Long staticRecId, Long hookEntityId) throws DynamicExtensionsSystemException,
 			SQLException;
 
@@ -71,7 +71,7 @@ public interface IntegrationInterface
 	 * @param dynamicEntityRecordId
 	 * @param hookEntityId
 	 */
-	public void associateRecords(Long containerId, Long staticEntityRecordId,
+	void associateRecords(Long containerId, Long staticEntityRecordId,
 			Long dynamicEntityRecordId, Long hookEntityId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
 			BizLogicException, DAOException;
@@ -84,7 +84,7 @@ public interface IntegrationInterface
 	 * @param isCategory
 	 * @return
 	 */
-	public Long addAssociation(Long hookEntityId, Long dynamicEntityId, boolean isEntityFromXmi,
+	Long addAssociation(Long hookEntityId, Long dynamicEntityId, boolean isEntityFromXmi,
 			boolean isCategory) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException, BizLogicException;
 
@@ -93,6 +93,6 @@ public interface IntegrationInterface
 	 * @param containerId
 	 * @return whether this entity is simple DE form /category. 
 	 */
-	public boolean isCategory(Long containerId) throws DynamicExtensionsSystemException;
+	boolean isCategory(Long containerId) throws DynamicExtensionsSystemException;
 
 }

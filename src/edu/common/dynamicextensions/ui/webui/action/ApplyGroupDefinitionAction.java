@@ -142,20 +142,8 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
-					WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
-			String associationIds = "";
-			if (deletedIdList != null)
-			{
-				for (int i = 0; i < deletedIdList.size(); i++)
-				{
-					associationIds += deletedIdList.get(i);
-					if (i < deletedIdList.size() - 1)
-					{
-						associationIds += "_";
-					}
-				}
-			}
+			String associationIds = CacheManager.getAssociationIds(request);
+
 			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
 					+ "=" + webUIManagerConstant + "&"
 					+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;

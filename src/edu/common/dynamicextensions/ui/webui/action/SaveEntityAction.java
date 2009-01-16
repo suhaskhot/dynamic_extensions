@@ -76,20 +76,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 					Constants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
-				List<Long> deletedIdList = (List<Long>) CacheManager.getObjectFromCache(request,
-						WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
-				String associationIds = "";
-				if (deletedIdList != null)
-				{
-					for (int i = 0; i < deletedIdList.size(); i++)
-					{
-						associationIds += deletedIdList.get(i);
-						if (i < deletedIdList.size() - 1)
-						{
-							associationIds += "_";
-						}
-					}
-				}
+				String associationIds = CacheManager.getAssociationIds(request);
 				callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName()
 						+ "=" + WebUIManagerConstants.SUCCESS + "&"
 						+ WebUIManager.getContainerIdentifierParameterName() + "="

@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.ui.webui.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -95,5 +96,29 @@ public class CacheManager
 			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
 			cacheMap.clear();
 		}
+	}
+
+	/**
+	 * @param request
+	 * @return
+	 */
+	public static String getAssociationIds(HttpServletRequest request)
+	{
+		List<Long> deletedIdList = (List<Long>) getObjectFromCache(request,
+				WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
+		String associationIds = "";
+		if (deletedIdList != null)
+		{
+			for (int i = 0; i < deletedIdList.size(); i++)
+			{
+				associationIds += deletedIdList.get(i);
+				if (i < deletedIdList.size() - 1)
+				{
+					associationIds += "_";
+				}
+			}
+		}
+
+		return associationIds;
 	}
 }

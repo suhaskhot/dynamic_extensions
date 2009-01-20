@@ -371,7 +371,7 @@ public class XMIImportProcessor
 			}
 			if (token.trim().equalsIgnoreCase(XMIConstants.DEFAULT_PACKAGE))
 			{
-				processPackageForModel(model, umlClassColl, umlAssociationColl,
+				processPackage(model, umlClassColl, umlAssociationColl,
 						umlGeneralisationColl);
 			}
 			else
@@ -438,53 +438,6 @@ public class XMIImportProcessor
 			if (temp == 0)
 			{//if package name is present, import only that package.
 				processPackage(parentPkg, umlClassColl, umlAssociationColl, umlGeneralisationColl);
-			}
-		}
-	}
-
-	/**
-	 * @param parentPkg
-	 * @param umlClasses
-	 * @param associations
-	 * @param generalizations
-	 */
-	private void processPackageForModel(Model parentPkg, List<UmlClass> umlClasses,
-			List<UmlAssociation> associations, List<Generalization> generalizations)
-	{
-		isPackagePresent = true;
-		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
-		{
-			Object o = i.next();
-			/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
-			 {
-			 org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
-			 processPackage(subPkg, umlClasses, associations, generalizations,packageName);
-			 }
-			 else*/
-
-			if (o instanceof UmlAssociation)
-			{
-				associations.add((UmlAssociation) o);
-			}
-			else if (o instanceof Generalization)
-			{
-				generalizations.add((Generalization) o);
-			}
-			else if (o instanceof UmlClass)
-			{
-				UmlClass umlClass = (UmlClass) o;
-				boolean isEntityADatatype = checkEntityWithDataTypeEntities(umlClass.getName());
-				if (isEntityADatatype)
-				{//Skipping classes having datatype names eg Integer,String etc.
-					continue;
-				}
-
-				Collection<Generalization> generalizationColl = umlClass.getGeneralization();
-				if (generalizationColl != null && generalizationColl.size() > 0)
-				{
-					generalizations.addAll(generalizationColl);
-				}
-				umlClasses.add(umlClass);
 			}
 		}
 	}

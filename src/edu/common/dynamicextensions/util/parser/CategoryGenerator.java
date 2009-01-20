@@ -263,11 +263,11 @@ public class CategoryGenerator
 									.getAbstractEntity()).getName();
 						}
 						if ((previousEntityName != null
-								&& !previousEntityName.equals(container
-										.getAbstractEntity().getName()) && !firstTimeinDisplayLabel))
+								&& !previousEntityName.equals(container.getAbstractEntity()
+										.getName()) && !firstTimeinDisplayLabel))
 						{
-							List listofEntities = sequenceMap.get(container
-									.getAbstractEntity().getName());
+							List listofEntities = sequenceMap.get(container.getAbstractEntity()
+									.getName());
 							if (listofEntities == null)
 							{
 								listofEntities = new ArrayList<String>();
@@ -304,8 +304,8 @@ public class CategoryGenerator
 								+ entityInterface.getName());
 
 						if (previousEntityName != null
-								&& !previousEntityName.equals(container
-										.getAbstractEntity().getName()))
+								&& !previousEntityName.equals(container.getAbstractEntity()
+										.getName()))
 						{
 							previousEntityName = container.getAbstractEntity().getName();
 						}
@@ -320,49 +320,8 @@ public class CategoryGenerator
 							CategoryEntityInterface parentCategoryEntity = childCategoryEntity
 									.getParentCategoryEntity();
 
-							while (childEntity.getParentEntity() != null)
-							{
-								parentEntity = childEntity.getParentEntity();
-
-								// Check whether the given category entity's parent category entity is created,
-								// if not created, create it.
-								if (parentCategoryEntity == null)
-								{
-									ContainerInterface parentContainer = createParentCategoryEntity(
-											childCategoryEntity, parentEntity, entityGroup,
-											containerCollection);
-									parentCategoryEntity = (CategoryEntityInterface) parentContainer
-											.getAbstractEntity();
-									ContainerInterface childcontainerInterface = CategoryGenerationUtil
-											.getContainerWithCategoryEntityName(
-													containerCollection, childCategoryEntity
-															.getName());
-									childcontainerInterface.setBaseContainer(parentContainer);
-								}
-
-								// Iterate over parent entity's attribute, check whether it is present in parent entity.
-								Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity
-										.getAbstractAttributeCollection().iterator();
-								while (parentattrIterator.hasNext())
-								{
-									AbstractAttributeInterface objParentAttribute = parentattrIterator
-											.next();
-									if (attributeName.equals(objParentAttribute.getName()))
-									{
-										isAttributeCategoryMatched = true;
-										break;
-									}
-								}
-
-								childEntity = childEntity.getParentEntity();
-								childCategoryEntity = parentCategoryEntity;
-								parentCategoryEntity = parentCategoryEntity
-										.getParentCategoryEntity();
-
-								// If attribute is found in parent category entity, break out of loop.
-								if (isAttributeCategoryMatched)
-									break;
-							}
+							processInheritance(parentEntity, childEntity, parentCategoryEntity,
+									childCategoryEntity, attributeName, containerCollection);
 
 							entityInterface = childEntity;
 							//containerInterface = (ContainerInterface) (childCategoryEntity.getContainerCollection()).iterator().next();
@@ -432,9 +391,8 @@ public class CategoryGenerator
 					lastControl.setSequenceNumber(sequenceNumber++);
 				}
 
-				CategoryGenerationUtil.setRootContainer(category, container,
-						containerCollection, entityNameAssociationMap, paths,
-						categoryEntityNameInstanceMap);
+				CategoryGenerationUtil.setRootContainer(category, container, containerCollection,
+						entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
 
 				if (hasRelatedAttributes)
 				{
@@ -755,7 +713,6 @@ public class CategoryGenerator
 
 			// Added for category inheritance.
 			boolean isAttributePresent = entity.isAttributePresent(attributeName);
-			boolean isAttributeCategoryMatched = false;
 
 			// If this is the parent attribute and currently the parent category entity is not created
 			// for given category entity, create parent category hierarchy up to where attribute is found.
@@ -767,48 +724,8 @@ public class CategoryGenerator
 				CategoryEntityInterface parentCategoryEntity = childCategoryEntity
 						.getParentCategoryEntity();
 
-				while (childEntity.getParentEntity() != null)
-				{
-					parentEntity = childEntity.getParentEntity();
-
-					// Check whether the given cat.entity's parent category entity is created.
-					// If not created, then create it.
-					if (parentCategoryEntity == null)
-					{
-						ContainerInterface parentContainer = createParentCategoryEntity(
-								childCategoryEntity, parentEntity, entityGroup, containerCollection);
-						parentCategoryEntity = (CategoryEntityInterface) parentContainer
-								.getAbstractEntity();
-
-						ContainerInterface childcontainerInterface = CategoryGenerationUtil
-								.getContainerWithCategoryEntityName(containerCollection,
-										childCategoryEntity.getName());
-						childcontainerInterface.setBaseContainer(parentContainer);
-					}
-
-					// Iterate over parent entity's attribute, check whether its present in parent entity.
-					Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity
-							.getAbstractAttributeCollection().iterator();
-
-					while (parentattrIterator.hasNext())
-					{
-						AbstractAttributeInterface objParentAttribute = parentattrIterator.next();
-						if (attributeName.equals(objParentAttribute.getName()))
-						{
-							isAttributeCategoryMatched = true;
-							break;
-						}
-					}
-
-					childEntity = childEntity.getParentEntity();
-					childCategoryEntity = parentCategoryEntity;
-					parentCategoryEntity = parentCategoryEntity.getParentCategoryEntity();
-
-					// If attribute found in parent category entity, break out of loop.
-					if (isAttributeCategoryMatched)
-						break;
-				}
-
+				processInheritance(parentEntity, childEntity, parentCategoryEntity,
+						childCategoryEntity, attributeName, containerCollection);
 				entity = childEntity;
 				categoryEntity = childCategoryEntity;
 			}
@@ -833,6 +750,66 @@ public class CategoryGenerator
 								.get(entityNameForEntityAssociationMap), categoryPaths[0]);
 			}
 		}
+	}
+
+	/**
+	 * @param parentEntity
+	 * @param childEntity
+	 * @param parentCategoryEntity
+	 * @param childCategoryEntity
+	 * @param attributeName
+	 * @param containerCollection
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void processInheritance(EntityInterface parentEntity, EntityInterface childEntity,
+			CategoryEntityInterface parentCategoryEntity,
+			CategoryEntityInterface childCategoryEntity, String attributeName,
+			List<ContainerInterface> containerCollection) throws DynamicExtensionsSystemException
+	{
+		boolean isAttributeCategoryMatched = false;
+		while (childEntity.getParentEntity() != null)
+		{
+			parentEntity = childEntity.getParentEntity();
+
+			// Check whether the given cat.entity's parent category entity is created.
+			// If not created, then create it.
+			if (parentCategoryEntity == null)
+			{
+				ContainerInterface parentContainer = createParentCategoryEntity(
+						childCategoryEntity, parentEntity, childEntity.getEntityGroup(),
+						containerCollection);
+				parentCategoryEntity = (CategoryEntityInterface) parentContainer
+						.getAbstractEntity();
+
+				ContainerInterface childcontainerInterface = CategoryGenerationUtil
+						.getContainerWithCategoryEntityName(containerCollection,
+								childCategoryEntity.getName());
+				childcontainerInterface.setBaseContainer(parentContainer);
+			}
+
+			// Iterate over parent entity's attribute, check whether its present in parent entity.
+			Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity
+					.getAbstractAttributeCollection().iterator();
+
+			while (parentattrIterator.hasNext())
+			{
+				AbstractAttributeInterface objParentAttribute = parentattrIterator.next();
+				if (attributeName.equals(objParentAttribute.getName()))
+				{
+					isAttributeCategoryMatched = true;
+					break;
+				}
+			}
+
+			childEntity = childEntity.getParentEntity();
+			childCategoryEntity = parentCategoryEntity;
+			parentCategoryEntity = parentCategoryEntity.getParentCategoryEntity();
+
+			// If attribute found in parent category entity, break out of loop.
+			if (isAttributeCategoryMatched)
+				break;
+		}
+
 	}
 
 	/**
@@ -1037,5 +1014,6 @@ public class CategoryGenerator
 			mainFormList.add(containerInterface.getAbstractEntity().getName());
 		}
 	}
+	
 
 }

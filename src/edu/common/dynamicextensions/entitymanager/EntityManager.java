@@ -67,7 +67,6 @@ import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.dao.AbstractDAO;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
@@ -303,60 +302,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			DynamicExtensionsApplicationException
 	{
 		return getDynamicQueryList(entity.getEntityGroup(), revQueries, queries);
-	}
-
-	/**
-	 * This method is called when any exception occurs while generating the data table queries
-	 * for the entity. Valid scenario is that if we need to fire Q1 Q2 and Q3 in order to create the
-	 * data tables and Q1 Q2 get fired successfully and exception occurs while executing query Q3 then
-	 * this method receives the query list which holds the set of queries which negate the effect of the
-	 * queries which were generated successfully so that the meta data information and database are in
-	 * synchronization.
-	 * @param revQryStack
-	 * @param entity
-	 * @param exception
-	 * @param dao
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private void rollbackQueries(Stack<String> revQryStack, EntityInterface entity,
-			Exception exception, AbstractDAO dao) throws DynamicExtensionsSystemException
-	{
-		String message = "";
-
-		dao.rollback();
-
-		if (revQryStack != null && !revQryStack.isEmpty())
-		{
-			Connection conn;
-			try
-			{
-				conn = DBUtil.getConnection();
-				while (!revQryStack.empty())
-				{
-					String query = (String) revQryStack.pop();
-					PreparedStatement statement = null;
-					statement = conn.prepareStatement(query);
-					statement.executeUpdate();
-				}
-			}
-			catch (HibernateException hibException)
-			{
-				message = hibException.getMessage();
-			}
-			catch (SQLException sqlException)
-			{
-				message = sqlException.getMessage();
-				logFatalError(sqlException, entity);
-			}
-			finally
-			{
-				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(exception));
-				DynamicExtensionsSystemException dynExtSysEx = new DynamicExtensionsSystemException(
-						message, exception);
-				dynExtSysEx.setErrorCode(DYEXTN_S_000);
-				throw dynExtSysEx;
-			}
-		}
 	}
 
 	/* (non-Javadoc)
@@ -3483,13 +3428,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return entityMapCondition for the given staticRecordId
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId) throws DynamicExtensionsSystemException
+	public Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId)
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
 		substParams.put("0", new HQLPlaceHolderObject("long", staticRecordId));
 
-		Collection<EntityMapCondition> entityMapCondition = executeHQL("getAllEntityMapConditionByStaticRecordId", substParams);
+		Collection<EntityMapCondition> entityMapCondition = executeHQL(
+				"getAllEntityMapConditionByStaticRecordId", substParams);
 
 		return entityMapCondition;
 	}
@@ -3502,7 +3449,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	public String getEntityGroupNameByEntityName(String entityName)
 			throws DynamicExtensionsSystemException
 	{
-		String entityGroupName=null;
+		String entityGroupName = null;
 		// Create a map of substitution parameters.
 		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
 		substParams.put("0", new HQLPlaceHolderObject("string", entityName));
@@ -3510,9 +3457,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		// The following method takes the name of the query and
 		// the actual values for the place holders as the parameters.
 		Collection groupName = executeHQL("getEntityGroupNameByEntityName", substParams);
-		if(groupName!=null && groupName.size()>0)
+		if (groupName != null && groupName.size() > 0)
 		{
-			entityGroupName= groupName.iterator().next().toString();
+			entityGroupName = groupName.iterator().next().toString();
 		}
 		return entityGroupName;
 	}

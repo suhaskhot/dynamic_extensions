@@ -60,4 +60,20 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 		shortValueInterface.setValue(this.value);
 		return shortValueInterface;
 	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof ShortValue)
+		{
+			if (value.equals(((ShortValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

@@ -61,4 +61,20 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
 		booleanValueInterface.setValue(this.value);
 		return booleanValueInterface;
 	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof BooleanValue)
+		{
+			if (value.equals(((BooleanValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

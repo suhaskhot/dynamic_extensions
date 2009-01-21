@@ -60,4 +60,20 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 		integerValueInterface.setValue(this.value);
 		return integerValueInterface;
 	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof IntegerValue)
+		{
+			if (value.equals(((IntegerValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

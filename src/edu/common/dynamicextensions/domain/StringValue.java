@@ -60,4 +60,19 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 		return stringValue;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof StringValue)
+		{
+			if (value.equals(((StringValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

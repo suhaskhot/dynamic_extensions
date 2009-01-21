@@ -59,4 +59,17 @@ public class LongValue extends PermissibleValue implements LongValueInterface
 		longValueInterface.setValue(this.value);
 		return longValueInterface;
 	}
+
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof LongValue)
+		{
+			if (value.equals(((LongValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

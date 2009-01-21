@@ -61,4 +61,20 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 		floatValueInterface.setValue(this.value);
 		return floatValueInterface;
 	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof FloatValue)
+		{
+			if (value.equals(((FloatValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

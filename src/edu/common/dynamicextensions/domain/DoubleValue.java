@@ -53,11 +53,30 @@ public class DoubleValue extends PermissibleValue implements DoubleValueInterfac
 	/**
 	 * 
 	 */
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#clone()
+	 */
 	public PermissibleValueInterface clone()
 	{
 		DoubleValueInterface doubleValueInterface = DomainObjectFactory.getInstance()
 				.createDoubleValue();
 		doubleValueInterface.setValue(this.value);
 		return doubleValueInterface;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof DoubleValue)
+		{
+			if (value.equals(((DoubleValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
 	}
 }

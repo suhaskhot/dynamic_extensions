@@ -62,4 +62,20 @@ public class DateValue extends PermissibleValue implements DateValueInterface
 		dateValueInterface.setValue(this.value);
 		return dateValueInterface;
 	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean isEqual = false;
+		if (obj instanceof DateValue)
+		{
+			if (value.equals(((DateValue) obj).getValue()))
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
 }

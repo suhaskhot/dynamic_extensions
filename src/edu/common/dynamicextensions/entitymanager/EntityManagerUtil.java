@@ -480,4 +480,10 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		return role;
 	}
 
+	public static int getNoOfRecordInTable(String tableName)
+			throws DynamicExtensionsSystemException
+	{
+		String query = "select count(*) from " + tableName;
+		return getNoOfRecord(query);
+	}
 }

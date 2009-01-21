@@ -521,16 +521,6 @@ public interface EntityManagerInterface
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
-	 * This method returns the EntityGroupInterface given the short name for the
-	 * entity.
-	 * @param entityGroupShortName short name for entity group
-	 * @return entityGroupInterface entity group interface
-	 * @throws DynamicExtensionsSystemException
-	 */
-	EntityGroupInterface getEntityGroupByShortName(String entityGroupShortName)
-			throws DynamicExtensionsSystemException;
-
-	/**
 	 * Returns all entityGroups in the system.
 	 * @return
 	 * @throws DynamicExtensionsSystemException

@@ -31,7 +31,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -66,7 +65,6 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
-import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.dao.DAOFactory;
 import edu.wustl.common.dao.HibernateDAO;
 import edu.wustl.common.dao.JDBCDAO;
@@ -3124,43 +3122,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		EntityGroupInterface entityGroup = (EntityGroupInterface) getObjectByName(EntityGroup.class
 				.getName(), entGroupName);
-
-		return entityGroup;
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByShortName(java.lang.String)
-	 */
-	public EntityGroupInterface getEntityGroupByShortName(String shortName)
-			throws DynamicExtensionsSystemException
-	{
-		EntityGroupInterface entityGroup = null;
-
-		Collection entityGroups = new HashSet();
-		if (shortName == null || shortName.equals(""))
-		{
-			return entityGroup;
-		}
-
-		// Getting the instance of the default biz logic class which has the method 
-		// that returns the particular object depending on the value of a particular 
-		// column of the associated table.
-		DefaultBizLogic defBizLogic = BizLogicFactory.getDefaultBizLogic();
-		try
-		{
-			// Calling retrieve method to  get the entity group object based on the 
-			// given value of short name.
-			entityGroups = defBizLogic
-					.retrieve(EntityGroup.class.getName(), "shortName", shortName);
-			if (entityGroups != null && entityGroups.size() > 0)
-			{
-				entityGroup = (EntityGroupInterface) entityGroups.iterator().next();
-			}
-		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
 
 		return entityGroup;
 	}

@@ -56,6 +56,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleParamete
 import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -834,10 +835,18 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				selectControl = DomainObjectFactory.getInstance().createComboBox();
 			}
-			
+
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
-		
+
+		if (isDataEntered(categoryAttribute.getCategoryEntity())
+				&& isPermissibleValueRemoved(categoryAttribute, permissibleValues))
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.PV_EDIT));
+		}
+
 		//clear old permissible values
 		categoryAttribute.clearDataElementCollection();
 
@@ -863,6 +872,54 @@ public class CategoryHelper implements CategoryHelperInterface
 			categoryAttribute.setDefaultValue(attributeTypeInformation.getDefaultValue());
 		}
 		return selectControl;
+	}
+
+	/**
+	 * @param categoryEntity
+	 * @return true if the data is entered for the category
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private boolean isDataEntered(CategoryEntityInterface categoryEntity)
+			throws DynamicExtensionsSystemException
+	{
+
+		boolean isDataEntered = false;
+		String rootTableName = categoryEntity.getTableProperties().getName();
+		if (EntityManagerUtil.getNoOfRecordInTable(rootTableName) > 0)
+		{
+			isDataEntered = true;
+		}
+
+		return isDataEntered;
+	}
+
+	/**
+	 * This method returns true if the existing permissible value is not present 
+	 * in the incoming permissible value set 
+	 * @param categoryAttribute
+	 * @param permissibleValues
+	 * @return
+	 */
+	private boolean isPermissibleValueRemoved(CategoryAttribute categoryAttribute,
+			List<PermissibleValueInterface> permissibleValues)
+	{
+		boolean isPermissibleValueRemoved = false;
+	
+		if (categoryAttribute.getDataElement() != null)
+		{
+			Collection<PermissibleValueInterface> existingPv = ((UserDefinedDEInterface) categoryAttribute
+					.getDataElement()).getPermissibleValueCollection();
+			for (PermissibleValueInterface pv : existingPv)
+			{
+				if (!permissibleValues.contains(pv))
+				{
+					isPermissibleValueRemoved = true;
+					break;
+				}
+
+			}
+		}
+		return isPermissibleValueRemoved;
 	}
 
 	/**
@@ -1145,6 +1202,15 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			radioButton = DomainObjectFactory.getInstance().createRadioButton();
 			updateContainerAndControl(container, radioButton, baseAbstractAttribute);
+		}
+
+		if (isDataEntered(((CategoryAttribute) baseAbstractAttribute).getCategoryEntity())
+				&& isPermissibleValueRemoved(((CategoryAttribute) baseAbstractAttribute),
+						permissibleValues))
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.PV_EDIT));
 		}
 
 		UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance()

@@ -403,33 +403,6 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	}
 
 	/**
-	 * This method generate the alter table query to drop columns
-	 * @param tableName
-	 * @param columnName
-	 * @return alter query
-	 */
-	protected String getDropColumnQuery(String tableName, List<String> columnName)
-	{
-		StringBuffer alterTableQuery = new StringBuffer();
-
-		alterTableQuery.append(ALTER_TABLE);
-		alterTableQuery.append(tableName);
-		alterTableQuery.append(WHITESPACE);
-
-		for (int i = 0; i < columnName.size(); i++)
-		{
-			alterTableQuery.append(DROP_KEYWORD);
-			alterTableQuery.append(COLUMN_KEYWORD);
-			alterTableQuery.append(columnName.get(i));
-			if (i != columnName.size() - 1)
-			{
-				alterTableQuery.append(COMMA);
-			}
-		}
-
-		return alterTableQuery.toString();
-	}
-	/**
 	 * Converts Blob data type to Object data type for db2 database 
 	 * @param valueObj
 	 * @return

@@ -3273,33 +3273,31 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * This method generates the alter table query to drop columns.
+	 * This method generate the alter table query to drop columns
 	 * @param tableName
-	 * @param columnNames
-	 * @return String altered query
+	 * @param columnName
+	 * @return alter query
 	 */
-	protected String getDropColumnQuery(String tableName, List<String> columnNames)
+	protected String getDropColumnQuery(String tableName, List<String> columnName)
 	{
-		StringBuffer alterQuery = new StringBuffer();
+		StringBuffer alterTableQuery = new StringBuffer();
 
-		alterQuery.append(ALTER_TABLE);
-		alterQuery.append(tableName);
-		alterQuery.append(WHITESPACE);
-		alterQuery.append(DROP_KEYWORD);
-		alterQuery.append(OPENING_BRACKET);
+		alterTableQuery.append(ALTER_TABLE);
+		alterTableQuery.append(tableName);
+		alterTableQuery.append(WHITESPACE);
 
-		for (int i = 0; i < columnNames.size(); i++)
+		for (int i = 0; i < columnName.size(); i++)
 		{
-			alterQuery.append(columnNames.get(i));
-			if (i != columnNames.size() - 1)
+			alterTableQuery.append(DROP_KEYWORD);
+			alterTableQuery.append(COLUMN_KEYWORD);
+			alterTableQuery.append(columnName.get(i));
+			if (i != columnName.size() - 1)
 			{
-				alterQuery.append(COMMA);
+				alterTableQuery.append(COMMA);
 			}
 		}
 
-		alterQuery.append(CLOSING_BRACKET);
-
-		return alterQuery.toString();
+		return alterTableQuery.toString();
 	}
 	/**
 	 * @param valueObj

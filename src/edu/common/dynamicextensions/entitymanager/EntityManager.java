@@ -2729,47 +2729,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return objects;
 	}
-
-	/**
-	 * This method substitutes the parameters from substitution parameters map 
-	 * into the input query.
-	 * @param session
-	 * @param queryName
-	 * @param substParams
-	 * @return
-	 * @throws HibernateException
-	 */
-	private Query substitutionParameterForQuery(Session session, String queryName,
-			Map<String, HQLPlaceHolderObject> substParams) throws HibernateException
-	{
-		Query query = session.getNamedQuery(queryName);
-
-		for (int counter = 0; counter < substParams.size(); counter++)
-		{
-			HQLPlaceHolderObject plcHolderObj = (HQLPlaceHolderObject) substParams
-					.get(counter + "");
-
-			String objectType = plcHolderObj.getType();
-			if (objectType.equals("string"))
-			{
-				query.setString(counter, plcHolderObj.getValue() + "");
-			}
-			else if (objectType.equals("integer"))
-			{
-				query.setInteger(counter, Integer.parseInt(plcHolderObj.getValue() + ""));
-			}
-			else if (objectType.equals("long"))
-			{
-				query.setLong(counter, Long.parseLong(plcHolderObj.getValue() + ""));
-			}
-			else if (objectType.equals("boolean"))
-			{
-				query.setBoolean(counter, Boolean.parseBoolean(plcHolderObj.getValue() + ""));
-			}
-		}
-
-		return query;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getContainerByEntityIdentifier(java.lang.Long)

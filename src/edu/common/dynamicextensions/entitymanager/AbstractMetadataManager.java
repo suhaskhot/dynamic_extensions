@@ -339,7 +339,7 @@ public abstract class AbstractMetadataManager
 	 * @return
 	 * @throws HibernateException
 	 */
-	private Query substitutionParameterForQuery(Session session, String queryName,
+	protected Query substitutionParameterForQuery(Session session, String queryName,
 			Map<String, HQLPlaceHolderObject> substParams) throws HibernateException
 	{
 		Query query = session.getNamedQuery(queryName);

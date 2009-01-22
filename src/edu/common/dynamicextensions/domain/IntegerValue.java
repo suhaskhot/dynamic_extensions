@@ -67,7 +67,7 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	public boolean equals(Object obj)
 	{
 		boolean isEqual = false;
-		if (obj instanceof IntegerValue)
+		if (obj != null && obj instanceof IntegerValue)
 		{
 			if (value.equals(((IntegerValue) obj).getValue()))
 			{

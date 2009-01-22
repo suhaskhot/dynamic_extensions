@@ -68,7 +68,7 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 	public boolean equals(Object obj)
 	{
 		boolean isEqual = false;
-		if (obj instanceof FloatValue)
+		if (obj != null && obj instanceof FloatValue)
 		{
 			if (value.equals(((FloatValue) obj).getValue()))
 			{

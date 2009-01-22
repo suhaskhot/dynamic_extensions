@@ -839,7 +839,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
 
-		if (isDataEntered(categoryAttribute.getCategoryEntity())
+		if (categoryAttribute.getId() != null && isDataEntered(categoryAttribute.getCategoryEntity())
 				&& isPermissibleValueRemoved(categoryAttribute, permissibleValues))
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -1204,7 +1204,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			updateContainerAndControl(container, radioButton, baseAbstractAttribute);
 		}
 
-		if (isDataEntered(((CategoryAttribute) baseAbstractAttribute).getCategoryEntity())
+		if (baseAbstractAttribute.getId() != null &&isDataEntered(((CategoryAttribute) baseAbstractAttribute).getCategoryEntity())
 				&& isPermissibleValueRemoved(((CategoryAttribute) baseAbstractAttribute),
 						permissibleValues))
 		{

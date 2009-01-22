@@ -2509,7 +2509,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @return queryString
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String extraColumnQueryStringForFileAttribute(Attribute attribute)
+	protected String extraColumnQueryStringForFileAttribute(Attribute attribute)
 			throws DynamicExtensionsSystemException
 	{
 		Attribute stringAttr = (Attribute) DomainObjectFactory.getInstance()
@@ -2530,7 +2530,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @return query string
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String dropExtraColumnQueryStringForFileAttribute(Attribute attribute)
+	protected String dropExtraColumnQueryStringForFileAttribute(Attribute attribute)
 			throws DynamicExtensionsSystemException
 	{
 		String query = attribute.getColumnProperties().getName() + UNDERSCORE + FILE_NAME + COMMA

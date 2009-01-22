@@ -340,7 +340,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * @return queryString
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String extraColumnQueryStringForFileAttribute(Attribute attribute)
+	protected String extraColumnQueryStringForFileAttribute(Attribute attribute)
 			throws DynamicExtensionsSystemException
 	{
 		Attribute stringAttribute = (Attribute) DomainObjectFactory.getInstance()
@@ -360,7 +360,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * @throws DynamicExtensionsSystemException
 	 */
 
-	private String dropExtraColumnQueryStringForFileAttribute(Attribute attribute)
+	protected String dropExtraColumnQueryStringForFileAttribute(Attribute attribute)
 			throws DynamicExtensionsSystemException
 	{
 		String queryString = DROP_KEYWORD + WHITESPACE + attribute.getName() + UNDERSCORE

@@ -60,48 +60,6 @@ public class DynamicExtensionMsSQLServerQueryBuilder extends DynamicExtensionBas
 	}
 
 	/**
-	 * This method constructs the query part for adding two extra columns when
-	 * an attribute of type file is created.
-	 * 
-	 * @param attribute
-	 *            FileAttribute
-	 * @return queryString
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private String extraColumnQueryStringForFileAttribute(Attribute attribute)
-			throws DynamicExtensionsSystemException
-	{
-		Attribute stringAttr = (Attribute) DomainObjectFactory.getInstance()
-				.createStringAttribute();
-
-		String query = attribute.getColumnProperties().getName() + UNDERSCORE + FILE_NAME
-				+ WHITESPACE + getDatabaseTypeAndSize(stringAttr) + COMMA + WHITESPACE
-				+ attribute.getColumnProperties().getName() + UNDERSCORE + CONTENT_TYPE
-				+ WHITESPACE + getDatabaseTypeAndSize(stringAttr);
-
-		return query;
-	}
-
-	/**
-	 * This method constructs the query part for dropping the extra columns
-	 * created while creating an attribute of type file.
-	 * 
-	 * @param attribute
-	 *            FileAttribute
-	 * @return query string
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private String dropExtraColumnQueryStringForFileAttribute(Attribute attribute)
-			throws DynamicExtensionsSystemException
-	{
-		String query = attribute.getColumnProperties().getName() + UNDERSCORE + FILE_NAME + COMMA
-				+ WHITESPACE + attribute.getColumnProperties().getName() + UNDERSCORE
-				+ CONTENT_TYPE;
-
-		return query;
-	}
-
-	/**
 	 * This method generates the alter table query to drop columns.
 	 * 
 	 * @param tableName

@@ -69,7 +69,7 @@ public class ShortValue extends PermissibleValue implements ShortValueInterface
 		boolean isEqual = false;
 		if (obj != null && obj instanceof ShortValue)
 		{
-			if (value.equals(((ShortValue) obj).getValue()))
+			if (value!= null && value.equals(((ShortValue) obj).getValue()))
 			{
 				isEqual = true;
 			}

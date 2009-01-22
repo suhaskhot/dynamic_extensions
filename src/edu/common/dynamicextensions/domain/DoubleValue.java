@@ -72,7 +72,7 @@ public class DoubleValue extends PermissibleValue implements DoubleValueInterfac
 		boolean isEqual = false;
 		if (obj != null && obj instanceof DoubleValue)
 		{
-			if (value.equals(((DoubleValue) obj).getValue()))
+			if (value!= null && value.equals(((DoubleValue) obj).getValue()))
 			{
 				isEqual = true;
 			}

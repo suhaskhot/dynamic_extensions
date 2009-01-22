@@ -70,7 +70,7 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 		boolean isEqual = false;
 		if (obj != null && obj instanceof FloatValue)
 		{
-			if (value.equals(((FloatValue) obj).getValue()))
+			if (value!= null && value.equals(((FloatValue) obj).getValue()))
 			{
 				isEqual = true;
 			}

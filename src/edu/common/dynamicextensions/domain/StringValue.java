@@ -68,7 +68,7 @@ public class StringValue extends PermissibleValue implements StringValueInterfac
 		boolean isEqual = false;
 		if (obj != null && obj instanceof StringValue)
 		{
-			if (value.equals(((StringValue) obj).getValue()))
+			if (value!= null && value.equals(((StringValue) obj).getValue()))
 			{
 				isEqual = true;
 			}

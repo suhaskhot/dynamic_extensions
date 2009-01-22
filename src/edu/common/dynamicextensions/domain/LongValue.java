@@ -65,7 +65,7 @@ public class LongValue extends PermissibleValue implements LongValueInterface
 		boolean isEqual = false;
 		if (obj != null && obj instanceof LongValue)
 		{
-			if (value.equals(((LongValue) obj).getValue()))
+			if (value!= null && value.equals(((LongValue) obj).getValue()))
 			{
 				isEqual = true;
 			}

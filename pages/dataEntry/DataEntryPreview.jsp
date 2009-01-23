@@ -56,16 +56,16 @@
 
 	    	<table valign="top" align='center' width='100%' height="100%" cellspacing="0" cellpadding="0" class="tbBorders1" >
  				<!-- Main Page heading -->
-				<tr>
+				<tr height='6%'>
 					<td class="formFieldNoBorders">
 						<bean:message key="app.title.MainPageTitle" />
 					</td>
 				</tr>
 		 
-				<tr valign="top">
+				<tr valign="top"  height='94%'>
 					<td>
 						<table valign="top" align='left' width='100%' height='100%' cellspacing="0" cellpadding="0" class="tbBordersAllbordersBlack" >
-							<tr valign="top">
+							<tr valign="top"  height='3%'>
 								<td height="20" class="tabMenuItem" onmouseover="changeMenuStyle(this,'tabMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'tabMenuItem'),hideCursor()" onclick="alert('This page is still under construction and will be available in the next release');">
 									<bean:message key="app.title.DefineGroupTabTitle" />
 								</td>
@@ -93,7 +93,7 @@
 								</td>
 							</tr>
 							
-							<tr>
+							<tr  height='57%'>
 								<td valign="top" colspan="7">
 									<table cellpadding="4" cellspacing="5" border="0" align='center'>
 										<tr height="5"></tr>

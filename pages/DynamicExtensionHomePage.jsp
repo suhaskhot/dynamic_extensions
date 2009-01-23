@@ -24,7 +24,7 @@
 	<body>
 		<html:form styleId='formsIndexForm' action='/ApplyFormsIndexAction'>
 		<font color="red" ><html:errors/></font>
-			<table width='100%' align='center' cellspacing="5" cellspacing="0" border='0'>
+			<table height='98%' width='100%' align='center' cellspacing="5" cellspacing="0" border='0'>
 				<!--<tr class="formMessage">
 					<td>
 						<h3>
@@ -32,14 +32,14 @@
 						</h3>
 					</td>
 				</tr>-->
-				<tr>
+				<tr height='3.80%'>
 					<td class="formMessage" align="left">
 						<bean:message key="app.formpage.heading" />
 					</td>
 				</tr>
 
 				<!-- Messages to be displayed -->
-				<tr>
+				<tr height='0.20%'>
 					<td class="formTitle" align="center">
 						<html:messages message="true" id="msg">
 							<bean:write name="msg" ignore="true"/>
@@ -48,7 +48,7 @@
 				</tr>
 
 				<!--  Build new form button -->
-				<tr align='left'>
+				<tr align='left' height='2%'>
 					<td>
 						<html:submit styleId="buildForm" property="buildForm" styleClass="buttonStyle" onclick='addFormAction()'>
 							<bean:message key="buttons.build.form" />
@@ -56,9 +56,9 @@
 					</td>
 				</tr>
 
-				<tr>
+				<tr height='91%'>
 					<td>
-						<div style="border:solid 1px; padding:1px; height:400px; overflow:auto;">
+						<div style="border:solid 1px; padding:1px; height:100%; overflow:no;">
 							<!-- table displaying entities already present in the database -->
 							<table class="dataTable" width='100%' cellpadding="4" cellspacing="0" border='1' >
 								<thead>
@@ -145,8 +145,8 @@
 						</div>
 					</td>
 				</tr>
-				<tr><td></td></tr>
-				<tr><td></td></tr>
+				<tr height='1%'><td></td></tr>
+				<tr height='1%'><td></td></tr>
 			</table>
 			<html:hidden styleId = "operationMode" property="operationMode"/>
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="insertParentData"/>

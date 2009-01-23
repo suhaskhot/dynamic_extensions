@@ -75,12 +75,12 @@
 
 			<table border='1' valign="top" align='right' width='100%' height="100%" cellspacing="0" cellpadding="0">
 			<!-- Main Page heading -->
-				<tr style = "border-bottom:0px">
+				<tr style = "border-bottom:0px" height="3%">
 					<td style="border-left:0px;border-bottom:0px" class="formFieldNoBorders">
 						<bean:message key="app.title.MainPageTitle" />
 					</td>
 				</tr>
-				<tr>
+				<tr height="97%">
 					<td style="border-left:0px;border-top:0px;border-bottom:0px" valign="top">
 						<table valign="top" summary="" align='left' width='100%' height='100%' cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack">
 							<tr>
@@ -102,27 +102,27 @@
 							<tr valign="top" >
 								<td colspan="7" class="tbBordersAllbordersNone">
 									<table align = "top" width="100%" height='100%' cellspacing="0">
-										<tr valign="top">
+										<tr valign="top" height='95%'>
 											<!--  Tree display -->
-											<td width="23%" valign="top" >
+											<td width="20%" valign="top" height='100%'>
 												<table width="100%" height='100%' class="tbBordersAllbordersBlack">
-													<tr valign="top" width="100%">
+													<tr valign="top" width="100%" height='5%'>
 														<td align="left" class="formLabelLeftBorderless">
 															<input  type="button" value="Add Form" disabled>
 														</td>
 													</tr>
-													<tr>
+													<tr height='15%'>
 														<td>
 															<label class="formMessage"><%=groupName%></label>
-															<div style="border:solid 0px; padding:1px; width:250px; height:510px; overflow:auto;" id="currentEntityTreeDiv" />
+															<div style="border:solid 0px; padding:1px; width:250px; height:100%; overflow:auto;" id="currentEntityTreeDiv" />
 														</td>
 													</tr>
-													<tr height='100%'><td>&nbsp;</td></tr>
+													<tr height='80%'><td>&nbsp;</td></tr>
 												</table>
 											</td>
-											<td width="80%">
+											<td width="80%" height='100%'>
 												<table cellspacing="0" cellpadding="3" align="left" width="100%" height='100%' class="tbBordersAllbordersBlack">
-													<tr valign="top">
+													<tr valign="top" height='3%'>
 														<c:choose>
 															<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
 																<td class="formFieldWithNoTopBorder" colspan="3">
@@ -136,20 +136,20 @@
 															</c:otherwise>
 														</c:choose>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='3%'>
 														<td class="formMessage" colspan="3">
 															<bean:message key="app.requiredMessage"/>
 														</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='4%'>
 														<td class="formMessage" colspan="3">&nbsp;</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='2%'>
 														<td class="formMessage" colspan="3">
 															<font color="red" ><html:errors/></font>
 														</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='4%'>
 														<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 														<td class="formRequiredLabelWithoutBorder" width="20%">
 															<bean:message key="eav.form.title"/> :
@@ -158,7 +158,7 @@
 															<html:text styleClass="formDateSized"  maxlength="100" size="60"  styleId= 'formName' property="formName" />
 														</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='4%'>
 														<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 														<td class="formRequiredLabelWithoutBorder" width="20%">
 															<bean:message key="eav.form.conceptCode"/> :
@@ -167,7 +167,7 @@
 															<html:text styleClass="formDateSized" size="40" styleId='conceptCode' property="conceptCode" />
 														</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='10%'>
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td class="formRequiredLabelWithoutBorder" width="20%">
 															<bean:message key="eav.form.description"/> :
@@ -176,7 +176,7 @@
 															<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 														</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='4%'>
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td width="20%"></td>
 														<td class="formMessage"  valign="top">
@@ -184,7 +184,7 @@
 															<bean:message key="eav.form.abstract"/>
 														</td>
 													</tr>
-													<tr valign="top">
+													<tr valign="top" height='4%'>
 														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
 														<td class="formRequiredLabelWithoutBorder" width="20%">
 															<bean:message key="eav.form.inheritform"/>
@@ -198,7 +198,7 @@
 
 
 													<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
-														<tr valign = "top">
+														<tr valign = "top" height='5%'>
 															<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
 															<td class="formRequiredLabelWithoutBorder" width="20%">
 																<bean:message key="eav.form.createAs"/> :
@@ -266,7 +266,7 @@
 															</tr>
 														</c:when>
 													</c:choose>
-													<tr height='100%' valign="top">
+													<tr height='50%' valign="top">
 														<td colspan="3">&nbsp;</td>
 													</tr>
 												</table>

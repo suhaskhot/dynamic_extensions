@@ -10,7 +10,7 @@
 <jsp:useBean id="supportedFileFormatsList" type="java.util.List"/>
 
 <html:hidden styleId = 'dataType' property="dataType" value ="<%=ProcessorConstants.DATATYPE_FILE%>"/>
-<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
+<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' height='100%'">
 	<tr>
   		<td>
   			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>

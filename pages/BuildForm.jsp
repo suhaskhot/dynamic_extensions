@@ -123,14 +123,14 @@
 	  	    %>
 			<table valign='top' style='border-right:0px' border='0' align='right' width='100%' height="100%" cellspacing="0" cellpadding="0">
 				<!-- Main Page heading -->
-		        <tr style="border-bottom:0px">
+		        <tr style="border-bottom:0px" height="5%">
 		        	<td class="tbBordersAllbordersNone">&nbsp;</td>
 		         	<td class="formFieldNoBorders">
 		         		<bean:message key="app.title.MainPageTitle"/>
 		         	</td>
 		        </tr>
 
-		        <tr valign="top">
+		        <tr valign="top" height="95%">
 					<td class="tbBordersAllbordersNone">&nbsp;</td>
 		     		<td class="tbBordersAllbordersNone" valign="top">
 					  	<table valign="top" summary="" align='left' width='100%' height="100%" cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
@@ -188,22 +188,22 @@
 													<tr>
 														<td>
 															<table width="100%" height='100%'>
-																<tr>
+																<tr height='100%'>
 																	<td width="15%" height='100%' class="toolBoxTable" align="center">
 																		<table valign="top" align="center" height='100%' width='100%' class="tbBordersAllbordersBlack" cellspacing="0" cellpadding="0">
-																			<tr height='100%' width='100%' valign="top" style="background-color:#F4F4F5;">
+																			<tr height='92%' width='100%' valign="top" style="background-color:#F4F4F5;">
 																				<td height='100%' width='100%' align="center">
 																					<dynamicExtensions:ToolsMenu id="BuildForm"	toolsList="<%=toolsList%>" onClick="controlSelectedAction" selectedUserOption="<%=userSelectedTool%>"/>
 																				</td>
 																			</tr>
-																			<tr width='100%' valign="bottom" style="background-color:#F4F4F5;">
+																			<tr height='4%' width='100%' valign="bottom" style="background-color:#F4F4F5;">
 																				<td align="center" width="100%">
 																					<html:button styleClass="formButton" property="addSubFormBtn" onclick="addSubForm()">
 																						<bean:message key="eav.caption.AddSubFormControl"/>
 																					</html:button>
 																				</td>
 																			</tr>
-																			<tr width='100%' valign="bottom" style="background-color:#F4F4F5;">
+																			<tr height='4%' width='100%' valign="bottom" style="background-color:#F4F4F5;">
 																				<td>&nbsp;</td>
 																			</tr>
 																		</table>

@@ -72,27 +72,27 @@
 
 	<body onload="loadPreviewForm()">
 		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" method="post">
-		<div style="position:absolute;overflow:auto;height:100%;width:100%;z-index:1000">
+		<div style="position:absolute;overflow:auto;height:100%;width:100%;z-index:1000;">
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 		
 			<c:choose>
 				<c:when test='${showFormPreview == "true"}'>
-					<table valign="top" style="border-right:1px" align='center' width='100%' height="500" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
+					<table valign="top" style="border-right:1px" align='center' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" class="tbBorders1" >
 				</c:when>
 				<c:otherwise>
-					<table valign="top" align='center' width='100%' height="380" border='0' cellspacing="0" cellpadding="0">
+					<table valign="top" align='center' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0">
 				</c:otherwise>
 			</c:choose>
 				<!-- Main Page heading -->
 				<c:if test='${showFormPreview == "true"}'>
-				<tr>
+				<tr height="7%">
 					<td class="formFieldNoBorders">
 							<bean:message key="app.title.MainPageTitle" />
 					</td>
 				</tr>
 				</c:if>
 	 
-				<tr valign="top">
+				<tr valign="top" height="93%">
 					<td>
 						<table valign="top" summary="" align='center' width='100%' cellspacing="0" cellpadding="0" border="0">
 							<c:if test='${showFormPreview == "true"}'> 

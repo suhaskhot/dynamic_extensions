@@ -34,12 +34,12 @@
 
 	        <table valign="top" align='right' width='100%' height="100%" border='0' cellspacing="0" cellpadding="0" >
 		    	<!-- Main Page heading -->
-		        <tr valign="top" style = "border-bottom:0px">
+		        <tr valign="top" style = "border-bottom:0px" height="4%">
 		         	<td style="border-left:0px;border-bottom:0px" class="formFieldNoBorders" >
 		         		<bean:message key="app.title.MainPageTitle" />
 		         	</td>
 		        </tr>
-				<tr>
+				<tr height="96%">
 					<td style = "border-left:0px;border-top:0px;border-bottom:0px" valign="top">
 						<table valign="top" align='left' width='100%' height='100%' cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
 							<tr valign="top">

@@ -9,8 +9,8 @@
 
 <html:hidden styleId = 'dataType'  property="dataType" value="<%=ProcessorConstants.DATATYPE_BOOLEAN%>"/>
 
-<table  summary="" align = 'center' width='100%'>
-	<tr>
+<table  summary="" align = 'center' width='100%' height="100%">
+	<tr height="4%">
   		<td>
   			<table summary=""  align = 'center' width='100%'>
 			   	<tr>
@@ -30,11 +30,13 @@
 			</table>
   		</td>
 	</tr>
-	<tr width="100%">
+	<tr width="100%" height="2%">
 		<td width="100%">
 			<hr/>
 			<div id="substitutionDivRules"></div>
 		</td>
+	</tr>
+	<tr height="94%">
 	</tr>
 </table>
 <jsp:include page="/pages/ValidationRules.jsp" />

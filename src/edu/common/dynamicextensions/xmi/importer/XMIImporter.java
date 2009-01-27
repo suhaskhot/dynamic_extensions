@@ -101,7 +101,7 @@ public class XMIImporter
 			xmiConfiguration.setCreateTable(true);
 			xmiConfiguration.setAddIdAttr(true);
 			xmiConfiguration.setAddColumnForInherianceInChild(false);
-			xmiConfiguration.setAddInheriedAttribute(false);
+			xmiConfiguration.setAddInheritedAttribute(false);
 			xmiConfiguration.setEntityGroupSystemGenerated(false);
 
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();

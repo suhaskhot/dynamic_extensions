@@ -25,7 +25,7 @@ public class XMIConfiguration
 	 * This flag indicates weather the attributes of the parent should be added to the child or not.
 	 * and these attributes will act as separate its own attribute
 	 */
-	private boolean isAddInheriedAttr = false;
+	private boolean isAddInheritedAttr = false;
 
 	/**
 	 * This is used for CA-tissue specific purpose To indicate it is static model & to store
@@ -136,18 +136,18 @@ public class XMIConfiguration
 	 * Will return weather extra column should be added to child which acts as foreign key of parent in case of inheritance
 	 * @return
 	 */
-	public boolean isAddInheriedAttribute()
+	public boolean isAddInheritedAttribute()
 	{
-		return isAddInheriedAttr;
+		return isAddInheritedAttr;
 	}
 
 	/**
 	 * Will set weather extra column should be added to child which acts as foreign key of parent in case of inheritance
-	 * @param isAddInheriedAttribute
+	 * @param isAddInheritedAttribute
 	 */
-	public void setAddInheriedAttribute(boolean isAddInheriedAttribute)
+	public void setAddInheritedAttribute(boolean isAddInheritedAttribute)
 	{
-		this.isAddInheriedAttr = isAddInheriedAttribute;
+		this.isAddInheritedAttr = isAddInheritedAttribute;
 	}
 
 }

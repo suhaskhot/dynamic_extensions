@@ -29,7 +29,7 @@ public class ConstraintProperties extends DatabaseProperties
 	}
 
 	/**
-	 * The source entity key through which constarint is related.
+	 * The source entity key through which constraint is related.
 	 * e.g. Used in case of foreign key constraint in one to many relation.
 	 */
 	protected Collection<ConstraintKeyPropertiesInterface> srcEntityConstraintKeyPropertiesCollection = new HashSet<ConstraintKeyPropertiesInterface>();

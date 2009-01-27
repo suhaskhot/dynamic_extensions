@@ -854,7 +854,7 @@ public class XMIImportProcessor
 				createAttribute(att, entity);
 			}
 		}
-		if (xmiConfigurationObject.isAddInheriedAttribute())
+		if (xmiConfigurationObject.isAddInheritedAttribute())
 		{
 			Map attsMap = new HashMap();
 			UmlClass superClass = XMIUtilities.getSuperClass(klass);

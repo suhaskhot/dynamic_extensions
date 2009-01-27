@@ -14,9 +14,11 @@ import java.util.Set;
 
 import org.hibernate.Session;
 
+import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -363,6 +365,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			ColumnPropertiesInterface column = factory.createColumnProperties();
 			column.setName(IDENTIFIER);
 			idAttribute.setColumnProperties(column);
+			entity.addPrimaryKeyAttribute(idAttribute);
 			entity.addAttribute(idAttribute);
 			idAttribute.setEntity(entity);
 		}
@@ -391,6 +394,125 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		}
 
 		return isAttrPresent;
+	}
+
+	/**
+	 * It will check weather the primary key of the entity is changed
+	 * @param entity to be checked 
+	 * @return 
+	 */
+	public static boolean isPrimaryKeyChanged(EntityInterface entity)
+	{
+		boolean isChanged = false;
+		if (entity != null)
+		{
+			Long entityId = entity.getId();
+			if (entityId != null)
+			{
+				EntityInterface dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entityId);
+				isChanged = isPrimaryKeyChanged(entity, dbaseCopy);
+			}
+		}
+		return isChanged;
+	}
+
+	/**
+	 * It will check weather the primary key of the entity is changed
+	 * @param entity to be checked 
+	 * @return 
+	 */
+	public static boolean isPrimaryKeyChanged(EntityInterface entity, EntityInterface dbaseCopy)
+	{
+		boolean isChanged = false;
+		Collection<AttributeInterface> entityPrmKeyColl = entity.getPrimaryKeyAttributeCollection();
+		Collection<AttributeInterface> dbasePrmKeyColl = dbaseCopy
+				.getPrimaryKeyAttributeCollection();
+		for (AttributeInterface entityAttribute : entityPrmKeyColl)
+		{
+			if (!dbasePrmKeyColl.contains(entityAttribute))
+			{
+				isChanged = true;
+				break;
+			}
+		}
+		for (AttributeInterface dbaseAttribute : dbasePrmKeyColl)
+		{
+			if (!entityPrmKeyColl.contains(dbaseAttribute))
+			{
+				isChanged = true;
+				break;
+			}
+		}
+
+		return isChanged;
+	}
+
+	/**
+	 * It will check weather the cardinality of the association is changed
+	 * @param association
+	 * @param dbaseCopy
+	 * @return
+	 */
+	public static boolean isCardinalityChanged(AssociationInterface association,
+			AssociationInterface dbaseCopy)
+	{
+		boolean isChanged = false;
+		Cardinality srcMaxCard = association.getSourceRole().getMaximumCardinality();
+		Cardinality tgtMaxCard = association.getTargetRole().getMaximumCardinality();
+
+		Cardinality srcMaxCardDbCpy = dbaseCopy.getSourceRole().getMaximumCardinality();
+		Cardinality tgtMaxCardDbCpy = dbaseCopy.getTargetRole().getMaximumCardinality();
+
+		if (!srcMaxCard.equals(srcMaxCardDbCpy) || !tgtMaxCard.equals(tgtMaxCardDbCpy))
+		{
+			isChanged = true;
+		}
+
+		return isChanged;
+	}
+
+	/**
+	 * It will check weather the parent of the entity is changed
+	 * @param catEntity
+	 * @param dbaseCopy
+	 * @return
+	 */
+	public static boolean isParentChanged(CategoryEntity catEntity, CategoryEntity dbaseCopy)
+	{
+		boolean isParentChanged = false;
+		if (catEntity.getParentCategoryEntity() != null
+				&& !catEntity.getParentCategoryEntity().equals(dbaseCopy.getParentCategoryEntity()))
+		{
+			isParentChanged = true;
+		}
+		else if (catEntity.getParentCategoryEntity() == null
+				&& dbaseCopy.getParentCategoryEntity() != null)
+		{
+			isParentChanged = true;
+		}
+
+		return isParentChanged;
+	}
+
+	/**
+	 * @param entity
+	 * @param dbaseCopy
+	 * @return
+	 */
+	public static boolean isParentChanged(Entity entity, Entity dbaseCopy)
+	{
+		boolean isParentChanged = false;
+		if (entity.getParentEntity() != null
+				&& !entity.getParentEntity().equals(dbaseCopy.getParentEntity()))
+		{
+			isParentChanged = true;
+		}
+		else if (entity.getParentEntity() == null && dbaseCopy.getParentEntity() != null)
+		{
+			isParentChanged = true;
+		}
+
+		return isParentChanged;
 	}
 
 	/**

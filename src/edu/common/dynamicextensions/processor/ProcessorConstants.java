@@ -163,4 +163,7 @@ public class ProcessorConstants
 	public static final String SDF_ORCL_CAT_REL_ATTR = "yyyy-MM-dd HH:mm:ss";
 	public static final String ORCL_CAT_REL_ATTR_FORMAT = "YYYY-MM-DD HH24:MI:SS";
 
+	public static final String ASSOCIATION_COLUMN_PREFIX = "DE_E";
+	public static final String UNDERSCORE = "_";
+
 }

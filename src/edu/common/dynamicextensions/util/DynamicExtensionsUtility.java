@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -35,6 +36,8 @@ import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domain.userinterface.Container;
@@ -51,6 +54,8 @@ import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
@@ -66,6 +71,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -74,6 +80,7 @@ import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.Cardinality;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
+import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
@@ -155,6 +162,41 @@ public class DynamicExtensionsUtility
 		attributeInterface = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class
 				.getName(), attributeIdentifier);
 		return attributeInterface;
+	}
+
+	/**
+	 * It will verify weather the Inherited Tagg is present on the given atribute parameter or not & will return boolean accordingly
+	 * @param attaibute to check for taggedValue
+	 * @return true if "Inherited" tagged value present.
+	 */
+	public static boolean isInheritedTaggPresent(AttributeInterface attaibute)
+	{
+		Collection<TaggedValueInterface> taggValueColl = attaibute.getTaggedValueCollection();
+		boolean isPresent = false;
+		for (TaggedValueInterface taggedValue : taggValueColl)
+		{
+			if (taggedValue.getKey().equals(XMIConstants.TAGGED_VALUE_INHERITED))
+			{
+				isPresent = true;
+				break;
+			}
+		}
+		return isPresent;
+	}
+
+	/**
+	 * It will add the taggedValue to the given attribute in parameter with key "derived" and its value also"derived" 
+	 * @param attaibute
+	 */
+	public static void addInheritedTaggedValue(AttributeInterface attaibute)
+	{
+		if (!DynamicExtensionsUtility.isInheritedTaggPresent(attaibute))
+		{
+			TaggedValueInterface taggedValue = new edu.common.dynamicextensions.domain.TaggedValue();
+			taggedValue.setKey(XMIConstants.TAGGED_VALUE_INHERITED);
+			taggedValue.setValue(XMIConstants.TAGGED_VALUE_INHERITED);
+			attaibute.addTaggedValue(taggedValue);
+		}
 	}
 
 	/**
@@ -1520,16 +1562,257 @@ public class DynamicExtensionsUtility
 		if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY
 				&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
 		{
-			constraintProperties.setTargetEntityKey(null);
+			constraintProperties.getTgtEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().setName(null);
 		}
 		else if (association.getSourceRole().getMaximumCardinality() == Cardinality.ONE
 				&& association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
 				|| association.getSourceRole().getMaximumCardinality() == Cardinality.ONE
 				&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
 		{
-			constraintProperties.setSourceEntityKey(null);
+			constraintProperties.getSrcEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().setName(null);
 		}
 
+		return constraintProperties;
+	}
+
+	/**
+	 * This method populates the constraint properties for the childEntity 
+	 * @param childEntity whose constraint properties is to be updated
+	 * @param isAddColumnForInheritance 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public static void getConstraintKeyPropertiesForInheritance(EntityInterface childEntity,
+			boolean isAddColumnForInheritance) throws DynamicExtensionsSystemException
+	{
+		EntityInterface parentEntity = childEntity.getParentEntity();
+		Long id = childEntity.getId();
+		if (id == null && parentEntity != null)
+		{
+			getConstraintKeyProperties(childEntity, parentEntity, isAddColumnForInheritance);
+		}
+		else if (id != null)
+		{
+			Entity dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, id);
+
+			if (EntityManagerUtil.isParentChanged((Entity) childEntity, dbaseCopy)
+					|| EntityManagerUtil.isPrimaryKeyChanged(parentEntity))
+			{
+				getConstraintKeyProperties(childEntity, parentEntity, isAddColumnForInheritance);
+			}
+		}
+
+	}
+
+	/**
+	 * This method populates the constraint properties of the child depending on the parentEntity primary key 
+	 * @param childEntity whose constraintProperties is to be populated
+	 * @param parentEntity
+	 * @param isAddColumnForInheritance 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private static void getConstraintKeyProperties(EntityInterface childEntity,
+			EntityInterface parentEntity, boolean isAddColumnForInheritance)
+			throws DynamicExtensionsSystemException
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		Collection<ConstraintKeyPropertiesInterface> cnstrKeyProp = childEntity
+				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+		ConstraintKeyPropertiesInterface primaryCnstrKeyProp = null;
+		cnstrKeyProp.clear();
+		if (parentEntity == null)
+		{
+			//do nothing as parent entity is null
+		}
+		else if ((EntityManagerUtil.isIdAttributePresent(parentEntity) && EntityManagerUtil
+				.isIdAttributePresent(childEntity))
+				&& !isAddColumnForInheritance)
+		{
+			AttributeInterface parentIdAtt = parentEntity.getAttributeByName("id");
+			primaryCnstrKeyProp = factory.createConstraintKeyProperties(parentIdAtt
+					.getColumnProperties().getName());
+			primaryCnstrKeyProp.setSrcPrimaryKeyAttribute(parentIdAtt);
+			cnstrKeyProp.add(primaryCnstrKeyProp);
+		}
+		else
+		{
+			Collection<AttributeInterface> parentPrmAttrColl = parentEntity
+					.getPrimaryKeyAttributeCollection();
+			if (isPrimaryKeyAttributeCollectionEmpty(parentPrmAttrColl))
+			{
+				throw new DynamicExtensionsSystemException("Parent entity "
+						+ parentEntity.getName()
+						+ " does not contain any primary key child entity is "
+						+ childEntity.getName());
+			}
+			for (AttributeInterface attribute : parentPrmAttrColl)
+			{
+				primaryCnstrKeyProp = factory.createConstraintKeyProperties();
+				primaryCnstrKeyProp.setSrcPrimaryKeyAttribute(attribute);
+				cnstrKeyProp.add(primaryCnstrKeyProp);
+			}
+
+		}
+
+	}
+
+	/**
+	 * This method sets the constraintProperties of the association depending
+	 * on weather it is edited one or not 
+	 * 
+	 * @param association
+	 * @return ConstraintPropertiesInterface
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public static ConstraintPropertiesInterface getConstraintPropertiesForAssociation(
+			AssociationInterface association) throws DynamicExtensionsSystemException
+	{
+		Long id = association.getId();
+		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
+		if (id == null)
+		{
+			constraintProperties = getConstraintKeyPropertiesForAssociation(association);
+
+		}
+		else
+		{
+			AssociationInterface dbaseCopy = (AssociationInterface) DBUtil.loadCleanObj(
+					Association.class, id);
+			if (EntityManagerUtil.isCardinalityChanged(association, dbaseCopy)
+					|| EntityManagerUtil.isPrimaryKeyChanged(association.getEntity())
+					|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity()))
+			{
+				association.getConstraintProperties()
+						.getSrcEntityConstraintKeyPropertiesCollection().clear();
+				association.getConstraintProperties()
+						.getTgtEntityConstraintKeyPropertiesCollection().clear();
+				constraintProperties = getConstraintKeyPropertiesForAssociation(association);
+			}
+		}
+
+		return constraintProperties;
+	}
+
+	/**
+	 * It will verify weather the attributeColl is not empty 
+	 * @param attributeColl collection of attribute to check 
+	 * @throws DynamicExtensionsSystemException if attributeColl is Empty
+	 */
+	private static boolean isPrimaryKeyAttributeCollectionEmpty(
+			Collection<AttributeInterface> attributeColl) throws DynamicExtensionsSystemException
+	{
+		boolean isEmpty = false;
+		if (attributeColl.isEmpty())
+		{
+			isEmpty = true;
+		}
+		return isEmpty;
+	}
+
+	/**
+	 * This method sets the constraintProperties of the association depending on
+	 * whether the association is one-to-one, one-to-many or many-to-one. 
+	 * @param association
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	private static ConstraintPropertiesInterface getConstraintKeyPropertiesForAssociation(
+			AssociationInterface association) throws DynamicExtensionsSystemException
+	{
+		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
+		EntityInterface srcEntity = association.getEntity();
+		EntityInterface tgtEntity = association.getTargetEntity();
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl;
+		Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl;
+		ConstraintKeyPropertiesInterface srcCnstrKeyProp = null;
+		ConstraintKeyPropertiesInterface tgtCnstrKeyProp = null;
+		Collection<AttributeInterface> tgtPrmKeyAttrColl = tgtEntity
+				.getPrimaryKeyAttributeCollection();
+		Collection<AttributeInterface> srcPrmKeyAttrColl = srcEntity
+				.getPrimaryKeyAttributeCollection();
+		srcCnstrKeyPropColl = constraintProperties.getSrcEntityConstraintKeyPropertiesCollection();
+		tgtCnstrKeyPropColl = constraintProperties.getTgtEntityConstraintKeyPropertiesCollection();
+		srcCnstrKeyPropColl.clear();
+		tgtCnstrKeyPropColl.clear();
+		try
+		{
+			if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY
+					&& association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
+					&& !isPrimaryKeyAttributeCollectionEmpty(srcPrmKeyAttrColl)
+					&& !isPrimaryKeyAttributeCollectionEmpty(tgtPrmKeyAttrColl))
+			{
+				for (AttributeInterface tgtAttribute : tgtPrmKeyAttrColl)
+				{
+					srcCnstrKeyProp = factory
+							.createConstraintKeyProperties(ProcessorConstants.ASSOCIATION_COLUMN_PREFIX
+									+ ProcessorConstants.UNDERSCORE
+									+ "S"
+									+ ProcessorConstants.UNDERSCORE
+									+ IdGeneratorUtil.getNextUniqeId());
+					srcCnstrKeyProp.setSrcPrimaryKeyAttribute(tgtAttribute);
+					srcCnstrKeyPropColl.add(srcCnstrKeyProp);
+				}
+				for (AttributeInterface srcAttribute : srcPrmKeyAttrColl)
+				{
+					tgtCnstrKeyProp = factory
+							.createConstraintKeyProperties(ProcessorConstants.ASSOCIATION_COLUMN_PREFIX
+									+ ProcessorConstants.UNDERSCORE
+									+ "T"
+									+ ProcessorConstants.UNDERSCORE
+									+ IdGeneratorUtil.getNextUniqeId());
+					tgtCnstrKeyProp.setSrcPrimaryKeyAttribute(srcAttribute);
+					tgtCnstrKeyPropColl.add(tgtCnstrKeyProp);
+				}
+			}
+
+			else if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY
+					&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE
+					&& !isPrimaryKeyAttributeCollectionEmpty(tgtPrmKeyAttrColl))
+			{
+
+				for (AttributeInterface tgtAttribute : tgtPrmKeyAttrColl)
+				{
+					srcCnstrKeyProp = factory
+							.createConstraintKeyProperties(ProcessorConstants.ASSOCIATION_COLUMN_PREFIX
+									+ ProcessorConstants.UNDERSCORE
+									+ "S"
+									+ ProcessorConstants.UNDERSCORE
+									+ IdGeneratorUtil.getNextUniqeId());
+					srcCnstrKeyProp.setSrcPrimaryKeyAttribute(tgtAttribute);
+					srcCnstrKeyPropColl.add(srcCnstrKeyProp);
+
+				}
+
+			}
+			else if (!isPrimaryKeyAttributeCollectionEmpty(srcPrmKeyAttrColl))
+			{
+				for (AttributeInterface srcAttribute : srcPrmKeyAttrColl)
+				{
+					tgtCnstrKeyProp = factory
+							.createConstraintKeyProperties(ProcessorConstants.ASSOCIATION_COLUMN_PREFIX
+									+ ProcessorConstants.UNDERSCORE
+									+ "T"
+									+ ProcessorConstants.UNDERSCORE
+									+ IdGeneratorUtil.getNextUniqeId());
+					tgtCnstrKeyProp.setSrcPrimaryKeyAttribute(srcAttribute);
+					tgtCnstrKeyPropColl.add(tgtCnstrKeyProp);
+
+				}
+
+			}
+		}
+		catch (NullPointerException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Please set source & target entity of the association", e);
+		}
+		catch (NoSuchElementException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Please set source & target entity of the association", e);
+		}
 		return constraintProperties;
 	}
 

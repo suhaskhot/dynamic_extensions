@@ -1,4 +1,4 @@
-package edu.common.dynamicextensions.ui.webui.actionform;
+package edu.common.dynamicextensions.ui.webui.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,109 +22,109 @@ public class CommonControlModel extends AbstractActionForm
 	/**
 	 *
 	 */
-	String description;
+	protected String description;
 	/**
 	 * Concept code
 	 */
 
-	String attributeConceptCode;
+	protected String attributeConceptCode;
 
 	/**
 	 *
 	 */
-	String dataType;
+	protected String dataType;
 
 	/**
 	 *
 	 */
-	List dataTypeList;
+	protected List dataTypeList;
 
 	/**
 	 *
 	 */
-	String attributeSize;
+	protected String attributeSize;
 
 	/**
 	 *
 	 */
-	String attributeDefaultValue;
+	protected String attributeDefaultValue;
 
 	/**
 	 *
 	 */
-	String format;
+	protected String format;
 	/**
 	 *
 	 */
-	String attributeValidationRules;
+	protected String attributeValidationRules;
 
 	/**
 	 *
 	 */
-	String attributeDisplayUnits;
+	protected String attributeDisplayUnits;
 
 	/**
 	 *
 	 */
-	String referenceValues;
+	protected String referenceValues;
 	/**
 	 *
 	 */
 
-	String displayChoice;
+	protected String displayChoice;
 	/**
 	 *  number of decimal places
 	 */
-	String attributeDecimalPlaces;
+	protected String attributeDecimalPlaces;
 	/**
 	 * Number of digits in number
 	 */
-	String attributeDigits;
+	protected String attributeDigits;
 
 	/**
 	 *
 	 */
-	String htmlFile;
+	protected String htmlFile;
 	/**
 	 * Data type changed
 	 */
-	String dataTypeChanged;
+	protected String dataTypeChanged;
 	/**
 	 * Attribute identifier
 	 */
-	String attributeIdentifier;
+	protected String attributeIdentifier;
 	/**
 	 *
 	 */
-	String caption;
+	protected String caption;
 	/**
 	 *
 	 */
-	String attributeIsPassword;
+	protected String attributeIsPassword;
 	/**
 	 *
 	 */
-	Boolean isPassword;
+	protected Boolean isPassword;
 	/**
 	 *
 	 */
-	Boolean isUrl;
+	protected Boolean isUrl;
 	/**
 	 *
 	 */
-	List toolsList = new ArrayList();
+	protected List toolsList = new ArrayList();
 	/**
 	 *
 	 */
-	Boolean isHidden;
+	protected Boolean isHidden;
 	/**
 	 *
 	 */
-	Integer sequenceNumber;
+	protected Integer sequenceNumber;
 	/**
 	 * order of controls on the form
 	 */
-	String controlsSequenceNumbers;
+	protected String controlsSequenceNumbers;
 	/**
 	 *
 	 */

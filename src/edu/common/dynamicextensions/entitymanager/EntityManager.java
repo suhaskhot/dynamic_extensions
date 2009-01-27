@@ -2251,7 +2251,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @param entityId
 	 * @return
@@ -2271,7 +2271,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-
+	
 	public Collection<Long> getAllEntityIdsForEntityGroup(Long entityGroupId)
 			throws DynamicExtensionsSystemException
 	{
@@ -2296,10 +2296,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		try
 		{
-			query = queryBuilder.getQueryPartForAssociation(association, revQueries, true);
 
 			List<String> queries = new ArrayList<String>();
-			queries.add(query);
+			queries.addAll(queryBuilder.getQueryPartForAssociation(association, revQueries, true));
 			rlbkQryStack = queryBuilder.executeQueries(queries, revQueries, rlbkQryStack);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -2663,7 +2662,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			else
 			{
 				Entity dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entity.getId());
-				if (queryBuilder.isParentChanged((Entity) entity, dbaseCopy))
+				if (EntityManagerUtil.isParentChanged((Entity) entity, dbaseCopy))
 				{
 					checkParentChangeAllowed(entityObject);
 				}
@@ -2729,8 +2728,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return objects;
 	}
-	
 
+	
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getContainerByEntityIdentifier(java.lang.Long)
 	 */

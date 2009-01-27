@@ -30,6 +30,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -40,7 +43,7 @@ import edu.wustl.common.util.Utility;
  * This Class is a mock class to test EntityManager
  * @author chetan_patil
  */
-public class MockEntityManager
+public class MockEntityManager extends DynamicExtensionsBaseTestCase
 {
 
 	int identifier = 1;
@@ -54,7 +57,6 @@ public class MockEntityManager
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
-
 
 		containerInterface = domainObjectFactory.createContainer();
 		containerInterface.setButtonCss("actionButton");
@@ -106,8 +108,8 @@ public class MockEntityManager
 			throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-        EntityGroup entityGroup = (EntityGroup) domainObjectFactory.createEntityGroup();
-        entityGroup.setName("testGroup"+ new Double(Math.random()).toString());
+		EntityGroup entityGroup = (EntityGroup) domainObjectFactory.createEntityGroup();
+		entityGroup.setName("testGroup" + new Double(Math.random()).toString());
 		ContainerInterface containerInterface = null;
 		ControlInterface controlInterface = null;
 		EntityInterface entityInterface = null;
@@ -122,7 +124,7 @@ public class MockEntityManager
 
 		entityInterface = initializeEntity(entityGroup);
 		containerInterface.setAbstractEntity((AbstractEntityInterface) entityInterface);
-        entityInterface.getContainerCollection().add(containerInterface);
+		entityInterface.getContainerCollection().add(containerInterface);
 
 		Collection abstractAttributeCollection = entityInterface.getAbstractAttributeCollection();
 		Iterator abstractAttributeCollectionIterator = abstractAttributeCollection.iterator();
@@ -157,12 +159,13 @@ public class MockEntityManager
 	 * @return Manually created dummy Entity along with its attributes
 	 * @throws DynamicExtensionsApplicationException On failure to create Entity
 	 */
-	public EntityInterface initializeEntity(EntityGroupInterface entityGroup) throws DynamicExtensionsApplicationException
+	public EntityInterface initializeEntity(EntityGroupInterface entityGroup)
+			throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AbstractAttributeInterface abstractAttributeInterface = null;
 
-		EntityInterface person = domainObjectFactory.createEntity();
+		EntityInterface person = createAndPopulateEntity();
 
 		person.setName("Person");
 		person.setCreatedDate(new Date());
@@ -194,7 +197,7 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface atributeInterface = null;
-		EntityInterface person = domainObjectFactory.createEntity();
+		EntityInterface person = createAndPopulateEntity();
 
 		person.setName("Person");
 		person.setCreatedDate(new Date());
@@ -225,7 +228,7 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface attributeInterface = null;
-		EntityInterface bioInformation = domainObjectFactory.createEntity();
+		EntityInterface bioInformation = createAndPopulateEntity();
 
 		bioInformation.setName("BioInformation");
 		bioInformation.setCreatedDate(new Date());
@@ -251,7 +254,7 @@ public class MockEntityManager
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		AttributeInterface attributeInterface = null;
-		EntityInterface personal = domainObjectFactory.createEntity();
+		EntityInterface personal = createAndPopulateEntity();
 
 		personal.setName("Personal");
 		personal.setCreatedDate(new Date());
@@ -285,7 +288,7 @@ public class MockEntityManager
 	public EntityInterface initializeEntity4() throws DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		EntityInterface person = domainObjectFactory.createEntity();
+		EntityInterface person = createAndPopulateEntity();
 
 		person.setName("Person");
 		person.setCreatedDate(new Date());
@@ -295,7 +298,7 @@ public class MockEntityManager
 		return person;
 	}
 
-	private RoleInterface getRole(AssociationType associationType, String name,
+	protected RoleInterface getRole(AssociationType associationType, String name,
 			Cardinality minCard, Cardinality maxCard)
 	{
 		RoleInterface role = DomainObjectFactory.getInstance().createRole();
@@ -579,9 +582,10 @@ public class MockEntityManager
 	 *
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public EntityGroupInterface initializeEntityGroupForInheritance()
-			throws DynamicExtensionsApplicationException
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
@@ -591,9 +595,11 @@ public class MockEntityManager
 
 		EntityInterface bioInformation = initializeEntity2();
 		bioInformation.setParentEntity(person);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(bioInformation, false);
 
 		EntityInterface personal = initializeEntity3();
 		personal.setParentEntity(bioInformation);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(personal, false);
 
 		entityGroupInterface.addEntity(person);
 		entityGroupInterface.addEntity(bioInformation);
@@ -606,9 +612,10 @@ public class MockEntityManager
 	 *
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public EntityGroupInterface initializeEntityGroupForInheritanceAndAssociation()
-			throws DynamicExtensionsApplicationException
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		EntityGroupInterface entityGroupInterface = domainObjectFactory.createEntityGroup();
@@ -618,6 +625,7 @@ public class MockEntityManager
 
 		EntityInterface bioInformation = initializeEntity2();
 		bioInformation.setParentEntity(person);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(bioInformation, false);
 
 		EntityInterface personal = initializeEntity3();
 
@@ -631,6 +639,7 @@ public class MockEntityManager
 				Cardinality.ONE, Cardinality.MANY));
 
 		bioInformation.addAssociation(association);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 
 		entityGroupInterface.addEntity(person);
 		entityGroupInterface.addEntity(bioInformation);

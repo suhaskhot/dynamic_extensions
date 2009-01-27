@@ -20,6 +20,7 @@ import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.UmlPackage;
 import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
 
 public class XMIImporter
@@ -94,10 +95,18 @@ public class XMIImporter
 
 			// read the document
 			reader.read(in, null, uml);
-			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
-
 			List<String> containerNames = readFile(args[2]);
-			xmiImportProcessor.processXmi(uml, domainModelName, packageName, containerNames, false);
+
+			XMIConfiguration xmiConfiguration = XMIConfiguration.getInstance();
+			xmiConfiguration.setCreateTable(true);
+			xmiConfiguration.setAddIdAttr(true);
+			xmiConfiguration.setAddColumnForInherianceInChild(false);
+			xmiConfiguration.setAddInheriedAttribute(false);
+			xmiConfiguration.setEntityGroupSystemGenerated(false);
+
+			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
+			xmiImportProcessor.setXmiConfigurationObject(xmiConfiguration);
+			xmiImportProcessor.processXmi(uml, domainModelName, packageName, containerNames);
 			System.out.println("--------------- Done ------------");
 
 		}
@@ -180,6 +189,9 @@ public class XMIImporter
 		}
 		// find package named "UML" in this extent
 		MofPackage result = getUmlPackage(umlMM);
+		reader.read(UmlPackage.class.getResource("resources/01-02-15_Diff.xml").toString(), umlMM);
+		// try to find the "UML" package again
+		result = getUmlPackage(umlMM);
 		if (result == null)
 		{
 			// it cannot be found -> UML metamodel is not loaded -> load it from XMI

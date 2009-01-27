@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -164,5 +167,30 @@ public class XMIImportValidator
 		}
 		return booleanVal;
 
+	}
+
+	/**
+	 * It will validate weather the data type of the attribute is valid for the
+	 * primary key of the entity
+	 * @param primaryAttribute
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public static boolean validateDataTypeForPrimaryKey(AttributeInterface primaryAttribute)
+			throws DynamicExtensionsApplicationException
+	{
+		AttributeTypeInformationInterface attrInfo = primaryAttribute.getAttributeTypeInformation();
+		String attributeDataType = attrInfo.getDataType();
+
+		if (EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE.equals(attributeDataType)
+				|| EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE.equals(attributeDataType)
+				|| EntityManagerConstantsInterface.OBJECT_ATTRIBUTE_TYPE.equals(attributeDataType))
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Data Type of the primaryKey Attribute " + primaryAttribute.getName()
+							+ " is not acceptable for " + primaryAttribute.getEntity().getName());
+		}
+
+		return true;
 	}
 }

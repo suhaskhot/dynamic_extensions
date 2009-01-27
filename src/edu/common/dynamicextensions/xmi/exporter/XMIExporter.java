@@ -77,6 +77,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -261,34 +262,51 @@ public class XMIExporter implements XMIExportInterface
 								String associationType = getAssociationType(association);
 								String foreignKeyOperationName = null;
 								String foreignKey = null;
+								Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl;
 
 								//For one-to-one and one-to-many association foreign key is in target entity
 								if ((associationType.equals(XMIConstants.ASSOC_ONE_MANY))
 										|| (associationType.equals(XMIConstants.ASSOC_ONE_ONE)))
 								{
-									foreignKey = association.getConstraintProperties()
-											.getTargetEntityKey();
-									addForeignKeyAttribute(association.getTargetEntity(),
-											foreignKey);
-									foreignKeyOperationName = generateForeignkeyOperationName(
-											association.getTargetEntity().getName(), association
-													.getEntity().getName());
-									//									Generate foreign key operation name and add it to foreignKeyOperationNameMappings map
-									foreignKeyOperationNameMappings.put(foreignKey,
-											foreignKeyOperationName);
+
+									cnstKeyPropColl = association.getConstraintProperties()
+											.getTgtEntityConstraintKeyPropertiesCollection();
+									Integer i = 1;
+									for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
+									{
+										foreignKey = cnstrKeyProp
+												.getTgtForiegnKeyColumnProperties().getName();
+										addForeignKeyAttribute(association.getTargetEntity(),
+												foreignKey);
+										//Generate foreign key operation name and add it to foreignKeyOperationNameMappings map
+										foreignKeyOperationName = generateForeignkeyOperationName(
+												association.getTargetEntity().getName(),
+												association.getEntity().getName().concat(
+														i.toString()));
+										foreignKeyOperationNameMappings.put(foreignKey,
+												foreignKeyOperationName);
+										i++;
+									}
 								}
 								//For many-to-one association foreign key is in source entity
 								else if (associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 								{
-									foreignKey = association.getConstraintProperties()
-											.getSourceEntityKey();
-									addForeignKeyAttribute(association.getEntity(), foreignKey);
-									foreignKeyOperationName = generateForeignkeyOperationName(
-											association.getEntity().getName(), association
-													.getTargetEntity().getName());
-									//									Generate foreign key operation name and add it to foreignKeyOperationNameMappings map
-									foreignKeyOperationNameMappings.put(foreignKey,
-											foreignKeyOperationName);
+									cnstKeyPropColl = association.getConstraintProperties()
+											.getSrcEntityConstraintKeyPropertiesCollection();
+									Integer i = 1;
+									for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
+									{
+										foreignKey = cnstrKeyProp
+												.getTgtForiegnKeyColumnProperties().getName();
+										addForeignKeyAttribute(association.getEntity(), foreignKey);
+										foreignKeyOperationName = generateForeignkeyOperationName(
+												association.getEntity().getName(), association
+														.getTargetEntity().getName().concat(
+																i.toString()));
+										//Generate foreign key operation name and add it to foreignKeyOperationNameMappings map
+										foreignKeyOperationNameMappings.put(foreignKey,
+												foreignKeyOperationName);
+									}
 								}
 							}
 						}
@@ -396,11 +414,49 @@ public class XMIExporter implements XMIExportInterface
 				UmlClass parentClass = entityDataClassMappings.get(entity.getParentEntity()
 						.getName());
 				UmlClass childClass = entityDataClassMappings.get(entity.getName());
+				createForeignKeyAttribute(entity, childClass);
 				Generalization generalization = createGeneralization(parentClass, childClass);
 				entitySQLRelationships.add(generalization);
 			}
 		}
 		return entitySQLRelationships;
+	}
+
+	/**
+	 * This will add the column created for inheritance relationship to the data 
+	 * class and there foreignKey constrint operation name 
+	 * @param entity child entity 
+	 * @param childClass umlclass corresponding to the entity
+	 * @throws DataTypeFactoryInitializationException 
+	 */
+	private void createForeignKeyAttribute(EntityInterface entity, UmlClass childClass)
+			throws DataTypeFactoryInitializationException
+	{
+		Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl = entity
+				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+		Classifier foreignKeySQLClass = getSQLClassForEntity(entity.getName());
+		String columnName;
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
+		{
+			columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+			Attribute foreignKeyAttribute = searchAttribute(foreignKeySQLClass, columnName);
+			//Create attribute if does not exist
+			if (foreignKeyAttribute == null)
+			{
+				//Datatype of foreign key and prmary key will be same
+				//AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
+				AttributeInterface primaryKeyAttr = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+				foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
+				String foreignKeyOprName = generateForeignkeyOperationName(entity.getName(), entity
+						.getParentEntity().getName());
+				foreignKeyOperationNameMappings.put(foreignKeyAttribute.getName(),
+						foreignKeyOprName);
+				foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
+				//Add foreign key operation
+				foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+
+			}
+		}
 	}
 
 	/**
@@ -497,14 +553,18 @@ public class XMIExporter implements XMIExportInterface
 				{
 
 					getForeignKeyAttribute(association.getEntity(), association.getTargetEntity(),
-							constraintProperties.getTargetEntityKey(), association.getSourceRole()
-									.getName());
+							constraintProperties.getTgtEntityConstraintKeyPropertiesCollection(),
+							association.getSourceRole().getName());
 					//One-One OR One-Many source will have primary key, target has foreign key
-					sourceRole.setName(getPrimaryKeyOperationName(
+					/*sourceRole.setName(getPrimaryKeyOperationName(
 							association.getEntity().getName(), constraintProperties
-									.getSourceEntityKey()));
+									.getSrcEntityConstraintKeyProperties()
+									.getTgtForiegnKeyColumnProperties().getName()));
 					targetRole.setName(getForeignkeyOperationName(constraintProperties
-							.getTargetEntityKey()));
+							.getTgtEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()));*/
+					sourceRole.setName(association.getSourceRole().getName());
+					targetRole.setName(association.getTargetRole().getName());
 
 					sqlAssociation.getConnection().add(
 							getAssociationEnd(sourceRole, sourceSQLClass));
@@ -515,13 +575,17 @@ public class XMIExporter implements XMIExportInterface
 				else if (associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 				{
 					getForeignKeyAttribute(association.getTargetEntity(), association.getEntity(),
-							constraintProperties.getSourceEntityKey(), association.getTargetRole()
-									.getName());
+							constraintProperties.getSrcEntityConstraintKeyPropertiesCollection(),
+							association.getTargetRole().getName());
 					//Many-One source will have foreign key, target primary key
-					sourceRole.setName(getForeignkeyOperationName(constraintProperties
-							.getTargetEntityKey()));
+					/*sourceRole.setName(getForeignkeyOperationName(constraintProperties
+							.getTgtEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()));
 					targetRole.setName(getPrimaryKeyOperationName(association.getTargetEntity()
-							.getName(), constraintProperties.getSourceEntityKey()));
+							.getName(), constraintProperties.getSrcEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()));*/
+					sourceRole.setName(association.getSourceRole().getName());
+					targetRole.setName(association.getTargetRole().getName());
 					sqlAssociation.getConnection().add(
 							getAssociationEnd(sourceRole, sourceSQLClass));
 					sqlAssociation.getConnection().add(
@@ -558,31 +622,39 @@ public class XMIExporter implements XMIExportInterface
 	 */
 	@SuppressWarnings("unchecked")
 	private Attribute getForeignKeyAttribute(EntityInterface primaryKeyEntity,
-			EntityInterface foreignKeyEntity, String columnName, String implementedAssociationName)
-			throws DataTypeFactoryInitializationException
+			EntityInterface foreignKeyEntity,
+			Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl,
+			String implementedAssociationName) throws DataTypeFactoryInitializationException
 	{
 		Classifier foreignKeySQLClass = getSQLClassForEntity(foreignKeyEntity.getName());
-		Attribute foreignKeyAttribute = searchAttribute(foreignKeySQLClass, columnName);
-		//Create attribute if does not exist
-		if (foreignKeyAttribute == null)
+		String columnName;
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
 		{
-			//Datatype of foreign key and primary key will be same
-			AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
-			foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
-			foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
-			//Add foreign key operation
-			foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+			columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+			Attribute foreignKeyAttribute = searchAttribute(foreignKeySQLClass, columnName);
+			//Create attribute if does not exist
+			if (foreignKeyAttribute == null)
+			{
+				//Datatype of foreign key and prmary key will be same
+				//AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
+				AttributeInterface primaryKeyAttr = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+				foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
+				foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
+				//Add foreign key operation
+				foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+			}
+			String implementedAssociation = packageName + XMIConstants.DOT_SEPARATOR
+					+ foreignKeyEntity.getName() + XMIConstants.DOT_SEPARATOR
+					+ implementedAssociationName;
+			if (foreignKeyAttribute != null)
+			{
+				foreignKeyAttribute.getTaggedValue().add(
+						createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
+								implementedAssociation));
+			}
+
 		}
-		String implementedAssociation = packageName + XMIConstants.DOT_SEPARATOR
-				+ foreignKeyEntity.getName() + XMIConstants.DOT_SEPARATOR
-				+ implementedAssociationName;
-		if (foreignKeyAttribute != null)
-		{
-			foreignKeyAttribute.getTaggedValue().add(
-					createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
-							implementedAssociation));
-		}
-		return foreignKeyAttribute;
+		return null;
 	}
 
 	/**
@@ -674,59 +746,66 @@ public class XMIExporter implements XMIExportInterface
 	{
 		ArrayList<Feature> corelationTableFeatures = new ArrayList<Feature>();
 		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
-		//		Create attributes for class
-		/*AttributeInterface sourceAttribute = searchAttribute(association.getEntity(), constraintProperties.getSourceEntityKey());
-		AttributeInterface targetAttribute = searchAttribute(association.getTargetEntity(), constraintProperties.getTargetEntityKey());*/
-		//Search primary keys of tables 
-		AttributeInterface sourceAttribute = getPrimaryKeyAttribute(association.getEntity());
-		AttributeInterface targetAttribute = getPrimaryKeyAttribute(association.getTargetEntity());
-
-		if ((sourceAttribute != null) && (targetAttribute != null))
+		Collection<ConstraintKeyPropertiesInterface> srcCnstKeyProps = constraintProperties
+				.getSrcEntityConstraintKeyPropertiesCollection();
+		Collection<ConstraintKeyPropertiesInterface> tgtCnstKeyProps = constraintProperties
+				.getTgtEntityConstraintKeyPropertiesCollection();
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstKeyProps)
 		{
-			//Create corelation table attributes
-			String corelationTableSrcAttributeName = generateCorelationAttributeName(association
-					.getEntity(), constraintProperties.getSourceEntityKey());
-			String corelationTableDestAttributeName = generateCorelationAttributeName(association
-					.getTargetEntity(), constraintProperties.getTargetEntityKey());
-
-			Attribute coRelationSourceAttribute = createDataAttribute(
-					corelationTableSrcAttributeName, sourceAttribute.getDataType());
-			Attribute coRelationTargetAttribute = createDataAttribute(
-					corelationTableDestAttributeName, targetAttribute.getDataType());
-
-			//Add "implements-association tagged value for both
+			Attribute coRelationAttribute = CreateCoRelationalAttributeAndOperns(cnstrKeyProp,
+					association.getEntity());
+			//Add "implements-association tagged value 
 			String srcAttribImplementedAssocn = packageName + XMIConstants.DOT_SEPARATOR
 					+ association.getTargetEntity().getName() + XMIConstants.DOT_SEPARATOR
 					+ association.getSourceRole().getName();
-			coRelationSourceAttribute.getTaggedValue().add(
+			coRelationAttribute.getTaggedValue().add(
 					createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
 							srcAttribImplementedAssocn));
-
+			corelationTableFeatures.add(coRelationAttribute);
+			String foreignKeyOprName = generateForeignkeyOperationName(association
+					.getTargetEntity().getName(), constraintProperties.getName());
+			foreignKeyOperationNameMappings.put(coRelationAttribute.getName(), foreignKeyOprName);
+			corelationTableFeatures.add(createForeignKeyOperation(coRelationAttribute));
+		}
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstKeyProps)
+		{
+			Attribute coRelationAttribute = CreateCoRelationalAttributeAndOperns(cnstrKeyProp,
+					association.getTargetEntity());
 			String targetAttribImplementedAssocn = packageName + XMIConstants.DOT_SEPARATOR
 					+ association.getEntity().getName() + XMIConstants.DOT_SEPARATOR
 					+ association.getTargetRole().getName();
-			coRelationTargetAttribute.getTaggedValue().add(
+			coRelationAttribute.getTaggedValue().add(
 					createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
 							targetAttribImplementedAssocn));
-
-			corelationTableFeatures.add(coRelationSourceAttribute);
-			corelationTableFeatures.add(coRelationTargetAttribute);
-
-			//			Add primary keys to mappings
-			String srcForeignKeyOprName = generateForeignkeyOperationName(association.getEntity()
-					.getName(), constraintProperties.getName());
-			String targetForeignKeyOprName = generateForeignkeyOperationName(constraintProperties
-					.getName(), association.getTargetEntity().getName());
-			foreignKeyOperationNameMappings.put(constraintProperties.getSourceEntityKey(),
-					srcForeignKeyOprName);
-			foreignKeyOperationNameMappings.put(constraintProperties.getTargetEntityKey(),
-					targetForeignKeyOprName);
-
-			//Add foreign keys
-			corelationTableFeatures.add(createForeignKeyOperation(coRelationSourceAttribute));
-			corelationTableFeatures.add(createForeignKeyOperation(coRelationTargetAttribute));
+			corelationTableFeatures.add(coRelationAttribute);
+			String foreignKeyOprName = generateForeignkeyOperationName(constraintProperties
+					.getName(), association.getEntity().getName());
+			foreignKeyOperationNameMappings.put(coRelationAttribute.getName(), foreignKeyOprName);
+			corelationTableFeatures.add(createForeignKeyOperation(coRelationAttribute));
 		}
 		return corelationTableFeatures;
+	}
+
+	/**
+	 * It will create the Attribute to be added in the corelational table sets its name & datatype
+	 * @param cnstrKeyProp 
+	 * @param entity
+	 * @return
+	 * @throws DataTypeFactoryInitializationException
+	 */
+	private Attribute CreateCoRelationalAttributeAndOperns(
+			ConstraintKeyPropertiesInterface cnstrKeyProp, EntityInterface entity)
+			throws DataTypeFactoryInitializationException
+	{
+		Attribute coRelationAttribute = null;
+		if (cnstrKeyProp.getSrcPrimaryKeyAttribute() != null)
+		{
+			String corelationTableAttributeName = generateCorelationAttributeName(entity,
+					cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName());
+			coRelationAttribute = createDataAttribute(corelationTableAttributeName, cnstrKeyProp
+					.getSrcPrimaryKeyAttribute().getDataType());
+		}
+		return coRelationAttribute;
 	}
 
 	/**
@@ -2263,7 +2342,7 @@ public class XMIExporter implements XMIExportInterface
 			{
 				throw new DynamicExtensionsSystemException("Entity group newsurgery not found ,test case to import xmi is failed");
 			}
-			exporter.exportXMI("d://deintegration.xmi", entityGroup, XMIConstants.XMI_VERSION_1_1);
+			exporter.exportXMI("deintegration.xmi", entityGroup, XMIConstants.XMI_VERSION_1_1);
 		}
 		catch (Exception e)
 		{

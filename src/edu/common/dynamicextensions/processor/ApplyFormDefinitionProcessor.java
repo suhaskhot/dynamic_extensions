@@ -100,7 +100,14 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface parentEntity = (EntityInterface) container.getBaseContainer()
 					.getAbstractEntity();
 			entity.setParentEntity(parentEntity);
+			entity.populateEntityForConstraintProperties(false);
 		}
+		else
+		{
+			entity.setParentEntity(null);
+			entity.populateEntityForConstraintProperties(false);
+		}
+
 		entity.addContainer(container);
 		return container;
 	}
@@ -135,6 +142,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					association = associateEntity(association, AssociationType.CONTAINTMENT,
 							sourceEntity, targetEntity, Cardinality.ONE, Cardinality.MANY);
 				}
+				association.populateAssociationForConstraintProperties();
 			}
 		}
 		return association;
@@ -181,11 +189,12 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param targetEntity
 	 * @param sourceCardinality
 	 * @param targetCardinality
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private AssociationInterface associateEntity(AssociationInterface association,
 			AssociationType associationType, EntityInterface sourceEntity,
 			EntityInterface targetEntity, Cardinality sourceCardinality,
-			Cardinality targetCardinality)
+			Cardinality targetCardinality) throws DynamicExtensionsSystemException
 	{
 		if (association == null)
 		{
@@ -198,10 +207,11 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				sourceCardinality));
 		association.setTargetRole(getRole(associationType, targetEntity.getName(), Cardinality.ONE,
 				targetCardinality));
+		sourceEntity.addAssociation(association);
 		ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
 				.getConstraintProperties(association);
 		association.setConstraintProperties(constraintProperties);
-		sourceEntity.addAssociation(association);
+
 		return association;
 	}
 

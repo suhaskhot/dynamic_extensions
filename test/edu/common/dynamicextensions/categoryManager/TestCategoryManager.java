@@ -3,10 +3,8 @@ package edu.common.dynamicextensions.categoryManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import edu.common.dynamicextensions.domain.Category;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -80,7 +78,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#setUp()
+	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCaseUtility#setUp()
 	 */
 	protected void setUp()
 	{
@@ -88,7 +86,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#tearDown()
+	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCaseUtility#tearDown()
 	 */
 	protected void tearDown()
 	{
@@ -102,9 +100,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	public void testSaveEntityGroup1()
 	{
 		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-		EntityGroupInterface entityGroup = createEntityGroup1();
+
 		try
 		{
+			EntityGroupInterface entityGroup = createEntityGroup1();
 			// Save the entity group.
 			entityGroupManager.persistEntityGroup(entityGroup);
 		}
@@ -127,9 +126,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	public void testSaveEntityGroup2()
 	{
 		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-		EntityGroupInterface entityGroup = createEntityGroup2();
+
 		try
 		{
+			EntityGroupInterface entityGroup = createEntityGroup2();
 			// Save the entity group.
 			entityGroupManager.persistEntityGroup(entityGroup);
 		}
@@ -152,9 +152,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	public void testSaveEntityGroup3()
 	{
 		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-		EntityGroupInterface entityGroup = createEntityGroup3();
+
 		try
 		{
+			EntityGroupInterface entityGroup = createEntityGroup3();
 			// Save the entity group.
 			entityGroupManager.persistEntityGroup(entityGroup);
 		}
@@ -184,7 +185,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		try
 		{
 			// Fetch the entity group from the database.
-			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", name);
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName",
+					name);
 
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
@@ -202,7 +204,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 	public void testImportInvalidPVForCategory()
 	{
-		ApplicationProperties.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
+		ApplicationProperties
+				.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
 
 		try
 		{
@@ -213,12 +216,13 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			String[] args2 = {"./csv/cat_RULES.csv"};
 			CategoryCreator categoryCreator = new CategoryCreator();
 			categoryCreator.main(args2);
-			
+
 			fail();
 		}
 		catch (Exception e)
 		{
-			assertTrue(e.getMessage().indexOf(ApplicationProperties.getValue(CategoryConstants.NO_PV_FOR_ATTR)) != -1);
+			assertTrue(e.getMessage().indexOf(
+					ApplicationProperties.getValue(CategoryConstants.NO_PV_FOR_ATTR)) != -1);
 		}
 	}
 
@@ -962,7 +966,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
 			EntityGroupInterface entityGroup = null;
 
-			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "User-Study-Experiment EG1");
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName",
+					"User-Study-Experiment EG1");
 
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
@@ -974,7 +979,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			EntityInterface study = entityGroup.getEntityByName("Study Entity");
 			EntityInterface experiment = entityGroup.getEntityByName("Experiment Entity");
 
-			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()), noOfDefaultColumns + 4);
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()),
+					noOfDefaultColumns + 4);
 
 			// Create a category from user and experiment entities.
 			CategoryInterface category = factory.createCategory();
@@ -1005,27 +1011,33 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			experimentCategoryEntity.setEntity(experiment);
 
 			// Create category attribute(s) for experiment category entity.
-			CategoryAttributeInterface experimentCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface experimentCategoryAttribute = factory
+					.createCategoryAttribute();
 			experimentCategoryAttribute.setName("Experiment Category Attribute");
-			experimentCategoryAttribute.setAbstractAttribute(experiment.getAttributeByName("Experiment Name"));
+			experimentCategoryAttribute.setAbstractAttribute(experiment
+					.getAttributeByName("Experiment Name"));
 
 			experimentCategoryEntity.addCategoryAttribute(experimentCategoryAttribute);
 			experimentCategoryAttribute.setCategoryEntity(experimentCategoryEntity);
 
 			// Fetch the user's associations list.
-			List<AssociationInterface> userAssociationsList = new ArrayList<AssociationInterface>(user.getAssociationCollection());
+			List<AssociationInterface> userAssociationsList = new ArrayList<AssociationInterface>(
+					user.getAssociationCollection());
 
 			// Fetch the study's associations list.
-			List<AssociationInterface> studyAssociationsList = new ArrayList<AssociationInterface>(study.getAssociationCollection());
+			List<AssociationInterface> studyAssociationsList = new ArrayList<AssociationInterface>(
+					study.getAssociationCollection());
 
 			// Create a path between user category entity and experiment category entity.
 			PathInterface path = factory.createPath();
 
-			PathAssociationRelationInterface pathAssociationRelation1 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelation1 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelation1.setAssociation(userAssociationsList.get(0));
 			pathAssociationRelation1.setPathSequenceNumber(1);
 
-			PathAssociationRelationInterface pathAssociationRelation2 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelation2 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelation2.setAssociation(studyAssociationsList.get(0));
 			pathAssociationRelation2.setPathSequenceNumber(2);
 
@@ -1041,7 +1053,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create a category association between user category entity and experiment category entity
 			// that corresponds to association between user and experiment entities.
 			CategoryAssociationInterface categoryAssociation = factory.createCategoryAssociation();
-			categoryAssociation.setName("User Category Entity To Experiment Category Entity Category Association");
+			categoryAssociation
+					.setName("User Category Entity To Experiment Category Entity Category Association");
 			categoryAssociation.setCategoryEntity(userCategoryEntity);
 			categoryAssociation.setTargetCategoryEntity(experimentCategoryEntity);
 
@@ -1057,7 +1070,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			ContainerInterface userContainer = createContainer(userCategoryEntity);
 
 			// Create a control for user category attribute.
-			TextFieldInterface userControl = createTextFieldControl(userCategoryAttribute, sequenceNumber++);
+			TextFieldInterface userControl = createTextFieldControl(userCategoryAttribute,
+					sequenceNumber++);
 			userControl.setParentContainer((Container) userContainer);
 
 			userContainer.addControl(userControl);
@@ -1067,13 +1081,15 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			experimentContainer.setAddCaption(false);
 
 			// Create a control for experiment category attribute.
-			TextFieldInterface experimentControl = createTextFieldControl(experimentCategoryAttribute, sequenceNumber++);
+			TextFieldInterface experimentControl = createTextFieldControl(
+					experimentCategoryAttribute, sequenceNumber++);
 			experimentControl.setParentContainer((Container) experimentContainer);
 
 			experimentContainer.addControl(experimentControl);
 
 			// Create a control for category association.
-			CategoryAssociationControlInterface categoryAssociationControl = factory.createCategoryAssociationControl();
+			CategoryAssociationControlInterface categoryAssociationControl = factory
+					.createCategoryAssociationControl();
 			categoryAssociationControl.setCaption("UserToExperimentCategoryAssociationControl");
 			categoryAssociationControl.setContainer(experimentContainer);
 			categoryAssociationControl.setBaseAbstractAttribute(categoryAssociation);
@@ -1119,7 +1135,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
 			EntityGroupInterface entityGroup = null;
 
-			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName", "User-Study-Experiment EG1");
+			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName",
+					"User-Study-Experiment EG1");
 
 			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
 			{
@@ -1130,7 +1147,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			EntityInterface user = entityGroup.getEntityByName("User Entity");
 			EntityInterface study = entityGroup.getEntityByName("Study Entity");
 			EntityInterface experiment = entityGroup.getEntityByName("Experiment Entity");
-			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()), noOfDefaultColumns + 4);
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()),
+					noOfDefaultColumns + 4);
 			// Create a category from user, study and experiment entities.
 			CategoryInterface category = factory.createCategory();
 			category.setName("Category From User, Study and Experiment Entities");
@@ -1174,23 +1192,28 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			experimentCategoryEntity.setEntity(experiment);
 
 			// Create category attribute(s) for experiment category entity.
-			CategoryAttributeInterface experimentCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface experimentCategoryAttribute = factory
+					.createCategoryAttribute();
 			experimentCategoryAttribute.setName("Experiment Category Attribute");
-			experimentCategoryAttribute.setAbstractAttribute(experiment.getAttributeByName("Experiment Name"));
+			experimentCategoryAttribute.setAbstractAttribute(experiment
+					.getAttributeByName("Experiment Name"));
 
 			experimentCategoryEntity.addCategoryAttribute(experimentCategoryAttribute);
 			experimentCategoryAttribute.setCategoryEntity(experimentCategoryEntity);
 
 			// Fetch the user's associations list.
-			List<AssociationInterface> userAssociationsList = new ArrayList<AssociationInterface>(user.getAssociationCollection());
+			List<AssociationInterface> userAssociationsList = new ArrayList<AssociationInterface>(
+					user.getAssociationCollection());
 
 			// Fetch the study's associations list.
-			List<AssociationInterface> studyAssociationsList = new ArrayList<AssociationInterface>(study.getAssociationCollection());
+			List<AssociationInterface> studyAssociationsList = new ArrayList<AssociationInterface>(
+					study.getAssociationCollection());
 
 			// Create a path between user category entity and study category entity.
 			PathInterface path1 = factory.createPath();
 
-			PathAssociationRelationInterface pathAssociationRelation1 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelation1 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelation1.setAssociation(userAssociationsList.get(0));
 			pathAssociationRelation1.setPathSequenceNumber(1);
 			pathAssociationRelation1.setPath(path1);
@@ -1198,7 +1221,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create a path between study category entity and experiment category entity.
 			PathInterface path2 = factory.createPath();
 
-			PathAssociationRelationInterface pathAssociationRelation2 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelation2 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelation2.setAssociation(studyAssociationsList.get(0));
 			pathAssociationRelation2.setPathSequenceNumber(2);
 			pathAssociationRelation2.setPath(path2);
@@ -1213,7 +1237,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create a category association between user category entity and study category entity
 			// that corresponds to association between user and study entities.
 			CategoryAssociationInterface categoryAssociation1 = factory.createCategoryAssociation();
-			categoryAssociation1.setName("User Category Entity To Study Category Entity Category Association");
+			categoryAssociation1
+					.setName("User Category Entity To Study Category Entity Category Association");
 			categoryAssociation1.setCategoryEntity(userCategoryEntity);
 			categoryAssociation1.setTargetCategoryEntity(studyCategoryEntity);
 
@@ -1222,7 +1247,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create a category association between study category entity and experiment category entity
 			// that corresponds to association between study and experiment entities.
 			CategoryAssociationInterface categoryAssociation2 = factory.createCategoryAssociation();
-			categoryAssociation2.setName("Study Category Entity To Experiment Category Entity Category Association");
+			categoryAssociation2
+					.setName("Study Category Entity To Experiment Category Entity Category Association");
 			categoryAssociation2.setCategoryEntity(studyCategoryEntity);
 			categoryAssociation2.setTargetCategoryEntity(experimentCategoryEntity);
 
@@ -1240,7 +1266,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			ContainerInterface userContainer = createContainer(userCategoryEntity);
 
 			// Create a control for user category attribute.
-			TextFieldInterface userControl = createTextFieldControl(userCategoryAttribute, sequenceNumber++);
+			TextFieldInterface userControl = createTextFieldControl(userCategoryAttribute,
+					sequenceNumber++);
 			userControl.setParentContainer((Container) userContainer);
 
 			userContainer.addControl(userControl);
@@ -1250,7 +1277,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			studyContainer.setAddCaption(false);
 
 			// Create a control for study category attribute.
-			TextFieldInterface studyControl = createTextFieldControl(studyCategoryAttribute, sequenceNumber++);
+			TextFieldInterface studyControl = createTextFieldControl(studyCategoryAttribute,
+					sequenceNumber++);
 			studyControl.setParentContainer((Container) studyContainer);
 
 			studyContainer.addControl(studyControl);
@@ -1260,13 +1288,15 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			experimentContainer.setAddCaption(false);
 
 			// Create a control for experiment category attribute.
-			TextFieldInterface experimentControl = createTextFieldControl(experimentCategoryAttribute, sequenceNumber++);
+			TextFieldInterface experimentControl = createTextFieldControl(
+					experimentCategoryAttribute, sequenceNumber++);
 			experimentControl.setParentContainer((Container) experimentContainer);
 
 			experimentContainer.addControl(experimentControl);
 
 			// Create a control for category association between user category entity and study category entity.
-			CategoryAssociationControlInterface categoryAssociationControl1 = factory.createCategoryAssociationControl();
+			CategoryAssociationControlInterface categoryAssociationControl1 = factory
+					.createCategoryAssociationControl();
 			categoryAssociationControl1.setCaption("UserToStudyCategoryAssociationControl");
 			categoryAssociationControl1.setBaseAbstractAttribute(categoryAssociation1);
 			categoryAssociationControl1.setSequenceNumber(sequenceNumber++);
@@ -1276,7 +1306,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			userContainer.addControl(categoryAssociationControl1);
 
 			// Create a control for category association between study category entity and experiment category entity.
-			CategoryAssociationControlInterface categoryAssociationControl2 = factory.createCategoryAssociationControl();
+			CategoryAssociationControlInterface categoryAssociationControl2 = factory
+					.createCategoryAssociationControl();
 			categoryAssociationControl2.setCaption("StudyToExperimentCategoryAssociationControl");
 			categoryAssociationControl2.setBaseAbstractAttribute(categoryAssociation2);
 			categoryAssociationControl2.setSequenceNumber(sequenceNumber++);
@@ -1315,7 +1346,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			String[] args1 = {"./xmi/scg.xmi", "edu.wustl.catissuecore.domain.PathAnnotation_SCG", "./csv/SCG.csv"};
+			String[] args1 = {"./xmi/scg.xmi", "edu.wustl.catissuecore.domain.PathAnnotation_SCG",
+					"./csv/SCG.csv"};
 			XMIImporter xmImporter = new XMIImporter();
 			xmImporter.main(args1);
 
@@ -1324,8 +1356,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryCreator.main(args2);
 			
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
-			category = (CategoryInterface) categoryManager.getObjectByName(Category.class.getName(), "RadicalProstatectomyPathologyAnnotation_TestCaseCategory");
-			
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(),
+					"RadicalProstatectomyPathologyAnnotation_TestCaseCategory");
+
 			assertNotNull(category.getId());
 			assertNotNull(category.getRootCategoryElement());
 			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category.getRootCategoryElement().getName()), "RadicalProstatectomyPathologyAnnotation[1]");
@@ -1363,7 +1397,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		{
 			String[] args1 = {"./xmi/scg.xmi", "edu.wustl.catissuecore.domain.PathAnnotation_SCG", "./csv/SCG.csv"};
 			XMIImporter xmImporter = new XMIImporter();
-			xmImporter.main(args1);
+			//xmImporter.main(args1);
 
 			String[] args2 = {"./csv/Category_NeedleBiopsy.csv"};
 			CategoryCreator categoryCreator = new CategoryCreator();
@@ -1397,11 +1431,10 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-
-	/**
-	 * Create entity group from pathology annotation model.
-	 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.
-	 */
+		/**
+		 * Create entity group from pathology annotation model.
+		 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.
+		 */
 	public void testSelectivePermissibleValuesForCategory()
 	{
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
@@ -1413,75 +1446,107 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			EntityGroupInterface entityGroup = createEntityGroup4();
 
 			// Fetch the entities.
-			EntityInterface baseSolidTissuePathologyAnnotation = entityGroup.getEntityByName("BaseSolidTissuePathologyAnnotation");
-			EntityInterface prostatePathologyAnnotation = entityGroup.getEntityByName("ProstatePathologyAnnotation");
+			EntityInterface baseSolidTissuePathologyAnnotation = entityGroup
+					.getEntityByName("BaseSolidTissuePathologyAnnotation");
+			EntityInterface prostatePathologyAnnotation = entityGroup
+					.getEntityByName("ProstatePathologyAnnotation");
 			EntityInterface gleasonScore = entityGroup.getEntityByName("GleasonScore");
-			EntityInterface radicalProstatectomyPathologyAnnotation = entityGroup.getEntityByName("RadicalProstatectomyPathologyAnnotation");
+			EntityInterface radicalProstatectomyPathologyAnnotation = entityGroup
+					.getEntityByName("RadicalProstatectomyPathologyAnnotation");
 			EntityInterface melanomaMargin = entityGroup.getEntityByName("melanomaMargin");
-			EntityInterface radicalProstatectomyMargin = entityGroup.getEntityByName("RadicalProstatectomyMargin");
+			EntityInterface radicalProstatectomyMargin = entityGroup
+					.getEntityByName("RadicalProstatectomyMargin");
 
 			// Create a category.
 			CategoryInterface category = factory.createCategory();
 			category.setName("Category");
 
 			// Create category entity from baseSolidTissuePathologyAnnotation entity.
-			CategoryEntityInterface baseSolidTissuePathologyAnnotationCategoryEntity = factory.createCategoryEntity();
-			baseSolidTissuePathologyAnnotationCategoryEntity.setName("baseSolidTissuePathologyAnnotationCategoryEntity");
-			baseSolidTissuePathologyAnnotationCategoryEntity.setEntity(baseSolidTissuePathologyAnnotation);
+			CategoryEntityInterface baseSolidTissuePathologyAnnotationCategoryEntity = factory
+					.createCategoryEntity();
+			baseSolidTissuePathologyAnnotationCategoryEntity
+					.setName("baseSolidTissuePathologyAnnotationCategoryEntity");
+			baseSolidTissuePathologyAnnotationCategoryEntity
+					.setEntity(baseSolidTissuePathologyAnnotation);
 			baseSolidTissuePathologyAnnotationCategoryEntity.setNumberOfEntries(-1);
 
 			// Fetch the baseSolidTissuePathologyAnnotation's attributes' list.
-			List<AttributeInterface> attributesList1 = new ArrayList<AttributeInterface>(baseSolidTissuePathologyAnnotation.getAttributeCollection());
+			List<AttributeInterface> attributesList1 = new ArrayList<AttributeInterface>(
+					baseSolidTissuePathologyAnnotation.getAttributeCollection());
 
 			// Create category attribute(s) for baseSolidTissuePathologyAnnotation category entity.
-			CategoryAttributeInterface tissueSlideCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface tissueSlideCategoryAttribute = factory
+					.createCategoryAttribute();
 			tissueSlideCategoryAttribute.setName("tissueSlideCategoryAttribute");
 			tissueSlideCategoryAttribute.setAbstractAttribute(attributesList1.get(0));
-			baseSolidTissuePathologyAnnotationCategoryEntity.addCategoryAttribute(tissueSlideCategoryAttribute);
-			tissueSlideCategoryAttribute.setCategoryEntity(baseSolidTissuePathologyAnnotationCategoryEntity);
+			baseSolidTissuePathologyAnnotationCategoryEntity
+					.addCategoryAttribute(tissueSlideCategoryAttribute);
+			tissueSlideCategoryAttribute
+					.setCategoryEntity(baseSolidTissuePathologyAnnotationCategoryEntity);
 
-			CategoryAttributeInterface tumourTissueSiteCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface tumourTissueSiteCategoryAttribute = factory
+					.createCategoryAttribute();
 			tumourTissueSiteCategoryAttribute.setName("tumourTissueSiteCategoryAttribute");
 			tumourTissueSiteCategoryAttribute.setAbstractAttribute(attributesList1.get(1));
-			baseSolidTissuePathologyAnnotationCategoryEntity.addCategoryAttribute(tumourTissueSiteCategoryAttribute);
-			tumourTissueSiteCategoryAttribute.setCategoryEntity(baseSolidTissuePathologyAnnotationCategoryEntity);
+			baseSolidTissuePathologyAnnotationCategoryEntity
+					.addCategoryAttribute(tumourTissueSiteCategoryAttribute);
+			tumourTissueSiteCategoryAttribute
+					.setCategoryEntity(baseSolidTissuePathologyAnnotationCategoryEntity);
 
 			// Create User defined DE for tumourTissueSiteCategoryAttribute.
-			UserDefinedDEInterface tumourTissueSiteCategoryAttributeUserDefinedDE = factory.createUserDefinedDE();
+			UserDefinedDEInterface tumourTissueSiteCategoryAttributeUserDefinedDE = factory
+					.createUserDefinedDE();
 
-			UserDefinedDEInterface attributeUserDefinedDE = (UserDefinedDE) attributesList1.get(1).getAttributeTypeInformation().getDataElement();
-			List<PermissibleValueInterface> permissibleValueCollection = new ArrayList<PermissibleValueInterface>(attributeUserDefinedDE
-					.getPermissibleValueCollection());
+			UserDefinedDEInterface attributeUserDefinedDE = (UserDefinedDE) attributesList1.get(2)
+					.getAttributeTypeInformation().getDataElement();
+			List<PermissibleValueInterface> permissibleValueCollection = new ArrayList<PermissibleValueInterface>(
+					attributeUserDefinedDE.getPermissibleValueCollection());
 
-			tumourTissueSiteCategoryAttributeUserDefinedDE.addPermissibleValue(permissibleValueCollection.get(0));
-			tumourTissueSiteCategoryAttributeUserDefinedDE.addPermissibleValue(permissibleValueCollection.get(1));
-			tumourTissueSiteCategoryAttributeUserDefinedDE.addPermissibleValue(permissibleValueCollection.get(2));
+			tumourTissueSiteCategoryAttributeUserDefinedDE
+					.addPermissibleValue(permissibleValueCollection.get(0));
+			tumourTissueSiteCategoryAttributeUserDefinedDE
+					.addPermissibleValue(permissibleValueCollection.get(1));
+			tumourTissueSiteCategoryAttributeUserDefinedDE
+					.addPermissibleValue(permissibleValueCollection.get(2));
 
-			tumourTissueSiteCategoryAttribute.setDataElement(tumourTissueSiteCategoryAttributeUserDefinedDE);
+			tumourTissueSiteCategoryAttribute
+					.setDataElement(tumourTissueSiteCategoryAttributeUserDefinedDE);
 			tumourTissueSiteCategoryAttribute.setDefaultValue(permissibleValueCollection.get(1));
 
 			// Create category entity from prostatePathologyAnnotation entity.
-			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = factory.createCategoryEntity();
-			prostatePathologyAnnotationCategoryEntity.setName("prostatePathologyAnnotationCategoryEntity");
+			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = factory
+					.createCategoryEntity();
+			prostatePathologyAnnotationCategoryEntity
+					.setName("prostatePathologyAnnotationCategoryEntity");
 			prostatePathologyAnnotationCategoryEntity.setEntity(prostatePathologyAnnotation);
 			prostatePathologyAnnotationCategoryEntity.setNumberOfEntries(-1);
-			prostatePathologyAnnotationCategoryEntity.setParentCategoryEntity(baseSolidTissuePathologyAnnotationCategoryEntity);
+			prostatePathologyAnnotationCategoryEntity
+					.setParentCategoryEntity(baseSolidTissuePathologyAnnotationCategoryEntity);
 
 			// Fetch the prostatePathologyAnnotation attributes' list.
-			List<AttributeInterface> attributesList2 = new ArrayList<AttributeInterface>(prostatePathologyAnnotation.getAttributeCollection());
+			List<AttributeInterface> attributesList2 = new ArrayList<AttributeInterface>(
+					prostatePathologyAnnotation.getAttributeCollection());
 
 			// Create category attribute(s) for prostatePathologyAnnotationCategoryEntity category entity.
-			CategoryAttributeInterface seminalVesicleInvasionCategoryAttribute = factory.createCategoryAttribute();
-			seminalVesicleInvasionCategoryAttribute.setName("seminalVesicleInvasionCategoryAttribute");
+			CategoryAttributeInterface seminalVesicleInvasionCategoryAttribute = factory
+					.createCategoryAttribute();
+			seminalVesicleInvasionCategoryAttribute
+					.setName("seminalVesicleInvasionCategoryAttribute");
 			seminalVesicleInvasionCategoryAttribute.setAbstractAttribute(attributesList2.get(0));
-			prostatePathologyAnnotationCategoryEntity.addCategoryAttribute(seminalVesicleInvasionCategoryAttribute);
-			seminalVesicleInvasionCategoryAttribute.setCategoryEntity(prostatePathologyAnnotationCategoryEntity);
+			prostatePathologyAnnotationCategoryEntity
+					.addCategoryAttribute(seminalVesicleInvasionCategoryAttribute);
+			seminalVesicleInvasionCategoryAttribute
+					.setCategoryEntity(prostatePathologyAnnotationCategoryEntity);
 
-			CategoryAttributeInterface periprostaticFatInvasionCategoryAttribute = factory.createCategoryAttribute();
-			periprostaticFatInvasionCategoryAttribute.setName("periprostaticFatInvasionCategoryAttribute");
+			CategoryAttributeInterface periprostaticFatInvasionCategoryAttribute = factory
+					.createCategoryAttribute();
+			periprostaticFatInvasionCategoryAttribute
+					.setName("periprostaticFatInvasionCategoryAttribute");
 			periprostaticFatInvasionCategoryAttribute.setAbstractAttribute(attributesList2.get(1));
-			prostatePathologyAnnotationCategoryEntity.addCategoryAttribute(periprostaticFatInvasionCategoryAttribute);
-			periprostaticFatInvasionCategoryAttribute.setCategoryEntity(prostatePathologyAnnotationCategoryEntity);
+			prostatePathologyAnnotationCategoryEntity
+					.addCategoryAttribute(periprostaticFatInvasionCategoryAttribute);
+			periprostaticFatInvasionCategoryAttribute
+					.setCategoryEntity(prostatePathologyAnnotationCategoryEntity);
 
 			// Create category entity from gleasonScore entity.
 			CategoryEntityInterface gleasonScoreCategoryEntity = factory.createCategoryEntity();
@@ -1490,28 +1555,33 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			gleasonScoreCategoryEntity.setNumberOfEntries(-1);
 
 			// Fetch the gleasonScore's attributes' list.
-			List<AttributeInterface> attributesList3 = new ArrayList<AttributeInterface>(gleasonScore.getAttributeCollection());
+			List<AttributeInterface> attributesList3 = new ArrayList<AttributeInterface>(
+					gleasonScore.getAttributeCollection());
 
 			// Create category attribute(s) for gleasonScoreCategoryEntity.
-			CategoryAttributeInterface primaryPatternCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface primaryPatternCategoryAttribute = factory
+					.createCategoryAttribute();
 			primaryPatternCategoryAttribute.setName("primaryPatternCategoryAttribute");
 			primaryPatternCategoryAttribute.setAbstractAttribute(attributesList3.get(0));
 			gleasonScoreCategoryEntity.addCategoryAttribute(primaryPatternCategoryAttribute);
 			primaryPatternCategoryAttribute.setCategoryEntity(gleasonScoreCategoryEntity);
 
-			CategoryAttributeInterface secondaryPatternCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface secondaryPatternCategoryAttribute = factory
+					.createCategoryAttribute();
 			secondaryPatternCategoryAttribute.setName("secondaryPatternCategoryAttribute");
 			secondaryPatternCategoryAttribute.setAbstractAttribute(attributesList3.get(1));
 			gleasonScoreCategoryEntity.addCategoryAttribute(secondaryPatternCategoryAttribute);
 			secondaryPatternCategoryAttribute.setCategoryEntity(gleasonScoreCategoryEntity);
 
 			// Fetch the prostatePathologyAnnotation's associations' list.
-			List<AssociationInterface> associationsList1 = new ArrayList<AssociationInterface>(prostatePathologyAnnotation.getAssociationCollection());
+			List<AssociationInterface> associationsList1 = new ArrayList<AssociationInterface>(
+					prostatePathologyAnnotation.getAssociationCollection());
 
 			// Create a path between prostate pathology annotation category entity and gleason score category entity.
 			PathInterface path1 = factory.createPath();
 
-			PathAssociationRelationInterface pathAssociationRelationForPath1 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelationForPath1 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelationForPath1.setAssociation(associationsList1.get(0));
 			pathAssociationRelationForPath1.setPathSequenceNumber(1);
 			pathAssociationRelationForPath1.setPath(path1);
@@ -1523,39 +1593,53 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create a category association between prostate pathology annotation category entity
 			// and gleason score category entity that corresponds to association between prostate pathology annotation
 			// and gleason score.
-			CategoryAssociationInterface prostateGleasonCategoryAssociation = factory.createCategoryAssociation();
-			prostateGleasonCategoryAssociation.setName("prostateGleasonAssociationCategoryAssociation");
-			prostateGleasonCategoryAssociation.setCategoryEntity(prostatePathologyAnnotationCategoryEntity);
+			CategoryAssociationInterface prostateGleasonCategoryAssociation = factory
+					.createCategoryAssociation();
+			prostateGleasonCategoryAssociation
+					.setName("prostateGleasonAssociationCategoryAssociation");
+			prostateGleasonCategoryAssociation
+					.setCategoryEntity(prostatePathologyAnnotationCategoryEntity);
 			prostateGleasonCategoryAssociation.setTargetCategoryEntity(gleasonScoreCategoryEntity);
 
-			prostatePathologyAnnotationCategoryEntity.getCategoryAssociationCollection().add(prostateGleasonCategoryAssociation);
+			prostatePathologyAnnotationCategoryEntity.getCategoryAssociationCollection().add(
+					prostateGleasonCategoryAssociation);
 
 			// Make gleason score category entity a child of prostate pathology annotation category entity.
 			prostatePathologyAnnotationCategoryEntity.addChildCategory(gleasonScoreCategoryEntity);
 
 			// Create category entity from radicalProstatectomyPathologyAnnotation entity.
-			CategoryEntityInterface radicalProstatectomyPathologyAnnotationCategoryEntity = factory.createCategoryEntity();
-			radicalProstatectomyPathologyAnnotationCategoryEntity.setName("radicalProstatectomyPathologyAnnotationCategoryEntity");
-			radicalProstatectomyPathologyAnnotationCategoryEntity.setEntity(radicalProstatectomyPathologyAnnotation);
+			CategoryEntityInterface radicalProstatectomyPathologyAnnotationCategoryEntity = factory
+					.createCategoryEntity();
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.setName("radicalProstatectomyPathologyAnnotationCategoryEntity");
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.setEntity(radicalProstatectomyPathologyAnnotation);
 			radicalProstatectomyPathologyAnnotationCategoryEntity.setNumberOfEntries(-1);
-			radicalProstatectomyPathologyAnnotationCategoryEntity.setParentCategoryEntity(prostatePathologyAnnotationCategoryEntity);
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.setParentCategoryEntity(prostatePathologyAnnotationCategoryEntity);
 
 			// Fetch the radicalProstatectomyPathologyAnnotation's attributes' list.
-			List<AttributeInterface> attributesList4 = new ArrayList<AttributeInterface>(radicalProstatectomyPathologyAnnotation
-					.getAttributeCollection());
+			List<AttributeInterface> attributesList4 = new ArrayList<AttributeInterface>(
+					radicalProstatectomyPathologyAnnotation.getAttributeCollection());
 
 			// Create category attribute(s) for radicalProstatectomyPathologyAnnotationCategoryEntity.
-			CategoryAttributeInterface radicalProstateNameCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface radicalProstateNameCategoryAttribute = factory
+					.createCategoryAttribute();
 			radicalProstateNameCategoryAttribute.setName("radicalProstateNameCategoryAttribute");
 			radicalProstateNameCategoryAttribute.setAbstractAttribute(attributesList4.get(0));
-			radicalProstatectomyPathologyAnnotationCategoryEntity.addCategoryAttribute(radicalProstateNameCategoryAttribute);
-			radicalProstateNameCategoryAttribute.setCategoryEntity(radicalProstatectomyPathologyAnnotationCategoryEntity);
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.addCategoryAttribute(radicalProstateNameCategoryAttribute);
+			radicalProstateNameCategoryAttribute
+					.setCategoryEntity(radicalProstatectomyPathologyAnnotationCategoryEntity);
 
-			CategoryAttributeInterface radicalProstateTypeCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface radicalProstateTypeCategoryAttribute = factory
+					.createCategoryAttribute();
 			radicalProstateTypeCategoryAttribute.setName("radicalProstateTypeCategoryAttribute");
 			radicalProstateTypeCategoryAttribute.setAbstractAttribute(attributesList4.get(1));
-			radicalProstatectomyPathologyAnnotationCategoryEntity.addCategoryAttribute(radicalProstateTypeCategoryAttribute);
-			radicalProstateTypeCategoryAttribute.setCategoryEntity(radicalProstatectomyPathologyAnnotationCategoryEntity);
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.addCategoryAttribute(radicalProstateTypeCategoryAttribute);
+			radicalProstateTypeCategoryAttribute
+					.setCategoryEntity(radicalProstatectomyPathologyAnnotationCategoryEntity);
 
 			// Create category entity from melanomaMargin entity.
 			CategoryEntityInterface melanomaMarginCategoryEntity = factory.createCategoryEntity();
@@ -1564,49 +1648,61 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			melanomaMarginCategoryEntity.setNumberOfEntries(-1);
 
 			// Fetch the melanomaMargin's attributes' list.
-			List<AttributeInterface> attributesList5 = new ArrayList<AttributeInterface>(melanomaMargin.getAttributeCollection());
+			List<AttributeInterface> attributesList5 = new ArrayList<AttributeInterface>(
+					melanomaMargin.getAttributeCollection());
 
 			// Create category attribute(s) for melanomaMarginCategoryEntity.
-			CategoryAttributeInterface melanomaMarginNameCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface melanomaMarginNameCategoryAttribute = factory
+					.createCategoryAttribute();
 			melanomaMarginNameCategoryAttribute.setName("melanomaMarginNameCategoryAttribute");
 			melanomaMarginNameCategoryAttribute.setAbstractAttribute(attributesList5.get(0));
 			melanomaMarginCategoryEntity.addCategoryAttribute(melanomaMarginNameCategoryAttribute);
 			melanomaMarginNameCategoryAttribute.setCategoryEntity(melanomaMarginCategoryEntity);
 
-			CategoryAttributeInterface melanomaMarginTypeCategoryAttribute = factory.createCategoryAttribute();
+			CategoryAttributeInterface melanomaMarginTypeCategoryAttribute = factory
+					.createCategoryAttribute();
 			melanomaMarginTypeCategoryAttribute.setName("melanomaMarginTypeCategoryAttribute");
 			melanomaMarginTypeCategoryAttribute.setAbstractAttribute(attributesList5.get(1));
 			melanomaMarginCategoryEntity.addCategoryAttribute(melanomaMarginTypeCategoryAttribute);
 			melanomaMarginTypeCategoryAttribute.setCategoryEntity(melanomaMarginCategoryEntity);
 
 			// Make melanoma margin category entity a child of radical prostatectomy pathology annotation category entity.
-			radicalProstatectomyPathologyAnnotationCategoryEntity.addChildCategory(melanomaMarginCategoryEntity);
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.addChildCategory(melanomaMarginCategoryEntity);
 
 			// Create a category association between radical prostatectomy pathology annotation category entity
 			// and melanoma margin category entity that corresponds to association between radical prostatectomy pathology annotation
 			// and melanoma margin.
-			CategoryAssociationInterface prostatePathologyMelanomaMarginCategoryAssociation = factory.createCategoryAssociation();
-			prostatePathologyMelanomaMarginCategoryAssociation.setName("prostatePathologymelanomaMarginCategoryAssociation");
-			prostatePathologyMelanomaMarginCategoryAssociation.setCategoryEntity(radicalProstatectomyPathologyAnnotationCategoryEntity);
-			prostatePathologyMelanomaMarginCategoryAssociation.setTargetCategoryEntity(melanomaMarginCategoryEntity);
-			radicalProstatectomyPathologyAnnotationCategoryEntity.getCategoryAssociationCollection().add(
-					prostatePathologyMelanomaMarginCategoryAssociation);
+			CategoryAssociationInterface prostatePathologyMelanomaMarginCategoryAssociation = factory
+					.createCategoryAssociation();
+			prostatePathologyMelanomaMarginCategoryAssociation
+					.setName("prostatePathologymelanomaMarginCategoryAssociation");
+			prostatePathologyMelanomaMarginCategoryAssociation
+					.setCategoryEntity(radicalProstatectomyPathologyAnnotationCategoryEntity);
+			prostatePathologyMelanomaMarginCategoryAssociation
+					.setTargetCategoryEntity(melanomaMarginCategoryEntity);
+			radicalProstatectomyPathologyAnnotationCategoryEntity
+					.getCategoryAssociationCollection().add(
+							prostatePathologyMelanomaMarginCategoryAssociation);
 
 			// Fetch the radicalProstatectomyPathologyAnnotation's associations' list.
-			List<AssociationInterface> associationsList2 = new ArrayList<AssociationInterface>(radicalProstatectomyPathologyAnnotation
-					.getAssociationCollection());
+			List<AssociationInterface> associationsList2 = new ArrayList<AssociationInterface>(
+					radicalProstatectomyPathologyAnnotation.getAssociationCollection());
 
 			// Fetch the radicalProstatectomyMargin's associations' list.
-			List<AssociationInterface> associationsList3 = new ArrayList<AssociationInterface>(radicalProstatectomyMargin.getAssociationCollection());
+			List<AssociationInterface> associationsList3 = new ArrayList<AssociationInterface>(
+					radicalProstatectomyMargin.getAssociationCollection());
 
 			// Create a path between radical prostatectomy pathology annotation category entity and melanoma margin category entity.
 			PathInterface path2 = factory.createPath();
 
-			PathAssociationRelationInterface pathAssociationRelation1ForPath2 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelation1ForPath2 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelation1ForPath2.setAssociation(associationsList2.get(0));
 			pathAssociationRelation1ForPath2.setPathSequenceNumber(1);
 
-			PathAssociationRelationInterface pathAssociationRelation2ForPath2 = factory.createPathAssociationRelation();
+			PathAssociationRelationInterface pathAssociationRelation2ForPath2 = factory
+					.createPathAssociationRelation();
 			pathAssociationRelation2ForPath2.setAssociation(associationsList3.get(0));
 			pathAssociationRelation2ForPath2.setPathSequenceNumber(2);
 
@@ -1631,39 +1727,51 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			baseSolidTissuePathologyAnnotationContainer.setCaption("Base Solid Tissue Pathology");
 
 			// Create a control for tissueSlideCategoryAttribute.
-			TextFieldInterface tissueSlideControl = createTextFieldControl(tissueSlideCategoryAttribute, sequenceNumber++);
+			TextFieldInterface tissueSlideControl = createTextFieldControl(
+					tissueSlideCategoryAttribute, sequenceNumber++);
 			// Create a control for tumourTissueSiteCategoryAttribute.
-			ComboBoxInterface tumourTissueSiteControl = createComboBoxControl(tumourTissueSiteCategoryAttribute, sequenceNumber++);
+			ComboBoxInterface tumourTissueSiteControl = createComboBoxControl(
+					tumourTissueSiteCategoryAttribute, sequenceNumber++);
 
-			tissueSlideControl.setParentContainer((Container) baseSolidTissuePathologyAnnotationContainer);
+			tissueSlideControl
+					.setParentContainer((Container) baseSolidTissuePathologyAnnotationContainer);
 			baseSolidTissuePathologyAnnotationContainer.addControl(tissueSlideControl);
 
-			tumourTissueSiteControl.setParentContainer((Container) baseSolidTissuePathologyAnnotationContainer);
+			tumourTissueSiteControl
+					.setParentContainer((Container) baseSolidTissuePathologyAnnotationContainer);
 			baseSolidTissuePathologyAnnotationContainer.addControl(tumourTissueSiteControl);
 
 			// Create a container for prostatePathologyAnnotationCategoryContainer.
 			ContainerInterface prostatePathologyAnnotationCategoryContainer = createContainer(prostatePathologyAnnotationCategoryEntity);
-			prostatePathologyAnnotationCategoryContainer.setCaption("Prostate Pathology Annotation");
+			prostatePathologyAnnotationCategoryContainer
+					.setCaption("Prostate Pathology Annotation");
 
 			// Create a control for seminalVesicleInvasionCategoryAttribute.
-			TextFieldInterface seminalVesicleInvasionControl = createTextFieldControl(seminalVesicleInvasionCategoryAttribute, sequenceNumber++);
+			TextFieldInterface seminalVesicleInvasionControl = createTextFieldControl(
+					seminalVesicleInvasionCategoryAttribute, sequenceNumber++);
 			// Create a control for periprostaticFatInvasionCategoryAttribute.
-			TextFieldInterface periprostaticFatInvasionControl = createTextFieldControl(periprostaticFatInvasionCategoryAttribute, sequenceNumber++);
+			TextFieldInterface periprostaticFatInvasionControl = createTextFieldControl(
+					periprostaticFatInvasionCategoryAttribute, sequenceNumber++);
 
-			seminalVesicleInvasionControl.setParentContainer((Container) prostatePathologyAnnotationCategoryContainer);
+			seminalVesicleInvasionControl
+					.setParentContainer((Container) prostatePathologyAnnotationCategoryContainer);
 			prostatePathologyAnnotationCategoryContainer.addControl(seminalVesicleInvasionControl);
 
-			periprostaticFatInvasionControl.setParentContainer((Container) prostatePathologyAnnotationCategoryContainer);
-			prostatePathologyAnnotationCategoryContainer.addControl(periprostaticFatInvasionControl);
+			periprostaticFatInvasionControl
+					.setParentContainer((Container) prostatePathologyAnnotationCategoryContainer);
+			prostatePathologyAnnotationCategoryContainer
+					.addControl(periprostaticFatInvasionControl);
 
 			// Create a container for gleasonScoreCategoryEntity.
 			ContainerInterface gleasonScoreContainer = createContainer(gleasonScoreCategoryEntity);
 			gleasonScoreContainer.setCaption("Gleason Score");
 
 			// Create a control for primaryPatternCategoryAttribute.
-			TextFieldInterface primaryPatternControl = createTextFieldControl(primaryPatternCategoryAttribute, sequenceNumber++);
+			TextFieldInterface primaryPatternControl = createTextFieldControl(
+					primaryPatternCategoryAttribute, sequenceNumber++);
 			// Create a control for secondaryPatternCategoryAttribute.
-			TextFieldInterface secondaryPatternControl = createTextFieldControl(secondaryPatternCategoryAttribute, sequenceNumber++);
+			TextFieldInterface secondaryPatternControl = createTextFieldControl(
+					secondaryPatternCategoryAttribute, sequenceNumber++);
 
 			primaryPatternControl.setParentContainer((Container) gleasonScoreContainer);
 			gleasonScoreContainer.addControl(primaryPatternControl);
@@ -1671,28 +1779,38 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			secondaryPatternControl.setParentContainer((Container) gleasonScoreContainer);
 			gleasonScoreContainer.addControl(secondaryPatternControl);
 
-			AbstractContainmentControlInterface prostateGleasonCategoryContainmentControl = factory.createCategoryAssociationControl();
-			prostateGleasonCategoryContainmentControl.setCaption("prostateGleasonCategory association");
-			prostateGleasonCategoryContainmentControl.setBaseAbstractAttribute(prostateGleasonCategoryAssociation);
+			AbstractContainmentControlInterface prostateGleasonCategoryContainmentControl = factory
+					.createCategoryAssociationControl();
+			prostateGleasonCategoryContainmentControl
+					.setCaption("prostateGleasonCategory association");
+			prostateGleasonCategoryContainmentControl
+					.setBaseAbstractAttribute(prostateGleasonCategoryAssociation);
 			prostateGleasonCategoryContainmentControl.setSequenceNumber(sequenceNumber++);
 			prostateGleasonCategoryContainmentControl.setContainer(gleasonScoreContainer);
-			prostateGleasonCategoryContainmentControl.setParentContainer((Container) prostatePathologyAnnotationCategoryContainer);
+			prostateGleasonCategoryContainmentControl
+					.setParentContainer((Container) prostatePathologyAnnotationCategoryContainer);
 
-			prostatePathologyAnnotationCategoryContainer.addControl(prostateGleasonCategoryContainmentControl);
+			prostatePathologyAnnotationCategoryContainer
+					.addControl(prostateGleasonCategoryContainmentControl);
 
 			// Create a container for radicalProstatectomyPathologyAnnotationCategoryEntity.
 			ContainerInterface radicalProstatectomyPathologyAnnotationContainer = createContainer(radicalProstatectomyPathologyAnnotationCategoryEntity);
-			radicalProstatectomyPathologyAnnotationContainer.setCaption("Radical Prostatectomy Pathology Annotation");
+			radicalProstatectomyPathologyAnnotationContainer
+					.setCaption("Radical Prostatectomy Pathology Annotation");
 
 			// Create a control for radicalProstateNameCategoryAttribute.
-			TextFieldInterface radicalProstateNameControl = createTextFieldControl(radicalProstateNameCategoryAttribute, sequenceNumber++);
+			TextFieldInterface radicalProstateNameControl = createTextFieldControl(
+					radicalProstateNameCategoryAttribute, sequenceNumber++);
 			// Create a control for radicalProstateTypeCategoryAttribute.
-			TextFieldInterface radicalProstateTypeControl = createTextFieldControl(radicalProstateTypeCategoryAttribute, sequenceNumber++);
+			TextFieldInterface radicalProstateTypeControl = createTextFieldControl(
+					radicalProstateTypeCategoryAttribute, sequenceNumber++);
 
-			radicalProstateNameControl.setParentContainer((Container) radicalProstatectomyPathologyAnnotationContainer);
+			radicalProstateNameControl
+					.setParentContainer((Container) radicalProstatectomyPathologyAnnotationContainer);
 			radicalProstatectomyPathologyAnnotationContainer.addControl(radicalProstateNameControl);
 
-			radicalProstateTypeControl.setParentContainer((Container) radicalProstatectomyPathologyAnnotationContainer);
+			radicalProstateTypeControl
+					.setParentContainer((Container) radicalProstatectomyPathologyAnnotationContainer);
 			radicalProstatectomyPathologyAnnotationContainer.addControl(radicalProstateTypeControl);
 
 			// Create a container for melanomaMarginCategoryEntity.
@@ -1700,9 +1818,11 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			melanomaMarginContainer.setCaption("Melanoma Margin");
 
 			// Create a control for melanomaMarginNameCategoryAttribute.
-			TextFieldInterface melanomaMarginNameControl = createTextFieldControl(melanomaMarginNameCategoryAttribute, sequenceNumber++);
+			TextFieldInterface melanomaMarginNameControl = createTextFieldControl(
+					melanomaMarginNameCategoryAttribute, sequenceNumber++);
 			// Create a control for melanomaMarginTypeCategoryAttribute.
-			TextFieldInterface melanomaMarginTypeControl = createTextFieldControl(melanomaMarginTypeCategoryAttribute, sequenceNumber++);
+			TextFieldInterface melanomaMarginTypeControl = createTextFieldControl(
+					melanomaMarginTypeCategoryAttribute, sequenceNumber++);
 
 			melanomaMarginNameControl.setParentContainer((Container) melanomaMarginContainer);
 			melanomaMarginContainer.addControl(melanomaMarginNameControl);
@@ -1713,18 +1833,25 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Create a containment control.
 			AbstractContainmentControlInterface prostatePathologyMelanomaMarginCategoryContainmentControl = factory
 					.createCategoryAssociationControl();
-			prostatePathologyMelanomaMarginCategoryContainmentControl.setBaseAbstractAttribute(prostatePathologyMelanomaMarginCategoryAssociation);
-			prostatePathologyMelanomaMarginCategoryContainmentControl.setSequenceNumber(sequenceNumber++);
-			prostatePathologyMelanomaMarginCategoryContainmentControl.setCaption("prostatePathologyMelanomaMargin association");
-			prostatePathologyMelanomaMarginCategoryContainmentControl.setContainer(melanomaMarginContainer);
+			prostatePathologyMelanomaMarginCategoryContainmentControl
+					.setBaseAbstractAttribute(prostatePathologyMelanomaMarginCategoryAssociation);
+			prostatePathologyMelanomaMarginCategoryContainmentControl
+					.setSequenceNumber(sequenceNumber++);
+			prostatePathologyMelanomaMarginCategoryContainmentControl
+					.setCaption("prostatePathologyMelanomaMargin association");
+			prostatePathologyMelanomaMarginCategoryContainmentControl
+					.setContainer(melanomaMarginContainer);
 			prostatePathologyMelanomaMarginCategoryContainmentControl
 					.setParentContainer((Container) radicalProstatectomyPathologyAnnotationContainer);
 
-			radicalProstatectomyPathologyAnnotationContainer.addControl(prostatePathologyMelanomaMarginCategoryContainmentControl);
+			radicalProstatectomyPathologyAnnotationContainer
+					.addControl(prostatePathologyMelanomaMarginCategoryContainmentControl);
 
 			// Link containers.
-			prostatePathologyAnnotationCategoryContainer.setBaseContainer(baseSolidTissuePathologyAnnotationContainer);
-			radicalProstatectomyPathologyAnnotationContainer.setBaseContainer(prostatePathologyAnnotationCategoryContainer);
+			prostatePathologyAnnotationCategoryContainer
+					.setBaseContainer(baseSolidTissuePathologyAnnotationContainer);
+			radicalProstatectomyPathologyAnnotationContainer
+					.setBaseContainer(prostatePathologyAnnotationCategoryContainer);
 
 			// Save category.
 			categoryManager.persistCategory(category);
@@ -1845,7 +1972,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			categoryManager.persistCategory(category);
 
 			// Edit category entity metadata.
-			category.getRootCategoryElement().setName("chemotherapyTrialsCategoryEntity name changed");
+			category.getRootCategoryElement().setName(
+					"chemotherapyTrialsCategoryEntity name changed");
 
 			// Again save the category. This should not result in new tables creation,
 			// just the category entity metadata information should get updated.
@@ -1917,7 +2045,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			// Edit category attribute metadata.
 			CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
 
-			for (CategoryAttributeInterface ca : rootCategoryEntity.getCategoryAttributeCollection())
+			for (CategoryAttributeInterface ca : rootCategoryEntity
+					.getCategoryAttributeCollection())
 			{
 				ca.setName(ca.getName() + String.valueOf(new Double(Math.random()).intValue()));
 			}
@@ -1942,8 +2071,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * Make a entity group from following entities:
 	 * Entities : user (1)------>(*) study
 	 * @return EntityGroupInterface
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private EntityGroupInterface createEntityGroup1()
+	private EntityGroupInterface createEntityGroup1() throws DynamicExtensionsSystemException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
@@ -1953,7 +2083,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		entityGroup.setShortName("User-Study EG1");
 
 		// Create user entity.
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		user.setName("User Entity");
 
 		// Create attribute(s) for user entity.
@@ -1975,7 +2105,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		user.addAbstractAttribute(userAddress);
 
 		// Create study entity.
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		study.setName("Study Entity");
 
 		// Create attribute(s) for study entity.
@@ -1989,7 +2119,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface studyDescription = factory.createStringAttribute();
 		studyDescription.setName("Study Description");
-		((StringAttributeTypeInformation) studyDescription.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) studyDescription.getAttributeTypeInformation())
+				.setSize(40);
 
 		// Add attribute(s) to study entity.
 		study.addAbstractAttribute(studyName);
@@ -2003,13 +2134,16 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		userToStudyAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
 		// Create source role for user to study association.
-		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "primaryInvestigator", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+				Cardinality.ONE, Cardinality.ONE);
 		sourceRole.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		userToStudyAssociation.setSourceRole(sourceRole);
-		userToStudyAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO, Cardinality.MANY));
+		userToStudyAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+				Cardinality.ZERO, Cardinality.MANY));
 
 		user.addAbstractAttribute(userToStudyAssociation);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(userToStudyAssociation);
 
 		// Create containers for user and study entities.
 		int sequenceNumber = 0;
@@ -2024,7 +2158,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		sequenceNumber = sequenceNumber + studyEntityContainer.getControlCollection().size();
 
 		// Create a contaiment control.
-		AbstractContainmentControlInterface containmentControl = factory.createContainmentAssociationControl();
+		AbstractContainmentControlInterface containmentControl = factory
+				.createContainmentAssociationControl();
 		containmentControl.setCaption("UserToStudyAbstractContainmentControl");
 		containmentControl.setContainer(studyEntityContainer);
 		containmentControl.setBaseAbstractAttribute(userToStudyAssociation);
@@ -2045,8 +2180,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * Make a entity group from following entities:
 	 * Entities : user (1)------>(*) study (1) ------>(*) experiment
 	 * @return EntityGroupInterface
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private EntityGroupInterface createEntityGroup2()
+	private EntityGroupInterface createEntityGroup2() throws DynamicExtensionsSystemException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
@@ -2056,7 +2192,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		entityGroup.setShortName("User-Study-Experiment EG1");
 
 		// Create user entity.
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		user.setName("User Entity");
 
 		// Create attribute(s) for user entity.
@@ -2078,7 +2214,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		user.addAbstractAttribute(userAddress);
 
 		// Create study entity.
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		study.setName("Study Entity");
 
 		// Create attribute(s) for study entity.
@@ -2092,7 +2228,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface studyDescription = factory.createStringAttribute();
 		studyDescription.setName("Study Description");
-		((StringAttributeTypeInformation) studyDescription.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) studyDescription.getAttributeTypeInformation())
+				.setSize(40);
 
 		// Add attribute(s) to study entity.
 		study.addAbstractAttribute(studyName);
@@ -2100,7 +2237,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		study.addAbstractAttribute(studyDescription);
 
 		// Create experiment entity.
-		EntityInterface experiment = factory.createEntity();
+		EntityInterface experiment = createAndPopulateEntity();
 		experiment.setName("Experiment Entity");
 
 		AttributeInterface experimentName = factory.createStringAttribute();
@@ -2113,7 +2250,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface experimentDescription = factory.createStringAttribute();
 		experimentDescription.setName("Experiment Description");
-		((StringAttributeTypeInformation) experimentDescription.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) experimentDescription.getAttributeTypeInformation())
+				.setSize(40);
 
 		// Add attribute to experiment entity.
 		experiment.addAbstractAttribute(experimentName);
@@ -2127,14 +2265,16 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		userToStudyAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
 		// Create source role for user to study association.
-		RoleInterface sourceRole1 = getRole(AssociationType.ASSOCIATION, "User To Study Association Source Role", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole1 = getRole(AssociationType.ASSOCIATION,
+				"User To Study Association Source Role", Cardinality.ONE, Cardinality.ONE);
 		sourceRole1.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		userToStudyAssociation.setSourceRole(sourceRole1);
-		userToStudyAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "User To Study Association Target Role", Cardinality.ZERO,
-				Cardinality.MANY));
+		userToStudyAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION,
+				"User To Study Association Target Role", Cardinality.ZERO, Cardinality.MANY));
 
 		user.addAbstractAttribute(userToStudyAssociation);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(userToStudyAssociation);
 
 		// Associate study entity with experiment entity : study (1)------ >(*) experiment
 		AssociationInterface studyToExperimentAssociation = factory.createAssociation();
@@ -2143,15 +2283,17 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		studyToExperimentAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
 		// Create source role for study to experiment association.
-		RoleInterface sourceRole2 = getRole(AssociationType.ASSOCIATION, "Study To Experiment Association Source Role", Cardinality.ONE,
-				Cardinality.ONE);
+		RoleInterface sourceRole2 = getRole(AssociationType.ASSOCIATION,
+				"Study To Experiment Association Source Role", Cardinality.ONE, Cardinality.ONE);
 		sourceRole2.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		studyToExperimentAssociation.setSourceRole(sourceRole2);
-		studyToExperimentAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "Study To Experiment Association Target Role",
-				Cardinality.ZERO, Cardinality.MANY));
+		studyToExperimentAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION,
+				"Study To Experiment Association Target Role", Cardinality.ZERO, Cardinality.MANY));
 
 		study.addAbstractAttribute(studyToExperimentAssociation);
+		DynamicExtensionsUtility
+				.getConstraintPropertiesForAssociation(studyToExperimentAssociation);
 
 		// Create containers for user, study and experiment entities.
 		int sequenceNumber = 0;
@@ -2169,7 +2311,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		sequenceNumber = sequenceNumber + experimentEntityContainer.getControlCollection().size();
 
 		// Create contaiment controls.
-		AbstractContainmentControlInterface containmentControl1 = factory.createContainmentAssociationControl();
+		AbstractContainmentControlInterface containmentControl1 = factory
+				.createContainmentAssociationControl();
 		containmentControl1.setCaption("UserToStudyContainmentControl");
 		containmentControl1.setContainer(studyEntityContainer);
 		containmentControl1.setBaseAbstractAttribute(userToStudyAssociation);
@@ -2178,7 +2321,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		containmentControl1.setParentContainer((Container) userEntityContainer);
 		userEntityContainer.addControl(containmentControl1);
 
-		AbstractContainmentControlInterface containmentControl2 = factory.createContainmentAssociationControl();
+		AbstractContainmentControlInterface containmentControl2 = factory
+				.createContainmentAssociationControl();
 		containmentControl2.setCaption("StudyToExperimentContainmentControl");
 		containmentControl2.setContainer(experimentEntityContainer);
 		containmentControl2.setBaseAbstractAttribute(studyToExperimentAssociation);
@@ -2200,8 +2344,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	/**
 	 * Create entity group from pathology annotation model.
 	 * @return EntityGroupInterface
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private EntityGroupInterface createEntityGroup3()
+	private EntityGroupInterface createEntityGroup3() throws DynamicExtensionsSystemException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
@@ -2210,7 +2355,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		entityGroup.setShortName("PathologyModel EG1");
 
 		// Create a baseSolidTissuePathologyAnnotation entity.
-		EntityInterface baseSolidTissuePathologyAnnotation = factory.createEntity();
+		EntityInterface baseSolidTissuePathologyAnnotation = createAndPopulateEntity();
 		baseSolidTissuePathologyAnnotation.setName("BaseSolidTissuePathologyAnnotation");
 		baseSolidTissuePathologyAnnotation.setAbstract(true);
 
@@ -2221,30 +2366,35 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface tumourTissueSite = factory.createStringAttribute();
 		tumourTissueSite.setName("tumourTissueSite");
-		((StringAttributeTypeInformation) tumourTissueSite.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) tumourTissueSite.getAttributeTypeInformation())
+				.setSize(40);
 
 		baseSolidTissuePathologyAnnotation.addAbstractAttribute(tissueSlide);
 		baseSolidTissuePathologyAnnotation.addAbstractAttribute(tumourTissueSite);
 
 		// Create a prostatePathologyAnnotation entity.
-		EntityInterface prostatePathologyAnnotation = factory.createEntity();
+		EntityInterface prostatePathologyAnnotation = createAndPopulateEntity();
 		prostatePathologyAnnotation.setName("ProstatePathologyAnnotation");
 		prostatePathologyAnnotation.setParentEntity(baseSolidTissuePathologyAnnotation);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(
+				prostatePathologyAnnotation, false);
 
 		// Create attribute(s) for prostatePathologyAnnotation entity.
 		AttributeInterface seminalVesicleInvasion = factory.createStringAttribute();
 		seminalVesicleInvasion.setName("seminalVesicleInvasion");
-		((StringAttributeTypeInformation) seminalVesicleInvasion.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) seminalVesicleInvasion.getAttributeTypeInformation())
+				.setSize(40);
 
 		AttributeInterface periprostaticFatInvasion = factory.createStringAttribute();
 		periprostaticFatInvasion.setName("periprostaticFatInvasion");
-		((StringAttributeTypeInformation) periprostaticFatInvasion.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) periprostaticFatInvasion.getAttributeTypeInformation())
+				.setSize(40);
 
 		prostatePathologyAnnotation.addAbstractAttribute(seminalVesicleInvasion);
 		prostatePathologyAnnotation.addAbstractAttribute(periprostaticFatInvasion);
 
 		// Create a gleasonScore entity.
-		EntityInterface gleasonScore = factory.createEntity();
+		EntityInterface gleasonScore = createAndPopulateEntity();
 		gleasonScore.setName("GleasonScore");
 
 		// Create attribute(s) for gleasonScore entity.
@@ -2254,7 +2404,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface secondaryPattern = factory.createStringAttribute();
 		secondaryPattern.setName("secondaryPattern");
-		((StringAttributeTypeInformation) secondaryPattern.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) secondaryPattern.getAttributeTypeInformation())
+				.setSize(40);
 
 		gleasonScore.addAbstractAttribute(primaryPattern);
 		gleasonScore.addAbstractAttribute(secondaryPattern);
@@ -2266,33 +2417,40 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association1.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
 		// Create source role for prostatePathologyAnnotation to gleasonScore association.
-		RoleInterface sourceRole1 = getRole(AssociationType.ASSOCIATION, "prostatePathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole1 = getRole(AssociationType.ASSOCIATION,
+				"prostatePathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
 		sourceRole1.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		association1.setSourceRole(sourceRole1);
-		association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "gleasonScore", Cardinality.ZERO, Cardinality.MANY));
+		association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "gleasonScore",
+				Cardinality.ZERO, Cardinality.MANY));
 
 		prostatePathologyAnnotation.addAbstractAttribute(association1);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association1);
 
 		// Create a radicalProstatectomyPathologyAnnotation entity.
-		EntityInterface radicalProstatectomyPathologyAnnotation = factory.createEntity();
+		EntityInterface radicalProstatectomyPathologyAnnotation = createAndPopulateEntity();
 		radicalProstatectomyPathologyAnnotation.setName("RadicalProstatectomyPathologyAnnotation");
 		radicalProstatectomyPathologyAnnotation.setParentEntity(prostatePathologyAnnotation);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(
+				radicalProstatectomyPathologyAnnotation, false);
 
 		// Create attribute(s) for radicalProstatectomyPathologyAnnotation entity.
 		AttributeInterface radicalProstateName = factory.createStringAttribute();
 		radicalProstateName.setName("radicalProstateName");
-		((StringAttributeTypeInformation) radicalProstateName.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) radicalProstateName.getAttributeTypeInformation())
+				.setSize(40);
 
 		AttributeInterface radicalProstateType = factory.createStringAttribute();
 		radicalProstateType.setName("radicalProstateType");
-		((StringAttributeTypeInformation) radicalProstateType.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) radicalProstateType.getAttributeTypeInformation())
+				.setSize(40);
 
 		radicalProstatectomyPathologyAnnotation.addAttribute(radicalProstateName);
 		radicalProstatectomyPathologyAnnotation.addAttribute(radicalProstateType);
 
 		// Create a radicalProstatectomyMargin entity.
-		EntityInterface radicalProstatectomyMargin = factory.createEntity();
+		EntityInterface radicalProstatectomyMargin = createAndPopulateEntity();
 		radicalProstatectomyMargin.setName("RadicalProstatectomyMargin");
 		radicalProstatectomyMargin.setAbstract(true);
 
@@ -2310,30 +2468,36 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		// Associate radicalProstatectomyPathologyAnnotation entity with radicalProstatectomyMargin entity : radicalProstatectomyPathologyAnnotation (1)------ >(*) radicalProstatectomyMargin
 		AssociationInterface association2 = factory.createAssociation();
-		association2.setName("radicalProstatectomyPathologyAnnotationToRadicalProstatectomyMarginAssociation");
+		association2
+				.setName("radicalProstatectomyPathologyAnnotationToRadicalProstatectomyMarginAssociation");
 		association2.setTargetEntity(radicalProstatectomyMargin);
 		association2.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-		RoleInterface sourceRole2 = getRole(AssociationType.ASSOCIATION, "radicalProstatectomyPathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole2 = getRole(AssociationType.ASSOCIATION,
+				"radicalProstatectomyPathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
 		sourceRole2.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		association2.setSourceRole(sourceRole2);
-		association2.setTargetRole(getRole(AssociationType.ASSOCIATION, "radicalProstatectomyMargin", Cardinality.ZERO, Cardinality.MANY));
+		association2.setTargetRole(getRole(AssociationType.ASSOCIATION,
+				"radicalProstatectomyMargin", Cardinality.ZERO, Cardinality.MANY));
 
 		radicalProstatectomyPathologyAnnotation.addAbstractAttribute(association2);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association2);
 
 		// Create a melanomaMargin entity.
-		EntityInterface melanomaMargin = factory.createEntity();
+		EntityInterface melanomaMargin = createAndPopulateEntity();
 		melanomaMargin.setName("MelanomaMargin");
 
 		// Create attribute(s) for melanomaMargin entity.
 		AttributeInterface melanomaMarginName = factory.createStringAttribute();
 		melanomaMarginName.setName("melanomaMarginName");
-		((StringAttributeTypeInformation) melanomaMarginName.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) melanomaMarginName.getAttributeTypeInformation())
+				.setSize(40);
 
 		AttributeInterface melanomaMarginType = factory.createStringAttribute();
 		melanomaMarginType.setName("melanomaMarginType");
-		((StringAttributeTypeInformation) melanomaMarginType.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) melanomaMarginType.getAttributeTypeInformation())
+				.setSize(40);
 
 		melanomaMargin.addAbstractAttribute(melanomaMarginName);
 		melanomaMargin.addAbstractAttribute(melanomaMarginType);
@@ -2344,13 +2508,16 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association3.setTargetEntity(melanomaMargin);
 		association3.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-		RoleInterface sourceRole3 = getRole(AssociationType.ASSOCIATION, "radicalProstatectomyMargin", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole3 = getRole(AssociationType.ASSOCIATION,
+				"radicalProstatectomyMargin", Cardinality.ONE, Cardinality.ONE);
 		sourceRole3.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		association3.setSourceRole(sourceRole3);
-		association3.setTargetRole(getRole(AssociationType.ASSOCIATION, "melanomaMargin", Cardinality.ZERO, Cardinality.MANY));
+		association3.setTargetRole(getRole(AssociationType.ASSOCIATION, "melanomaMargin",
+				Cardinality.ZERO, Cardinality.MANY));
 
 		radicalProstatectomyMargin.addAbstractAttribute(association3);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association3);
 
 		// Create containers for baseSolidTissuePathologyAnnotation, prostatePathologyAnnotation,
 		// gleasonScore, radicalProstatectomyPathologyAnnotation, radicalProstatectomyMargin
@@ -2367,46 +2534,65 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		// Create text field controls for attributes baseSolidTissuePathologyAnnotation,
 		// prostatePathologyAnnotation, gleasonScore, radicalProstatectomyPathologyAnnotation,
 		// radicalProstatectomyMargin and melanomaMargin entities.
-		createTextFieldControlForEntity(baseSolidTissuePathologyAnnotationEntityContainer, baseSolidTissuePathologyAnnotation, sequenceNumber);
-		sequenceNumber = baseSolidTissuePathologyAnnotationEntityContainer.getControlCollection().size();
-		createTextFieldControlForEntity(prostatePathologyAnnotationEntityContainer, prostatePathologyAnnotation, sequenceNumber);
-		sequenceNumber = sequenceNumber + prostatePathologyAnnotationEntityContainer.getControlCollection().size();
+		createTextFieldControlForEntity(baseSolidTissuePathologyAnnotationEntityContainer,
+				baseSolidTissuePathologyAnnotation, sequenceNumber);
+		sequenceNumber = baseSolidTissuePathologyAnnotationEntityContainer.getControlCollection()
+				.size();
+		createTextFieldControlForEntity(prostatePathologyAnnotationEntityContainer,
+				prostatePathologyAnnotation, sequenceNumber);
+		sequenceNumber = sequenceNumber
+				+ prostatePathologyAnnotationEntityContainer.getControlCollection().size();
 		createTextFieldControlForEntity(gleasonScoreEntityContainer, gleasonScore, sequenceNumber);
 		sequenceNumber = sequenceNumber + gleasonScoreEntityContainer.getControlCollection().size();
-		createTextFieldControlForEntity(radicalProstatectomyPathologyAnnotationrEntityContainer, radicalProstatectomyPathologyAnnotation,
+		createTextFieldControlForEntity(radicalProstatectomyPathologyAnnotationrEntityContainer,
+				radicalProstatectomyPathologyAnnotation, sequenceNumber);
+		sequenceNumber = sequenceNumber
+				+ radicalProstatectomyPathologyAnnotationrEntityContainer.getControlCollection()
+						.size();
+		createTextFieldControlForEntity(radicalProstatectomyMarginEntityContainer,
+				radicalProstatectomyMargin, sequenceNumber);
+		sequenceNumber = sequenceNumber
+				+ radicalProstatectomyMarginEntityContainer.getControlCollection().size();
+		createTextFieldControlForEntity(melanomaMarginEntityContainer, melanomaMargin,
 				sequenceNumber);
-		sequenceNumber = sequenceNumber + radicalProstatectomyPathologyAnnotationrEntityContainer.getControlCollection().size();
-		createTextFieldControlForEntity(radicalProstatectomyMarginEntityContainer, radicalProstatectomyMargin, sequenceNumber);
-		sequenceNumber = sequenceNumber + radicalProstatectomyMarginEntityContainer.getControlCollection().size();
-		createTextFieldControlForEntity(melanomaMarginEntityContainer, melanomaMargin, sequenceNumber);
-		sequenceNumber = sequenceNumber + melanomaMarginEntityContainer.getControlCollection().size();
+		sequenceNumber = sequenceNumber
+				+ melanomaMarginEntityContainer.getControlCollection().size();
 
 		// Create contaiment controls.
-		AbstractContainmentControlInterface containmentControl1 = factory.createContainmentAssociationControl();
-		containmentControl1.setCaption("ProstatePathologyAnnotationToGleasonScoreContainmentControl");
+		AbstractContainmentControlInterface containmentControl1 = factory
+				.createContainmentAssociationControl();
+		containmentControl1
+				.setCaption("ProstatePathologyAnnotationToGleasonScoreContainmentControl");
 		containmentControl1.setContainer(gleasonScoreEntityContainer);
 		containmentControl1.setBaseAbstractAttribute(association1);
 		containmentControl1.setSequenceNumber(++sequenceNumber);
 
-		containmentControl1.setParentContainer((Container) prostatePathologyAnnotationEntityContainer);
+		containmentControl1
+				.setParentContainer((Container) prostatePathologyAnnotationEntityContainer);
 		prostatePathologyAnnotationEntityContainer.addControl(containmentControl1);
 
-		AbstractContainmentControlInterface containmentControl2 = factory.createContainmentAssociationControl();
-		containmentControl2.setCaption("RadicalProstatectomyPathologyAnnotationToRadicalProstatectomyMarginContainmentControl");
+		AbstractContainmentControlInterface containmentControl2 = factory
+				.createContainmentAssociationControl();
+		containmentControl2
+				.setCaption("RadicalProstatectomyPathologyAnnotationToRadicalProstatectomyMarginContainmentControl");
 		containmentControl2.setContainer(radicalProstatectomyMarginEntityContainer);
 		containmentControl2.setBaseAbstractAttribute(association2);
 		containmentControl2.setSequenceNumber(++sequenceNumber);
 
-		containmentControl2.setParentContainer((Container) radicalProstatectomyPathologyAnnotationrEntityContainer);
+		containmentControl2
+				.setParentContainer((Container) radicalProstatectomyPathologyAnnotationrEntityContainer);
 		radicalProstatectomyPathologyAnnotationrEntityContainer.addControl(containmentControl2);
 
-		AbstractContainmentControlInterface containmentControl3 = factory.createContainmentAssociationControl();
-		containmentControl3.setCaption("RadicalProstatectomyMarginToMelanomaMarginAssociationContainmentControl");
+		AbstractContainmentControlInterface containmentControl3 = factory
+				.createContainmentAssociationControl();
+		containmentControl3
+				.setCaption("RadicalProstatectomyMarginToMelanomaMarginAssociationContainmentControl");
 		containmentControl3.setContainer(melanomaMarginEntityContainer);
 		containmentControl3.setBaseAbstractAttribute(association3);
 		containmentControl3.setSequenceNumber(++sequenceNumber);
 
-		containmentControl3.setParentContainer((Container) radicalProstatectomyMarginEntityContainer);
+		containmentControl3
+				.setParentContainer((Container) radicalProstatectomyMarginEntityContainer);
 		radicalProstatectomyMarginEntityContainer.addControl(containmentControl3);
 
 		entityGroup.addEntity(baseSolidTissuePathologyAnnotation);
@@ -2429,8 +2615,9 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * Create entity group from pathology annotation model.
 	 * Add permissible values to tumourTissueSite attribute.
 	 * @return EntityGroupInterface
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private EntityGroupInterface createEntityGroup4()
+	private EntityGroupInterface createEntityGroup4() throws DynamicExtensionsSystemException
 	{
 		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
@@ -2439,7 +2626,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		entityGroup.setName("Entity Group " + new Double(Math.random()).toString());
 
 		// Create a baseSolidTissuePathologyAnnotation entity.
-		EntityInterface baseSolidTissuePathologyAnnotation = factory.createEntity();
+		EntityInterface baseSolidTissuePathologyAnnotation = createAndPopulateEntity();
 		baseSolidTissuePathologyAnnotation.setName("BaseSolidTissuePathologyAnnotation");
 		baseSolidTissuePathologyAnnotation.setAbstract(true);
 
@@ -2450,7 +2637,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface tumourTissueSite = factory.createStringAttribute();
 		tumourTissueSite.setName("tumourTissueSite");
-		((StringAttributeTypeInformation) tumourTissueSite.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) tumourTissueSite.getAttributeTypeInformation())
+				.setSize(40);
 
 		baseSolidTissuePathologyAnnotation.addAbstractAttribute(tissueSlide);
 		baseSolidTissuePathologyAnnotation.addAbstractAttribute(tumourTissueSite);
@@ -2479,29 +2667,34 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		userDefinedDE.addPermissibleValue(permissibleValue4);
 		userDefinedDE.addPermissibleValue(permissibleValue5);
 
-		StringAttributeTypeInformation tumourTissueSiteTypeInfo = (StringAttributeTypeInformation) tumourTissueSite.getAttributeTypeInformation();
+		StringAttributeTypeInformation tumourTissueSiteTypeInfo = (StringAttributeTypeInformation) tumourTissueSite
+				.getAttributeTypeInformation();
 
 		tumourTissueSiteTypeInfo.setDataElement(userDefinedDE);
 
 		// Create a prostatePathologyAnnotation entity.
-		EntityInterface prostatePathologyAnnotation = factory.createEntity();
+		EntityInterface prostatePathologyAnnotation = createAndPopulateEntity();
 		prostatePathologyAnnotation.setParentEntity(baseSolidTissuePathologyAnnotation);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(
+				prostatePathologyAnnotation, false);
 		prostatePathologyAnnotation.setName("ProstatePathologyAnnotation");
 
 		// Create attribute(s) for prostatePathologyAnnotation entity.
 		AttributeInterface seminalVesicleInvasion = factory.createStringAttribute();
 		seminalVesicleInvasion.setName("seminalVesicleInvasion");
-		((StringAttributeTypeInformation) seminalVesicleInvasion.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) seminalVesicleInvasion.getAttributeTypeInformation())
+				.setSize(40);
 
 		AttributeInterface periprostaticFatInvasion = factory.createStringAttribute();
 		periprostaticFatInvasion.setName("periprostaticFatInvasion");
-		((StringAttributeTypeInformation) periprostaticFatInvasion.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) periprostaticFatInvasion.getAttributeTypeInformation())
+				.setSize(40);
 
 		prostatePathologyAnnotation.addAbstractAttribute(seminalVesicleInvasion);
 		prostatePathologyAnnotation.addAbstractAttribute(periprostaticFatInvasion);
 
 		// Create a gleasonScore entity.
-		EntityInterface gleasonScore = factory.createEntity();
+		EntityInterface gleasonScore = createAndPopulateEntity();
 		gleasonScore.setName("GleasonScore");
 
 		// Create attribute(s) for gleasonScore entity.
@@ -2511,7 +2704,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		AttributeInterface secondaryPattern = factory.createStringAttribute();
 		secondaryPattern.setName("secondaryPattern");
-		((StringAttributeTypeInformation) secondaryPattern.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) secondaryPattern.getAttributeTypeInformation())
+				.setSize(40);
 
 		gleasonScore.addAbstractAttribute(primaryPattern);
 		gleasonScore.addAbstractAttribute(secondaryPattern);
@@ -2522,33 +2716,40 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association1.setTargetEntity(gleasonScore);
 		association1.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-		RoleInterface sourceRole1 = getRole(AssociationType.ASSOCIATION, "prostatePathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole1 = getRole(AssociationType.ASSOCIATION,
+				"prostatePathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
 		sourceRole1.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		association1.setSourceRole(sourceRole1);
-		association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "gleasonScore", Cardinality.ZERO, Cardinality.MANY));
+		association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "gleasonScore",
+				Cardinality.ZERO, Cardinality.MANY));
 
 		prostatePathologyAnnotation.addAbstractAttribute(association1);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association1);
 
 		// Create a radicalProstatectomyPathologyAnnotation entity.
-		EntityInterface radicalProstatectomyPathologyAnnotation = factory.createEntity();
+		EntityInterface radicalProstatectomyPathologyAnnotation = createAndPopulateEntity();
 		radicalProstatectomyPathologyAnnotation.setName("RadicalProstatectomyPathologyAnnotation");
 		radicalProstatectomyPathologyAnnotation.setParentEntity(prostatePathologyAnnotation);
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(
+				radicalProstatectomyPathologyAnnotation, false);
 
 		// Create attribute(s) for radicalProstatectomyPathologyAnnotation entity.
 		AttributeInterface radicalProstateName = factory.createStringAttribute();
 		radicalProstateName.setName("radicalProstateName");
-		((StringAttributeTypeInformation) radicalProstateName.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) radicalProstateName.getAttributeTypeInformation())
+				.setSize(40);
 
 		AttributeInterface radicalProstateType = factory.createStringAttribute();
 		radicalProstateType.setName("radicalProstateType");
-		((StringAttributeTypeInformation) radicalProstateType.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) radicalProstateType.getAttributeTypeInformation())
+				.setSize(40);
 
 		radicalProstatectomyPathologyAnnotation.addAttribute(radicalProstateName);
 		radicalProstatectomyPathologyAnnotation.addAttribute(radicalProstateType);
 
 		// Create a radicalProstatectomyMargin entity.
-		EntityInterface radicalProstatectomyMargin = factory.createEntity();
+		EntityInterface radicalProstatectomyMargin = createAndPopulateEntity();
 		radicalProstatectomyMargin.setName("RadicalProstatectomyMargin");
 		radicalProstatectomyMargin.setAbstract(true);
 
@@ -2566,31 +2767,37 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		// Associate radicalProstatectomyPathologyAnnotation entity with radicalProstatectomyMargin entity : radicalProstatectomyPathologyAnnotation (1)------ >(*) radicalProstatectomyMargin
 		AssociationInterface association2 = factory.createAssociation();
-		association2.setName("radicalProstatectomyPathologyAnnotationToRadicalProstatectomyMarginAssociation");
+		association2
+				.setName("radicalProstatectomyPathologyAnnotationToRadicalProstatectomyMarginAssociation");
 		association2.setTargetEntity(radicalProstatectomyMargin);
 		association2.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
 		// Create source role for radicalProstatectomyPathologyAnnotation to radicalProstatectomyMargin association.
-		RoleInterface sourceRole2 = getRole(AssociationType.ASSOCIATION, "radicalProstatectomyPathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole2 = getRole(AssociationType.ASSOCIATION,
+				"radicalProstatectomyPathologyAnnotation", Cardinality.ONE, Cardinality.ONE);
 		sourceRole2.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		association2.setSourceRole(sourceRole2);
-		association2.setTargetRole(getRole(AssociationType.ASSOCIATION, "radicalProstatectomyMargin", Cardinality.ZERO, Cardinality.MANY));
+		association2.setTargetRole(getRole(AssociationType.ASSOCIATION,
+				"radicalProstatectomyMargin", Cardinality.ZERO, Cardinality.MANY));
 
 		radicalProstatectomyPathologyAnnotation.addAbstractAttribute(association2);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association2);
 
 		// Create a melanomaMargin entity.
-		EntityInterface melanomaMargin = factory.createEntity();
+		EntityInterface melanomaMargin = createAndPopulateEntity();
 		melanomaMargin.setName("MelanomaMargin");
 
 		// Create attribute(s) for melanomaMargin entity.
 		AttributeInterface melanomaMarginName = factory.createStringAttribute();
 		melanomaMarginName.setName("melanomaMarginName");
-		((StringAttributeTypeInformation) melanomaMarginName.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) melanomaMarginName.getAttributeTypeInformation())
+				.setSize(40);
 
 		AttributeInterface melanomaMarginType = factory.createStringAttribute();
 		melanomaMarginType.setName("melanomaMarginType");
-		((StringAttributeTypeInformation) melanomaMarginType.getAttributeTypeInformation()).setSize(40);
+		((StringAttributeTypeInformation) melanomaMarginType.getAttributeTypeInformation())
+				.setSize(40);
 
 		melanomaMargin.addAbstractAttribute(melanomaMarginName);
 		melanomaMargin.addAbstractAttribute(melanomaMarginType);
@@ -2601,13 +2808,16 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		association3.setTargetEntity(melanomaMargin);
 		association3.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-		RoleInterface sourceRole3 = getRole(AssociationType.ASSOCIATION, "radicalProstatectomyMargin", Cardinality.ONE, Cardinality.ONE);
+		RoleInterface sourceRole3 = getRole(AssociationType.ASSOCIATION,
+				"radicalProstatectomyMargin", Cardinality.ONE, Cardinality.ONE);
 		sourceRole3.setAssociationsType(AssociationType.CONTAINTMENT);
 
 		association3.setSourceRole(sourceRole3);
-		association3.setTargetRole(getRole(AssociationType.ASSOCIATION, "melanomaMargin", Cardinality.ZERO, Cardinality.MANY));
+		association3.setTargetRole(getRole(AssociationType.ASSOCIATION, "melanomaMargin",
+				Cardinality.ZERO, Cardinality.MANY));
 
 		radicalProstatectomyMargin.addAbstractAttribute(association3);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association3);
 
 		entityGroup.addEntity(baseSolidTissuePathologyAnnotation);
 		baseSolidTissuePathologyAnnotation.setEntityGroup(entityGroup);
@@ -2665,7 +2875,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * @param sequenceNumber
 	 * @return
 	 */
-	private TextFieldInterface createTextFieldControl(BaseAbstractAttributeInterface baseAbstractAttribute, int sequenceNumber)
+	private TextFieldInterface createTextFieldControl(
+			BaseAbstractAttributeInterface baseAbstractAttribute, int sequenceNumber)
 	{
 		TextFieldInterface textFieldInterface = DomainObjectFactory.getInstance().createTextField();
 		textFieldInterface.setCaption(baseAbstractAttribute.getName());
@@ -2682,7 +2893,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * @param sequenceNumber
 	 * @return ComboBoxInterface
 	 */
-	private ComboBoxInterface createComboBoxControl(CategoryAttributeInterface categoryAttribute, int sequenceNumber)
+	private ComboBoxInterface createComboBoxControl(CategoryAttributeInterface categoryAttribute,
+			int sequenceNumber)
 	{
 		ComboBoxInterface comboBox = DomainObjectFactory.getInstance().createComboBox();
 		comboBox.setCaption(categoryAttribute.getName());
@@ -2709,7 +2921,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * @param entity
 	 * @param sequenceNumber
 	 */
-	private void createTextFieldControlForEntity(ContainerInterface container, EntityInterface entity, int sequenceNumber)
+	private void createTextFieldControlForEntity(ContainerInterface container,
+			EntityInterface entity, int sequenceNumber)
 	{
 		for (AttributeInterface attribute : entity.getAttributeCollection())
 		{

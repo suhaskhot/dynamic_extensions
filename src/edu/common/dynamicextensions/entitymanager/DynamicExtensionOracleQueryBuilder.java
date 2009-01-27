@@ -7,15 +7,51 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * This class provides the methods that builds the queries that are specific to ORACLE database 
  * 
- * @author Rahul Ner
+ * @author Rahul Ner,pavan_kalantri
  */
 public class DynamicExtensionOracleQueryBuilder extends DynamicExtensionBaseQueryBuilder
 {
+
+	/**
+	 *This method create the query for altering the column of given attribute to add not null constraint on it
+	 * no need to specify not null so returning null
+	 *@param attribute on which the constraint is to be applied 
+	 *@return query 
+	 */
+	protected String addNotNullConstraintQuery(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
+	{
+		/*		StringBuffer query=new StringBuffer();
+				query.append(ALTER_TABLE).append(WHITESPACE).append(attribute.getEntity().getTableProperties().getName())
+					.append(WHITESPACE).append(MODIFY_KEYWORD).append(WHITESPACE).append(attribute.getColumnProperties().getName())
+					.append(WHITESPACE).append(getDataTypeForAttribute(attribute)).append(WHITESPACE)
+					.append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD);
+				return query.toString();*/
+		return null;
+	}
+
+	/**
+	 *This method create the query for altering the column of given attribute to add null constraint on it
+	 * no need to specify null so returning null
+	 *@param attribute on which the constraint is to be applied 
+	 *@return query 
+	 */
+	protected String dropNotNullConstraintQuery(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
+	{
+		/*StringBuffer query=new StringBuffer();
+		query.append(ALTER_TABLE).append(WHITESPACE).append(attribute.getEntity().getTableProperties().getName())
+			.append(WHITESPACE).append(MODIFY_KEYWORD).append(WHITESPACE).append(attribute.getColumnProperties().getName())
+			.append(WHITESPACE).append(getDataTypeForAttribute(attribute)).append(WHITESPACE).append(NULL_KEYWORD);
+		return query.toString();*/
+		return null;
+	}
 	/**
 	 * Converts Blob data type to Object data type for Oracle database
 	 * @param valueObj

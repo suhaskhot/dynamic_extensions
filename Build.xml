@@ -490,12 +490,14 @@
 	this is temporary task and needs to be removed,once we uses hibernate annotations.
 	-->
 	<target name="remove_generics" >
+	  <delete dir="${temp.hdoclet.dir}"/>
 	  <mkdir dir="${temp.hdoclet.dir}" />
 	  <property name="generics.match.pattern" value="&lt;[^=(]*&gt;|(for\s?\(.+:.+\))"/>
 	  <echo message="Pattern used to remove generics : ${generics.match.pattern}"/>
 	  <copy toDir="${temp.hdoclet.dir}" overwrite="true">
 	    <fileset dir="${src.dir}">
 	      <include name="**/*.java"/>
+	    	<exclude name="**/domain/**/DomainObjectFactory.java"/>
 	    </fileset>
 	  </copy>
 	  <replaceregexp byline="true" flags="g">
@@ -512,7 +514,7 @@
 	 	<mkdir dir="${junit.report.dir}"/>
 
       	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
-      		fork="yes">
+      		fork="yes" maxmemory="512m">
 
       		<sysproperty key="net.sourceforge.cobertura.datafile"
       				file="./cobertura/coverage.ser" />

@@ -7,12 +7,10 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +18,13 @@ import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
+import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
@@ -58,7 +58,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#setUp()
+	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCaseUtility#setUp()
 	 */
 	protected void setUp()
 	{
@@ -66,7 +66,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#tearDown()
+	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCaseUtility#tearDown()
 	 */
 	protected void tearDown()
 	{
@@ -85,45 +85,62 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		// create user
-        EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
-        entityGroup.setName("User"+ new Double(Math.random()).toString());
-		EntityInterface user = factory.createEntity();
+		EntityGroupInterface entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
+		entityGroup.setName("User" + new Double(Math.random()).toString());
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user_name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
-		AttributeInterface studyNameAttribute = factory.createStringAttribute();
-		studyNameAttribute.setName("study_name");
-		study.setName("study");
-		study.addAbstractAttribute(studyNameAttribute);
+		EntityInterface study = createAndPopulateEntity();
 
-		// Associate user (1)------ >(*)study
-		AssociationInterface association = factory.createAssociation();
+		Container container = new Container();
+		container.setCaption("testcontainer");
+		Collection<ContainerInterface> listOfContainers = new HashSet<ContainerInterface>();
+		listOfContainers.add(container);
 
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ONE, Cardinality.ONE));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-
+		study.setContainerCollection(listOfContainers);
 		try
 		{
+			AttributeInterface studyNameAttribute = factory.createStringAttribute();
+			studyNameAttribute.setName("study_name");
+			study.setName("study");
+			study.addAbstractAttribute(studyNameAttribute);
+
+			// Associate user (1)------ >(*)study
+			AssociationInterface association = factory.createAssociation();
+
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
 			//entityManager.createEntity(study);
-            entityGroup.addEntity(user);
-            user.setEntityGroup(entityGroup);
-            entityGroup.addEntity(study);
-            study.setEntityGroup(entityGroup);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+			EntityManager m1 = new EntityManager();
+
 			EntityGroupInterface savedUser = entityGroupManager.persistEntityGroup(entityGroup);
 
-			
-			assertEquals(getColumnCount("select * from "+ study.getTableProperties().getName()), noOfDefaultColumns + 2);
+			Collection<Container> coll = study.getContainerCollection();
+
+			long id = 0;
+			for (ContainerInterface cont : coll)
+			{
+				id = cont.getId();
+			}
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()),
+					noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -137,7 +154,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -152,15 +169,15 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		// create user
-        EntityGroupInterface entityGroupInterface = factory.getInstance().createEntityGroup();
-		EntityInterface user = factory.createEntity();
+		EntityGroupInterface entityGroupInterface = factory.getInstance().createEntityGroup();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
@@ -169,23 +186,26 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
 
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ZERO, Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.ONE));
-
-		user.addAbstractAttribute(association);
-
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
 			//entityManager.createEntity(study);
 
-            entityGroupInterface.getEntityCollection().add(user);
-            EntityGroupInterface savedGroup = (EntityGroupInterface) entityGroupManager.persistEntityGroup(entityGroupInterface);
-			assertEquals(getColumnCount("select * from "+ user.getTableProperties().getName()), noOfDefaultColumns + 2);
+			entityGroupInterface.getEntityCollection().add(user);
+			EntityGroupInterface savedGroup = (EntityGroupInterface) entityGroupManager
+					.persistEntityGroup(entityGroupInterface);
+			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
+					noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -231,6 +251,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ONE, Cardinality.ONE));
 			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
 					Cardinality.ONE, Cardinality.ONE));
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			srcEntity.addAbstractAttribute(association);
 			// association.sets
 
@@ -260,14 +281,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
@@ -275,23 +296,22 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ONE, Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
-		entityGroup.addEntity(study);
-		study.setEntityGroup(entityGroup);
-
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
@@ -299,7 +319,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			assertNotNull(middleTableName);
 
-			
 			assertEquals(getColumnCount("select * from " + middleTableName), noOfDefaultColumns + 1);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -314,7 +333,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -330,7 +349,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
@@ -354,7 +373,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
@@ -362,7 +381,6 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			assertNotNull(tableName);
 
-			
 			assertEquals(getColumnCount("select * from " + tableName), noOfDefaultColumns + 2);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -377,7 +395,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -394,14 +412,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -418,6 +436,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 			entityGroup.addEntity(study);
@@ -448,9 +467,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(association, targetIdList);
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
-			int rowCount= (Integer)executeQuery("select count(*) from "
-					+ association.getConstraintProperties().getName(),INT_TYPE,1);
-			assertEquals(4,rowCount);
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ association.getConstraintProperties().getName(), INT_TYPE, 1);
+			assertEquals(4, rowCount);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -486,14 +505,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -510,6 +529,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 			entityGroup.addEntity(study);
@@ -535,8 +555,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
-			int rowCount = (Integer)executeQuery("select count(*) from "
-					+ study.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ study.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(2, rowCount);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -574,14 +594,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -598,6 +618,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 			entityGroup.addEntity(study);
@@ -614,9 +635,9 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
-			int rowCount = (Integer)executeQuery("select IDENTIFIER from "
-					+ savedEntity.getTableProperties().getName(),INT_TYPE,1);
-			assertEquals(1,rowCount);
+			int rowCount = (Integer) executeQuery("select IDENTIFIER from "
+					+ savedEntity.getTableProperties().getName(), INT_TYPE, 1);
+			assertEquals(1, rowCount);
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -653,14 +674,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -677,6 +698,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 			entityGroup.addEntity(study);
@@ -749,14 +771,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -773,6 +795,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 			entityGroup.addEntity(study);
@@ -850,14 +873,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -874,6 +897,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 			entityGroup.addEntity(study);
@@ -943,14 +967,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -1045,14 +1069,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			//          create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			//          create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -1069,10 +1093,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ONE, Cardinality.ZERO));
 
 			user.addAbstractAttribute(association);
-            entityGroup.addEntity(user);
-            user.setEntityGroup(entityGroup);
-            entityGroup.addEntity(study);
-            study.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -1084,13 +1109,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(association, targetIdList);
 
 			entityManagerInterface.insertData(savedEntity, dataValue);
-			int identifier = (Integer)executeQuery("select IDENTIFIER from "
-					+ savedEntity.getTableProperties().getName(),INT_TYPE,1);
+			int identifier = (Integer) executeQuery("select IDENTIFIER from "
+					+ savedEntity.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, identifier);
 		}
 		catch (Exception e)
 		{
 			Logger.out.debug(e.getStackTrace());
+			e.printStackTrace();
 			fail();
 
 		}
@@ -1113,14 +1139,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			EntityGroupInterface entityGroup = factory.createEntityGroup();
 			entityGroup.setName("test_" + new Double(Math.random()).toString());
 			MockEntityManager mock = new MockEntityManager();
-			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
+			Entity study = (Entity) createAndPopulateEntity();;
 			study.setName("study");
 
 			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
 					"new Study");
 			study.addAbstractAttribute(studyName);
 
-			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
+			Entity user = (Entity) createAndPopulateEntity();;
 			user.setName("user");
 			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
 			user.addAbstractAttribute(userName);
@@ -1138,11 +1164,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			EntityManagerUtil.addIdAttribute(user);
-            entityGroup.addEntity(user);
-            user.setEntityGroup(entityGroup);
-            entityGroup.addEntity(study);
-            study.setEntityGroup(entityGroup);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityManager.getInstance().persistEntity(user);
 
@@ -1153,16 +1180,18 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			dataValue.put(association, list);
 
 			EntityManager.getInstance().insertData(user, dataValue);
-			int columnValue= (Integer) executeQuery("select * from "
-					+ user.getTableProperties().getName(),INT_TYPE,3);
+			int columnValue = (Integer) executeQuery("select * from "
+					+ user.getTableProperties().getName(), INT_TYPE, 2);
 			assertEquals(1, columnValue);
-			String value=(String) executeQuery("select * from "
-					+ user.getTableProperties().getName(),STRING_TYPE,2);
+			String value = (String) executeQuery("select * from "
+					+ user.getTableProperties().getName(), STRING_TYPE, 3);
 			assertEquals("User1", value);
-			
-			assertEquals(getColumnCount("select * from "+ user.getTableProperties().getName()), noOfDefaultColumns + 1);
 
-			int rowCount= (Integer)executeQuery("select count(*) from " + user.getTableProperties().getName(),INT_TYPE,1);
+			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
+					noOfDefaultColumns + 1);
+
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			EntityManager.getInstance().deleteRecord(user, 1L);
@@ -1198,14 +1227,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			EntityGroupInterface entityGroup = factory.createEntityGroup();
 			entityGroup.setName("test_" + new Double(Math.random()).toString());
 			MockEntityManager mock = new MockEntityManager();
-			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
+			Entity study = (Entity) createAndPopulateEntity();
 			study.setName("study");
 
 			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
 					"new Study");
 			study.addAbstractAttribute(studyName);
 
-			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
+			Entity user = (Entity) createAndPopulateEntity();;
 			user.setName("user");
 			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
 			user.addAbstractAttribute(userName);
@@ -1223,11 +1252,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			EntityManagerUtil.addIdAttribute(user);
-            entityGroup.addEntity(user);
-            user.setEntityGroup(entityGroup);
-            entityGroup.addEntity(study);
-            study.setEntityGroup(entityGroup);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityManager.getInstance().persistEntity(user);
 
@@ -1241,19 +1271,20 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
 
 			//Checking whether there is an entry added in the data table for user.
-			int columnValue =(Integer) executeQuery("select * from "
-					+ user.getTableProperties().getName(),INT_TYPE,3);
+			int columnValue = (Integer) executeQuery("select * from "
+					+ user.getTableProperties().getName(), INT_TYPE, 2);
 			assertEquals(1, columnValue);
 			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
 			//is having the expected value or not.
-			String value=(String) executeQuery("select * from "
-					+ user.getTableProperties().getName(),"string",2);
+			String value = (String) executeQuery("select * from "
+					+ user.getTableProperties().getName(), "string", 3);
 			assertEquals("User1", value);
-			assertEquals(getColumnCount("select * from "+ user.getTableProperties().getName()), noOfDefaultColumns + 1);
+			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
+					noOfDefaultColumns + 1);
 
 			//Checking whether there are 2 entries added in the middle table for the many to many association.
-			int rowCount = (Integer)executeQuery("select count(*) from "
-					+ association.getConstraintProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ association.getConstraintProperties().getName(), INT_TYPE, 1);
 			assertEquals(2, rowCount);
 			//Deleting the record
 			EntityManager.getInstance().deleteRecord(user, 1L);
@@ -1288,14 +1319,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			EntityGroupInterface entityGroup = factory.createEntityGroup();
 			entityGroup.setName("test_" + new Double(Math.random()).toString());
 			MockEntityManager mock = new MockEntityManager();
-			Entity study = (Entity) DomainObjectFactory.getInstance().createEntity();
+			Entity study = (Entity) createAndPopulateEntity();;
 			study.setName("study");
 
 			Attribute studyName = (Attribute) mock.initializeStringAttribute("studyName",
 					"new Study");
 			study.addAbstractAttribute(studyName);
 
-			Entity user = (Entity) DomainObjectFactory.getInstance().createEntity();
+			Entity user = (Entity) createAndPopulateEntity();;
 			user.setName("user");
 			Attribute userName = (Attribute) mock.initializeStringAttribute("userName", "new User");
 			user.addAbstractAttribute(userName);
@@ -1313,10 +1344,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
-            entityGroup.addEntity(user);
-            user.setEntityGroup(entityGroup);
-            entityGroup.addEntity(study);
-            study.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 
 			EntityManager.getInstance().persistEntity(user);
 
@@ -1329,19 +1361,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Long recordId = EntityManager.getInstance().insertData(user, dataValue);
 
 			//Checking whether there is an entry added in the data table for user.
-			int identifier = (Integer)executeQuery("select IDENTIFIER from "
-					+ user.getTableProperties().getName(),INT_TYPE,1);
-			
-			assertEquals(1,identifier);
+			int identifier = (Integer) executeQuery("select IDENTIFIER from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
+
+			assertEquals(1, identifier);
 			//Checking whether the the value of the second column (i.e. the column for the user name.. first column is identifier).
 			//is having the expected value or not.
 			//Checking whether there is an entry added in the data table for user.
-			String value = (String)executeQuery("select "+userName.getColumnProperties().getName()+" from "
-					+ user.getTableProperties().getName(),STRING_TYPE,1);
-			
+			String value = (String) executeQuery("select "
+					+ userName.getColumnProperties().getName() + " from "
+					+ user.getTableProperties().getName(), STRING_TYPE, 1);
+
 			assertEquals("User1", value);
 			//Checking if the extra column for many to one assiciation is added or not
-			assertEquals(getColumnCount("select * from "+ user.getTableProperties().getName()), noOfDefaultColumns + 2);
+			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
+					noOfDefaultColumns + 2);
 
 			//Deleting the record
 			EntityManager.getInstance().deleteRecord(user, 1L);
@@ -1365,10 +1399,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 * @param sourceRole
 	 * @param targetRole
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private AssociationInterface getAssociation(EntityInterface targetEntity,
 			AssociationDirection associationDirection, String assoName, RoleInterface sourceRole,
-			RoleInterface targetRole)
+			RoleInterface targetRole) throws DynamicExtensionsSystemException
 	{
 		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
 		association.setTargetEntity(targetEntity);
@@ -1392,21 +1427,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
 		// create institution
-		EntityInterface institution = factory.createEntity();
+		EntityInterface institution = createAndPopulateEntity();
 		AttributeInterface institutionNameAttribute = factory.createStringAttribute();
 		institutionNameAttribute.setName("institution name");
 		institution.setName("institution");
@@ -1414,49 +1449,51 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (*)------ >(1)study
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ZERO, Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.ONE));
-
-		user.addAbstractAttribute(association);
-
-		// Associate study(1) ------> (1) institution
-		AssociationInterface studInstAssociation = factory.createAssociation();
-
-		studInstAssociation.setTargetEntity(institution);
-		studInstAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		studInstAssociation.setName("studyLocation");
-		studInstAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "studyPerformed",
-				Cardinality.ZERO, Cardinality.ONE));
-		studInstAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "studyLocation",
-				Cardinality.ZERO, Cardinality.ONE));
-
-		study.addAbstractAttribute(studInstAssociation);
-        entityGroup.addEntity(user);
-        user.setEntityGroup(entityGroup);
-        entityGroup.addEntity(study);
-        study.setEntityGroup(entityGroup);
-        entityGroup.addEntity(institution);
-        institution.setEntityGroup(entityGroup);
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
+			// Associate study(1) ------> (1) institution
+			AssociationInterface studInstAssociation = factory.createAssociation();
+
+			studInstAssociation.setTargetEntity(institution);
+			studInstAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			studInstAssociation.setName("studyLocation");
+			studInstAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION,
+					"studyPerformed", Cardinality.ZERO, Cardinality.ONE));
+			studInstAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "studyLocation",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			study.addAbstractAttribute(studInstAssociation);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(studInstAssociation);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+			entityGroup.addEntity(institution);
+			institution.setEntityGroup(entityGroup);
+
 			//entityManager.createEntity(study);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
-			
-			assertEquals(getColumnCount("select * from "+ user.getTableProperties().getName()), noOfDefaultColumns + 2);
+			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
+					noOfDefaultColumns + 2);
 
-			
-			assertEquals(getColumnCount("select * from "+ study.getTableProperties().getName()), noOfDefaultColumns + 1);
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()),
+					noOfDefaultColumns + 1);
 
-			
-			assertEquals(getColumnCount("select * from "+ institution.getTableProperties().getName()), noOfDefaultColumns + 2);
+			assertEquals(getColumnCount("select * from "
+					+ institution.getTableProperties().getName()), noOfDefaultColumns + 2);
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1471,7 +1508,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -1488,21 +1525,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
 		// create institution
-		EntityInterface institution = factory.createEntity();
+		EntityInterface institution = createAndPopulateEntity();
 		AttributeInterface institutionNameAttribute = factory.createStringAttribute();
 		institutionNameAttribute.setName("institution name");
 		institution.setName("institution");
@@ -1510,66 +1547,69 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (*)------ >(1)study
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ZERO, Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.ONE));
-
-		user.addAbstractAttribute(association);
-		EntityManagerUtil.addIdAttribute(user);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
-		// Associate study(1) ------> (1) institution
-		AssociationInterface studInstAssociation = factory.createAssociation();
-
-		studInstAssociation.setTargetEntity(institution);
-		studInstAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		studInstAssociation.setName("studyLocation");
-		studInstAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "studyPerformed",
-				Cardinality.ZERO, Cardinality.ONE));
-		studInstAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "studyLocation",
-				Cardinality.ZERO, Cardinality.ONE));
-
-		study.addAbstractAttribute(studInstAssociation);
-		EntityManagerUtil.addIdAttribute(study);
-		entityGroup.addEntity(study);
-		study.setEntityGroup(entityGroup);
-		// Associate institution (*)----->(*) user
-		AssociationInterface instUserAssociation = factory.createAssociation();
-
-		instUserAssociation.setTargetEntity(user);
-		instUserAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		instUserAssociation.setName("lecturers");
-		instUserAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "university",
-				Cardinality.ONE, Cardinality.MANY));
-		instUserAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "lecturer",
-				Cardinality.ONE, Cardinality.MANY));
-
-		institution.addAbstractAttribute(instUserAssociation);
-		entityGroup.addEntity(institution);
-		institution.setEntityGroup(entityGroup);
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			EntityManagerUtil.addIdAttribute(user);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			// Associate study(1) ------> (1) institution
+			AssociationInterface studInstAssociation = factory.createAssociation();
+
+			studInstAssociation.setTargetEntity(institution);
+			studInstAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			studInstAssociation.setName("studyLocation");
+			studInstAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION,
+					"studyPerformed", Cardinality.ZERO, Cardinality.ONE));
+			studInstAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "studyLocation",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			study.addAbstractAttribute(studInstAssociation);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(studInstAssociation);
+			EntityManagerUtil.addIdAttribute(study);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+			// Associate institution (*)----->(*) user
+			AssociationInterface instUserAssociation = factory.createAssociation();
+
+			instUserAssociation.setTargetEntity(user);
+			instUserAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			instUserAssociation.setName("lecturers");
+			instUserAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "university",
+					Cardinality.ONE, Cardinality.MANY));
+			instUserAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "lecturer",
+					Cardinality.ONE, Cardinality.MANY));
+
+			institution.addAbstractAttribute(instUserAssociation);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(instUserAssociation);
+			entityGroup.addEntity(institution);
+			institution.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
-			
-			assertEquals(getColumnCount("select * from "+ user.getTableProperties().getName()), noOfDefaultColumns + 2);
+			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
+					noOfDefaultColumns + 2);
 
-			
-			assertEquals(getColumnCount("select * from "+ study.getTableProperties().getName()), noOfDefaultColumns + 1);
+			assertEquals(getColumnCount("select * from " + study.getTableProperties().getName()),
+					noOfDefaultColumns + 1);
 
-			
-			assertEquals(getColumnCount("select * from "+ institution.getTableProperties().getName()), noOfDefaultColumns + 2);
+			assertEquals(getColumnCount("select * from "
+					+ institution.getTableProperties().getName()), noOfDefaultColumns + 2);
 
 			assertNotNull(instUserAssociation.getConstraintProperties().getName());
 
-			
-			assertEquals(getColumnCount("select * from "+ instUserAssociation.getConstraintProperties().getName()), noOfDefaultColumns + 1);
+			assertEquals(getColumnCount("select * from "
+					+ instUserAssociation.getConstraintProperties().getName()),
+					noOfDefaultColumns + 1);
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1598,7 +1638,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
@@ -1607,20 +1647,20 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		// Associate user (*)------ >(1)user
 		AssociationInterface association = factory.createAssociation();
 
-		association.setTargetEntity(user);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi", Cardinality.ONE,
-				Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
-
 		try
 		{
+			association.setTargetEntity(user);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi",
+					Cardinality.ONE, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
+					Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
@@ -1628,11 +1668,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			assertNotNull(tableName);
 
-			
 			assertEquals(getColumnCount("select * from " + tableName), noOfDefaultColumns + 1);
 
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ association.getConstraintProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ association.getConstraintProperties().getName()));
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -1646,7 +1685,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -1664,7 +1703,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
@@ -1672,33 +1711,35 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (*)------ >(*)user
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(user);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("children");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi", Cardinality.ONE,
-				Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-
-		// Associate user (*)------ >(1)user
-		AssociationInterface creatorAssociation = factory.createAssociation();
-
-		creatorAssociation.setTargetEntity(user);
-		creatorAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		creatorAssociation.setName("creator");
-		creatorAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "user",
-				Cardinality.ONE, Cardinality.MANY));
-		creatorAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "creator",
-				Cardinality.ONE, Cardinality.ONE));
-
-		user.addAbstractAttribute(creatorAssociation);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
 		try
 		{
+
+			association.setTargetEntity(user);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("children");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi",
+					Cardinality.ONE, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
+					Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
+			// Associate user (*)------ >(1)user
+			AssociationInterface creatorAssociation = factory.createAssociation();
+
+			creatorAssociation.setTargetEntity(user);
+			creatorAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			creatorAssociation.setName("creator");
+			creatorAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "user",
+					Cardinality.ONE, Cardinality.MANY));
+			creatorAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "creator",
+					Cardinality.ONE, Cardinality.ONE));
+
+			user.addAbstractAttribute(creatorAssociation);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(creatorAssociation);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
@@ -1706,11 +1747,10 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			assertNotNull(tableName);
 
-			
-			assertEquals(noOfDefaultColumns + 2,getColumnCount("select * from " + tableName));
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from " + tableName));
 
-
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ association.getConstraintProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ association.getConstraintProperties().getName()));
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -1724,7 +1764,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -1742,7 +1782,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
@@ -1750,33 +1790,34 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (*)------ >(*)user
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(user);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("children");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi", Cardinality.ONE,
-				Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-
-		// Associate user (*)------ >(*)user
-		AssociationInterface creatorAssociation = factory.createAssociation();
-
-		creatorAssociation.setTargetEntity(user);
-		creatorAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		creatorAssociation.setName("parentUSers");
-		creatorAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "user",
-				Cardinality.ONE, Cardinality.MANY));
-		creatorAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "creator",
-				Cardinality.ONE, Cardinality.MANY));
-
-		user.addAbstractAttribute(creatorAssociation);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
 		try
 		{
+			association.setTargetEntity(user);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("children");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi",
+					Cardinality.ONE, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
+					Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
+			// Associate user (*)------ >(*)user
+			AssociationInterface creatorAssociation = factory.createAssociation();
+
+			creatorAssociation.setTargetEntity(user);
+			creatorAssociation.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			creatorAssociation.setName("parentUSers");
+			creatorAssociation.setSourceRole(getRole(AssociationType.ASSOCIATION, "user",
+					Cardinality.ONE, Cardinality.MANY));
+			creatorAssociation.setTargetRole(getRole(AssociationType.ASSOCIATION, "creator",
+					Cardinality.ONE, Cardinality.MANY));
+
+			user.addAbstractAttribute(creatorAssociation);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(creatorAssociation);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
@@ -1784,14 +1825,13 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			assertNotNull(tableName);
 
-			
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from " + tableName));
 
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ association.getConstraintProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ association.getConstraintProperties().getName()));
 
-			
-			assertEquals(noOfDefaultColumns + 1,getColumnCount("select * from "+ creatorAssociation.getConstraintProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ creatorAssociation.getConstraintProperties().getName()));
 
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -1806,7 +1846,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -1821,42 +1861,42 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-        EntityManagerUtil.addIdAttribute(user);
+		EntityManagerUtil.addIdAttribute(user);
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		study.setName("Study");
 
 		// Associate  User(1) <---->(*)Study
 		AssociationInterface association = factory.createAssociation();
 		association.setEntity(user);
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ONE, Cardinality.ONE));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-		entityGroup.addEntity(user);
-		entityGroup.addEntity(study);
-		user.setEntityGroup(entityGroup);
-		study.setEntityGroup(entityGroup);
-
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
+			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			entityGroup.addEntity(study);
+			user.setEntityGroup(entityGroup);
+			study.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ study.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
 			//1 user attribute + 1 system generated attribute
-			assertEquals(1, study.getAbstractAttributeCollection().size());
+			assertEquals(2, study.getAbstractAttributeCollection().size());
 
 			Association systemGeneratedAssociation = (Association) study
 					.getAbstractAttributeCollection().toArray()[0];
@@ -1880,6 +1920,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
+
 	/**
 	 *
 	 *
@@ -1894,21 +1935,21 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 			// create user
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			// create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
 
 			// create institution
-			EntityInterface institution = factory.createEntity();
+			EntityInterface institution = createAndPopulateEntity();
 			AttributeInterface institutionNameAttribute = factory.createStringAttribute();
 			institutionNameAttribute.setName("institution name");
 			institution.setName("institution");
@@ -1926,6 +1967,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 
 			// Associate study(1) ------> (1) institution
 			AssociationInterface studInstAssociation = factory.createAssociation();
@@ -1939,6 +1981,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			study.addAbstractAttribute(studInstAssociation);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(studInstAssociation);
 			entityGroup.addEntity(user);
 			entityGroup.addEntity(study);
 			user.setEntityGroup(entityGroup);
@@ -1970,34 +2013,36 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		study.setName("study name");
 
 		// Associate  User(1) <---->(*)Study
 		AssociationInterface association = factory.createAssociation();
 		association.setEntity(user);
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ONE, Cardinality.ONE));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
-		entityGroup.addEntity(study);
-		study.setEntityGroup(entityGroup);
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+
 			EntityInterface savedUser = entityManager.persistEntity(user);
 			Collection associationCollection = entityManager.getAssociations(savedUser.getId(),
 					study.getId());
@@ -2030,7 +2075,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
@@ -2039,30 +2084,31 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		// Associate user (*)------ >(1)user
 		AssociationInterface association = factory.createAssociation();
 		association.setEntity(user);
-		association.setTargetEntity(user);
-		association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi", Cardinality.ONE,
-				Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-		entityGroup.addEntity(user);
-		user.setEntityGroup(entityGroup);
 		try
 		{
+			association.setTargetEntity(user);
+			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "subpi",
+					Cardinality.ONE, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "pi", Cardinality.ONE,
+					Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
 			String tableName = user.getTableProperties().getName();
 
 			assertNotNull(tableName);
-			
-			assertEquals(noOfDefaultColumns + 1,getColumnCount("select * from " + tableName));
 
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ association.getConstraintProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from " + tableName));
+
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ association.getConstraintProperties().getName()));
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -2076,7 +2122,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -2093,7 +2139,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
@@ -2105,7 +2151,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			user = entityManager.persistEntity(user);
 
 			// create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
@@ -2124,13 +2170,13 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
 					Cardinality.ZERO, Cardinality.ONE));
 			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			user.addAbstractAttribute(association);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
 
-			
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ user.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
 
 			//			 Associate user (1) <------>(*)study
 			AssociationInterface association1 = factory.createAssociation();
@@ -2143,13 +2189,13 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			association1.setTargetRole(getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.MANY));
 			association1.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association1);
 			savedUser.addAbstractAttribute(association1);
 
 			savedUser = entityManager.persistEntity(savedUser);
 
-			
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ study.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -2163,7 +2209,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -2177,60 +2223,59 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-        entityGroup.addEntity(user);
-        user.setEntityGroup(entityGroup);
-
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 
 		try
 		{
 			user = entityManager.persistEntity(user);
 
 			// create study
-			EntityInterface study = factory.createEntity();
+			EntityInterface study = createAndPopulateEntity();
 			AttributeInterface studyNameAttribute = factory.createStringAttribute();
 			studyNameAttribute.setName("study name");
 			study.setName("study");
 			study.addAbstractAttribute(studyNameAttribute);
-	        entityGroup.addEntity(study);
-	        study.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
 			// Associate user (1)------ >(*)study
 			RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.MANY);
 			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
 					Cardinality.ZERO, Cardinality.ONE);
-			AssociationInterface association = getAssociation(study,user,
+			AssociationInterface association = getAssociation(study, user,
 					AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
 
 			user.addAbstractAttribute(association);
-
-
 			user = entityManager.persistEntity(user);
-			
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ user.getTableProperties().getName()));
+
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
 
 			user.removeAssociation(association);
 			user = entityManager.persistEntity(user);
 
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ user.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
 
 			sourceRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO,
 					Cardinality.MANY);
 			targetRole = getRole(AssociationType.ASSOCIATION, "association1", Cardinality.ZERO,
 					Cardinality.MANY);
-			association = getAssociation(study,user, AssociationDirection.SRC_DESTINATION, "prim",
+			association = getAssociation(study, user, AssociationDirection.SRC_DESTINATION, "prim",
 					sourceRole, targetRole);
 
 			user.addAbstractAttribute(association);
 			user = entityManager.persistEntity(user);
 
 			assertTrue(isTablePresent(association.getConstraintProperties().getName()));
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ association.getConstraintProperties().getName()));
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ association.getConstraintProperties().getName()));
 
 			user.removeAssociation(association);
 			user = entityManager.persistEntity(user);
@@ -2249,7 +2294,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -2265,50 +2310,55 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
-
-		// Associate user (1)------ >(*)study
-		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
-				Cardinality.ZERO, Cardinality.MANY);
-		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
-				Cardinality.ZERO, Cardinality.ONE);
-		AssociationInterface association = getAssociation(user,study,
-				AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
-
-		user.addAbstractAttribute(association);
-        entityGroup.addEntity(user);
-        user.setEntityGroup(entityGroup);
-        entityGroup.addEntity(study);
-        study.setEntityGroup(entityGroup);
-
 		try
 		{
+			// Associate user (1)------ >(*)study
+			RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
+					Cardinality.ZERO, Cardinality.MANY);
+			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
+					Cardinality.ZERO, Cardinality.ONE);
+			AssociationInterface association = getAssociation(user, study,
+					AssociationDirection.SRC_DESTINATION, "prim", sourceRole, targetRole);
+
+			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+
 			user = entityManager.persistEntity(user);
 
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ study.getTableProperties().getName()));
-			assertEquals(noOfDefaultColumns + 2,getColumnCount("select * from "+ user.getTableProperties().getName()));
-					
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
+
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
 
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
 			association.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 			user = entityManager.persistEntity(user);
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ user.getTableProperties().getName()));
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ study.getTableProperties().getName()));
-		
+
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
+
 			EntityInterface savedUser = entityManager
 					.getEntityByIdentifier(user.getId().toString());
 			assertEquals(1, savedUser.getAssociationCollection().size());
@@ -2329,7 +2379,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -2345,51 +2395,54 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
 
 		// Associate user (1)------ >(*)study
-		RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
-				Cardinality.ZERO, Cardinality.MANY);
-		RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
-				Cardinality.ZERO, Cardinality.ONE);
-		AssociationInterface association = getAssociation(study,user,
-				AssociationDirection.BI_DIRECTIONAL, "prim", sourceRole, targetRole);
-
-		user.addAbstractAttribute(association);
-        entityGroup.addEntity(user);
-        user.setEntityGroup(entityGroup);
-        entityGroup.addEntity(study);
-        study.setEntityGroup(entityGroup);
-
 		try
 		{
+			RoleInterface sourceRole = getRole(AssociationType.ASSOCIATION, "association1",
+					Cardinality.ZERO, Cardinality.MANY);
+			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "association1",
+					Cardinality.ZERO, Cardinality.ONE);
+			AssociationInterface association = getAssociation(study, user,
+					AssociationDirection.BI_DIRECTIONAL, "prim", sourceRole, targetRole);
+
+			user.addAbstractAttribute(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+
 			user = entityManager.persistEntity(user);
 
-			
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ user.getTableProperties().getName()));
-			
-			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "+ study.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
+
+			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
 			association.getSourceRole().setMaximumCardinality(Cardinality.ONE);
 			association.getTargetRole().setMaximumCardinality(Cardinality.MANY);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 
 			user = entityManager.persistEntity(user);
 
-			
-			assertEquals(noOfDefaultColumns , getColumnCount("select * from "+ user.getTableProperties().getName()));
-			
-			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "+ study.getTableProperties().getName()));
+			assertEquals(noOfDefaultColumns, getColumnCount("select * from "
+					+ user.getTableProperties().getName()));
+
+			assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+					+ study.getTableProperties().getName()));
 
 			EntityInterface savedUser = entityManager
 					.getEntityByIdentifier(user.getId().toString());
@@ -2411,7 +2464,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			fail();
 
 		}
-		
+
 	}
 
 	/**
@@ -2436,14 +2489,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			// Step 1
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			// Step 2
-			EntityInterface address = factory.createEntity();
+			EntityInterface address = createAndPopulateEntity();
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2465,10 +2518,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
-	        entityGroup.addEntity(user);
-	        user.setEntityGroup(entityGroup);
-	        entityGroup.addEntity(address);
-	        address.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
 
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
@@ -2488,13 +2542,13 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
 			// Step 6
-			int rowCount = (Integer)executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
-			rowCount = (Integer)executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
-			assertEquals(1,rowCount);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
+			assertEquals(1, rowCount);
 		}
 		catch (Exception e)
 		{
@@ -2526,14 +2580,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			// Step 1
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			// Step 2
-			EntityInterface address = factory.createEntity();
+			EntityInterface address = createAndPopulateEntity();
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2555,10 +2609,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-	        entityGroup.addEntity(user);
-	        user.setEntityGroup(entityGroup);
-	        entityGroup.addEntity(address);
-	        address.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
 
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
@@ -2583,12 +2638,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.insertData(savedEntity, dataValue);
 
 			// Step 6
-			int rowCount = (Integer)executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(2, rowCount);
 
-			rowCount = (Integer)executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 		}
 		catch (Exception e)
@@ -2624,14 +2679,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			// Step 1
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			// Step 2
-			EntityInterface address = factory.createEntity();
+			EntityInterface address = createAndPopulateEntity();
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2653,10 +2708,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.ONE));
 
 			user.addAbstractAttribute(association);
-	        entityGroup.addEntity(user);
-	        user.setEntityGroup(entityGroup);
-	        entityGroup.addEntity(address);
-	        address.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -2676,11 +2732,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			int rowCount = (Integer) executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
-			rowCount =(Integer) executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			addressDataValue1.clear();
@@ -2692,12 +2748,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.editData(savedEntity, dataValue, recordId);
 
 			// Step 9
-			rowCount = (Integer)executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
-			rowCount =(Integer) executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 		}
@@ -2735,14 +2791,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			// Step 1
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			// Step 2
-			EntityInterface address = factory.createEntity();
+			EntityInterface address = createAndPopulateEntity();
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2764,10 +2820,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-	        entityGroup.addEntity(user);
-	        user.setEntityGroup(entityGroup);
-	        entityGroup.addEntity(address);
-	        address.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -2790,13 +2847,13 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			Long recordId = entityManagerInterface.insertData(savedEntity, dataValue);
 
 			// Step 6
-			int rowCount = (Integer)executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
-			
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
+
 			assertEquals(2, rowCount);
 
-			rowCount =(Integer) executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			addressDataValue1.clear();
@@ -2811,22 +2868,22 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManagerInterface.editData(savedEntity, dataValue, recordId);
 
 			// Step 9
-			rowCount = (Integer)executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
-			String value = (String)executeQuery("select * from " 
-					+ address.getTableProperties().getName(),STRING_TYPE,3);
-			assertEquals("Swami Vivekand Road",value);
-			
-			value = (String)executeQuery("select * from " 
-					+ address.getTableProperties().getName(),STRING_TYPE,4);
+			String value = (String) executeQuery("select * from "
+					+ address.getTableProperties().getName(), STRING_TYPE, 3);
+			assertEquals("Swami Vivekand Road", value);
+
+			value = (String) executeQuery(
+					"select * from " + address.getTableProperties().getName(), STRING_TYPE, 4);
 			assertEquals("Pune 37", value);
 
-			rowCount = (Integer)executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
-			
-			assertEquals(1,rowCount);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
+
+			assertEquals(1, rowCount);
 
 		}
 		catch (Exception e)
@@ -2861,14 +2918,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		{
 
 			// Step 1
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
 
 			// Step 2
-			EntityInterface address = factory.createEntity();
+			EntityInterface address = createAndPopulateEntity();
 			address.setName("address");
 
 			AttributeInterface streetAttribute = factory.createStringAttribute();
@@ -2890,10 +2947,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ZERO, Cardinality.MANY));
 
 			user.addAbstractAttribute(association);
-	        entityGroup.addEntity(user);
-	        user.setEntityGroup(entityGroup);
-	        entityGroup.addEntity(address);
-	        address.setEntityGroup(entityGroup);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
 			// Step 4
 			EntityInterface savedEntity = entityManagerInterface.persistEntity(user);
 
@@ -2917,23 +2975,23 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			// Step 6
 			int rowCount = (Integer) executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(2, rowCount);
 
-			rowCount = (Integer) executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 			// Step 7
 			entityManagerInterface.deleteRecord(savedEntity, recordId);
 
 			// Step 8
-			rowCount = (Integer) executeQuery("select count(*) from " 
-					+ user.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ user.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
-			rowCount= (Integer) executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+			rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(2, rowCount);
 
 		}
@@ -2945,96 +3003,96 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	}
 
-//	/**
-//	 *  PURPOSE: This method tests for creation of all the hierarchy for containment control
-//	 *  having one to many association
-//	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved
-//	 *  TEST CASE FLOW: 1. create User
-//	 *                  2. Create Address
-//	 *                  3. Add Association with      User(1) ------->(1) Address containment association
-//	 *                  4. Add containment control to user container with address container inside this control.
-//	 *                  5. persist entities.
-//	 *                  6. Check if the address container is saved or not.
-//	 */
-//	public void testCreateContainerFromContainmentAssociation()
-//	{
-//		try
-//		{
-//			//Step 1
-//			Container userContainer = (Container) DomainObjectFactory.getInstance()
-//					.createContainer();
-//
-//			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
-//			user.setName("USER");
-//			AttributeInterface nameAttribute = new MockEntityManager().initializeStringAttribute(
-//					"name", "new name");
-//
-//			ControlInterface textbox = DomainObjectFactory.getInstance().createTextField();
-//			textbox.setAbstractAttribute(nameAttribute);
-//			userContainer.addControl(textbox);
-//			user.addAbstractAttribute(nameAttribute);
-//
-//			userContainer.setEntity(user);
-//
-//			//Step 2
-//			EntityInterface address = DomainObjectFactory.getInstance().createEntity();
-//			address.setName("ADDRESS");
-//			AttributeInterface cityAttribute = new MockEntityManager().initializeStringAttribute(
-//					"City", "Ahmednagar");
-//
-//			Container addressContainer = (Container) DomainObjectFactory.getInstance()
-//					.createContainer();
-//
-//			ControlInterface cityTextbox = DomainObjectFactory.getInstance().createTextField();
-//			cityTextbox.setAbstractAttribute(cityAttribute);
-//			addressContainer.addControl(cityTextbox);
-//			address.addAbstractAttribute(cityAttribute);
-//
-//			addressContainer.setEntity(address);
-//
-//			// Step 3 Associate user (1)------ >(1)address
-//			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "adress",
-//					Cardinality.ZERO, Cardinality.ONE);
-//			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "user",
-//					Cardinality.ZERO, Cardinality.ONE);
-//			AssociationInterface association = getAssociation(address,
-//					AssociationDirection.SRC_DESTINATION, "userAddress", sourceRole, targetRole);
-//
-//			user.addAbstractAttribute(association);
-//
-//			//Step 4
-//			ContainmentAssociationControlInterface containmentAssociationControlInterface = DomainObjectFactory
-//					.getInstance().createContainmentAssociationControl();
-//
-//			containmentAssociationControlInterface.setContainer(addressContainer);
-//
-//			userContainer.addControl(containmentAssociationControlInterface);
-//			//Step 5
-//			EntityManager.getInstance().persistContainer(userContainer);
-//			Collection list = EntityManager.getInstance().getAllContainers();
-//			assertNotNull(list);
-//			Iterator iter = list.iterator();
-//			boolean flag = false;
-//			//Step 6
-//			while (iter.hasNext())
-//			{
-//				Container cont = (Container) iter.next();
-//				if (cont.getId().equals(addressContainer.getId()))
-//				{
-//					flag = true;
-//					break;
-//				}
-//			}
-//			assertTrue(flag);
-//		}
-//		catch (Exception e)
-//		{
-//			//TODO Auto-generated catch block
-//			Logger.out.debug(e.getMessage());
-//			fail("Exception occured");
-//		}
-//
-//	}
+	//	/**
+	//	 *  PURPOSE: This method tests for creation of all the hierarchy for containment control
+	//	 *  having one to many association
+	//	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved
+	//	 *  TEST CASE FLOW: 1. create User
+	//	 *                  2. Create Address
+	//	 *                  3. Add Association with      User(1) ------->(1) Address containment association
+	//	 *                  4. Add containment control to user container with address container inside this control.
+	//	 *                  5. persist entities.
+	//	 *                  6. Check if the address container is saved or not.
+	//	 */
+	//	public void testCreateContainerFromContainmentAssociation()
+	//	{
+	//		try
+	//		{
+	//			//Step 1
+	//			Container userContainer = (Container) DomainObjectFactory.getInstance()
+	//					.createContainer();
+	//
+	//			EntityInterface user = DomainObjectFactory.getInstance().createEntity();
+	//			user.setName("USER");
+	//			AttributeInterface nameAttribute = new MockEntityManager().initializeStringAttribute(
+	//					"name", "new name");
+	//
+	//			ControlInterface textbox = DomainObjectFactory.getInstance().createTextField();
+	//			textbox.setAbstractAttribute(nameAttribute);
+	//			userContainer.addControl(textbox);
+	//			user.addAbstractAttribute(nameAttribute);
+	//
+	//			userContainer.setEntity(user);
+	//
+	//			//Step 2
+	//			EntityInterface address = DomainObjectFactory.getInstance().createEntity();
+	//			address.setName("ADDRESS");
+	//			AttributeInterface cityAttribute = new MockEntityManager().initializeStringAttribute(
+	//					"City", "Ahmednagar");
+	//
+	//			Container addressContainer = (Container) DomainObjectFactory.getInstance()
+	//					.createContainer();
+	//
+	//			ControlInterface cityTextbox = DomainObjectFactory.getInstance().createTextField();
+	//			cityTextbox.setAbstractAttribute(cityAttribute);
+	//			addressContainer.addControl(cityTextbox);
+	//			address.addAbstractAttribute(cityAttribute);
+	//
+	//			addressContainer.setEntity(address);
+	//
+	//			// Step 3 Associate user (1)------ >(1)address
+	//			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "adress",
+	//					Cardinality.ZERO, Cardinality.ONE);
+	//			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "user",
+	//					Cardinality.ZERO, Cardinality.ONE);
+	//			AssociationInterface association = getAssociation(address,
+	//					AssociationDirection.SRC_DESTINATION, "userAddress", sourceRole, targetRole);
+	//
+	//			user.addAbstractAttribute(association);
+	//
+	//			//Step 4
+	//			ContainmentAssociationControlInterface containmentAssociationControlInterface = DomainObjectFactory
+	//					.getInstance().createContainmentAssociationControl();
+	//
+	//			containmentAssociationControlInterface.setContainer(addressContainer);
+	//
+	//			userContainer.addControl(containmentAssociationControlInterface);
+	//			//Step 5
+	//			EntityManager.getInstance().persistContainer(userContainer);
+	//			Collection list = EntityManager.getInstance().getAllContainers();
+	//			assertNotNull(list);
+	//			Iterator iter = list.iterator();
+	//			boolean flag = false;
+	//			//Step 6
+	//			while (iter.hasNext())
+	//			{
+	//				Container cont = (Container) iter.next();
+	//				if (cont.getId().equals(addressContainer.getId()))
+	//				{
+	//					flag = true;
+	//					break;
+	//				}
+	//			}
+	//			assertTrue(flag);
+	//		}
+	//		catch (Exception e)
+	//		{
+	//			//TODO Auto-generated catch block
+	//			Logger.out.debug(e.getMessage());
+	//			fail("Exception occured");
+	//		}
+	//
+	//	}
 
 	/**
 	 *
@@ -3046,14 +3104,14 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
 
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
@@ -3061,22 +3119,23 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ZERO, Cardinality.MANY));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.ONE));
-
-		user.addAbstractAttribute(association);
-        entityGroup.addEntity(user);
-        user.setEntityGroup(entityGroup);
-        entityGroup.addEntity(study);
-        study.setEntityGroup(entityGroup);
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ZERO, Cardinality.MANY));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.ONE));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(study);
+			study.setEntityGroup(entityGroup);
+
 			//entityManager.createEntity(study);
 
 			EntityInterface savedUser = entityManager.persistEntity(user);
@@ -3153,35 +3212,35 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		try
 		{
 			//Step 1
-			EntityInterface user = factory.createEntity();
+			EntityInterface user = createAndPopulateEntity();
 			AttributeInterface userNameAttribute = factory.createStringAttribute();
 			userNameAttribute.setName("user name");
 			user.setName("user");
 			user.addAbstractAttribute(userNameAttribute);
-	        entityGroup.addEntity(user);
-	        user.setEntityGroup(entityGroup);
+			entityGroup.addEntity(user);
+			user.setEntityGroup(entityGroup);
 
 			entityManager.persistEntity(user);
 
 			//Step 2 create institute
-			EntityInterface institution = factory.createEntity();
+			EntityInterface institution = createAndPopulateEntity();
 			AttributeInterface institutionName = factory.createStringAttribute();
 			institutionName.setName("institution Name");
 			institution.setName("institution");
 			institution.addAbstractAttribute(institutionName);
-	        entityGroup.addEntity(institution);
-	        institution.setEntityGroup(entityGroup);
+			entityGroup.addEntity(institution);
+			institution.setEntityGroup(entityGroup);
 
 			entityManager.persistEntity(institution);
 
 			//Step 3 create address
-			EntityInterface address = factory.createEntity();
+			EntityInterface address = createAndPopulateEntity();
 			AttributeInterface addressCity = factory.createStringAttribute();
 			addressCity.setName("City");
 			address.setName("address");
 			address.addAbstractAttribute(addressCity);
-	        entityGroup.addEntity(address);
-	        address.setEntityGroup(entityGroup);
+			entityGroup.addEntity(address);
+			address.setEntityGroup(entityGroup);
 			entityManager.persistEntity(address);
 
 			//Step 4 user --- > institute
@@ -3195,6 +3254,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			userInstitute.setTargetRole(getRole(AssociationType.CONTAINTMENT, "institution",
 					Cardinality.ONE, Cardinality.MANY));
 			user.addAbstractAttribute(userInstitute);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(userInstitute);
 
 			entityManager.persistEntity(user);
 
@@ -3210,6 +3270,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					Cardinality.ONE, Cardinality.MANY));
 
 			institution.addAbstractAttribute(instituteAddress);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(instituteAddress);
 
 			entityManager.persistEntity(institution);
 
@@ -3242,8 +3303,8 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			entityManager.editData(user, dataValue, recordId);
 
 			//step 8
-			int rowCount = (Integer)executeQuery("select count(*) from "
-					+ address.getTableProperties().getName(),INT_TYPE,1);
+			int rowCount = (Integer) executeQuery("select count(*) from "
+					+ address.getTableProperties().getName(), INT_TYPE, 1);
 			assertEquals(1, rowCount);
 
 		}
@@ -3268,57 +3329,58 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		EntityGroupInterface entityGroup = factory.createEntityGroup();
 		entityGroup.setName("test_" + new Double(Math.random()).toString());
 		// create user
-		EntityInterface user = factory.createEntity();
+		EntityInterface user = createAndPopulateEntity();
 		AttributeInterface userNameAttribute = factory.createStringAttribute();
 		userNameAttribute.setName("user name");
 		user.setName("user");
 		user.addAbstractAttribute(userNameAttribute);
-        entityGroup.addEntity(user);
-        user.setEntityGroup(entityGroup);
+		entityGroup.addEntity(user);
+		user.setEntityGroup(entityGroup);
 		// create study
-		EntityInterface study = factory.createEntity();
+		EntityInterface study = createAndPopulateEntity();
 		AttributeInterface studyNameAttribute = factory.createStringAttribute();
 		studyNameAttribute.setName("study name");
 		study.setName("study");
 		study.addAbstractAttribute(studyNameAttribute);
-        entityGroup.addEntity(study);
-        study.setEntityGroup(entityGroup);
+		entityGroup.addEntity(study);
+		study.setEntityGroup(entityGroup);
 		// Associate user (1)------ >(*)study
 		AssociationInterface association = factory.createAssociation();
-
-		association.setTargetEntity(study);
-		association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		association.setName("primaryInvestigator");
-		association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
-				Cardinality.ONE, Cardinality.ONE));
-		association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study", Cardinality.ZERO,
-				Cardinality.MANY));
-
-		user.addAbstractAttribute(association);
-
-		// create site
-		EntityInterface site = factory.createEntity();
-		AttributeInterface siteNameAttribute = factory.createStringAttribute();
-		siteNameAttribute.setName("site name");
-		site.setName("site");
-		site.addAbstractAttribute(siteNameAttribute);
-        entityGroup.addEntity(site);
-        site.setEntityGroup(entityGroup);
-		// Associate site (1)------ >(*)study
-		AssociationInterface associationSite = factory.createAssociation();
-
-		associationSite.setTargetEntity(study);
-		associationSite.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-		associationSite.setName("site_study");
-		associationSite.setSourceRole(getRole(AssociationType.ASSOCIATION, "site", Cardinality.ONE,
-				Cardinality.ONE));
-		associationSite.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
-				Cardinality.ZERO, Cardinality.MANY));
-
-		site.addAbstractAttribute(associationSite);
-
 		try
 		{
+			association.setTargetEntity(study);
+			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			association.setName("primaryInvestigator");
+			association.setSourceRole(getRole(AssociationType.ASSOCIATION, "primaryInvestigator",
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			user.addAbstractAttribute(association);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+
+			// create site
+			EntityInterface site = createAndPopulateEntity();
+			AttributeInterface siteNameAttribute = factory.createStringAttribute();
+			siteNameAttribute.setName("site name");
+			site.setName("site");
+			site.addAbstractAttribute(siteNameAttribute);
+			entityGroup.addEntity(site);
+			site.setEntityGroup(entityGroup);
+			// Associate site (1)------ >(*)study
+			AssociationInterface associationSite = factory.createAssociation();
+
+			associationSite.setTargetEntity(study);
+			associationSite.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+			associationSite.setName("site_study");
+			associationSite.setSourceRole(getRole(AssociationType.ASSOCIATION, "site",
+					Cardinality.ONE, Cardinality.ONE));
+			associationSite.setTargetRole(getRole(AssociationType.ASSOCIATION, "study",
+					Cardinality.ZERO, Cardinality.MANY));
+
+			site.addAbstractAttribute(associationSite);
+			DynamicExtensionsUtility.getConstraintPropertiesForAssociation(associationSite);
+
 			//entityManager.createEntity(study);
 
 			entityManager.persistEntity(user);
@@ -3347,6 +3409,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		}
 
 	}
+
 	/**
 	 * @param targetEntity
 	 * @param associationDirection
@@ -3354,10 +3417,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	 * @param sourceRole
 	 * @param targetRole
 	 * @return
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private AssociationInterface getAssociation(EntityInterface sourceEntity,
 			EntityInterface targetEntity, AssociationDirection associationDirection,
 			String assoName, RoleInterface sourceRole, RoleInterface targetRole)
+			throws DynamicExtensionsSystemException
 	{
 		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
 		association.setTargetEntity(targetEntity);
@@ -3366,6 +3431,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 		association.setSourceRole(sourceRole);
 		association.setTargetRole(targetRole);
 		association.setAssociationDirection(associationDirection);
+		DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
 		return association;
 	}
 

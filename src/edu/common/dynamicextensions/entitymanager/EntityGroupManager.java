@@ -375,7 +375,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 			else
 			{
 				EntityInterface dbaseCpy = getEntityFromGroup(dbaseCopy, entity.getId());
-				if (queryBuilder.isParentChanged((Entity) entity, (Entity) dbaseCpy))
+				if (EntityManagerUtil.isParentChanged((Entity) entity, (Entity) dbaseCpy))
 				{
 					checkParentChangeAllowed(entity);
 				}

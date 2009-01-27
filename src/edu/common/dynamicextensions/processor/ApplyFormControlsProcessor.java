@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.processor;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -109,6 +110,12 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				{
 					entity.addAbstractAttribute(abstractAttribute);
 					abstractAttribute.setEntity(entity);
+					if (abstractAttribute instanceof AssociationInterface)
+					{
+						((AssociationInterface) abstractAttribute)
+								.populateAssociationForConstraintProperties();
+					}
+
 				}
 				//DynamicExtensionsUtility.updateEntityReferences(abstractAttributeInterface);
 

@@ -168,11 +168,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @return true if CallbackURL is redirected, false otherwise
 	 * @throws IOException
 	 */
-	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response, String recordIdentifier,
-			String webUIManagerConstant, String containerId) throws IOException
+	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
+			String recordIdentifier, String webUIManagerConstant, String containerId)
+			throws IOException
 	{
 		boolean isCallbackURL = false;
-		String calllbackURL = (String) CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL);
+		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
+				Constants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
 			if(calllbackURL.contains("?"))

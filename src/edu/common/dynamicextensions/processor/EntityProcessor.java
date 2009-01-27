@@ -55,7 +55,7 @@ public class EntityProcessor extends BaseDynamicExtensionsProcessor
 	public EntityInterface createEntity()
 	{
 		EntityInterface entityInterface = DomainObjectFactory.getInstance().createEntity();
-		EntityManagerUtil.addIdAttribute(entityInterface);
+		//EntityManagerUtil.addIdAttribute(entityInterface);
 		return entityInterface;
 	}
 

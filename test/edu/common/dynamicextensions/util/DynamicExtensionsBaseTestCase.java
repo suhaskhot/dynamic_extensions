@@ -17,12 +17,12 @@ import java.sql.SQLException;
 import junit.framework.TestCase;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
@@ -31,7 +31,9 @@ import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
-public class DynamicExtensionsBaseTestCase extends TestCase implements EntityManagerExceptionConstantsInterface
+public class DynamicExtensionsBaseTestCase extends TestCase
+		implements
+			EntityManagerExceptionConstantsInterface
 {
 
 	protected int noOfDefaultColumns = 2;
@@ -39,8 +41,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	//1:ACTIVITY_STATUS 2:IDENTIFIER 3:FILE NAME 4:CONTENTE_TYPE 5:ACTUAL_CONTENTS
 	protected int noOfDefaultColumnsForfile = 5;
 
-	protected final static String STRING_TYPE="string";
-	protected final static String INT_TYPE="int";
+	protected final static String STRING_TYPE = "string";
+	protected final static String INT_TYPE = "int";
+
 	/**
 	 *
 	 */
@@ -65,7 +68,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	{
 
 		Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
-        ApplicationProperties.initBundle("ApplicationResources");
+		ApplicationProperties.initBundle("ApplicationResources");
 	}
 
 	/**
@@ -88,21 +91,21 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	{
 		Connection conn = null;
 		PreparedStatement statement = null;
-		ResultSet resultSet=null;
-		Object ans=null;
-		conn=getConnection();
+		ResultSet resultSet = null;
+		Object ans = null;
+		conn = getConnection();
 		try
 		{
 			statement = conn.prepareStatement(query);
-			resultSet= statement.executeQuery();
+			resultSet = statement.executeQuery();
 			resultSet.next();
-			if(STRING_TYPE.equals(returnType))
+			if (STRING_TYPE.equals(returnType))
 			{
-				ans=resultSet.getString(columnNumber);
+				ans = resultSet.getString(columnNumber);
 			}
-			if(INT_TYPE.equals(returnType))
+			if (INT_TYPE.equals(returnType))
 			{
-				ans=resultSet.getInt(columnNumber);
+				ans = resultSet.getInt(columnNumber);
 			}
 		}
 		catch (SQLException e)
@@ -117,46 +120,56 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		return ans;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public EntityInterface createAndPopulateEntity()
+	{
+		final DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		final EntityInterface entity = factory.createEntity();
+		EntityManagerUtil.addIdAttribute(entity);
+		return entity;
+	}
 
 	/**
 	 * @param query query to be executed
 	 * @return
 	 */
-/*	protected ResultSet executeQuery(String query)
-	{
-		//      Checking whether the data table is created properly or not.
-		Connection conn = null;
-		java.sql.PreparedStatement statement = null;
-		java.sql.ResultSet resultSet=null;
-		try
+	/*	protected ResultSet executeQuery(String query)
 		{
-			conn = DBUtil.getConnection();
-		}
-		catch (HibernateException e)
-		{
-			e.printStackTrace();
-		}
-
-		try
-		{
-			statement = conn.prepareStatement(query);
-			resultSet= statement.executeQuery();
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		/*finally
-		{
-			if(conn!=null)
+			//      Checking whether the data table is created properly or not.
+			Connection conn = null;
+			java.sql.PreparedStatement statement = null;
+			java.sql.ResultSet resultSet=null;
+			try
 			{
-				DBUtil.closeConnection();
+				conn = DBUtil.getConnection();
 			}
-		}
-		return resultSet;
-	}*/
+			catch (HibernateException e)
+			{
+				e.printStackTrace();
+			}
 
+			try
+			{
+				statement = conn.prepareStatement(query);
+				resultSet= statement.executeQuery();
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+				fail();
+			}
+			/*finally
+			{
+				if(conn!=null)
+				{
+					DBUtil.closeConnection();
+				}
+			}
+			return resultSet;
+		}*/
 
 	/**
 	 *  It will execute query & will retrieve the total columncount in that queried table.
@@ -171,7 +184,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		conn = getConnection();
 		try
 		{
-			metadata = executeQueryForMetadata(conn,query,metadata);
+			metadata = executeQueryForMetadata(conn, query, metadata);
 			count = metadata.getColumnCount();
 		}
 		catch (SQLException e)
@@ -187,24 +200,22 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		return count;
 	}
 
-
-
 	/**
 	 * It will retrieve the DataType of the column specified in the columnNumber
 	 * @param query To be executed
 	 * @param columnNumber Of which dataType is required
 	 * @return Dataype of the column
 	 */
-	protected int getColumntype(String query,int columnNumber)
+	protected int getColumntype(String query, int columnNumber)
 	{
 		Connection conn = null;
-		ResultSetMetaData metadata=null;
-		int type=0;
-		conn=getConnection();
+		ResultSetMetaData metadata = null;
+		int type = 0;
+		conn = getConnection();
 		try
 		{
-			metadata=executeQueryForMetadata(conn,query,metadata);
-			type=metadata.getColumnType(columnNumber);
+			metadata = executeQueryForMetadata(conn, query, metadata);
+			type = metadata.getColumnType(columnNumber);
 		}
 		catch (SQLException e)
 		{
@@ -218,7 +229,6 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 
 		return type;
 	}
-
 
 	/**
 	 * Close the connection
@@ -238,11 +248,12 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	 * @return
 	 * @throws SQLException
 	 */
-	private ResultSetMetaData executeQueryForMetadata(Connection conn,
-			String query, ResultSetMetaData metadata)throws SQLException {
+	private ResultSetMetaData executeQueryForMetadata(Connection conn, String query,
+			ResultSetMetaData metadata) throws SQLException
+	{
 		PreparedStatement statement = null;
 		statement = conn.prepareStatement(query);
-		metadata= statement.executeQuery().getMetaData();
+		metadata = statement.executeQuery().getMetaData();
 		return metadata;
 	}
 
@@ -250,8 +261,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	 * Open the connection for use
 	 * @return connection
 	 */
-	private Connection getConnection() {
-		Connection conn=null;
+	private Connection getConnection()
+	{
+		Connection conn = null;
 		try
 		{
 			conn = DBUtil.getConnection();
@@ -260,7 +272,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		{
 			e.printStackTrace();
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -275,7 +287,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	{
 		//      Checking whether the data table is created properly or not.
 		Connection conn = null;
-		conn=getConnection();
+		conn = getConnection();
 		java.sql.PreparedStatement statement = null;
 		try
 		{
@@ -300,7 +312,8 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 	 * @param tableName
 	 * @return
 	 */
-	protected boolean  isTablePresent(String tableName) {
+	protected boolean isTablePresent(String tableName)
+	{
 		Connection conn = null;
 		String query = "select * from " + tableName;
 		try
@@ -324,9 +337,11 @@ public class DynamicExtensionsBaseTestCase extends TestCase implements EntityMan
 		return true;
 	}
 
-	protected String getActivityStatus(EntityInterface entity , Long recordId) throws Exception {
-		return (String)executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN +  " from "
-				+ entity.getTableProperties().getName()  + " where identifier = " + recordId,STRING_TYPE,1);
+	protected String getActivityStatus(EntityInterface entity, Long recordId) throws Exception
+	{
+		return (String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from "
+				+ entity.getTableProperties().getName() + " where identifier = " + recordId,
+				STRING_TYPE, 1);
 
 	}
 

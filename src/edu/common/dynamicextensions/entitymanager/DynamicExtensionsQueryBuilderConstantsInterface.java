@@ -40,6 +40,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String COLUMN_KEYWORD = " COLUMN ";
 	String NULL_KEYWORD = " NULL ";
 	String SET_KEYWORD = " SET ";
+	String CHANGE_KEYWORD = " CHANGE ";
 	String NOT_KEYWORD = " NOT ";
 	String UNIQUE_CONSTRAINT_SUFFIX = "UC";
 	String OPENING_BRACKET = "( ";
@@ -51,6 +52,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String IDENTIFIER = "IDENTIFIER";
 	String CATEGORY_ROOT_ID = "CATEGORY_ROOT_ID";
 	String STATUS = "STATUS";
+	String PRIMARY_KEY = "primary key";
 	String PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE = "primary key (IDENTIFIER)";
 	String ALTER_COLUMN_KEYWORD = "ALTER " + COLUMN_KEYWORD;
 	String REFERENCES_KEYWORD = "REFERENCES";

@@ -37,7 +37,8 @@ public class TestAll
 		suite.addTestSuite(TestEntityManagerForAssociations.class);
 		suite.addTestSuite(TestEntityManagerForInheritance.class);
 		suite.addTestSuite(TestEntityMangerForXMIImportExport.class);
-		suite.addTestSuite(TestCategoryManager.class);		
+		suite.addTestSuite(TestCategoryManager.class);
+//		suite.addTestSuite(TestEntityManagerWithPrimaryKey.class);
 		return suite;
 	}
 }

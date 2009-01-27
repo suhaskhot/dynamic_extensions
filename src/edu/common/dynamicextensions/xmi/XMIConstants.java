@@ -22,6 +22,7 @@ public class XMIConstants
 	// name of a MOF extent that will contain definition of UML metamodel
 	public static final String UML_MM = "UML";
 	//tagged values
+	public static final String TAGGED_NAME_PREFIX = "DE_";
 	public static final String TAGGED_NAME_ASSOC_DIRECTION = "direction";
 	public static final String TAGGED_VALUE_ASSOC_BIDIRECTIONAL = "Bi-Directional";
 	public static final String TAGGED_VALUE_ASSOC_SRC_DEST = "Source -> Destination";
@@ -46,6 +47,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_DATE_FORMAT = "Format";
 	public static final String TAGGED_VALUE_PRECISION = "Precision";
 
+	public static final String TAGGED_VALUE_INHERITED = "Inherited";
+	public static final String TAGGED_VALUE_PRIMARYKEY = "PrimaryKey";
 	public static final String TAGGED_VALUE_PASSWORD = "Password";
 	public static final String TAGGED_VALUE_MULTILINE = "Multiline";
 	public static final String TAGGED_VALUE_DEFAULT_VALUE = "DefaultValue";
@@ -126,4 +129,6 @@ public class XMIConstants
 
 	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "255";
 	public static final String MAX_LENGTH_LIMIT = "999";
+
+	public static final String ID_ATTRIBUTE_NAME = "id";
 }

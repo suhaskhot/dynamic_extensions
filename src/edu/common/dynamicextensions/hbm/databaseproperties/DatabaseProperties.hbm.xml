@@ -47,13 +47,6 @@
         <key
             column="IDENTIFIER"
         />
-        <property
-            name="constraintName"
-            type="string"
-            update="true"
-            insert="true"
-            column="CONSTRAINT_NAME"
-        />
 
         </joined-subclass>
         <joined-subclass
@@ -64,13 +57,6 @@
         >
         <key
             column="IDENTIFIER"
-        />
-        <property
-            name="constraintName"
-            type="string"
-            update="true"
-            insert="true"
-            column="CONSTRAINT_NAME"
         />
 
         </joined-subclass>
@@ -83,36 +69,55 @@
         <key
             column="IDENTIFIER"
         />
-        <property
-            name="sourceEntityKey"
-            type="string"
-            update="true"
-            insert="true"
-            column="SOURCE_ENTITY_KEY"
-        />
+
+        <set
+            name="srcEntityConstraintKeyPropertiesCollection"
+            table="DYEXTN_CONSTRAINTKEY_PROP"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="SRC_CONSTRAINT_KEY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintKeyProperties"
+              />
+        </set>
+
+        <set
+            name="tgtEntityConstraintKeyPropertiesCollection"
+            table="DYEXTN_CONSTRAINTKEY_PROP"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="TGT_CONSTRAINT_KEY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintKeyProperties"
+              />
+        </set>
 
         <property
-            name="targetEntityKey"
+            name="constraintName"
             type="string"
             update="true"
             insert="true"
-            column="TARGET_ENTITY_KEY"
-        />
-
-        <property
-            name="sourceEntityKeyConstraintName"
-            type="string"
-            update="true"
-            insert="true"
-            column="SRC_CONSTRAINT_NAME"
-        />
-
-        <property
-            name="targetEntityKeyConstraintName"
-            type="string"
-            update="true"
-            insert="true"
-            column="TARGET_CONSTRAINT_NAME"
+            column="CONSTRAINT_NAME"
         />
 
         </joined-subclass>

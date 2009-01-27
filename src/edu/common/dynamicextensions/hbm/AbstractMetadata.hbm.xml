@@ -683,6 +683,27 @@
         />
 
         <set
+            name="constraintPropertiesCollection"
+            table="DYEXTN_CONSTRAINT_PROPERTIES"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="ABSTRACT_ENTITY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
+              />
+        </set>
+
+        <set
             name="tablePropertiesCollection"
             table="DYEXTN_TABLE_PROPERTIES"
             lazy="false"
@@ -740,6 +761,34 @@
             insert="true"
             column="DATA_TABLE_STATE"
         />
+
+        <list
+            name="primaryKeyAttributeCollection"
+            table="DYEXTN_ENTIY_COMPOSITE_KEY_REL"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="ENTITY_ID"
+              />
+
+              <index
+                  column="INSERTION_ORDER"
+                  type="long"
+              />
+
+              <many-to-many
+                  class="edu.common.dynamicextensions.domain.Attribute"
+                  column="ATTRIBUTE_ID"
+                  outer-join="auto"
+              />
+
+        </list>
 
         <many-to-one
             name="entityGroup"

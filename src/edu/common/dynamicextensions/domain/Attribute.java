@@ -149,7 +149,7 @@ public class Attribute extends AbstractAttribute
 	}
 
 	/**
-	 * This method returns whehter the Attribute is a primary key or not.
+	 * This method returns whether the Attribute is a primary key or not.
 	 * @hibernate.property name="isPrimaryKey" type="boolean" column="IS_PRIMARY_KEY"
 	 * @return whehter the Attribute is a primary key or not.
 	 */
@@ -165,6 +165,7 @@ public class Attribute extends AbstractAttribute
 	public void setIsPrimaryKey(Boolean isPrimaryKey)
 	{
 		this.isPrimaryKey = isPrimaryKey;
+		setIsNullable(!isPrimaryKey);
 	}
 
 	/**

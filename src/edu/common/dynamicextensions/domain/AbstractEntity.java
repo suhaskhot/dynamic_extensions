@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 
@@ -35,7 +35,70 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
 	/**
 	 * containerCollection.
 	 */
-	protected Collection containerCollection = new HashSet<Container>();
+	protected Collection<ContainerInterface> containerCollection = new HashSet<ContainerInterface>();
+
+	/**
+	 * It will hold the collection of constraint properties on that entity like foreign key constraint
+	 * its referencing primary key & own foreign key properties , constraint name etc.
+	 */
+	protected Collection<ConstraintPropertiesInterface> constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
+
+	/**
+	 * This method returns the Collection of constraintProperties of this Entity.
+	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ABSTRACT_ENTITY_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties"
+	 * @return the Collection of TableProperties of this Entity.
+	 */
+	private Collection<ConstraintPropertiesInterface> getConstraintPropertiesCollection()
+	{
+		return constraintPropertiesCollection;
+	}
+
+	/**
+	 * It will set the ConstraintPropertiesCollection
+	 * @param constraintPropertiesCollection
+	 */
+	private void setConstraintPropertiesCollection(
+			final Collection<ConstraintPropertiesInterface> constraintPropertiesCollection)
+	{
+		this.constraintPropertiesCollection = constraintPropertiesCollection;
+	}
+
+	/**
+	* This method returns the constraintProperties of the Entity.
+	* @return the TableProperties of the Entity.
+	*/
+	public ConstraintPropertiesInterface getConstraintProperties()
+	{
+		ConstraintPropertiesInterface constraintProperties = null;
+		if (constraintPropertiesCollection != null && !constraintPropertiesCollection.isEmpty())
+		{
+			Iterator constraintPropertiesIterator = constraintPropertiesCollection.iterator();
+			constraintProperties = (ConstraintPropertiesInterface) constraintPropertiesIterator
+					.next();
+		}
+		return constraintProperties;
+	}
+
+	/**
+	 * This method sets the constraintProperties of the Entity to the given TableProperties.
+	 * @param tableProperties the TableProperties to be set.
+	 */
+	public void setConsraintProperties(final ConstraintPropertiesInterface constraintProperties)
+	{
+		if (constraintPropertiesCollection == null)
+		{
+			constraintPropertiesCollection = new HashSet<ConstraintPropertiesInterface>();
+		}
+		else
+		{
+			this.constraintPropertiesCollection.clear();
+		}
+		this.constraintPropertiesCollection.add(constraintProperties);
+	}
 
 	/**
 	 * This method returns the Collection of TableProperties of this Entity.

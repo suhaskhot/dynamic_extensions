@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -11,7 +12,11 @@ import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.Constants.AssociationType;
 
@@ -177,7 +182,6 @@ public class Association extends AbstractAttribute
 
 	/**
 	 * This method returns the Collection of the ConstraintProperties of the Association.
-	 *
 	 * @hibernate.set name="constraintPropertiesCollection" table="DYEXTN_CONSTRAINT_PROPERTIES"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ASSOCIATION_ID"
@@ -246,6 +250,7 @@ public class Association extends AbstractAttribute
 	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.Constants.AssociationDirection)
 	 */
 	public void setAssociationDirection(AssociationDirection direction)
+			throws DynamicExtensionsSystemException
 	{
 		setDirection(direction.getValue());
 		populateSystemGeneratedAssociation(this);
@@ -279,8 +284,10 @@ public class Association extends AbstractAttribute
 	 * In this case we no longer need the system generated association.
 	 * So if the sys. generated association is present , it is removed.
 	 * @param association
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void populateSystemGeneratedAssociation(Association association)
+			throws DynamicExtensionsSystemException
 	{
 		//Getting the sys.generated association for the given original association.
 		if (association.getIsSystemGenerated())
@@ -302,12 +309,46 @@ public class Association extends AbstractAttribute
 					constraintPropertiesSysGen = systemGeneratedAssociation
 							.getConstraintProperties();
 				}
+
 				constraintPropertiesSysGen.setName(association.getConstraintProperties().getName());
 				//Swapping the source and target keys.
-				constraintPropertiesSysGen.setSourceEntityKey(association.getConstraintProperties()
-						.getTargetEntityKey());
-				constraintPropertiesSysGen.setTargetEntityKey(association.getConstraintProperties()
-						.getSourceEntityKey());
+				Collection<ConstraintKeyPropertiesInterface> cnstrKeyPropCollection = association
+						.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+				DomainObjectFactory factory = DomainObjectFactory.getInstance();
+				ConstraintKeyPropertiesInterface srcCnstKeyProp;
+				ConstraintKeyPropertiesInterface tgtCnstKeyProp;
+				try
+				{
+					for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstrKeyPropCollection)
+					{
+						srcCnstKeyProp = factory.createConstraintKeyProperties(cnstrKeyProp
+								.getTgtForiegnKeyColumnProperties().getName());
+						srcCnstKeyProp.setSrcPrimaryKeyAttribute(cnstrKeyProp
+								.getSrcPrimaryKeyAttribute());
+						constraintPropertiesSysGen.addTgtConstraintKeyProperties(srcCnstKeyProp);
+					}
+
+					cnstrKeyPropCollection = association.getConstraintProperties()
+							.getTgtEntityConstraintKeyPropertiesCollection();
+					for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstrKeyPropCollection)
+					{
+						tgtCnstKeyProp = factory.createConstraintKeyProperties(cnstrKeyProp
+								.getTgtForiegnKeyColumnProperties().getName());
+						tgtCnstKeyProp.setSrcPrimaryKeyAttribute(cnstrKeyProp
+								.getSrcPrimaryKeyAttribute());
+						constraintPropertiesSysGen.addSrcConstaintKeyProperties(tgtCnstKeyProp);
+					}
+				}
+				catch (NoSuchElementException e)
+				{
+					throw new DynamicExtensionsSystemException(
+							"Generate constraint properties for association first", e);
+				}
+				catch (NullPointerException e)
+				{
+					throw new DynamicExtensionsSystemException(
+							"Generate constraint properties for association first", e);
+				}
 				//Populating the sys. generated association.
 				//systemGeneratedAssociation.setName(association.getName());
 
@@ -387,6 +428,19 @@ public class Association extends AbstractAttribute
 	{
 		RoleInterface roleInterface = this.getTargetRole();
 		return roleInterface.getAssociationsType();
+	}
+
+	/**
+	 * This method will update the constraint properties of the association 
+	 * depending on the source & target Entities.
+	 * @throws DynamicExtensionsSystemException 
+	 * 
+	 */
+	public void populateAssociationForConstraintProperties()
+			throws DynamicExtensionsSystemException
+	{
+		this.setConstraintProperties(DynamicExtensionsUtility
+				.getConstraintPropertiesForAssociation(this));
 	}
 
 }

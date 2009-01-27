@@ -12,34 +12,4 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
 public class ColumnProperties extends DatabaseProperties implements ColumnPropertiesInterface
 {
 
-	/**
-	 * Name of the constraint property.
-	 */
-	protected String constraintName;
-
-	/**
-	 * Empty constructor
-	 */
-	public ColumnProperties()
-	{
-
-	}
-
-	/**
-	 * @hibernate.property name="constraintName" type="string" column="CONSTRAINT_NAME"
-	 * @return Returns the name.
-	 */
-	public String getConstraintName()
-	{
-		return constraintName;
-	}
-
-	/**
-	 * @param name The name to set.
-	 */
-	public void setConstraintName(String constraintName)
-	{
-		this.constraintName = constraintName;
-	}
-
 }

@@ -14,7 +14,10 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
@@ -40,6 +43,11 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 * Collection of attributes in this entity.
 	 */
 	protected Collection<AbstractAttributeInterface> abstractAttributeCollection = new HashSet<AbstractAttributeInterface>();
+
+	/**
+	 * Collection of attribute which are acting as a composite/Primary key for the entity
+	 */
+	protected List<AttributeInterface> primaryKeyAttributeCollection = new ArrayList<AttributeInterface>();
 
 	/**
 	 * Collection of EntityGroup.
@@ -102,6 +110,49 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	public Entity()
 	{
+	}
+
+	/**
+	 * This method returns the Collection of primaryKeyAttributes.
+	 * @hibernate.list name="PrimaryKeyAttributeCollection" table="DYEXTN_ENTIY_COMPOSITE_KEY_REL"
+	 * cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="ENTITY_ID"
+	 * @hibernate.collection-index column="INSERTION_ORDER" type="long"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.Attribute" column="ATTRIBUTE_ID"
+	 * @return List of the composite/primary key attribute
+	 */
+	public List<AttributeInterface> getPrimaryKeyAttributeCollection()
+	{
+		return primaryKeyAttributeCollection;
+	}
+
+	/**
+	 * It will set the primaryKeyAttributeCollection to the given collection
+	 * @param PrimaryKeyAttributeCollection 
+	 */
+	public void setPrimaryKeyAttributeCollection(
+			List<AttributeInterface> primaryKeyAttributeCollection)
+	{
+		this.primaryKeyAttributeCollection = primaryKeyAttributeCollection;
+	}
+
+	/**
+	 * It will add the given argument in the composite/Primary key attribute collection
+	 * @param primaryAttribute to be added in primaryKeyAttributeCollection
+	 */
+	public void addPrimaryKeyAttribute(AttributeInterface primaryAttribute)
+	{
+		if (primaryAttribute == null)
+		{
+			return;
+		}
+
+		if (primaryKeyAttributeCollection == null)
+		{
+			primaryKeyAttributeCollection = new ArrayList<AttributeInterface>();
+		}
+		primaryKeyAttributeCollection.add(primaryAttribute);
 	}
 
 	/**
@@ -180,7 +231,35 @@ public class Entity extends AbstractEntity implements EntityInterface
 				Object object = attributeIterator.next();
 				if (object instanceof AttributeInterface)
 				{
+					AttributeInterface attribute = (AttributeInterface) object;
+					if (!DynamicExtensionsUtility.isInheritedTaggPresent(attribute))
+					{
+						attributeCollection.add(attribute);
+					}
+				}
+			}
+		}
+		return attributeCollection;
+	}
+
+	/**
+	 * This method return the Collection of Attributes including the new Attributes which are 
+	 * added because of inheritance
+	 * @return the Collection of Attributes.
+	 */
+	public Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes()
+	{
+		Collection<AttributeInterface> attributeCollection = new HashSet<AttributeInterface>();
+		if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty())
+		{
+			Iterator attributeIterator = abstractAttributeCollection.iterator();
+			while (attributeIterator.hasNext())
+			{
+				Object object = attributeIterator.next();
+				if (object instanceof AttributeInterface)
+				{
 					attributeCollection.add((AttributeInterface) object);
+
 				}
 			}
 		}
@@ -394,16 +473,16 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public Collection<AttributeInterface> getAllAttributes()
 	{
 
-		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
-		AttributeCollection.addAll(getAttributeCollection());
+		Collection<AttributeInterface> attributeCollection = new ArrayList<AttributeInterface>();
+		attributeCollection.addAll(getAttributeCollection());
 		EntityInterface parentEntity = this.parentEntity;
 		while (parentEntity != null)
 		{
-			AttributeCollection.addAll(parentEntity.getAttributeCollection());
+			attributeCollection.addAll(parentEntity.getAttributeCollection());
 			parentEntity = parentEntity.getParentEntity();
 		}
 
-		return AttributeCollection;
+		return attributeCollection;
 	}
 
 	/**
@@ -489,9 +568,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	public Collection<AttributeInterface> getEntityAttributes()
 	{
-		Collection<AttributeInterface> AttributeCollection = new ArrayList<AttributeInterface>();
-		AttributeCollection.addAll(getAttributeCollection());
-		return AttributeCollection;
+		return getAttributeCollection();
 	}
 
 	/**
@@ -544,15 +621,46 @@ public class Entity extends AbstractEntity implements EntityInterface
 	}
 
 	/**
-	 *
+	 * It will search the attribute in the same entity attributes without including inherited attributes. 
+	 * if not found will search the attribute in the parent entity & so on
 	 * @param attributeName
 	 * @return
 	 */
 	public AttributeInterface getAttributeByName(String attributeName)
 	{
+		return searchAttributeByNameInCollection(this.getAllAbstractAttributes(), attributeName);
+	}
+
+	/**
+	 * It will retrieve the Attribute with the given name in the All attributes of entity including its inherited Attributes
+	 * Will return the matched attribute which is present in the same entity or null. 
+	 * @param attributeName
+	 * @return
+	 */
+	public AttributeInterface getEntityAttributeByName(String attributeName)
+	{
+		
+		Collection<AbstractAttributeInterface> abstractAttributeCollection = new ArrayList<AbstractAttributeInterface>();
+		abstractAttributeCollection
+				.addAll(getAbstractAttributeCollectionIncludingInheritedAttribute());
+		return searchAttributeByNameInCollection(abstractAttributeCollection,attributeName);
+	}
+	
+	
+	/**
+	 * It will search the attribute in the given given abstractAttributeCollection parameter which is having the same name given in the 
+	 * second attribute name parameter.
+	 * @param abstractAttributeCollection
+	 * @param attributeName
+	 * @return
+	 */
+	private AttributeInterface searchAttributeByNameInCollection(
+			Collection<AbstractAttributeInterface> abstractAttributeCollection,
+			String attributeName)
+	{
 		AttributeInterface attribute = null;
 		AbstractAttributeInterface abstractAttribute = null;
-		for (AbstractAttributeInterface attr : this.getAllAbstractAttributes())
+		for (AbstractAttributeInterface attr : abstractAttributeCollection)
 		{
 			if (attr.getName().trim().equals(attributeName))
 			{
@@ -579,6 +687,26 @@ public class Entity extends AbstractEntity implements EntityInterface
 			attribute = (AttributeInterface) abstractAttribute;
 		}
 		return attribute;
+	}
+
+	/**
+	 * This method return the Collection of Attributes including all its inherited attributes.
+	 * @return the Collection of Attributes.
+	 */
+	private Collection<AbstractAttributeInterface> getAbstractAttributeCollectionIncludingInheritedAttribute()
+	{
+		Collection<AbstractAttributeInterface> attributeCollection = new HashSet<AbstractAttributeInterface>();
+		if (abstractAttributeCollection != null && !abstractAttributeCollection.isEmpty())
+		{
+			Iterator attributeIterator = abstractAttributeCollection.iterator();
+			while (attributeIterator.hasNext())
+			{
+				Object object = attributeIterator.next();
+				attributeCollection.add((AbstractAttributeInterface) object);
+
+			}
+		}
+		return attributeCollection;
 	}
 
 	/**
@@ -641,5 +769,59 @@ public class Entity extends AbstractEntity implements EntityInterface
 			}
 		}
 		return isAttributePresent;
+	}
+
+	/**
+	 * This method will return the collection of the attribute which are primary key
+	 * @return collection of attributes
+	 */
+	public Collection<AttributeInterface> getPrimarykeyAttributeCollectionInSameEntity()
+	{
+		Collection<AttributeInterface> primaryKeyAttributeCollection = new HashSet<AttributeInterface>();
+		Collection<AttributeInterface> attributeCollection = getEntityAttributes();
+		if (attributeCollection != null && !attributeCollection.isEmpty())
+		{
+			for (AttributeInterface attribute : attributeCollection)
+			{
+				if (attribute.getIsPrimaryKey() && !attribute.getIsNullable())
+				{
+					primaryKeyAttributeCollection.add(attribute);
+
+				}
+			}
+
+		}
+		return primaryKeyAttributeCollection;
+	}
+
+	/**
+	 * This method will return the list of column names which are acting as primary key in this entity
+	 * @return list of column names
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public List<String> getForeignKeyColumnsForInheritance()
+			throws DynamicExtensionsSystemException
+	{
+		List<String> ColumnNames = new ArrayList<String>();
+		Collection<ConstraintKeyPropertiesInterface> cnstrKeyPropColl = getConstraintProperties()
+				.getSrcEntityConstraintKeyPropertiesCollection();
+		for (ConstraintKeyPropertiesInterface foreignKeyProperties : cnstrKeyPropColl)
+		{
+			ColumnNames.add(foreignKeyProperties.getTgtForiegnKeyColumnProperties().getName());
+		}
+
+		return ColumnNames;
+	}
+
+	/**
+	 * It will create the constraintProperties of the entity for inheritance
+	 * @param isAddColumnForInheritance
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public void populateEntityForConstraintProperties(boolean isAddColumnForInheritance)
+			throws DynamicExtensionsSystemException
+	{
+		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(this,
+				isAddColumnForInheritance);
 	}
 }

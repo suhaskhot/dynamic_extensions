@@ -264,8 +264,20 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.SemanticAnnotatableInterface#getOrderedSemanticPropertyCollection()
+	/**
+	 * This method removes all TaggedValues from AbstractMetadata.
+	 */
+	public void removeAllTaggedValues()
+	{
+		if (taggedValueCollection != null)
+		{
+			taggedValueCollection.clear();
+		}
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
 	 */
 	public List<SemanticPropertyInterface> getOrderedSemanticPropertyCollection()
 	{

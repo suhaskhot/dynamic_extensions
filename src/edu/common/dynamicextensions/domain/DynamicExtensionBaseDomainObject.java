@@ -17,7 +17,7 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 {
 
 	/**
-	 * Serial Version Unique Identifief
+	 * Serial Version Unique Identifier
 	 */
 	protected static final long serialVersionUID = 1234567890L;
 

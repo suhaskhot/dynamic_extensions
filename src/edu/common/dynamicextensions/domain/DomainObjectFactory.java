@@ -12,6 +12,7 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import java.util.Date;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
+import edu.common.dynamicextensions.domain.databaseproperties.ConstraintKeyProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.CategoryAssociationControl;
@@ -57,6 +58,7 @@ import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
@@ -135,6 +137,7 @@ public class DomainObjectFactory
 		entity.setCreatedDate(new Date());
 		entity.setLastUpdated(entity.getCreatedDate());
 		entity.setTableProperties(createTableProperties());
+		entity.setConsraintProperties(createConstraintPropertiesForInheritance());
 		return entity;
 	}
 
@@ -204,10 +207,41 @@ public class DomainObjectFactory
 
 		tableProperties.setName(TABLE_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
-		tableProperties.setConstraintName(CONSTRAINT + UNDERSCORE
-				+ IdGeneratorUtil.getNextUniqeId());
-
 		return tableProperties;
+	}
+
+	/**
+	 * This method creates an object of constraintKeyProperties
+	 * @return an instance of constraintKeyProperties
+	 */
+	public ConstraintKeyPropertiesInterface createConstraintKeyProperties()
+	{
+		ConstraintKeyProperties cnstrKeyProp = new ConstraintKeyProperties();
+		cnstrKeyProp.setTgtForiegnKeyColumnProperties(createColumnProperties());
+		return cnstrKeyProp;
+	}
+
+	/**
+	 * This method creates an object of constraintKeyProperties set column name to the given parameter
+	 * @param columnName 
+	 * @return an instance of constraintKeyProperties
+	 */
+	public ConstraintKeyPropertiesInterface createConstraintKeyProperties(String columnName)
+	{
+		ConstraintKeyProperties cnstrKeyProp = new ConstraintKeyProperties();
+		cnstrKeyProp.setTgtForiegnKeyColumnProperties(createColumnProperties(columnName));
+		return cnstrKeyProp;
+	}
+
+	/**
+	 * This method creates constraintKeyProperties for inheritance, creates only the constraint name 
+	 * @return an instance of constraintProperties
+	 */
+	public ConstraintPropertiesInterface createConstraintPropertiesForInheritance()
+	{
+		ConstraintProperties cnstrProp = new ConstraintProperties();
+		cnstrProp.setConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		return cnstrProp;
 	}
 
 	/**
@@ -217,24 +251,21 @@ public class DomainObjectFactory
 	 */
 	public ConstraintPropertiesInterface createConstraintProperties()
 	{
-		ConstraintProperties constraintProperties = new ConstraintProperties();
+		ConstraintProperties cnstrProp = new ConstraintProperties();
 
-		constraintProperties.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE
-				+ IdGeneratorUtil.getNextUniqeId());
+		cnstrProp.setName(ASSOCIATION_NAME_PREFIX + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
-		constraintProperties.setSourceEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "S"
-				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		cnstrProp
+				.setSrcEntityConstraintKeyProp(createConstraintKeyProperties(ASSOCIATION_COLUMN_PREFIX
+						+ UNDERSCORE + "S" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId()));
 
-		constraintProperties.setTargetEntityKey(ASSOCIATION_COLUMN_PREFIX + UNDERSCORE + "T"
-				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
+		cnstrProp
+				.setTgtEntityConstraintKeyProp(createConstraintKeyProperties(ASSOCIATION_COLUMN_PREFIX
+						+ UNDERSCORE + "T" + UNDERSCORE + IdGeneratorUtil.getNextUniqeId()));
 
-		constraintProperties.setSourceEntityKeyConstraintName(CONSTRAINT + UNDERSCORE
-				+ IdGeneratorUtil.getNextUniqeId());
+		cnstrProp.setConstraintName(CONSTRAINT + UNDERSCORE + IdGeneratorUtil.getNextUniqeId());
 
-		constraintProperties.setTargetEntityKeyConstraintName(CONSTRAINT + UNDERSCORE
-				+ IdGeneratorUtil.getNextUniqeId());
-
-		return constraintProperties;
+		return cnstrProp;
 	}
 
 	/**
@@ -721,7 +752,7 @@ public class DomainObjectFactory
 	 */
 	public ColumnPropertiesInterface createColumnProperties(String columnName)
 	{
-		ColumnPropertiesInterface columnProperties = createColumnProperties();
+		ColumnPropertiesInterface columnProperties = new ColumnProperties();
 		columnProperties.setName(columnName);
 		return columnProperties;
 	}
@@ -806,6 +837,7 @@ public class DomainObjectFactory
 		categoryEntity.setLastUpdated(categoryEntity.getCreatedDate());
 		categoryEntity.setTableProperties(createTableProperties(CATEGORY_TABLE_NAME_PREFIX
 				+ UNDERSCORE + IdGeneratorUtil.getNextUniqeId()));
+		categoryEntity.setConsraintProperties(createConstraintPropertiesForInheritance());
 		return categoryEntity;
 	}
 

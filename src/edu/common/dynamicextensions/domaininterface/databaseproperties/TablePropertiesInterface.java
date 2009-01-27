@@ -8,15 +8,4 @@ package edu.common.dynamicextensions.domaininterface.databaseproperties;
 public interface TablePropertiesInterface extends DatabasePropertiesInterface
 {
 
-	/**
-	 *
-	 * @return
-	 */
-	String getConstraintName();
-
-	/**
-	 *
-	 * @param constraintName
-	 */
-	void setConstraintName(String constraintName);
 }

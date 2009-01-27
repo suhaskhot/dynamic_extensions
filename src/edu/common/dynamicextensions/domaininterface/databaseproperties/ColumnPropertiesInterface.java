@@ -10,9 +10,4 @@ package edu.common.dynamicextensions.domaininterface.databaseproperties;
 public interface ColumnPropertiesInterface extends DatabasePropertiesInterface
 {
 
-	/**
-	 *
-	 * @return
-	 */
-	String getConstraintName();
 }

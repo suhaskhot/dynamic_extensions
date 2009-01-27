@@ -12,36 +12,4 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.TableProp
 public class TableProperties extends DatabaseProperties implements TablePropertiesInterface
 {
 
-	/**
-	 * constraintName.
-	 *
-	 * */
-	protected String constraintName;
-
-	/**
-	 * Empty constructor.
-	 */
-	public TableProperties()
-	{
-
-	}
-
-	/**
-	 * @hibernate.property name="constraintName" type="string" column="CONSTRAINT_NAME"
-	 * @return Returns the constraintName.
-	 */
-	public String getConstraintName()
-	{
-		return constraintName;
-	}
-
-	/**
-	 *
-	 * @param constraintName
-	 */
-	public void setConstraintName(String constraintName)
-	{
-		this.constraintName = constraintName;
-	}
-
 }

@@ -2,7 +2,9 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
+import java.util.List;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
 
 /**
@@ -220,4 +222,50 @@ public interface EntityInterface extends AbstractEntityInterface
 	 * @return the Collection of Association.
 	 */
 	Collection<AssociationInterface> getAssociationCollectionExcludingCollectionAttributes();
+
+	/**
+	 * This method will return the collection of attributes which are primary key for the entity
+	 * @return
+	 */
+	Collection<AttributeInterface> getPrimarykeyAttributeCollectionInSameEntity();
+
+	/**
+	 * This method will populate the constraintProperties of the entity for inheritance
+	 * @param isAddColumnForInheritance 
+	 */
+	void populateEntityForConstraintProperties(boolean isAddColumnForInheritance)
+			throws DynamicExtensionsSystemException;
+
+	/**
+	 * It will add the given argument in the composite/Primary key attribute collection
+	 * @param primaryAttribute to be added in compositeKeyAttributeCollection
+	 */
+	void addPrimaryKeyAttribute(AttributeInterface primaryAttribute);
+
+	/**
+	 * This method returns the Collection of primaryKeyAttributes.
+	 */
+	List<AttributeInterface> getPrimaryKeyAttributeCollection();
+
+	/**
+	 * It will set the primaryKeyAttributeCollection to the given collection
+	 * @param primaryKeyAttributeCollection 
+	 */
+	void setPrimaryKeyAttributeCollection(List<AttributeInterface> primaryKeyAttributeCollection);
+
+	/**
+	 * It will retrieve the Attribute with the given name in the All attributes of entity including its inherited Attributes
+	 * If not found will search in its parent attributes also 
+	 * @param attributeName
+	 * @return
+	 */
+	AttributeInterface getEntityAttributeByName(String attributeName);
+
+	/**
+	 * This method return the Collection of Attributes including the new Attributes which are 
+	 * added because of inheritance
+	 * @return
+	 */
+	public Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes();
+
 }

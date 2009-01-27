@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
 
 /**
@@ -39,8 +40,10 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	/**
 	 * This method sets the direction of the Association.
 	 * @param direction the direction of the Association to be set.
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	void setAssociationDirection(AssociationDirection direction);
+	void setAssociationDirection(AssociationDirection direction)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * This method returns the target Entity of the Association.
@@ -90,6 +93,7 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	ConstraintPropertiesInterface getConstraintProperties();
 
 	/**
+	 * This method sets the constraint properties of the association
 	 * @param constraintProperties constraintProperties
 	 */
 	void setConstraintProperties(ConstraintPropertiesInterface constraintProperties);
@@ -103,5 +107,12 @@ public interface AssociationInterface extends AbstractAttributeInterface
 	 * @param isSystemGenerated The isSystemGenerated to set.
 	 */
 	void setIsSystemGenerated(Boolean isSystemGenerated);
+
+	/**
+	 * This method will update the constraint properties of the association 
+	 * depending on the source & target Entities.
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	void populateAssociationForConstraintProperties() throws DynamicExtensionsSystemException;
 
 }

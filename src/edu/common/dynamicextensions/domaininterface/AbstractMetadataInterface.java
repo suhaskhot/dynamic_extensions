@@ -110,4 +110,9 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 	void setSemanticPropertyCollection(
 			Collection<SemanticPropertyInterface> semanticPropertyCollection);
 
+	/**
+	 *It will remove all the taggedValues in the given object 
+	 */
+	void removeAllTaggedValues();
+
 }

@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
 
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 
@@ -47,5 +48,17 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface
 	 * Clears the attibute list.
 	 */
 	void removeAllAttributes();
+
+	/**
+	 * 
+	 * @return ConstraintProperties 
+	 */
+	ConstraintPropertiesInterface getConstraintProperties();
+
+	/**
+	 * 
+	 * @param constraintProperties
+	 */
+	void setConsraintProperties(ConstraintPropertiesInterface constraintProperties);
 
 }

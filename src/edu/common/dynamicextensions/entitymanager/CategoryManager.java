@@ -762,8 +762,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			executeUpdateQuery(insertQuery, userId, jdbcDAO);
 
 			// Query to update record in entity table of multiselect attribute.
-			String updateQuery = "UPDATE " + tgtEntTblName + " SET "
-					+ association.getConstraintProperties().getTargetEntityKey() + " = " + id
+			String updateQuery = "UPDATE "
+					+ tgtEntTblName
+					+ " SET "
+					+ association.getConstraintProperties().getTgtEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName() + " = " + id
 					+ " WHERE IDENTIFIER = " + identifier;
 
 			executeUpdateQuery(updateQuery, userId, jdbcDAO);
@@ -910,7 +913,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		String catEntTblName = catEntity.getTableProperties().getName();
 		String entTblName = catEntity.getEntity().getTableProperties().getName();
-		String catEntFK = catAssociation.getConstraintProperties().getTargetEntityKey();
+		String catEntFK = catAssociation.getConstraintProperties()
+				.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
 
 		List<Long> srcEntityId = records.get(DynamicExtensionsUtility
 				.getCategoryEntityName(catAssociation.getCategoryEntity().getName()));
@@ -971,7 +975,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							String insertQuery = "INSERT INTO "
 									+ association.getTargetEntity().getTableProperties().getName()
 									+ "(IDENTIFIER, ACTIVITY_STATUS, "
-									+ association.getConstraintProperties().getTargetEntityKey()
+									+ association.getConstraintProperties()
+											.getTgtEntityConstraintKeyProperties()
+											.getTgtForiegnKeyColumnProperties().getName()
 									+ ") VALUES (" + entityId + ", 'ACTIVE'," + sourceId + ")";
 							executeUpdateQuery(insertQuery, userId, jdbcDAO);
 
@@ -994,9 +1000,14 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						Long entityId = entityManagerUtil.getNextIdentifier(entTblName);
 
 						// Insert query for entity table.
-						String insQryForEnt = "INSERT INTO " + entTblName
-								+ " (IDENTIFIER, ACTIVITY_STATUS, " + columnNames + ", "
-								+ association.getConstraintProperties().getTargetEntityKey()
+						String insQryForEnt = "INSERT INTO "
+								+ entTblName
+								+ " (IDENTIFIER, ACTIVITY_STATUS, "
+								+ columnNames
+								+ ", "
+								+ association.getConstraintProperties()
+										.getTgtEntityConstraintKeyProperties()
+										.getTgtForiegnKeyColumnProperties().getName()
 								+ ") VALUES (" + entityId + ", " + "'ACTIVE', " + columnValues
 								+ ", " + sourceId + ")";
 						executeUpdateQuery(insQryForEnt, userId, jdbcDAO);
@@ -1321,7 +1332,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				Long srcCategoryEntId = resultId;
 
 				String catEntFKClmnName = catAssociation.getConstraintProperties()
-						.getTargetEntityKey();
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 
 				EntityInterface entity = catAssociation.getTargetCategoryEntity().getEntity();
 
@@ -1329,7 +1341,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				{
 					AssociationInterface association = par.getAssociation();
 
-					fKeyColName = association.getConstraintProperties().getTargetEntityKey();
+					fKeyColName = association.getConstraintProperties()
+							.getTgtEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName();
 
 					if (association.getTargetEntity().getId() != entity.getId())
 					{
@@ -1341,7 +1355,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							String insertQuery = "INSERT INTO "
 									+ association.getTargetEntity().getTableProperties().getName()
 									+ "(IDENTIFIER, ACTIVITY_STATUS, "
-									+ association.getConstraintProperties().getTargetEntityKey()
+									+ association.getConstraintProperties()
+											.getTgtEntityConstraintKeyProperties()
+											.getTgtForiegnKeyColumnProperties().getName()
 									+ ") VALUES (" + entityId + ", 'ACTIVE'," + sourceEntityId
 									+ ")";
 							executeUpdateQuery(insertQuery, userId, jdbcDAO);
@@ -1645,8 +1661,14 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					}
 				}
 
-				selRecIdQuery = "SELECT " + RECORD_ID + " FROM " + catEntTblName + " WHERE "
-						+ catAssociation.getConstraintProperties().getTargetEntityKey() + " = "
+				selRecIdQuery = "SELECT "
+						+ RECORD_ID
+						+ " FROM "
+						+ catEntTblName
+						+ " WHERE "
+						+ catAssociation.getConstraintProperties()
+								.getTgtEntityConstraintKeyProperties()
+								.getTgtForiegnKeyColumnProperties().getName() + " = "
 						+ rootCatEntRecId;
 
 				List<Map<BaseAbstractAttributeInterface, Object>> innerRecords = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
@@ -1822,8 +1844,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			{
 				String selectQuery = "SELECT IDENTIFIER FROM "
 						+ catAssociation.getTargetCategoryEntity().getTableProperties().getName()
-						+ " WHERE " + catAssociation.getConstraintProperties().getTargetEntityKey()
-						+ " = " + recordId;
+						+ " WHERE "
+						+ catAssociation.getConstraintProperties()
+								.getTgtEntityConstraintKeyProperties()
+								.getTgtForiegnKeyColumnProperties().getName() + " = " + recordId;
 
 				List<Long> recordIds = getResultIDList(selectQuery, "IDENTIFIER");
 				for (Long recId : recordIds)
@@ -1842,8 +1866,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			{
 				String deleteQuery = "DELETE FROM "
 						+ catAssociation.getTargetCategoryEntity().getTableProperties().getName()
-						+ " WHERE " + catAssociation.getConstraintProperties().getTargetEntityKey()
-						+ " = " + recordId;
+						+ " WHERE "
+						+ catAssociation.getConstraintProperties()
+								.getTgtEntityConstraintKeyProperties()
+								.getTgtForiegnKeyColumnProperties().getName() + " = " + recordId;
 				executeUpdateQuery(deleteQuery, userId, jdbcDAO);
 				rlbkQryStack.push(deleteQuery);
 			}

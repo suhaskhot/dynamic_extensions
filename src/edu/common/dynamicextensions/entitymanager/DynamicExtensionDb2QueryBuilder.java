@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
@@ -116,8 +117,10 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 				}
 			}
 			else
+			{
 				formattedvalue = "'"
 						+ DynamicExtensionsUtility.getEscapedStringValue((String) value) + "'";
+			}
 		}
 		else if (attributeInformation instanceof DateAttributeTypeInformation)
 		{
@@ -178,16 +181,22 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 				}
 			}
 			else
+			{
 				formattedvalue = value.toString();
+			}
 
 			//In case of DB2 ,if the column datatype double ,float ,integer then its not possible to pass '' as  in insert-update query
 			//so instead pass null as value.
 			if (attributeInformation instanceof BooleanAttributeTypeInformation)
 			{
-				if (formattedvalue.equals("false"))
+				if ("false".equals(formattedvalue))
+				{
 					formattedvalue = "0";
+				}
 				else
+				{
 					formattedvalue = "1";
+				}
 			}
 			else if (formattedvalue != null)
 			{
@@ -202,6 +211,40 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 		Logger.out.debug("getFormattedValue The formatted value for attribute "
 				+ attribute.getName() + "is " + formattedvalue);
 		return formattedvalue;
+	}
+
+	/**
+	 *This method create the query for altering the column of given attribute to add not null constraint on it
+	 *@param attribute on which the constraint is to be applied
+	 *@return query 
+	 */
+	protected String addNotNullConstraintQuery(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
+	{
+		/*StringBuffer query=new StringBuffer();
+		String tableName=attribute.getEntity().getTableProperties().getName();
+		String columnName=attribute.getColumnProperties().getName();
+		query.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE).append(ALTER_COLUMN_KEYWORD).append(WHITESPACE)
+		.append(columnName).append(WHITESPACE).append(SET_KEYWORD).append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD);
+		return query.toString();*/
+		return null;
+	}
+
+	/**
+	 *This method create the query for altering the column of given attribute to add null constraint on it
+	 *@param attribute on which the constraint is to be applied
+	 *@return query 
+	 */
+	protected String dropNotNullConstraintQuery(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
+	{
+		/*	StringBuffer query=new StringBuffer();
+			String tableName=attribute.getEntity().getTableProperties().getName();
+			String columnName=attribute.getColumnProperties().getName();
+			query.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE).append(ALTER_COLUMN_KEYWORD).append(WHITESPACE)
+			.append(columnName).append(WHITESPACE).append(SET_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD);
+			return query.toString();*/
+		return null;
 	}
 
 	/**
@@ -224,7 +267,6 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 							savedAttribute.getColumnProperties().getName()).append(WHITESPACE)
 					.append("IS").append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(
 							NULL_KEYWORD);
-			System.out.println(queryBuffer);
 			ResultSet resultSet = null;
 			try
 			{
@@ -283,24 +325,24 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * @throws DynamicExtensionsSystemException
 	 */
 	protected List<String> getAttributeDataTypeChangedQuery(Attribute attribute,
-			Attribute savedAttribute, List modifyAttributeRollbackQueryList)
+			Attribute savedAttribute, List mdfyAttRbkQryLst)
 			throws DynamicExtensionsSystemException
 	{
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
-		String modifyAttributeRollbackQuery = "";
+		String mdfyAttrRlbkQry = "";
 
-		String modifyAttributeQuery = getQueryPartForAttribute(attribute, type, false);
-		modifyAttributeQuery = ALTER_TABLE + tableName + ADD_KEYWORD + modifyAttributeQuery;
+		String mdfAttrQry = getQueryPartForAttribute(attribute, type, false);
+		mdfAttrQry = ALTER_TABLE + tableName + ADD_KEYWORD + mdfAttrQry;
 
-		modifyAttributeRollbackQuery = getQueryPartForAttribute(savedAttribute, type, false);
-		modifyAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-				+ MODIFY_KEYWORD + WHITESPACE + modifyAttributeRollbackQuery;
+		mdfyAttrRlbkQry = getQueryPartForAttribute(savedAttribute, type, false);
+		mdfyAttrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
+				+ WHITESPACE + mdfyAttrRlbkQry;
 
 		String nullQueryKeyword = "";
 		String nullQueryRollbackKeyword = "";
-		List<String> modifyAttributeQueryList = new ArrayList<String>();
-		modifyAttributeQueryList.add(ALTER_TABLE + tableName + DROP_KEYWORD + COLUMN_KEYWORD
+		List<String> mdfyAttrQryLst = new ArrayList<String>();
+		mdfyAttrQryLst.add(ALTER_TABLE + tableName + DROP_KEYWORD + COLUMN_KEYWORD
 				+ savedAttribute.getColumnProperties().getName());
 
 		if (attribute.getIsNullable() && !savedAttribute.getIsNullable())
@@ -318,19 +360,18 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 		{
 
-			modifyAttributeQuery = modifyAttributeQuery
-					+ extraColumnQueryStringForFileAttribute(attribute);
-			modifyAttributeRollbackQuery = modifyAttributeRollbackQuery
+			mdfAttrQry = mdfAttrQry + extraColumnQueryStringForFileAttribute(attribute);
+			mdfyAttrRlbkQry = mdfyAttrRlbkQry
 					+ dropExtraColumnQueryStringForFileAttribute(attribute);
 
 		}
-		modifyAttributeQuery = modifyAttributeQuery + nullQueryKeyword;
-		modifyAttributeRollbackQuery = modifyAttributeRollbackQuery + nullQueryRollbackKeyword;
-		modifyAttributeRollbackQueryList.add(modifyAttributeRollbackQuery);
+		mdfAttrQry = mdfAttrQry + nullQueryKeyword;
+		mdfyAttrRlbkQry = mdfyAttrRlbkQry + nullQueryRollbackKeyword;
+		mdfyAttRbkQryLst.add(mdfyAttrRlbkQry);
 
-		modifyAttributeQueryList.add(modifyAttributeQuery);
+		mdfyAttrQryLst.add(mdfAttrQry);
 
-		return modifyAttributeQueryList;
+		return mdfyAttrQryLst;
 	}
 
 	/**
@@ -340,7 +381,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * @return queryString
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected String extraColumnQueryStringForFileAttributeInEditCase(Attribute attribute)
+	private String extraColumnQueryStringForFileAttributeInEditCase(Attribute attribute)
 			throws DynamicExtensionsSystemException
 	{
 		Attribute stringAttribute = (Attribute) DomainObjectFactory.getInstance()
@@ -360,7 +401,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * @throws DynamicExtensionsSystemException
 	 */
 
-	protected String dropExtraColumnQueryStringForFileAttributeInEditCase(Attribute attribute)
+	private String dropExtraColumnQueryStringForFileAttributeInEditCase(Attribute attribute)
 			throws DynamicExtensionsSystemException
 	{
 		String queryString = DROP_KEYWORD + WHITESPACE + attribute.getName() + UNDERSCORE
@@ -373,17 +414,17 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * This method builds the query part for the newly added attribute.
 	 * @param attribute Newly added attribute in the entity.
 	 * @param attributeRollbackQueryList This list is updated with the rollback queries for the actual queries.
-	 * @return Srting The actual query part for the new attribute.
+	 * @return List<String> The actual query list for the new attribute.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	protected String processAddAttribute(Attribute attribute, List attributeRollbackQueryList)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-
 		String columnName = attribute.getColumnProperties().getName();
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
+
 		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
 				+ WHITESPACE + getQueryPartForAttribute(attribute, type, true);
 
@@ -396,12 +437,13 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			newAttributeRollbackQuery += dropExtraColumnQueryStringForFileAttributeInEditCase(attribute);
 
 		}
-
+		
 		attributeRollbackQueryList.add(newAttributeRollbackQuery);
-
 		return newAttributeQuery;
 	}
 
+	
+	
 	/**
 	 * Converts Blob data type to Object data type for db2 database 
 	 * @param valueObj
@@ -433,3 +475,6 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	}
 
 }
+	
+
+

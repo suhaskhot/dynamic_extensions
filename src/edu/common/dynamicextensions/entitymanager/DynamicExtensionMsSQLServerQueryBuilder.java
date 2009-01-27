@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.Attribute;
-import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;

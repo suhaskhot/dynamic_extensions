@@ -26,7 +26,7 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 	/*
 	 * cnanged by: pavan
 	 * Method signature is different than the DynamicExtensionsBaseQueryBuilder
-	 * thus it is changed to match. Thus it can be overriden correctly
+	 * thus it is changed to match. Thus it can be overridden correctly
 	 * 
 	 */
 
@@ -34,23 +34,17 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 			AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
 	{
 		StringBuffer foreignKeyConstraint = new StringBuffer();
-		/*changed by :- pavan
-		 * fk id is same as constraint name.
-		 * not working with fkid
-		 * 
-		 */
-		//String foreignConstraintName = "FK" + "E" + entity.getId() + "E" + parentEntity.getId();
-		String foreignConstraintName = entity.getTableProperties().getConstraintName() + UNDERSCORE
-				+ parentEntity.getTableProperties().getConstraintName();
 
-		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(
-				entity.getTableProperties().getName()).append(WHITESPACE).append(DROP_KEYWORD)
-				.append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(WHITESPACE).append(
-						foreignConstraintName);
+		String tableName = entity.getTableProperties().getName();
+		String foreignConstraintName = entity.getConstraintProperties().getConstraintName() + UNDERSCORE
+				+ parentEntity.getConstraintProperties().getConstraintName();
+
+		foreignKeyConstraint.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE)
+				.append(DROP_KEYWORD).append(WHITESPACE).append(FOREIGN_KEY_KEYWORD).append(
+						WHITESPACE).append(foreignConstraintName);
 
 		return foreignKeyConstraint.toString();
 	}
-
 	
 	/**
 	 * Converts value to Object data type for MySql database 
@@ -77,5 +71,5 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 		}
 		return value;
 	}
-
+	
 }

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +44,6 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
@@ -51,11 +51,13 @@ import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.ConstraintKeyPropertiesComparator;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
@@ -72,7 +74,7 @@ import edu.wustl.common.util.logger.Logger;
  * Theses methods can be over-ridden  in the database specific query builder class to
  * provide any database-specific implementation.
  *
- * @author rahul_ner
+ * @author rahul_ner,pavan_kalantri
  */
 class DynamicExtensionBaseQueryBuilder
 		implements
@@ -84,17 +86,10 @@ class DynamicExtensionBaseQueryBuilder
 	EntityManagerUtil entityManagerUtil = new EntityManagerUtil();
 
 	/**
-
-	 *
-	 * @param entity 
-	 * @param revQueries
-
-	/**
 	 * This method builds the list of all the queries that need to be executed in order to
 	 * create the data table for the entity and its associations.
 	 * @param entity entity for which the queries are formed.
 	 * @param revQueries for every data table query this method creates a reverse query.
-	 * @param hibernateDAO
 	 * @return List<String> list of queries
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
@@ -115,7 +110,6 @@ class DynamicExtensionBaseQueryBuilder
 	 * create the data table for the entity and its associations.
 	 * @param entity entity for which the queries are formed.
 	 * @param revQueries for every data table query this method creates a reverse query.
-	 * @param hibernateDAO
 	 * @return List<String> list of queries
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
@@ -174,21 +168,343 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		Logger.out.debug("getUpdateEntityQueryList : Entering method");
 		List<String> updateQries = new ArrayList<String>();
-
-		List<String> entInheQries = getInheritanceQueryList(entity, dbaseCopy, attrRlbkQries);
-		// Get the query for any attribute that is modified.
+		// Get the query for any attribute that is modified.		
 		List<String> updAttrQries = getUpdateAttributeQueryList(entity, dbaseCopy, attrRlbkQries);
+		// Get the query part for if primary keys are changed
+		List<String> prmCnstrQueries = getPrimaryKeyQueryList(entity, dbaseCopy, attrRlbkQries);
+		//Get the query part inheritance changed
+		List<String> entInheQries = getInheritanceQueryList(entity, dbaseCopy, attrRlbkQries);
 
 		// Get the query for any association that is modified.
 		List<String> updAssoQries = getUpdateAssociationsQueryList(entity, dbaseCopy, attrRlbkQries);
 
-		updateQries.addAll(entInheQries);
 		updateQries.addAll(updAttrQries);
+		updateQries.addAll(prmCnstrQueries);
+		updateQries.addAll(entInheQries);
 		updateQries.addAll(updAssoQries);
+		// process all removed attributes
+		processRemovedAttributes(entity, dbaseCopy, updateQries, attrRlbkQries);
 
 		Logger.out.debug("getUpdateEntityQueryList Exiting method");
 
 		return updateQries;
+	}
+
+	/**
+	 * This method checks weather the primary key of the entity is changed & if changed
+	 * it searches for all child entities of that entity remove all foreign key constraints
+	 * then modify primary key of the entity and again apply the foreign key constraint of its child  
+	 * @param entity for which to check weather primary key is changed
+	 * @param dbaseCopy database copy of the entity
+	 * @param attrRlbkQries rolback query list 
+	 * @return List<String> which are queries to be executed
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private List<String> getPrimaryKeyQueryList(EntityInterface entity, EntityInterface dbaseCopy,
+			List<String> attrRlbkQries) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		List<String> queries = new ArrayList<String>();
+		StringBuffer query = new StringBuffer();
+		query.append(SELECT_KEYWORD).append(WHITESPACE).append(COUNT_KEYWORD).append(
+				OPENING_BRACKET).append(ASTERIX).append(CLOSING_BRACKET).append(WHITESPACE).append(
+				FROM_KEYWORD).append(entity.getTableProperties().getName());
+		if (EntityManagerUtil.isPrimaryKeyChanged(entity, dbaseCopy))
+		{
+			int noOfRecords = EntityManagerUtil.getNoOfRecord(query.toString());
+			if (noOfRecords != 0)
+			{
+				throw new DynamicExtensionsApplicationException(
+						"primary key can not be changed data present in the entity"
+								+ entity.getName());
+			}
+			//remove all foreignKey constraint in other entities which depends on this entity
+			queries.addAll(getForeignConstraintRemoveQueryForChangedPrimaryKey(entity,
+					attrRlbkQries));
+
+			//Change primary key constraint of the entity
+			List<String> prmKeyRemoveQuery = getPrimaryKeyRemoveCnstrQuery(dbaseCopy, attrRlbkQries);
+			queries.addAll(prmKeyRemoveQuery);
+			List<String> prmKeyQuery = getPrimaryKeyQuery(entity, attrRlbkQries);
+			queries.addAll(prmKeyQuery);
+
+			//Add all foreign key constraints in other entities which depends on this entity & references new primary key
+			queries.addAll(getForeignConstraintQueryForChangedPrimaryKey(entity, attrRlbkQries));
+
+		}
+
+		return queries;
+	}
+
+	/**
+	 * This method prepares queries for applying the foreign key constraint 
+	 * of all the child entity of the current parent whose primary key is changed
+	 * @param entity entity whose primary key is changed
+	 * @param attrRlbkQries rollback query list
+	 * @return list of queries
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private List<String> getForeignConstraintQueryForChangedPrimaryKey(EntityInterface entity,
+			List<String> attrRlbkQries) throws DynamicExtensionsSystemException
+	{
+		List<String> queries = new ArrayList<String>();
+		Collection<EntityInterface> entityColl = entity.getEntityGroup().getEntityCollection();
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		EntityInterface depEntityParent;
+		String frnCnstrQry;
+		String frnCnstrRemQry;
+		for (EntityInterface depEntity : entityColl)
+		{
+			depEntityParent = depEntity.getParentEntity();
+			if (depEntityParent != null && depEntityParent.equals(entity))
+			{
+				//this is child of the current entity so drop foreign key constraint
+				queries.addAll(queryBuilder.getAddColumnQueryForForeignKeyConstraint(depEntity,
+						depEntityParent, attrRlbkQries, true));
+				frnCnstrQry = queryBuilder.getForeignKeyConstraintQueryForInheritance(depEntity,
+						depEntityParent);
+				queries.add(frnCnstrQry);
+
+				frnCnstrRemQry = queryBuilder.getForeignKeyRemoveConstraintQueryForInheritance(
+						depEntity, depEntityParent);
+				attrRlbkQries.add(frnCnstrRemQry);
+			}
+		}
+		return queries;
+	}
+
+	/**
+	 * This method prepares queries for removing the foreign key constraint 
+	 * of all the child entity of the current parent whose primary key is changed
+	 * It searches for child entities in its own entityGroup
+	 * @param entity whose primary key is changed
+	 * @param attrRlbkQries rollback query list
+	 * @return list of queries
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private List<String> getForeignConstraintRemoveQueryForChangedPrimaryKey(
+			EntityInterface entity, List<String> attrRlbkQries)
+			throws DynamicExtensionsSystemException
+	{
+		List<String> queries = new ArrayList<String>();
+		Collection<EntityInterface> entityColl = entity.getEntityGroup().getEntityCollection();
+		EntityInterface dbDepEntity = null;
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		EntityInterface dbDepEntityParent;
+		String frnCnstrRlbkQry;
+		String frnCnstrRemQry;
+		for (EntityInterface depEntity : entityColl)
+		{
+			if (depEntity.getParentEntity() != null && depEntity.getParentEntity().equals(entity))
+			{
+
+				dbDepEntity = (EntityInterface) DBUtil
+						.loadCleanObj(Entity.class, depEntity.getId());
+				dbDepEntityParent = dbDepEntity.getParentEntity();
+				frnCnstrRemQry = queryBuilder.getForeignKeyRemoveConstraintQueryForInheritance(
+						dbDepEntity, dbDepEntityParent);
+				queries.add(frnCnstrRemQry);
+
+				frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbDepEntity,
+						dbDepEntityParent);
+				attrRlbkQries.add(frnCnstrRlbkQry);
+
+				queries.addAll(queryBuilder.getAddColumnQueryForForeignKeyConstraint(dbDepEntity,
+						dbDepEntityParent, attrRlbkQries, false));
+
+			}
+		}
+		return queries;
+	}
+
+	/**
+	 * It prepares the queries for applying the primary key constraint on the entity
+	 * @param entity on which primary key constraint is to be applied
+	 * @param attrRlbkQries rollback query list
+	 * @return List<String> queries 
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	protected List<String> getPrimaryKeyQuery(EntityInterface entity, List<String> attrRlbkQries)
+			throws DynamicExtensionsSystemException
+	{
+		Collection<AttributeInterface> prmKeyAttrColl = entity
+				.getPrimarykeyAttributeCollectionInSameEntity();
+		StringBuffer prmKeyQuery = new StringBuffer();
+		List<String> primaryKeyName = new ArrayList<String>();
+		List<String> queries = new ArrayList<String>();
+		String tableName = entity.getTableProperties().getName();
+
+		//add all the not null constraints 
+		getNotNullQeries(prmKeyAttrColl, queries, attrRlbkQries);
+
+		prmKeyQuery.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE)
+				.append(ADD_KEYWORD).append(WHITESPACE).append(PRIMARY_KEY);
+		for (AttributeInterface attribute : prmKeyAttrColl)
+		{
+			primaryKeyName.add(attribute.getColumnProperties().getName());
+		}
+		//sorting the primary key name cause sequence matters when applying the foreign key 
+		//constraint on the child entities
+		Collections.sort(primaryKeyName);
+		prmKeyQuery.append(OPENING_BRACKET);
+		Iterator nameIterator = primaryKeyName.iterator();
+		while (nameIterator.hasNext())
+		{
+			prmKeyQuery.append(nameIterator.next());
+			if (nameIterator.hasNext())
+			{
+				prmKeyQuery.append(COMMA);
+			}
+		}
+		prmKeyQuery.append(CLOSING_BRACKET);
+		queries.add(prmKeyQuery.toString());
+		StringBuffer prmKeyRemoveQuery = new StringBuffer();
+		prmKeyRemoveQuery.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(
+				WHITESPACE).append(DROP_KEYWORD).append(WHITESPACE).append(PRIMARY_KEY);
+		attrRlbkQries.add(prmKeyRemoveQuery.toString());
+		return queries;
+	}
+
+	/**
+	 * This method will create the Query for applying the not null
+	 * constraint on the primary key attributes column
+	 * @param prmKeyAttrColl collection of Attributes on which not null is to be applied
+	 * @param queries List of queries
+	 * @param attrRlbkQries roll back query list
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void getNotNullQeries(Collection<AttributeInterface> prmKeyAttrColl,
+			List<String> queries, List<String> attrRlbkQries)
+			throws DynamicExtensionsSystemException
+	{
+
+		String notNullQuery;
+		String rollBackQuery;
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		for (AttributeInterface attribute : prmKeyAttrColl)
+		{
+			//create queries for applying not null constraint on the primary key attribute columns 
+			//and there roll back queries
+			notNullQuery = queryBuilder.addNotNullConstraintQuery(attribute);
+			rollBackQuery = queryBuilder.dropNotNullConstraintQuery(attribute);
+			if (notNullQuery != null && rollBackQuery != null)
+			{
+				queries.add(notNullQuery);
+				attrRlbkQries.add(rollBackQuery);
+			}
+		}
+
+	}
+
+	/**
+	 * This method will create the Query for dropping the not null
+	 * constraint on the primary key attributes column collection
+	 * @param prmKeyAttrColl collection of Attributes on which not null is to be dropped
+	 * @param queries List of query
+	 * @param attrRlbkQries roll back query list
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private void getDropNotNullQeries(Collection<AttributeInterface> prmKeyAttrColl,
+			List<String> queries, List<String> attrRlbkQries)
+			throws DynamicExtensionsSystemException
+	{
+		String notNullQuery;
+		String rlbackQuery;
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		for (AttributeInterface attribute : prmKeyAttrColl)
+		{
+			// after removing the primary key on attribute it should also be nullable so 
+			//removing not null constraint on it
+			notNullQuery = queryBuilder.dropNotNullConstraintQuery(attribute);
+			rlbackQuery = queryBuilder.addNotNullConstraintQuery(attribute);
+			if (notNullQuery != null && rlbackQuery != null)
+			{
+				queries.add(notNullQuery);
+				attrRlbkQries.add(rlbackQuery);
+			}
+		}
+	}
+
+	/**
+	 * It prepares he queries for removing the primary key constraint on the entity
+	 * @param entity whose primary key constraint is to be removed
+	 * @param attrRlbkQries rollback Query List
+	 * @return List<String> queries to be executed
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	protected List<String> getPrimaryKeyRemoveCnstrQuery(EntityInterface entity,
+			List<String> attrRlbkQries) throws DynamicExtensionsSystemException
+	{
+		StringBuffer prmKeyRemoveQuery = new StringBuffer();
+		List<String> queries = new ArrayList<String>();
+		String tableName = entity.getTableProperties().getName();
+		Collection<AttributeInterface> prmKeyAttrColl = entity
+				.getPrimarykeyAttributeCollectionInSameEntity();
+		prmKeyRemoveQuery.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(
+				WHITESPACE).append(DROP_KEYWORD).append(WHITESPACE).append(PRIMARY_KEY);
+		queries.add(prmKeyRemoveQuery.toString());
+		StringBuffer query = new StringBuffer();
+		StringBuffer primaryKeyName = new StringBuffer();
+
+		query.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE).append(
+				ADD_KEYWORD).append(WHITESPACE).append(PRIMARY_KEY);
+		for (AttributeInterface attribute : prmKeyAttrColl)
+		{
+			if (primaryKeyName.toString().trim().length() != 0)
+			{
+				primaryKeyName.append(COMMA);
+			}
+			primaryKeyName.append(attribute.getColumnProperties().getName());
+
+		}
+		query.append(OPENING_BRACKET).append(primaryKeyName).append(CLOSING_BRACKET);
+		attrRlbkQries.add(query.toString());
+
+		//drop all the not null constraints
+		getDropNotNullQeries(prmKeyAttrColl, queries, attrRlbkQries);
+
+		return queries;
+
+	}
+
+	/**
+	 * It prepares queries for adding the NOT NULL constraint on the given primay key attributes
+	 * @param attribute on which the not null constraint is to be applied
+	 * @return query
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected String addNotNullConstraintQuery(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
+	{
+		StringBuffer query = new StringBuffer();
+		String tableName = attribute.getEntity().getTableProperties().getName();
+		String columnName = attribute.getColumnProperties().getName();
+		query.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE).append(
+				CHANGE_KEYWORD).append(WHITESPACE).append(COLUMN_KEYWORD).append(columnName)
+				.append(WHITESPACE).append(columnName).append(WHITESPACE).append(
+						getDatabaseTypeAndSize(attribute)).append(WHITESPACE).append(NOT_KEYWORD)
+				.append(WHITESPACE).append(NULL_KEYWORD);
+		return query.toString();
+	}
+
+	/**
+	 * It prepares queries for removing the NOT NULL constraint and setting it to null for given attibute  
+	 * @param attribute on which NULL constraint is to be applied
+	 * @return query
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected String dropNotNullConstraintQuery(AttributeInterface attribute)
+			throws DynamicExtensionsSystemException
+	{
+		StringBuffer query = new StringBuffer();
+		String columnName = attribute.getColumnProperties().getName();
+		query.append(ALTER_TABLE).append(WHITESPACE).append(
+				attribute.getEntity().getTableProperties().getName()).append(WHITESPACE).append(
+				CHANGE_KEYWORD).append(WHITESPACE).append(COLUMN_KEYWORD).append(columnName)
+				.append(WHITESPACE).append(columnName).append(WHITESPACE).append(
+						getDatabaseTypeAndSize(attribute)).append(WHITESPACE).append(NULL_KEYWORD);
+		return query.toString();
 	}
 
 	/**
@@ -228,84 +544,83 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 *
-	 * @param entity
-	 * @param dbaseCopy
-	 * @param attrRlbkQries
-	 * @return
+	 * This method is used to create the queries in case of editing the entity.
+	 * This method creates the queries related to inheritance i.e. foreign key constraint queries
+	 * @param entity on which queries are formed
+	 * @param dbaseCopy saved state of the entity
+	 * @param attrRlbkQries rollback query list
+	 * @return Query list
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private List<String> getInheritanceQueryList(Entity entity, Entity dbaseCopy,
-			List<String> attrRlbkQries)
+			List<String> attrRlbkQries) throws DynamicExtensionsSystemException
 	{
 		List<String> queries = new ArrayList<String>();
-		if (entity.getTableProperties() != null)
+		if (entity.getTableProperties() != null
+				&& EntityManagerUtil.isParentChanged(entity, dbaseCopy))
 		{
-			if (isParentChanged(entity, dbaseCopy))
+			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+			EntityInterface dbaseCopyParent = dbaseCopy.getParentEntity();
+			EntityInterface parentEntity = entity.getParentEntity();
+			if (dbaseCopyParent != null)
 			{
-				String frnCnstrRlbkQry = "";
-				if (dbaseCopy.getParentEntity() != null)
-				{
-					String frnCnstrRemQry = QueryBuilderFactory.getQueryBuilder()
-							.getForeignKeyRemoveConstraintQueryForInheritance(dbaseCopy,
-									dbaseCopy.getParentEntity());
-					frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy);
-					queries.add(frnCnstrRemQry);
-					attrRlbkQries.add(frnCnstrRlbkQry);
-				}
+				// first of all remove all column added for foreign keys & then remove constraint
+				String frnCnstrRemQry = queryBuilder
+						.getForeignKeyRemoveConstraintQueryForInheritance(dbaseCopy,
+								dbaseCopyParent);
+				queries.add(frnCnstrRemQry);
+				attrRlbkQries.add(getForeignKeyConstraintQueryForInheritance(dbaseCopy,
+						dbaseCopyParent));
 
-				if (entity.getParentEntity() != null)
-				{
-					String frnCnstrAddQry = getForeignKeyConstraintQueryForInheritance(entity);
+				queries.addAll(getAddColumnQueryForForeignKeyConstraint(dbaseCopy, dbaseCopyParent,
+						attrRlbkQries, false));
 
-					frnCnstrRlbkQry = getForeignKeyRemoveConstraintQueryForInheritance(entity,
-							entity.getParentEntity());
-
-					queries.add(frnCnstrAddQry);
-					attrRlbkQries.add(frnCnstrRlbkQry);
-				}
 			}
+			if (entity.getParentEntity() != null)
+			{
+				queries.addAll(getAddColumnQueryForForeignKeyConstraint(entity, parentEntity,
+						attrRlbkQries, true));
+				queries.add(getForeignKeyConstraintQueryForInheritance(entity, parentEntity));
+				attrRlbkQries.add(getForeignKeyRemoveConstraintQueryForInheritance(entity, entity
+						.getParentEntity()));
+			}
+
 		}
 
 		return queries;
 	}
 
 	/**
-	 *
-	 * @param catEntity
-	 * @param dbaseCopy
-	 * @param attrRlbkQries
-	 * @return
+	 * This method is used to create the queries in case of editing the CategoryEntity.
+	 * This method creates the queries related to inheritance i.e. foreign key constraint queries
+	 * @param catEntity on which queries are formed
+	 * @param dbaseCopy saved state of the catEnity
+	 * @param attrRlbkQries rollback query List
+	 * @return query list
 	 */
 	private List<String> getInheritanceQueryList(CategoryEntity catEntity,
 			CategoryEntity dbaseCopy, List<String> attrRlbkQries)
 	{
 		List<String> queries = new ArrayList<String>();
-		if (catEntity.getTableProperties() != null)
+		if (catEntity.getTableProperties() != null
+				&& EntityManagerUtil.isParentChanged(catEntity, dbaseCopy))
 		{
-			if (isParentChanged(catEntity, dbaseCopy))
+			String frnCnstrRlbkQry = "";
+			if (dbaseCopy.getParentCategoryEntity() != null)
 			{
-				String frnCnstrRlbkQry = "";
-				if (dbaseCopy.getParentCategoryEntity() != null)
-				{
-					String frnCnstrRemQry = getForeignKeyRemoveConstraintQueryForInheritance(
-							dbaseCopy, dbaseCopy.getParentCategoryEntity());
-					frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy,
-							dbaseCopy.getParentCategoryEntity());
-					queries.add(frnCnstrRemQry);
-					attrRlbkQries.add(frnCnstrRlbkQry);
-				}
-
-				if (catEntity.getParentCategoryEntity() != null)
-				{
-					String frnCnstrntAdQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy,
-							dbaseCopy.getParentCategoryEntity());
-
-					frnCnstrRlbkQry = getForeignKeyRemoveConstraintQueryForInheritance(catEntity,
-							catEntity.getParentCategoryEntity());
-
-					queries.add(frnCnstrntAdQry);
-					attrRlbkQries.add(frnCnstrRlbkQry);
-				}
+				frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy, dbaseCopy
+						.getParentCategoryEntity());
+				queries.add(getForeignKeyRemoveConstraintQueryForInheritance(dbaseCopy, dbaseCopy
+						.getParentCategoryEntity()));
+				attrRlbkQries.add(frnCnstrRlbkQry);
+			}
+			if (catEntity.getParentCategoryEntity() != null)
+			{
+				String frnCnstrntAdQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy,
+						dbaseCopy.getParentCategoryEntity());
+				queries.add(frnCnstrntAdQry);
+				attrRlbkQries.add(getForeignKeyRemoveConstraintQueryForInheritance(catEntity,
+						catEntity.getParentCategoryEntity()));
 			}
 		}
 
@@ -340,8 +655,8 @@ class DynamicExtensionBaseQueryBuilder
 			Association association = (Association) assocIter.next();
 
 			String tableName = DynamicExtensionsUtility.getTableName(association);
-			String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-			String targetKey = association.getConstraintProperties().getTargetEntityKey();
+			String sourceKey;
+			String targetKey;
 			StringBuffer query = new StringBuffer();
 
 			RoleInterface sourceRole = association.getSourceRole();
@@ -350,6 +665,12 @@ class DynamicExtensionBaseQueryBuilder
 			Cardinality tgtMaxCard = targetRole.getMaximumCardinality();
 			if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 			{
+				sourceKey = association.getConstraintProperties()
+						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
+				targetKey = association.getConstraintProperties()
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				// For many to many, get values from the middle table.
 				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
 				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
@@ -362,6 +683,9 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				// For all many to one associations of a single entity,  
 				// create a single query to get values for the target records.
+				sourceKey = association.getConstraintProperties()
+						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				if (manyToOneAssocns.size() != 0)
 				{
 					mnyToOneAssQry.append(COMMA);
@@ -373,6 +697,9 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				// For one to many or one to one association, get target record values 
 				// from the target entity table.
+				targetKey = association.getConstraintProperties()
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
 				query
@@ -480,8 +807,8 @@ class DynamicExtensionBaseQueryBuilder
 					association);
 
 			String tableName = DynamicExtensionsUtility.getTableName(association);
-			String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-			String targetKey = association.getConstraintProperties().getTargetEntityKey();
+			String sourceKey;
+			String targetKey;
 			StringBuffer query = new StringBuffer();
 
 			RoleInterface sourceRole = association.getSourceRole();
@@ -491,19 +818,27 @@ class DynamicExtensionBaseQueryBuilder
 			if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 			{
 				// For many to many, get values from the middle table.
+				sourceKey = association.getConstraintProperties()
+						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
+				targetKey = association.getConstraintProperties()
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				query.append(SELECT_KEYWORD + WHITESPACE + targetKey);
 				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
 				query
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL
 								+ recordId);
-
-				List<Long> manyToManyRecIds = getAssociationRecordValues(query.toString());
-				entRecord.getRecordValueList().set(index, manyToManyRecIds);
+				entRecord.getRecordValueList().set(index,
+						getAssociationRecordValues(query.toString()));
 			}
 			else if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.ONE)
 			{
 				// For all many to one associations of a single entity, create a single query 
 				// to get values for the target records.
+				sourceKey = association.getConstraintProperties()
+						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				if (manyToOneAssocns.size() != 0)
 				{
 					mnyToOneAssQry.append(COMMA);
@@ -515,6 +850,9 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				// For one to many or one to one associations, get target record values
 				// from the target entity table.
+				targetKey = association.getConstraintProperties()
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				query.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
 				query.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName + WHITESPACE);
 				query
@@ -611,8 +949,8 @@ class DynamicExtensionBaseQueryBuilder
 			verifyCardinalityConstraints(asso, srcRecId);
 		}
 
-		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-		String targetKey = association.getConstraintProperties().getTargetEntityKey();
+		String sourceKey;
+		String targetKey;
 
 		StringBuffer query = new StringBuffer();
 		RoleInterface srcRole = association.getSourceRole();
@@ -623,11 +961,15 @@ class DynamicExtensionBaseQueryBuilder
 
 		if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 		{
+			sourceKey = association.getConstraintProperties().getSrcEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().getName();
+			targetKey = association.getConstraintProperties().getTgtEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().getName();
 			Long identifier;
 			// For many to many, insert into middle table.
 			for (int i = 0; i < recIds.size(); i++)
 			{
-				identifier = entityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
+				identifier = EntityManagerUtil.getNextIdentifier(asso.getConstraintProperties()
 						.getName());
 				query = new StringBuffer();
 				query.append("INSERT INTO " + association.getConstraintProperties().getName()
@@ -640,6 +982,7 @@ class DynamicExtensionBaseQueryBuilder
 				query.append(COMMA);
 				query.append(recIds.get(i));
 				query.append(CLOSING_BRACKET);
+
 				queries.add(query.toString());
 			}
 
@@ -647,6 +990,8 @@ class DynamicExtensionBaseQueryBuilder
 		else if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.ONE)
 		{
 			// For many to one, update source entity table.
+			sourceKey = association.getConstraintProperties().getSrcEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().getName();
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + association.getEntity().getTableProperties().getName());
 			query.append(WHITESPACE + SET_KEYWORD + WHITESPACE + sourceKey + EQUAL + recIds.get(0)
@@ -658,6 +1003,8 @@ class DynamicExtensionBaseQueryBuilder
 		else
 		{
 			// For one to one & one to many, update target entity table.
+			targetKey = association.getConstraintProperties().getTgtEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().getName();
 			String recordId = recIds.toString();
 			recordId = recordId.replace("[", OPENING_BRACKET);
 			recordId = recordId.replace("]", CLOSING_BRACKET);
@@ -696,7 +1043,8 @@ class DynamicExtensionBaseQueryBuilder
 
 		CategoryAssociation catAssocn = (CategoryAssociation) catAsso;
 		verifyCardinalityConstraints(catAssocn, srcRecId);
-		String targetKey = catAssocn.getConstraintProperties().getTargetEntityKey();
+		String targetKey = catAssocn.getConstraintProperties()
+				.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
 		StringBuffer query = new StringBuffer();
 
 		// For one to one & one to many, update target entity table.
@@ -748,7 +1096,8 @@ class DynamicExtensionBaseQueryBuilder
 		for (AssociationInterface tgtEntAsso : associations)
 		{
 			if (tgtEntAsso.getSourceRole().getAssociationsType().equals(
-					AssociationType.CONTAINTMENT) || tgtEntAsso.getIsCollection())
+					AssociationType.CONTAINTMENT)
+					|| tgtEntAsso.getIsCollection())
 			{
 				getContenmentAssociationRemoveDataQueryList(tgtEntAsso, chldrnRecIds, queries,
 						isLogicalDeletion);
@@ -820,8 +1169,6 @@ class DynamicExtensionBaseQueryBuilder
 		for (AssociationInterface association : incomingAsso)
 		{
 			tableName = DynamicExtensionsUtility.getTableName(association);
-			sourceKey = association.getConstraintProperties().getSourceEntityKey();
-			targetKey = association.getConstraintProperties().getTargetEntityKey();
 
 			StringBuffer query = new StringBuffer();
 			query.append(SELECT_KEYWORD + COUNT_KEYWORD + "(*)");
@@ -840,6 +1187,12 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				// For many to many check into middle table.
 				String srcTable = association.getEntity().getTableProperties().getName();
+				sourceKey = association.getConstraintProperties()
+						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
+				targetKey = association.getConstraintProperties()
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				query.append(" AS m_table join " + srcTable);
 				query.append(" AS s_table on m_table." + sourceKey + "= s_table." + IDENTIFIER);
 				query.append(WHERE_KEYWORD + targetKey + WHITESPACE + IN_KEYWORD + WHITESPACE
@@ -848,12 +1201,20 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			else if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.ONE)
 			{
+				sourceKey = association.getConstraintProperties()
+						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
+
 				query.append(WHERE_KEYWORD + sourceKey + WHITESPACE + IN_KEYWORD + WHITESPACE
 						+ getListToString(recordIds));
 				// query.append(" and " + DynamicExtensionBaseQueryBuilder.getRemoveDisbledRecordsQuery(""));
 			}
 			else
 			{
+
+				targetKey = association.getConstraintProperties()
+						.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
+						.getName();
 				// For one to one & one to many, check target entity table.
 				query.append(WHERE_KEYWORD + IDENTIFIER + WHITESPACE + IN_KEYWORD + WHITESPACE
 						+ getListToString(recordIds));
@@ -885,7 +1246,8 @@ class DynamicExtensionBaseQueryBuilder
 	{
 		String tableName = DynamicExtensionsUtility.getTableName(association);
 
-		String targetKey = association.getConstraintProperties().getTargetEntityKey();
+		String targetKey = association.getConstraintProperties()
+				.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
 
 		StringBuffer cntnmntRecIdQry = new StringBuffer();
 		cntnmntRecIdQry.append(SELECT_KEYWORD + WHITESPACE + IDENTIFIER);
@@ -907,8 +1269,10 @@ class DynamicExtensionBaseQueryBuilder
 	public String getAssociationRemoveDataQuery(Association association, Long recId)
 	{
 		String tableName = DynamicExtensionsUtility.getTableName(association);
-		String sourceKey = association.getConstraintProperties().getSourceEntityKey();
-		String targetKey = association.getConstraintProperties().getTargetEntityKey();
+		String sourceKey = association.getConstraintProperties()
+				.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
+		String targetKey = association.getConstraintProperties()
+				.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
 
 		StringBuffer query = new StringBuffer();
 
@@ -966,13 +1330,8 @@ class DynamicExtensionBaseQueryBuilder
 
 			String tableName = entity.getTableProperties().getName();
 			StringBuffer query = new StringBuffer(CREATE_TABLE + " " + tableName + " "
-					+ OPENING_BRACKET + " " + actStatus + COMMA);
-			if (!EntityManagerUtil.isIdAttributePresent(entity))
-			{
-				query.append(IDENTIFIER).append(WHITESPACE).append(getDataTypeForIdentifier())
-						.append(NOT_KEYWORD).append(WHITESPACE).append(NULL_KEYWORD).append(COMMA);
-			}
-
+					+ OPENING_BRACKET + " " + actStatus);
+			StringBuffer primaryKeyName = new StringBuffer();
 			Collection<AttributeInterface> attributes = entity.getAttributeCollection();
 
 			if (attributes != null && !attributes.isEmpty())
@@ -989,45 +1348,36 @@ class DynamicExtensionBaseQueryBuilder
 					}
 					if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 					{
-						query = query.append(extraColumnQueryStringForFileAttribute(attribute)
-								+ COMMA);
+						query = query.append(COMMA
+								+ extraColumnQueryStringForFileAttribute(attribute));
 					}
 
 					String type = "";
 
 					// Get column info for attribute.
 					String attrQueryPart = getQueryPartForAttribute(attribute, type, true);
-					query = query.append(attrQueryPart);
 					query = query.append(COMMA);
-				}
-			}
+					query = query.append(attrQueryPart);
 
-			if (attributes != null && !attributes.isEmpty())
-			{
-				Iterator<AttributeInterface> attrIter = attributes.iterator();
-				while (attrIter.hasNext())
-				{
-					Attribute attribute = (Attribute) attrIter.next();
-					if (attribute.getIsPrimaryKey()
-							&& attribute.getColumnProperties().getName() != null
-							&& !attribute.getColumnProperties().getName().equalsIgnoreCase(
-									IDENTIFIER))
+					if (!attribute.getIsNullable() && attribute.getIsPrimaryKey())
 					{
-						query = query.append(CONSTRAINT_KEYWORD + WHITESPACE
-								+ attribute.getColumnProperties().getName() + entity.getId()
-								+ WHITESPACE + UNIQUE_KEYWORD + OPENING_BRACKET
-								+ attribute.getColumnProperties().getName() + CLOSING_BRACKET);
-						query = query.append(COMMA);
+						if (primaryKeyName.toString().trim().length() != 0)
+						{
+							primaryKeyName.append(COMMA);
+						}
+						primaryKeyName.append(attribute.getColumnProperties().getName());
 					}
 				}
 			}
-
-			// Identifier set as primary key.
-			query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")");
+			if (primaryKeyName.length() != 0)
+			{
+				query = query.append(COMMA).append(PRIMARY_KEY).append(OPENING_BRACKET).append(
+						primaryKeyName).append(CLOSING_BRACKET);
+			}
+			query = query.append(CLOSING_BRACKET);
 
 			// Add create query.
 			queries.add(query.toString());
-
 			String reverseQuery = getReverseQueryForAbstractEntityTable(entity.getTableProperties()
 					.getName());
 			revQueries.add(reverseQuery);
@@ -1091,12 +1441,14 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * getForeignKeyConstraintQuery.
-	 * @param entity
-	 * @param revQueries
-	 * @return
+	 * getForeignKeyConstraintQuery for the given entity .
+	 * @param entity on which the query is to be applied
+	 * @param revQueries rollback query list
+	 * @return list of queries
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private List<String> getForeignKeyConstraintQuery(Entity entity, List<String> revQueries)
+			throws DynamicExtensionsSystemException
 	{
 		List<String> queries = new ArrayList<String>();
 		EntityInterface parentEntity = entity.getParentEntity();
@@ -1104,11 +1456,12 @@ class DynamicExtensionBaseQueryBuilder
 		// Add foreign key query for inheritance.
 		if (parentEntity != null)
 		{
-			String frnKeyCnstrQry = getForeignKeyConstraintQueryForInheritance(entity);
-			queries.add(frnKeyCnstrQry);
-			String frnCnstrRemQry = getForeignKeyRemoveConstraintQueryForInheritance(entity,
-					parentEntity);
-			revQueries.add(frnCnstrRemQry);
+			queries.addAll(getAddColumnQueryForForeignKeyConstraint(entity, parentEntity,
+					revQueries, true));
+
+			queries.add(getForeignKeyConstraintQueryForInheritance(entity, parentEntity));
+
+			revQueries.add(getForeignKeyRemoveConstraintQueryForInheritance(entity, parentEntity));
 		}
 
 		return queries;
@@ -1132,24 +1485,12 @@ class DynamicExtensionBaseQueryBuilder
 			String frnKeyCnstrQry = getForeignKeyConstraintQueryForInheritance(catEntity,
 					parentCatEntity);
 			queries.add(frnKeyCnstrQry);
-			String frnCnstrRemQry = getForeignKeyRemoveConstraintQueryForInheritance(catEntity,
-					parentCatEntity);
-			revQueries.add(frnCnstrRemQry);
+
+			revQueries.add(getForeignKeyRemoveConstraintQueryForInheritance(catEntity,
+					parentCatEntity));
 		}
 
 		return queries;
-	}
-
-	/**
-	 * This method returns the query to add foreign key constraint in the given child entity
-	 * that refers to identifier column of the parent.
-	 * @param entity
-	 * @return
-	 */
-	protected String getForeignKeyConstraintQueryForInheritance(EntityInterface entity)
-	{
-		EntityInterface parentEntity = entity.getParentEntity();
-		return getForeignKeyConstraintQueryForInheritance(entity, parentEntity);
 	}
 
 	/**
@@ -1161,8 +1502,8 @@ class DynamicExtensionBaseQueryBuilder
 			AbstractEntityInterface parentEntity)
 	{
 		StringBuffer frnKeyCnstrQry = new StringBuffer();
-		String frnCnstrName = entity.getTableProperties().getConstraintName() + UNDERSCORE
-				+ parentEntity.getTableProperties().getConstraintName();
+		String frnCnstrName = entity.getConstraintProperties().getConstraintName() + UNDERSCORE
+				+ parentEntity.getConstraintProperties().getConstraintName();
 
 		frnKeyCnstrQry.append(ALTER_TABLE).append(WHITESPACE).append(
 				entity.getTableProperties().getName()).append(WHITESPACE).append(ADD_KEYWORD)
@@ -1177,23 +1518,129 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * This method returns the query to add foreign key constraint in the  
+	 * It actually prepares the query for inheritance on the entity whose parent is parent entity
+	 * @param entity child entity
+	 * @param parentEntity parent of the entity
+	 * @return query
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	protected String getForeignKeyConstraintQueryForInheritance(EntityInterface entity,
+			EntityInterface parentEntity) throws DynamicExtensionsSystemException
+	{
+		StringBuffer frnKeyCnstrQry = new StringBuffer();
+		String tableName = entity.getTableProperties().getName();
+		String frnCnstrName = entity.getConstraintProperties().getConstraintName() + UNDERSCORE
+				+ parentEntity.getConstraintProperties().getConstraintName();
+
+		frnKeyCnstrQry.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE);
+
+		Collection<ConstraintKeyPropertiesInterface> frnCnstKeyPrpties = entity
+				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+
+		String frgnCnstrName = "";
+		String prmKeyName = "";
+		frnCnstKeyPrpties = sortOnPrimaryAttribute(frnCnstKeyPrpties);
+		String columnName = "";
+		// add the constraint in child for each primary key in parent except IDENTIFIER
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : frnCnstKeyPrpties)
+		{
+			columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+
+			if (frnCnstrName.trim().length() != 0 && !"".equals(frgnCnstrName))
+			{
+				frgnCnstrName = frgnCnstrName.concat(COMMA);
+				prmKeyName = prmKeyName.concat(COMMA);
+			}
+
+			frgnCnstrName = frgnCnstrName.concat(columnName);
+			prmKeyName = prmKeyName.concat(cnstrKeyProp.getSrcPrimaryKeyAttribute()
+					.getColumnProperties().getName());
+
+		}
+		if ("".equals(frgnCnstrName) || "".equals(prmKeyName))
+		{
+			throw new DynamicExtensionsSystemException("Generate Constraint properties for entity "
+					+ entity.getName());
+		}
+		frnKeyCnstrQry.append(ADD_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(
+				WHITESPACE).append(frnCnstrName).append(FOREIGN_KEY_KEYWORD)
+				.append(OPENING_BRACKET).append(frgnCnstrName).append(CLOSING_BRACKET).append(
+						WHITESPACE).append(REFERENCES_KEYWORD).append(WHITESPACE).append(
+						parentEntity.getTableProperties().getName()).append(OPENING_BRACKET)
+				.append(prmKeyName).append(CLOSING_BRACKET);
+
+		return frnKeyCnstrQry.toString();
+	}
+
+	protected List<String> getAddColumnQueryForForeignKeyConstraint(EntityInterface entity,
+			EntityInterface parentEntity, List<String> revQueries, boolean isAddColumn)
+			throws DynamicExtensionsSystemException
+	{
+		Collection<ConstraintKeyPropertiesInterface> frnCnstKeyPrpties = entity
+				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+		String tableName = entity.getTableProperties().getName();
+		String columnName = "";
+		List<String> queries = new ArrayList<String>();
+		String query = "";
+		if (frnCnstKeyPrpties == null)
+		{
+			throw new DynamicExtensionsSystemException("Generate Constraint properties for enity"
+					+ entity.getName());
+		}
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : frnCnstKeyPrpties)
+		{
+			columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+			// dont add the column if the both child and parent contains id attribute
+			if (!columnName.equals(IDENTIFIER))
+			{
+				query = getAddAttributeQuery(tableName, columnName,
+						getDatabaseTypeAndSize(cnstrKeyProp.getSrcPrimaryKeyAttribute()),
+						revQueries, isAddColumn);
+				queries.add(query);
+			}
+		}
+		return queries;
+	}
+
+	/**
+	 * This method is used to sort the frgnCnstrKeyPropColl in the natural order of the srcPrimaryKeyAttributes column name
+	 * @param frnCnstrKeyProps which is to be sorted
+	 * @return sorted collection of frgnCnstrKeyPropColl 
+	 */
+	private Collection<ConstraintKeyPropertiesInterface> sortOnPrimaryAttribute(
+			Collection<ConstraintKeyPropertiesInterface> frnCnstrKeyProps)
+	{
+		List<ConstraintKeyPropertiesInterface> frgnKeyCnstrList = new ArrayList<ConstraintKeyPropertiesInterface>();
+		for (ConstraintKeyPropertiesInterface cnstrKeyProp : frnCnstrKeyProps)
+		{
+			frgnKeyCnstrList.add(cnstrKeyProp);
+		}
+		ConstraintKeyPropertiesComparator comparator = new ConstraintKeyPropertiesComparator();
+		Collections.sort(frgnKeyCnstrList, comparator);
+		return frgnKeyCnstrList;
+	}
+
+	/**
+	 * This method returns the queries to remove foreign key constraint in the  
 	 * given child entity that refers to identifier column of the parent.
-	 * @param entity
-	 * @param parentEntity
-	 * @return
+	 * @param entity whose foreign key constraint is to be removed
+	 * @param parentEntity on which it refers
+	 * @return query
 	 */
 	protected String getForeignKeyRemoveConstraintQueryForInheritance(
 			AbstractEntityInterface entity, AbstractEntityInterface parentEntity)
 	{
 		StringBuffer frnKeyCnstrQry = new StringBuffer();
-		String frnCnstrName = entity.getTableProperties().getConstraintName() + UNDERSCORE
-				+ parentEntity.getTableProperties().getConstraintName();
 
-		frnKeyCnstrQry.append(ALTER_TABLE).append(WHITESPACE).append(
-				entity.getTableProperties().getName()).append(WHITESPACE).append(DROP_KEYWORD)
-				.append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(WHITESPACE).append(
-						frnCnstrName);
+		String tableName = entity.getTableProperties().getName();
+		String frnCnstrName = entity.getConstraintProperties().getConstraintName() + UNDERSCORE
+				+ parentEntity.getConstraintProperties().getConstraintName();
+		Collection<ConstraintKeyPropertiesInterface> frnCnstrKeyProps = entity
+				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+
+		frnKeyCnstrQry.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE)
+				.append(DROP_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(
+						WHITESPACE).append(frnCnstrName);
 
 		return frnKeyCnstrQry.toString();
 	}
@@ -1299,7 +1746,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected String getDatabaseTypeAndSize(AttributeMetadataInterface attribute)
+	protected String getDatabaseTypeAndSize(AttributeInterface attribute)
 			throws DynamicExtensionsSystemException
 	{
 		try
@@ -1385,9 +1832,9 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method returns all the CREATE table entries for associations present in the entity.
-	 * @param entity
-	 * @param revQueries
-	 * @return
+	 * @param entity whose associations are to be processed
+	 * @param revQueries rollback query list
+	 * @return list of queries
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
@@ -1410,8 +1857,8 @@ class DynamicExtensionBaseQueryBuilder
 				}
 
 				boolean isAddAssoQry = true;
-				String assoQuery = getQueryPartForAssociation(association, revQueries, isAddAssoQry);
-				assoQueries.add(assoQuery);
+				assoQueries
+						.addAll(getQueryPartForAssociation(association, revQueries, isAddAssoQry));
 			}
 		}
 
@@ -1419,9 +1866,10 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * @param entity
-	 * @param revQueries
-	 * @return
+	 * This method returns all the CREATE table entries for associations present in the entity.
+	 * @param entity whose all category associatons are to be processed 
+	 * @param revQueries rollback query list
+	 * @return list of queries
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
@@ -1448,13 +1896,13 @@ class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method builds the query part for the association.
-	 * @param association
-	 * @param revQueries
-	 * @param isAddAssoQuery
+	 * @param association whose query is to be prepared 
+	 * @param revQueries rollback query list
+	 * @param isAddAssoQuery boolean indicating weather add or remove association query
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getQueryPartForAssociation(AssociationInterface association,
+	public List<String> getQueryPartForAssociation(AssociationInterface association,
 			List<String> revQueries, boolean isAddAssoQuery)
 			throws DynamicExtensionsSystemException
 	{
@@ -1468,22 +1916,34 @@ class DynamicExtensionBaseQueryBuilder
 		Cardinality srcMaxCard = sourceRole.getMaximumCardinality();
 		Cardinality tgtMaxCard = targetRole.getMaximumCardinality();
 
-		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
+		ConstraintPropertiesInterface cnstrnPrprties = association.getConstraintProperties();
 		String tableName = "";
 
+		List<String> queries = new ArrayList<String>();
+		Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyProps = cnstrnPrprties
+				.getSrcEntityConstraintKeyPropertiesCollection();
+		Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyProps = cnstrnPrprties
+				.getTgtEntityConstraintKeyPropertiesCollection();
 		String dataType = getDataTypeForIdentifier();
+
 		StringBuffer query = new StringBuffer();
 		if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.MANY)
 		{
 			// For many to many, a middle table is created.
-			tableName = constraintProperties.getName();
-
+			tableName = cnstrnPrprties.getName();
 			query.append(CREATE_TABLE + WHITESPACE + tableName + WHITESPACE + OPENING_BRACKET
 					+ WHITESPACE + IDENTIFIER + WHITESPACE + dataType + WHITESPACE + NOT_KEYWORD
 					+ WHITESPACE + NULL_KEYWORD + COMMA);
-			query.append(constraintProperties.getSourceEntityKey() + WHITESPACE + dataType + COMMA);
-			query.append(constraintProperties.getTargetEntityKey() + WHITESPACE + dataType + COMMA
-					+ WHITESPACE);
+			for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyProps)
+			{
+				query.append(cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() + WHITESPACE
+						+ getDatabaseTypeAndSize(cnstrKeyProp.getSrcPrimaryKeyAttribute()) + COMMA);
+			}
+			for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyProps)
+			{
+				query.append(cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() + WHITESPACE
+						+ getDatabaseTypeAndSize(cnstrKeyProp.getSrcPrimaryKeyAttribute()) + COMMA);
+			}
 			query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + CLOSING_BRACKET);
 			String rollbackQuery = DROP_KEYWORD + WHITESPACE + TABLE_KEYWORD + WHITESPACE
 					+ tableName;
@@ -1496,28 +1956,38 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				revQueries.add(query.toString());
 				query = new StringBuffer(rollbackQuery);
+
 			}
+			queries.add(query.toString());
 		}
 		else if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.ONE)
 		{
 			// For many to one, a column is added into source entity table.
 			tableName = srcEntity.getTableProperties().getName();
-			String columnName = constraintProperties.getSourceEntityKey();
-			query.append(getAddAttributeQuery(tableName, columnName, dataType, revQueries,
-					isAddAssoQuery));
+			for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstrKeyProps)
+			{
+				queries.add(getAddAttributeQuery(tableName, cnstrKeyProp
+						.getTgtForiegnKeyColumnProperties().getName(),
+						getDatabaseTypeAndSize(cnstrKeyProp.getSrcPrimaryKeyAttribute()),
+						revQueries, isAddAssoQuery));
+			}
+
 		}
 		else
 		{
 			// For one to one and one to many, a column is added into target entity table.
 			tableName = tgtEntity.getTableProperties().getName();
-			String columnName = constraintProperties.getTargetEntityKey();
-			query.append(getAddAttributeQuery(tableName, columnName, dataType, revQueries,
-					isAddAssoQuery));
+			for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstrKeyProps)
+			{
+				queries.add(getAddAttributeQuery(tableName, cnstrKeyProp
+						.getTgtForiegnKeyColumnProperties().getName(),
+						getDatabaseTypeAndSize(cnstrKeyProp.getSrcPrimaryKeyAttribute()),
+						revQueries, isAddAssoQuery));
+			}
 		}
-
 		Logger.out.debug("Exiting getQueryPartForAssociation method");
 
-		return query.toString();
+		return queries;
 	}
 
 	/**
@@ -1540,7 +2010,8 @@ class DynamicExtensionBaseQueryBuilder
 
 		// For one to one and one to many, a column is added into target entity table.
 		String tableName = tgtCatEntity.getTableProperties().getName();
-		String columnName = catAsso.getConstraintProperties().getTargetEntityKey();
+		String columnName = catAsso.getConstraintProperties().getTgtEntityConstraintKeyProperties()
+				.getTgtForiegnKeyColumnProperties().getName();
 		query.append(getAddAttributeQuery(tableName, columnName, getDataTypeForIdentifier(),
 				revQueries, isAddAssoQuery));
 
@@ -1579,7 +2050,7 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * This method returns queries for any attribute that is modified.
+	 * This method returns queries for any attribute that is modified. except removed attributes
 	 * @param entity
 	 * @param dbaseCopy
 	 * @param attrRlbkQries
@@ -1610,20 +2081,18 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					// Either the attribute is newly added or previously excluded(file type/multi select) 
 					// attribute.
-					String attributeQuery = processAddAttribute(attribute, attrRlbkQries);
-					attrQueries.add(attributeQuery);
+
+					attrQueries.add(processAddAttribute(attribute, attrRlbkQries));
 				}
 				else
 				{
 					// Check for other modification in the attributes such a unique constraint change.
-					List<String> modifiedAttrQueries = processModifyAttribute(attribute,
+					List<String> mdfdAttrQueries = processModifyAttribute(attribute,
 							savedAttribute, attrRlbkQries);
-					attrQueries.addAll(modifiedAttrQueries);
+					attrQueries.addAll(mdfdAttrQueries);
 				}
 			}
 		}
-
-		processRemovedAttributes(entity, dbaseCopy, attrQueries, attrRlbkQries);
 
 		Logger.out.debug("Exiting getUpdateAttributeQueryList method");
 
@@ -1675,10 +2144,11 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * @param entity
-	 * @param dbaseCopy
-	 * @param attrRlbkQries
-	 * @return
+	 * It will create the queries for association in case of edit 
+	 * @param entity which is edited 
+	 * @param dbaseCopy 
+	 * @param attrRlbkQries rollback query list
+	 * @return list of queries
 	 * @throws DynamicExtensionsSystemException
 	 */
 	protected List<String> getUpdateAssociationsQueryList(Entity entity, Entity dbaseCopy,
@@ -1708,23 +2178,22 @@ class DynamicExtensionBaseQueryBuilder
 				if (assoDbaseCopy == null)
 				{
 					isAddAssoQuery = true;
-					String newAssoQuery = getQueryPartForAssociation(association, attrRlbkQries,
-							isAddAssoQuery);
-					assoQueries.add(newAssoQuery);
+					assoQueries.addAll(getQueryPartForAssociation(association, attrRlbkQries,
+							isAddAssoQuery));
 				}
 				else
 				{
-					if (isCardinalityChanged(association, assoDbaseCopy))
+					if (EntityManagerUtil.isCardinalityChanged(association, assoDbaseCopy)
+							|| EntityManagerUtil.isPrimaryKeyChanged(entity)
+							|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity()))
 					{
 						isAddAssoQuery = false;
-						String savedAssoRemQry = getQueryPartForAssociation(assoDbaseCopy,
-								attrRlbkQries, isAddAssoQuery);
-						assoQueries.add(savedAssoRemQry);
+						assoQueries.addAll(getQueryPartForAssociation(assoDbaseCopy, attrRlbkQries,
+								isAddAssoQuery));
 
 						isAddAssoQuery = true;
-						String newAssoAddQuery = getQueryPartForAssociation(association,
-								attrRlbkQries, isAddAssoQuery);
-						assoQueries.add(newAssoAddQuery);
+						assoQueries.addAll(getQueryPartForAssociation(association, attrRlbkQries,
+								isAddAssoQuery));
 					}
 				}
 			}
@@ -1959,27 +2428,6 @@ class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
-	 * @param association
-	 * @param dbaseCopy
-	 * @return
-	 */
-	protected boolean isCardinalityChanged(Association association, Association dbaseCopy)
-	{
-		Cardinality srcMaxCard = association.getSourceRole().getMaximumCardinality();
-		Cardinality tgtMaxCard = association.getTargetRole().getMaximumCardinality();
-
-		Cardinality srcMaxCardDbCpy = dbaseCopy.getSourceRole().getMaximumCardinality();
-		Cardinality tgtMaxCardDbCpy = dbaseCopy.getTargetRole().getMaximumCardinality();
-
-		if (!srcMaxCard.equals(srcMaxCardDbCpy) || !tgtMaxCard.equals(tgtMaxCardDbCpy))
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * This method processes any associations that are deleted from the entity.
 	 * @param entity
 	 * @param dbaseCopy
@@ -2010,9 +2458,9 @@ class DynamicExtensionBaseQueryBuilder
 					if (association == null)
 					{
 						boolean isAddAssoQuery = false;
-						String remAssoQuery = getQueryPartForAssociation(savedAssociation,
-								attrRlbkQries, isAddAssoQuery);
-						assoQueries.add(remAssoQuery);
+
+						assoQueries.addAll(getQueryPartForAssociation(savedAssociation,
+								attrRlbkQries, isAddAssoQuery));
 					}
 				}
 			}
@@ -2136,9 +2584,6 @@ class DynamicExtensionBaseQueryBuilder
 			return mdfyAttrQries;
 		}
 
-		String tableName = attribute.getEntity().getTableProperties().getName();
-		String columnName = attribute.getColumnProperties().getName();
-
 		String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
 		String oldTypeClass = savedAttr.getAttributeTypeInformation().getClass().getName();
 
@@ -2147,33 +2592,34 @@ class DynamicExtensionBaseQueryBuilder
 			checkIfDataTypeChangeAllowable(attribute);
 			mdfyAttrQries = getAttributeDataTypeChangedQuery(attribute, savedAttr, attrRlbkQries);
 		}
+		/*	if (attribute.getIsPrimaryKey() && !savedAttr.getIsPrimaryKey())
+			{
+				mdfyAttrQries.add(addNotNullConstraint(attribute));
+				attrRlbkQries.add(addNotNullConstraint(savedAttr));
+				String uniqCnstrQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
+						+ WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
+						+ UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE
+						+ OPENING_BRACKET + columnName + CLOSING_BRACKET;
+				String uniqCnstrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+						+ DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
+						+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
 
-		if (attribute.getIsPrimaryKey() && !savedAttr.getIsPrimaryKey())
-		{
-			String uniqCnstrQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
-					+ WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
-					+ UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE
-					+ OPENING_BRACKET + columnName + CLOSING_BRACKET;
-			String uniqCnstrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-					+ DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
+				mdfyAttrQries.add(uniqCnstrQry);
+				attrRlbkQries.add(uniqCnstrRlbkQry);
+			}
+			else if (!attribute.getIsPrimaryKey() && savedAttr.getIsPrimaryKey())
+			{
+				String uniqCnstrQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
+						+ WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
+						+ UNIQUE_CONSTRAINT_SUFFIX;
+				String uniqCnstrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
+						+ ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
+						+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
+						+ WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
 
-			mdfyAttrQries.add(uniqCnstrQry);
-			attrRlbkQries.add(uniqCnstrRlbkQry);
-		}
-		else if (!attribute.getIsPrimaryKey() && savedAttr.getIsPrimaryKey())
-		{
-			String uniqCnstrQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
-					+ WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
-					+ UNIQUE_CONSTRAINT_SUFFIX;
-			String uniqCnstrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-					+ ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-					+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
-					+ WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
-
-			mdfyAttrQries.add(uniqCnstrQry);
-			attrRlbkQries.add(uniqCnstrRlbkQry);
-		}
+				mdfyAttrQries.add(uniqCnstrQry);
+				attrRlbkQries.add(uniqCnstrRlbkQry);
+			}*/
 
 		return mdfyAttrQries;
 	}
@@ -2229,7 +2675,7 @@ class DynamicExtensionBaseQueryBuilder
 			ResultSet resultSet = null;
 			try
 			{
-				resultSet = entityManagerUtil.executeQuery(query.toString());
+				resultSet = EntityManagerUtil.executeQuery(query.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
@@ -2303,7 +2749,7 @@ class DynamicExtensionBaseQueryBuilder
 			ResultSet resultSet = null;
 			try
 			{
-				resultSet = entityManagerUtil.executeQuery(query.toString());
+				resultSet = EntityManagerUtil.executeQuery(query.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
@@ -2343,6 +2789,7 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
 	{
+		boolean isDataPresent = false;
 		StringBuffer query = new StringBuffer();
 		query.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(OPENING_BRACKET)
 				.append(ASTERIX).append(CLOSING_BRACKET).append(WHITESPACE).append(FROM_KEYWORD)
@@ -2356,12 +2803,9 @@ class DynamicExtensionBaseQueryBuilder
 			Long count = resultSet.getLong(1);
 			if (count > 0)
 			{
-				return true;
+				isDataPresent = true;
 			}
-			else
-			{
-				return false;
-			}
+			return isDataPresent;
 		}
 		catch (SQLException e)
 		{
@@ -2416,7 +2860,8 @@ class DynamicExtensionBaseQueryBuilder
 		if (attribute.getIsNullable() && !savedAttr.getIsNullable())
 		{
 			nullQueryKeyword = WHITESPACE + NULL_KEYWORD + WHITESPACE;
-			nullQueryRlbkKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD + WHITESPACE;
+			nullQueryRlbkKeyword = WHITESPACE + NOT_KEYWORD + WHITESPACE + NULL_KEYWORD
+					+ WHITESPACE;
 		}
 		else if (!attribute.getIsNullable() && savedAttr.getIsNullable())
 		{
@@ -2796,7 +3241,8 @@ class DynamicExtensionBaseQueryBuilder
 		if (tgtMaxCard == Cardinality.ONE && srcMaxCard == Cardinality.ONE)
 		{
 			tableName = tgtEnt.getTableProperties().getName();
-			columnName = asso.getConstraintProperties().getTargetEntityKey();
+			columnName = asso.getConstraintProperties().getTgtEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().getName();
 
 			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*"
 					+ CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
@@ -2857,7 +3303,8 @@ class DynamicExtensionBaseQueryBuilder
 		if (catEntity.getNumberOfEntries() == 1)
 		{
 			tableName = catEntity.getTableProperties().getName();
-			columnName = catAsso.getConstraintProperties().getTargetEntityKey();
+			columnName = catAsso.getConstraintProperties().getTgtEntityConstraintKeyProperties()
+					.getTgtForiegnKeyColumnProperties().getName();
 
 			String query = SELECT_KEYWORD + WHITESPACE + COUNT_KEYWORD + OPENING_BRACKET + "*"
 					+ CLOSING_BRACKET + WHITESPACE + FROM_KEYWORD + WHITESPACE + tableName
@@ -2908,70 +3355,6 @@ class DynamicExtensionBaseQueryBuilder
 		query = query.replace("]", CLOSING_BRACKET);
 
 		return query;
-	}
-
-	/**
-	 * @param entity
-	 * @param dbaseCopy
-	 * @return
-	 */
-	public boolean isParentChanged(Entity entity, Entity dbaseCopy)
-	{
-		boolean isParentChanged = false;
-		if (entity.getParentEntity() != null
-				&& !entity.getParentEntity().equals(dbaseCopy.getParentEntity()))
-		{
-			isParentChanged = true;
-		}
-		else if (entity.getParentEntity() == null && dbaseCopy.getParentEntity() != null)
-		{
-			isParentChanged = true;
-		}
-
-		return isParentChanged;
-	}
-
-	/**
-	 * @param entity
-	 * @param dbaseParentId
-	 * @return
-	 */
-	public boolean isParentChanged(Entity entity, Long dbaseParentId)
-	{
-		boolean isParentChanged = false;
-		if (entity.getParentEntity() != null
-				&& !entity.getParentEntity().getId().equals(dbaseParentId))
-		{
-			isParentChanged = true;
-		}
-		else if (entity.getParentEntity() == null && dbaseParentId != null)
-		{
-			isParentChanged = true;
-		}
-
-		return isParentChanged;
-	}
-
-	/**
-	 * @param catEntity
-	 * @param dbaseCopy
-	 * @return
-	 */
-	public boolean isParentChanged(CategoryEntity catEntity, CategoryEntity dbaseCopy)
-	{
-		boolean isParentChanged = false;
-		if (catEntity.getParentCategoryEntity() != null
-				&& !catEntity.getParentCategoryEntity().equals(dbaseCopy.getParentCategoryEntity()))
-		{
-			isParentChanged = true;
-		}
-		else if (catEntity.getParentCategoryEntity() == null
-				&& dbaseCopy.getParentCategoryEntity() != null)
-		{
-			isParentChanged = true;
-		}
-
-		return isParentChanged;
 	}
 
 	/**
@@ -3214,20 +3597,28 @@ class DynamicExtensionBaseQueryBuilder
 		{
 			query = new StringBuffer();
 			query.append(INSERT_INTO_KEYWORD).append(tableName).append(OPENING_BRACKET).append(
-					constraint.getSourceEntityKey()).append(COMMA).append(
-					constraint.getTargetEntityKey()).append(CLOSING_BRACKET).append("values")
-					.append(OPENING_BRACKET).append(srcEntRecId).append(COMMA).append(tgtEntRecId)
-					.append(CLOSING_BRACKET);
+					constraint.getSrcEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()).append(COMMA).append(
+					constraint.getTgtEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()).append(CLOSING_BRACKET)
+					.append("values").append(OPENING_BRACKET).append(srcEntRecId).append(COMMA)
+					.append(tgtEntRecId).append(CLOSING_BRACKET);
 		}
 		else if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.ONE)
 		{
-			query.append(constraint.getSourceEntityKey()).append(EQUAL).append(tgtEntRecId).append(
-					WHERE_KEYWORD).append(IDENTIFIER).append(EQUAL).append(srcEntRecId);
+			query.append(
+					constraint.getSrcEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()).append(EQUAL).append(
+					tgtEntRecId).append(WHERE_KEYWORD).append(IDENTIFIER).append(EQUAL).append(
+					srcEntRecId);
 		}
 		else
 		{
-			query.append(constraint.getTargetEntityKey()).append(EQUAL).append(srcEntRecId).append(
-					WHERE_KEYWORD).append(IDENTIFIER).append(EQUAL).append(tgtEntRecId);
+			query.append(
+					constraint.getTgtEntityConstraintKeyProperties()
+							.getTgtForiegnKeyColumnProperties().getName()).append(EQUAL).append(
+					srcEntRecId).append(WHERE_KEYWORD).append(IDENTIFIER).append(EQUAL).append(
+					tgtEntRecId);
 		}
 
 		Connection conn = null;
@@ -3299,6 +3690,7 @@ class DynamicExtensionBaseQueryBuilder
 
 		return alterTableQuery.toString();
 	}
+
 	/**
 	 * @param valueObj
 	 * @return
@@ -3309,5 +3701,4 @@ class DynamicExtensionBaseQueryBuilder
 		Object value = "";
 		return value;
 	}
-
 }

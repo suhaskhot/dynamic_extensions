@@ -101,6 +101,10 @@ public class CategoryValidator
 		String entityHQL = "select id from Entity entity where entity.entityGroup.id = "
 				+ entityGroupId + " and entity.name = '" + entityName + "'";
 		List entityIdList = DynamicExtensionsUtility.executeQuery(entityHQL);
+		if(entityIdList.isEmpty())
+		{
+			throw new DynamicExtensionsSystemException(errorMessage);
+		}
 		checkForNullRefernce(entityIdList.get(0), errorMessage);
 	}
 

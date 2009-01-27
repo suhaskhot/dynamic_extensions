@@ -214,9 +214,11 @@
 	</query>
 
 	<query name="getColumnNameForAssociation">
-	 select constraintColl.targetEntityKey
+	 select columnColl.name
        from Association association
 		   join association.constraintPropertiesCollection constraintColl
+		   join constraintColl.tgtEntityConstraintKeyPropertiesCollection tgtkeyColl
+		   join tgtkeyColl.tgtForiegnKeyColumnPropertiesCollection columnColl
 		   join association.targetEntity.containerCollection contColl
 			   	where association.entity.id = ?
 				and contColl.id = ?

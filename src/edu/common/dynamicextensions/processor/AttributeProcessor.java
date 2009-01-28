@@ -2173,7 +2173,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			Object permissibleValueObjectValue = permissibleValueIntf.getValueAsObject();
 			if ((permissibleValueObjectValue != null)
 					&& (permissibleValueObjectValue.toString() != null)
-					&& (permissibleValueObjectValue.toString().trim() != ""))
+					&& ( ! "".equals(permissibleValueObjectValue.toString().trim())))
 			{
 				OptionValueObject optionDetail = new OptionValueObject();
 				optionDetail.setOptionName(permissibleValueObjectValue.toString().trim());

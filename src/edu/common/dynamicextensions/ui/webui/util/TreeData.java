@@ -180,7 +180,7 @@ public class TreeData
 			}
 			String style = null;
 			String id = "";
-			if (parent != "0")
+			if (! "0".equals(parent))
 			{
 				id = treeName + "N" + parent;
 				if (isTreeExpanded)
@@ -212,7 +212,7 @@ public class TreeData
 						hasChild = false;
 					}
 
-					if (node.getImageUrl() == "")
+					if ( "".equals(node.getImageUrl()))
 					{
 						style = "style = 'FONT-WEIGHT:normal;'";
 					}
@@ -261,7 +261,7 @@ public class TreeData
 							node.setHref("javascript:changeSelection('" + fieldForSelectedObject
 									+ "','" + id + "','" + node.getSequenceNumber() + "');");
 						}
-						if (node.getTarget() == "")
+						if ( "".equals(node.getTarget()))
 						{
 							node.setTarget(target);
 						}

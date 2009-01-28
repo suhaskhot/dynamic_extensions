@@ -31,12 +31,12 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	 */
 	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
 	{
-		//
+		// TODO Auto-generated constructor stub
 	}
 
 	public void setAllValues(IValueObject arg0) throws AssignDataException
 	{
-		//
+		// TODO Auto-generated constructor stub
 	}
 
 	/** 

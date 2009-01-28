@@ -139,8 +139,8 @@ public class NumberValidator implements ValidatorRuleInterface
 				EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE);
 
 		BigInteger numberValue = new BigInteger(value);
-		String strLongMin = (new Long(Long.MIN_VALUE)).toString();
-		String strLongMax = (new Long(Long.MAX_VALUE)).toString();
+		String strLongMin = new Long(Long.MIN_VALUE).toString();
+		String strLongMax = new Long(Long.MAX_VALUE).toString();
 		BigInteger longMin = new BigInteger(strLongMin);
 		BigInteger longMax = new BigInteger(strLongMax);
 
@@ -171,8 +171,8 @@ public class NumberValidator implements ValidatorRuleInterface
 				EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
 
 		BigInteger numberValue = new BigInteger(value);
-		String strIntegerMin = (new Integer(Integer.MIN_VALUE)).toString();
-		String strIntegerMax = (new Integer(Integer.MAX_VALUE)).toString();
+		String strIntegerMin = new Integer(Integer.MIN_VALUE).toString();
+		String strIntegerMax = new Integer(Integer.MAX_VALUE).toString();
 		BigInteger integerMin = new BigInteger(strIntegerMin);
 		BigInteger integerMax = new BigInteger(strIntegerMax);
 
@@ -203,8 +203,8 @@ public class NumberValidator implements ValidatorRuleInterface
 				EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE);
 
 		BigInteger numberValue = new BigInteger(value);
-		String strShortMin = (new Short(Short.MIN_VALUE)).toString();
-		String strShortMax = (new Short(Short.MAX_VALUE)).toString();
+		String strShortMin = new Short(Short.MIN_VALUE).toString();
+		String strShortMax = new Short(Short.MAX_VALUE).toString();
 		BigInteger shortMin = new BigInteger(strShortMin);
 		BigInteger shortMax = new BigInteger(strShortMax);
 

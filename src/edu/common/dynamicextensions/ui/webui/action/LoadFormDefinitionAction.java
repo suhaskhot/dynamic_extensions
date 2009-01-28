@@ -70,10 +70,10 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				return mapping.getInputForward();
 			}
-			return (mapping.findForward(actionForwardString));
+			return mapping.findForward(actionForwardString);
 		}
 
-		return (mapping.findForward(Constants.SUCCESS));
+		return mapping.findForward(Constants.SUCCESS);
 	}
 
 	/**

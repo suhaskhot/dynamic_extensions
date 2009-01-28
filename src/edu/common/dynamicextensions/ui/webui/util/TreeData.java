@@ -99,7 +99,7 @@ public class TreeData
 	 */
 	public TreeNode createNode(String text, int seqno)
 	{
-		return (new TreeNode(text, seqno));
+		return new TreeNode(text, seqno);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class TreeData
 	 */
 	public TreeNode createNode(String text, String href, String toolTip, int seqno)
 	{
-		return (new TreeNode(text, href, toolTip, seqno));
+		return new TreeNode(text, href, toolTip, seqno);
 	}
 
 	/**

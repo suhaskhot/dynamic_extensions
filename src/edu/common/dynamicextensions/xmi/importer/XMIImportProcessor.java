@@ -751,7 +751,7 @@ public class XMIImportProcessor
 	private EntityInterface createEntity(UmlClass umlClass, UmlPackage umlPackage)
 			throws DynamicExtensionsSystemException
 	{
-		String name = (umlClass.getName());
+		String name = umlClass.getName();
 		//EntityInterface entity = deFactory.createEntity();
 		// calling createEntity of EntityProcessor as it generates id attibute for that entity
 		EntityProcessor entityProcessor = EntityProcessor.getInstance();

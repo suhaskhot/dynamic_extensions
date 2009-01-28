@@ -131,7 +131,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			{
 				return mapping.getInputForward();
 			}
-			return (mapping.findForward(actionForwardString));
+			return mapping.findForward(actionForwardString);
 		}
 	}
 

@@ -24,6 +24,6 @@ public class ApplyFormPreviewAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		return (mapping.findForward(Constants.SUCCESS));
+		return mapping.findForward(Constants.SUCCESS);
 	}
 }

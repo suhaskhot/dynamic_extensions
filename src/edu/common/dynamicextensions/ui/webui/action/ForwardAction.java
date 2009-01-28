@@ -36,7 +36,7 @@ public class ForwardAction extends BaseDynamicExtensionsAction
 		HttpSession session = request.getSession();
 		Map cacheMap = new HashMap();
 		session.setAttribute(Constants.CACHE_MAP, cacheMap);
-		return (mapping.findForward(Constants.SUCCESS));
+		return mapping.findForward(Constants.SUCCESS);
 	}
 
 }

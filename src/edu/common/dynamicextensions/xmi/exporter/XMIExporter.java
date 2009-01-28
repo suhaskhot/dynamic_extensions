@@ -160,9 +160,9 @@ public class XMIExporter implements XMIExportInterface
 			MDRManager.getDefault().shutdownAll();
 			XMIUtilities.cleanUpRepository();
 			outputStream.close();
-			if ((new File(XMIConstants.TEMPORARY_XMI1_1_FILENAME)).exists())
+			if (new File(XMIConstants.TEMPORARY_XMI1_1_FILENAME).exists())
 			{
-				(new File(XMIConstants.TEMPORARY_XMI1_1_FILENAME)).delete();
+				new File(XMIConstants.TEMPORARY_XMI1_1_FILENAME).delete();
 			}
 		}
 	}
@@ -823,7 +823,7 @@ public class XMIExporter implements XMIExportInterface
 				while (attributesIter.hasNext())
 				{
 					AttributeInterface attribute = (AttributeInterface) attributesIter.next();
-					if ((attribute != null) && (attribute.getIsPrimaryKey()))
+					if (attribute != null && attribute.getIsPrimaryKey())
 					{
 						return attribute;
 					}

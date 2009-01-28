@@ -479,8 +479,8 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		if (category.getRootCategoryElement() != null)
 		{
-			rootContainer = (new ArrayList<ContainerInterface>(category.getRootCategoryElement()
-					.getContainerCollection())).get(0);
+			rootContainer = new ArrayList<ContainerInterface>(category.getRootCategoryElement()
+					.getContainerCollection()).get(0);
 		}
 
 		associationControl = (CategoryAssociationControlInterface) getAssociationControl(

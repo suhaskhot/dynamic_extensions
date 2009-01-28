@@ -192,7 +192,7 @@ public class XMIUtilities
 
 			public boolean evaluate(Object object)
 			{
-				return (((ModelElement) object).getName()).equals(name);
+				return ((ModelElement) object).getName().equals(name);
 			}
 		});
 	}
@@ -258,11 +258,11 @@ public class XMIUtilities
 	 */
 	public static void cleanUpRepository()
 	{
-		if ((new File("mdr.btd")).exists())
+		if (new File("mdr.btd").exists())
 		{
 			(new File("mdr.btd")).delete();
 		}
-		if ((new File("mdr.btx")).exists())
+		if (new File("mdr.btx").exists())
 		{
 			(new File("mdr.btx")).delete();
 		}

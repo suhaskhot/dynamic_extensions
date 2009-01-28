@@ -26,7 +26,6 @@ public class ControlsForm extends CommonControlModel
 			AbstractAttributeUIBeanInterface
 {
 
-
 	/**
 	 * Overrides the validate method of ActionForm.
 	 * @param mapping ActionMapping mapping
@@ -67,31 +66,31 @@ public class ControlsForm extends CommonControlModel
 		if (userSelectedTool != null)
 		{
 			//Special case for text Control
-			if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.TEXT_CONTROL)))
+			if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.TEXT_CONTROL))
 			{
 				getErrorsForTextControl(validator, errors);
 			}
-			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.COMBOBOX_CONTROL)))
+			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 			{
 				//Special case for combobox Control
 				getErrorsForComboboxControl(validator, errors);
 			}
-			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.DATEPICKER_CONTROL)))
+			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL))
 			{
 				//Special case for Date picker Control
 				getErrorsForDatePickerControl(validator, errors);
 			}
-			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.FILEUPLOAD_CONTROL)))
+			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.FILEUPLOAD_CONTROL))
 			{
 				//Special case for File upload Control
 				getErrorsForFileUploadControl(validator, errors);
 			}
-			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.CHECKBOX_CONTROL)))
+			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL))
 			{
 				//Special case for Check box control
 				getErrorsForCheckBoxControl(validator, errors);
 			}
-			else if (userSelectedTool.equalsIgnoreCase((ProcessorConstants.RADIOBUTTON_CONTROL)))
+			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL))
 			{
 				getErrorsForRadioButtonControl(validator, errors);
 			}
@@ -490,7 +489,7 @@ public class ControlsForm extends CommonControlModel
 			}
 			else
 			{
-				return (DynamicExtensionsUtility.isNumeric(stringFld));
+				return DynamicExtensionsUtility.isNumeric(stringFld);
 			}
 		}
 		return false;
@@ -506,7 +505,7 @@ public class ControlsForm extends CommonControlModel
 			}
 			else
 			{
-				return (DynamicExtensionsUtility.isNaturalNumber(stringFld));
+				return DynamicExtensionsUtility.isNaturalNumber(stringFld);
 			}
 		}
 		return false;
@@ -550,5 +549,4 @@ public class ControlsForm extends CommonControlModel
 		return isValid;
 	}
 
-	
 }

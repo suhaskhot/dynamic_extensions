@@ -303,7 +303,7 @@ public class ControlsUtility
 
 				public int compare(NameValueBean nameValueBean1, NameValueBean nameValueBean2)
 				{
-					return (nameValueBean1.getName()).compareTo(nameValueBean2.getName());
+					return nameValueBean1.getName().compareTo(nameValueBean2.getName());
 				}
 			});
 		}

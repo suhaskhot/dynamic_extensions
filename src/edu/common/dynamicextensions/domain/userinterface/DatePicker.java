@@ -91,7 +91,7 @@ public class DatePicker extends Control implements DatePickerInterface
 			if (defaultValue == null)
 			{
 				if (this.getDateValueType() != null
-						&& this.getDateValueType().equals((ProcessorConstants.DATE_VALUE_TODAY)))
+						&& this.getDateValueType().equals(ProcessorConstants.DATE_VALUE_TODAY))
 				{
 					defaultValue = Utility.parseDateToString(new Date(), dateFormat);
 				}

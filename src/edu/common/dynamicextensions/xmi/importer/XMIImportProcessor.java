@@ -781,7 +781,9 @@ public class XMIImportProcessor
 		{
 			//If id attribute is system generated then dont create attribute for user given Id attribute
 			if (xmiConfigurationObject.isAddIdAttribute())
+			{
 				return null;
+			}
 		}
 		DataType dataType = DataType.get(umlAttribute.getType().getName());
 		if (dataType != null)
@@ -2474,7 +2476,9 @@ public class XMIImportProcessor
 		//Also not setting parentform to avoid unncessary DB call as base container is already present in the container object
 		containerModel.setFormName(entityInterface.getName());
 		if (entityInterface.isAbstract())
+		{
 			containerModel.setIsAbstract("true");
+		}
 		//Container Object is now populated
 		containerProcessor.populateContainerInterface(containerInterface, containerModel);
 

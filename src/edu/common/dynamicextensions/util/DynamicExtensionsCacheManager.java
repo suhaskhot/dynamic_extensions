@@ -27,7 +27,9 @@ public class DynamicExtensionsCacheManager
 	protected DynamicExtensionsCacheManager()
 	{
 		if (containercacheMap == null)
+		{
 			containercacheMap = new HashMap();
+		}
 
 	}
 
@@ -51,7 +53,9 @@ public class DynamicExtensionsCacheManager
 	{
 
 		if (containercacheMap != null)
+		{
 			containercacheMap.put(key, value);
+		}
 	}
 
 	/**
@@ -61,7 +65,9 @@ public class DynamicExtensionsCacheManager
 	{
 
 		if (containercacheMap != null)
+		{
 			containercacheMap.remove(key);
+		}
 	}
 
 	/**

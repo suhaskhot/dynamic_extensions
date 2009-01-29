@@ -806,7 +806,9 @@ public class CategoryGenerator
 
 			// If attribute found in parent category entity, break out of loop.
 			if (isAttributeCategoryMatched)
+			{
 				break;
+			}
 		}
 
 	}
@@ -959,7 +961,9 @@ public class CategoryGenerator
 		for (String string : categoryPaths)
 		{
 			if (string.endsWith(newCategoryEntityName))
+			{
 				categoryPath = string;
+			}
 		}
 		return categoryPath;
 	}

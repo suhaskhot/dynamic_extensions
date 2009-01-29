@@ -423,7 +423,9 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if ((control.getBaseAbstractAttribute() != null)
 						&& (control.getBaseAbstractAttribute() instanceof AttributeInterface))
+				{
 					attribute = (AttributeInterface) control.getBaseAbstractAttribute();
+				}
 			}
 		}
 		return attribute;

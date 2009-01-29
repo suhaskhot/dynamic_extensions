@@ -95,7 +95,9 @@ public class Category extends AbstractMetadata implements CategoryInterface
 				searchedCategoryEntity = getCategoryEntity(categoryEntityInterface,
 						categoryEntityName);
 				if (searchedCategoryEntity != null)
+				{
 					break;
+				}
 
 			}
 

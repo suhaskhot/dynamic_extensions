@@ -282,7 +282,9 @@ public class ControlsUtility
 		 * Reviewed by : Sujay
 		 */
 		if (dateAttribute instanceof DateTypeInformationInterface)
+		{
 			dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
+		}
 		if (dateFormat == null)
 		{
 			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;

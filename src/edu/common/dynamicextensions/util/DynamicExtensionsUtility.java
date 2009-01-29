@@ -1468,8 +1468,10 @@ public class DynamicExtensionsUtility
 							.getName()))
 			{
 				if (((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
+				{
 					getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),
 							objCategoryMap);
+				}
 			}
 			if (!objCategoryMap.containsKey(categoryEntity.getName())
 					&& objCategoryEntity.isCreateTable())
@@ -1478,7 +1480,9 @@ public class DynamicExtensionsUtility
 				{
 					//Only includes those category entity for which table is required to be created
 					if (objCategoryEntity.isCreateTable())
+					{
 						objCategoryMap.put(categoryEntity.getName(), objCategoryEntity);
+					}
 				}
 			}
 			else
@@ -1491,10 +1495,14 @@ public class DynamicExtensionsUtility
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
 						.getTargetCategoryEntity();
 				if (objCEntity != null && objCEntity.isCreateTable())
+				{
 					if (!objCategoryMap.containsKey(categoryAssociationInterface
 							.getTargetCategoryEntity().getName()))
+					{
 						getUnsavedCategoryEntityList(categoryAssociationInterface
 								.getTargetCategoryEntity(), objCategoryMap);
+					}
+				}
 			}
 		}
 	}
@@ -1520,8 +1528,10 @@ public class DynamicExtensionsUtility
 							.getName()))
 			{
 				if (((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
+				{
 					getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
 							objCategoryMap);
+				}
 			}
 			if (!objCategoryMap.containsKey(categoryEntity.getName()))
 			{
@@ -1540,10 +1550,14 @@ public class DynamicExtensionsUtility
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
 						.getTargetCategoryEntity();
 				if (objCEntity != null && objCEntity.isCreateTable() && objCEntity.getId() != null)
+				{
 					if (!objCategoryMap.containsKey(categoryAssociationInterface
 							.getTargetCategoryEntity().getName()))
+					{
 						getSavedCategoryEntityList(categoryAssociationInterface
 								.getTargetCategoryEntity(), objCategoryMap);
+					}
+				}
 			}
 		}
 	}
@@ -1865,10 +1879,14 @@ public class DynamicExtensionsUtility
 	public static String replaceUtil(String str, String one, String another)
 	{
 		if (str == null)
+		{
 			return str;
+		}
 		//    	 In a string replace one substring with another
 		if (str.equals(""))
+		{
 			return "";
+		}
 		String res = "";
 		int i = str.indexOf(one, 0);
 		int lastpos = 0;

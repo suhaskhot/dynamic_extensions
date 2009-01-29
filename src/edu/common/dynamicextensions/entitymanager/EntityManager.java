@@ -1849,9 +1849,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				.getAssociationDisplayAttributeCollection();
 
 		if (assoControl instanceof SelectControl)
+		{
 			tgtEntityTable = ((AssociationInterface) ((SelectControl) assoControl)
 					.getBaseAbstractAttribute()).getTargetEntity().getTableProperties().getName();
-
+		}
 		String selectClause = SELECT_KEYWORD + tgtEntityTable + "." + IDENTIFIER;
 		String fromClause = FROM_KEYWORD + tgtEntityTable + ", ";
 		String whereClause = WHERE_KEYWORD;
@@ -1877,8 +1878,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				selectClause = selectClause + ", " + tableName + "." + columnName;
 
 				if (!(fromClause.contains(tableName)))
+				{
 					fromClause = fromClause + tableName + ", ";
-
+				}
 				if (counter == 0 && assoAttributes.size() > 1)
 				{
 					whereClause = whereClause + tableName + ".ACTIVITY_STATUS <> 'Disabled' AND ";
@@ -1893,8 +1895,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				else if (assoAttributes.size() == 1)
 				{
 					if (!(fromClause.contains(tgtEntityTable)))
+					{
 						fromClause = fromClause + tgtEntityTable + ", ";
-
+					}
 					whereClause = whereClause + tgtEntityTable
 							+ ".ACTIVITY_STATUS <> 'Disabled' AND ";
 					whereClause = whereClause + tableName + "." + IDENTIFIER + " = "
@@ -2046,7 +2049,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			// In case of category creation form caption is optional.
 			if ((String) contBeans[1] != null)
+			{
 				nameValueBeans.add(new NameValueBean((String) contBeans[1], (Long) contBeans[0]));
+			}
 		}
 
 		return nameValueBeans;
@@ -2073,7 +2078,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			contBeans = (Object[]) contBeansIter.next();
 			// In case of category creation form caption is optional.
 			if ((String) contBeans[1] != null)
+			{
 				nameValueBeans.add(new NameValueBean((String) contBeans[1], (Long) contBeans[0]));
+			}
 		}
 
 		return nameValueBeans;

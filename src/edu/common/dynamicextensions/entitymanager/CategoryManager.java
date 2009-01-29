@@ -1623,7 +1623,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			Map<AbstractAttributeInterface, Object> innerValues = EntityManager.getInstance()
 					.getEntityRecordById(parentCatEnt.getEntity(), recordId);
 			if (innerValues != null)
+			{
 				entityRecords.putAll(innerValues);
+			}
 
 			parentCatEnt = parentCatEnt.getParentCategoryEntity();
 		}

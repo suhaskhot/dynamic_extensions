@@ -20,9 +20,9 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 public interface XMIExportInterface
 {
 
-	public void exportXMI(String filename, javax.jmi.reflect.RefPackage extent, String xmiVersion)
+	void exportXMI(String filename, javax.jmi.reflect.RefPackage extent, String xmiVersion)
 			throws IOException, TransformerException;
 
-	public void exportXMI(String filename, EntityGroupInterface entityGroup, String xmiVersion)
+	void exportXMI(String filename, EntityGroupInterface entityGroup, String xmiVersion)
 			throws IOException, Exception;
 }

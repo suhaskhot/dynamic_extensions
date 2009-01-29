@@ -702,21 +702,21 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getContainerIdFromEntityId(Long entityId) throws DynamicExtensionsSystemException;
+	Long getContainerIdFromEntityId(Long entityId) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param entityId
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getContainerCaptionFromEntityId(Long entityId)
+	String getContainerCaptionFromEntityId(Long entityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return SystemGenerated EntityGroup beans
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<NameValueBean> getAllSystemGenEntityGroupBeans()
+	Collection<NameValueBean> getAllSystemGenEntityGroupBeans()
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -724,13 +724,13 @@ public interface EntityManagerInterface
 	 * @return collection of EntityMapConditions for a staticRecordId
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId)
+	Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId)
 			throws DynamicExtensionsSystemException;
 	/**
 	 * @param entityName to get entityGroup
 	 * @return entityGroupName of a particular entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getEntityGroupNameByEntityName(String entityName)
+	String getEntityGroupNameByEntityName(String entityName)
 			throws DynamicExtensionsSystemException;
 }

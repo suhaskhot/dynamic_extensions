@@ -51,7 +51,7 @@ public interface CategoryManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long insertData(CategoryInterface category,
+	Long insertData(CategoryInterface category,
 			Map<BaseAbstractAttributeInterface, Object> dataValue, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
@@ -64,7 +64,7 @@ public interface CategoryManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<Long> insertData(CategoryInterface category,
+	List<Long> insertData(CategoryInterface category,
 			List<Map<BaseAbstractAttributeInterface, Object>> dataValueMaps, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
@@ -76,7 +76,7 @@ public interface CategoryManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws SQLException
 	 */
-	public Map<BaseAbstractAttributeInterface, Object> getRecordById(
+	Map<BaseAbstractAttributeInterface, Object> getRecordById(
 			CategoryEntityInterface rootCatEntity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
 			SQLException;
@@ -90,7 +90,7 @@ public interface CategoryManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws SQLException
 	 */
-	public boolean editData(CategoryEntityInterface catEntity,
+	boolean editData(CategoryEntityInterface catEntity,
 			Map<BaseAbstractAttributeInterface, Object> attributeValues, Long recordId,
 			Long... userId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException, SQLException;
@@ -101,21 +101,21 @@ public interface CategoryManagerInterface
 	 * @param desiredPVs
 	 * @return true or false depending on valid permissible values subset
 	 */
-	public boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE,
+	boolean isPermissibleValuesSubsetValid(UserDefinedDEInterface userDefinedDE,
 			Map<String, Collection<SemanticPropertyInterface>> desiredPVs);
 
 	/**
 	 * getEntityRecordIdByRootCategoryEntityRecordId.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Long getEntityRecordIdByRootCategoryEntityRecordId(Long rootCategoryEntityRecordId,
+	Long getEntityRecordIdByRootCategoryEntityRecordId(Long rootCategoryEntityRecordId,
 			String rootCategoryTableName) throws DynamicExtensionsSystemException;
 
 	/**
 	 * getEntityRecordIdByRootCategoryEntityRecordId.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,
+	Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,
 			String rootCategoryTableName) throws DynamicExtensionsSystemException;
 
 }

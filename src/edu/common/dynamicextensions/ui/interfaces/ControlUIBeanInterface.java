@@ -264,52 +264,52 @@ public interface ControlUIBeanInterface
 	/**
 	 * @return
 	 */
-	public String[] getSelectedAttributeIds();
+	String[] getSelectedAttributeIds();
 
 	/**
 	 * @param selectedFormAttributeList
 	 */
-	public void setSelectedAttributeIds(String[] selectedFormAttributeList);
+	void setSelectedAttributeIds(String[] selectedFormAttributeList);
 
 	/**
 	 * @return
 	 */
-	public List getSelectedAttributes();
+	List getSelectedAttributes();
 
 	/**
 	 * @param selectedAttributes
 	 */
-	public void setSelectedAttributes(List selectedAttributes);
+	void setSelectedAttributes(List selectedAttributes);
 
 	//Separator
 	/**
 	 * @return
 	 */
-	public String getSeparator();
+	String getSeparator();
 
 	/**
 	 * @param separator
 	 */
-	public void setSeparator(String separator);
+	void setSeparator(String separator);
 
 	//Added by Ashish
 	/**
 	 * @return
 	 */
-	public String getControlOperation();
+	String getControlOperation();
 
 	/**
 	 * @return
 	 */
-	public String getSelectedControlId();
+	String getSelectedControlId();
 
 	/**
 	 * @return
 	 */
-	public String getUserSelectedTool();
+	String getUserSelectedTool();
 
 	/**
 	 * @return
 	 */
-	public String getControlsSequenceNumbers();
+	String getControlsSequenceNumbers();
 }

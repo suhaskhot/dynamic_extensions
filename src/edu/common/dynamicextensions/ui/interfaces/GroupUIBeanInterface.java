@@ -21,71 +21,71 @@ public interface GroupUIBeanInterface
 	 * 
 	 * @return group description
 	 */
-	public String getGroupDescription();
+	String getGroupDescription();
 
 	/**
 	 * 
 	 * @param groupDescription : description for the group
 	 */
-	public void setGroupDescription(String groupDescription);
+	void setGroupDescription(String groupDescription);
 
 	/**
 	 * 
 	 * @return groupName 
 	 */
-	public String getGroupName();
+	String getGroupName();
 
 	/**
 	 * 
 	 * @param groupName : Name of group
 	 */
-	public void setGroupName(String groupName);
+	void setGroupName(String groupName);
 
 	/**
 	 * 
 	 * @return Group operation performed :  Save or show next page
 	 */
-	public String getGroupOperation();
+	String getGroupOperation();
 
 	/**
 	 * 
 	 * @param groupOperation : Group operation performed - Save or show next page
 	 */
-	public void setGroupOperation(String groupOperation);
+	void setGroupOperation(String groupOperation);
 
 	/**
 	 * 
 	 * @return create new group or use existing
 	 */
-	public String getCreateGroupAs();
+	String getCreateGroupAs();
 
 	/**
 	 * 
 	 * @param createGroupAs Create group or use existing
 	 */
-	public void setCreateGroupAs(String createGroupAs);
+	void setCreateGroupAs(String createGroupAs);
 
 	/**
 	 * @return
 	 */
-	public List getGroupList();
+	List getGroupList();
 
 	/**
 	 * 
 	 * @param groupList
 	 */
-	public void setGroupList(List groupList);
+	void setGroupList(List groupList);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public String getGroupNameText();
+	String getGroupNameText();
 
 	/**
 	 * 
 	 * @param groupNameText
 	 */
-	public void setGroupNameText(String groupNameText);
+	void setGroupNameText(String groupNameText);
 
 }

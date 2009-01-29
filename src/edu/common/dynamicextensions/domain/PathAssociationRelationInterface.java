@@ -20,60 +20,60 @@ public interface PathAssociationRelationInterface
 	 * 
 	 * @return
 	 */
-	public PathInterface getPath();
+	PathInterface getPath();
 
 	/**
 	 * 
 	 * @param path
 	 */
-	public void setPath(PathInterface path);
+	void setPath(PathInterface path);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public AssociationInterface getAssociation();
+	AssociationInterface getAssociation();
 
 	/**
 	 * 
 	 * @param association
 	 */
-	public void setAssociation(AssociationInterface association);
+	void setAssociation(AssociationInterface association);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public int getPathSequenceNumber();
+	int getPathSequenceNumber();
 
 	/**
 	 * 
 	 * @param pathSequenceNumber
 	 */
-	public void setPathSequenceNumber(int pathSequenceNumber);
+	void setPathSequenceNumber(int pathSequenceNumber);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public Long getSourceInstanceId();
+	Long getSourceInstanceId();
 
 	/**
 	 * 
 	 * @param sourceInstanceId
 	 */
-	public void setSourceInstanceId(Long sourceInstanceId);
+	void setSourceInstanceId(Long sourceInstanceId);
 
 	/**
 	 * 
 	 * @return
 	 */
-	public Long getTargetInstanceId();
+	Long getTargetInstanceId();
 
 	/**
 	 * 
 	 * @param targetInstanceId
 	 */
-	public void setTargetInstanceId(Long targetInstanceId);
+	void setTargetInstanceId(Long targetInstanceId);
 
 }

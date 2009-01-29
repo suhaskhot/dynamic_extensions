@@ -266,6 +266,6 @@ public interface EntityInterface extends AbstractEntityInterface
 	 * added because of inheritance
 	 * @return
 	 */
-	public Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes();
+	Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes();
 
 }

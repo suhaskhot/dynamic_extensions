@@ -25,7 +25,7 @@ public interface EntityGroupManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroup)
+	EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -95,7 +95,7 @@ public interface EntityGroupManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
+	void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 }

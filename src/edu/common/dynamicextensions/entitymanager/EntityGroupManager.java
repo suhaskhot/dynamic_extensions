@@ -223,7 +223,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 			// Call retrieve method to get the entity group object based on the given value of short name.
 			entityGroups = defBizLogic
 					.retrieve(EntityGroup.class.getName(), "shortName", shortName);
-			if (entityGroups != null && entityGroups.size() > 0)
+			if (entityGroups != null && !entityGroups.isEmpty())
 			{
 				entityGroup = (EntityGroupInterface) entityGroups.iterator().next();
 			}

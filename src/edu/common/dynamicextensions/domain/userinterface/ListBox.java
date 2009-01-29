@@ -169,7 +169,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			nameValueBeanList = ControlsUtility.populateListOfValues(this);
 		}
 
-		if (nameValueBeanList != null && nameValueBeanList.size() > 0)
+		if (nameValueBeanList != null && !nameValueBeanList.isEmpty())
 		{
 			for (NameValueBean nameValueBean : nameValueBeanList)
 			{

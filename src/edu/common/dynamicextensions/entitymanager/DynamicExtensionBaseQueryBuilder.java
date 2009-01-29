@@ -686,7 +686,7 @@ class DynamicExtensionBaseQueryBuilder
 				sourceKey = association.getConstraintProperties()
 						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
 						.getName();
-				if (manyToOneAssocns.size() != 0)
+				if (!manyToOneAssocns.isEmpty())
 				{
 					mnyToOneAssQry.append(COMMA);
 				}
@@ -839,7 +839,7 @@ class DynamicExtensionBaseQueryBuilder
 				sourceKey = association.getConstraintProperties()
 						.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties()
 						.getName();
-				if (manyToOneAssocns.size() != 0)
+				if (!manyToOneAssocns.isEmpty())
 				{
 					mnyToOneAssQry.append(COMMA);
 				}
@@ -879,7 +879,7 @@ class DynamicExtensionBaseQueryBuilder
 			}
 		}
 
-		if (manyToOneAssocns.size() != 0)
+		if (!manyToOneAssocns.isEmpty())
 		{
 			String srcEntName = manyToOneAssocns.get(0).getEntity().getTableProperties().getName();
 			mnyToOneAssQry.append(WHITESPACE + FROM_KEYWORD + WHITESPACE + srcEntName + WHITESPACE);

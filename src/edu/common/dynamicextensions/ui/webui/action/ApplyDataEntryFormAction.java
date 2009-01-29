@@ -437,7 +437,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				Map<BaseAbstractAttributeInterface, Object> oneToOneValueMap = null;
 
-				if (associationValueMapList.size() > 0 && associationValueMapList.get(0) != null)
+				if (!associationValueMapList.isEmpty() && associationValueMapList.get(0) != null)
 				{
 					oneToOneValueMap = associationValueMapList.get(0);
 				}

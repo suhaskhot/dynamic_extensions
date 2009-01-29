@@ -379,7 +379,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Long rootCERecId = null;
 
 		List<Long> results = getResultIDList(query.toString(), IDENTIFIER);
-		if (results.size() > 0)
+		if (!results.isEmpty())
 		{
 			rootCERecId = (Long) results.get(0);
 		}
@@ -617,7 +617,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		Collection<CategoryAttributeInterface> catAttributes = catEntity.getAllCategoryAttributes();
 
-		if (catAttributes != null && catAttributes.size() == 0)
+		if (catAttributes != null && catAttributes.isEmpty())
 		{
 			return false;
 		}
@@ -934,7 +934,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							+ RECORD_ID + " = " + id;
 
 					List<Long> resultIds = getResultIDList(selectQuery, "IDENTIFIER");
-					if (resultIds.size() == 0)
+					if (resultIds.isEmpty())
 					{
 						Long catEntId = entityManagerUtil.getNextIdentifier(catEntTblName);
 
@@ -1324,7 +1324,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				List<Long> identifiers = getResultIDList(selectQuery, "IDENTIFIER");
 
 				Long resultId = null;
-				if (identifiers != null && identifiers.size() > 0)
+				if (identifiers != null && !identifiers.isEmpty())
 				{
 					resultId = identifiers.get(0);
 				}
@@ -1426,7 +1426,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					}
 
 					// Insert data for category attributes.
-					if (catAttributes.size() == 0)
+					if (catAttributes.isEmpty())
 					{
 						isNoCatAttrPrsnt = true;
 						CategoryAttributeInterface dummyCatAttr = DomainObjectFactory.getInstance()
@@ -1596,7 +1596,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			List<Long> identifiers = getResultIDList(selRecIdQuery, RECORD_ID);
 
-			if (identifiers != null && identifiers.size() > 0)
+			if (identifiers != null && !identifiers.isEmpty())
 			{
 				recordId = identifiers.get(0);
 			}
@@ -1657,7 +1657,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 					List<Long> identifiers = getResultIDList(selectQuery, "IDENTIFIER");
 
-					if (identifiers != null && identifiers.size() > 0)
+					if (identifiers != null && !identifiers.isEmpty())
 					{
 						rootCatEntRecId = identifiers.get(0);
 					}
@@ -1904,7 +1904,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Long rootCatEntRecId = null;
 
 		List<Long> results = getResultIDList(query.toString(), RECORD_ID);
-		if (results.size() > 0)
+		if (!results.isEmpty())
 		{
 			rootCatEntRecId = (Long) results.get(0);
 		}

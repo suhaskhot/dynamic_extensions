@@ -400,7 +400,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			control.setHeading(heading);
 		}
-		if (controlNotes.size() != 0)
+		if (!controlNotes.isEmpty())
 		{
 			control.setFormNotes(controlNotes);
 		}

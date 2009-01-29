@@ -121,7 +121,7 @@ public abstract class AbstractMetadataManager
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 
-		if (objects != null && objects.size() > 0)
+		if (objects != null && !objects.isEmpty())
 		{
 			dyExtBsDmnObj = (DynamicExtensionBaseDomainObjectInterface) objects.get(0);
 		}
@@ -177,7 +177,7 @@ public abstract class AbstractMetadataManager
 			// After moving to MYSQL 5.2, the type checking is strict so changing the identifier to Long.
 			List objects = bizLogic.retrieve(objectName, Constants.ID, new Long(identifier));
 
-			if (objects == null || objects.size() == 0)
+			if (objects == null || objects.isEmpty())
 			{
 				Logger.out.debug("Required Obejct not found: Object Name*" + objectName
 						+ "*   identifier  *" + identifier + "*");

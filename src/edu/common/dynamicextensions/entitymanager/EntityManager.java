@@ -392,7 +392,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Collection<AssociationInterface> associations = executeHQL("getAssociationByName",
 				substParams);
 		AssociationInterface association = null;
-		if (associations != null && associations.size() != 0)
+		if (associations != null && !associations.isEmpty())
 		{
 			association = associations.iterator().next();
 		}
@@ -419,7 +419,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				"getAssociationBySourceTargetEntity", substParams);
 
 		AssociationInterface association = null;
-		if (associations != null && associations.size() != 0)
+		if (associations != null && !associations.isEmpty())
 		{
 			association = associations.iterator().next();
 		}
@@ -1100,7 +1100,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				// Now add new associated target records.
 				List<String> insertQueries = queryBuilder.getAssociationInsertDataQuery(
 						((Association) attribute), recordIds, recordId);
-				if (insertQueries != null && insertQueries.size() != 0)
+				if (insertQueries != null && !insertQueries.isEmpty())
 				{
 					assoInsDataQries.addAll(insertQueries);
 				}
@@ -1117,7 +1117,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		try
 		{
 			jdbcDAO.setAutoCommit(false);
-			if (columnNames.size() != 0)
+			if (!columnNames.isEmpty())
 			{
 				StringBuffer query = new StringBuffer("UPDATE " + tableName + " SET ");
 				StringBuffer auditQuery = new StringBuffer("UPDATE " + tableName + " SET ");
@@ -1916,7 +1916,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				tableNames.add(tableName);
 			}
 
-			if (tableNames.size() == 0 && !(assoControl instanceof SelectControl))
+			if (tableNames.isEmpty() && !(assoControl instanceof SelectControl))
 			{
 				selectClause = selectClause + tableName + "." + IDENTIFIER;
 				fromClause = fromClause + tableName;
@@ -2390,7 +2390,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Long contId = null;
 
-		if (containers != null && containers.size() > 0)
+		if (containers != null && !containers.isEmpty())
 		{
 			contId = (Long) containers.iterator().next();
 
@@ -2413,7 +2413,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Long contId = null;
 
-		if (containers != null && containers.size() > 0)
+		if (containers != null && !containers.isEmpty())
 		{
 			contId = (Long) containers.iterator().next();
 
@@ -2434,7 +2434,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("string", entityName));
 
 		Collection entityIds = executeHQL("getEntityIdentifier", substParams);
-		if (entityIds != null && entityIds.size() > 0)
+		if (entityIds != null && !entityIds.isEmpty())
 		{
 			entityId = (Long) entityIds.iterator().next();
 		}
@@ -2750,7 +2750,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("long", entityId));
 
 		Collection containers = executeHQL("getContainerOfEntity", substParams);
-		if (containers != null && containers.size() > 0)
+		if (containers != null && !containers.isEmpty())
 		{
 			container = (ContainerInterface) containers.iterator().next();
 		}
@@ -2912,7 +2912,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("long", containerId));
 
 		Collection containers = executeHQL("getDynamicTableName", substParams);
-		if (containers != null && containers.size() > 0)
+		if (containers != null && !containers.isEmpty())
 		{
 			tableName = (String) containers.iterator().next();
 		}
@@ -2947,7 +2947,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("long", containerId));
 
 		Collection containers = executeHQL("isCategory", substParams);
-		if (containers != null && containers.size() > 0)
+		if (containers != null && !containers.isEmpty())
 		{
 			contIdentifier = (Long) containers.iterator().next();
 		}
@@ -2968,7 +2968,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("long", containerId));
 
 		Collection containers = executeHQL("getCategoryRootContainerId", substParams);
-		if (containers != null && containers.size() > 0)
+		if (containers != null && !containers.isEmpty())
 		{
 			contIdentifier = (Long) containers.iterator().next();
 		}
@@ -2991,7 +2991,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Collection colNames = executeHQL("getColumnNameForAssociation", substParams);
 
-		if (colNames != null && colNames.size() > 0)
+		if (colNames != null && !colNames.isEmpty())
 		{
 			colName = (String) colNames.iterator().next();
 		}
@@ -3114,7 +3114,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("long", abstrAttrId));
 
 		Collection controls = executeHQL("getControlOfAbstractAttribute", substParams);
-		if (controls != null && controls.size() > 0)
+		if (controls != null && !controls.isEmpty())
 		{
 			control = (ControlInterface) controls.iterator().next();
 		}
@@ -3175,7 +3175,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("string", entGroupName));
 
 		Collection entGrpIds = executeHQL("getEntityGroupId", substParams);
-		if (entGrpIds != null && entGrpIds.size() > 0)
+		if (entGrpIds != null && !entGrpIds.isEmpty())
 		{
 			entGroupId = (Long) entGrpIds.iterator().next();
 		}
@@ -3197,7 +3197,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("1", new HQLPlaceHolderObject("string", entityName));
 
 		Collection entityIds = executeHQL("getEntityId", substParams);
-		if (entityIds != null && entityIds.size() > 0)
+		if (entityIds != null && !entityIds.isEmpty())
 		{
 			entityId = (Long) entityIds.iterator().next();
 		}
@@ -3219,7 +3219,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("1", new HQLPlaceHolderObject("string", attrName));
 
 		Collection attrIds = executeHQL("getAttributeId", substParams);
-		if (attrIds != null && attrIds.size() > 0)
+		if (attrIds != null && !attrIds.isEmpty())
 		{
 			attrId = (Long) attrIds.iterator().next();
 		}
@@ -3240,7 +3240,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("long", attrId));
 
 		Collection attrTypeInfos = executeHQL("getAttributeTypeObject", substParams);
-		if (attrTypeInfos != null && attrTypeInfos.size() > 0)
+		if (attrTypeInfos != null && !attrTypeInfos.isEmpty())
 		{
 			attrTypeInfo = (AttributeTypeInformationInterface) attrTypeInfos.iterator().next();
 		}
@@ -3260,7 +3260,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substParams.put("0", new HQLPlaceHolderObject("string", contCaption));
 
 		Collection<Long> containerIds = executeHQL("getContainerIdByName", substParams);
-		if (containerIds != null && containerIds.size() > 0)
+		if (containerIds != null && !containerIds.isEmpty())
 		{
 			containerId = (Long) containerIds.iterator().next();
 		}
@@ -3315,7 +3315,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		substitutionParameterMap.put("0", new HQLPlaceHolderObject("long", categoryEntityId));
 		Collection<Long> containerIdCollection = executeHQL("getEntityIdByCategoryEntityId",
 				substitutionParameterMap);
-		if (containerIdCollection != null && containerIdCollection.size() > 0)
+		if (containerIdCollection != null && !containerIdCollection.isEmpty())
 		{
 			containerId = (Long) containerIdCollection.iterator().next();
 		}
@@ -3384,7 +3384,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		// The following method takes the name of the query and
 		// the actual values for the place holders as the parameters.
 		Collection groupName = executeHQL("getEntityGroupNameByEntityName", substParams);
-		if (groupName != null && groupName.size() > 0)
+		if (groupName != null && !groupName.isEmpty())
 		{
 			entityGroupName = groupName.iterator().next().toString();
 		}

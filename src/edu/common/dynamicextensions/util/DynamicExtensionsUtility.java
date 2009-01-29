@@ -1184,7 +1184,7 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 
-		if (objectList.size() > 0)
+		if (!objectList.isEmpty())
 		{
 			containerInterface = (ContainerInterface) objectList.get(0);
 		}
@@ -1315,7 +1315,7 @@ public class DynamicExtensionsUtility
 			entityGroupCollection = bizlogic.retrieve(EntityGroup.class.getName(), "shortName",
 					name);
 
-			if (entityGroupCollection != null && entityGroupCollection.size() > 0)
+			if (entityGroupCollection != null && !entityGroupCollection.isEmpty())
 			{
 				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
 			}

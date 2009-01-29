@@ -373,13 +373,13 @@ public final class ControlConfigurationsFactory
 		{
 			Map dataTypeImplicitRulesMap = controlsConfiguration.getDataTypeImplicitRules();
 			List<String> dataTypeImplicitRuleList = (List) dataTypeImplicitRulesMap.get(dataType);
-			if (dataTypeImplicitRuleList != null && dataTypeImplicitRuleList.size() > 0)
+			if (dataTypeImplicitRuleList != null && !dataTypeImplicitRuleList.isEmpty())
 			{
 				allImplicitRules.addAll(dataTypeImplicitRuleList);
 			}
 
 			List<String> commonImplicitRuleList = controlsConfiguration.getCommonImplicitRules();
-			if (commonImplicitRuleList != null || commonImplicitRuleList.size() > 0)
+			if (commonImplicitRuleList != null || !commonImplicitRuleList.isEmpty())
 			{
 				allImplicitRules.addAll(commonImplicitRuleList);
 			}

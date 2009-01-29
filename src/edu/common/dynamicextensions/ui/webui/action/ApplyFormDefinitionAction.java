@@ -300,7 +300,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			List<AssociationInterface> traversedAssocioations)
 			throws DynamicExtensionsApplicationException
 	{
-		if (traversedAssocioations.size() != 0)
+		if (!traversedAssocioations.isEmpty())
 		{
 			Collection<AssociationInterface> allAssociations = traversedAssocioations.get(0)
 					.getTargetEntity().getAssociationCollection();
@@ -317,7 +317,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 							EntityManagerExceptionConstantsInterface.DYEXTN_A_020);
 				}
 			}
-			if (traversedAssocioations.size() != 0)
+			if (!traversedAssocioations.isEmpty())
 			{
 				traversedAssocioations.remove(0);
 			}

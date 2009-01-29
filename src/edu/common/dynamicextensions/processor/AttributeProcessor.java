@@ -651,7 +651,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeRuleCollection.addAll(newRules);
 		}
 
-		if (allValidationRules != null && allValidationRules.size() > 0)
+		if (allValidationRules != null && !allValidationRules.isEmpty())
 		{
 			for (String validationRule : allValidationRules)
 			{

@@ -67,7 +67,7 @@ public class IdGeneratorUtil
 			Query query = session.createQuery("from " + IdGenerator.class.getName());
 
 			List list = query.list();
-			if (list.size() == 0)
+			if (list.isEmpty())
 			{
 				nextAvailableId = new Long(1);
 				IdGeneratorInterface idGeneratorObject = DomainObjectFactory.getInstance()

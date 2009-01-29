@@ -306,7 +306,7 @@ public class CategoryGenerationUtil
 
 			entityPaths.put(entityName, assocaitions);
 
-			if (pathsForEntity.size() > 1 && assocaitions.size() == 0)
+			if (pathsForEntity.size() > 1 && assocaitions.isEmpty())
 			{
 				CategoryValidator.checkForNullRefernce(null, "ERROR: PATH DEFINED FOR THE ENTITY "
 						+ entityName + " IS NOT CORRECT");

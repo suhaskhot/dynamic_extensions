@@ -197,7 +197,7 @@ public class XMIImportProcessor
 		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,
 				packageName);
 
-		if (entityGroupColl == null || entityGroupColl.size() == 0)
+		if (entityGroupColl == null || entityGroupColl.isEmpty())
 		{//Add
 			entityGroup = DomainObjectFactory.getInstance().createEntityGroup();
 			setEntityGroupName(entityGroupName);
@@ -253,12 +253,12 @@ public class XMIImportProcessor
 
 		Map<String, List<String>> parentIdVsChildrenIds = new HashMap<String, List<String>>();
 
-		if (umlGeneralisationColl.size() > 0)
+		if (!umlGeneralisationColl.isEmpty())
 		{
 			parentIdVsChildrenIds = getParentVsChildrenMap(umlGeneralisationColl);
 		}
 
-		if (umlGeneralisationColl.size() > 0)
+		if (!umlGeneralisationColl.isEmpty())
 		{
 			processInheritance(parentIdVsChildrenIds);
 			//			markInheritedAttributes(entityGroup);
@@ -303,11 +303,11 @@ public class XMIImportProcessor
 			createContainer(entity);
 			//to retrieve primary key properties of the attribute of entity
 		}
-		if (umlGeneralisationColl.size() > 0)
+		if (!umlGeneralisationColl.isEmpty())
 		{//setting base container in child container.
 			postProcessInheritence(parentIdVsChildrenIds);
 		}
-		if (umlAssociationColl.size() > 0)
+		if (!umlAssociationColl.isEmpty())
 		{//Adding container for containment control
 			postProcessAssociation();
 		}
@@ -726,7 +726,7 @@ public class XMIImportProcessor
 				}
 
 				Collection<Generalization> generalizationColl = umlClass.getGeneralization();
-				if (generalizationColl != null && generalizationColl.size() > 0)
+				if (generalizationColl != null && !generalizationColl.isEmpty())
 				{
 					generalizations.addAll(generalizationColl);
 				}
@@ -1222,7 +1222,7 @@ public class XMIImportProcessor
 	private AttributeInterface getAttributeByName(String attrName,
 			Collection<AttributeInterface> originalAttrColl)
 	{
-		if (originalAttrColl != null && originalAttrColl.size() > 0)
+		if (originalAttrColl != null && !originalAttrColl.isEmpty())
 		{
 			for (AttributeInterface originalAttr : originalAttrColl)
 			{
@@ -1354,7 +1354,7 @@ public class XMIImportProcessor
 		AssociationInterface association = null;
 		Collection<AssociationInterface> existingAssociationColl = srcEntity
 				.getAssociationCollection();
-		if (existingAssociationColl != null && existingAssociationColl.size() > 0)
+		if (existingAssociationColl != null && !existingAssociationColl.isEmpty())
 		{//EDIT Case
 			association = isAssociationPresent(umlAssociation.getName(), existingAssociationColl,
 					srcEntity.getName(), tgtEntity.getName(), direction, sourceRole, targetRole);
@@ -1771,7 +1771,7 @@ public class XMIImportProcessor
 	 */
 	private ContainerInterface getContainer(String entityName)
 	{
-		if (retrievedContainerList != null && retrievedContainerList.size() > 0)
+		if (retrievedContainerList != null && !retrievedContainerList.isEmpty())
 		{
 			for (ContainerInterface container : retrievedContainerList)
 			{
@@ -1790,7 +1790,7 @@ public class XMIImportProcessor
 	 */
 	private EntityInterface getEntity(String entityName)
 	{
-		if (retrievedContainerList != null && retrievedContainerList.size() > 0)
+		if (retrievedContainerList != null && !retrievedContainerList.isEmpty())
 		{
 			for (ContainerInterface container : retrievedContainerList)
 			{
@@ -2575,7 +2575,7 @@ public class XMIImportProcessor
 
 			List parentContainerList = (ArrayList) entityNameVsContainers.get(parent.getName());
 			ContainerInterface parentContainer = null;
-			if (parentContainerList == null || parentContainerList.size() == 0)
+			if (parentContainerList == null || parentContainerList.isEmpty())
 			{
 				parentContainer = getContainer(parent.getName());
 			}
@@ -2589,7 +2589,7 @@ public class XMIImportProcessor
 
 				List childContainerList = (ArrayList) entityNameVsContainers.get(child.getName());
 				ContainerInterface childContainer = null;
-				if (childContainerList == null || childContainerList.size() == 0)
+				if (childContainerList == null || childContainerList.isEmpty())
 				{
 					childContainer = getContainer(child.getName());
 				}
@@ -2633,7 +2633,7 @@ public class XMIImportProcessor
 					//getting container corresponding to renamed or deleted entity which is associated with some association from the retrieved entity group
 					ContainerInterface targetContainerInterface = null;
 					if (targetContainerInterfaceList == null
-							|| targetContainerInterfaceList.size() == 0)
+							|| targetContainerInterfaceList.isEmpty())
 					{
 						targetContainerInterface = getContainer(targetEntityId);
 					}

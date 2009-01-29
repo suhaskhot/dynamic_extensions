@@ -231,7 +231,7 @@ public class XMIUtilities
 	{
 		UmlClass superClass = null;
 		List superClasses = getSuperClasses(klass);
-		if (superClasses.size() > 0)
+		if (!superClasses.isEmpty())
 		{
 			superClass = (UmlClass) superClasses.iterator().next();
 		}

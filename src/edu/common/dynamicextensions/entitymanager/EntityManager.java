@@ -3059,6 +3059,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				// we need to roll back the queries that were fired. So calling the 
 				// following method to do that.
 				//rollbackQueries(stack, entity, e, hibernateDAO);
+				Logger.out.error("The cause of the exception is - " + e.getMessage());
 			}
 		}
 

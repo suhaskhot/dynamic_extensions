@@ -31,6 +31,8 @@ import org.hibernate.engine.SessionImplementor;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 
+import edu.wustl.common.util.logger.Logger;
+
 /**
  * <p>This is wrapper for both BinaryType and BlobType in order to give developer the ability to switch them via config</p>
  * <p>Returned class is <code>byte[]</code>, that's why we should make conversion of BLOB</p>
@@ -322,6 +324,7 @@ public class BinaryBlobType implements CompositeUserType
 			}
 			catch (IOException ex2)
 			{
+				Logger.out.error("The cause of the exception is - " + ex2.getMessage());
 				//do nothing
 			}
 			try
@@ -330,6 +333,7 @@ public class BinaryBlobType implements CompositeUserType
 			}
 			catch (IOException ex2)
 			{
+				Logger.out.error("The cause of the exception is - " + ex2.getMessage());
 				//do nothing
 			}
 		}

@@ -10,6 +10,7 @@ import java.sql.Statement;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Constants;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * Used for cleaning or dropping all the tablee created previously.
@@ -23,7 +24,7 @@ public class DatabaseCleaner
 	private static final String MYSQL_DRIVER = "org.gjt.mm.mysql.Driver";
 	private static final String DB2_DRIVER = "com.ibm.db2.jcc.DB2Driver";
 	private static final String MSSQLSERVER_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	
+
 	/**
 	 * 
 	 * @param args args[0]=Databae.type,args[1]=connection url
@@ -93,7 +94,7 @@ public class DatabaseCleaner
 		}
 		catch (SQLException e)
 		{
-
+			Logger.out.error("The cause of the exception is - " + e.getMessage());
 		}
 	}
 
@@ -268,6 +269,7 @@ public class DatabaseCleaner
 		}
 
 	}
+
 	/**
 	 * Drop database in mssqlserver & recreates it
 	 * @param args

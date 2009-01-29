@@ -252,6 +252,6 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public void setOptions(
-			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObjectInterface,
+			DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
 			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException;
 }

@@ -928,7 +928,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public void setOptions(
-			DynamicExtensionBaseDomainObjectInterface dynamicExtensionBaseDomainObjectInterface,
+			DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
 			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException
 	{
 		try
@@ -942,7 +942,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				String methodName = CategoryConstants.SET + optionString;
 
 				Class[] types = getParameterType(methodName,
-						dynamicExtensionBaseDomainObjectInterface);
+						dyextnBaseDomainObject);
 				if (types.length < 1)
 				{
 					throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -957,10 +957,10 @@ public class CategoryHelper implements CategoryHelperInterface
 
 				Method method;
 
-				method = dynamicExtensionBaseDomainObjectInterface.getClass().getMethod(methodName,
+				method = dyextnBaseDomainObject.getClass().getMethod(methodName,
 						types);
 
-				method.invoke(dynamicExtensionBaseDomainObjectInterface, values.toArray());
+				method.invoke(dyextnBaseDomainObject, values.toArray());
 			}
 		}
 		catch (SecurityException e)

@@ -709,13 +709,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * This method populates and returns the Collection of parameters of the Rule.
 	 * @param ruleConfigurationObject the Rule configuration object
-	 * @param abstractAttributeUIBeanInterface the UI Bean for attribute information
+	 * @param abstractAttributeUIBean the UI Bean for attribute information
 	 * @return the Collection of parameters of the Rule.
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private Collection<RuleParameterInterface> getRuleParameterCollection(
 			RuleConfigurationObject ruleConfigurationObject,
-			AbstractAttributeUIBeanInterface abstractAttributeUIBeanInterface)
+			AbstractAttributeUIBeanInterface abstractAttributeUIBean)
 			throws DynamicExtensionsSystemException
 	{
 		Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
@@ -741,7 +741,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					Class[] types = new Class[]{};
 
 					Method method = clas.getMethod(methodName, types);
-					Object result = method.invoke(abstractAttributeUIBeanInterface, new Object[0]);
+					Object result = method.invoke(abstractAttributeUIBean, new Object[0]);
 					RuleParameterInterface ruleParameterInterface = domainObjectFactory
 							.createRuleParameter();
 					ruleParameterInterface.setName(paramName);
@@ -880,7 +880,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private PermissibleValueInterface getPermissibleValue(
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
 			String permissibleValue, String permissibleValueDesc,
-			Collection permissibleValueSematicPropColln)
+			Collection pvSemanticPropColln)
 			throws DynamicExtensionsApplicationException
 	{
 		PermissibleValueInterface permissibleValueIntf = null;
@@ -915,7 +915,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					{
 						permissibleValueIntf = getPermissibleValueInterfaceForNumber(
 								attributeUIBeanInformationIntf, permissibleValue,
-								permissibleValueDesc, permissibleValueSematicPropColln);
+								permissibleValueDesc, pvSemanticPropColln);
 					}
 					//populate common properties
 					if (permissibleValueIntf instanceof PermissibleValue)
@@ -923,7 +923,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						((PermissibleValue) permissibleValueIntf)
 								.setDescription(permissibleValueDesc);
 						((PermissibleValue) permissibleValueIntf)
-								.setSemanticPropertyCollection(permissibleValueSematicPropColln);
+								.setSemanticPropertyCollection(pvSemanticPropColln);
 					}
 				}
 				catch (Exception e)
@@ -946,7 +946,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
 			String permissibleValue, String permissibleValueDesc,
-			Collection permissibleValueSematicPropColln)
+			Collection pvSemanticPropColln)
 			throws DynamicExtensionsApplicationException
 	{
 
@@ -1608,69 +1608,69 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	public void populateAttributeInformationInUIBean(AbstractAttributeInterface attributeInterface,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+		AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
 				.getAttributeTypeInformation(attributeInterface);
-		if (attributeTypeInformationInterface != null)
+		if (attributeTypeInformation != null)
 		{
-			if (attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+			if (attributeTypeInformation instanceof StringAttributeTypeInformation)
 			{
 				populateStringAttributeUIBeanInterface(
-						(StringAttributeTypeInformation) attributeTypeInformationInterface,
+						(StringAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof DateAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof DateAttributeTypeInformation)
 			{
 				populateDateAttributeUIBeanInterface(
-						(DateAttributeTypeInformation) attributeTypeInformationInterface,
+						(DateAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof BooleanAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof BooleanAttributeTypeInformation)
 			{
 				populateBooleanAttributeUIBeanInterface(
-						(BooleanAttributeTypeInformation) attributeTypeInformationInterface,
+						(BooleanAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof ByteArrayAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof ByteArrayAttributeTypeInformation)
 			{
 				populateByteArrayAttributeUIBeanInterface(
-						(ByteArrayAttributeTypeInformation) attributeTypeInformationInterface,
+						(ByteArrayAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof FileAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
 			{
 				populateFileAttributeUIBeanInterface(
-						(FileAttributeTypeInformation) attributeTypeInformationInterface,
+						(FileAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof IntegerAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof IntegerAttributeTypeInformation)
 			{
 				populateIntegerAttributeUIBeanInterface(
-						(IntegerAttributeTypeInformation) attributeTypeInformationInterface,
+						(IntegerAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof ShortAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
 			{
 				populateShortAttributeUIBeanInterface(
-						(ShortAttributeTypeInformation) attributeTypeInformationInterface,
+						(ShortAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 			{
 				populateLongAttributeUIBeanInterface(
-						(LongAttributeTypeInformation) attributeTypeInformationInterface,
+						(LongAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformationInterface instanceof FloatAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof FloatAttributeTypeInformation)
 			{
 				populateFloatAttributeUIBeanInterface(
-						(FloatAttributeTypeInformation) attributeTypeInformationInterface,
+						(FloatAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 
 			}
-			else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 			{
 				populateDoubleAttributeUIBeanInterface(
-						(DoubleAttributeTypeInformation) attributeTypeInformationInterface,
+						(DoubleAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 
 			}
@@ -2008,16 +2008,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else
 			{
-				AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+				AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
 						.getAttributeTypeInformation(attributeInterface);
-				if (attributeTypeInformationInterface != null)
+				if (attributeTypeInformation != null)
 				{
-					DataElementInterface dataEltInterface = attributeTypeInformationInterface
+					DataElementInterface dataEltInterface = attributeTypeInformation
 							.getDataElement();
 					if ((dataEltInterface != null)
 							&& (dataEltInterface instanceof UserDefinedDEInterface))
 					{
-						populateUserDefinedOptionValues(attributeTypeInformationInterface,
+						populateUserDefinedOptionValues(attributeTypeInformation,
 								attributeUIBeanInformationIntf);
 					}
 				}
@@ -2059,17 +2059,17 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					.filterSystemAttributes(attributeCollection);
 			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
 					filteredAttributeCollection);
-			AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+			AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
 					.getAttributeTypeInformation(attributesList.get(0));
 
-			if (attributeTypeInformationInterface != null)
+			if (attributeTypeInformation != null)
 			{
-				DataElementInterface dataEltInterface = attributeTypeInformationInterface
+				DataElementInterface dataEltInterface = attributeTypeInformation
 						.getDataElement();
 				if ((dataEltInterface != null)
 						&& (dataEltInterface instanceof UserDefinedDEInterface))
 				{
-					populateUserDefinedOptionValues(attributeTypeInformationInterface,
+					populateUserDefinedOptionValues(attributeTypeInformation,
 							attributeUIBeanInformationIntf);
 				}
 			}
@@ -2131,16 +2131,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @param attributeTypeInformationInterface
+	 * @param attributeTypeInformation
 	 * @param attributeUIBeanInformationIntf
 	 */
 	private void populateUserDefinedOptionValues(
-			AttributeTypeInformationInterface attributeTypeInformationInterface,
+			AttributeTypeInformationInterface attributeTypeInformation,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
-		DataElementInterface dataEltInterface = attributeTypeInformationInterface.getDataElement();
-		if ((attributeTypeInformationInterface != null) && (attributeUIBeanInformationIntf != null))
+		DataElementInterface dataEltInterface = attributeTypeInformation.getDataElement();
+		if ((attributeTypeInformation != null) && (attributeUIBeanInformationIntf != null))
 		{
 			attributeUIBeanInformationIntf
 					.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
@@ -2279,19 +2279,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * Checks the dataType for the edited and new attributetypeinfo.
-	 * @param originalAttributeTypeInformation
+	 * @param originalAttributeType
 	 * @param newAttributeTypeInformation
 	 * @return
 	 */
 	private boolean isDataTypeChanged(
-			AttributeTypeInformationInterface originalAttributeTypeInformation,
+			AttributeTypeInformationInterface originalAttributeType,
 			AttributeTypeInformationInterface newAttributeTypeInformation)
 	{
 		boolean isChanged = false;
-		if (originalAttributeTypeInformation.getDataType() != null
+		if (originalAttributeType.getDataType() != null
 				&& newAttributeTypeInformation.getDataType() != null)
 		{
-			if (!originalAttributeTypeInformation.getDataType().equals(
+			if (!originalAttributeType.getDataType().equals(
 					newAttributeTypeInformation.getDataType()))
 			{
 				isChanged = true;

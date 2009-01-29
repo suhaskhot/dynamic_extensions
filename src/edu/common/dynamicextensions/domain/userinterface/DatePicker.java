@@ -48,9 +48,9 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeMetadataInterface) this
+		AttributeTypeInformationInterface attributeTypeInformation = ((AttributeMetadataInterface) this
 				.getBaseAbstractAttribute()).getAttributeTypeInformation();
-		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformationInterface);
+		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformation);
 
 		String defaultValue = (String) this.value;
 		if (value == null)

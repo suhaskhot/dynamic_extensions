@@ -352,21 +352,21 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			if (controlInterface instanceof ContainmentAssociationControlInterface)
 			{
-				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface
+				ContainmentAssociationControlInterface containmentAssociationControl = (ContainmentAssociationControlInterface) controlInterface;
+				ContainerInterface tempContainer = containmentAssociationControl
 						.getContainer();
 				if (childContainerList.contains(tempContainer))
 				{
 					ContainerInterface actualContainer = (ContainerInterface) childContainerList
-							.get(childContainerList.indexOf(containmentAssociationControlInterface
+							.get(childContainerList.indexOf(containmentAssociationControl
 									.getContainer()));
 					tempContainer.setAbstractEntity((EntityInterface) actualContainer
 							.getAbstractEntity());
 					//actualContainer.getEntity().setContainer((Container) tempContainer);
-					((AssociationInterface) containmentAssociationControlInterface
+					((AssociationInterface) containmentAssociationControl
 							.getBaseAbstractAttribute())
 							.setTargetEntity((EntityInterface) actualContainer.getAbstractEntity());
-					containmentAssociationControlInterface.setContainer(actualContainer);
+					containmentAssociationControl.setContainer(actualContainer);
 				}
 				else
 				{
@@ -384,8 +384,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			if (controlInterface instanceof ContainmentAssociationControlInterface)
 			{
-				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface
+				ContainmentAssociationControlInterface containmentAssociationControl = (ContainmentAssociationControlInterface) controlInterface;
+				ContainerInterface tempContainer = containmentAssociationControl
 						.getContainer();
 				childContainerList.add(tempContainer);
 			}
@@ -401,8 +401,8 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			if (controlInterface instanceof ContainmentAssociationControlInterface)
 			{
-				ContainmentAssociationControlInterface containmentAssociationControlInterface = (ContainmentAssociationControlInterface) controlInterface;
-				ContainerInterface tempContainer = containmentAssociationControlInterface
+				ContainmentAssociationControlInterface containmentAssociationControl = (ContainmentAssociationControlInterface) controlInterface;
+				ContainerInterface tempContainer = containmentAssociationControl
 						.getContainer();
 
 				if (tempContainer.getId().equals(containerId))

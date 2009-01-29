@@ -378,8 +378,8 @@ public class UserInterfaceiUtility
 				Long containerId = abstractContainmentControl.getContainer().getId();
 				if (containerId != null)
 				{
-					String containmentAssociationControlId = containerId.toString();
-					if (containmentAssociationControlId.equals(childContainerId))
+					String associationControlId = containerId.toString();
+					if (associationControlId.equals(childContainerId))
 					{
 						return abstractContainmentControl;
 					}

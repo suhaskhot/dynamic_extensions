@@ -371,17 +371,17 @@ public class CategoryGenerationUtil
 	 */
 	public static String getMainCategoryEntityName(String[] categoryPaths)
 	{
-		int minimumNumberOfCategoryEntityNames = categoryPaths[0].split("->").length;
+		int minNumOfCategoryEntityNames = categoryPaths[0].split("->").length;
 		for (String string : categoryPaths)
 		{
-			if (minimumNumberOfCategoryEntityNames > string.split("->").length)
+			if (minNumOfCategoryEntityNames > string.split("->").length)
 			{
-				minimumNumberOfCategoryEntityNames = string.split("->").length;
+				minNumOfCategoryEntityNames = string.split("->").length;
 			}
 		}
 		String categoryEntityName = categoryPaths[0].split("->")[0];
 
-		a : for (int i = 0; i < minimumNumberOfCategoryEntityNames; i++)
+		a : for (int i = 0; i < minNumOfCategoryEntityNames; i++)
 		{
 			String temp = categoryPaths[0].split("->")[i];
 			for (String string : categoryPaths)

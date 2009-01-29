@@ -41,7 +41,7 @@ public class AssociationTreeObject
 	/**
 	 * 
 	 */
-	Collection associationTreeObjectCollection;
+	Collection associationTreeObjCollection;
 
 	/**
 	 * 
@@ -49,16 +49,16 @@ public class AssociationTreeObject
 	 */
 	public Collection getAssociationTreeObjectCollection()
 	{
-		return associationTreeObjectCollection;
+		return associationTreeObjCollection;
 	}
 
 	/**
 	 * 
-	 * @param associationTreeObjectCollection
+	 * @param associationTreeObjCollection
 	 */
-	public void setAssociationTreeObjectCollection(Collection associationTreeObjectCollection)
+	public void setAssociationTreeObjectCollection(Collection associationTreeObjCollection)
 	{
-		this.associationTreeObjectCollection = associationTreeObjectCollection;
+		this.associationTreeObjCollection = associationTreeObjCollection;
 	}
 
 	/**
@@ -67,11 +67,11 @@ public class AssociationTreeObject
 	 */
 	public void addAssociationTreeObject(AssociationTreeObject associationTreeObject)
 	{
-		if (this.associationTreeObjectCollection == null)
+		if (this.associationTreeObjCollection == null)
 		{
-			associationTreeObjectCollection = new HashSet();
+			associationTreeObjCollection = new HashSet();
 		}
-		associationTreeObjectCollection.add(associationTreeObject);
+		associationTreeObjCollection.add(associationTreeObject);
 	}
 
 	/**

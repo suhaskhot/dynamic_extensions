@@ -53,7 +53,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String CATEGORY_ROOT_ID = "CATEGORY_ROOT_ID";
 	String STATUS = "STATUS";
 	String PRIMARY_KEY = "primary key";
-	String PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE = "primary key (IDENTIFIER)";
+	String PRIMARY_KEY_CONSTRAINT = "primary key (IDENTIFIER)";
 	String ALTER_COLUMN_KEYWORD = "ALTER " + COLUMN_KEYWORD;
 	String REFERENCES_KEYWORD = "REFERENCES";
 	String FOREIGN_KEY_KEYWORD = " foreign key ";

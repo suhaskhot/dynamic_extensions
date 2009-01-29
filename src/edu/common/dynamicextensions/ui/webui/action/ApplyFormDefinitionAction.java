@@ -102,7 +102,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			target = findForwardTarget(operation);
 			String callbackURL = null;
-			if (target.equals(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE))
+			if (target.equals(Constants.SHOW_DYEXTN_HOMEPAGE))
 			{
 				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
 				if (callbackURL != null && !callbackURL.equals(""))
@@ -164,7 +164,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 			else if (operation.equals(Constants.SAVE_FORM))
 			{
-				return Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE;
+				return Constants.SHOW_DYEXTN_HOMEPAGE;
 			}
 		}
 		return null;

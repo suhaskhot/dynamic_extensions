@@ -94,9 +94,9 @@ public class Attribute extends AbstractAttribute
 		AttributeTypeInformationInterface attributeTypeInformationInterface = null;
 		if (attributeTypeInformationCollection != null)
 		{
-			Iterator attributeTypeInformationIterator = attributeTypeInformationCollection
+			Iterator attributeTypeInfoIterator = attributeTypeInformationCollection
 					.iterator();
-			attributeTypeInformationInterface = (AttributeTypeInformationInterface) attributeTypeInformationIterator
+			attributeTypeInformationInterface = (AttributeTypeInformationInterface) attributeTypeInfoIterator
 					.next();
 		}
 		return attributeTypeInformationInterface;
@@ -324,12 +324,12 @@ public class Attribute extends AbstractAttribute
 	public int getMaxSize()
 	{
 		int maxSize = -1;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = this
+		AttributeTypeInformationInterface attributeTypeInformation = this
 				.getAttributeTypeInformation();
-		if (attributeTypeInformationInterface != null
-				&& attributeTypeInformationInterface instanceof StringAttributeTypeInformation)
+		if (attributeTypeInformation != null
+				&& attributeTypeInformation instanceof StringAttributeTypeInformation)
 		{
-			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformationInterface;
+			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
 			if (stringAttributeTypeInformation != null
 					&& stringAttributeTypeInformation.getSize() != null)
 			{
@@ -345,18 +345,18 @@ public class Attribute extends AbstractAttribute
 	public String getMeasurementUnit()
 	{
 		String measurementUnit = null;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = DynamicExtensionsUtility
+		AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
 				.getAttributeTypeInformation(this);
-		if (attributeTypeInformationInterface != null)
+		if (attributeTypeInformation != null)
 		{
-			if (attributeTypeInformationInterface instanceof LongAttributeTypeInformation)
+			if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 			{
-				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) attributeTypeInformationInterface;
+				LongAttributeTypeInformation longAttribute = (LongAttributeTypeInformation) attributeTypeInformation;
 				measurementUnit = longAttribute.getMeasurementUnits();
 			}
-			else if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+			else if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 			{
-				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) attributeTypeInformationInterface;
+				DoubleAttributeTypeInformation doubleAttribute = (DoubleAttributeTypeInformation) attributeTypeInformation;
 				measurementUnit = doubleAttribute.getMeasurementUnits();
 			}
 		}
@@ -369,11 +369,11 @@ public class Attribute extends AbstractAttribute
 	public int getDecimalPlaces()
 	{
 		int decimalPlaces = -1;
-		AttributeTypeInformationInterface attributeTypeInformationInterface = this
+		AttributeTypeInformationInterface attributeTypeInformation = this
 				.getAttributeTypeInformation();
-		if (attributeTypeInformationInterface instanceof DoubleAttributeTypeInformation)
+		if (attributeTypeInformation instanceof DoubleAttributeTypeInformation)
 		{
-			decimalPlaces = ((DoubleAttributeTypeInformation) attributeTypeInformationInterface)
+			decimalPlaces = ((DoubleAttributeTypeInformation) attributeTypeInformation)
 					.getDecimalPlaces();
 		}
 		return decimalPlaces;

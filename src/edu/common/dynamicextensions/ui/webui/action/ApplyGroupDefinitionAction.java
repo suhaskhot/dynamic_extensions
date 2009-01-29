@@ -114,7 +114,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				if (!isCallbackURL)
 				{
-					actionForward = mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
+					actionForward = mapping.findForward(Constants.SHOW_DYEXTN_HOMEPAGE);
 				}
 			}
 			else

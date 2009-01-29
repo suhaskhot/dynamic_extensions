@@ -1429,7 +1429,7 @@ class DynamicExtensionBaseQueryBuilder
 					COMMA);
 			query = query.append("record_Id" + WHITESPACE + getDataTypeForIdentifier() + WHITESPACE
 					+ "NOT NULL" + COMMA);
-			query = query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + ")"); //identifier set as primary key
+			query = query.append(PRIMARY_KEY_CONSTRAINT + ")"); //identifier set as primary key
 			queries.add(query.toString());
 
 			String reverseQuery = getReverseQueryForAbstractEntityTable(catEntity
@@ -1944,7 +1944,7 @@ class DynamicExtensionBaseQueryBuilder
 				query.append(cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName() + WHITESPACE
 						+ getDatabaseTypeAndSize(cnstrKeyProp.getSrcPrimaryKeyAttribute()) + COMMA);
 			}
-			query.append(PRIMARY_KEY_CONSTRAINT_FOR_ENTITY_DATA_TABLE + CLOSING_BRACKET);
+			query.append(PRIMARY_KEY_CONSTRAINT + CLOSING_BRACKET);
 			String rollbackQuery = DROP_KEYWORD + WHITESPACE + TABLE_KEYWORD + WHITESPACE
 					+ tableName;
 

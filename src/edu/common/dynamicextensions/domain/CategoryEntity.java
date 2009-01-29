@@ -371,15 +371,15 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public Collection<CategoryAttributeInterface> getAllCategoryAttributes()
 	{
-		Collection<CategoryAttributeInterface> allCategoryAttributesCollection = new HashSet<CategoryAttributeInterface>();
-		allCategoryAttributesCollection.addAll(getCategoryAttributeCollection());
+		Collection<CategoryAttributeInterface> allCategoryAttributesColl = new HashSet<CategoryAttributeInterface>();
+		allCategoryAttributesColl.addAll(getCategoryAttributeCollection());
 		CategoryEntityInterface parent = this.parentCategoryEntity;
 		while (parent != null)
 		{
-			allCategoryAttributesCollection.addAll(parent.getCategoryAttributeCollection());
+			allCategoryAttributesColl.addAll(parent.getCategoryAttributeCollection());
 			parent = parent.getParentCategoryEntity();
 		}
-		return allCategoryAttributesCollection;
+		return allCategoryAttributesColl;
 	}
 
 	/* (non-Javadoc)

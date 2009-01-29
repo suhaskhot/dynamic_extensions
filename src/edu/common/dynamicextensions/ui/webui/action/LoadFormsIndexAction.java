@@ -55,7 +55,7 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 		FormsIndexForm loadFormIndexForm = (FormsIndexForm) form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();
 		loadFormsIndexProcessor.populateFormsIndex(loadFormIndexForm);
-		return mapping.findForward(Constants.SHOW_DYNAMIC_EXTENSIONS_HOMEPAGE);
+		return mapping.findForward(Constants.SHOW_DYEXTN_HOMEPAGE);
 	}
 
 }

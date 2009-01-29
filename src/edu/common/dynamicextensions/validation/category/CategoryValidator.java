@@ -53,7 +53,7 @@ public class CategoryValidator
 	{
 		this.categoryFileParser = categoryFileParser;
 		ApplicationProperties
-				.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
+				.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
 	}
 
 	/**

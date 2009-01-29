@@ -25,7 +25,7 @@ public class DynamicExtensionPostGreSQLQueryBuilder extends DynamicExtensionBase
 	 * @throws DynamicExtensionsSystemException
 	 */
 	protected List getAttributeDataTypeChangedQuery(Attribute attribute, Attribute savedAttribute,
-			List modifyAttributeRollbackQueryList) throws DynamicExtensionsSystemException
+			List modifyAttrRollbackQueryList) throws DynamicExtensionsSystemException
 	{
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String columnName = attribute.getColumnProperties().getName();
@@ -66,8 +66,8 @@ public class DynamicExtensionPostGreSQLQueryBuilder extends DynamicExtensionBase
 		modifyAttributeQueryList.add(modifyAttributeQuery);
 		modifyAttributeQueryList.add(nullPartQuery);
 
-		modifyAttributeRollbackQueryList.add(modifyAttributeRollbackQuery);
-		modifyAttributeRollbackQueryList.add(nullPartRollbackQuery);
+		modifyAttrRollbackQueryList.add(modifyAttributeRollbackQuery);
+		modifyAttrRollbackQueryList.add(nullPartRollbackQuery);
 
 		return modifyAttributeQueryList;
 	}

@@ -1259,13 +1259,13 @@ public class XMIExporter implements XMIExportInterface
 				taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_SEPARATOR,
 						selectControl.getSeparator()));
 			}
-			Collection<AssociationDisplayAttributeInterface> associationDisplayAttributeColl = selectControl
+			Collection<AssociationDisplayAttributeInterface> associationDisplayAttrColl = selectControl
 					.getAssociationDisplayAttributeCollection();
-			if (associationDisplayAttributeColl != null
-					&& !associationDisplayAttributeColl.isEmpty())
+			if (associationDisplayAttrColl != null
+					&& !associationDisplayAttrColl.isEmpty())
 			{// Attributes to be displayed in drop down
 				String attributeNames = "";
-				for (AssociationDisplayAttributeInterface associationDisplayAttribute : associationDisplayAttributeColl)
+				for (AssociationDisplayAttributeInterface associationDisplayAttribute : associationDisplayAttrColl)
 				{
 					attributeNames = attributeNames + XMIConstants.COMMA
 							+ associationDisplayAttribute.getAttribute().getName();
@@ -1846,7 +1846,7 @@ public class XMIExporter implements XMIExportInterface
 		Collection<AssociationInterface> associationCollection = new ArrayList<AssociationInterface>();
 		associationCollection.addAll(entity.getAssociationCollection());
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-		TaggedValueInterface tagValueForCollectionTypeAttribute = domainObjectFactory
+		TaggedValueInterface tagValueForCollectionTypeAttr = domainObjectFactory
 				.createTaggedValue();
 		//		tagValueForCollectionTypeAttribute.setKey("CollectionTypeAttribute");
 		//		tagValueForCollectionTypeAttribute.setValue("true");
@@ -1875,11 +1875,11 @@ public class XMIExporter implements XMIExportInterface
 					if (listBox.getIsMultiSelect() != null && listBox.getNoOfRows() != null
 							&& listBox.getIsMultiSelect().booleanValue() != false)
 					{
-						tagValueForCollectionTypeAttribute
+						tagValueForCollectionTypeAttr
 								.setKey(XMIConstants.TAGGED_VALUE_MULTISELECT);
-						tagValueForCollectionTypeAttribute.setValue(listBox.getNoOfRows()
+						tagValueForCollectionTypeAttr.setValue(listBox.getNoOfRows()
 								.toString());
-						collectionTypeAttribute.addTaggedValue(tagValueForCollectionTypeAttribute);
+						collectionTypeAttribute.addTaggedValue(tagValueForCollectionTypeAttr);
 					}
 				}
 			}

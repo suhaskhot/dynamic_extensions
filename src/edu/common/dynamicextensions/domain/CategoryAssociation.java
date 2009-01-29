@@ -87,9 +87,9 @@ public class CategoryAssociation extends BaseAbstractAttribute
 		CategoryEntity targetCategoryEntity = null;
 		if (targetCategoryEntityCollection != null && !targetCategoryEntityCollection.isEmpty())
 		{
-			Iterator<CategoryEntity> targetCategoryEntityCollectionIterator = targetCategoryEntityCollection
+			Iterator<CategoryEntity> tgtCategoryEntityCollIterator = targetCategoryEntityCollection
 					.iterator();
-			targetCategoryEntity = targetCategoryEntityCollectionIterator.next();
+			targetCategoryEntity = tgtCategoryEntityCollIterator.next();
 		}
 		return targetCategoryEntity;
 	}

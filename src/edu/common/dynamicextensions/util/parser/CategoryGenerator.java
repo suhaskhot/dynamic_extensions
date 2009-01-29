@@ -86,8 +86,7 @@ public class CategoryGenerator
 	{
 		CategoryHelperInterface categoryHelper = new CategoryHelper();
 		List<CategoryInterface> categoryList = new ArrayList<CategoryInterface>();
-		ApplicationProperties
-				.initBundle(CategoryCSVConstants.DYNAMIC_EXTENSIONS_ERROR_MESSAGES_FILE);
+		ApplicationProperties.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
 
 		try
 		{
@@ -1014,6 +1013,5 @@ public class CategoryGenerator
 			mainFormList.add(containerInterface.getAbstractEntity().getName());
 		}
 	}
-	
 
 }

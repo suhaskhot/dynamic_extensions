@@ -87,14 +87,14 @@ public class DataTypeFactory
 			Element digitsAfterDecimal = null;
 
 			Element primitiveAttributesElement = document.getRootElement();
-			Iterator primitiveAttributeElementIterator = primitiveAttributesElement
+			Iterator primitiveAttrElementIterator = primitiveAttributesElement
 					.elementIterator("Primitive-Attribute");
 
 			Element primitiveAttributeElement = null;
 
-			while (primitiveAttributeElementIterator.hasNext())
+			while (primitiveAttrElementIterator.hasNext())
 			{
-				primitiveAttributeElement = (Element) primitiveAttributeElementIterator.next();
+				primitiveAttributeElement = (Element) primitiveAttrElementIterator.next();
 
 				name = primitiveAttributeElement.element("name");
 				databaseDataType = primitiveAttributeElement.element("database-datatype");

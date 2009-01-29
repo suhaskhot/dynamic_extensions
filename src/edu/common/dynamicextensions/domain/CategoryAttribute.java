@@ -279,7 +279,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	public String getDefaultValue()
 	{
 		String defaultValue = null;
-		
+
 		if (defaultPermissibleValuesCollection != null
 				&& !defaultPermissibleValuesCollection.isEmpty())
 		{
@@ -293,9 +293,26 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		}
 		else
 		{
+			defaultValue = getDefaultValueForAbstractAttribute();
+
+		}
+
+		return defaultValue;
+	}
+
+	/**
+	 * It will check weather categoryAttribute's abstract attribute is attribute or association.
+	 * If it is association will return null else will return the default value of the original attribute  
+	 * @return
+	 */
+	private String getDefaultValueForAbstractAttribute()
+	{
+		String defaultValue = null;
+		AbstractAttributeInterface attribute = this.abstractAttribute;
+		if (attribute instanceof Attribute)
+		{
 			defaultValue = ((AttributeMetadataInterface) this.abstractAttribute).getDefaultValue();
 		}
-		
 		return defaultValue;
 	}
 

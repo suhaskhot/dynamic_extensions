@@ -21,7 +21,6 @@ public class RequiredValidator implements ValidatorRuleInterface
 	public boolean validate(AttributeMetadataInterface attribute, Object valueObject,
 			Map parameterMap, String controlCaption) throws DynamicExtensionsValidationException
 	{
-		String attributeName = attribute.getName();
 		if (valueObject != null)
 		{
 			if (valueObject instanceof List)

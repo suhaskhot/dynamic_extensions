@@ -2297,7 +2297,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	public void addAssociationColumn(AssociationInterface association)
 			throws DynamicExtensionsSystemException
 	{
-		String query;
 		List<String> revQueries = new ArrayList<String>();
 		Stack<String> rlbkQryStack = new Stack<String>();
 

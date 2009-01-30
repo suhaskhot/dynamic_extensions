@@ -1635,8 +1635,6 @@ class DynamicExtensionBaseQueryBuilder
 		String tableName = entity.getTableProperties().getName();
 		String frnCnstrName = entity.getConstraintProperties().getConstraintName() + UNDERSCORE
 				+ parentEntity.getConstraintProperties().getConstraintName();
-		Collection<ConstraintKeyPropertiesInterface> frnCnstrKeyProps = entity
-				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
 
 		frnKeyCnstrQry.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE)
 				.append(DROP_KEYWORD).append(WHITESPACE).append(CONSTRAINT_KEYWORD).append(

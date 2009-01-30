@@ -31,7 +31,6 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		boolean isValid = false;
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
-		String attributeName = attribute.getName();
 
 		//If control of type TextField is changed to the 
 		//ListBox while creating category. These validations should be 

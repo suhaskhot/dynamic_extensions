@@ -550,28 +550,6 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
-	 * @param name
-	 * @param entityGroup
-	 * @return
-	 */
-	private AssociationInterface getAssociationByName(String name, EntityGroupInterface entityGroup)
-	{
-		AssociationInterface association = null;
-		for (EntityInterface entity : entityGroup.getEntityCollection())
-		{
-			for (AssociationInterface associationInterface : entity.getAllAssociations())
-			{
-				if (name.equals(associationInterface.getName()))
-				{
-					association = associationInterface;
-				}
-			}
-		}
-
-		return association;
-	}
-
-	/**
 	 * @param path
 	 * @param instance
 	 * @throws DynamicExtensionsSystemException

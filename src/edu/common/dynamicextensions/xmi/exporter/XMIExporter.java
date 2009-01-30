@@ -809,31 +809,6 @@ public class XMIExporter implements XMIExportInterface
 	}
 
 	/**
-	 * @param entity
-	 * @return
-	 */
-	private AttributeInterface getPrimaryKeyAttribute(EntityInterface entity)
-	{
-		if (entity != null)
-		{
-			Collection<AttributeInterface> attributes = entity.getEntityAttributes();
-			if (attributes != null)
-			{
-				Iterator attributesIter = attributes.iterator();
-				while (attributesIter.hasNext())
-				{
-					AttributeInterface attribute = (AttributeInterface) attributesIter.next();
-					if (attribute != null && attribute.getIsPrimaryKey())
-					{
-						return attribute;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Generates qualified name for the corelation table attributes
 	 * Column name generated as <EntityName>_<EntityAttribute>
 	 * @param entity

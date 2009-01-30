@@ -178,21 +178,6 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 		return objEntityGroup;
 	}
 
-	private EntityGroupInterface getEntityGroup(ContainerInterface containerInterface,
-			Long entityGroupId)
-	{
-		//		Collection<EntityGroupInterface> entityGroupCollection = getAllEntityGroups(containerInterface);
-		//		
-		//		for(EntityGroupInterface entityGroupInterface : entityGroupCollection)
-		//		{
-		//			if (entityGroupInterface.getId().equals(entityGroupId))
-		//			{
-		//				return entityGroupInterface;
-		//			}
-		//		}
-		return null;
-	}
-
 	/**
 	 * @param groupForm
 	 * @throws DynamicExtensionsApplicationException 

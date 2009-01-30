@@ -67,6 +67,7 @@ public class RecordListForm extends AbstractActionForm
 	 */
 	protected void reset()
 	{
+		// TODO This method will be provided if required.
 	}
 
 	/**
@@ -75,6 +76,7 @@ public class RecordListForm extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomainObject)
 	{
+		// TODO This method will be provided if required.
 	}
 
 	/**

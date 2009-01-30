@@ -137,6 +137,7 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject arg0)
 	{
+		//TODO empty method
 	}
 
 	/**
@@ -144,6 +145,7 @@ public class DataEntryForm extends AbstractActionForm
 	 */
 	protected void reset()
 	{
+		//TODO empty method
 	}
 
 	/**

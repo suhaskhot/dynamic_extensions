@@ -83,9 +83,13 @@ public class BinaryBlobType implements CompositeUserType
 	public Type[] getPropertyTypes()
 	{
 		if (isBlob)
+		{
 			return new Type[]{Hibernate.BLOB};
+		}
 		else
+		{
 			return new Type[]{Hibernate.BINARY};
+		}
 	}
 
 	/**
@@ -114,6 +118,7 @@ public class BinaryBlobType implements CompositeUserType
 	public void setPropertyValue(Object component, int property, Object value)
 			throws HibernateException
 	{
+		// TODO This method will be provided if required.
 	}
 
 	/**
@@ -169,9 +174,13 @@ public class BinaryBlobType implements CompositeUserType
 		{
 			Blob blob = (Blob) Hibernate.BLOB.nullSafeGet(rs, names, session, owner);
 			if (blob == null)
+			{
 				return null;
+			}
 			else
+			{
 				return copyData(blob.getBinaryStream());
+			}
 		}
 		else
 		{
@@ -198,7 +207,9 @@ public class BinaryBlobType implements CompositeUserType
 		if (isBlob)
 		{
 			if (value == null)
+			{
 				Hibernate.BLOB.nullSafeSet(st, value, index, session);
+			}
 			else
 			{
 				Blob blob = Hibernate.createBlob((byte[]) value);

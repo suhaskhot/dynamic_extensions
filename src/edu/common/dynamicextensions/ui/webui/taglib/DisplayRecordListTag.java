@@ -77,17 +77,9 @@ public class DisplayRecordListTag extends TagSupport
 		{
 			StringBuffer stringBuffer = new StringBuffer();
 			stringBuffer
-					.append("<div style='border:solid 1px; padding:1px; height:500px; overflow:auto;' width='100%'>");
-			stringBuffer
-					.append("<table class='dataTable' width='100%' cellpadding='4' cellspacing='0' border='1'>");
-
-			stringBuffer.append("<thead><tr class='formTitle'>");
-			stringBuffer.append("<th width='5%' align='center'>");
+					.append("<div style='border:solid 1px; padding:1px; height:500px; overflow:auto;' width='100%'><table class='dataTable' width='100%' cellpadding='4' cellspacing='0' border='1'><thead><tr class='formTitle'><th width='5%' align='center'>");
 			stringBuffer.append(ApplicationProperties.getValue("record.id"));
-			stringBuffer.append("</th><th>Delete</th>");
-			stringBuffer.append("</tr></thead>");
-
-			stringBuffer.append("<tbody>");
+			stringBuffer.append("</th><th>Delete</th></tr></thead><tbody>");
 			for (EntityRecord entityRecord : this.entityRecordList)
 			{
 				stringBuffer.append("<tr><td>");
@@ -98,9 +90,7 @@ public class DisplayRecordListTag extends TagSupport
 					//					stringBuffer.append("<input type='checkbox' name='deleteCheckbox' id='deleteCheckbox' value=" + recordId.toString() + "/>");
 					//					stringBuffer.append("</td><td>");
 
-					stringBuffer.append("<span style='cursor:hand' ");
-					stringBuffer.append("onclick=\"setRecordListTarget(");
-
+					stringBuffer.append("<span style='cursor:hand' onclick=\"setRecordListTarget(");
 					String target = "'/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier="
 							+ this.containerIdentifier
 							+ "&recordIdentifier="
@@ -108,25 +98,23 @@ public class DisplayRecordListTag extends TagSupport
 							+ "&showFormPreview=false" + "&mode=" + mode + "'";
 
 					stringBuffer.append(target);
-					stringBuffer.append(")\">");
+					stringBuffer.append(")\">Record No. ");
 
-					stringBuffer.append("Record No. " + recordId.toString());
-					stringBuffer.append("</span>");
-					stringBuffer.append("</td><td>");
-
-					stringBuffer.append("<span style='cursor:hand' ");
-					stringBuffer.append("onclick='deleteRecord(" + this.containerIdentifier + " , "
-							+ recordId.toString() + " ,\"" + mode + "\"" + ")'>");
-					stringBuffer.append("Delete </span>");
+					stringBuffer.append(recordId.toString());
+					stringBuffer.append("</span></td><td><span style='cursor:hand' onclick='deleteRecord(");
+					stringBuffer.append(this.containerIdentifier);
+					stringBuffer.append(" , ");
+					stringBuffer.append(recordId.toString());
+					stringBuffer.append(" ,\"");
+					stringBuffer.append(mode);
+					stringBuffer.append("\")'>Delete </span>");
 
 				}
 				stringBuffer.append("</td></tr>");
 
 			}
 
-			stringBuffer.append("</tbody>");
-
-			stringBuffer.append("</table></div>");
+			stringBuffer.append("</tbody></table></div>");
 
 			JspWriter out = pageContext.getOut();
 			out.println(stringBuffer.toString());

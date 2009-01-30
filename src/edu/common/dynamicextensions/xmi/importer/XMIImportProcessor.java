@@ -2832,7 +2832,9 @@ public class XMIImportProcessor
 				}
 			}
 			else
+			{
 				return null;
+			}
 		}
 		controlInterface.setName(abstractAttributeInterface.getName());
 		controlInterface.setCaption(abstractAttributeInterface.getName());

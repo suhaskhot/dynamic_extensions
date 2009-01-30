@@ -405,11 +405,9 @@ public class ToolBoxTag extends TagSupport
 		}
 		Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
 		StringBuffer sb = new StringBuffer();
-		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: " + height
-				+ "; width:" + width + ";  overflow-y: auto; \">");
-		sb
-				.append("\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
-
+		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: ");
+		sb.append(height);
+		sb.append("; width:" + width + ";  overflow-y: auto; \">\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
 		Iterator toolsListIterator = toolsList.iterator();
 		String toolName = null, toolCaption = null;
 		NameValueBean tool = null;
@@ -449,8 +447,7 @@ public class ToolBoxTag extends TagSupport
 						sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
 					}
 					sb.append(toolCaption);
-					sb.append("</label>");
-					sb.append("\n</td></tr>");
+					sb.append("</label>\n</td></tr>");
 				}
 				else
 				{
@@ -458,12 +455,9 @@ public class ToolBoxTag extends TagSupport
 				}
 			}
 		}
-		sb.append("</tr>");
-		sb.append("\n</table> ");
-		sb.append("\n</div> ");
-		sb
-				.append("<input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\""
-						+ selectedUserOption + "\"/>");
+		sb.append("</tr>\n</table> \n</div> <input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"");
+		sb.append(selectedUserOption);
+		sb.append("\"/>");
 		try
 		{
 			JspWriter out = pageContext.getOut();

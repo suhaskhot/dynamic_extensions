@@ -516,9 +516,13 @@ public class CategoryGenerator
 						{
 
 							if (newSequenceNumber == 0)
+							{
 								newSequenceNumber = ++previousSequenceNumber;
+							}
 							else
+							{
 								newSequenceNumber++;
+							}
 							objControl.setSequenceNumber(newSequenceNumber);
 
 							modified = true;

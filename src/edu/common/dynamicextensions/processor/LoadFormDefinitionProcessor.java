@@ -129,8 +129,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		{
 			associationsCollection = entityManager.getAssociationTree(entityGroup.getId());
 		}
-		definedEntitiesXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
-		definedEntitiesXML.append("<tree id='0'>");
+		definedEntitiesXML.append("<?xml version='1.0' encoding='iso-8859-1'?> <tree id='0'>");
 		//Special handling for grp : assign id as "Group_ number
 
 		if (associationsCollection != null)
@@ -162,15 +161,20 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		StringBuffer xmlNode = new StringBuffer();
 		if (text != null)
 		{
-			xmlNode.append("<item");
-			xmlNode.append(" text='" + text + "' ");
+			xmlNode.append("<item text='");
+			xmlNode.append(text);
+			xmlNode.append("' ");
 			if (id == null) //if id is null put name as id.
 			{
-				xmlNode.append(" id='" + text + "' ");
+				xmlNode.append(" id='");
+				xmlNode.append(text);
+				xmlNode.append("' ");
 			}
 			else
 			{
-				xmlNode.append(" id='" + id + "' ");
+				xmlNode.append(" id='");
+				xmlNode.append(id);
+				xmlNode.append("' ");
 			}
 			if (showExpanded)
 			{
@@ -264,12 +268,10 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		StringBuffer currentEntityXML = new StringBuffer();
 		//ContainerInterface container = (ContainerInterface)CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
 		//String currentContainerName = (String) CacheManager.getObjectFromCache(request, Constants.CURRENT_CONTAINER_NAME);
-		currentEntityXML.append("<?xml version='1.0' encoding='iso-8859-1'?> ");
-		currentEntityXML.append("<tree id='0'>");
+		currentEntityXML.append("<?xml version='1.0' encoding='iso-8859-1'?> <tree id='0'>");
 		currentEntityXML.append(getNodeForContainer(container, currentContainerName, addNewNode,
 				true));
 		currentEntityXML.append("</tree>");
-
 		return currentEntityXML.toString();
 	}
 

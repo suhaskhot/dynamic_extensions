@@ -386,9 +386,9 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	private String createGroupDetailsXML(String groupDescription)
 	{
 		StringBuffer responseXML = new StringBuffer();
-		responseXML.append("<group>");
-		responseXML.append("<group-description>" + groupDescription + "</group-description>");
-		responseXML.append("</group>");
+		responseXML.append("<group><group-description>");
+		responseXML.append(groupDescription);
+		responseXML.append("</group-description></group>");
 		return responseXML.toString();
 
 	}
@@ -470,13 +470,17 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			String formConceptCode, String operationMode, boolean isAbstract)
 	{
 		StringBuffer responseXML = new StringBuffer();
-		responseXML.append("<form>");
-		responseXML.append("<form-name>" + formName + "</form-name>");
-		responseXML.append("<form-description>" + formDescription + "</form-description>");
-		responseXML.append("<form-conceptcode>" + formConceptCode + "</form-conceptcode>");
-		responseXML.append("<operationMode>" + operationMode + "</operationMode>");
-		responseXML.append("<isAbstract>" + isAbstract + "</isAbstract>");
-		responseXML.append("</form>");
+		responseXML.append("<form><form-name>");
+		responseXML.append(formName);
+		responseXML.append("</form-name><form-description>");
+		responseXML.append(formDescription);
+		responseXML.append("</form-description><form-conceptcode>");
+		responseXML.append(formConceptCode);
+		responseXML.append("</form-conceptcode><operationMode>");
+		responseXML.append(operationMode);
+		responseXML.append("</operationMode><isAbstract>");
+		responseXML.append(isAbstract);
+		responseXML.append("</isAbstract></form>");
 		return responseXML.toString();
 	}
 
@@ -583,15 +587,23 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				bean = listValues.get(i);
 				if (bean != null)
 				{
-					responseXML.append("<" + xmlParentNode + ">");
-					responseXML.append("<" + xmlIdNode + ">");
+					responseXML.append("<");
+					responseXML.append(xmlParentNode);
+					responseXML.append("><");
+					responseXML.append(xmlIdNode);
+					responseXML.append(">");
 					responseXML.append(bean.getValue());
-					responseXML.append("</" + xmlIdNode + ">");
-
-					responseXML.append("<" + xmlNameNode + ">");
+					responseXML.append("</");
+					responseXML.append(xmlIdNode);
+					responseXML.append("><");
+					responseXML.append(xmlNameNode);
+					responseXML.append(">");
 					responseXML.append(bean.getName());
-					responseXML.append("</" + xmlNameNode + ">");
-					responseXML.append("</" + xmlParentNode + ">");
+					responseXML.append("</");
+					responseXML.append(xmlNameNode);
+					responseXML.append("></");
+					responseXML.append(xmlParentNode);
+					responseXML.append(">");
 				}
 			}
 			responseXML.append("</node>");

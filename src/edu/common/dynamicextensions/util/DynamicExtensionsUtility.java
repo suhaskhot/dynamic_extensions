@@ -1116,9 +1116,13 @@ public class DynamicExtensionsUtility
 	public static boolean areBothDatesOfSameFormat(String date1, String date2)
 	{
 		if (date1.length() != date2.length())
+		{
 			return true;
+		}
 		else
+		{
 			return false;
+		}
 	}
 
 	/**

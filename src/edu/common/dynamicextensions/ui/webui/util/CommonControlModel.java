@@ -397,7 +397,7 @@ public class CommonControlModel extends AbstractActionForm
 	 */
 	public void reset()
 	{
-
+		// TODO This method will be provided if required.
 	}
 
 	/**
@@ -414,7 +414,7 @@ public class CommonControlModel extends AbstractActionForm
 	 */
 	public void setAllValues(AbstractDomainObject abstractDomain)
 	{
-
+		// TODO This method will be provided if required.
 	}
 
 	/**

@@ -23,7 +23,6 @@ public class TreeData
 	private String color = "navy";
 	private TreeNodesList nodes;
 	private String target = "";
-	private int length = 0;
 	private StringBuffer buf = null;
 	private String nodeClickedFunction = null;
 
@@ -78,7 +77,6 @@ public class TreeData
 	public void add(TreeNode node)
 	{
 		nodes.add(node);
-		length++;
 	}
 
 	/**

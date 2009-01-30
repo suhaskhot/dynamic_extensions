@@ -34,6 +34,9 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.IValueObject)
+	 */
 	public void setAllValues(IValueObject arg0) throws AssignDataException
 	{
 		// TODO Auto-generated constructor stub

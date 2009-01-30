@@ -7,7 +7,6 @@
 package edu.common.dynamicextensions.xmi.exporter;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.entitymanager.DataTypeFactory;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
@@ -136,9 +135,8 @@ public enum DatatypeMappings {
 	 */
 	public static void main(String[] args) throws DataTypeFactoryInitializationException
 	{
-		AttributeInterface a = DomainObjectFactory.getInstance().createFloatAttribute();
+		DomainObjectFactory.getInstance().createFloatAttribute();
 		Variables.databaseName = "MYSQL";
-		DatatypeMappings d = DatatypeMappings.get(a.getDataType());
 		//System.out.println(d.getJavaClassMapping());
 		//System.out.println(d.getSQLClassMapping());
 	}

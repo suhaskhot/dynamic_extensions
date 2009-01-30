@@ -21,7 +21,6 @@ import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
-import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -43,7 +42,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * This method builds the query part for the primitive attribute
 	 * @param attribute primitive attribute for which to build the query.
 	 * @return String query part of the primitive attribute.
-	 * @throws DataTypeFactoryInitializationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	protected String getQueryPartForAttribute(Attribute attribute, String type,
 			boolean processConstraints) throws DynamicExtensionsSystemException
@@ -73,7 +72,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	 * This method builds the query part for the primitive attribute
 	 * @param attribute primitive attribute for which to build the query.
 	 * @return String query part of the primitive attribute.
-	 * @throws DataTypeFactoryInitializationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	protected String getQueryPartForCategoryAttribute(CategoryAttributeInterface attribute,
 			String type, boolean processConstraints) throws DynamicExtensionsSystemException

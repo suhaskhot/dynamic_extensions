@@ -219,9 +219,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		if (value != null)
 		{
 			htmlString = new StringBuffer();
-			htmlString.append("<span class = '");
-			htmlString.append("font_bl_s");
-			htmlString.append("'>");
+			htmlString.append("<span class = 'font_bl_s'>");
 			for (String string : selectedOptions)
 			{
 				htmlString.append(string);

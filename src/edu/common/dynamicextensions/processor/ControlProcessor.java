@@ -567,6 +567,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	private void populateContainmentAssociationAttributesInUIBean(
 			ContainmentAssociationControl control, ControlUIBeanInterface controlUIBeanInterface)
 	{
+		// TODO This method will be provided if required.
 	}
 
 	/**

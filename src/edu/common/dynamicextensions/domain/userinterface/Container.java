@@ -380,16 +380,11 @@ public class Container extends DynamicExtensionBaseDomainObject
 		if (this.getMode() != null
 				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
 		{
-			stringBuffer.append("<tr>");
-			stringBuffer.append("<td class='formMessage' colspan='3'>");
-			stringBuffer.append("<span class='font_red'>");
-			stringBuffer.append(this.getRequiredFieldIndicatior() + "&nbsp;");
-			stringBuffer.append("</span>");
-			stringBuffer.append("<span class='font_gr_s'>");
+			stringBuffer.append("<tr><td class='formMessage' colspan='3'><span class='font_red'>");
+			stringBuffer.append(this.getRequiredFieldIndicatior());
+			stringBuffer.append("&nbsp;</span><span class='font_gr_s'>");
 			stringBuffer.append(this.getRequiredFieldWarningMessage());
-			stringBuffer.append("</span>");
-			stringBuffer.append("</td>");
-			stringBuffer.append("</tr>");
+			stringBuffer.append("</span></td></tr>");
 		}
 		else
 		{
@@ -440,13 +435,10 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 	private void addCaption(StringBuffer stringBuffer)
 	{
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
+		stringBuffer.append("<tr><td class='td_color_6e81a6' colspan='3' align='left'>");
 		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
 				.getCaption()));
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
+		stringBuffer.append("</td></tr>");
 	}
 
 	/**
@@ -528,18 +520,11 @@ public class Container extends DynamicExtensionBaseDomainObject
 		}
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer
-				.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'>");
-		stringBuffer.append("<a href='#' style='cursor:hand' class='set1'");
-		stringBuffer.append("onclick='showChildContainerInsertDataPage(");
-		stringBuffer.append(containerInterface.getId() + ",this");
-		stringBuffer.append(")'>");
+				.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'><a href='#' style='cursor:hand' class='set1' onclick='showChildContainerInsertDataPage(");
+		stringBuffer.append(containerInterface.getId());
+		stringBuffer.append(",this)'>");
 		stringBuffer.append(detailsString);
-		stringBuffer.append("</a>");
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td>");
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
+		stringBuffer.append("</a><tr><td></td></tr>");
 		return stringBuffer.toString();
 	}
 

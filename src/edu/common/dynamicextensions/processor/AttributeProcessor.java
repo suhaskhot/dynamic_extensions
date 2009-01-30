@@ -1746,10 +1746,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			DoubleValue doubleValue = (DoubleValue) doubleAttributeInformation.getDefaultValue();
 			if (doubleValue.getValue() != 0)
+			{
 				attributeUIBeanInformationIntf
 						.setAttributeDefaultValue(doubleValue.getValue() + "");
+			}
 			else
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+			}
 		}
 		else
 		{
@@ -1775,9 +1779,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			FloatValue floatValue = (FloatValue) floatAttributeInformation.getDefaultValue();
 			if (floatValue.getValue() != 0)
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue() + "");
+			}
 			else
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+			}
 		}
 		else
 		{
@@ -1803,10 +1811,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			LongValue longDefaultValue = (LongValue) longAttributeInformation.getDefaultValue();
 			if (longDefaultValue.getValue() != 0)
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue()
 						+ "");
+			}
 			else
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+			}
 		}
 		else
 		{
@@ -1832,11 +1844,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			ShortValue shortDefaultValue = (ShortValue) shortAttributeInformation.getDefaultValue();
 			if (shortDefaultValue.getValue() != 0)
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue
 						.getValue()
 						+ "");
+			}
 			else
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+			}
 		}
 		else
 		{
@@ -1863,11 +1879,15 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			IntegerValue integerDefaultValue = (IntegerValue) integerAttributeInformation
 					.getDefaultValue();
 			if (integerDefaultValue.getValue() != 0)
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue
 						.getValue()
 						+ "");
+			}
 			else
+			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+			}
 		}
 		else
 		{

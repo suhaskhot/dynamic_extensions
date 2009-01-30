@@ -252,8 +252,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(this);
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<tr valign='top'>");
-		stringBuffer.append("<tr>");
+		stringBuffer.append("<tr valign='top'><tr>");
 
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
@@ -284,30 +283,19 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		}
 		else
 		{
-			stringBuffer.append("<td>");
-			stringBuffer.append("</td>");
+			stringBuffer.append("<td></td>");
 		}
-		stringBuffer.append("</tr>");
+		stringBuffer.append("</tr> <td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
 
-		stringBuffer
-				.append("<td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
 			stringBuffer.append("<span class='font_red'>");
-			stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior() + "&nbsp;");
-			stringBuffer.append("</span>");
-			stringBuffer.append("</td>");
-
-			stringBuffer
-					.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
+			stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior());
+			stringBuffer.append("&nbsp; </span> </td> <td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
 		}
 		else
 		{
-			stringBuffer.append("&nbsp;");
-			stringBuffer.append("</td>");
-
-			stringBuffer
-					.append("<td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
+			stringBuffer.append("&nbsp; </td> <td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
 		}
 		if (this instanceof ComboBox)
 		{
@@ -315,18 +303,9 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		}
 		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
 				.getCaption()));
-		stringBuffer.append("</td>");
-
-		stringBuffer.append("<td class='formField_withoutBorder' valign='top'>");
-		stringBuffer.append("&nbsp;");
+		stringBuffer.append("</td> <td class='formField_withoutBorder' valign='top'> &nbsp;");
 		stringBuffer.append(htmlString);
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
-		stringBuffer.append("<tr>");
-		stringBuffer.append("<td>");
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
+		stringBuffer.append("</td></tr><tr><td></td></tr>");
 		return stringBuffer.toString();
 	}
 

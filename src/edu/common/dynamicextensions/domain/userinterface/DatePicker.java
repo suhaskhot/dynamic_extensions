@@ -260,6 +260,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	public void setAttribute(AbstractAttributeInterface attributeInterface)
 	{
+		// TODO empty method.
 	}
 
 	/**This method returns the dateValueType of the DatePicker.
@@ -279,6 +280,10 @@ public class DatePicker extends Control implements DatePickerInterface
 		this.dateValueType = dateValueType;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
+	 */
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";

@@ -61,7 +61,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -72,7 +71,6 @@ import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.Constants;
@@ -468,20 +466,6 @@ public class XMIImportProcessor
 			token = tokenizer.nextToken();
 		}
 		return token;
-	}
-
-	/**
-	 * It will remove the Id attribute if present from the given entity
-	 * @param entity from which to remove Id Attribute
-	 */
-	private void removeIdAttributeFromEntity(EntityInterface entity)
-	{
-		AttributeInterface idAttr = entity.getAttributeByName(XMIConstants.ID_ATTRIBUTE_NAME);
-		if (idAttr != null)
-		{
-			entity.removeAttribute(idAttr);
-		}
-
 	}
 
 	/**
@@ -1136,106 +1120,6 @@ public class XMIImportProcessor
 	}
 
 	/**
-	 * @param attributeType
-	 * @return
-	 */
-	private AttributeTypeInformationInterface createAttributeTypeInformation(String attributeType)
-	{
-		AttributeTypeInformationInterface attributeTypeInformation = null;
-		if (attributeType != null && !attributeType.equals(""))
-		{
-
-			DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
-			if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.STRING_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createStringAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.DATE_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory.createDateAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.BOOLEAN_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createBooleanAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.BYTE_ARRAY_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createByteArrayAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory.createFileAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createIntegerAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.FLOAT_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createFloatAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.LONG_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory.createLongAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.DOUBLE_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createDoubleAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.SHORT_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createShortAttributeTypeInformation();
-			}
-			else if (attributeType
-					.equalsIgnoreCase(EntityManagerConstantsInterface.OBJECT_ATTRIBUTE_TYPE))
-			{
-				attributeTypeInformation = domainObjectFactory
-						.createObjectAttributeTypeInformation();
-			}
-		}
-
-		return attributeTypeInformation;
-	}
-
-	/**
-	 * @param attrName
-	 * @param originalAttrColl
-	 * @return
-	 */
-	private AttributeInterface getAttributeByName(String attrName,
-			Collection<AttributeInterface> originalAttrColl)
-	{
-		if (originalAttrColl != null && !originalAttrColl.isEmpty())
-		{
-			for (AttributeInterface originalAttr : originalAttrColl)
-			{
-				if (originalAttr.getName().equalsIgnoreCase(attrName))
-				{
-					return originalAttr;
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Gives a map having parent child information.
 	 * @return Map with key as UML-id of parent class and value as list of UML-id of all children classes.
 	 */
@@ -1615,40 +1499,6 @@ public class XMIImportProcessor
 			{
 				EntityInterface child = umlClassIdVsEntity.get(childId);
 				child.setParentEntity(parent);
-			}
-		}
-	}
-
-	/**
-	 * Taggs inherited attributes present in given entity group. The processing is based on name.
-	 * For a attribute, if attribute with same name present in parent hirarchy then it is considered as inherited.
-	 * @param eg Entity Group top process
-	 */
-	private void markInheritedAttributes(EntityGroupInterface eg)
-	{
-		for (EntityInterface entity : eg.getEntityCollection())
-		{
-			if (entity.getParentEntity() != null)
-			{
-				List<AbstractAttributeInterface> duplicateAttrColl = new ArrayList<AbstractAttributeInterface>();
-				Collection<AttributeInterface> parentAttributeCollection = entity.getParentEntity()
-						.getAttributeCollection();
-				for (AttributeInterface attributeFromChild : entity.getAttributeCollection())
-				{
-					boolean isInherited = false;
-					for (AttributeInterface attributeFromParent : parentAttributeCollection)
-					{
-						if (attributeFromChild.getName().equalsIgnoreCase(
-								attributeFromParent.getName()))
-						{
-							isInherited = true;
-							duplicateAttrColl.add(attributeFromChild);
-							break;
-						}
-					}
-				}
-				//removeInheritedAttributes(entity,duplicateAttrColl,true);
-				removeInheritedAttributes(entity, duplicateAttrColl);
 			}
 		}
 	}
@@ -2661,8 +2511,6 @@ public class XMIImportProcessor
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
-		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
-				.getInstance();
 		AttributeProcessor attributeProcessor = AttributeProcessor.getInstance();
 		ControlProcessor controlProcessor = ControlProcessor.getInstance();
 

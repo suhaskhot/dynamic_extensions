@@ -62,44 +62,37 @@ public class UserInterfaceiUtility
 		// Do not sort the controls list; it jumbles up the attributes order.
 		//Collections.sort(controlsList);
 
-		stringBuffer.append("<tr width='100%'><td colspan='3'");
-		stringBuffer.append("<div style='display:none' id='" + subContainer.getId()
-				+ "_substitutionDiv'>");
-		stringBuffer.append("<table>");
+		stringBuffer.append("<tr width='100%'><td colspan='3'<div style='display:none' id='");
+		stringBuffer.append(subContainer.getId());
+		stringBuffer.append("_substitutionDiv'><table>");
 		subContainer.setContainerValueMap(new HashMap<BaseAbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
 		stringBuffer.append(getContainerHTMLAsARow(subContainer, -1));
-		stringBuffer.append("</table>");
-		stringBuffer.append("</div>");
+		stringBuffer.append("</table></div><input type='hidden' name='");
 
-		stringBuffer.append("<input type='hidden' name='" + subContainer.getId()
-				+ "_rowCount' id= '" + subContainer.getId() + "_rowCount' value='" + rowCount
-				+ "'/> ");
-		stringBuffer.append("</td></tr>");
-
-		stringBuffer.append("<tr width='100%'>");
+		stringBuffer.append(subContainer.getId());
+		stringBuffer.append("_rowCount' id= '");
+		stringBuffer.append(subContainer.getId());
+		stringBuffer.append("_rowCount' value='");
+		stringBuffer.append(rowCount);
 		stringBuffer
-				.append("<td class='formFieldContainer_withoutBorder' colspan='3' align='center'>");
-		stringBuffer.append("<table cellpadding='3' cellspacing='0' align='center' width='100%'>");
+				.append("'/> </td></tr><tr width='100%'><td class='formFieldContainer_withoutBorder' colspan='3' align='center'><table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		String tableHeaderClass = "formLabelWithTopBorder";
 		String formFieldContainerClass = "formFieldContainerWithTopBorder";
 		String formformRequiredNoticeClass = "formRequiredNoticeWithTopBorder";
 		if (subContainer.getAddCaption())
 		{
-			stringBuffer.append("<tr width='100%'>");
-			stringBuffer.append("<td class='td_color_6e81a6' colspan='3' align='left'>");
+			stringBuffer.append("<tr width='100%'><td class='td_color_6e81a6' colspan='3' align='left'>");
 			stringBuffer.append(DynamicExtensionsUtility
 					.getFormattedStringForCapitalization(subContainer.getCaption()));
-			stringBuffer.append("</td>");
-			stringBuffer.append("</tr>");
+			stringBuffer.append("</td></tr>");
 
 			tableHeaderClass = "formLabel_withoutBorder";
 			formFieldContainerClass = "formFieldContainer_withoutBorder";
 			formformRequiredNoticeClass = "formRequiredNotice_withoutBorder";
 		}
 
-		stringBuffer.append("<tr width='100%'>");
-		stringBuffer.append("<td colspan='3' width='100%'>");
+		stringBuffer.append("<tr width='100%'><td colspan='3' width='100%'>");
 
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
@@ -124,13 +117,13 @@ public class UserInterfaceiUtility
 			}
 		}
 
-		stringBuffer
-				.append("<table id='"
-						+ subContainer.getId()
-						+ "_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'>");
+		stringBuffer.append("<table id='");
 
-		stringBuffer.append("<tr width='100%' class='formLabel_withoutBorder'>");
-		stringBuffer.append("<th width='1%'>&nbsp;</th>");
+		stringBuffer.append(subContainer.getId());
+
+		stringBuffer
+				.append("_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'><tr width='100%' class='formLabel_withoutBorder'><th width='1%'>&nbsp;</th>");
+
 		for (ControlInterface control : controls)
 		{
 			boolean isControlRequired = isControlRequired(control);
@@ -141,17 +134,14 @@ public class UserInterfaceiUtility
 
 				stringBuffer.append("<span class='font_red'>");
 				stringBuffer.append(subContainer.getRequiredFieldIndicatior());
-				stringBuffer.append("</span>");
-				stringBuffer.append("&nbsp;&nbsp;");
-				stringBuffer.append("<span class='font_bl_nor'>");
+				stringBuffer.append("</span>&nbsp;&nbsp;<span class='font_bl_nor'>");
 				stringBuffer.append(DynamicExtensionsUtility
 						.getFormattedStringForCapitalization(control.getCaption()));
 				stringBuffer.append("</span>");
 			}
 			else
 			{
-				stringBuffer.append("&nbsp;&nbsp;");
-				stringBuffer.append("<span class='font_bl_nor'>");
+				stringBuffer.append("&nbsp;&nbsp;<span class='font_bl_nor'>");
 				stringBuffer.append(DynamicExtensionsUtility
 						.getFormattedStringForCapitalization(control.getCaption()));
 				stringBuffer.append("</span>");
@@ -176,43 +166,26 @@ public class UserInterfaceiUtility
 		if (subContainer.getMode().equals("edit"))
 		{
 			stringBuffer
-					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr>");
-
-			stringBuffer.append("<td align='left'>");
+					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'><img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('");
+			stringBuffer.append(subContainer.getId());
+			stringBuffer.append("')\"><map alt='Delete'><area href='javascript:removeCheckedRow('");
+			stringBuffer.append(subContainer.getId());
 			stringBuffer
-					.append("<img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('"
-							+ subContainer.getId() + "')\">");
-			stringBuffer.append("<map alt='Delete'>");
-			stringBuffer.append("<area href='javascript:removeCheckedRow('" + subContainer.getId()
-					+ "')' shape='default'>");
-			stringBuffer.append("</map>");
+					.append("')' shape='default'></map></td><td align='right'><img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('");
 			//stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
 			//		+ "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
 			//stringBuffer.append("</button>");
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("<td align='right'>");
-			stringBuffer
-					.append("<img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('"
-							+ subContainer.getId() + "')\">");
-			stringBuffer.append("<map alt='Add More'>");
-			stringBuffer.append("<area href='javascript:\"addRow('" + subContainer.getId()
-					+ "')' shape='default'>");
-			stringBuffer.append("</map>");
+			stringBuffer.append(subContainer.getId());
+			stringBuffer.append("')\"><map alt='Add More'><area href='javascript:\"addRow('");
+			stringBuffer.append(subContainer.getId());
+			stringBuffer.append("')' shape='default'></map></td></tr></table>");
 			//stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
 			//stringBuffer.append("</button>");
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("</tr></table>");
 		}
 
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
-		stringBuffer.append("</table></td></tr>");
-
+		stringBuffer.append("</td></tr></table></td></tr>");
 		return stringBuffer.toString();
 	}
 
@@ -314,9 +287,9 @@ public class UserInterfaceiUtility
 		{
 			rowClass = "td_color_f0f2f6";
 		}
-		stringBuffer.append("<tr width='100%'class='" + rowClass + "'>");
-
-		stringBuffer.append("<td width='1%'>");
+		stringBuffer.append("<tr width='100%'class='");
+		stringBuffer.append(rowClass);
+		stringBuffer.append("'><td width='1%'>");
 		if (container.getMode().equals("edit"))
 		{
 			stringBuffer.append("<input type='checkbox' name='deleteRow' value='' id='1'/>");
@@ -408,33 +381,21 @@ public class UserInterfaceiUtility
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(controlInterface);
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<tr>");
-
-		stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
+		stringBuffer.append("<tr><td class='formRequiredNotice_withoutBorder' width='2%'>");
 		if (isControlRequired)
 		{
-			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior()
-					+ "&nbsp;");
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
+			stringBuffer.append(controlInterface.getParentContainer().getRequiredFieldIndicatior());
+			stringBuffer.append("&nbsp;</td><td class='formRequiredLabel_withoutBorder'>");
 		}
 		else
 		{
-			stringBuffer.append("&nbsp;");
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
+			stringBuffer.append("&nbsp;</td><td class='formRequiredLabel_withoutBorder'>");
 		}
 		stringBuffer.append(DynamicExtensionsUtility
 				.getFormattedStringForCapitalization(controlInterface.getCaption()));
-		stringBuffer.append("</td>");
-
-		stringBuffer.append("<td class='formField_withoutBorder'>");
+		stringBuffer.append("</td><td class='formField_withoutBorder'>");
 		stringBuffer.append(htmlString);
-		stringBuffer.append("</td>");
-		stringBuffer.append("</tr>");
-
+		stringBuffer.append("</td></tr>");
 		return stringBuffer.toString();
 	}
 

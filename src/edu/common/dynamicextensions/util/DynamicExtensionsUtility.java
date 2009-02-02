@@ -761,7 +761,6 @@ public class DynamicExtensionsUtility
 						null, EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
 			}
 		}
-		return;
 	}
 
 	public static void validateDuplicateNamesWithinEntity(EntityInterface entity,

@@ -392,6 +392,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			case CHECK_BOX_CONTROL :
 				control = createOrUpdateCheckBoxControl(container, categoryAttribute);
 				break;
+			default :
+				throw new DynamicExtensionsSystemException("ERROR: INCORRECT CONTROL TYPE");
 		}
 
 		control.setCaption(controlCaption);
@@ -817,7 +819,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
 
-		if (categoryAttribute.getId() != null && isDataEntered(categoryAttribute.getCategoryEntity())
+		if (categoryAttribute.getId() != null
+				&& isDataEntered(categoryAttribute.getCategoryEntity())
 				&& isPermissibleValueRemoved(categoryAttribute, permissibleValues))
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -882,7 +885,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			List<PermissibleValueInterface> permissibleValues)
 	{
 		boolean isPermissibleValueRemoved = false;
-	
+
 		if (categoryAttribute.getDataElement() != null)
 		{
 			Collection<PermissibleValueInterface> existingPv = ((UserDefinedDEInterface) categoryAttribute
@@ -905,8 +908,7 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param nextLine
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void setOptions(
-			DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
+	public void setOptions(DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
 			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException
 	{
 		try
@@ -919,8 +921,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				String methodName = CategoryConstants.SET + optionString;
 
-				Class[] types = getParameterType(methodName,
-						dyextnBaseDomainObject);
+				Class[] types = getParameterType(methodName, dyextnBaseDomainObject);
 				if (types.length < 1)
 				{
 					throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -935,8 +936,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 				Method method;
 
-				method = dyextnBaseDomainObject.getClass().getMethod(methodName,
-						types);
+				method = dyextnBaseDomainObject.getClass().getMethod(methodName, types);
 
 				method.invoke(dyextnBaseDomainObject, values.toArray());
 			}
@@ -1182,7 +1182,8 @@ public class CategoryHelper implements CategoryHelperInterface
 			updateContainerAndControl(container, radioButton, baseAbstractAttribute);
 		}
 
-		if (baseAbstractAttribute.getId() != null &&isDataEntered(((CategoryAttribute) baseAbstractAttribute).getCategoryEntity())
+		if (baseAbstractAttribute.getId() != null
+				&& isDataEntered(((CategoryAttribute) baseAbstractAttribute).getCategoryEntity())
 				&& isPermissibleValueRemoved(((CategoryAttribute) baseAbstractAttribute),
 						permissibleValues))
 		{
@@ -1553,6 +1554,8 @@ public class CategoryHelper implements CategoryHelperInterface
 					checkboxControl.setIsReadOnly(false);
 					checkboxControl.setIsHidden(false);
 					break;
+				default :
+					throw new DynamicExtensionsSystemException("ERROR: INCORRECT CONTROL TYPE");
 			}
 		}
 		catch (Exception e)

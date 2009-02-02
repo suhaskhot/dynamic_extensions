@@ -2203,7 +2203,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		try
 		{
 			jdbcDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(userId, query), null,
-					false, false);;
+					false, false);
 
 			conn = DBUtil.getConnection();
 			statement = conn.createStatement();

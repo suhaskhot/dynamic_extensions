@@ -179,6 +179,9 @@
 	    				<include name="**/ui/util/*.class"/>
 		    			<include name="**/ui/webui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
+						<include name="**/wustl/cab2b/**/*.class"/>
+						<include name="**/wustl/common/**/*.class"/>
+    					<include name="**/wustl/metadata/**/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
 
 

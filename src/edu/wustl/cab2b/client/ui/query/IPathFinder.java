@@ -35,14 +35,14 @@ public interface IPathFinder
      * @param destination End of the path 
      * @return Returns the list of IPath present between given source and destination
      */
-    public List<IPath> getAllPossiblePaths(EntityInterface source,EntityInterface destination);
+    List<IPath> getAllPossiblePaths(EntityInterface source,EntityInterface destination);
 
     /**
      * Returns all the InterModelAssociations where given entity is present.
      * @param sourceEntityId id of the source Entity
      * @return The list of IInterModelAssociation
      */
-    public List<IInterModelAssociation> getInterModelAssociations(Long sourceEntityId);
+    List<IInterModelAssociation> getInterModelAssociations(Long sourceEntityId);
     
     /**
      * Finds all curated paths defined for given source and desination entity.
@@ -51,13 +51,13 @@ public interface IPathFinder
      * @param destination The destination entity
      * @return Set of curated paths
      */
-    public Set<ICuratedPath> getCuratedPaths(EntityInterface source, EntityInterface destination);
+    Set<ICuratedPath> getCuratedPaths(EntityInterface source, EntityInterface destination);
     /**
      * Finds all curated paths defined for given set of entities.
      * @param entitySet Set of entities
      * @return Set of curated paths
      */
-    public Set<ICuratedPath> autoConnect(Set<EntityInterface> entitySet);
+    Set<ICuratedPath> autoConnect(Set<EntityInterface> entitySet);
     
     IPath getPathForAssociations(List<IIntraModelAssociation> associations);
 }

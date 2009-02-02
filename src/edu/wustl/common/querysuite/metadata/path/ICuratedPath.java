@@ -15,20 +15,20 @@ public interface ICuratedPath extends Serializable
 	/**
 	 * @return Returns the curatedPathId.
 	 */
-	public Long getCuratedPathId();
+	Long getCuratedPathId();
 
 	/**
 	 * @return Returns the entitySet.
 	 */
-	public Set<EntityInterface> getEntitySet();
+	Set<EntityInterface> getEntitySet();
 
 	/**
 	 * @return Returns the isSelected.
 	 */
-	public boolean isSelected();
+	boolean isSelected();
 
 	/**
 	 * @return Returns the paths.
 	 */
-	public Set<IPath> getPaths();
+	Set<IPath> getPaths();
 }

@@ -20,15 +20,16 @@ import edu.wustl.common.querysuite.utils.IConstraintsObjectBuilderInterface;
  * object from the DAG view.
  * @author gautam_shetty
  */
-public interface IClientQueryBuilderInterface extends IConstraintsObjectBuilderInterface {
+public interface IClientQueryBuilderInterface extends IConstraintsObjectBuilderInterface
+{
 
-    /**
-     * Sets the output of the query to the specified entity.
-     * @param entity The entity to be set as output.
-     * @throws RemoteException 
-     */
-    public void setOutputForQuery(EntityInterface entity) throws RemoteException;
+	/**
+	 * Sets the output of the query to the specified entity.
+	 * @param entity The entity to be set as output.
+	 * @throws RemoteException 
+	 */
+	void setOutputForQuery(EntityInterface entity) throws RemoteException;
 
-    public void setOutputForQueryForSpecifiedURL(EntityInterface entity, String strURL);
+	void setOutputForQueryForSpecifiedURL(EntityInterface entity, String strURL);
 
 }

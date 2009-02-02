@@ -18,10 +18,10 @@ public interface IIntraModelAssociation extends IAssociation
 	 * @return the reference to the Dynamic Extension Attribute.
 	 */
 	AssociationInterface getDynamicExtensionsAssociation();
-	
+
 	/**
 	 * @return intramodel association wrapping de association that is reverse of this association.
 	 * @throws java.lang.IllegalArgumentException if this association is not bidirectional.
 	 */
-	public IIntraModelAssociation reverse();
+	IIntraModelAssociation reverse();
 }

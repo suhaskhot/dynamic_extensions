@@ -1,3 +1,4 @@
+
 package edu.wustl.metadata.util;
 
 import java.io.IOException;
@@ -22,112 +23,151 @@ import edu.wustl.common.util.ObjectCloner;
  * @author srinath_k
  * 
  */
-public class DyExtnObjectCloner extends ObjectCloner {
-    @Override
-    protected CloneInputStream createObjectInputStream() throws IOException {
-        return new DyExtnResolveObjectInputStream(createInputStream());
-    }
+public class DyExtnObjectCloner extends ObjectCloner
+{
 
-    @Override
-    protected CloneOutputStream createObjectOutputStream() throws IOException {
-        return new DyExtnReplaceObjectOutputStream(createOutputStream());
-    }
+	@Override
+	protected CloneInputStream createObjectInputStream() throws IOException
+	{
+		return new DyExtnResolveObjectInputStream(createInputStream());
+	}
 
-    private static class DyExtnResolveObjectInputStream extends CloneInputStream {
-        DyExtnResolveObjectInputStream(InputStream in) throws IOException {
-            super(in);
-            enableResolveObject(true);
-        }
+	@Override
+	protected CloneOutputStream createObjectOutputStream() throws IOException
+	{
+		return new DyExtnReplaceObjectOutputStream(createOutputStream());
+	}
 
-        @Override
-        protected Object resolveObject(Object obj) throws IOException {
-            if (obj instanceof Replacement) {
-                return ((Replacement) obj).getOrigObject();
-            }
-            return super.resolveObject(obj);
-        }
-    }
+	private static class DyExtnResolveObjectInputStream extends CloneInputStream
+	{
 
-    private static class DyExtnReplaceObjectOutputStream extends CloneOutputStream {
-        public DyExtnReplaceObjectOutputStream(OutputStream out) throws IOException {
-            super(out);
-            enableReplaceObject(true);
-        }
+		DyExtnResolveObjectInputStream(InputStream in) throws IOException
+		{
+			super(in);
+			enableResolveObject(true);
+		}
 
-        @Override
-        protected Object replaceObject(Object obj) throws IOException {
-            if (obj instanceof EntityInterface) {
-                return new ReplacementForEntity((EntityInterface) obj);
-            }
-            if (obj instanceof AttributeInterface) {
-                return new ReplacementForAttribute((AttributeInterface) obj);
-            }
-            if (obj instanceof AssociationInterface) {
-                return new ReplacementForAssociation((AssociationInterface) obj);
-            }
-            return super.replaceObject(obj);
-        }
-    }
+		@Override
+		protected Object resolveObject(Object obj) throws IOException
+		{
+			if (obj instanceof Replacement)
+			{
+				return ((Replacement) obj).getOrigObject();
+			}
+			return super.resolveObject(obj);
+		}
+	}
 
-    private static interface Replacement<D extends AbstractMetadataInterface> {
-        Long getId();
+	private static class DyExtnReplaceObjectOutputStream extends CloneOutputStream
+	{
 
-        D getOrigObject();
-    }
+		public DyExtnReplaceObjectOutputStream(OutputStream out) throws IOException
+		{
+			super(out);
+			enableReplaceObject(true);
+		}
 
-    private static class ReplacementForEntity implements Serializable, Replacement<EntityInterface> {
-        private static final long serialVersionUID = -1324920205387970975L;
+		@Override
+		protected Object replaceObject(Object obj) throws IOException
+		{
+			if (obj instanceof EntityInterface)
+			{
+				return new ReplacementForEntity((EntityInterface) obj);
+			}
+			if (obj instanceof AttributeInterface)
+			{
+				return new ReplacementForAttribute((AttributeInterface) obj);
+			}
+			if (obj instanceof AssociationInterface)
+			{
+				return new ReplacementForAssociation((AssociationInterface) obj);
+			}
+			return super.replaceObject(obj);
+		}
+	}
 
-        private final Long id;
+	private interface Replacement<D extends AbstractMetadataInterface>
+	{
 
-        ReplacementForEntity(EntityInterface entity) {
-            this.id = entity.getId();
-        }
+		Long getId();
 
-        public Long getId() {
-            return id;
-        }
+		D getOrigObject();
+	}
 
-        public EntityInterface getOrigObject() {
-            return EntityCache.getInstance().getEntityById(id);
-        }
-    };
+	private static class ReplacementForEntity implements Serializable, Replacement<EntityInterface>
+	{
 
-    private static class ReplacementForAttribute implements Serializable, Replacement<AttributeInterface> {
-        private static final long serialVersionUID = 9194062618296956803L;
+		private static final long serialVersionUID = -1324920205387970975L;
 
-        private final Long id;
+		private final Long id;
 
-        ReplacementForAttribute(AttributeInterface attr) {
-            this.id = attr.getId();
-        }
+		ReplacementForEntity(EntityInterface entity)
+		{
+			this.id = entity.getId();
+		}
 
-        public Long getId() {
-            return id;
-        }
+		public Long getId()
+		{
+			return id;
+		}
 
-        public AttributeInterface getOrigObject() {
-            return EntityCache.getInstance().getAttributeById(id);
-        }
+		public EntityInterface getOrigObject()
+		{
+			return EntityCache.getInstance().getEntityById(id);
+		}
+	};
 
-    };
+	private static class ReplacementForAttribute
+			implements
+				Serializable,
+				Replacement<AttributeInterface>
+	{
 
-    private static class ReplacementForAssociation implements Serializable, Replacement<AssociationInterface> {
-        private static final long serialVersionUID = 6784553723374640799L;
+		private static final long serialVersionUID = 9194062618296956803L;
 
-        private final Long id;
+		private final Long id;
 
-        ReplacementForAssociation(AssociationInterface assoc) {
-            this.id = assoc.getId();
-        }
+		ReplacementForAttribute(AttributeInterface attr)
+		{
+			this.id = attr.getId();
+		}
 
-        public Long getId() {
-            return id;
-        }
+		public Long getId()
+		{
+			return id;
+		}
 
-        public AssociationInterface getOrigObject() {
-            return EntityCache.getInstance().getAssociationById(id);
-        }
-    };
+		public AttributeInterface getOrigObject()
+		{
+			return EntityCache.getInstance().getAttributeById(id);
+		}
+
+	};
+
+	private static class ReplacementForAssociation
+			implements
+				Serializable,
+				Replacement<AssociationInterface>
+	{
+
+		private static final long serialVersionUID = 6784553723374640799L;
+
+		private final Long id;
+
+		ReplacementForAssociation(AssociationInterface assoc)
+		{
+			this.id = assoc.getId();
+		}
+
+		public Long getId()
+		{
+			return id;
+		}
+
+		public AssociationInterface getOrigObject()
+		{
+			return EntityCache.getInstance().getAssociationById(id);
+		}
+	};
 
 }

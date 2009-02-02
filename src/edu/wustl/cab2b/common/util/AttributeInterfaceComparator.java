@@ -1,3 +1,4 @@
+
 package edu.wustl.cab2b.common.util;
 
 import java.util.Comparator;
@@ -9,7 +10,8 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
  * 
  * @author chetan_patil
  */
-public class AttributeInterfaceComparator implements Comparator<AttributeInterface> {
+public class AttributeInterfaceComparator implements Comparator<AttributeInterface>
+{
 
 	/**
 	 * This method compares the given attributes by name
@@ -20,8 +22,9 @@ public class AttributeInterfaceComparator implements Comparator<AttributeInterfa
 	 *          0 if both attribute has same name
 	 *          1 if name of first attribute is greater
 	 */
-	public int compare(AttributeInterface attribute1, AttributeInterface attribute2) {
-		return (attribute1.getName().compareToIgnoreCase(attribute2.getName()));
+	public int compare(AttributeInterface attribute1, AttributeInterface attribute2)
+	{
+		return attribute1.getName().compareToIgnoreCase(attribute2.getName());
 	}
 
 }

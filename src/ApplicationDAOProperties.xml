@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Applications>
+	<Application name = "dynamicExtention">
+		<DAOFactory name="edu.wustl.dao.daofactory.DAOFactory" default="true">
+	
+			<DefaultDAO>
+				<Class-name name = "edu.wustl.dao.HibernateDAOImpl"/>
+				<Config-file name = "DynamicExtensionsHibernate.cfg.xml"/>
+				<DefaultConnectionManager name = "edu.wustl.dao.connectionmanager.ConnectionManager"/>
+			</DefaultDAO>
+<!-- 
+		  <JDBCDAO>
+				<Class-name name = "edu.wustl.dao.OracleDAOImpl"/>
+				<DatabaseType name = "ORACLE"/>
+				<DefaultBatchSize value = "5"/>
+				<DataSource name = ""/>
+				<JDBCConnectionManager name = "edu.wustl.dao.connectionmanager.ConnectionManager"/>
+				<DatePattern name = "mm-dd-yyyy"/>
+				<TimePattern name = "hh-mi-ss"/>
+				<DateFormatFunction name ="TO_CHAR"/>
+				<TimeFormatFunction name ="TO_CHAR"/>
+				<DateToStrFunction name = "TO_CHAR"/>
+				<StrTodateFunction name = "TO_DATE"/>
+				<ExceptionFormater name = "edu.wustl.dao.formatmessage.OracleExceptionFormatter"/>
+				<QueryGenerator name = "edu.wustl.dao.query.generator.OracleQueryGenerator"/>
+			</JDBCDAO>
+-->
+
+			<JDBCDAO>
+				<Class-name name = "edu.wustl.dao.MySQLDAOImpl"/>
+				<DatabaseType name = "MYSQL"/>
+				<DefaultBatchSize value = "5"/>
+				<DataSource name = ""/>
+				<JDBCConnectionManager name = "edu.wustl.dao.connectionmanager.ConnectionManager"/>
+				<DatePattern name = "%m-%d-%Y"/>
+				<TimePattern name = "%H:%i:%s"/>
+				<DateFormatFunction name ="DATE_FORMAT"/>
+				<TimeFormatFunction name ="TIME_FORMAT"/>
+				<DateToStrFunction name = "TO_CHAR"/>
+				<StrTodateFunction name = "STR_TO_DATE"/>
+				<ExceptionFormater name = "edu.wustl.dao.formatmessage.MysqlExceptionFormatter"/>
+				<QueryGenerator name = "edu.wustl.dao.query.generator.MySQLQueryGenerator"/>
+			</JDBCDAO>	 
+	
+		</DAOFactory>
+	 </Application>
+</Applications>

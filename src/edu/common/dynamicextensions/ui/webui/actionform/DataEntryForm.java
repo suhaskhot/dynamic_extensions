@@ -331,4 +331,17 @@ public class DataEntryForm extends AbstractActionForm
 		this.previewBack = previewBack;
 	}
 
+	/**
+	 * This method set Identifier of newly added object by AddNew operation into FormBean
+	 * which initialized AddNew operation.
+	 * @param addNewFor - add New For.
+	 * @param addObjectIdentifier - Identifier of newly added object by AddNew operation
+	 */
+	@Override
+	public void setAddNewObjectIdentifier(String addNewFor, Long addObjectIdentifier)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

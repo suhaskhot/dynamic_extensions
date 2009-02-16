@@ -12,7 +12,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -197,7 +197,7 @@ public class FormDefinitionForm extends AbstractActionForm
 	 */
 	public int getFormId()
 	{
-		return Constants.ENTITY_FORM_ID;
+		return DEConstants.ENTITY_FORM_ID;
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class FormDefinitionForm extends AbstractActionForm
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
-		if ((operationMode != null) && (operationMode.equals(Constants.ADD_SUB_FORM_OPR)))
+		if ((operationMode != null) && (operationMode.equals(DEConstants.ADD_SUB_FORM_OPR)))
 		{
 			if ((!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs))
 					&& ((formName == null) || (validator.isEmpty(String.valueOf(formName)))))
@@ -571,5 +571,18 @@ public class FormDefinitionForm extends AbstractActionForm
 	public void setParentForm(String parentForm)
 	{
 		this.parentForm = parentForm;
+	}
+
+	/**
+	 * This method set Identifier of newly added object by AddNew operation into FormBean
+	 * which initialized AddNew operation.
+	 * @param addNewFor - add New For.
+	 * @param addObjectIdentifier - Identifier of newly added object by AddNew operation
+	 */
+	@Override
+	public void setAddNewObjectIdentifier(String addNewFor, Long addObjectIdentifier)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

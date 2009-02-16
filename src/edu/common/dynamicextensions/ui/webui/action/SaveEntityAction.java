@@ -23,7 +23,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -49,7 +49,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 		{
 			//Get container interface from cache
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager
-					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+					.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 			ControlsForm controlsForm = (ControlsForm) form;
 			ContainerInterface currentContainerInterface = WebUIManager
 					.getCurrentContainer(request);
@@ -71,7 +71,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 			}
 			saveMessages(request, getSuccessMessage(formName));
 			String callbackURL = (String) CacheManager.getObjectFromCache(request,
-					Constants.CALLBACK_URL);
+					DEConstants.CALLBACK_URL);
 			if (callbackURL != null && !callbackURL.equals(""))
 			{
 				String associationIds = CacheManager.getAssociationIds(request);
@@ -85,7 +85,7 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction
 				response.sendRedirect(callbackURL);
 				return null;
 			}
-			actionForward = mapping.findForward(Constants.SUCCESS);
+			actionForward = mapping.findForward(DEConstants.SUCCESS);
 		}
 		catch (Exception e)
 		{

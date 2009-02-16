@@ -37,8 +37,8 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -81,15 +81,15 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 						.getAbstractEntity(), recordId);
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_STACK);
+				.getObjectFromCache(request, DEConstants.CONTAINER_STACK);
 		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
-				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
+				.getObjectFromCache(request, DEConstants.VALUE_MAP_STACK);
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, containerStack);
+			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_STACK, containerStack);
 			valueMapStack = new Stack<Map<BaseAbstractAttributeInterface, Object>>();
-			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, valueMapStack);
+			CacheManager.addObjectToCache(request, DEConstants.VALUE_MAP_STACK, valueMapStack);
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
 					valueMapStack, recordMap);
 		}
@@ -159,7 +159,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		if (callBackURL != null && !callBackURL.equals(""))
 		{
 			CacheManager.clearCache(request);
-			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
+			CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callBackURL);
 			CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
 		}
 	}
@@ -175,7 +175,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+				.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 		String containerIdentifier = getContainerId(request);
 		if (containerIdentifier != null || containerInterface == null)
 		{
@@ -186,7 +186,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 			HashMap containerMap = new HashMap();
 
 			deCacheManager = DynamicExtensionsCacheManager.getInstance();
-			containerMap = (HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
+			containerMap = (HashMap) deCacheManager.getObjectFromCache(DEConstants.LIST_OF_CONTAINER);
 
 			if (containerMap != null && containerMap.containsKey(containerId))
 			{
@@ -202,7 +202,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 
 			}
 
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE,
+			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE,
 					containerInterface);
 		}
 

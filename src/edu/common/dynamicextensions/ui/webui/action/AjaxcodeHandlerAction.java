@@ -44,7 +44,7 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
 
@@ -195,7 +195,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			}
 		}
 		String formDetailsXML = createFormDetailsXML(formName, formDescription, formConceptCode,
-				Constants.ADD_SUB_FORM_OPR, isAbstract);
+				DEConstants.ADD_SUB_FORM_OPR, isAbstract);
 		if (formDetailsXML == null)
 		{
 			formDetailsXML = "";
@@ -302,9 +302,9 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			String childContainerId)
 	{
 		Stack containerStack = (Stack) CacheManager.getObjectFromCache(request,
-				Constants.CONTAINER_STACK);
+				DEConstants.CONTAINER_STACK);
 		Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
-				Constants.VALUE_MAP_STACK);
+				DEConstants.VALUE_MAP_STACK);
 
 		Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
 				.peek();
@@ -424,7 +424,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		String formName = selectedFormName;
 		String formDescription = "";
 		String formConceptCode = "";
-		String operationMode = Constants.ADD_SUB_FORM_OPR;
+		String operationMode = DEConstants.ADD_SUB_FORM_OPR;
 		boolean isAbstract = false;
 		if (containerForSelectedForm != null)
 		{
@@ -437,7 +437,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				formConceptCode = SemanticPropertyBuilderUtil.getConceptCodeString(entity);
 				isAbstract = entity.isAbstract();
 			}
-			operationMode = Constants.EDIT_FORM;
+			operationMode = DEConstants.EDIT_FORM;
 		}
 		//If selected form container is null and cache container interface is also null,
 		// it means that there is no container in cache and a new form is to be created.
@@ -445,10 +445,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		if (containerForSelectedForm == null)
 		{
 			ContainerInterface mainContainerInterface = (ContainerInterface) CacheManager
-					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+					.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 			if (mainContainerInterface == null)
 			{
-				operationMode = Constants.ADD_NEW_FORM;
+				operationMode = DEConstants.ADD_NEW_FORM;
 			}
 		}
 		String formDetailsXML = createFormDetailsXML(formName, formDescription, formConceptCode,
@@ -490,7 +490,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	private void updateCacheRefernces(HttpServletRequest request, String selectedFormName,
 			ContainerInterface containerForSelectedForm)
 	{
-		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, selectedFormName);
+		CacheManager.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME, selectedFormName);
 		CacheManager.addObjectToCache(request, selectedFormName, containerForSelectedForm);
 	}
 

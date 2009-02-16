@@ -23,7 +23,7 @@ import edu.common.dynamicextensions.processor.LoadGroupDefinitionProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.GroupForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -40,7 +40,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		GroupForm groupForm = (GroupForm) form;
 		loadGroup(request, groupForm);
-		return mapping.findForward(Constants.SUCCESS);
+		return mapping.findForward(DEConstants.SUCCESS);
 	}
 
 	/**
@@ -56,13 +56,13 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		String operationMode = groupForm.getOperationMode();
 		String containerIdentifier = request.getParameter("containerIdentifier");
 		ContainerInterface container = null;
-		if (operationMode != null && operationMode.equalsIgnoreCase(Constants.EDIT_FORM))
+		if (operationMode != null && operationMode.equalsIgnoreCase(DEConstants.EDIT_FORM))
 		{
 			container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
+			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
 			if (container != null)
 			{
-				CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container
+				CacheManager.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME, container
 						.getCaption());
 				CacheManager.addObjectToCache(request, container.getCaption(), container);
 			}
@@ -70,7 +70,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		else
 		{
 			container = (ContainerInterface) CacheManager.getObjectFromCache(request,
-					Constants.CONTAINER_INTERFACE);
+					DEConstants.CONTAINER_INTERFACE);
 		}
 
 		EntityGroupInterface entityGroup = null;
@@ -82,7 +82,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		else
 		{
 			entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(request,
-					Constants.ENTITYGROUP_INTERFACE);
+					DEConstants.ENTITYGROUP_INTERFACE);
 		}
 
 		LoadGroupDefinitionProcessor loadGroupDefinitionProcessor = LoadGroupDefinitionProcessor

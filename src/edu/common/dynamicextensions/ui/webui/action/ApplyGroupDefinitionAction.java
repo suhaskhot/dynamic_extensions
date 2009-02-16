@@ -24,7 +24,7 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -51,20 +51,20 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		{
 
 			ContainerInterface container = (ContainerInterface) CacheManager.getObjectFromCache(
-					request, Constants.CONTAINER_INTERFACE);
+					request, DEConstants.CONTAINER_INTERFACE);
 			//This is incase when dynamic exception shown on UI-eg. Group name already exist ,so in this case container object is not set in request
 			//So get container object by Containercaption ,which is available in request.
-			if (container == null && !(operationMode.equals(Constants.ADD_NEW_FORM)))
+			if (container == null && !(operationMode.equals(DEConstants.ADD_NEW_FORM)))
 			{
 				String containerCaption = (String) CacheManager.getObjectFromCache(request,
-						Constants.CURRENT_CONTAINER_NAME);
+						DEConstants.CURRENT_CONTAINER_NAME);
 				container = DynamicExtensionsUtility.getContainerByCaption(containerCaption);
 			}
 
 			entityGroup = applyGroupDefinitionProcessor.saveGroupDetails(groupForm, container,
 					operationMode, request);
 
-			if ((operationMode != null) && (operationMode.equals(Constants.EDIT_FORM)))
+			if ((operationMode != null) && (operationMode.equals(DEConstants.EDIT_FORM)))
 			{
 				applyGroupDefinitionProcessor.updateEntityGroup(container, entityGroup, groupForm);
 			}
@@ -82,7 +82,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			//Add entity group to cache.This will be attached with the entity when the entity is created
 			//Till then the object remains in cache
-			CacheManager.addObjectToCache(request, Constants.ENTITYGROUP_INTERFACE, entityGroup);
+			CacheManager.addObjectToCache(request, DEConstants.ENTITYGROUP_INTERFACE, entityGroup);
 		}
 
 		//Redirection logic
@@ -114,12 +114,12 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 			{
 				if (!isCallbackURL)
 				{
-					actionForward = mapping.findForward(Constants.SHOW_DYEXTN_HOMEPAGE);
+					actionForward = mapping.findForward(DEConstants.SHOW_DYEXTN_HOMEPAGE);
 				}
 			}
 			else
 			{
-				actionForward = mapping.findForward(Constants.SUCCESS);
+				actionForward = mapping.findForward(DEConstants.SUCCESS);
 			}
 		}
 		return actionForward;
@@ -138,7 +138,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		boolean isCallbackURL = false;
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
-				Constants.CALLBACK_URL);
+				DEConstants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
 			String associationIds = CacheManager.getAssociationIds(request);

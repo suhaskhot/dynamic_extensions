@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -32,7 +32,7 @@ public class RedirectAction extends BaseDynamicExtensionsAction
 	{
 
 		String callbackURL = (String) CacheManager.getObjectFromCache(request,
-				Constants.CALLBACK_URL);
+				DEConstants.CALLBACK_URL);
 		if (callbackURL != null && !callbackURL.equals(""))
 		{
 			callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "="
@@ -43,7 +43,7 @@ public class RedirectAction extends BaseDynamicExtensionsAction
 		}
 		else
 		{
-			return mapping.findForward(Constants.SUCCESS);
+			return mapping.findForward(DEConstants.SUCCESS);
 		}
 	}
 }

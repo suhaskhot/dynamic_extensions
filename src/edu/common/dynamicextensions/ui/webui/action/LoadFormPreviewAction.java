@@ -18,7 +18,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * This Action Class is responsible for displaying the Preview Forms of the Dynamic UI.
@@ -35,12 +35,12 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 	{
 
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+				.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_STACK);
+				.getObjectFromCache(request, DEConstants.CONTAINER_STACK);
 		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
-				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
+				.getObjectFromCache(request, DEConstants.VALUE_MAP_STACK);
 
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
 
@@ -49,10 +49,10 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 		if (containerStack == null)
 		{
 			containerStack = new Stack<ContainerInterface>();
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, containerStack);
+			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_STACK, containerStack);
 
 			valueMapStack = new Stack<Map<BaseAbstractAttributeInterface, Object>>();
-			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, valueMapStack);
+			CacheManager.addObjectToCache(request, DEConstants.VALUE_MAP_STACK, valueMapStack);
 
 			Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 			UserInterfaceiUtility.addContainerInfo(containerStack, containerInterface,
@@ -87,13 +87,13 @@ public class LoadFormPreviewAction extends BaseDynamicExtensionsAction
 		ActionForward forwardTo = null;
 		if (containerStack.isEmpty())
 		{
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, null);
-			CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
+			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_STACK, null);
+			CacheManager.addObjectToCache(request, DEConstants.VALUE_MAP_STACK, null);
 			forwardTo = mapping.findForward("LoadFormControls");
 		}
 		else
 		{
-			forwardTo = mapping.findForward(Constants.SUCCESS);
+			forwardTo = mapping.findForward(DEConstants.SUCCESS);
 		}
 
 		return forwardTo;

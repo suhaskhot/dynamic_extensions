@@ -10,7 +10,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * This class will forward the request to LoadFormDefinitionAction.java.
@@ -34,29 +34,29 @@ public class ApplyFormsIndexAction extends BaseDynamicExtensionsAction
 		FormsIndexForm formsIndexForm = (FormsIndexForm) form;
 		ActionForward actionForward = null;
 		String mode = formsIndexForm.getOperationMode();
-		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM)
-				&& CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
+		if (mode != null && mode.equalsIgnoreCase(DEConstants.ADD_NEW_FORM)
+				&& CacheManager.getObjectFromCache(request, DEConstants.CALLBACK_URL) == null)
 		{
 			CacheManager.clearCache(request);
 		}
-		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA)
-				&& CacheManager.getObjectFromCache(request, Constants.CALLBACK_URL) == null)
+		else if (mode != null && mode.equalsIgnoreCase(DEConstants.INSERT_DATA)
+				&& CacheManager.getObjectFromCache(request, DEConstants.CALLBACK_URL) == null)
 		{
 			CacheManager.clearCache(request);
 		}
 
-		if (mode != null && mode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+		if (mode != null && mode.equalsIgnoreCase(DEConstants.ADD_NEW_FORM))
 		{
-			actionForward = mapping.findForward(Constants.SUCCESS);
+			actionForward = mapping.findForward(DEConstants.SUCCESS);
 		}
-		else if (mode != null && mode.equalsIgnoreCase(Constants.INSERT_DATA))
+		else if (mode != null && mode.equalsIgnoreCase(DEConstants.INSERT_DATA))
 		{
-			actionForward = mapping.findForward(Constants.INSERT_DATA);
+			actionForward = mapping.findForward(DEConstants.INSERT_DATA);
 		}
 		if (mode != null && mode.equalsIgnoreCase(""))
 		{
 			CacheManager.clearCache(request);
-			actionForward = mapping.findForward(Constants.SUCCESS);
+			actionForward = mapping.findForward(DEConstants.SUCCESS);
 		}
 		return actionForward;
 	}

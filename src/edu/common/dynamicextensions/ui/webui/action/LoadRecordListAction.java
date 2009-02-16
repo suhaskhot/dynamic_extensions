@@ -16,7 +16,7 @@ import edu.common.dynamicextensions.processor.LoadRecordListProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.RecordListForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * LoadRecordListAction class loads the RecordList page displaying list of existing records that can be edited or viewed 
@@ -39,13 +39,13 @@ public class LoadRecordListAction extends BaseDynamicExtensionsAction
 
 		ContainerInterface container = DynamicExtensionsUtility
 				.getContainerByIdentifier(containerIdentifier);
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
+		CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
 
 		RecordListForm recordListForm = (RecordListForm) form;
 		LoadRecordListProcessor loadRecordListProcessor = LoadRecordListProcessor.getInstance();
 		loadRecordListProcessor.populateRecordIndex(recordListForm, container, mode);
 
-		return mapping.findForward(Constants.SHOW_EDIT_RECORDS_PAGE);
+		return mapping.findForward(DEConstants.SHOW_EDIT_RECORDS_PAGE);
 	}
 
 }

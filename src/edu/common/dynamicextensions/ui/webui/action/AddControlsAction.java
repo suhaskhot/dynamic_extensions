@@ -15,7 +15,7 @@ import edu.common.dynamicextensions.processor.ApplyFormControlsProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * This class is executed when user selects 'Add to Form'.
@@ -46,7 +46,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			ContainerInterface containerInterface = WebUIManager.getCurrentContainer(request);
 
 			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(
-					request, Constants.ENTITYGROUP_INTERFACE);
+					request, DEConstants.ENTITYGROUP_INTERFACE);
 
 			//Add control to form
 			ApplyFormControlsProcessor applyFormControlsProcessor = ApplyFormControlsProcessor
@@ -55,7 +55,7 @@ public class AddControlsAction extends BaseDynamicExtensionsAction
 			applyFormControlsProcessor.addControlToForm(containerInterface, controlsForm,
 					controlsForm, entityGroup);
 
-			ActionForward actionForward = mapping.findForward(Constants.SUCCESS);
+			ActionForward actionForward = mapping.findForward(DEConstants.SUCCESS);
 			response.sendRedirect(request.getContextPath() + actionForward.getPath());
 			return null;
 		}

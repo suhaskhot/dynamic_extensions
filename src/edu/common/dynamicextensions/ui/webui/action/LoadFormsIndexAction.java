@@ -13,7 +13,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.FormsIndexForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * A call to LoadFormsIndexProcessor will get all the existing forms' list.
@@ -44,7 +44,7 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 		if (callBackURL != null && !callBackURL.equals(""))
 		{
 			CacheManager.clearCache(request);
-			CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callBackURL);
+			CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callBackURL);
 			CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
 		}
 		else
@@ -55,7 +55,7 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 		FormsIndexForm loadFormIndexForm = (FormsIndexForm) form;
 		LoadFormsIndexProcessor loadFormsIndexProcessor = LoadFormsIndexProcessor.getInstance();
 		loadFormsIndexProcessor.populateFormsIndex(loadFormIndexForm);
-		return mapping.findForward(Constants.SHOW_DYEXTN_HOMEPAGE);
+		return mapping.findForward(DEConstants.SHOW_DYEXTN_HOMEPAGE);
 	}
 
 }

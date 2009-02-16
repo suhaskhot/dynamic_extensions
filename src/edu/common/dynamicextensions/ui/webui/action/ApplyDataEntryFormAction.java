@@ -55,7 +55,7 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 
@@ -78,9 +78,9 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		List<String> errorList = null;
 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_STACK);
+				.getObjectFromCache(request, DEConstants.CONTAINER_STACK);
 		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
-				.getObjectFromCache(request, Constants.VALUE_MAP_STACK);
+				.getObjectFromCache(request, DEConstants.VALUE_MAP_STACK);
 		if ((containerStack != null && !containerStack.isEmpty())
 				&& (valueMapStack != null || !valueMapStack.isEmpty()))
 		{
@@ -140,7 +140,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				UserInterfaceiUtility.clearContainerStack(request);
 			}
-			actionForward = mapping.findForward(Constants.SUCCESS);
+			actionForward = mapping.findForward(DEConstants.SUCCESS);
 		}
 		return actionForward;
 	}
@@ -174,7 +174,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		boolean isCallbackURL = false;
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
-				Constants.CALLBACK_URL);
+				DEConstants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
 			if(calllbackURL.contains("?"))

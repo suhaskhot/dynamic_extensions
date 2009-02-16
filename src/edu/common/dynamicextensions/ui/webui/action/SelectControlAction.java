@@ -21,7 +21,7 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -59,14 +59,14 @@ public class SelectControlAction extends BaseDynamicExtensionsAction
 			{
 				String operationMode = request.getParameter("operationMode");
 				request.setAttribute("operationMode", operationMode);
-				return mapping.findForward(Constants.ADD_SUB_FORM);
+				return mapping.findForward(DEConstants.ADD_SUB_FORM);
 			}
 			else
 			{
 				//Add form control
 				addControlToForm(containerInterface, controlsForm);
 				request.setAttribute("controlsList", controlsForm.getChildList());
-				return mapping.findForward(Constants.SUCCESS);
+				return mapping.findForward(DEConstants.SUCCESS);
 			}
 		}
 		catch (Exception e)

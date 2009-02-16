@@ -36,7 +36,7 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * This Action class handles two situations ,
@@ -78,11 +78,11 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			if (operationMode != null)
 			{
-				if (operationMode.equals(Constants.ADD_SUB_FORM_OPR))
+				if (operationMode.equals(DEConstants.ADD_SUB_FORM_OPR))
 				{
 					addSubForm(request, formDefinitionForm);
 				}
-				else if (operationMode.equals(Constants.EDIT_SUB_FORM_OPR))
+				else if (operationMode.equals(DEConstants.EDIT_SUB_FORM_OPR))
 				{
 					editSubForm(request, formDefinitionForm);
 				}
@@ -94,7 +94,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 
 			String operation = formDefinitionForm.getOperation();
-			if (operation.equals(Constants.SAVE_FORM))
+			if (operation.equals(DEConstants.SAVE_FORM))
 			{
 				saveContainer(request, formDefinitionForm);
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
@@ -102,7 +102,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			target = findForwardTarget(operation);
 			String callbackURL = null;
-			if (target.equals(Constants.SHOW_DYEXTN_HOMEPAGE))
+			if (target.equals(DEConstants.SHOW_DYEXTN_HOMEPAGE))
 			{
 				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
 				if (callbackURL != null && !callbackURL.equals(""))
@@ -142,7 +142,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 		//ContainerInterface currentContainer = WebUIManager.getCurrentContainer(request);
 		ContainerInterface currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(
-				request, Constants.CONTAINER_INTERFACE);
+				request, DEConstants.CONTAINER_INTERFACE);
 		if (currentContainer != null)
 		{
 			containerProcessor.saveContainer(currentContainer);
@@ -158,13 +158,13 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if (operation != null)
 		{
-			if (operation.equals(Constants.BUILD_FORM))
+			if (operation.equals(DEConstants.BUILD_FORM))
 			{
-				return Constants.SHOW_BUILD_FORM_JSP;
+				return DEConstants.SHOW_BUILD_FORM_JSP;
 			}
-			else if (operation.equals(Constants.SAVE_FORM))
+			else if (operation.equals(DEConstants.SAVE_FORM))
 			{
-				return Constants.SHOW_DYEXTN_HOMEPAGE;
+				return DEConstants.SHOW_DYEXTN_HOMEPAGE;
 			}
 		}
 		return null;
@@ -186,7 +186,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			//update container
 
 			EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(
-					request, Constants.ENTITYGROUP_INTERFACE);
+					request, DEConstants.ENTITYGROUP_INTERFACE);
 
 			DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, currentContainer,
 					formDefinitionForm.getFormName());
@@ -262,7 +262,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		ContainerInterface mainFormContainer = WebUIManager.getCurrentContainer(request);
 
 		EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request,
-				Constants.ENTITYGROUP_INTERFACE);
+				DEConstants.ENTITYGROUP_INTERFACE);
 
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
 				.getInstance();
@@ -337,7 +337,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if (container != null)
 		{
-			CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, container
+			CacheManager.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME, container
 					.getCaption());
 			CacheManager.addObjectToCache(request, container.getCaption(), container);
 		}
@@ -371,7 +371,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		ContainerInterface container = WebUIManager.getCurrentContainer(request);
 		EntityGroupInterface entityGroup = (EntityGroupInterface) CacheManager.getObjectFromCache(
-				request, Constants.ENTITYGROUP_INTERFACE);
+				request, DEConstants.ENTITYGROUP_INTERFACE);
 
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
 				.getInstance();
@@ -383,9 +383,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 				formDefinitionForm, entityGroup);
 
 		updateCacheReferences(request, container);
-		if (CacheManager.getObjectFromCache(request, Constants.CONTAINER_INTERFACE) == null)
+		if (CacheManager.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE) == null)
 		{
-			CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
+			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
 		}
 	}
 
@@ -415,12 +415,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			throws IOException
 	{
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
-				Constants.CALLBACK_URL);
+				DEConstants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
 			String associationIds = CacheManager.getAssociationIds(request);
 			ContainerInterface containerInterface = (ContainerInterface) CacheManager
-					.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+					.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 			calllbackURL = calllbackURL + "?" + WebUIManager.getOperationStatusParameterName()
 					+ "=" + webUIManagerConstant + "&"
 					+ WebUIManagerConstants.DELETED_ASSOCIATION_IDS + "=" + associationIds;

@@ -12,7 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * This class is used to redirect the user to the Home Page.
@@ -35,8 +35,8 @@ public class ForwardAction extends BaseDynamicExtensionsAction
 	{
 		HttpSession session = request.getSession();
 		Map cacheMap = new HashMap();
-		session.setAttribute(Constants.CACHE_MAP, cacheMap);
-		return mapping.findForward(Constants.SUCCESS);
+		session.setAttribute(DEConstants.CACHE_MAP, cacheMap);
+		return mapping.findForward(DEConstants.SUCCESS);
 	}
 
 }

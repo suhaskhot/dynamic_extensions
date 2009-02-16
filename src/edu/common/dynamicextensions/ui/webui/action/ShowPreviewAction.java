@@ -12,7 +12,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 public class ShowPreviewAction extends BaseDynamicExtensionsAction
 {
@@ -28,7 +28,7 @@ public class ShowPreviewAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response)
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+				.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 		ControlsForm controlsForm = (ControlsForm) form;
 
 		if ((controlsForm != null) && (containerInterface != null))

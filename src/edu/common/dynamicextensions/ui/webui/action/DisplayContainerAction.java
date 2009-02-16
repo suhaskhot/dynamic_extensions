@@ -15,7 +15,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -43,7 +43,7 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 		{
 			actionForward = actionForward + "EditForm" + "&containerIdentifier=" + id;
 		}
-		CacheManager.addObjectToCache(request, Constants.CALLBACK_URL, callbackUrl);
+		CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callbackUrl);
 		CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
 		return new ActionForward(actionForward);
 	}

@@ -17,7 +17,7 @@ import org.apache.struts.actions.DispatchAction;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.util.logger.Logger;
 
 public class BaseDynamicExtensionsAction extends DispatchAction
@@ -89,7 +89,7 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 		String actionForwardString = null;
 		if (isSystemException)
 		{
-			actionForwardString = Constants.SYSTEM_EXCEPTION;
+			actionForwardString = DEConstants.SYSTEM_EXCEPTION;
 			System.out.println(DynamicExtensionsUtility.getStackTrace(e));
 			request.setAttribute("exceptionString", DynamicExtensionsUtility.getStackTrace(e));
 		}

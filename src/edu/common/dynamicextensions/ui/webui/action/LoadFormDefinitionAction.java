@@ -35,8 +35,8 @@ import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
 public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 {
@@ -73,7 +73,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			return mapping.findForward(actionForwardString);
 		}
 
-		return mapping.findForward(Constants.SUCCESS);
+		return mapping.findForward(DEConstants.SUCCESS);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		ContainerInterface container = null;
 
 		EntityGroupInterface entityGroup = (EntityGroup) CacheManager.getObjectFromCache(request,
-				Constants.ENTITYGROUP_INTERFACE);
+				DEConstants.ENTITYGROUP_INTERFACE);
 
 		String operationMode = formDefinitionForm.getOperationMode();
 		if (operationMode == null && request.getAttribute("operationMode") != null)
@@ -101,12 +101,12 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		String containerIdentifier = request.getParameter("containerIdentifier");
 		if (operationMode != null)
 		{
-			if (operationMode.equalsIgnoreCase(Constants.ADD_NEW_FORM))
+			if (operationMode.equalsIgnoreCase(DEConstants.ADD_NEW_FORM))
 			{
 				loadFormDefinitionProcessor.populateContainerInformation(container,
 						formDefinitionForm, entityGroup);
 			}
-			else if (operationMode.equalsIgnoreCase(Constants.EDIT_FORM))
+			else if (operationMode.equalsIgnoreCase(DEConstants.EDIT_FORM))
 			{
 				if (containerIdentifier != null)
 				{
@@ -120,12 +120,12 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 				loadFormDefinitionProcessor.populateContainerInformation(container,
 						formDefinitionForm, entityGroup);
 			}
-			else if (operationMode.equalsIgnoreCase(Constants.ADD_SUB_FORM_OPR))
+			else if (operationMode.equalsIgnoreCase(DEConstants.ADD_SUB_FORM_OPR))
 			{
 				loadFormDefinitionProcessor.initializeSubFormAttributes(formDefinitionForm,
 						entityGroup);
 			}
-			else if (operationMode.equalsIgnoreCase(Constants.EDIT_SUB_FORM_OPR))
+			else if (operationMode.equalsIgnoreCase(DEConstants.EDIT_SUB_FORM_OPR))
 			{
 				container = WebUIManager.getCurrentContainer(request);
 				loadFormDefinitionProcessor.populateContainerInformation(container,
@@ -161,9 +161,9 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 		}
 
 		ContainerInterface cachedContainer = (ContainerInterface) CacheManager.getObjectFromCache(
-				request, Constants.CONTAINER_INTERFACE);
+				request, DEConstants.CONTAINER_INTERFACE);
 		String currentContainerName = (String) CacheManager.getObjectFromCache(request,
-				Constants.CURRENT_CONTAINER_NAME);
+				DEConstants.CURRENT_CONTAINER_NAME);
 		loadFormDefinitionProcessor.initializeFormAttributes(entityGroup, cachedContainer,
 				currentContainerName, formDefinitionForm);
 

@@ -23,7 +23,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.ControlsForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.util.logger.Logger;
 
 /**
@@ -77,13 +77,13 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				String operationMode = request.getParameter("operationMode");
 				request.setAttribute("operationMode", operationMode);
 				request.setAttribute("currentContainerName", containerInterface.getCaption());
-				actionForwardString = Constants.EDIT_SUB_FORM_PAGE;
+				actionForwardString = DEConstants.EDIT_SUB_FORM_PAGE;
 			}
 			else
 			{
 				loadFormControlsProcessor.loadFormControls(controlsForm, containerInterface);
 				request.setAttribute("controlsList", controlsForm.getChildList());
-				actionForwardString = Constants.SHOW_BUILD_FORM_JSP;
+				actionForwardString = DEConstants.SHOW_BUILD_FORM_JSP;
 			}
 			if ((controlsForm.getDataType() != null)
 					&& DynamicExtensionsUtility.isDataTypeNumeric(controlsForm.getDataType()))
@@ -118,7 +118,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		//update cache refernces
 		CacheManager.addObjectToCache(request, selectedControl.getCaption(), selectedControl
 				.getContainer());
-		CacheManager.addObjectToCache(request, Constants.CURRENT_CONTAINER_NAME, selectedControl
+		CacheManager.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME, selectedControl
 				.getCaption());
 	}
 

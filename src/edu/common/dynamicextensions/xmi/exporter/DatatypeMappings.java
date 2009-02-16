@@ -10,7 +10,6 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.entitymanager.DataTypeFactory;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
-import edu.common.dynamicextensions.util.global.Variables;
 
 /**
  * @author preeti_lodha
@@ -136,7 +135,7 @@ public enum DatatypeMappings {
 	public static void main(String[] args) throws DataTypeFactoryInitializationException
 	{
 		DomainObjectFactory.getInstance().createFloatAttribute();
-		Variables.databaseName = "MYSQL";
+//		Variables.databasenames = "MYSQL";
 		//System.out.println(d.getJavaClassMapping());
 		//System.out.println(d.getSQLClassMapping());
 	}

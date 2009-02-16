@@ -58,6 +58,7 @@ import org.omg.uml.modelmanagement.Model;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -94,13 +95,13 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Variables;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * @author preeti_lodha
@@ -957,6 +958,8 @@ public class XMIExporter implements XMIExportInterface
 	@SuppressWarnings("unchecked")
 	private UmlClass createDataClass(String tableName)
 	{
+		String appName= DynamicExtensionDAO.getInstance().getAppName();
+		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
 		UmlClass dataClass = umlPackage.getCore().getUmlClass().createUmlClass(tableName,
 				VisibilityKindEnum.VK_PUBLIC, false, false, false, false, false);
 		//Table stereotype
@@ -967,9 +970,9 @@ public class XMIExporter implements XMIExportInterface
 		dataClass.getTaggedValue().add(
 				createTaggedValue(XMIConstants.STEREOTYPE, XMIConstants.TABLE));
 		dataClass.getTaggedValue().add(
-				createTaggedValue(XMIConstants.TAGGED_VALUE_GEN_TYPE, Variables.databaseName));
+				createTaggedValue(XMIConstants.TAGGED_VALUE_GEN_TYPE, dbType));
 		dataClass.getTaggedValue().add(
-				createTaggedValue(XMIConstants.TAGGED_VALUE_PRODUCT_NAME, Variables.databaseName));
+				createTaggedValue(XMIConstants.TAGGED_VALUE_PRODUCT_NAME,dbType));
 		return dataClass;
 	}
 
@@ -2252,10 +2255,10 @@ public class XMIExporter implements XMIExportInterface
 			    true)));
 		 */
 
-		Variables.databaseName = "MYSQL";
+		//Variables.databaseName = "MYSQL";
 		generateXMIForIntegrationTables();
 		//test();		//For internal testing
-		//createSmokingHisroy();
+		//createSmokingHistory();
 
 		/*if(args.length<3)
 		{

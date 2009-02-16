@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 
 /**
  * @author kunal_kamble

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
+import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
 
 /**
  * Entity object stores information of the entity.For each entity a dynamic table is generated using the metadata

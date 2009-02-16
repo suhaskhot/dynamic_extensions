@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domaininterface;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 
 /**
  * This interface contains all the information regarding association between the entities.

@@ -1,8 +1,8 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
 /**
  * For every entity association there are two roles invoved.They are source role and target role.

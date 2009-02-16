@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
+import edu.common.dynamicextensions.util.global.DEConstants.ValueDomainType;
 
 public interface CaDSRValueDomainInfoInterface extends DynamicExtensionBaseDomainObjectInterface
 {
@@ -37,7 +37,7 @@ public interface CaDSRValueDomainInfoInterface extends DynamicExtensionBaseDomai
 	ValueDomainType getValueDomainType();
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.Constants.AssociationDirection)
+	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection)
 	 */
 	void setValueDomainType(ValueDomainType valueDomainType);
 

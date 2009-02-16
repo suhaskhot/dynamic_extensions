@@ -26,8 +26,8 @@ import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
-import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * @author kunal_kamble

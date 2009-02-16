@@ -52,12 +52,12 @@ public class DateRangeValidator implements ValidatorRuleInterface
 
 			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 			{
-				value = DynamicExtensionsUtility.formatMonthAndYearDate(value);
+				value = DynamicExtensionsUtility.formatMonthAndYearDate(value,false);
 				value = value.substring(0, value.length() - 4);
 			}
 			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 			{
-				value = DynamicExtensionsUtility.formatYearDate(value);
+				value = DynamicExtensionsUtility.formatYearDate(value,false);
 				value = value.substring(0, value.length() - 4);
 			}
 
@@ -70,12 +70,12 @@ public class DateRangeValidator implements ValidatorRuleInterface
 				if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 				{
 					parameterValue = DynamicExtensionsUtility
-							.formatMonthAndYearDate(parameterValue);
+							.formatMonthAndYearDate(parameterValue,false);
 					parameterValue = parameterValue.substring(0, parameterValue.length() - 4);
 				}
 				if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 				{
-					parameterValue = DynamicExtensionsUtility.formatYearDate(parameterValue);
+					parameterValue = DynamicExtensionsUtility.formatYearDate(parameterValue,false);
 					parameterValue = parameterValue.substring(0, parameterValue.length() - 4);
 				}
 

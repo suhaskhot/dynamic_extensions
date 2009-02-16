@@ -42,7 +42,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 /**
  * @author kunal_kamble
  * This class creates the category/categories defined in
- * the csv file.
+ * the CSV file.
  */
 public class CategoryGenerator
 {
@@ -167,7 +167,7 @@ public class CategoryGenerator
 
 					if (categoryFileParser.hasSubcategory())
 					{
-						//Set this flag when subcategory is just after display label
+						//Set this flag when sub category is just after display label
 						if (firstTimeinDisplayLabel)
 						{
 							firstTimeinDisplayLabel = false;

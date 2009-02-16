@@ -22,7 +22,7 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleParamete
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**

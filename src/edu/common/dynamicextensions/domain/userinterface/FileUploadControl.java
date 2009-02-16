@@ -6,7 +6,6 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
-import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -65,12 +64,12 @@ public class FileUploadControl extends Control implements FileUploadInterface
 
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
-		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
-
+//		FileAttributeRecordValue fileAttributeRecordValue = (FileAttributeRecordValue) this.value;
 		String htmlString = "&nbsp;";
-		if (fileAttributeRecordValue != null)
+		
+		if (this.value != null)
 		{
-			String fileName = fileAttributeRecordValue.getFileName();
+			String fileName = this.value.toString();
 			htmlString = "<span class = '" + cssClass + "'> " + fileName + "</span>";
 		}
 		return htmlString;

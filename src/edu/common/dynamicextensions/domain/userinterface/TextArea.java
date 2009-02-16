@@ -90,7 +90,7 @@ public class TextArea extends Control implements TextAreaInterface
 		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName
 				+ "' " + "id='" + htmlComponentName + "' ";
 
-		//If control is defined as readonly through category CSV file,make it Disabled
+		//If control is defined as read only through category CSV file,make it Disabled
 
 		if (this.isReadOnly != null && getIsReadOnly())
 		{

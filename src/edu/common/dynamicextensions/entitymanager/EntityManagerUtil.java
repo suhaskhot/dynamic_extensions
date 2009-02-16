@@ -1,18 +1,14 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.hibernate.Session;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -27,13 +23,11 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.wustl.common.dao.HibernateDAO;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.DBUtil;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
 
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
@@ -46,23 +40,13 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static ResultSet executeQuery(String query, boolean... useClnSession)
+	/*public static ResultSet executeQuery(String query,DAO dao)
 			throws DynamicExtensionsSystemException
 	{
 		Connection conn = null;
-		Session session = null;
 		try
 		{
-			if (useClnSession.length == 1 && useClnSession[0])
-			{
-				session = DBUtil.getCleanSession();
-				conn = session.connection();
-			}
-			else
-			{
-				conn = DBUtil.getConnection();
-			}
-
+			conn = dao.getCleanConnection();
 			conn.setAutoCommit(false);
 			Statement statement = null;
 			statement = conn.createStatement();
@@ -81,7 +65,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			}
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-	}
+	}*/
 
 	/**
 	 * @param inputs
@@ -104,11 +88,17 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public static int getNoOfRecord(String query) throws DynamicExtensionsSystemException
 	{
 		ResultSet resultSet = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			resultSet = executeQuery(query);
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getQueryResultSet(query);
 			resultSet.next();
 			return resultSet.getInt(1);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		catch (SQLException e)
 		{
@@ -120,9 +110,9 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			{
 				try
 				{
-					resultSet.close();
+					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
-				catch (SQLException e)
+				catch (DAOException e)
 				{
 					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
@@ -136,18 +126,14 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDML(JDBCDAO jdbcDAO, String query) throws DynamicExtensionsSystemException
+	public int executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
 	{
 		System.out.println(query);
-		Connection conn = null;
 		try
 		{
-			conn = jdbcDAO.getConnection();
-			Statement statement = null;
-			statement = conn.createStatement();
-			return statement.executeUpdate(query);
+			return jdbcDao.executeUpdate(query);
 		}
-		catch (Exception e)
+		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
@@ -159,22 +145,14 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDMLQueryList(JDBCDAO jdbcDAO, List<String> queries)
+	public int executeDMLQueryList(JDBCDAO jdbcDao, List<String> queries)
 			throws DynamicExtensionsSystemException
 	{
 		int result = -1;
 
 		for (String query : queries)
 		{
-			try
-			{
-				jdbcDAO.setAutoCommit(false);
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
-			result = executeDML(jdbcDAO, query);
+			result = executeDML(jdbcDao, query);
 		}
 
 		return result;
@@ -191,6 +169,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	{
 		// Query to get next identifier.
 		StringBuffer query = new StringBuffer("SELECT MAX(IDENTIFIER) FROM " + tableName);
+		JDBCDAO jdbcDao = null;
 		try
 		{
 			Long identifier = null;
@@ -204,7 +183,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				ResultSet resultSet = null;
 				try
 				{
-					resultSet = executeQuery(query.toString());
+					jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+					resultSet = jdbcDao.getQueryResultSet(query.toString());
 					resultSet.next();
 					identifier = resultSet.getLong(1);
 					identifier = identifier + 1;
@@ -215,9 +195,9 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 					{
 						try
 						{
-							resultSet.close();
+							DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 						}
-						catch (SQLException e)
+						catch (DAOException e)
 						{
 							throw new DynamicExtensionsSystemException(e.getMessage(), e);
 						}
@@ -227,6 +207,11 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			idMap.put(tableName, identifier);
 
 			return identifier;
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Could not fetch the next identifier for table " + tableName);
 		}
 		catch (SQLException e)
 		{
@@ -245,42 +230,34 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	{
 		List<Long> results = new ArrayList<Long>();
 
-		Session session = null;
-		Connection con = null;
-		Statement statement = null;
-		ResultSet resultSet = null;
 
+		ResultSet resultSet = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			session = DBUtil.getCleanSession();
-			con = session.connection();
-			statement = con.createStatement();
-			resultSet = statement.executeQuery(query);
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getQueryResultSet(query);
 			while (resultSet.next())
 			{
 				Long identifier = resultSet.getLong(1);
 				results.add(identifier);
 			}
 		}
-		catch (SQLException e)
+		catch (DAOException e)
 		{
-			e.printStackTrace();
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		catch (BizLogicException e)
+		catch (SQLException e)
 		{
-			e.printStackTrace();
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		finally
 		{
 			try
 			{
-				resultSet.close();
-				statement.close();
-				session.close();
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
-			catch (SQLException e)
+			catch (DAOException e)
 			{
 				e.printStackTrace();
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
@@ -409,7 +386,15 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			Long entityId = entity.getId();
 			if (entityId != null)
 			{
-				EntityInterface dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, entityId);
+				EntityInterface dbaseCopy=null;
+				try
+				{
+					dbaseCopy = (Entity) DynamicExtensionsUtility.getCleanObject(Entity.class.getCanonicalName(), entityId);
+				}
+				catch (DAOException e)
+				{
+					e.printStackTrace();
+				}				
 				isChanged = isPrimaryKeyChanged(entity, dbaseCopy);
 			}
 		}
@@ -543,9 +528,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 		List<EntityInterface> savedEntities = DynamicExtensionsUtility
 				.getSavedEntities(entityGroup);
+		
+		try
+		{
 		for (EntityInterface savedEntity : savedEntities)
 		{
-			Entity dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, savedEntity.getId());
+			Entity dbaseCopy = (Entity) hibernateDAO.retrieveById(Entity.class.getCanonicalName(), savedEntity.getId());
 
 			List<String> updateQueries = queryBuilder.getUpdateEntityQueryList(
 					(Entity) savedEntity, (Entity) dbaseCopy, revQueries);
@@ -554,7 +542,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				queries.addAll(updateQueries);
 			}
 		}
-
+		}
+		catch(DAOException exception)
+		{
+			throw new DynamicExtensionsSystemException(exception.getMessage(),exception);
+		}
+		
 		return queries;
 	}
 
@@ -566,20 +559,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 */
 	public boolean isDataPresent(String tableName) throws DynamicExtensionsSystemException
 	{
-		boolean isDataPrsent = false;
-
-		try
-		{
-			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
-			isDataPrsent = queryBuilder.isDataPresent(tableName);
-		}
-		finally
-		{
-			DBUtil.closeConnection();
-
-		}
-
-		return isDataPrsent;
+		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+		return queryBuilder.isDataPresent(tableName);
 	}
 
 	/**

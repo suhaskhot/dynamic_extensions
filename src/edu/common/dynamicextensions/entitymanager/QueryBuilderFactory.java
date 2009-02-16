@@ -1,8 +1,9 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDBFactory;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 
 /**
  * This class returns the queryBuilder depending on the database
@@ -27,28 +28,9 @@ public class QueryBuilderFactory
 		{
 			return queryBuilder;
 		}
-
-		if (Variables.databaseName.equalsIgnoreCase(Constants.MYSQL_DATABASE))
-		{
-			queryBuilder = new DynamicExtensionMySQLQueryBuilder();
-		}
-		else if (Variables.databaseName.equalsIgnoreCase(Constants.ORACLE_DATABASE))
-		{
-			queryBuilder = new DynamicExtensionOracleQueryBuilder();
-		}
-		else if (Variables.databaseName.equalsIgnoreCase(Constants.POSTGRESQL_DATABASE))
-		{
-			queryBuilder = new DynamicExtensionPostGreSQLQueryBuilder();
-		}
-		else if (Variables.databaseName.equalsIgnoreCase(Constants.DB2_DATABASE))
-		{
-			queryBuilder = new DynamicExtensionDb2QueryBuilder();
-		}
-		else if (Variables.databaseName.equalsIgnoreCase(Constants.MSSQLSERVER_DATABASE))
-		{
-			queryBuilder = new DynamicExtensionMsSQLServerQueryBuilder();
-		}
-
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String dbType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		queryBuilder=DynamicExtensionDBFactory.getInstance().getQueryBuilder(dbType);
 		return queryBuilder;
 	}
 

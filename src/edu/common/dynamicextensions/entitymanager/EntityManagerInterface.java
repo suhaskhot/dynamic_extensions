@@ -24,8 +24,8 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  *
@@ -572,7 +572,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	boolean editDataForSingleEntity(EntityInterface entity, Map<?, ?> dataValue, Long recordId,
-			JDBCDAO jdbcDAO, Long... userId) throws DynamicExtensionsSystemException,
+			JDBCDAO jdbcDao, Long... userId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -585,7 +585,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	Long insertDataForHeirarchy(EntityInterface entity,
-			Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDAO, Long... id)
+			Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDao, Long... id)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
@@ -599,7 +599,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	boolean editDataForHeirarchy(EntityInterface entity,
-			Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDAO,
+			Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDao,
 			Long... userId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException;
 
@@ -709,8 +709,7 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String getContainerCaptionFromEntityId(Long entityId)
-			throws DynamicExtensionsSystemException;
+	String getContainerCaptionFromEntityId(Long entityId) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return SystemGenerated EntityGroup beans
@@ -726,6 +725,7 @@ public interface EntityManagerInterface
 	 */
 	Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId)
 			throws DynamicExtensionsSystemException;
+
 	/**
 	 * @param entityName to get entityGroup
 	 * @return entityGroupName of a particular entity
@@ -733,4 +733,16 @@ public interface EntityManagerInterface
 	 */
 	String getEntityGroupNameByEntityName(String entityName)
 			throws DynamicExtensionsSystemException;
+
+	/**
+	 * This method return all the records based on entity
+	 * @param entity Identifier of entity
+	 * @param recordId recordId of entity
+	 * @return recordValues for the entity
+	 * @throws DynamicExtensionsSystemException fails to get entity record
+	 * @throws DynamicExtensionsApplicationException fails to get entity record
+	 */
+	Map<AbstractAttributeInterface, Object> getRecordForSingleEntity(EntityInterface entity,
+			Long recordId) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 }

@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.processor;
 
-import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.global.CommonServiceLocator;
 
 /**
  * @author preeti_munot
@@ -46,13 +46,13 @@ public class ProcessorConstants
 	public static final String OPERATION_EDIT = "Edit";
 
 	// Date Formats.
-	public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
+	public static final String DATE_ONLY_FORMAT = CommonServiceLocator.getInstance().getDatePattern();
 	public static final String DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
 	public static final String MONTH_YEAR_FORMAT = "MM-yyyy";
 	public static final String YEAR_ONLY_FORMAT = "yyyy";
 	public static final String SQL_DATE_ONLY_FORMAT = "MM-dd-yyyy";
 	public static final String SQL_DATE_TIME_FORMAT = "MM-dd-yyyy HH24:MI";
-	public static final String DATE_SEPARATOR = Constants.DATE_SEPARATOR;
+	public static final String DATE_SEPARATOR = CommonServiceLocator.getInstance().getDateSeparator();
 
 	// Types of permisible value sources for Combobox.
 	public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";

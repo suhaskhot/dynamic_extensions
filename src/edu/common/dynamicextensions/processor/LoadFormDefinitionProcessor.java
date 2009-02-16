@@ -25,7 +25,7 @@ import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 {
@@ -141,7 +141,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				if (associationObj != null)
 				{
 					String label = associationObj.getLabel();
-					String id = Constants.GROUP_PREFIX + associationObj.getId();
+					String id = DEConstants.GROUP_PREFIX + associationObj.getId();
 					definedEntitiesXML.append(getXMLNode(id, label, false, false));
 					definedEntitiesXML.append(getAssociationTreeXML(associationObj
 							.getAssociationTreeObjectCollection()));
@@ -238,7 +238,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		formDefinitionForm.setGroupName(groupName);
 		boolean addNewNode = true;
 		if ((formDefinitionForm.getOperationMode() != null)
-				&& (formDefinitionForm.getOperationMode().equals(Constants.EDIT_FORM)))
+				&& (formDefinitionForm.getOperationMode().equals(DEConstants.EDIT_FORM)))
 		{
 			addNewNode = false;
 		}

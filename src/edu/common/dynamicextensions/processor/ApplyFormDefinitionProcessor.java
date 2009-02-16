@@ -25,9 +25,9 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
 public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 {

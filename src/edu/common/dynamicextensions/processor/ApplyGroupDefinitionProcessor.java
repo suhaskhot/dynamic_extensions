@@ -19,7 +19,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author preeti_munot
@@ -71,7 +71,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 				EntityInterface entity = (EntityInterface) container.getAbstractEntity();
 				EntityGroupInterface existingEntityGroup = DynamicExtensionsUtility
 						.getEntityGroup(entity);
-				if (operationMode.equals(Constants.EDIT_FORM))
+				if (operationMode.equals(DEConstants.EDIT_FORM))
 				{
 					existingEntityGroup.setDescription(groupUIBean.getGroupDescription());
 					if (existingEntityGroup.getId() != Long.parseLong(groupUIBean.getGroupName()))
@@ -114,14 +114,14 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 						.getGroupName());
 				container = DomainObjectFactory.getInstance().createContainer();
 				container.setCaption("New Form");
-				CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, container);
-				CacheManager.addObjectToCache(request, Constants.ENTITYGROUP_INTERFACE,
+				CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
+				CacheManager.addObjectToCache(request, DEConstants.ENTITYGROUP_INTERFACE,
 						objEntityGroup);
 			}
 		}
 		else if ((createGroupAs != null)
 				&& (createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW))
-				&& operationMode.equals(Constants.EDIT_FORM))
+				&& operationMode.equals(DEConstants.EDIT_FORM))
 		{
 			//This is the case where Form is already is within one group.But in Edit mode the form Group is created newly
 			//In this case ,new group requires to create ,the entity and container set to it
@@ -131,7 +131,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 				EntityInterface entity = (EntityInterface) container.getAbstractEntity();
 				EntityGroupInterface existingEntityGroup = DynamicExtensionsUtility
 						.getEntityGroup(entity);
-				if (operationMode.equals(Constants.EDIT_FORM))
+				if (operationMode.equals(DEConstants.EDIT_FORM))
 				{
 					//check whether groupname already exist
 					DynamicExtensionsUtility.validateName(groupUIBean.getGroupNameText());

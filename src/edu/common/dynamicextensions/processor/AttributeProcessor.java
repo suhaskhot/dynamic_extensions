@@ -67,9 +67,9 @@ import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.importer.XMIImportValidator;
 import edu.common.dynamicextensions.xmi.model.ControlsModel;
 import edu.wustl.common.beans.NameValueBean;
@@ -1076,13 +1076,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						{
 							value = DynamicExtensionsUtility
 									.formatMonthAndYearDate(attributeUIBeanInformationIntf
-											.getAttributeDefaultValue());
+											.getAttributeDefaultValue(),false);
 						}
 						else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 						{
 							value = DynamicExtensionsUtility
 									.formatYearDate(attributeUIBeanInformationIntf
-											.getAttributeDefaultValue());
+											.getAttributeDefaultValue(),false);
 						}
 						else
 						{

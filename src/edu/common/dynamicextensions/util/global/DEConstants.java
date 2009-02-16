@@ -10,13 +10,14 @@
 
 package edu.common.dynamicextensions.util.global;
 
+
 /**
  * This class stores the constants used in the operations in the application.
  * @author Sujay Narkar
  * @author Rahul Ner
  */
 
-public class Constants extends edu.wustl.common.util.global.Constants
+public class DEConstants
 {
 
 	public static final int ENTITY_FORM_ID = 301;
@@ -83,8 +84,6 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final int DATA_TABLE_STATE_NOT_CREATED = 2;
 	public static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
 
-	public static final String DATE_ONLY_FORMAT = Constants.DATE_PATTERN_MM_DD_YYYY;
-
 	public static final String ID = "id";
 	public static final String IDENTIFIER = "identifier";
 	public static final String LIST_OF_CONTAINER = "listofContainer";
@@ -93,6 +92,12 @@ public class Constants extends edu.wustl.common.util.global.Constants
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
 
+	public static final String MYSQL_DATABASE = "MYSQL";
+	public static final String DB2_DATABASE = "DB2";
+	public static final String ORACLE_DATABASE = "ORACLE";
+	public static final String POSTGRESQL_DATABASE = "DATABASE";
+	public static final String MSSQLSERVER_DATABASE = "MSSQLSERVER";
+	
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);
 

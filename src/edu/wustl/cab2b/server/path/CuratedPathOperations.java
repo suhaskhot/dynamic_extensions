@@ -6,12 +6,11 @@ import java.util.Set;
 
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.metadata.path.CuratedPath;
 import edu.wustl.common.querysuite.metadata.path.ICuratedPath;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.global.Constants;
 
 /**
  * Class for C R U D operations on curated path
@@ -34,7 +33,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		{
 			curatePathList = retrieve(CuratedPath.class.getName(), "id", id);
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage());
 		}
@@ -54,7 +53,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		{
 			curatePathList = (List<ICuratedPath>) retrieve(CuratedPath.class.getName());
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage());
 		}
@@ -69,9 +68,9 @@ public class CuratedPathOperations extends DefaultBizLogic
 	{
 		try
 		{
-			insert(curatedPath, Constants.HIBERNATE_DAO);
+			insert(curatedPath);
 		}
-		catch (Exception e)
+		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to save curatedPath, Exception:" + e.getMessage());
 		}
@@ -89,7 +88,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		{
 			pathList = retrieve(Path.class.getName(), "pathId", id);
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage());
 		}

@@ -24,8 +24,8 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
 import edu.wustl.cab2b.server.util.InheritanceUtil;
@@ -195,9 +195,9 @@ public class DomainModelProcessor {
         association.setTargetEntity(tgtEntity);
         association.setTargetRole(getRole(tgtEdge));
         if (umlAssociation.isBidirectional()) {
-            association.setAssociationDirection(Constants.AssociationDirection.BI_DIRECTIONAL);
+            association.setAssociationDirection(DEConstants.AssociationDirection.BI_DIRECTIONAL);
         } else {
-            association.setAssociationDirection(Constants.AssociationDirection.SRC_DESTINATION);
+            association.setAssociationDirection(DEConstants.AssociationDirection.SRC_DESTINATION);
         }
         String originalAssociationIdentifier = InheritanceUtil.generateUniqueId(association);
         List<EntityInterface> childrenOfSrc = new ArrayList<EntityInterface>();
@@ -238,11 +238,11 @@ public class DomainModelProcessor {
         int maxCardinality = edge.getMaxCardinality();
         int minCardinality = edge.getMinCardinality();
         RoleInterface role = deFactory.createRole();
-        role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
+        role.setAssociationsType(DEConstants.AssociationType.ASSOCIATION);
         role.setName(edge.getRoleName());
         //Bug# 10295: Workaround to fix the max cardinality = 0. Assuming these cases are MANY
         if (maxCardinality == 0) {
-            role.setMaximumCardinality(Constants.Cardinality.MANY);
+            role.setMaximumCardinality(DEConstants.Cardinality.MANY);
         } else {
             role.setMaximumCardinality(getCardinality(maxCardinality));
         }
@@ -256,14 +256,14 @@ public class DomainModelProcessor {
      * @param cardinality integer value of cardinality.
      * @return Dynamic Extension's Cardinality enumeration
      */
-    private Constants.Cardinality getCardinality(int cardinality) {
+    private DEConstants.Cardinality getCardinality(int cardinality) {
         if (cardinality == 0) {
-            return Constants.Cardinality.ZERO;
+            return DEConstants.Cardinality.ZERO;
         }
         if (cardinality == 1) {
-            return Constants.Cardinality.ONE;
+            return DEConstants.Cardinality.ONE;
         }
-        return Constants.Cardinality.MANY;
+        return DEConstants.Cardinality.MANY;
     }
 
     /**

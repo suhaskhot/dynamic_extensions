@@ -17,7 +17,7 @@ import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
+import edu.common.dynamicextensions.util.global.DEConstants.ValueDomainType;
 import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
 import gov.nih.nci.cagrid.metadata.common.Enumeration;
 import gov.nih.nci.cagrid.metadata.common.UMLAttribute;

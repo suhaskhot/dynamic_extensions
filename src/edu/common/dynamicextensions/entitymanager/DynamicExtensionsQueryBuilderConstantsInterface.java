@@ -46,8 +46,8 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String OPENING_BRACKET = "( ";
 	String CLOSING_BRACKET = " ) ";
 	String COMMA = " , ";
-	String EQUAL = " = ";
-	String IN_KEYWORD = " IN ";
+	String EQUAL = "=";
+	String IN_KEYWORD = "IN";
 	String WHITESPACE = " ";
 	String IDENTIFIER = "IDENTIFIER";
 	String CATEGORY_ROOT_ID = "CATEGORY_ROOT_ID";

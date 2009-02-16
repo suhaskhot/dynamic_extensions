@@ -23,15 +23,14 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.DBTypes;
+import edu.wustl.dao.util.NamedQueryParam;
 
 /**
  *
@@ -228,7 +227,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 				entityGroup = (EntityGroupInterface) entityGroups.iterator().next();
 			}
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
@@ -254,8 +253,8 @@ public class EntityGroupManager extends AbstractMetadataManager
 	public Collection<NameValueBean> getMainContainer(Long identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
-		substParams.put("0", new HQLPlaceHolderObject("long", identifier));
+		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+		substParams.put("0", new NamedQueryParam(DBTypes.LONG, identifier));
 
 		return executeHQL("getMainContainers", substParams);
 	}
@@ -319,8 +318,8 @@ public class EntityGroupManager extends AbstractMetadataManager
 		AssociationTreeObject assoTreeObject = new AssociationTreeObject(Long.valueOf(groupBean
 				.getValue()), groupBean.getName());
 
-		Map<String, HQLPlaceHolderObject> substParams = new HashMap<String, HQLPlaceHolderObject>();
-		substParams.put("0", new HQLPlaceHolderObject("long", assoTreeObject.getId()));
+		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+		substParams.put("0", new NamedQueryParam(DBTypes.LONG, assoTreeObject.getId()));
 
 		Object[] contBeans;
 		AssociationTreeObject contAssoTreeObj;
@@ -359,29 +358,33 @@ public class EntityGroupManager extends AbstractMetadataManager
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public boolean validateEntityGroup(EntityGroupInterface entityGroup)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		EntityGroup dbaseCopy = (EntityGroup) DBUtil.loadCleanObj(EntityGroup.class, entityGroup
-				.getId());
-
-		Collection<EntityInterface> entities = entityGroup.getEntityCollection();
-		for (EntityInterface entObject : entities)
+		try
 		{
-			Entity entity = (Entity) entObject;
-			if (entity.getId() == null)
+			EntityGroup dbaseCopy = (EntityGroup)DynamicExtensionsUtility.getCleanObject(EntityGroup.class.getCanonicalName(), entityGroup.getId());
+			Collection<EntityInterface> entities = entityGroup.getEntityCollection();
+			for (EntityInterface entObject : entities)
 			{
-				DynamicExtensionsUtility.validateEntity(entity);
-			}
-			else
-			{
-				EntityInterface dbaseCpy = getEntityFromGroup(dbaseCopy, entity.getId());
-				if (EntityManagerUtil.isParentChanged((Entity) entity, (Entity) dbaseCpy))
+				Entity entity = (Entity) entObject;
+				if (entity.getId() == null)
 				{
-					checkParentChangeAllowed(entity);
+					DynamicExtensionsUtility.validateEntity(entity);
+				}
+				else
+				{
+					EntityInterface dbaseCpy = getEntityFromGroup(dbaseCopy, entity.getId());
+					if (EntityManagerUtil.isParentChanged((Entity) entity, (Entity) dbaseCpy))
+					{
+						checkParentChangeAllowed(entity);
+					}
 				}
 			}
 		}
-
+		catch(DAOException exception)
+		{
+			throw new DynamicExtensionsSystemException(exception.getMessage(),exception);
+		}
 		return true;
 	}
 
@@ -411,13 +414,13 @@ public class EntityGroupManager extends AbstractMetadataManager
 	public void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		JDBCDAO dao = (JDBCDAO) DAOFactory.getInstance().getDAO(Constants.JDBC_DAO);
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			dao.openSession(null);
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			String query = "select count(*) from dyextn_abstract_metadata d , dyextn_entity_group e where d.identifier = e.identifier and d.name = '"
 					+ entityGroup.getName() + "'";
-			List result = dao.executeQuery(query, new SessionDataBean(), false, null);
+			List result = jdbcDao.executeQuery(query);
 
 			if (result != null && !result.isEmpty())
 			{
@@ -437,16 +440,12 @@ public class EntityGroupManager extends AbstractMetadataManager
 		{
 			throw new DynamicExtensionsSystemException("Error while checking for duplicate group",
 					e);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new DynamicExtensionsSystemException("Class not found", e);
-		}
+		}		
 		finally
 		{
 			try
 			{
-				dao.closeSession();
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)
 			{

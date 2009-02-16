@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
@@ -25,10 +26,13 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.daofactory.IDAOFactory;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This class does the specific work according to db2.
@@ -126,7 +130,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			String dateFormat = ((DateAttributeTypeInformation) attributeInformation).getFormat();
 			if (dateFormat == null)
 			{
-				dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
+				dateFormat = CommonServiceLocator.getInstance().getDatePattern();
 			}
 
 			String str = null;
@@ -143,7 +147,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			{
 				if (str.length() != 0)
 				{
-					str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
+					str = DynamicExtensionsUtility.formatMonthAndYearDate(str,false);
 
 				}
 			}
@@ -152,7 +156,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			{
 				if (str.length() != 0)
 				{
-					str = DynamicExtensionsUtility.formatYearDate(str);
+					str = DynamicExtensionsUtility.formatYearDate(str,false);
 
 				}
 			}
@@ -165,8 +169,20 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			}
 			else
 			{
-				formattedvalue = Variables.strTodateFunction + "('" + str.trim() + "','"
-						+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+				String appName=DynamicExtensionDAO.getInstance().getAppName();
+				IDAOFactory factory = DAOConfigFactory.getInstance().getDAOFactory(appName);
+				JDBCDAO jdbcDAO;
+				try
+				{
+					jdbcDAO = (JDBCDAO) factory.getJDBCDAO();
+					formattedvalue = jdbcDAO.getStrTodateFunction() + "('" + str.trim() + "','"
+					+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+				}
+				catch (DAOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		else
@@ -267,15 +283,22 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 					.append("IS").append(WHITESPACE).append(NOT_KEYWORD).append(WHITESPACE).append(
 							NULL_KEYWORD);
 			ResultSet resultSet = null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
-				resultSet = entityManagerUtil.executeQuery(queryBuffer.toString());
+				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+				resultSet=jdbcDao.getQueryResultSet(queryBuffer.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
 				{
 					dataPresent = true;
 				}
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Can not check the availability of data", e);
 			}
 			catch (SQLException e)
 			{
@@ -284,17 +307,15 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			}
 			finally
 			{
-				if (resultSet != null)
+				try
 				{
-					try
-					{
-						resultSet.close();
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(e.getMessage(), e);
-					}
+					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+				
 			}
 		}
 		else

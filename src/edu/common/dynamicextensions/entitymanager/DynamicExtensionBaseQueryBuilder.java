@@ -2,11 +2,8 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,10 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDBFactory;
+import edu.common.dynamicextensions.dao.impl.IDEDBUtility;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -59,14 +55,16 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.ConstraintKeyPropertiesComparator;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.wustl.common.exception.BizLogicException;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This class provides the methods that builds the queries that are required for
@@ -76,7 +74,7 @@ import edu.wustl.common.util.logger.Logger;
  *
  * @author rahul_ner,pavan_kalantri
  */
-class DynamicExtensionBaseQueryBuilder
+public class DynamicExtensionBaseQueryBuilder
 		implements
 			EntityManagerConstantsInterface,
 			EntityManagerExceptionConstantsInterface,
@@ -294,27 +292,33 @@ class DynamicExtensionBaseQueryBuilder
 		EntityInterface dbDepEntityParent;
 		String frnCnstrRlbkQry;
 		String frnCnstrRemQry;
-		for (EntityInterface depEntity : entityColl)
+		try
 		{
-			if (depEntity.getParentEntity() != null && depEntity.getParentEntity().equals(entity))
+			for (EntityInterface depEntity : entityColl)
 			{
-
-				dbDepEntity = (EntityInterface) DBUtil
-						.loadCleanObj(Entity.class, depEntity.getId());
-				dbDepEntityParent = dbDepEntity.getParentEntity();
-				frnCnstrRemQry = queryBuilder.getForeignKeyRemoveConstraintQueryForInheritance(
-						dbDepEntity, dbDepEntityParent);
-				queries.add(frnCnstrRemQry);
-
-				frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbDepEntity,
-						dbDepEntityParent);
-				attrRlbkQries.add(frnCnstrRlbkQry);
-
-				queries.addAll(queryBuilder.getAddColumnQueryForForeignKeyConstraint(dbDepEntity,
-						dbDepEntityParent, attrRlbkQries, false));
-
+				if (depEntity.getParentEntity() != null && depEntity.getParentEntity().equals(entity))
+				{
+	
+					dbDepEntity = (EntityInterface) DynamicExtensionsUtility.getCleanObject(Entity.class.getCanonicalName(), depEntity.getId());
+					dbDepEntityParent = dbDepEntity.getParentEntity();
+					frnCnstrRemQry = queryBuilder.getForeignKeyRemoveConstraintQueryForInheritance(
+							dbDepEntity, dbDepEntityParent);
+					queries.add(frnCnstrRemQry);
+	
+					frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbDepEntity,
+							dbDepEntityParent);
+					attrRlbkQries.add(frnCnstrRlbkQry);
+	
+					queries.addAll(queryBuilder.getAddColumnQueryForForeignKeyConstraint(dbDepEntity,
+							dbDepEntityParent, attrRlbkQries, false));
+	
+				}
 			}
 		}
+		catch(DAOException exception)
+		{
+			throw new DynamicExtensionsSystemException(exception.getMessage(),exception);
+		}		
 		return queries;
 	}
 
@@ -718,7 +722,7 @@ class DynamicExtensionBaseQueryBuilder
 					for (Long cntnmntRecId : recordIds)
 					{
 						Map<AbstractAttributeInterface, Object> recordMap = EntityManager
-								.getInstance().getRecordById(association.getTargetEntity(),
+								.getInstance().getRecordForSingleEntity(association.getTargetEntity(),
 										cntnmntRecId);
 						cntnmntRecords.add(recordMap);
 					}
@@ -739,13 +743,12 @@ class DynamicExtensionBaseQueryBuilder
 		int noOfMany2OneAsso = manyToOneAssocns.size();
 		if (noOfMany2OneAsso != 0)
 		{
-			Statement statement = null;
 			ResultSet resultSet = null;
+			JDBCDAO jdbcDao=null;
 			try
 			{
-				Connection conn = DBUtil.getConnection();
-				statement = conn.createStatement();
-				resultSet = statement.executeQuery(mnyToOneAssQry.toString());
+				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+				resultSet = jdbcDao.getQueryResultSet(mnyToOneAssQry.toString());
 
 				resultSet.next();
 				for (int i = 0; i < noOfMany2OneAsso; i++)
@@ -760,14 +763,17 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				throw new DynamicExtensionsSystemException("Exception in query execution", e);
 			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Exception in query execution", e);
+			}
 			finally
 			{
 				try
 				{
-					resultSet.close();
-					statement.close();
+					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
-				catch (SQLException e)
+				catch (DAOException e)
 				{
 					throw new DynamicExtensionsApplicationException(e.getMessage());
 				}
@@ -887,9 +893,11 @@ class DynamicExtensionBaseQueryBuilder
 					+ recordId);
 
 			ResultSet resultSet = null;
+			JDBCDAO jdbcDao =null;
 			try
 			{
-				resultSet = EntityManagerUtil.executeQuery(mnyToOneAssQry.toString());
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				resultSet = jdbcDao.getQueryResultSet(mnyToOneAssQry.toString());
 				resultSet.next();
 				for (int i = 0; i < manyToOneAssocns.size(); i++)
 				{
@@ -902,6 +910,10 @@ class DynamicExtensionBaseQueryBuilder
 					entRecord.getRecordValueList().set(index, values);
 				}
 			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Exception in query execution", e);
+			}
 			catch (SQLException e)
 			{
 				throw new DynamicExtensionsSystemException("Exception in query execution", e);
@@ -912,9 +924,9 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					try
 					{
-						resultSet.close();
+						DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 					}
-					catch (SQLException e)
+					catch (DAOException e)
 					{
 						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
@@ -932,7 +944,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<String> getAssociationInsertDataQuery(AssociationInterface asso, List<Long> recIds,
+	public List<String> getAssociationInsertDataQuery(JDBCDAO jdbcDao,AssociationInterface asso, List<Long> recIds,
 			Long srcRecId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
@@ -946,7 +958,7 @@ class DynamicExtensionBaseQueryBuilder
 		Association association = (Association) asso;
 		if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
 		{
-			verifyCardinalityConstraints(asso, srcRecId);
+			verifyCardinalityConstraints(jdbcDao,asso, srcRecId);
 		}
 
 		String sourceKey;
@@ -1112,7 +1124,7 @@ class DynamicExtensionBaseQueryBuilder
 			query.append(UPDATE_KEYWORD);
 			query.append(WHITESPACE + tableName + WHITESPACE);
 			query.append(SET_KEYWORD + Constants.ACTIVITY_STATUS_COLUMN + EQUAL + "'"
-					+ Constants.ACTIVITY_STATUS_DISABLED + "'");
+					+ Status.ACTIVITY_STATUS_DISABLED.toString() + "'");
 			query.append(WHERE_KEYWORD + WHITESPACE + IDENTIFIER + WHITESPACE + IN_KEYWORD);
 			query.append(WHITESPACE + getListToString(chldrnRecIds) + WHITESPACE);
 
@@ -2671,15 +2683,22 @@ class DynamicExtensionBaseQueryBuilder
 			}
 
 			ResultSet resultSet = null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
-				resultSet = EntityManagerUtil.executeQuery(query.toString());
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				resultSet=jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
 				{
 					isDataPresent = true;
 				}
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Can not check the availability of data", e);
 			}
 			catch (SQLException e)
 			{
@@ -2692,9 +2711,10 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					try
 					{
-						resultSet.close();
+						jdbcDao.commit();
+						DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 					}
-					catch (SQLException e)
+					catch (DAOException e)
 					{
 						throw new DynamicExtensionsSystemException(e.getMessage(), e);
 					}
@@ -2745,9 +2765,11 @@ class DynamicExtensionBaseQueryBuilder
 					.append("''");
 
 			ResultSet resultSet = null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
-				resultSet = EntityManagerUtil.executeQuery(query.toString());
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				resultSet = jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
@@ -2756,23 +2778,25 @@ class DynamicExtensionBaseQueryBuilder
 				}
 
 			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Can not check the availability of data", e);
+			}
 			catch (SQLException e)
 			{
 				throw new DynamicExtensionsSystemException(
 						"Can not check the availability of data", e);
 			}
 			finally
-			{
-				if (resultSet != null)
+			{				
+				try
 				{
-					try
-					{
-						resultSet.close();
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(e.getMessage(), e);
-					}
+					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
 			}
 		}
@@ -2794,9 +2818,11 @@ class DynamicExtensionBaseQueryBuilder
 				.append(WHITESPACE).append(tableName);
 
 		ResultSet resultSet = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			resultSet = entityManagerUtil.executeQuery(query.toString());
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getQueryResultSet(query.toString());
 			resultSet.next();
 			Long count = resultSet.getLong(1);
 			if (count > 0)
@@ -2805,23 +2831,25 @@ class DynamicExtensionBaseQueryBuilder
 			}
 			return isDataPresent;
 		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
+		}
 		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException("Can not check the availability of data", e);
 		}
 		finally
 		{
-			if (resultSet != null)
+			try
 			{
-				try
-				{
-					resultSet.close();
-				}
-				catch (SQLException e)
-				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
-				}
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+			
 		}
 	}
 
@@ -2997,31 +3025,13 @@ class DynamicExtensionBaseQueryBuilder
 	public Stack<String> executeQueries(List<String> queries, List<String> revQueries,
 			Stack<String> rlbkQryStack) throws DynamicExtensionsSystemException
 	{
-		Session session = null;
-		Transaction transaction = null;
-		Connection connection = null;
 
+		JDBCDAO jdbcDao =null;
 		try
 		{
-			session = DBUtil.getCleanSession();
-			transaction = session.beginTransaction();
-		}
-		catch (BizLogicException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while getting the new session", e, DYEXTN_S_002);
-		}
-		catch (HibernateException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while getting the new transaction", e, DYEXTN_S_002);
-		}
-
-		Iterator<String> revQryIter = revQueries.iterator();
-
-		try
-		{
-			connection = session.connection();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			Iterator<String> revQryIter = revQueries.iterator();
+		
 			if (queries != null && !queries.isEmpty())
 			{
 				Iterator<String> queryIter = queries.iterator();
@@ -3029,60 +3039,29 @@ class DynamicExtensionBaseQueryBuilder
 				{
 					String query = queryIter.next();
 					System.out.println("Query: " + query);
-
-					PreparedStatement statement = null;
-					try
+					jdbcDao.executeUpdate(query);
+					if (revQryIter.hasNext())
 					{
-						statement = connection.prepareStatement(query);
+						rlbkQryStack.push(revQryIter.next());
 					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while executing the data table query", e);
-					}
-					try
-					{
-						statement.executeUpdate();
-						if (revQryIter.hasNext())
-						{
-							rlbkQryStack.push(revQryIter.next());
-						}
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(
-								"Exception occured while forming the data tables for entity", e,
-								DYEXTN_S_002);
-					}
-					finally
-					{
-						try
-						{
-							statement.close();
-						}
-						catch (SQLException e)
-						{
-							e.printStackTrace();
-							throw new DynamicExtensionsSystemException(
-									"Exception occured while closing statement", e);
-						}
-					}
+					
+										
 				}
 			}
 		}
-		catch (HibernateException e)
+		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
+					"Exception occured while forming the data tables for entity", e,
+					DYEXTN_S_002);
 		}
 		finally
 		{
 			try
 			{
-				transaction.commit();
-				session.close();
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
-			catch (HibernateException e)
+			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(
 						"Exception occured while commiting transaction", e, DYEXTN_S_002);
@@ -3099,75 +3078,46 @@ class DynamicExtensionBaseQueryBuilder
 	 */
 	public Object[] executeDMLQuery(String query) throws DynamicExtensionsSystemException
 	{
-		Session session = null;
 
+		JDBCDAO jdbcDao = null;			
+		ResultSet resultSet = null;
 		try
 		{
-			session = DBUtil.currentSession();
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getQueryResultSet(query);
+
+			List<Object> objects = new ArrayList<Object>();
+			int count = 1;
+			while (resultSet.next())
+			{
+				objects.add(resultSet.getObject(count));
+			}
+
+			return objects.toArray();
 		}
-		catch (HibernateException e1)
+		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Unable to exectute the queries .....Cannot access connection from session",
-					e1, DYEXTN_S_002);
+					"Exception occured while forming the data tables for entity", e,
+					DYEXTN_S_002);
 		}
-		try
+		catch (SQLException e)
 		{
-			System.out.println("DMLQuery is : " + query);
-			Connection conn = session.connection();
-			Statement statement = null;
-			ResultSet resultSet = null;
-
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while forming the data tables for entity", e,
+					DYEXTN_S_002);
+		}
+		finally
+		{			
 			try
 			{
-				statement = conn.createStatement();
-				resultSet = statement.executeQuery(query);
-
-				List<Object> objects = new ArrayList<Object>();
-				int count = 1;
-				while (resultSet.next())
-				{
-					objects.add(resultSet.getObject(count));
-				}
-
-				return objects.toArray();
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
-			catch (SQLException e)
+			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while forming the data tables for entity", e,
-						DYEXTN_S_002);
-			}
-			finally
-			{
-				try
-				{
-					statement.close();
-				}
-				catch (SQLException e)
-				{
-					e.printStackTrace();
-					throw new DynamicExtensionsSystemException(
-							"Exception occured while closing statement", e);
-				}
-				if (resultSet != null)
-				{
-					try
-					{
-						resultSet.close();
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(e.getMessage(), e);
-					}
-				}
-			}
-		}
-		catch (HibernateException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Cannot obtain connection to execute the data query", e, DYEXTN_S_001);
-		}
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}		
+		}		
 	}
 
 	/**
@@ -3181,14 +3131,12 @@ class DynamicExtensionBaseQueryBuilder
 			throws DynamicExtensionsSystemException
 	{
 		List<Long> assoRecords = new ArrayList<Long>();
-
-		Statement statement = null;
 		ResultSet resultSet = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			Connection conn = DBUtil.getConnection();
-			statement = conn.createStatement();
-			resultSet = statement.executeQuery(query);
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getQueryResultSet(query);
 
 			while (resultSet.next())
 			{
@@ -3196,18 +3144,21 @@ class DynamicExtensionBaseQueryBuilder
 				assoRecords.add(recordId);
 			}
 		}
-		catch (Exception e)
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Exception in query execution", e);
+		}
+		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException("Exception in query execution", e);
 		}
 		finally
 		{
 			try
-			{
-				resultSet.close();
-				statement.close();
+			{			
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
-			catch (SQLException e)
+			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException("can not close result set", e);
 			}
@@ -3226,7 +3177,7 @@ class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected void verifyCardinalityConstraints(AssociationInterface asso, Long srcRecId)
+	protected void verifyCardinalityConstraints(JDBCDAO jdbcDao,AssociationInterface asso, Long srcRecId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		EntityInterface tgtEnt = asso.getTargetEntity();
@@ -3250,7 +3201,7 @@ class DynamicExtensionBaseQueryBuilder
 			ResultSet resultSet = null;
 			try
 			{
-				resultSet = entityManagerUtil.executeQuery(query);
+				resultSet =jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 
 				// If another source record is already using target record, throw exception.
@@ -3260,23 +3211,13 @@ class DynamicExtensionBaseQueryBuilder
 							"Cardinality constraint violated", null, DYEXTN_A_005);
 				}
 			}
-			catch (SQLException e)
+			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-			finally
+			catch (SQLException e)
 			{
-				if (resultSet != null)
-				{
-					try
-					{
-						resultSet.close();
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(e.getMessage(), e);
-					}
-				}
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 		}
 	}
@@ -3310,9 +3251,11 @@ class DynamicExtensionBaseQueryBuilder
 					+ WHITESPACE + srcRecId;
 
 			ResultSet resultSet = null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
-				entityManagerUtil.executeQuery(query);
+				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+				resultSet=jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 				// If another source record is already using target record, throw exception.
 				if (resultSet.getInt(1) != 0)
@@ -3321,23 +3264,25 @@ class DynamicExtensionBaseQueryBuilder
 							"Cardinality constraint violated", null, DYEXTN_A_005);
 				}
 			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
 			catch (SQLException e)
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 			finally
 			{
-				if (resultSet != null)
+				try
 				{
-					try
-					{
-						resultSet.close();
-					}
-					catch (SQLException e)
-					{
-						throw new DynamicExtensionsSystemException(e.getMessage(), e);
-					}
+					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+				
 			}
 		}
 	}
@@ -3365,6 +3310,10 @@ class DynamicExtensionBaseQueryBuilder
 	public Object getFormattedValue(AbstractAttribute attribute, Object value)
 			throws DynamicExtensionsSystemException
 	{
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		IDEDBUtility dbUtility=DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
+		
 		String frmtedValue = null;
 		if (attribute == null)
 		{
@@ -3397,7 +3346,7 @@ class DynamicExtensionBaseQueryBuilder
 			String dateFormat = ((DateAttributeTypeInformation) attrTypInfo).getFormat();
 			if (dateFormat == null)
 			{
-				dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
+				dateFormat = CommonServiceLocator.getInstance().getDatePattern();
 			}
 
 			String str = null;
@@ -3414,11 +3363,7 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				if (str.length() != 0)
 				{
-					str = DynamicExtensionsUtility.formatMonthAndYearDate(str);
-					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
-					{
-						str = str.substring(0, str.length() - 4);
-					}
+					str = dbUtility.formatMonthAndYearDate(str,true);
 				}
 			}
 
@@ -3426,23 +3371,40 @@ class DynamicExtensionBaseQueryBuilder
 			{
 				if (str.length() != 0)
 				{
-					str = DynamicExtensionsUtility.formatYearDate(str);
-					if (Variables.databaseName.equals(Constants.ORACLE_DATABASE))
-					{
-						str = str.substring(0, str.length() - 4);
-					}
+					str = dbUtility.formatMonthAndYearDate(str,true);					
 				}
 			}
 			// For MySQL5 if user does not enter any value for date field, it gets saved as 00-00-0000,
 			// which is throwing exception so to avoid it store null value in database.
-			if (Variables.databaseName.equals(Constants.MYSQL_DATABASE) && str.trim().length() == 0)
+			if (str.trim().length() == 0)
 			{
 				frmtedValue = null;
 			}
 			else
 			{
-				frmtedValue = Variables.strTodateFunction + "('" + str.trim() + "','"
+				JDBCDAO jdbcDao=null;
+				try
+				{
+					jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+					frmtedValue = jdbcDao.getStrTodateFunction()
+						+ "('" + str.trim() + "','"
 						+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException("Not able to create DAO object.");
+				}
+				finally
+				{
+					try
+					{
+						DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+					}
+					catch (DAOException e)
+					{
+						throw new DynamicExtensionsSystemException("Not able to create DAO object.");
+					}
+				}
 			}
 		}
 		else
@@ -3462,28 +3424,17 @@ class DynamicExtensionBaseQueryBuilder
 
 			// In case of MySQL5, if the column data type is one of double, float or integer, 
 			// then it is not possible to pass '' as  a value in insert-update query so pass null as value.
-			if (Variables.databaseName.equals(Constants.MYSQL_DATABASE))
+			if (attrTypInfo instanceof NumericAttributeTypeInformation)
 			{
-				if (attrTypInfo instanceof NumericAttributeTypeInformation)
+				if (frmtedValue.trim().length() == 0)
 				{
-					if (frmtedValue.trim().length() == 0)
-					{
-						frmtedValue = null;
-					}
-				}
-				else if (attrTypInfo instanceof BooleanAttributeTypeInformation)
-				{
-					if ("false".equals(frmtedValue))
-					{
-						frmtedValue = "0";
-					}
-					else
-					{
-						frmtedValue = "1";
-					}
+					frmtedValue = null;
 				}
 			}
-
+			if (attrTypInfo instanceof BooleanAttributeTypeInformation)
+			{
+				dbUtility.getValueForCheckBox(Boolean.parseBoolean(frmtedValue));				
+			}
 			if (frmtedValue != null)
 			{
 				frmtedValue = "'" + frmtedValue + "'";
@@ -3520,9 +3471,11 @@ class DynamicExtensionBaseQueryBuilder
 				frmtedValue).append(" and " + getRemoveDisbledRecordsQuery(""));
 
 		ResultSet resultSet = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			resultSet = EntityManagerUtil.executeQuery(query.toString());
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getQueryResultSet(query.toString());
 			resultSet.next();
 			Long count = resultSet.getLong(1);
 			if (count > 0)
@@ -3530,26 +3483,25 @@ class DynamicExtensionBaseQueryBuilder
 				isPresent = true;
 			}
 		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Can not check the availability of value", e);
+		}
 		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException("Can not check the availability of value", e);
 		}
 		finally
 		{
-			if (resultSet != null)
+			try
 			{
-				try
-				{
-					resultSet.close();
-					DBUtil.closeConnection();
-				}
-				catch (SQLException e)
-				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
-				}
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}			
 		}
-
 		return isPresent;
 	}
 
@@ -3566,7 +3518,7 @@ class DynamicExtensionBaseQueryBuilder
 		}
 
 		return " " + prefix + Constants.ACTIVITY_STATUS_COLUMN + " <> '"
-				+ Constants.ACTIVITY_STATUS_DISABLED + "' ";
+				+ Status.ACTIVITY_STATUS_DISABLED.toString() + "' ";
 	}
 
 	/**
@@ -3619,25 +3571,27 @@ class DynamicExtensionBaseQueryBuilder
 					tgtEntRecId);
 		}
 
-		Connection conn = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			conn = DBUtil.getConnection();
-			Statement stmt = conn.createStatement();
-			stmt.execute(query.toString());
-			conn.commit();
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao.executeUpdate(query.toString());
+			jdbcDao.commit();
 		}
-		catch (HibernateException e)
+		catch (DAOException e)
 		{
-			connectionRollBack(conn);
-		}
-		catch (SQLException e)
-		{
-			connectionRollBack(conn);
-		}
+			connectionRollBack(jdbcDao);
+		}		
 		finally
 		{
-			DBUtil.closeConnection();
+			try
+			{
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			}
 		}
 	}
 
@@ -3646,14 +3600,14 @@ class DynamicExtensionBaseQueryBuilder
 	 * @param connection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void connectionRollBack(Connection connection)
+	private static void connectionRollBack(JDBCDAO jdbcDao)
 			throws DynamicExtensionsSystemException
 	{
 		try
 		{
-			connection.rollback();
+			jdbcDao.rollback();
 		}
-		catch (SQLException e)
+		catch (DAOException e)
 		{
 			e.printStackTrace();
 		}

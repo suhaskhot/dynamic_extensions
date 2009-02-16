@@ -11,8 +11,10 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDBFactory;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
-import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 
 /**
  * This is a Singleton class which parses the XML file that consists of mapping between PrimitiveAttribute 
@@ -53,12 +55,12 @@ public class DataTypeFactory
 	{
 		if (dataTypeFactory == null)
 		{
+			String appName=DynamicExtensionDAO.getInstance().getAppName();
+			String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();				
+			String dataTypeMappingFileName=DynamicExtensionDBFactory.getInstance().getDataTypeMappingFile(dbType);			
 			dataTypeFactory = new DataTypeFactory();
-			String dataTypeMappingFileName = "PrimitiveAttributeDataTypes" + "_"
-					+ Variables.databaseName + ".xml";
 			dataTypeFactory.populateDataTypeMap(dataTypeMappingFileName);
 		}
-
 		return dataTypeFactory;
 	}
 

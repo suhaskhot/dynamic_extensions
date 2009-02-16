@@ -18,9 +18,6 @@ import edu.wustl.common.querysuite.metadata.category.CategorialClass;
 import edu.wustl.common.querysuite.metadata.category.Category;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.metadata.path.Path;
-import edu.wustl.common.security.exceptions.UserNotAuthorizedException;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.global.Constants;
 
 /**
  * This class provides all operations needed for Category like save, retrieve
@@ -31,10 +28,7 @@ import edu.wustl.common.util.global.Constants;
  */
 public class CategoryOperations extends DefaultBizLogic {
 
-    /**
-     * Hibernate DAO Type to use.
-     */
-    private static final int DAO_TYPE = Constants.HIBERNATE_DAO;
+
 
     /**
      * Saves the input category to database.
@@ -44,10 +38,8 @@ public class CategoryOperations extends DefaultBizLogic {
      */
     public void saveCategory(Category category) {
         try {
-            insert(category, DAO_TYPE);
+            insert(category);
         } catch (BizLogicException e) {
-            throw new RuntimeException(ErrorCodeConstants.CATEGORY_SAVE_ERROR);
-        } catch (UserNotAuthorizedException e) {
             throw new RuntimeException(ErrorCodeConstants.CATEGORY_SAVE_ERROR);
         }
     }
@@ -63,7 +55,7 @@ public class CategoryOperations extends DefaultBizLogic {
         List list = null;
         try {
             list = retrieve(Category.class.getName(), "deEntityId", entityId);
-        } catch (DAOException e) {
+        } catch (BizLogicException e) {
             throw new RuntimeException(ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR);
         }
         Category category = getCategoryFromList(list);
@@ -82,7 +74,7 @@ public class CategoryOperations extends DefaultBizLogic {
         List list = null;
         try {
             list = retrieve(Category.class.getName(), "id", categoryId);
-        } catch (DAOException e) {
+        } catch (BizLogicException e) {
             throw new RuntimeException(ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR);
         }
         if (list == null || list.isEmpty()) {
@@ -183,16 +175,17 @@ public class CategoryOperations extends DefaultBizLogic {
      * @return List of root categories.
      */
     public List<EntityInterface> getAllRootCategories() {
-        List<Category> allCategories = null;
+        List<Object> allCategories = null;
         try {
             allCategories = retrieve(Category.class.getName(), null, new String[] { "parentCategory" },
                                      new String[] { "is null" }, new Object[0], null);
-        } catch (DAOException e) {
+        } catch (BizLogicException e) {
             throw new RuntimeException("Error in fetching category", e, ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR);
         }
         List<EntityInterface> categoryEntities = new ArrayList<EntityInterface>(allCategories.size());
         EntityCache cache = (EntityCache) EntityCache.getInstance();
-        for (Category category : allCategories) {
+        for (Object object  : allCategories) {
+        	Category category =(Category) object;
             Long categoryEntityId = category.getDeEntityId();
             categoryEntities.add(cache.getEntityById(categoryEntityId));
         }
@@ -210,7 +203,7 @@ public class CategoryOperations extends DefaultBizLogic {
         List<Category> allCategories = null;
         try {
             allCategories = retrieve(Category.class.getName());
-        } catch (DAOException e) {
+        } catch (BizLogicException e) {
             throw new RuntimeException("Error in fetching category", e, ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR);
         }
         for (Category category : allCategories) {

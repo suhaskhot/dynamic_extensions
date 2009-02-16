@@ -14,7 +14,7 @@ import java.util.Collection;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This interface is acting as an interface for host application to communicate with DE
@@ -62,7 +62,7 @@ public interface IntegrationInterface
 	 */
 	Collection getCategoryRecIdBasedOnHookEntityRecId(Long categoryContainerId,
 			Long staticRecId, Long hookEntityId) throws DynamicExtensionsSystemException,
-			SQLException;
+			SQLException,DAOException;
 
 	/**
 	 * This method associate the DE records with the given Static hook entity record id 

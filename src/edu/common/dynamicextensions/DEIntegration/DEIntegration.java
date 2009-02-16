@@ -8,10 +8,8 @@
 
 package edu.common.dynamicextensions.DEIntegration;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,10 +23,11 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.exception.BizLogicException;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * 
@@ -54,7 +53,7 @@ public class DEIntegration implements IntegrationInterface
 	/**
 	 *This method returns the Category Record Id BasedOn HookEntityRecId 
 	 *Steps:
-	 *1) it will search for root enity of this category entity 
+	 *1) it will search for root entity of this category entity 
 	 *2) and then it will return record id of category based on root entity rec id 
 	 *@param categoryContainerId
 	 *@param staticRecId
@@ -63,7 +62,7 @@ public class DEIntegration implements IntegrationInterface
 	 */
 	public Collection getCategoryRecIdBasedOnHookEntityRecId(Long categoryContainerId,
 			Long staticRecId, Long hookEntityId) throws DynamicExtensionsSystemException,
-			SQLException
+			SQLException,DAOException
 	{
 
 		Collection catRecIds = new HashSet();
@@ -119,16 +118,13 @@ public class DEIntegration implements IntegrationInterface
 
 		}
 		ResultSet resultSet = null;
-		Statement statement = null;
-		Connection connection = null;
+		JDBCDAO jdbcDao=null;
 		try
 		{
-			connection = DBUtil.getConnection();
-			statement = connection.createStatement();
-
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
 			String entitySql = "select identifier from " + entityTableName + " where " + columnName
 					+ " = " + staticRecId;
-			resultSet = statement.executeQuery(entitySql.toString()); //util.executeQuery(entitySql);
+			resultSet = jdbcDao.getQueryResultSet(entitySql.toString()); //util.executeQuery(entitySql);
 			List recIdList = new ArrayList();
 			while (resultSet.next())
 			{
@@ -142,9 +138,7 @@ public class DEIntegration implements IntegrationInterface
 		}
 		finally
 		{
-			resultSet.close();
-			statement.close();
-			DBUtil.closeConnection();
+			DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 		}
 
 		return catRecIds;
@@ -176,15 +170,15 @@ public class DEIntegration implements IntegrationInterface
 	{
 		boolean isCategory = false;
 		Long contId = null;
-		if (categoryEntityMap.containsKey((containerId + Constants.ISCATEGORY)))
+		if (categoryEntityMap.containsKey((containerId + DEConstants.ISCATEGORY)))
 		{
-			contId = (Long) categoryEntityMap.get(containerId + Constants.ISCATEGORY);
+			contId = (Long) categoryEntityMap.get(containerId + DEConstants.ISCATEGORY);
 		}
 		else
 		// if(contId == null)
 		{
 			contId = EntityManager.getInstance().isCategory(containerId);
-			categoryEntityMap.put(containerId + Constants.ISCATEGORY, contId);
+			categoryEntityMap.put(containerId + DEConstants.ISCATEGORY, contId);
 		}
 		if (contId != null)
 		{
@@ -264,11 +258,12 @@ public class DEIntegration implements IntegrationInterface
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws CacheException 
-	 * @throws SQLException 
+	 * @throws SQLException
+	 * @throws DAOException
 	 */
 	public Collection getDynamicRecordFromStaticId(String recEntryId, Long containerId,
 			String hookEntityId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, CacheException, SQLException
+			DynamicExtensionsApplicationException, CacheException, SQLException,DAOException
 	{
 		Collection recIdList = new HashSet();
 		if (isCategory(containerId))
@@ -314,16 +309,13 @@ public class DEIntegration implements IntegrationInterface
 		}
 
 		ResultSet resultSet = null;
-		Statement statement = null;
-		Connection connection = null;
+		JDBCDAO jdbcDao=null;
 		try
 		{
-			connection = DBUtil.getConnection();
-			statement = connection.createStatement();
-
+			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
 			String catSql = "select RECORD_ID from " + catTableName + " where identifier= "
 					+ dynamicEntityRecordId;
-			resultSet = statement.executeQuery(catSql.toString()); //util.executeQuery(entitySql);
+			resultSet = jdbcDao.getQueryResultSet(catSql); //util.executeQuery(entitySql);
 
 			while (resultSet.next())
 			{
@@ -335,19 +327,20 @@ public class DEIntegration implements IntegrationInterface
 		{
 			throw new DynamicExtensionsSystemException("Error while opening session", e);
 		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while opening session", e);
+		}
 		finally
 		{
 			try
 			{
-				resultSet.close();
-				statement.close();
-				DBUtil.closeConnection();
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
-			catch (SQLException e)
+			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException("Error while closing session", e);
 			}
-
 		}
 		return recIdList;
 	}

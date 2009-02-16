@@ -48,7 +48,7 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 
 		DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
 		ContainerInterface container = (ContainerInterface) ((HashMap) deCacheManager
-				.getObjectFromCache(Constants.LIST_OF_CONTAINER)).get(Long.parseLong(containerId));
+				.getObjectFromCache(DEConstants.LIST_OF_CONTAINER)).get(Long.parseLong(containerId));
 
 		List<NameValueBean> nameValueBeans = null;
 		for (ControlInterface control : container.getControlCollection())

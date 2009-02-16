@@ -15,7 +15,6 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.logger.Logger;
-
 /**
  * @author Rahul Ner
  * @author Vishvesh Mulay
@@ -976,10 +975,10 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when parent is set null and data is  present
+	 *  PURPOSE: This method tests for meta data save of the inheritance when parent is set null and data is  present
 	 *  for the child.
 	 *
-	 *  EXPECTED BEHAVIOUR: since data is present, should not allow chnage in the parent.ApplicationExcpetion is expected
+	 *  EXPECTED BEHAVIOUR: since data is present, should not allow change in the parent.ApplicationExcpetion is expected
 	 *
 	 *  in the database. Appropriate changes in the data tables should occur without any exception.
 	 *
@@ -1059,7 +1058,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when parent is set null and data is not present
+	 *  PURPOSE: This method tests for meta data save of the inheritance when parent is set null and data is not present
 	 *  for the child.
 	 *
 	 *  EXPECTED BEHAVIOUR: parent of the child should be set to null., since data is not present should not throw any exception.
@@ -1072,7 +1071,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	 *                  4. persist TissueSpecimen
 	 *                  5. Verify TissueSpecimen.
 	 *                  6. set aprent of TissueSpecimen as null
-	 *                  7. verify this change reflecte din database.
+	 *                  7. verify this change reflect din database.
 	 *
 	 */
 

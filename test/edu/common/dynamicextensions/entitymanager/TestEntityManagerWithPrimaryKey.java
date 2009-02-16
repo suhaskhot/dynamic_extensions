@@ -5,6 +5,9 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.List;
 
+import oracle.jdbc.dbaccess.DBType;
+
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
@@ -20,11 +23,13 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 
 /**
  * test cases to verify primary key functionality in the entity
@@ -642,6 +647,8 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 		Entity entity;
 		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String dyType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
 		try
 		{
 			//Step 1
@@ -667,14 +674,14 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 			entity = (Entity) EntityManagerInterface.persistEntity(entity);
 
 			//Step 3
-			if (Variables.databaseName
-					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
+			if (dyType
+					.equals(edu.common.dynamicextensions.util.global.DEConstants.MYSQL_DATABASE))
 			{
 				assertEquals(getColumntype(
 						"select * from " + entity.getTableProperties().getName(), 3), Types.INTEGER);
 			}
-			else if (Variables.databaseName
-					.equals(edu.common.dynamicextensions.util.global.Constants.DB2_DATABASE))
+			else if (dyType
+					.equals(edu.common.dynamicextensions.util.global.DEConstants.DB2_DATABASE))
 			{
 				assertEquals(getColumntype(
 						"select * from " + entity.getTableProperties().getName(), 3), Types.DECIMAL);
@@ -693,8 +700,8 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 			entity = (Entity) EntityManagerInterface.persistEntity(entity);
 
 			//Step 6
-			if (Variables.databaseName
-					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
+			if (dyType
+					.equals(edu.common.dynamicextensions.util.global.DEConstants.MYSQL_DATABASE))
 			{
 
 				assertEquals(getColumntype(
@@ -1544,7 +1551,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * This test case test for associating three entities with  many to one to one
-	 * user conatins different primary key study also contains other primary key 
+	 * user contains different primary key study also contains other primary key 
 	 *
 	 * User(*) ---- >(1)Study(1) ------>(1)institute
 	 */

@@ -37,11 +37,12 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  *
@@ -2039,7 +2040,7 @@ public class MockCategoryManager extends DynamicExtensionsBaseTestCase
 		{
 			objectList = defaultBizLogic.retrieve(objectClassName, "id", identifier);
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			e.printStackTrace();
 		}

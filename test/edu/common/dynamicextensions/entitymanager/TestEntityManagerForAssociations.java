@@ -29,11 +29,10 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Variables;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.logger.Logger;
 
 public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestCase
@@ -1196,7 +1195,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			EntityManager.getInstance().deleteRecord(user, 1L);
 
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(user, 1L));
 
 		}
 		catch (Exception e)
@@ -1289,7 +1288,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			//Deleting the record
 			EntityManager.getInstance().deleteRecord(user, 1L);
 			//Checking there is no entry for the deleted record in the middle table.
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(user, 1L));
 		}
 		catch (Exception e)
 		{
@@ -1314,7 +1313,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 		try
 		{
-			Variables.databaseName = Constants.ORACLE_DATABASE;
+			//Variables.databaseName = DEConstants.ORACLE_DATABASE;
 			DomainObjectFactory factory = DomainObjectFactory.getInstance();
 			EntityGroupInterface entityGroup = factory.createEntityGroup();
 			entityGroup.setName("test_" + new Double(Math.random()).toString());
@@ -1380,7 +1379,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			//Deleting the record
 			EntityManager.getInstance().deleteRecord(user, 1L);
 
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));;
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(user, 1L));;
 		}
 		catch (Exception e)
 		{

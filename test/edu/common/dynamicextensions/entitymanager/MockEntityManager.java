@@ -33,11 +33,11 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.common.util.Utility;
+import edu.wustl.common.util.global.CommonServiceLocator;
 
 /**
  * This Class is a mock class to test EntityManager
@@ -364,7 +364,7 @@ public class MockEntityManager extends DynamicExtensionsBaseTestCase
 		try
 		{
 			defaultValue.setValue(Utility
-					.parseDate("11-11-1982", Constants.DATE_PATTERN_MM_DD_YYYY));
+					.parseDate("11-11-1982", CommonServiceLocator.getInstance().getDatePattern()));
 		}
 		catch (ParseException e)
 		{

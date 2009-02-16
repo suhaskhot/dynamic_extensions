@@ -22,10 +22,10 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.exporter.XMIExporter;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.util.logger.Logger;
@@ -373,7 +373,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	private RoleInterface getRole(RoleInterface role, int maxCardinality, int minCardinality,
 			String roleName)
 	{
-		role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
+		role.setAssociationsType(DEConstants.AssociationType.ASSOCIATION);
 		role.setName(roleName);
 		role.setMaximumCardinality(getCardinality(maxCardinality));
 		role.setMinimumCardinality(getCardinality(minCardinality));
@@ -384,17 +384,17 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	 * @param cardinality
 	 * @return
 	 */
-	private Constants.Cardinality getCardinality(int cardinality)
+	private DEConstants.Cardinality getCardinality(int cardinality)
 	{
 		if (cardinality == 0)
 		{
-			return Constants.Cardinality.ZERO;
+			return DEConstants.Cardinality.ZERO;
 		}
 		if (cardinality == 1)
 		{
-			return Constants.Cardinality.ONE;
+			return DEConstants.Cardinality.ONE;
 		}
-		return Constants.Cardinality.MANY;
+		return DEConstants.Cardinality.MANY;
 	}
 
 	/**

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.AttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -57,15 +58,18 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.global.Constants;
 import edu.common.dynamicextensions.util.global.Variables;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.ValueDomainType;
 import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
-import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 
 public class TestEntityManager extends DynamicExtensionsBaseTestCase
 {
@@ -387,7 +391,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		entityGroup.setName("testGroup" + new Double(Math.random()).toString());
 		Entity entity;
 		EntityManagerInterface EntityManagerInterface = EntityManager.getInstance();
-
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String dyType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
 		try
 		{
 			//Step 1
@@ -402,14 +407,14 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entity = (Entity) EntityManagerInterface.persistEntity(entity);
 
 			//Step 3
-			if (Variables.databaseName
-					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
+			if (dyType
+					.equals(edu.common.dynamicextensions.util.global.DEConstants.MYSQL_DATABASE))
 			{
 				assertEquals(getColumntype(
 						"select * from " + entity.getTableProperties().getName(), 3), Types.INTEGER);
 			}
-			else if (Variables.databaseName
-					.equals(edu.common.dynamicextensions.util.global.Constants.DB2_DATABASE))
+			else if (dyType
+					.equals(edu.common.dynamicextensions.util.global.DEConstants.DB2_DATABASE))
 			{
 				assertEquals(getColumntype(
 						"select * from " + entity.getTableProperties().getName(), 3), Types.DECIMAL);
@@ -428,8 +433,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			entity = (Entity) EntityManagerInterface.persistEntity(entity);
 
 			//Step 6
-			if (Variables.databaseName
-					.equals(edu.common.dynamicextensions.util.global.Constants.MYSQL_DATABASE))
+			if (dyType
+					.equals(edu.common.dynamicextensions.util.global.DEConstants.MYSQL_DATABASE))
 			{
 
 				assertEquals(getColumntype(
@@ -785,7 +790,6 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (Exception e)
 		{
 			Logger.out.debug(e.getMessage());
-			e.printStackTrace();
 			fail("Exception occured");
 		}
 	}
@@ -840,7 +844,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			boolean isRecordDeleted = EntityManagerInterface.deleteRecord(entity, new Long(1));
 			assertTrue(isRecordDeleted);
 
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(entity, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(entity, 1L));
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -910,7 +914,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	        boolean isRecordDeleted = EntityManagerInterface.deleteRecord(savedEntity, new Long(1));
 	        assertTrue(isRecordDeleted);
 
-	        assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(entity, 1L));
+	        assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(entity, 1L));
 	    }
 	    catch (DynamicExtensionsSystemException e)
 	    {
@@ -1124,7 +1128,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	}
 
 	/**
-	 * This method test for updating data for a multi select attribute
+	 * This method test for updating data for a multiSelect attribute
 	 */
 	/* public void testEditRecordWithMultiselectAttrubteUpdate()
 	 {
@@ -1266,7 +1270,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			user = EntityManagerInterface.persistEntity(user);
 
-			DBUtil.closeConnection();
+			//DBUtil.closeConnection();
 			//DBUtil.Connection();
 
 			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
@@ -2419,9 +2423,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			//Step 1.
 			AttributeInterface commentsAttributes = factory.createStringAttribute();
 			commentsAttributes.setName("comments");
-			StringValueInterface defalutValue = factory.createStringValue();
-			defalutValue.setValue("this is default value");
-			commentsAttributes.getAttributeTypeInformation().setDefaultValue(defalutValue);
+			StringValueInterface defaultValue = factory.createStringValue();
+			defaultValue.setValue("this is default value");
+			commentsAttributes.getAttributeTypeInformation().setDefaultValue(defaultValue);
 
 			entity.addAbstractAttribute(commentsAttributes);
 
@@ -2996,7 +3000,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			String activityStatus = (String) executeQuery("select "
 					+ Constants.ACTIVITY_STATUS_COLUMN + " from "
 					+ entity.getTableProperties().getName(), STRING_TYPE, 1);
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, activityStatus);
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), activityStatus);
 
 			//step 6
 			boolean isRecordDeleted = EntityManagerInterface.deleteRecord(entity, new Long(1));
@@ -3005,7 +3009,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			assertTrue(isRecordDeleted);
 			activityStatus = (String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN
 					+ " from " + entity.getTableProperties().getName(), STRING_TYPE, 1);
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, activityStatus);
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), activityStatus);
 
 			rowCount = (Integer) executeQuery("select count(*) from "
 					+ entity.getTableProperties().getName(), INT_TYPE, 1);
@@ -3168,13 +3172,13 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			// Step 6
 
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(user, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(address, 1L));
 
 			EntityManagerInterface.deleteRecord(savedEntity, 1L);
 
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(address, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(address, 1L));
 		}
 		catch (Exception e)
 		{
@@ -3262,16 +3266,16 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			// Step 5
 			EntityManagerInterface.insertData(savedEntity, dataValue);
 
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(user, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(address, 2L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(address, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(address, 2L));
 
 			// Step 6
 			EntityManagerInterface.deleteRecord(savedEntity, 1L);
 
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(address, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(address, 2L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(address, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(address, 2L));
 		}
 		catch (Exception e)
 		{
@@ -3352,17 +3356,17 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 			EntityManagerInterface.insertData(savedEntity, dataValue);
 
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(user, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(study, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(study, 2L));
 
 			//Step 6:
 			EntityManagerInterface.deleteRecord(savedEntity, 1L);
 
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(user, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(user, 1L));
 
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 1L));
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(study, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(study, 2L));
 		}
 		catch (Exception e)
 		{
@@ -3372,7 +3376,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
-	/** PURPOSE: This method test for deleting data of one entity which is reffered by a record of some
+	/** PURPOSE: This method test for deleting data of one entity which is referred by a record of some
 	 *           other entity.
 	 *  EXPECTED BEHAVIOUR: In such a cases, record is not allowed to be deleted, appropriate applicationException should be thrown.
 	 *
@@ -3382,9 +3386,9 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 *                  4. persist entities.
 	 *                  5. Insert Data for study as "study"
 	 *                  6. Insert Data for study as  "study1"
-	 *                  7. Delete "study1" shoud be succesful.
+	 *                  7. Delete "study1" should be successful.
 	 *                  8. Insert Data for user  as "user" that refers to "study"
-	 *                  9. Delete "Study" : should throw exception as it is refered by "user"
+	 *                  9. Delete "Study" : should throw exception as it is referred by "user"
 	 * @throws Exception
 	 */
 	public void testDeleteReferedData() throws Exception
@@ -3444,8 +3448,8 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			EntityManagerInterface.deleteRecord(study, 1L);
 			assertTrue(true);
 
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
-			assertEquals(Constants.ACTIVITY_STATUS_DISABLED, getActivityStatus(study, 1L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(study, 2L));
+			assertEquals(Status.ACTIVITY_STATUS_DISABLED.toString(), getActivityStatus(study, 1L));
 
 			//Step 8
 			dataValue.clear();
@@ -3464,7 +3468,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 		catch (DynamicExtensionsApplicationException e)
 		{
 			assertTrue(true);
-			assertEquals(Constants.ACTIVITY_STATUS_ACTIVE, getActivityStatus(study, 2L));
+			assertEquals(Status.ACTIVITY_STATUS_ACTIVE.toString(), getActivityStatus(study, 2L));
 			Logger.out.debug(DynamicExtensionsUtility.getStackTrace(e));
 		}
 		catch (Exception e)
@@ -3514,7 +3518,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 
 	/** PURPOSE: This method tests for creating value domain information object
 	 *
-	 *  EXPECTED BEHAVIOUR: Attribute should be created successfully along with value domain information objet.
+	 *  EXPECTED BEHAVIOUR: Attribute should be created successfully along with value domain information object.
 	 *  TEST CASE FLOW: 1.create test entity
 	 *                  2.create cadsr value domain information object
 	 * @throws Exception

@@ -615,7 +615,7 @@ public class TestCategoryDemo extends DynamicExtensionsBaseTestCase
 	//			genderList.add("Female");
 	//			genderList.add("Male");
 	//
-	//			categoryHelper.addOrUpdateControl(patient, "gender", patientContainer, ControlEnum.RADIO_BUTTON_CONTROL, "Gneder", genderList);
+	//			categoryHelper.addOrUpdateControl(patient, "gender", patientContainer, ControlEnum.RADIO_BUTTON_CONTROL, "Gender", genderList);
 	//
 	//			List<String> ethnicityList = new ArrayList<String>();
 	//			ethnicityList.add("asian");

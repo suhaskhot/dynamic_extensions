@@ -43,13 +43,13 @@ import edu.common.dynamicextensions.util.CategoryCreator;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
@@ -193,7 +193,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
 			}
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			e.printStackTrace();
 			fail();
@@ -1112,7 +1112,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			e.printStackTrace();
 			fail();
@@ -1330,7 +1330,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			e.printStackTrace();
 			fail();
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			e.printStackTrace();
 			fail();

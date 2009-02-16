@@ -330,8 +330,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		{
 			Iterator<PermissibleValueInterface> iterator = defaultPermissibleValuesCollection
 					.iterator();
-			PermissibleValueInterface pv = iterator.next();
-			defaultPermissibleValuesCollection.remove(pv);
+			defaultPermissibleValuesCollection.remove(iterator.next());
 		}
 
 		this.defaultPermissibleValuesCollection.add(permissibleValue);

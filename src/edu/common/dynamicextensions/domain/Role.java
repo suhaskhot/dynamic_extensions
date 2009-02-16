@@ -2,8 +2,8 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
 /**
  * This Class represents the role of the Association.
@@ -144,7 +144,7 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setMaximumCardinality(edu.common.dynamicextensions.util.global.Constants.Cardinality)
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setMaximumCardinality(edu.common.dynamicextensions.util.global.DEConstants.Cardinality)
 	 */
 	public void setMaximumCardinality(Cardinality maxCardinality)
 	{
@@ -161,7 +161,7 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setMinimumCardinality(edu.common.dynamicextensions.util.global.Constants.Cardinality)
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setMinimumCardinality(edu.common.dynamicextensions.util.global.DEConstants.Cardinality)
 	 */
 	public void setMinimumCardinality(Cardinality minCardinality)
 	{
@@ -177,7 +177,7 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setAssociationsType(edu.common.dynamicextensions.util.global.Constants.AssociationType)
+	 * @see edu.common.dynamicextensions.domaininterface.RoleInterface#setAssociationsType(edu.common.dynamicextensions.util.global.DEConstants.AssociationType)
 	 */
 	public void setAssociationsType(AssociationType associationType)
 	{

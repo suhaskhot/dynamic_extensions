@@ -2,7 +2,7 @@
 package edu.common.dynamicextensions.domain;
 
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
-import edu.common.dynamicextensions.util.global.Constants.ValueDomainType;
+import edu.common.dynamicextensions.util.global.DEConstants.ValueDomainType;
 
 /**
  * This class stores value domain information of each attribute.
@@ -99,7 +99,7 @@ public class CaDSRValueDomainInfo extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.Constants.AssociationDirection)
+	 * @see edu.common.dynamicextensions.domaininterface.AssociationInterface#setAssociationDirection(edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection)
 	 */
 	public void setValueDomainType(ValueDomainType valueDomainType)
 	{

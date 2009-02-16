@@ -92,12 +92,12 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 		if (format.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
 			Utility.parseDate(value, format);
-			value = DynamicExtensionsUtility.formatMonthAndYearDate(value);
+			value = DynamicExtensionsUtility.formatMonthAndYearDate(value,false);
 		}
 		if (format.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 		{
 			Utility.parseDate(value, format);
-			value = DynamicExtensionsUtility.formatYearDate(value);
+			value = DynamicExtensionsUtility.formatYearDate(value,false);
 		}
 
 		Date date = null;

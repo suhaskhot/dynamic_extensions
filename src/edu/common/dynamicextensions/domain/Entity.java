@@ -18,8 +18,8 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
 
 /**
  * An entity is something that has a distinct, separate existence, though it need not be a material
@@ -61,7 +61,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 * 3 - data table is not created by DE but it is already present. calling application take the
 	 *     responsibility of setting Table name and column name to the entity and attributes.
 	 */
-	protected int dataTableState = Constants.DATA_TABLE_STATE_NOT_CREATED;
+	protected int dataTableState = DEConstants.DATA_TABLE_STATE_NOT_CREATED;
 
 	/**
 	 * parent of this entity, null is no parent present.

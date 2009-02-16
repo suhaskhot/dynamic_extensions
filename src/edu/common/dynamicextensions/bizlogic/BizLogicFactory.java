@@ -9,10 +9,10 @@
 
 package edu.common.dynamicextensions.bizlogic;
 
-import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.bizlogic.QueryBizLogic;
+import edu.wustl.common.util.global.Constants;
+import edu.wustl.simplequery.bizlogic.QueryBizLogic;
 
 /**
  * BizLogicFactory is a factory for DAO instances of various domain objects.

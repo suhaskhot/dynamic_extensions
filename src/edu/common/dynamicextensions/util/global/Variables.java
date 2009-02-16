@@ -15,7 +15,7 @@ import java.util.Vector;
  * @author aarti_sharma
  *
  */
-public class Variables extends edu.wustl.common.util.global.Variables
+public class Variables
 {
 
 	public static String dynamicExtensionsHome = new String();

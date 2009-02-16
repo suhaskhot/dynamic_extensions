@@ -28,8 +28,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
 /**
  * @author chetan_patil
@@ -252,15 +252,15 @@ public class UserInterfaceiUtility
 	public static void clearContainerStack(HttpServletRequest request)
 	{
 		ContainerInterface containerInterface = (ContainerInterface) CacheManager
-				.getObjectFromCache(request, Constants.CONTAINER_INTERFACE);
+				.getObjectFromCache(request, DEConstants.CONTAINER_INTERFACE);
 		if (containerInterface != null && containerInterface.getId() != null)
 		{
 			request.setAttribute("containerIdentifier", containerInterface.getId().toString());
 		}
 
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_STACK, null);
-		CacheManager.addObjectToCache(request, Constants.VALUE_MAP_STACK, null);
-		CacheManager.addObjectToCache(request, Constants.CONTAINER_INTERFACE, null);
+		CacheManager.addObjectToCache(request, DEConstants.CONTAINER_STACK, null);
+		CacheManager.addObjectToCache(request, DEConstants.VALUE_MAP_STACK, null);
+		CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, null);
 		CacheManager.addObjectToCache(request, "rootRecordIdentifier", null);
 	}
 

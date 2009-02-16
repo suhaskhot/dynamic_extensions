@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * This class acts as an interface to the external systems.The dynamic extensions can be delivered
@@ -115,7 +115,7 @@ public class WebUIManager implements WebUIManagerConstants
 		//if null, return default container from cache.
 		ContainerInterface currentContainer = null;
 		String currentContainerName = (String) CacheManager.getObjectFromCache(request,
-				Constants.CURRENT_CONTAINER_NAME);
+				DEConstants.CURRENT_CONTAINER_NAME);
 		if ((currentContainerName != null) && (!currentContainerName.trim().equals("")))
 		{
 			//container for current container name
@@ -126,7 +126,7 @@ public class WebUIManager implements WebUIManagerConstants
 		{
 			//return default container
 			currentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
-					Constants.CONTAINER_INTERFACE);
+					DEConstants.CONTAINER_INTERFACE);
 		}
 		return currentContainer;
 	}

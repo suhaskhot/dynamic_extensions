@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 /**
  * @author deepti_shelar
@@ -39,12 +39,12 @@ public class CacheManager
 			Object formDetailsObject)
 	{
 		HttpSession session = request.getSession();
-		cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
+		cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 
 		if (cacheMap == null)
 		{
 			cacheMap = new HashMap();
-			session.setAttribute(Constants.CACHE_MAP, cacheMap);
+			session.setAttribute(DEConstants.CACHE_MAP, cacheMap);
 		}
 		cacheMap.put(key, formDetailsObject);
 
@@ -61,9 +61,9 @@ public class CacheManager
 		HttpSession session = request.getSession();
 		Object result = null;
 
-		if (session.getAttribute(Constants.CACHE_MAP) != null)
+		if (session.getAttribute(DEConstants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
+			cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 			result = cacheMap.get(key);
 		}
 		return result;
@@ -77,9 +77,9 @@ public class CacheManager
 	public static void removeObjectFromCache(HttpServletRequest request, String key)
 	{
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Constants.CACHE_MAP) != null)
+		if (session.getAttribute(DEConstants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
+			cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 			cacheMap.remove(key);
 		}
 	}
@@ -91,9 +91,9 @@ public class CacheManager
 	public static void clearCache(HttpServletRequest request)
 	{
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Constants.CACHE_MAP) != null)
+		if (session.getAttribute(DEConstants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map) session.getAttribute(Constants.CACHE_MAP);
+			cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 			cacheMap.clear();
 		}
 	}

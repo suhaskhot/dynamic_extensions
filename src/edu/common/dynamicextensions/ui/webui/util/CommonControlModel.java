@@ -8,7 +8,7 @@ import org.apache.struts.upload.FormFile;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
 import edu.wustl.common.domain.AbstractDomainObject;
 
@@ -318,21 +318,33 @@ public class CommonControlModel extends AbstractActionForm
 		this.tempcsvFile = tempcsvFile;
 	}
 
+	/**
+	 * @return the current container name
+	 */
 	public String getCurrentContainerName()
 	{
 		return this.currentContainerName;
 	}
 
+	/**
+	 * @param currentContainerName set current container name
+	 */
 	public void setCurrentContainerName(String currentContainerName)
 	{
 		this.currentContainerName = currentContainerName;
 	}
 
+	/**
+	 * @return collection of EntityGroup names
+	 */
 	public List getGroupNames()
 	{
 		return this.groupNames;
 	}
 
+	/**
+	 * @param groupNames set collection of EntityGroup names
+	 */
 	public void setGroupNames(List groupNames)
 	{
 		this.groupNames = groupNames;
@@ -406,7 +418,7 @@ public class CommonControlModel extends AbstractActionForm
 	 */
 	public int getFormId()
 	{
-		return Constants.ATTRIBUTE_FORM_ID;
+		return DEConstants.ATTRIBUTE_FORM_ID;
 	}
 
 	/**
@@ -1536,5 +1548,12 @@ public class CommonControlModel extends AbstractActionForm
 	public void setCsvString(String csvString)
 	{
 		this.csvString = csvString;
+	}
+
+	@Override
+	public void setAddNewObjectIdentifier(String addNewFor, Long addObjectIdentifier)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

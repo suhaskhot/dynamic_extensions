@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,8 +35,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.globus.wsrf.encoding.ObjectDeserializer;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.w3c.dom.Document;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
@@ -57,6 +56,9 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.errorcodes.ErrorCodeConstants;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
@@ -65,7 +67,8 @@ import edu.wustl.cab2b.common.queryengine.result.IRecord;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.DataType;
-import edu.wustl.common.util.dbManager.DBUtil;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.exception.DAOException;
 import gov.nih.nci.cagrid.syncgts.bean.SyncDescription;
 import gov.nih.nci.cagrid.syncgts.core.SyncGTS;
 
@@ -75,7 +78,7 @@ import gov.nih.nci.cagrid.syncgts.core.SyncGTS;
  * @author Chandrakant Talele
  * @author Gautam Shetty
  */
-public class Utility
+public class Utility implements EntityManagerExceptionConstantsInterface
 {
 
 	private static final Logger logger = edu.wustl.common.util.logger.Logger
@@ -569,53 +572,47 @@ public class Utility
 	 * @param values
 	 * @return
 	 * @throws HibernateException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	public static Collection<?> executeHQL(String queryName, List<Object> values)
-			throws HibernateException
+			throws HibernateException, DynamicExtensionsSystemException
 	{
-		Session session = DBUtil.currentSession();
+		Collection objects = new HashSet();
+		HibernateDAO hibernateDAO=null;
 		try
 		{
-			Query q = session.getNamedQuery(queryName);
-
-			if (values != null)
-			{
-				for (int counter = 0; counter < values.size(); counter++)
-				{
-
-					Object value = values.get(counter);
-					String objectType = value.getClass().getName();
-					String onlyClassName = objectType.substring(objectType.lastIndexOf('.') + 1,
-							objectType.length());
-
-					if (onlyClassName.equals("String"))
-					{
-						q.setString(counter, (String) value);
-					}
-					else if (onlyClassName.equals("Integer"))
-					{
-						q.setInteger(counter, Integer.parseInt(value.toString()));
-					}
-					else if (onlyClassName.equals("Long"))
-					{
-						q.setLong(counter, Long.parseLong(value.toString()));
-					}
-				}
-			}
-			return q.list();
+			hibernateDAO =DynamicExtensionsUtility.getHibernateDAO();
+			objects=hibernateDAO.executeNamedQuery(queryName, null);
 		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while rolling back the session", e);
+		}
+
 		finally
 		{
-			DBUtil.closeSession();
+			try
+			{
+				DynamicExtensionsUtility.closeHibernateDAO(hibernateDAO);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception occured while closing the session", e, DYEXTN_S_001);
+			}
+
 		}
+
+		return objects;
 	}
 
 	/**
 	 * @param queryName
 	 * @return
 	 * @throws HibernateException
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	public static Collection<?> executeHQL(String queryName) throws HibernateException
+	public static Collection<?> executeHQL(String queryName) throws HibernateException, DynamicExtensionsSystemException
 	{
 		return executeHQL(queryName, null);
 	}
@@ -924,16 +921,16 @@ public class Utility
 	 */
 	public static boolean hasAnySecureService(ICab2bQuery query)
 	{
-		boolean anySecureSevice = false;
+		boolean anySecureService = false;
 		for (String url : query.getOutputUrls())
 		{
 			if (url.trim().toLowerCase().startsWith("https://"))
 			{
-				anySecureSevice = true;
+				anySecureService = true;
 				break;
 			}
 		}
-		return anySecureSevice;
+		return anySecureService;
 	}
 
 	/**

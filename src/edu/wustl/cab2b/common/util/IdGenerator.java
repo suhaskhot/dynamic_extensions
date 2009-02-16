@@ -10,7 +10,7 @@ package edu.wustl.cab2b.common.util;
 public class IdGenerator {
 
     /**
-     * Maintains next avaible id
+     * Maintains next available id
      */
     private long nextAvailableId;
 
@@ -22,7 +22,7 @@ public class IdGenerator {
     }
     
     /**
-     * @return next avaible id.
+     * @return next available id.
      */
     public synchronized long getNextId() {
         return nextAvailableId++;

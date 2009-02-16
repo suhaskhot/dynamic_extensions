@@ -50,7 +50,7 @@ public interface ErrorCodeConstants
 	/** Inconsistent data in database */
 	String DE_0003 = "DE.0003";
 
-	/** Unable to retrive Dynamic Extension objects */
+	/** Unable to retrieve Dynamic Extension objects */
 	String DE_0004 = "DE.0004";
 
 	//---------------------------------------------------------------------

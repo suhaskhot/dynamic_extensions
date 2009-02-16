@@ -73,10 +73,10 @@ import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
-import edu.common.dynamicextensions.util.global.Constants;
-import edu.common.dynamicextensions.util.global.Constants.AssociationDirection;
-import edu.common.dynamicextensions.util.global.Constants.AssociationType;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
+import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
@@ -84,7 +84,9 @@ import edu.common.dynamicextensions.xmi.exporter.DatatypeMappings;
 import edu.common.dynamicextensions.xmi.model.ContainerModel;
 import edu.common.dynamicextensions.xmi.model.ControlsModel;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.global.Constants;
 
 /**
  *
@@ -504,7 +506,7 @@ public class XMIImportProcessor
 	 * @throws DAOException
 	 */
 	private List<EntityGroupInterface> retrieveEntityGroup(String entityGroupName,
-			String packageName) throws DAOException
+			String packageName) throws BizLogicException
 	{
 		List<EntityGroupInterface> entityGroupColl = null;
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
@@ -760,7 +762,7 @@ public class XMIImportProcessor
 	{
 		//Not showing id attribute on UI if Id attribue is to be added by DE which is specified in xmiConfiguration Object
 		AttributeInterface originalAttribute = null;
-		if ((umlAttribute.getName().equalsIgnoreCase(Constants.ID) || umlAttribute.getName()
+		if ((umlAttribute.getName().equalsIgnoreCase(DEConstants.ID) || umlAttribute.getName()
 				.equalsIgnoreCase(Constants.IDENTIFIER)))
 		{
 			//If id attribute is system generated then dont create attribute for user given Id attribute
@@ -889,7 +891,7 @@ public class XMIImportProcessor
 		EntityManagerUtil.addIdAttribute(targetEntity);
 		targetEntity.setName(umlAttribute.getName()
 				+ IdGeneratorUtil.getInstance().getNextUniqeId());
-		attribute.setName(Constants.COLLECTIONATTRIBUTE
+		attribute.setName(DEConstants.COLLECTIONATTRIBUTE
 				+ IdGeneratorUtil.getInstance().getNextUniqeId());
 		targetEntity.addAbstractAttribute(attribute);
 		entityGroup.addEntity(targetEntity);
@@ -1197,7 +1199,7 @@ public class XMIImportProcessor
 					|| direction
 							.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED))
 			{
-				direction = Constants.AssociationDirection.SRC_DESTINATION.toString();
+				direction = DEConstants.AssociationDirection.SRC_DESTINATION.toString();
 			}
 		}
 		else
@@ -1207,11 +1209,11 @@ public class XMIImportProcessor
 			if (direction.equals("")
 					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_BIDIRECTIONAL))
 			{
-				direction = Constants.AssociationDirection.BI_DIRECTIONAL.toString();
+				direction = DEConstants.AssociationDirection.BI_DIRECTIONAL.toString();
 			}
 			else
 			{
-				direction = Constants.AssociationDirection.SRC_DESTINATION.toString();
+				direction = DEConstants.AssociationDirection.SRC_DESTINATION.toString();
 			}
 		}
 		//		getAssociationEnds(sourceAssociationEnd,targetAssociationEnd,associationEnds,direction);
@@ -1254,13 +1256,13 @@ public class XMIImportProcessor
 		association.setTargetEntity(tgtEntity);
 		association.setTargetRole(targetRole);
 		association.populateAssociationForConstraintProperties();
-		if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL.toString()))
+		if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL.toString()))
 		{
-			association.setAssociationDirection(Constants.AssociationDirection.BI_DIRECTIONAL);
+			association.setAssociationDirection(DEConstants.AssociationDirection.BI_DIRECTIONAL);
 		}
 		else
 		{
-			association.setAssociationDirection(Constants.AssociationDirection.SRC_DESTINATION);
+			association.setAssociationDirection(DEConstants.AssociationDirection.SRC_DESTINATION);
 		}
 
 		populateAssociationUIProperties(association, taggedValueColl);
@@ -1312,7 +1314,7 @@ public class XMIImportProcessor
 			if (!existingAsso.getSourceRole().getAssociationsType().equals(
 					sourceRole.getAssociationsType()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (!existingAsso.getSourceRole().getAssociationsType().equals(
@@ -1329,7 +1331,7 @@ public class XMIImportProcessor
 			if (!existingAsso.getSourceRole().getMaximumCardinality().equals(
 					sourceRole.getMaximumCardinality()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (!existingAsso.getSourceRole().getMaximumCardinality().equals(
@@ -1346,7 +1348,7 @@ public class XMIImportProcessor
 			if (!existingAsso.getSourceRole().getMinimumCardinality().equals(
 					sourceRole.getMinimumCardinality()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (!existingAsso.getSourceRole().getMinimumCardinality().equals(
@@ -1365,7 +1367,7 @@ public class XMIImportProcessor
 					&& !existingAsso.getSourceRole().getName().equalsIgnoreCase(
 							sourceRole.getName()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (existingAsso.getSourceRole().getName() != null
@@ -1385,7 +1387,7 @@ public class XMIImportProcessor
 			if (!existingAsso.getTargetRole().getAssociationsType().equals(
 					targetRole.getAssociationsType()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (!existingAsso.getTargetRole().getAssociationsType().equals(
@@ -1402,7 +1404,7 @@ public class XMIImportProcessor
 			if (!existingAsso.getTargetRole().getMaximumCardinality().equals(
 					targetRole.getMaximumCardinality()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (!existingAsso.getTargetRole().getMaximumCardinality().equals(
@@ -1419,7 +1421,7 @@ public class XMIImportProcessor
 			if (!existingAsso.getTargetRole().getMinimumCardinality().equals(
 					targetRole.getMinimumCardinality()))
 			{//For bi directional association, reversing the association ends and comparing
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{
 					if (!existingAsso.getTargetRole().getMinimumCardinality().equals(
@@ -1438,7 +1440,7 @@ public class XMIImportProcessor
 					&& !existingAsso.getTargetRole().getName().equalsIgnoreCase(
 							targetRole.getName()))
 			{
-				if (direction.equalsIgnoreCase(Constants.AssociationDirection.BI_DIRECTIONAL
+				if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL
 						.toString()))
 				{//For bi directional association, reversing the association ends and comparing
 					if (existingAsso.getTargetRole().getName() != null
@@ -1548,11 +1550,11 @@ public class XMIImportProcessor
 						.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_UNSPECIFIED) || associationType
 						.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_CONTAINMENT_NOTSPECIFIED)))
 		{
-			role.setAssociationsType(Constants.AssociationType.ASSOCIATION);
+			role.setAssociationsType(DEConstants.AssociationType.ASSOCIATION);
 		}
 		else
 		{
-			role.setAssociationsType(Constants.AssociationType.CONTAINTMENT);
+			role.setAssociationsType(DEConstants.AssociationType.CONTAINTMENT);
 		}
 		role.setName(sourceRoleName);
 		role.setMaximumCardinality(getCardinality(maxCardinality));
@@ -1565,17 +1567,17 @@ public class XMIImportProcessor
 	 * @param cardinality intger value of cardinality.
 	 * @return Dynamic Extension's Cardinality enumration
 	 */
-	private Constants.Cardinality getCardinality(int cardinality)
+	private DEConstants.Cardinality getCardinality(int cardinality)
 	{
 		if (cardinality == 0)
 		{
-			return Constants.Cardinality.ZERO;
+			return DEConstants.Cardinality.ZERO;
 		}
 		if (cardinality == 1)
 		{
-			return Constants.Cardinality.ONE;
+			return DEConstants.Cardinality.ONE;
 		}
-		return Constants.Cardinality.MANY;
+		return DEConstants.Cardinality.MANY;
 	}
 
 	/**
@@ -1827,10 +1829,10 @@ public class XMIImportProcessor
 					}
 
 					if (targetAsso.getAssociationDirection().equals(
-							Constants.AssociationDirection.SRC_DESTINATION)
+							DEConstants.AssociationDirection.SRC_DESTINATION)
 							&& originalTargetAssociation != null
 							&& originalTargetAssociation.getAssociationDirection().equals(
-									Constants.AssociationDirection.BI_DIRECTIONAL))
+									DEConstants.AssociationDirection.BI_DIRECTIONAL))
 					{//We need to remove system generated association if direction has been changed from bi directional to source destination
 						attributesToRemove.add(editedAttribute);
 					}
@@ -2177,7 +2179,7 @@ public class XMIImportProcessor
 		String format = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DATE_FORMAT);
 		if (format == null || format.trim().equals(""))
 		{
-			format = Constants.DATE_PATTERN_MM_DD_YYYY;
+			format = CommonServiceLocator.getInstance().getDatePattern();
 		}
 
 		return format;

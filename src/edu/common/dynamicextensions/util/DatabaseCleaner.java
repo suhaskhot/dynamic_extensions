@@ -8,12 +8,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDBFactory;
+import edu.common.dynamicextensions.dao.impl.IDEDBUtility;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 
 /**
- * Used for cleaning or dropping all the tablee created previously.
+ * Used for cleaning or dropping all the table created previously.
  * @author pavan_kalantri
  *
  */
@@ -35,23 +38,11 @@ public class DatabaseCleaner
 	{
 		try
 		{
-			if (args[0].equalsIgnoreCase(Constants.ORACLE_DATABASE))
-			{
-				cleanOracle(args);
-			}
-			else if (args[0].equalsIgnoreCase(Constants.MYSQL_DATABASE))
-			{
-				cleanMysql(args);
-			}
-			else if (args[0].equalsIgnoreCase(Constants.DB2_DATABASE))
-			{
-				cleanDb2(args);
-			}
-			else if (args[0].equalsIgnoreCase(Constants.MSSQLSERVER_DATABASE))
-			{
-				cleanMsSqlServer(args);
-			}
-		}
+			String appName=DynamicExtensionDAO.getInstance().getAppName();
+			String dbType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+			IDEDBUtility dbUtility=DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
+			dbUtility.cleanDatabase(args);
+		}		
 		catch (DynamicExtensionsSystemException e)
 		{
 			System.out.println("Can not clean the database");
@@ -170,7 +161,7 @@ public class DatabaseCleaner
 	 * @param args
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void cleanDb2(String[] args) throws DynamicExtensionsSystemException
+	public static void cleanDb2(String[] args) throws DynamicExtensionsSystemException
 	{
 		String query = null;
 
@@ -202,7 +193,7 @@ public class DatabaseCleaner
 	 * @param args
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void cleanOracle(String[] args) throws DynamicExtensionsSystemException
+	public static void cleanOracle(String[] args) throws DynamicExtensionsSystemException
 	{
 		String query = null;
 		Connection conn = null;
@@ -236,7 +227,7 @@ public class DatabaseCleaner
 	 * @param args
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void cleanMysql(String[] args) throws DynamicExtensionsSystemException
+	public static void cleanMysql(String[] args) throws DynamicExtensionsSystemException
 	{
 		String query = null;
 		Connection conn = null;
@@ -275,7 +266,7 @@ public class DatabaseCleaner
 	 * @param args
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void cleanMsSqlServer(String[] args) throws DynamicExtensionsSystemException
+	public static void cleanMsSqlServer(String[] args) throws DynamicExtensionsSystemException
 	{
 		String query = null;
 		Connection conn = null;

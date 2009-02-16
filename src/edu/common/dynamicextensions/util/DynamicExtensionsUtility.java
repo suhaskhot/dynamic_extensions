@@ -33,6 +33,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDBFactory;
+import edu.common.dynamicextensions.dao.impl.IDEDBUtility;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -76,22 +79,24 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
-import edu.common.dynamicextensions.util.global.Constants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.Variables;
-import edu.common.dynamicextensions.util.global.Constants.Cardinality;
-import edu.common.dynamicextensions.util.global.Constants.InheritanceStrategy;
+import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.HibernateDAO;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * @author chetan_patil
@@ -165,7 +170,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * It will verify weather the Inherited Tagg is present on the given atribute parameter or not & will return boolean accordingly
+	 * It will verify weather the Inherited Tag is present on the given attribute parameter or not & will return boolean accordingly
 	 * @param attaibute to check for taggedValue
 	 * @return true if "Inherited" tagged value present.
 	 */
@@ -219,7 +224,7 @@ public class DynamicExtensionsUtility
 		try
 		{
 			// After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
-			List objectList = bizLogic.retrieve(objectName, Constants.ID, new Long(identifier));
+			List objectList = bizLogic.retrieve(objectName, DEConstants.ID, new Long(identifier));
 
 			if (objectList == null || objectList.isEmpty())
 			{
@@ -228,7 +233,7 @@ public class DynamicExtensionsUtility
 
 			object = objectList.get(0);
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
@@ -343,6 +348,11 @@ public class DynamicExtensionsUtility
 		return null;
 	}
 
+	/**
+	 * @param controlCollection collection of controls
+	 * @param sequenceNumber sequence number
+	 * @return control
+	 */
 	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection,
 			int sequenceNumber)
 	{
@@ -373,40 +383,9 @@ public class DynamicExtensionsUtility
 	 */
 	public static void initialiseApplicationVariables()
 	{
-		try
-		{
-			DBUtil.currentSession();
-			//			DBUtil.closeSession();
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-
 		if (Logger.out == null)
 		{
 			Logger.configure("");
-		}
-
-		if (!Variables.databaseName.equals(Constants.MYSQL_DATABASE))
-		{
-			//set string/function for oracle
-
-			Variables.datePattern = "mm-dd-yyyy";
-			Variables.timePattern = "hh24-mi-ss";
-			Variables.dateFormatFunction = "TO_CHAR";
-			Variables.timeFormatFunction = "TO_CHAR";
-			Variables.dateTostrFunction = "TO_CHAR";
-			Variables.strTodateFunction = "TO_DATE";
-		}
-		else
-		{
-			Variables.datePattern = "%m-%d-%Y";
-			Variables.timePattern = "%H:%i:%s";
-			Variables.dateFormatFunction = "DATE_FORMAT";
-			Variables.timeFormatFunction = "TIME_FORMAT";
-			Variables.dateTostrFunction = "TO_CHAR";
-			Variables.strTodateFunction = "STR_TO_DATE";
 		}
 	}
 
@@ -416,6 +395,7 @@ public class DynamicExtensionsUtility
 	public static void initialiseApplicationInfo()
 	{
 
+		CommonServiceLocator serviceLocator=CommonServiceLocator.getInstance();
 		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")
 				+ ApplicationProperties.getValue("application.version.file");
 		CVSTagReader cvsTagReader = new CVSTagReader();
@@ -423,11 +403,10 @@ public class DynamicExtensionsUtility
 		Variables.applicationCvsTag = cvsTag;
 		Logger.out.info("========================================================");
 		Logger.out.info("Application Information");
-		Logger.out.info("Name: " + Variables.applicationName);
-		Logger.out.info("Version: " + Variables.applicationVersion);
+		Logger.out.info("Name: " + DynamicExtensionDAO.getInstance().getAppName());
 		Logger.out.info("CVS TAG: " + Variables.applicationCvsTag);
-		Logger.out.info("Path: " + Variables.applicationHome);
-		Logger.out.info("Database Name: " + Variables.databaseName);
+		Logger.out.info("Path: " + serviceLocator.getAppHome());
+		//Logger.out.info("Database Name: " + Variables.databaseName);
 		Logger.out.info("========================================================");
 
 		try
@@ -435,7 +414,11 @@ public class DynamicExtensionsUtility
 			Logger.out.info("Preloading the DE metadata....This may take a few minutes");
 			EntityManager.getInstance().getAllContainers();
 		}
-		catch (Exception e)
+		catch (DynamicExtensionsSystemException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch (DynamicExtensionsApplicationException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -525,8 +508,8 @@ public class DynamicExtensionsUtility
 
 	/**
 	 *
-	 * @param numString
-	 * @return
+	 * @param numString Number as string.
+	 * @return boolean true if numeric else false.
 	 */
 	public static boolean isNumeric(String numString)
 	{
@@ -547,6 +530,9 @@ public class DynamicExtensionsUtility
 		return isNumeric;
 	}
 
+	/**
+	 * @return day form Calendar.
+	 */
 	public static int getCurrentDay()
 	{
 		return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
@@ -806,8 +792,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * @param association
-	 * @param entitySet
+	 * @param abstractAttribute abstract attribute
 	 */
 	public static void updateEntityReferences(AbstractAttributeInterface abstractAttribute)
 	{
@@ -911,12 +896,12 @@ public class DynamicExtensionsUtility
 
 		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
-			strDate = formatMonthAndYearDate(strDate);
+			strDate = formatMonthAndYearDate(strDate,false);
 			//09-12-2007 0:0
 		}
 		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 		{
-			strDate = formatYearDate(strDate);
+			strDate = formatYearDate(strDate,false);
 			//09-12-2007 0:0
 		}
 
@@ -940,37 +925,24 @@ public class DynamicExtensionsUtility
 	 * @param strDate
 	 * @return
 	 */
-	public static String formatMonthAndYearDate(String strDate)
+	public static String formatMonthAndYearDate(String strDate,boolean removeTime)
 	{
-		String month = strDate.substring(0, 2);
-		String year = strDate.substring(3, strDate.length());
-		// For MySQL5, do not add time to date for YYYY and MM-YYYY formats.
-		if (Variables.databaseName.equals(Constants.MYSQL_DATABASE))
-		{
-			return month + "-" + "01" + "-" + year;
-		}
-		else
-		{
-			return month + "-" + "01" + "-" + year + " 0:0";
-		}
+		String appName=DynamicExtensionDAO.getInstance().getAppName();		
+		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		IDEDBUtility dbUtility=DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
+		String formattedStr=dbUtility.formatMonthAndYearDate(strDate,removeTime);		
+		return formattedStr;
 	}
 
 	/**
 	 * @param strDate
 	 * @return
 	 */
-	public static String formatYearDate(String strDate)
+	public static String formatYearDate(String strDate,boolean removeTime)
 	{
-		String year = strDate;
-		// For MySQL5, do not add time to date for YYYY and MM-YYYY formats.
-		if (Variables.databaseName.equals(Constants.MYSQL_DATABASE))
-		{
-			return "01" + "-" + "01" + "-" + year;
-		}
-		else
-		{
-			return "01" + "-" + "01" + "-" + year + " 0:0";
-		}
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String dbType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		return DynamicExtensionDBFactory.getInstance().getDbUtility(dbType).formatYearDate(strDate,removeTime);		
 	}
 
 	/**
@@ -1002,31 +974,9 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getValueForCheckBox(boolean ischecked)
 	{
-		String checkboxValue = "";
-		if (Variables.databaseName.equals(Constants.ORACLE_DATABASE)
-				|| Variables.databaseName.equals(Constants.MYSQL_DATABASE))
-		{
-			if (ischecked)
-			{
-				checkboxValue = "1";
-			}
-			else
-			{
-				checkboxValue = "0";
-			}
-		}
-		else if (Variables.databaseName.equals(Constants.POSTGRESQL_DATABASE))
-		{
-			if (ischecked)
-			{
-				checkboxValue = "true";
-			}
-			else
-			{
-				checkboxValue = "false";
-			}
-		}
-		return checkboxValue;
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String dbType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		return DynamicExtensionDBFactory.getInstance().getDbUtility(dbType).getValueForCheckBox(ischecked);
 	}
 
 	/**
@@ -1074,8 +1024,8 @@ public class DynamicExtensionsUtility
 				result = 1;
 				return result;
 			}
-			date1 = formatMonthAndYearDate(date1);
-			date2 = formatMonthAndYearDate(date2);
+			date1 = formatMonthAndYearDate(date1,false);
+			date2 = formatMonthAndYearDate(date2,false);
 			//09-12-2007 0:0
 		}
 
@@ -1155,10 +1105,11 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getSQLDateFormat(String dateFormat)
 	{
-		String sqlDateFormat = Variables.datePattern;
+		CommonServiceLocator locator= CommonServiceLocator.getInstance();
+		String sqlDateFormat = locator.getDatePattern();
 		if (dateFormat != null && dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-			sqlDateFormat = sqlDateFormat + " " + Variables.timePattern;
+			sqlDateFormat = sqlDateFormat + " " + locator.getTimePattern();
 		}
 		return sqlDateFormat;
 	}
@@ -1182,7 +1133,7 @@ public class DynamicExtensionsUtility
 		{
 			objectList = defaultBizLogic.retrieve(Container.class.getName(), "caption", caption);
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
@@ -1254,7 +1205,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method processes entity before saving it to databse.
+	 * This method processes entity before saving it to database.
 	 * <li> It validates entity for duplicate name of entity,attributes and association
 	 * <li> It sets created and updated date-time.
 	 *
@@ -1323,9 +1274,9 @@ public class DynamicExtensionsUtility
 				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
 			}
 		}
-		catch (DAOException e)
+		catch (BizLogicException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage(),e);
 
 		}
 
@@ -1355,13 +1306,13 @@ public class DynamicExtensionsUtility
 			// getting instance of catissueCoreCacheManager and adding containerMap to cache
 			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
 					.getInstance();
-			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
-			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER, (HashMap) containerMap);
+			deCacheManager.removeObjectFromCache(DEConstants.LIST_OF_CONTAINER);
+			deCacheManager.addObjectToCache(DEConstants.LIST_OF_CONTAINER, (HashMap) containerMap);
 			System.out.println("ON Startup caching containers.Size of Container ----------"
 					+ containerList.size());
 
 		}
-		catch (Exception e)
+		catch (BizLogicException e)
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
@@ -1414,13 +1365,13 @@ public class DynamicExtensionsUtility
 			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
 					.getInstance();
 			Map containerMap = new HashMap();
-			containerMap = (HashMap) deCacheManager.getObjectFromCache(Constants.LIST_OF_CONTAINER);
+			containerMap = (HashMap) deCacheManager.getObjectFromCache(DEConstants.LIST_OF_CONTAINER);
 			if (containerMap != null)
 			{
 				containerMap.put(updatedContainer.getId(), updatedContainer);
 			}
-			deCacheManager.removeObjectFromCache(Constants.LIST_OF_CONTAINER);
-			deCacheManager.addObjectToCache(Constants.LIST_OF_CONTAINER, (HashMap) containerMap);
+			deCacheManager.removeObjectFromCache(DEConstants.LIST_OF_CONTAINER);
+			deCacheManager.addObjectToCache(DEConstants.LIST_OF_CONTAINER, (HashMap) containerMap);
 
 		}
 		catch (Exception e)
@@ -1605,14 +1556,22 @@ public class DynamicExtensionsUtility
 	{
 		EntityInterface parentEntity = childEntity.getParentEntity();
 		Long id = childEntity.getId();
+		Entity dbaseCopy;
 		if (id == null && parentEntity != null)
 		{
 			getConstraintKeyProperties(childEntity, parentEntity, isAddColumnForInheritance);
 		}
 		else if (id != null)
 		{
-			Entity dbaseCopy = (Entity) DBUtil.loadCleanObj(Entity.class, id);
-
+			try
+			{
+				dbaseCopy = (Entity) DynamicExtensionsUtility.getCleanObject(Entity.class
+						.getCanonicalName(), id);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			}			
 			if (EntityManagerUtil.isParentChanged((Entity) childEntity, dbaseCopy)
 					|| EntityManagerUtil.isPrimaryKeyChanged(parentEntity))
 			{
@@ -1694,8 +1653,16 @@ public class DynamicExtensionsUtility
 		}
 		else
 		{
-			AssociationInterface dbaseCopy = (AssociationInterface) DBUtil.loadCleanObj(
-					Association.class, id);
+			AssociationInterface dbaseCopy;
+			try
+			{
+				dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(Association.class.getCanonicalName(),id);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			}			
+			
 			if (EntityManagerUtil.isCardinalityChanged(association, dbaseCopy)
 					|| EntityManagerUtil.isPrimaryKeyChanged(association.getEntity())
 					|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity()))
@@ -1920,7 +1887,7 @@ public class DynamicExtensionsUtility
 				.getFormat();
 		if (dateFormat == null)
 		{
-			dateFormat = Constants.DATE_PATTERN_MM_DD_YYYY;
+			dateFormat = CommonServiceLocator.getInstance().getDatePattern();
 		}
 
 		String str = null;
@@ -1944,7 +1911,17 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsSystemException("Unable to parse given date.");
 		}
 
-		formattedvalue = Variables.strTodateFunction + "('" + simpleDateFormat.format(date) + "','"
+		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		JDBCDAO jdbcDao=null;
+		try
+		{
+			jdbcDao = (JDBCDAO) DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Unable to JDBCDAO object.");
+		}
+		formattedvalue = jdbcDao.getStrTodateFunction() + "('" + simpleDateFormat.format(date) + "','"
 				+ ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";
 
 		return formattedvalue;
@@ -2130,30 +2107,23 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * Executes hql Query and returns the results.
-	 * 
-	 * @param hql
-	 *            String hql
-	 * @throws DAOException 
-	 * @throws DAOException
-	 *             DAOException
-	 * @throws ClassNotFoundException 
+	 * @param hql Query and returns the results.
+	 * @return String query
+	 * @throws DAOException Generic DAO Exception
 	 * @throws ClassNotFoundException
-	 *             ClassNotFoundException
 	 */
 	public static List executeQuery(String hql) throws DAOException, ClassNotFoundException
 	{
-		HibernateDAO dao = (HibernateDAO) DAOFactory.getInstance().getDAO(Constants.HIBERNATE_DAO);
-		dao.openSession(null);
-		List list = dao.executeQuery(hql, null, false, null);
-		dao.closeSession();
+		HibernateDAO dao = DynamicExtensionsUtility.getHibernateDAO();
+		List list = dao.executeQuery(hql);
+		DynamicExtensionsUtility.closeHibernateDAO(dao);
 		return list;
 	}
 
 	/**
 	 * Replace any single and double quotes value with proper escape character	in HTML
 	 * @param value
-	 * @return
+	 * @return String value
 	 */
 	public static String getEscapedStringValue(String value)
 	{
@@ -2166,11 +2136,11 @@ public class DynamicExtensionsUtility
 		}
 		return value;
 	}
-	
+
 	/**
-	 * @param catEntity
+	 * @param container
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static boolean areNoRelatedCategoryAttributesPresent(ContainerInterface container)
 			throws DynamicExtensionsSystemException
@@ -2197,9 +2167,10 @@ public class DynamicExtensionsUtility
 
 		return true;
 	}
+
 	/**
-	 * 
-	 * @return
+	 * @param categoryEntityName
+	 * @return categoryEntityName
 	 */
 	public static String getCategoryEntityName(String categoryEntityName)
 	{
@@ -2224,5 +2195,71 @@ public class DynamicExtensionsUtility
 			categoryEntityName = categoryEntityNameArray[categoryEntityNameArray.length - 1];
 		}
 		return categoryEntityName;
+	}
+
+	/**
+	 * this method returns object from database not from current session.
+	 * @param sourceObjectName class name.
+	 * @param identifier id for object.
+	 * @return object from database
+	 * @throws DAOException generic DAO exception.
+	 */
+	public static Object getCleanObject(String sourceObjectName, Long identifier) throws DAOException
+	{
+		HibernateDAO hibernateDao=null;
+		try
+		{
+			String appName=DynamicExtensionDAO.getInstance().getAppName();			
+			hibernateDao = (HibernateDAO)DAOConfigFactory.getInstance().getDAOFactory(appName).getDAO();
+			hibernateDao.openSession(null);
+			return hibernateDao.retrieveById(sourceObjectName, identifier);
+		}
+		finally
+		{	
+			hibernateDao.closeSession();			
+		}
+	}
+
+	/**
+	 * @return jdbcDao
+	 * @throws DAOException generic DAO exception
+	 */
+	public static JDBCDAO getJDBCDAO() throws DAOException
+	{
+		
+		String appName=DynamicExtensionDAO.getInstance().getAppName();			
+		JDBCDAO jdbcDao = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
+		jdbcDao.openSession(null);	
+		return jdbcDao;
+	}
+
+	/**
+	 * @return hibernateDao
+	 * @throws DAOException generic DAO exception
+	 */
+	public static HibernateDAO getHibernateDAO() throws DAOException
+	{
+		String appName=DynamicExtensionDAO.getInstance().getAppName();			
+		HibernateDAO hibernateDao = (HibernateDAO)DAOConfigFactory.getInstance().getDAOFactory(appName).getDAO();
+		hibernateDao.openSession(null);	
+		return hibernateDao;
+	}
+
+	/**
+	 * @param jdbcDao DAO object
+	 * @throws DAOException generic DAO exception
+	 */
+	public static void closeJDBCDAO(JDBCDAO jdbcDao) throws DAOException
+	{
+		jdbcDao.closeSession();
+	}
+
+	/**
+	 * @param hibernateDao DAO object
+	 * @throws DAOException generic DAO exception
+	 */
+	public static void closeHibernateDAO(HibernateDAO hibernateDao) throws DAOException
+	{
+		hibernateDao.closeSession();
 	}
 }

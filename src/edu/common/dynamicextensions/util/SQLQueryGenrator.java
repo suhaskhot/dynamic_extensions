@@ -67,7 +67,7 @@ public class SQLQueryGenrator
 	 */
 	public String getDeleteQuery(String tableName, Map<String, Object>...columnValueMap )
 	{
-	return null;	
+	return null;
 	}
 	
 	

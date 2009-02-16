@@ -3,15 +3,12 @@ package edu.common.dynamicextensions.util;
 
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.IdGenerator;
 import edu.common.dynamicextensions.domaininterface.IdGeneratorInterface;
-import edu.wustl.common.util.dbManager.DBUtil;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This is singleton util class is used to generate unique ids.
@@ -55,18 +52,13 @@ public class IdGeneratorUtil
 	 */
 	public static synchronized Long getNextUniqeId()
 	{
-		Session session = null;
-		Transaction transaction = null;
 		Long nextAvailableId = null;
+		HibernateDAO hibernateDAO=null;
 
 		try
 		{
-			session = DBUtil.getCleanSession();
-			transaction = session.beginTransaction();
-
-			Query query = session.createQuery("from " + IdGenerator.class.getName());
-
-			List list = query.list();
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			List list = hibernateDAO.executeQuery("from " + IdGenerator.class.getName());
 			if (list.isEmpty())
 			{
 				nextAvailableId = new Long(1);
@@ -75,39 +67,41 @@ public class IdGeneratorUtil
 
 				idGeneratorObject.setNextAvailableId(new Long(2));
 				idGeneratorObject.setId(new Long(1));
-
-				session.save(idGeneratorObject);
-				transaction.commit();
-
+				hibernateDAO.insert(idGeneratorObject,false);				
+				hibernateDAO.commit();
 				return nextAvailableId;
 			}
 
-			IdGeneratorInterface idGenerator = (IdGeneratorInterface) query.list().get(0);
+			IdGeneratorInterface idGenerator = (IdGeneratorInterface) list.get(0);
 
 			nextAvailableId = idGenerator.getNextAvailableId();
 			idGenerator.setNextAvailableId(nextAvailableId + 1);
 
 			// Remove idGenerator instance from the session cache.
-			session.evict(idGenerator);
-			session.update(idGenerator);
-			transaction.commit();
+			//session.evict(idGenerator);
+			hibernateDAO.update(idGenerator);
+			hibernateDAO.commit();
 		}
 		catch (Exception orgExp)
 		{
 			try
 			{
-				transaction.rollback();
+				hibernateDAO.rollback();
 			}
-			catch (RuntimeException rte)
+			catch (DAOException rte)
 			{
 				Logger.out.debug("Could not rollback transaction", rte);
 			}
 		}
 		finally
 		{
-			if (session != null)
+			try
 			{
-				session.close();
+				DynamicExtensionsUtility.closeHibernateDAO(hibernateDAO);
+			}
+			catch(DAOException exception)
+			{
+				Logger.out.debug("Could not close session.", exception);
 			}
 		}
 

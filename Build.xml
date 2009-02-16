@@ -179,7 +179,8 @@
 	    				<include name="**/ui/util/*.class"/>
 		    			<include name="**/ui/webui/util/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
-						<include name="**/wustl/cab2b/**/*.class"/>
+	    				<include name="**/dao/impl/**/*.class"/>
+	    				<include name="**/wustl/cab2b/**/*.class"/>
 						<include name="**/wustl/common/**/*.class"/>
     					<include name="**/wustl/metadata/**/*.class"/>
 		    			<exclude name="**/*Test*.class"/>
@@ -237,7 +238,7 @@
 				<exclude name="**/dom4j.jar"/>
 				<exclude name="**/jboss-common-jdbc-wrapper.jar"/>
 				<exclude name="**/jboss.jar"/>
-				<exclude name="**/log4j.jar"/>
+				<include name="**/log4j.jar"/>
 				<include name="ApplicationVersionInfo.txt"/>
 			</fileset>
  		</war>
@@ -262,7 +263,7 @@
 
 	<!-- Generates schema for DE release.The longblob changes are done for MYSQL using Alter table SQL -->
 	<target name="generate_schema" depends="generate_hbm,build_jar">
-	    	<java classname="edu.wustl.common.util.dbManager.GenerateSchema">
+	    	<java classname="edu.common.dynamicextensions.util.GenerateSchema">
 	    		<arg value="true"/>
 	            <classpath>
 		            <pathelement location="${build.dir}/cawebeav.jar"/>

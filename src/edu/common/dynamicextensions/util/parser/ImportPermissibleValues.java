@@ -201,7 +201,6 @@ public class ImportPermissibleValues
 			System.out.println("\n----------");
 			System.out.println("Exception: ");
 			System.out.println("----------");
-			ex.printStackTrace();
 			throw new RuntimeException(ex);
 		}
 	}

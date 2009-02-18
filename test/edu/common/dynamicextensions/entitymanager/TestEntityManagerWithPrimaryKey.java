@@ -446,7 +446,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * purpose  : import the xmi which is already imported and modified to add a 
-	 * 				new attribute as aprimary key
+	 * 				new attribute as a primary key
 	 */
 	public void testEditXMIImportToAddPrimaryKey()
 	{
@@ -1088,7 +1088,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 *  PURPOSE: This method tests for metadata save of the inheritance when child is edited with edited parent.
-	 *  and both have different primary key attribute other than identifier then set he parent of tissuspecimen to null 
+	 *  and both have different primary key attribute other than identifier then set he parent of tissue specimen to null 
 	 *
 	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved. Changes in the parent should get properly reflected
 	 *  in the database. A new column is added in child for primary key of parent. 
@@ -1215,8 +1215,8 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 * purpose: create two entites specimen without specifying any primary key attribute and tissuespecimen with primary key attribute
-	 * 			and tissuespecimen inherite from specimen 
+	 * purpose: create two entities specimen without specifying any primary key attribute and tissue specimen with primary key attribute
+	 * 			and tissue specimen inherite from specimen 
 	 * 	
 	 * 		step 1: create two entities
 	 * 		step 2: save enities

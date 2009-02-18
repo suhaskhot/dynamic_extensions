@@ -18,6 +18,11 @@ public class FileAttributeRecordValue extends DynamicExtensionBaseDomainObject
 {
 
 	/**
+	 * added default serial version UID
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * content of the file.
 	 */
 	private byte[] fileContent;

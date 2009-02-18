@@ -19,7 +19,7 @@ import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Validator;
 
 /**
- * This actionFotm stores information about the Container and the Entity.
+ * This actionForm stores information about the Container and the Entity.
  * @author deepti_shelar
  *
  */

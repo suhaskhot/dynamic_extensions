@@ -14,7 +14,7 @@ public class ByteArrayValue extends PermissibleValue implements ByteArrayValueIn
 {
 
 	/**
-	 * Sserial Version Unique Identifier
+	 * Serial Version Unique Identifier
 	 */
 	private static final long serialVersionUID = -5535531891478617220L;
 

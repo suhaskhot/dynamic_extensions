@@ -24,7 +24,7 @@ public class DynamicExtensionMySQLQueryBuilder extends DynamicExtensionBaseQuery
 	 * @return
 	 */
 	/*
-	 * cnanged by: pavan
+	 * changed by: pavan
 	 * Method signature is different than the DynamicExtensionsBaseQueryBuilder
 	 * thus it is changed to match. Thus it can be overridden correctly
 	 * 

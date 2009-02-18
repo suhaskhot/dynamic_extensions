@@ -7,7 +7,7 @@ import java.util.List;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 
 /**
- * This class represents a meatadata of the entity records.
+ * This class represents a metadata of the entity records.
  * The class contains the list of all the attributes and associations for which records are obtained.
  * 
  * @author Rahul Ner

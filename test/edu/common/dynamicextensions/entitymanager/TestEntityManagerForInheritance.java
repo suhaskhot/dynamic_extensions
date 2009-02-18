@@ -677,7 +677,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance.
+	 *  PURPOSE: This method tests for metadata save of the inheritance.
 	 *
 	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved
 	 *
@@ -727,9 +727,9 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 
 			EntityInterface savedSpecimen = entityManagerInterface.getEntityByIdentifier(specimen
 					.getId());
-			Collection childColelction = entityManagerInterface.getChildrenEntities(savedSpecimen);
-			assertEquals(childColelction.size(), 1);
-			childColelction.contains(savedTissueSpecimen);
+			Collection childCollection = entityManagerInterface.getChildrenEntities(savedSpecimen);
+			assertEquals(childCollection.size(), 1);
+			childCollection.contains(savedTissueSpecimen);
 
 			assertEquals(noOfDefaultColumns + 1, getColumnCount("select * from "
 					+ specimen.getTableProperties().getName()));
@@ -747,7 +747,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when child is created with edited parent.
+	 *  PURPOSE: This method tests for metadata save of the inheritance when child is created with edited parent.
 	 *
 	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved. Changes in the parent should get properly reflected
 	 *  in the database. Appropriate changes in the data tables should occur without any exception.
@@ -820,7 +820,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when child is edited with unsaved parent.
+	 *  PURPOSE: This method tests for metadata save of the inheritance when child is edited with unsaved parent.
 	 *
 	 *  EXPECTED BEHAVIOUR: Application exception should get thrown stating that parent should get saved first before
 	 *  saving the child object.
@@ -886,7 +886,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when child is edited with edited parent.
+	 *  PURPOSE: This method tests for metadata save of the inheritance when child is edited with edited parent.
 	 *
 	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved. Changes in the parent should get properly reflected
 	 *  in the database. Appropriate changes in the data tables should occur without any exception for both
@@ -1070,7 +1070,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	 *                  3. Create TissueSpecimen and set parent as Specimen
 	 *                  4. persist TissueSpecimen
 	 *                  5. Verify TissueSpecimen.
-	 *                  6. set aprent of TissueSpecimen as null
+	 *                  6. set apparent of TissueSpecimen as null
 	 *                  7. verify this change reflect din database.
 	 *
 	 */
@@ -1150,7 +1150,7 @@ public class TestEntityManagerForInheritance extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *  PURPOSE: This method tests for metadata save of the inheriatance when parent is changed and data is not present
+	 *  PURPOSE: This method tests for metadata save of the inheritance when parent is changed and data is not present
 	 *  for the child.
 	 *
 	 *  EXPECTED BEHAVIOUR: appropriate changes should be made,since data is not present should not throw any exception.

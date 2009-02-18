@@ -137,7 +137,7 @@ public class Path {
     }
 
     /**
-     * Retrunrs no. of nodes
+     * Returns no. of nodes
      * @return
      */
     public int numNodes() {
@@ -177,12 +177,12 @@ public class Path {
      * @return
      */
     public String toString() {
-        String delim = "#";
+        String delimiter = "#";
         String s = fromNode().toString();
         for (Node intermediateNode : getIntermediateNodes()) {
-            s += delim + intermediateNode;
+            s += delimiter + intermediateNode;
         }
-        s += delim + toNode();
+        s += delimiter + toNode();
         return s;
     }
 }

@@ -29,7 +29,7 @@ public class DatePicker extends Control implements DatePickerInterface
 {
 
 	/**
-	 *
+	 * default serial UID
 	 */
 	private static final long serialVersionUID = 1L;
 	private String dateValueType = null;
@@ -237,7 +237,7 @@ public class DatePicker extends Control implements DatePickerInterface
 
 	/**
 	 * @param defaultValue
-	 * @return
+	 * @return defaultValue
 	 */
 	private String reverseDate(String defaultValue)
 	{
@@ -255,15 +255,16 @@ public class DatePicker extends Control implements DatePickerInterface
 		return defaultValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
+	/**
+	 * @param attributeInterface attribute type object
 	 */
 	public void setAttribute(AbstractAttributeInterface attributeInterface)
 	{
 		// TODO empty method.
 	}
 
-	/**This method returns the dateValueType of the DatePicker.
+   /**
+	* This method returns the dateValueType of the DatePicker.
 	* @hibernate.property name="dateValueType" type="string" column="DATE_VALUE_TYPE"
 	* @return Returns the dateValueType.
 	*/
@@ -272,17 +273,16 @@ public class DatePicker extends Control implements DatePickerInterface
 		return dateValueType;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface#setDateValueType(java.lang.String)
+	/**
+	 * @param dateValueType set the date type value
 	 */
 	public void setDateValueType(String dateValueType)
 	{
 		this.dateValueType = dateValueType;
 	}
-
 	
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
+	/**
+	 * Generate HTML for viewing data
 	 */
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{

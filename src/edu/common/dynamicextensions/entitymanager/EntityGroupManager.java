@@ -194,9 +194,6 @@ public class EntityGroupManager extends AbstractMetadataManager
 				.error("***Fatal Error.. Inconsistent data table and metadata information for the entity -"
 						+ name + "***");
 		Logger.out.error("The cause of the exception is - " + exception.getMessage());
-		Logger.out.error("The detailed log is : ");
-
-		exception.printStackTrace();
 	}
 
 	/* (non-Javadoc)

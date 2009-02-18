@@ -180,8 +180,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 				}
 				catch (DAOException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.out.error(e.getMessage());
 				}
 			}
 		}

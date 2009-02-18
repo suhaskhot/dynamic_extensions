@@ -668,7 +668,6 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		catch (IOException e)
 		{
 			logger.error("Unable to load properties from : " + propertyfile);
-			e.printStackTrace();
 		}
 
 		return properties;
@@ -813,9 +812,9 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 					{
 						splitStrings[splitStrCount++] = str.substring(0, i);
 
-						char[] lasrCharIsUpperCase = new char[1];
-						lasrCharIsUpperCase[0] = character;
-						splitStrings[splitStrCount++] = new String(lasrCharIsUpperCase);
+						char[] lastCharIsUpperCase = new char[1];
+						lastCharIsUpperCase[0] = character;
+						splitStrings[splitStrCount++] = new String(lastCharIsUpperCase);
 					}
 					else
 					{
@@ -970,7 +969,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			SyncDescription description = (SyncDescription) obj;
 			SyncGTS.getInstance().syncOnce(description);
 			logger
-					.debug("Successfully syncronized with GTS service. Globus certificates generated.");
+					.debug("Successfully synchronized with GTS service. Globus certificates generated.");
 		}
 		catch (Exception e)
 		{

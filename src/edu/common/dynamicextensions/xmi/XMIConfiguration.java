@@ -71,7 +71,7 @@ public class XMIConfiguration
 
 	/**
 	 * Will set weather IdAttribute is system generated or not
-	 * @param isIdAttributeSystemGenarated
+	 * @param isAddIdAttr specifies is system generated attribute
 	 */
 	public void setAddIdAttr(boolean isAddIdAttr)
 	{

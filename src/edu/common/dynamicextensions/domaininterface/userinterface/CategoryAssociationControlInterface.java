@@ -7,7 +7,7 @@ public interface CategoryAssociationControlInterface extends AbstractContainment
 {
 
 	/**
-	 * This method generates the HMTL for this containement as a Link.
+	 * This method generates the HTML for this containment as a Link.
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */

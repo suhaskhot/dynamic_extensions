@@ -22,6 +22,7 @@ import org.openide.util.Lookup;
 
 import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
+import edu.wustl.common.util.logger.Logger;
 
 public class XMIImporter
 {
@@ -113,7 +114,7 @@ public class XMIImporter
 		catch (Exception e)
 		{
 			System.out.println("Fatal error reading XMI.");
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 		finally
 		{

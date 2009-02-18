@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An adjacency list representation of a (directd) graph. Each vertex of the
+ * An adjacency list representation of a (directed) graph. Each vertex of the
  * graph is a {@link edu.wustl.cab2b.server.path.pathgen.Node}.
  * @see edu.wustl.cab2b.server.path.pathgen.Node
  * @author srinath_k

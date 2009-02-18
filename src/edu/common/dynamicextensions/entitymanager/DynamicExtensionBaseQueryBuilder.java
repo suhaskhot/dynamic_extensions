@@ -1877,7 +1877,7 @@ public class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method returns all the CREATE table entries for associations present in the entity.
-	 * @param entity whose all category associatons are to be processed 
+	 * @param entity whose all category associations are to be processed 
 	 * @param revQueries rollback query list
 	 * @return list of queries
 	 * @throws DynamicExtensionsApplicationException
@@ -2097,9 +2097,9 @@ public class DynamicExtensionBaseQueryBuilder
 				else
 				{
 					// Check for other modification in the attributes such a unique constraint change.
-					List<String> mdfdAttrQueries = processModifyAttribute(attribute,
+					List<String> modifiedAttrQueries = processModifyAttribute(attribute,
 							savedAttribute, attrRlbkQries);
-					attrQueries.addAll(mdfdAttrQueries);
+					attrQueries.addAll(modifiedAttrQueries);
 				}
 			}
 		}
@@ -2253,7 +2253,7 @@ public class DynamicExtensionBaseQueryBuilder
 
 		processRemovedAssociation(catEntity, dbaseCopy, assoQueries, attrRlbkQries);
 
-		Logger.out.debug("ExitinggetUpdateAssociationsQueryList method");
+		Logger.out.debug("Exiting getUpdateAssociationsQueryList method");
 
 		return assoQueries;
 	}
@@ -3578,7 +3578,8 @@ public class DynamicExtensionBaseQueryBuilder
 		}
 		catch (DAOException e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
+			throw new DynamicExtensionsSystemException("Can not rollback query");
 		}
 
 		throw new DynamicExtensionsSystemException("Can not execute query");

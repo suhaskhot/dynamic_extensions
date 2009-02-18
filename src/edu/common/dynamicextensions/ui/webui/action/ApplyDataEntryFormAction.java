@@ -58,6 +58,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * It populates the Attribute values entered in the dynamically generated controls. *
@@ -125,7 +126,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			catch (Exception exception)
 			{
-				exception.printStackTrace();
+				Logger.out.error(exception.getMessage());
 				return getExceptionActionForward(exception, mapping, request);
 			}
 		}

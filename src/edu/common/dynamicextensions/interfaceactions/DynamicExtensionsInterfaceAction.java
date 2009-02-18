@@ -21,6 +21,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.wustl.common.util.logger.Logger;
 
 public class DynamicExtensionsInterfaceAction extends HttpServlet implements WebUIManagerConstants
 {
@@ -60,7 +61,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 			generateOutput(res, entityInterfaceJSONArray);
 		}
 
@@ -81,13 +82,13 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 			}
 			catch (DynamicExtensionsSystemException e)
 			{
-				e.printStackTrace();
+				Logger.out.error(e.getMessage());
 				generateOutput(res, entityInterfaceJSONArray);
 
 			}
 			catch (DynamicExtensionsApplicationException e)
 			{
-				e.printStackTrace();
+				Logger.out.error(e.getMessage());
 				generateOutput(res, entityInterfaceJSONArray);
 			}
 

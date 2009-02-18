@@ -35,7 +35,7 @@ public class ValidatorUtil
 
 	/**
 	 * @param attributeValueMap  key - AttributeInterface
-	 *                           value - value that user has entred for this attribute
+	 *                           value - value that user has entered for this attribute
 	 * @return errorList if any
 	 * @throws DynamicExtensionsSystemException : Exception
 	 * @throws DynamicExtensionsValidationException

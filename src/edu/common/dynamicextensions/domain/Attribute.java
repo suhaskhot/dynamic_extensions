@@ -16,7 +16,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * Entites have attributes that distinguishes them form other entities.
- * This Class represnts the Attribute of Entities.
+ * This Class represents the Attribute of Entities.
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.joined-subclass table="DYEXTN_PRIMITIVE_ATTRIBUTE"

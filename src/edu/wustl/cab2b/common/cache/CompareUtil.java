@@ -199,7 +199,7 @@ public class CompareUtil {
                                    SemanticPropertyInterface cachedSemanticProperty) {
             int index = -1;
             if (cachedSemanticProperty.getConceptCode() != null) {
-                // TODO this null check is bcoz caTissue
+                // TODO this null check is because caTissue
                 // has some permissible values without
                 // concept codes. This will never be the case with models from cDSR
                 if (patternSemanticProperty.getConceptCode() != null) {

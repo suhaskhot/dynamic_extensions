@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.wustl.common.util.logger.Logger;
+
 /**
  * Uses the database to cache paths. The cache is pretty slow due to database
  * access, and is to be used when the
@@ -78,8 +80,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 		finally
 		{
@@ -91,8 +92,7 @@ public class DatabaseCache extends GraphPathFinderCache
 				}
 				catch (SQLException e)
 				{
-					// do nothing
-					e.printStackTrace();
+					Logger.out.debug(e.getMessage());
 				}
 			}
 		}
@@ -149,8 +149,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 	}
 
@@ -175,8 +174,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 
 		return set;
@@ -210,8 +208,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 	}
 
@@ -307,8 +304,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 	}
 

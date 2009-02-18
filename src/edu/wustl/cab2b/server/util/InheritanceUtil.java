@@ -16,7 +16,7 @@ import edu.wustl.cab2b.server.cache.EntityCache;
  */
 public class InheritanceUtil {
     /**
-     * Checks whether passed attribute/association is inheriated.
+     * Checks whether passed attribute/association is Inherited.
      * @param abstractAttribute
      *            Attribute/Association to check.
      * @return TRUE if it is inherited else returns FALSE
@@ -28,7 +28,7 @@ public class InheritanceUtil {
     }
 
     /**
-     * Returns actual attribute if passed attribute is a derieved one. Else
+     * Returns actual attribute if passed attribute is a derived one. Else
      * returns the passed attribute
      * @param attribute
      *            Attribute for which actual attribute is expected.

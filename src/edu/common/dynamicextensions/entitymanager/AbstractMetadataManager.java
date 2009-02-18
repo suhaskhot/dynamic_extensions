@@ -263,7 +263,8 @@ public abstract class AbstractMetadataManager
 				}
 				catch (DAOException e1)
 				{
-					e1.printStackTrace();
+					Logger.out.error(e1.getMessage());
+					throw new DynamicExtensionsSystemException("fail to close connection");
 				}
 
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(exception));
@@ -414,7 +415,7 @@ public abstract class AbstractMetadataManager
 		catch (DynamicExtensionsSystemException e)
 		{
 			rollbackQueries(rlbkQryStack, null, e, hibernateDAO);
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 			throw e;
 		}
 		finally
@@ -529,8 +530,7 @@ public abstract class AbstractMetadataManager
 		}
 		catch (DAOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 		}
 
 		if (isExcToBeWrpd)

@@ -760,7 +760,7 @@ public class XMIImportProcessor
 	private AttributeInterface createAttribute(Attribute umlAttribute, EntityInterface entity)
 			throws DynamicExtensionsSystemException
 	{
-		//Not showing id attribute on UI if Id attribue is to be added by DE which is specified in xmiConfiguration Object
+		//Not showing id attribute on UI if Id attribute is to be added by DE which is specified in xmiConfiguration Object
 		AttributeInterface originalAttribute = null;
 		if ((umlAttribute.getName().equalsIgnoreCase(DEConstants.ID) || umlAttribute.getName()
 				.equalsIgnoreCase(Constants.IDENTIFIER)))
@@ -1737,7 +1737,7 @@ public class XMIImportProcessor
 				else
 				{//Add Attribute
 					addAttributeAndControl(controlModel, editedAttribute, containerInterface);
-					//					Duplicate attributes have been created since we have created attribute in the method createattribues also
+					//					Duplicate attributes have been created since we have created attribute in the method create attributes also
 					//Do not create attributes above but create them here.
 					if (!(editedAttribute instanceof AssociationInterface))
 					{
@@ -2325,7 +2325,7 @@ public class XMIImportProcessor
 		ContainerModel containerModel = new ContainerModel();
 
 		//Setting Edited entity name as caption for container.
-		//Also not setting parentform to avoid unncessary DB call as base container is already present in the container object
+		//Also not setting parentform to avoid unnecessary DB call as base container is already present in the container object
 		containerModel.setFormName(entityInterface.getName());
 		if (entityInterface.isAbstract())
 		{

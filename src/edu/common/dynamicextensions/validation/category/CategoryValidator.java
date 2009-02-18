@@ -277,7 +277,7 @@ public class CategoryValidator
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName());
+						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(),e);
 			}
 		}
 		else
@@ -293,7 +293,7 @@ public class CategoryValidator
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName());
+						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(),e);
 			}
 		}
 	}

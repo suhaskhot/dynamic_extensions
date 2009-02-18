@@ -923,7 +923,7 @@ public class CategoryGenerator
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
 					+ categoryFileParser.getLineNumber()
-					+ ApplicationProperties.getValue("errorReadingCategoryEntityPath"));
+					+ ApplicationProperties.getValue("errorReadingCategoryEntityPath"),exception);
 		}
 
 		return container;

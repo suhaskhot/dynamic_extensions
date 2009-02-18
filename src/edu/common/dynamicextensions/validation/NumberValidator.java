@@ -66,7 +66,7 @@ public class NumberValidator implements ValidatorRuleInterface
 			}
 			catch (DataTypeFactoryInitializationException e)
 			{
-				throw new DataTypeFactoryInitializationException(e.getMessage());
+				throw new DataTypeFactoryInitializationException(e.getMessage(),e);
 			}
 
 			if (attributeTypeInformation != null)

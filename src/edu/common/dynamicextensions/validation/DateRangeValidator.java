@@ -90,7 +90,7 @@ public class DateRangeValidator implements ValidatorRuleInterface
 					List<String> placeHolders = new ArrayList<String>();
 					placeHolders.add(controlCaption);
 					placeHolders.add(dateFormat);
-					throw new DynamicExtensionsValidationException("Validation failed", null,
+					throw new DynamicExtensionsValidationException("Validation failed", ParseException,
 							"dynExtn.validation.Date", placeHolders);
 				}
 

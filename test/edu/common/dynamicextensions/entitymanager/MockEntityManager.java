@@ -100,7 +100,7 @@ public class MockEntityManager extends DynamicExtensionsBaseTestCase
 	/**
 	 * This method returns a dummy Container instance populated with dummy
 	 * Controls, Entity and its attributes.	 *
-	 * @param containerName Name of the Conatiner
+	 * @param containerName Name of the Container
 	 * @return Container instance
 	 * @throws DynamicExtensionsApplicationException On failure to create Container instance
 	 */

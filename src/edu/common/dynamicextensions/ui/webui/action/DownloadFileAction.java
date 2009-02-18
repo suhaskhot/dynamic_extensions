@@ -26,6 +26,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.exception.DAOException;
 
 /**
@@ -89,28 +90,23 @@ public class DownloadFileAction extends HttpServlet
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 		}
 		catch (NumberFormatException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 		}
 		catch (DAOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.out.error(e.getMessage());
 		}
 	}
 

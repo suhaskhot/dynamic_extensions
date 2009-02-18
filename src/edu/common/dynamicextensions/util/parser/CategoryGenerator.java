@@ -900,7 +900,7 @@ public class CategoryGenerator
 						categoryEntityNameInstanceMap);
 				if (!categoryEntityName.contains(categoryEntName))
 				{
-					container = SearchExistingCategoryEntityAndContainer(categoryEntName,
+					container = searchExistingCategoryEntityAndContainer(categoryEntName,
 							containerCollection);
 					if (container == null)
 					{
@@ -934,7 +934,7 @@ public class CategoryGenerator
 	 * @param containerCollection
 	 * @return
 	 */
-	private ContainerInterface SearchExistingCategoryEntityAndContainer(String categoryEntityName,
+	private ContainerInterface searchExistingCategoryEntityAndContainer(String categoryEntityName,
 			List<ContainerInterface> containerCollection)
 	{
 		// Check whether the container is already created for category entity

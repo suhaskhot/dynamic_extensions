@@ -28,7 +28,7 @@ public class TestAll
 	}
 
 	/**
-	 * @return etst
+	 * @return test suite
 	 */
 	public static Test suite()
 	{

@@ -115,7 +115,7 @@ public class LoadDataEntryFormProcessor
 		Map<BaseAbstractAttributeInterface, Object> recordMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 		if (recordIdentifier != null && !recordIdentifier.equals(""))
 		{
-			//Quic fix:
+			//Quick fix:
 			if (entityInterface instanceof EntityInterface)
 			{
 				EntityManagerInterface entityManagerInterface = EntityManager.getInstance();

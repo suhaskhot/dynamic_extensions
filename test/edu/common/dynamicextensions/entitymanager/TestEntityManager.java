@@ -230,7 +230,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			floatAtribute.setName("Price");
 			AttributeInterface commentsAttributes = DomainObjectFactory.getInstance()
 					.createStringAttribute();
-			commentsAttributes.setName("coomments");
+			commentsAttributes.setName("comments");
 
 			entity.addAbstractAttribute(floatAtribute);
 			entity.addAbstractAttribute(commentsAttributes);
@@ -682,7 +682,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 * Test case to check the behaviour when first entity is saved with a collection attribute and then the that
 	 * attribute is made non-collection. Expected behavior is that after editing the attribute in
 	 * such a way the column for that attribute should get added to the data table. This column was not present in
-	 * earlier scenario when the attribue was a collection attribute.
+	 * earlier scenario when the attribute was a collection attribute.
 	 */
 	public void testEditEntityWithCollectionAttribute()
 	{
@@ -1242,7 +1242,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
 					noOfDefaultColumns + 1);
 
-			//Edit attribute: change attribute type to file attrbiute type.
+			//Edit attribute: change attribute type to file attribiute type.
 			Collection<FileExtension> allowedExtn = new HashSet<FileExtension>();
 
 			FileExtension txtExtn = new FileExtension();
@@ -1732,7 +1732,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
 			fileRecord.setContentType("PDF");
 			fileRecord.setFileName("test.pdf");
-			String fileContent = "this is cntent of the file";
+			String fileContent = "this is content of the file";
 			fileRecord.setFileContent(fileContent.getBytes());
 
 			Map dataValue = new HashMap();
@@ -1802,7 +1802,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			FileAttributeRecordValue fileRecord = new FileAttributeRecordValue();
 			fileRecord.setContentType("PDF");
 			fileRecord.setFileName("tp.java");
-			String fileContent = "this is cntent of the file";
+			String fileContent = "this is content of the file";
 			//File f = new File("C:\\BinaryBlobType.java");
 			fileRecord.setFileContent(fileContent.getBytes());
 
@@ -2943,7 +2943,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	 * PURPOSE : to test the basic delete functionality
 	 *
 	 *
-	 * EXPECTED BEHAVIOR : delete method should disbale the record and not actually delete it.
+	 * EXPECTED BEHAVIOR : delete method should disable the record and not actually delete it.
 	 *
 	 * TEST CASE FLOW :
 	 * 1.Create an entity

@@ -391,7 +391,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 			//Changed by : Kunal
 			//Reviewed by: Sujay
 			//Container hierarchy can be n level
-			//So, mode of the n coatiners in the hierarchy need to be same.
+			//So, mode of the n containers in the hierarchy need to be same.
 
 			ContainerInterface tempContainerInterface = this.baseContainer;
 			while (tempContainerInterface != null)

@@ -326,8 +326,7 @@ public class Attribute extends AbstractAttribute
 		int maxSize = -1;
 		AttributeTypeInformationInterface attributeTypeInformation = this
 				.getAttributeTypeInformation();
-		if (attributeTypeInformation != null
-				&& attributeTypeInformation instanceof StringAttributeTypeInformation)
+		if (attributeTypeInformation instanceof StringAttributeTypeInformation)
 		{
 			StringAttributeTypeInformation stringAttributeTypeInformation = (StringAttributeTypeInformation) attributeTypeInformation;
 			if (stringAttributeTypeInformation != null

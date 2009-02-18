@@ -81,7 +81,7 @@ public class MatchedClassEntry implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof MatchedClassEntry)) {
+        if (!(other instanceof MatchedClassEntry)) {
             return false;
         }
 

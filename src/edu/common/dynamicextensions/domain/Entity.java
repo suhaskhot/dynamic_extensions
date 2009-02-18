@@ -668,7 +668,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 				break;
 			}
 		}
-		if (abstractAttribute != null && abstractAttribute instanceof AssociationInterface)
+		if (abstractAttribute instanceof AssociationInterface)
 		{
 			AssociationInterface association = (AssociationInterface) abstractAttribute;
 			if (association.getIsCollection())

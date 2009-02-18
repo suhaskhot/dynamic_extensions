@@ -68,7 +68,7 @@ public class BooleanValue extends PermissibleValue implements BooleanValueInterf
 	public boolean equals(Object obj)
 	{
 		boolean isEqual = false;
-		if (obj != null &&obj instanceof BooleanValue)
+		if (obj instanceof BooleanValue)
 		{
 			if (value!= null && value.equals(((BooleanValue) obj).getValue()))
 			{

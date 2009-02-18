@@ -284,12 +284,11 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	public AssociationInterface getBaseAbstractAttributeAssociation()
 	{
 		AssociationInterface association = null;
-		if (baseAbstractAttribute != null && baseAbstractAttribute instanceof AssociationInterface)
+		if (baseAbstractAttribute instanceof AssociationInterface)
 		{
 			association = (AssociationInterface) baseAbstractAttribute;
 		}
-		else if (baseAbstractAttribute != null
-				&& baseAbstractAttribute instanceof CategoryAttributeInterface)
+		else if (baseAbstractAttribute instanceof CategoryAttributeInterface)
 		{
 			CategoryAttributeInterface categoryAttributeInterface = (CategoryAttributeInterface) baseAbstractAttribute;
 			AbstractAttributeInterface abstractAttributeInterface = categoryAttributeInterface

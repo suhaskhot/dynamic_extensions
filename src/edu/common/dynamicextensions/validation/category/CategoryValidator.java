@@ -408,7 +408,7 @@ public class CategoryValidator
 		AbstractAttributeInterface abstractAttribute = entity
 				.getAbstractAttributeByName(attributeName);
 
-		if (control != null && control instanceof ListBoxInterface)
+		if (control instanceof ListBoxInterface)
 		{
 			Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
 

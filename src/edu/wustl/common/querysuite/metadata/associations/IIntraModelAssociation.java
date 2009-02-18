@@ -14,7 +14,7 @@ public interface IIntraModelAssociation extends IAssociation
 {
 
 	/**
-	 * To get the Dynamic Extenstion Association correpsonding to this class
+	 * To get the Dynamic Extension Association corresponding to this class
 	 * @return the reference to the Dynamic Extension Attribute.
 	 */
 	AssociationInterface getDynamicExtensionsAssociation();

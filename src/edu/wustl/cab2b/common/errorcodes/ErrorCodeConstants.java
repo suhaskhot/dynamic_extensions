@@ -160,7 +160,7 @@ public interface ErrorCodeConstants
 	/** Error occurred while delegating the credentials */
 	String CDS_007 = "CDS.007";
 
-	/** The server doesn't have permission to acess the client's credentials */
+	/** The server doesn't have permission to access the client's credentials */
 	String CDS_008 = "CDS.008";
 
 	/** Incorrect CDS URL. Please check the CDS URL in conf/client.properties */

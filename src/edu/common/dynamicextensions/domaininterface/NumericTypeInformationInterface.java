@@ -29,7 +29,7 @@ public interface NumericTypeInformationInterface extends AttributeTypeInformatio
 	Integer getDecimalPlaces();
 
 	/**
-	 * This method sets the places after the decimal point of the DoubleAttribue.
+	 * This method sets the places after the decimal point of the DoubleAttribute.
 	 * @param decimalPlaces the places after the decimal point to be set.
 	 */
 	void setDecimalPlaces(Integer decimalPlaces);

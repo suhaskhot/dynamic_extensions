@@ -5,7 +5,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
 /**
- * For every entity association there are two roles invoved.They are source role and target role.
+ * For every entity association there are two roles involved.They are source role and target role.
  * @author sujay_narkar
  *
  */

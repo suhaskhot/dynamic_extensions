@@ -70,7 +70,7 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	}
 
 	/**
-	 * This method sets the places after the decimal point of the DoubleAttribue.
+	 * This method sets the places after the decimal point of the DoubleAttribute.
 	 * @param decimalPlaces the places after the decimal point to be set.
 	 */
 	public void setDecimalPlaces(Integer decimalPlaces)

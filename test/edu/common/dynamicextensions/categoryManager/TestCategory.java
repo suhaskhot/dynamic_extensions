@@ -293,7 +293,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//			UserDefinedDEInterface userDefinedDE2 = factory.createUserDefinedDE();
 	//
 	//			PermissibleValueInterface permissibleValue10 = factory.createStringValue();
-	//			((StringValue) permissibleValue10).setValue("DEXA");
+	//			((StringValue) permissibleValue10).setValue("DATA");
 	//
 	//			PermissibleValueInterface permissibleValue11 = factory.createStringValue();
 	//			((StringValue) permissibleValue11).setValue("MRI");
@@ -408,7 +408,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//			UserDefinedDEInterface userDefinedDE3 = factory.createUserDefinedDE();
 	//
 	//			PermissibleValueInterface permissibleValue6 = factory.createStringValue();
-	//			((StringValue) permissibleValue6).setValue("Atypical adenomatous hyperplasia (adenosis)");
+	//			((StringValue) permissibleValue6).setValue("A typical adenomatous hyperplasia (adenosis)");
 	//
 	//			PermissibleValueInterface permissibleValue7 = factory.createStringValue();
 	//			((StringValue) permissibleValue7).setValue("Others");
@@ -701,7 +701,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//			permissibleValues1.add("Intra Abdom fat(cubic cm)");
 	//
 	//			List<String> permissibleValues2 = new ArrayList<String>();
-	//			permissibleValues2.add("DEXA");
+	//			permissibleValues2.add("DATA");
 	//			permissibleValues2.add("MRI");
 	//
 	//			// Create category attribute(s) for bodyComposition category entity.
@@ -984,7 +984,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//			EntityInterface additionalFinding = entityGroup.getEntityByName("AdditionalFinding");
 	//			EntityInterface invasion = entityGroup.getEntityByName("Invasion");
 	//			EntityInterface gleasonScore = entityGroup.getEntityByName("GleasonScore");
-	//			EntityInterface tumorQuant = entityGroup.getEntityByName("TumorQuantitaion");
+	//			EntityInterface tumorQuant = entityGroup.getEntityByName("TumorQuantitation");
 	//			EntityInterface varHistoType = entityGroup.getEntityByName("VariantHistologicType");
 	//
 	//			CategoryHelper categoryHelper = new CategoryHelper();
@@ -1039,7 +1039,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//					"Additional Finding", category);
 	//
 	//			List<String> desiredValues3 = new ArrayList<String>();
-	//			desiredValues3.add("Atypical adenomatous hyperplasia (adenosis)");
+	//			desiredValues3.add("A typical adenomatous hyperplasia (adenosis)");
 	//
 	//			// Create category attribute(s) for additionalFinding category entity.
 	//			categoryHelper.addOrUpdateControl(additionalFinding, "Detail", additionalFindingContainer, ControlEnum.LIST_BOX_CONTROL, "Detail",
@@ -1185,7 +1185,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//	 * @throws FileNotFoundException
 	//	 *
 	//	 */
-	//	public void createCatgeory(String categoryFile)
+	//	public void createCategory(String categoryFile)
 	//	{
 	//		try
 	//		{
@@ -1212,7 +1212,7 @@ public class TestCategory extends DynamicExtensionsBaseTestCase
 	//				"E:\\Projects\\ClinPortal\\models\\from jahangeer 27-3-08\\Referring Info\\referringinfo.csv");
 	//
 	//		importPermissibleValues("E:/Projects/ClinPortal/models/from jahangeer 27-3-08/Referring Info/referringinfo_pv.csv");
-	//		createCatgeory("E:/Projects/ClinPortal/models/from jahangeer 27-3-08/Referring Info/category_referringInfo_ver2_UI_single_entity.csv");
+	//		createCategory("E:/Projects/ClinPortal/models/from jahangeer 27-3-08/Referring Info/category_referringInfo_ver2_UI_single_entity.csv");
 	//
 	//	}
 	//

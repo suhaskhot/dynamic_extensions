@@ -193,7 +193,7 @@ public class CategoryOperations extends DefaultBizLogic {
     }
 
     /**
-     * Returns all the categories availble in the system.
+     * Returns all the categories available in the system.
      * 
      * @param connection
      *            Connection object reference

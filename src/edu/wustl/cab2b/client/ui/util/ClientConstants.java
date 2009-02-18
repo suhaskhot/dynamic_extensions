@@ -75,12 +75,12 @@ public interface ClientConstants
 	String SELECT_ICON_ADD_LIMIT_MOUSEOVER = "select_icon_mo.gif";
 
 	/**
-	 * Add limit panel paranthesis icon image
+	 * Add limit panel parenthesis icon image
 	 */
 	String PARENTHISIS_ICON_ADD_LIMIT = "parenthesis_icon.gif";
 
 	/**
-	 * Add limit panel paranthesis icon mouseover image
+	 * Add limit panel parenthesis icon mouseover image
 	 */
 	String PARENTHISIS_ICON_ADD_LIMIT_MOUSEOVER = "parenthesis_icon_mo.gif";
 
@@ -105,7 +105,7 @@ public interface ClientConstants
 	String TREE_CLOSE_FOLDER = "close_folder.gif";
 
 	/**
-	 * Visualise data image
+	 * Visualize data image
 	 */
 	String VISUALIZE_DATA = "visualize_data.gif";
 

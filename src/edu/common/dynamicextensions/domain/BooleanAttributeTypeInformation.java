@@ -22,7 +22,7 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public BooleanAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor
 	}
 
 	/** 

@@ -38,7 +38,7 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public DateAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**This method returns the format of the DateAttributeTypeInformation.

@@ -43,6 +43,7 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute
 	 */
 	public AbstractAttribute()
 	{
+		// TODO Auto-generated constructor
 	}
 
 	/**

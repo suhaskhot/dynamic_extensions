@@ -32,7 +32,7 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public StringAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

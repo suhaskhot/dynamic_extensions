@@ -78,6 +78,7 @@ public class Association extends AbstractAttribute
 	 */
 	public Association()
 	{
+		// TODO Auto-generated constructor
 	}
 
 	/**

@@ -127,6 +127,7 @@ public class Attribute extends AbstractAttribute
 	 */
 	public Attribute()
 	{
+		// TODO Auto-generated constructor
 	}
 
 	/**

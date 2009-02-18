@@ -23,7 +23,7 @@ public class ObjectAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public ObjectAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

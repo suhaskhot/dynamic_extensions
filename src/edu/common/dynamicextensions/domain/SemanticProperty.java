@@ -51,6 +51,7 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject
 	 */
 	public SemanticProperty()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

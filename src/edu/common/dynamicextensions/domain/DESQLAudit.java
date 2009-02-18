@@ -34,9 +34,12 @@ public class DESQLAudit extends DynamicExtensionBaseDomainObject implements DESQ
 	 */
 	private String queryExecuted;
 
+	/**
+	 * Default constructor  
+	 */
 	public DESQLAudit()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

@@ -21,6 +21,7 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject
 	 */
 	public AttributeRecord()
 	{
+		super();
 	}
 
 	/**

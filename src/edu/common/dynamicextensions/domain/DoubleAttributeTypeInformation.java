@@ -22,7 +22,7 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 	 */
 	public DoubleAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/** 

@@ -22,7 +22,7 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 	 */
 	public IntegerAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/** 

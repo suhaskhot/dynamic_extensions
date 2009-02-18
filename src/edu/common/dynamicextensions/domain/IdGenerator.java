@@ -22,6 +22,7 @@ public class IdGenerator extends DynamicExtensionBaseDomainObject implements IdG
 	/** default constructor. */
 	public IdGenerator()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

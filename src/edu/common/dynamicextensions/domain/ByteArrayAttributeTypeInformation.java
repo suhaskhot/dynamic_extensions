@@ -30,6 +30,7 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public ByteArrayAttributeTypeInformation()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

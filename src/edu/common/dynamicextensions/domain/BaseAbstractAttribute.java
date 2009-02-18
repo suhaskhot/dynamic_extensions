@@ -22,7 +22,7 @@ public abstract class BaseAbstractAttribute extends AbstractMetadata
 	 */
 	public BaseAbstractAttribute()
 	{
-
+		// TODO Auto-generated constructor
 	}
 
 }

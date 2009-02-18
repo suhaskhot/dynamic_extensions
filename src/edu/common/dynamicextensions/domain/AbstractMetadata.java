@@ -83,6 +83,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 */
 	public AbstractMetadata()
 	{
+		// TODO Auto-generated constructor
 	}
 
 	/**

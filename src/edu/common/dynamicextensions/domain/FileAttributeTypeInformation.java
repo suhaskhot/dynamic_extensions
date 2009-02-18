@@ -34,7 +34,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public FileAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

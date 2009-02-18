@@ -63,9 +63,9 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	 */
 	public EntityGroup()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
-	//column="ENTITY_ID"
 
 	/**
 	 * This method returns the Collection of the Entities in the group.

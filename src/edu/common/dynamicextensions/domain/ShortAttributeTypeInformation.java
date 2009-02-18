@@ -22,7 +22,7 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 	 */
 	public ShortAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/** 

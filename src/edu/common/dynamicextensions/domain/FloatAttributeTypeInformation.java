@@ -22,7 +22,7 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 	 */
 	public FloatAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/** 

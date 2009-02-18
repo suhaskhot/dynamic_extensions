@@ -98,6 +98,7 @@ public class DomainObjectFactory
 	 */
 	protected DomainObjectFactory()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

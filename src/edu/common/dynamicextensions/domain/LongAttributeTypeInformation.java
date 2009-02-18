@@ -22,7 +22,7 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 	 */
 	public LongAttributeTypeInformation()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/** 

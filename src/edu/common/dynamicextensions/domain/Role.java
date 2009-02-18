@@ -45,6 +45,7 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 	 */
 	public Role()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

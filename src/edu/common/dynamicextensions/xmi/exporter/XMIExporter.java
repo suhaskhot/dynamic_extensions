@@ -100,6 +100,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
 
@@ -425,7 +426,7 @@ public class XMIExporter implements XMIExportInterface
 
 	/**
 	 * This will add the column created for inheritance relationship to the data 
-	 * class and there foreignKey constrint operation name 
+	 * class and there foreignKey constraint operation name 
 	 * @param entity child entity 
 	 * @param childClass umlclass corresponding to the entity
 	 * @throws DataTypeFactoryInitializationException 
@@ -753,7 +754,7 @@ public class XMIExporter implements XMIExportInterface
 				.getTgtEntityConstraintKeyPropertiesCollection();
 		for (ConstraintKeyPropertiesInterface cnstrKeyProp : srcCnstKeyProps)
 		{
-			Attribute coRelationAttribute = CreateCoRelationalAttributeAndOperns(cnstrKeyProp,
+			Attribute coRelationAttribute = createCoRelationalAttributeAndOperns(cnstrKeyProp,
 					association.getEntity());
 			//Add "implements-association tagged value 
 			String srcAttribImplementedAssocn = packageName + XMIConstants.DOT_SEPARATOR
@@ -770,7 +771,7 @@ public class XMIExporter implements XMIExportInterface
 		}
 		for (ConstraintKeyPropertiesInterface cnstrKeyProp : tgtCnstKeyProps)
 		{
-			Attribute coRelationAttribute = CreateCoRelationalAttributeAndOperns(cnstrKeyProp,
+			Attribute coRelationAttribute = createCoRelationalAttributeAndOperns(cnstrKeyProp,
 					association.getTargetEntity());
 			String targetAttribImplementedAssocn = packageName + XMIConstants.DOT_SEPARATOR
 					+ association.getEntity().getName() + XMIConstants.DOT_SEPARATOR
@@ -794,7 +795,7 @@ public class XMIExporter implements XMIExportInterface
 	 * @return
 	 * @throws DataTypeFactoryInitializationException
 	 */
-	private Attribute CreateCoRelationalAttributeAndOperns(
+	private Attribute createCoRelationalAttributeAndOperns(
 			ConstraintKeyPropertiesInterface cnstrKeyProp, EntityInterface entity)
 			throws DataTypeFactoryInitializationException
 	{
@@ -2324,7 +2325,7 @@ public class XMIExporter implements XMIExportInterface
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			Logger.out.debug(e.getMessage());
 		}
 	}
 

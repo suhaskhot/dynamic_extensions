@@ -1297,7 +1297,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
-		//if no prmissible values are defined, copy  the all the permissible values
+		//if no permissible values are defined, copy  the all the permissible values
 		//of the original attribute
 		if (desiredPermissibleValues == null)
 		{

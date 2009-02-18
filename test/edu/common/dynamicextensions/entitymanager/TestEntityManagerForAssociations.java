@@ -1372,7 +1372,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 					+ user.getTableProperties().getName(), STRING_TYPE, 1);
 
 			assertEquals("User1", value);
-			//Checking if the extra column for many to one assiciation is added or not
+			//Checking if the extra column for many to one association is added or not
 			assertEquals(getColumnCount("select * from " + user.getTableProperties().getName()),
 					noOfDefaultColumns + 2);
 
@@ -2125,7 +2125,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
-	 * This test case test for adding a new associatiion bet 2 entities
+	 * This test case test for adding a new association bet 2 entities
 	 *
 	 * for oracle it should throw exception.
 	 * for mysql  it works.
@@ -2740,7 +2740,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 			addressDataValue1.clear();
 			// Step 7
-			addressDataValue1.put(streetAttribute, "Swami Vivekand Road");
+			addressDataValue1.put(streetAttribute, "Swami Vivekanand Road");
 			addressDataValue1.put(cityAttribute, "Pune 37");
 
 			// Step 8
@@ -2766,7 +2766,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 
 	/**
 	 *  PURPOSE: This method test for editing data for a containtment relationship between two entities
-	 *  having one to mant association
+	 *  having one to many association
 	 *  EXPECTED BEHAVIOUR: Data should be persisted for the target entity in its own table and that record should
 	 *                      get updated.
 	 *  TEST CASE FLOW: 1. create User
@@ -3050,7 +3050,7 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	//			addressContainer.setEntity(address);
 	//
 	//			// Step 3 Associate user (1)------ >(1)address
-	//			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "adress",
+	//			RoleInterface sourceRole = getRole(AssociationType.CONTAINTMENT, "address",
 	//					Cardinality.ZERO, Cardinality.ONE);
 	//			RoleInterface targetRole = getRole(AssociationType.ASSOCIATION, "user",
 	//					Cardinality.ZERO, Cardinality.ONE);
@@ -3288,12 +3288,12 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 			//			institutionValueMap1.put(institutionName,"pspl");
 
 			Map dataValue = new HashMap();
-			List instituionList = new ArrayList();
-			instituionList.add(institutionValueMap);
+			List institutionList = new ArrayList();
+			institutionList.add(institutionValueMap);
 			//instituionList.add(institutionValueMap1);
 
 			dataValue.put(userNameAttribute, "Rahul");
-			dataValue.put(userInstitute, instituionList);
+			dataValue.put(userInstitute, institutionList);
 
 			Long recordId = entityManager.insertData(user, dataValue);
 

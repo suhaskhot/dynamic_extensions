@@ -185,7 +185,7 @@ public class DomainObjectFactory
 	}
 
 	/**
-	 * This method creates an object of ColunmProperties.
+	 * This method creates an object of ColumnProperties.
 	 *
 	 * @return an instance of ColumnProperties.
 	 */
@@ -747,7 +747,7 @@ public class DomainObjectFactory
 	}
 
 	/**
-	 * This method creates an object of ColunmProperties.
+	 * This method creates an object of ColumnProperties.
 	 *
 	 * @return an instance of ColumnProperties.
 	 */

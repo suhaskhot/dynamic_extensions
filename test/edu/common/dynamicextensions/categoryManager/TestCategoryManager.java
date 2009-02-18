@@ -383,7 +383,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 EntityInterface additionalFinding = entityGroup.getEntityByName("AdditionalFinding");
 	 EntityInterface invasion = entityGroup.getEntityByName("Invasion");
 	 EntityInterface gleasonScore = entityGroup.getEntityByName("GleasonScore");
-	 EntityInterface tumorQuant = entityGroup.getEntityByName("TumorQuantitaion");
+	 EntityInterface tumorQuant = entityGroup.getEntityByName("TumorQuantitation");
 	 EntityInterface varHistoType = entityGroup.getEntityByName("VariantHistologicType");
 
 	 // Create category.

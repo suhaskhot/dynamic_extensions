@@ -280,7 +280,7 @@ public class DEIntegration implements IntegrationInterface
 	}
 
 	/**
-	 *This method returns the Category Record_Id ie id of its root entty 
+	 *This method returns the Category Record_Id ie id of its root entity 
 	 *BasedOn categoryContainerId and dynamicEntityRecordId  
 	 * @param categoryContainerId
 	 * @param dynamicEntityRecordId

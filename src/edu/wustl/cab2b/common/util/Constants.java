@@ -31,10 +31,6 @@ public interface Constants
 	/** Metadata search configuration parameter : Used when a code based search is desired*/
 	int BASED_ON_CONCEPT_CODE = 1;
 
-	//int INLUDE_CLASSES_CLASS = 6;
-
-	//int INLUDE_CLASSES_ATTRIBUTE = 7;
-
 	String OLD_ENTITY_ID_TAG_NAME = "original_entity_id";
 
 	/** Tagged value key to store the name of original entity*/
@@ -66,12 +62,12 @@ public interface Constants
 	String TYPE_CATEGORY = "Category";
 
 	/**
-	 * tagged key constant to identify wthether a attribute OR an association is a derived one
+	 * tagged key constant to identify whether a attribute OR an association is a derived one
 	 */
 	String TYPE_DERIVED = "derived";
 
 	/**
-	 * tagged key constant to identify wthether a attribute OR an association is a derived one
+	 * tagged key constant to identify whether a attribute OR an association is a derived one
 	 */
 	String ORIGINAL_ASSOCIATION_POINTER = "actualAssociationPointer";
 

@@ -112,6 +112,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 */
 	public Control()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

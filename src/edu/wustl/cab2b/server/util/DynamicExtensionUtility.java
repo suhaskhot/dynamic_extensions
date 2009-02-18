@@ -50,6 +50,7 @@ import edu.wustl.cab2b.common.errorcodes.ErrorCodeConstants;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.cab2b.server.path.PathConstants;
 import edu.wustl.common.querysuite.queryobject.DataType;
 import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 

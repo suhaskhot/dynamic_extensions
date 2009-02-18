@@ -889,7 +889,7 @@ public class XMIImportProcessor
 
 		EntityInterface targetEntity = factory.createEntity();
 		EntityManagerUtil.addIdAttribute(targetEntity);
-		targetEntity.setName(umlAttribute.getName()
+		targetEntity.setName(DEConstants.COLLECTION_ATTRIBUTE_CLASS+ umlAttribute.getName()
 				+ IdGeneratorUtil.getInstance().getNextUniqeId());
 		attribute.setName(DEConstants.COLLECTIONATTRIBUTE
 				+ IdGeneratorUtil.getInstance().getNextUniqeId());

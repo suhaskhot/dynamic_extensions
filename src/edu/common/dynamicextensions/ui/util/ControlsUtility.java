@@ -374,7 +374,7 @@ public class ControlsUtility
 		if (attributeMetadataInterface != null)
 		{
 			DataElementInterface dataElement = attributeMetadataInterface.getDataElement();
-			if (dataElement != null && dataElement instanceof UserDefinedDEInterface)
+			if (dataElement instanceof UserDefinedDEInterface)
 			{
 				UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElement;
 				if (userDefinedDEInterface != null && userDefinedDEInterface.getIsOrdered())
@@ -400,7 +400,7 @@ public class ControlsUtility
 		List<NameValueBean> nameValueBeanList = null;
 		DataElementInterface dataElement = attribute.getDataElement();
 
-		if (dataElement != null && dataElement instanceof UserDefinedDEInterface)
+		if (dataElement instanceof UserDefinedDEInterface)
 		{
 			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElement;
 			Collection<PermissibleValueInterface> permissibleValueList = userDefinedDEInterface

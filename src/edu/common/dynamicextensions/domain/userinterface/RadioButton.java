@@ -32,6 +32,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 */
 	public RadioButton()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

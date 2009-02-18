@@ -266,6 +266,7 @@ enum DataType {
      * Builds enumeration
      */
     DataType() {
+    	// TODO Auto-generated constructor stub
     }
 
     private static Map<String, DataType> dataTypeMap = new HashMap<String, DataType>();

@@ -98,6 +98,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	protected EntityManager()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

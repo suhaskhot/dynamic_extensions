@@ -25,6 +25,7 @@ public class HQLPlaceHolderObject
 	 */
 	public HQLPlaceHolderObject()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

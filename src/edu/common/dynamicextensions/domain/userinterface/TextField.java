@@ -43,6 +43,7 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	public TextField()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

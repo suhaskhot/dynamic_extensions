@@ -26,6 +26,7 @@ public class Category extends AbstractCategory<CategorialClass, Category> implem
 	 */
 	public Category()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

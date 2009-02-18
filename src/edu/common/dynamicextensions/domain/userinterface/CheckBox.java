@@ -27,6 +27,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	 */
 	public CheckBox()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)

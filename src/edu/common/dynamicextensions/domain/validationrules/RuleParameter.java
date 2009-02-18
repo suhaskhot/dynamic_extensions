@@ -38,6 +38,7 @@ public class RuleParameter extends DynamicExtensionBaseDomainObject
 	 */
 	public RuleParameter()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

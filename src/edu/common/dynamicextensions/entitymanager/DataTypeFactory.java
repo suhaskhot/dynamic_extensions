@@ -43,6 +43,7 @@ public class DataTypeFactory
 	 */
 	protected DataTypeFactory()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

@@ -37,6 +37,7 @@ public class View extends DynamicExtensionBaseDomainObject implements Serializab
 	 */
 	public View()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

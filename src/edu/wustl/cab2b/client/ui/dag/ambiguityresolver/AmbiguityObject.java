@@ -12,6 +12,7 @@ public class AmbiguityObject
 
 	public AmbiguityObject()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	public AmbiguityObject(EntityInterface sourceEntity, EntityInterface targetEntity)

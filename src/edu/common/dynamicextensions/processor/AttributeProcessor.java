@@ -67,6 +67,7 @@ import edu.common.dynamicextensions.ui.util.SemanticPropertyBuilderUtil;
 import edu.common.dynamicextensions.ui.webui.util.OptionValueObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
@@ -91,6 +92,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected AttributeProcessor()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -310,7 +312,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				collectionAttribute = createAndPopulateAttribute(
 						ProcessorConstants.DEFAULT_SELECTED_CONTROL,
 						attributeUIBeanInformationIntf, entityGroup);
-				attributeUIBeanInformationIntf.setName("CollectionAttribute"
+				attributeUIBeanInformationIntf.setName(DEConstants.COLLECTIONATTRIBUTE
 						+ IdGeneratorUtil.getInstance().getNextUniqeId());
 				attributeUIBeanInformationIntf
 						.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);

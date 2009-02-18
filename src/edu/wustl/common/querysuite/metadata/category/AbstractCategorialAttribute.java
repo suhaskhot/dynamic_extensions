@@ -85,7 +85,7 @@ public abstract class AbstractCategorialAttribute<C extends AbstractCategorialCl
 	 */
 	public AbstractCategorialAttribute()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

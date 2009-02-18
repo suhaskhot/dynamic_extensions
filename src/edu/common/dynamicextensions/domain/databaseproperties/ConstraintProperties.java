@@ -25,7 +25,7 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public ConstraintProperties()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class Path implements IPath
 	 */
 	public Path()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	public Path(EntityInterface sourceEntity, EntityInterface targetEntity,

@@ -12,11 +12,11 @@ import edu.wustl.cab2b.common.exception.RuntimeException;
 import gov.nih.nci.cagrid.common.Utils;
 import gov.nih.nci.cagrid.metadata.common.UMLClass;
 import gov.nih.nci.cagrid.metadata.dataservice.DomainModel;
-import gov.nih.nci.cagrid.metadata.dataservice.UMLAssociation;
-import gov.nih.nci.cagrid.metadata.dataservice.UMLGeneralization;
 import gov.nih.nci.cagrid.metadata.dataservice.DomainModelExposedUMLAssociationCollection;
 import gov.nih.nci.cagrid.metadata.dataservice.DomainModelExposedUMLClassCollection;
 import gov.nih.nci.cagrid.metadata.dataservice.DomainModelUmlGeneralizationCollection;
+import gov.nih.nci.cagrid.metadata.dataservice.UMLAssociation;
+import gov.nih.nci.cagrid.metadata.dataservice.UMLGeneralization;
 
 /**
  * This class parses the domain model for an application.<br>

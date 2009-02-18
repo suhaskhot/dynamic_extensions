@@ -9,6 +9,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.cab2b.server.path.PathConstants;
 
 /**
  * @author Chandrakant Talele

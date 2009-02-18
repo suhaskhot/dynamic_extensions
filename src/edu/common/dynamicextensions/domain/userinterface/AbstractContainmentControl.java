@@ -36,6 +36,7 @@ public abstract class AbstractContainmentControl extends Control
 	 */
 	public AbstractContainmentControl()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException

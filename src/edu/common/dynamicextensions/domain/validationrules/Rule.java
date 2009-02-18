@@ -42,6 +42,7 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	 */
 	public Rule()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

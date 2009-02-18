@@ -18,9 +18,12 @@ public class CategorialClass
 
 	private static final long serialVersionUID = -136227480173654340L;
 
+	/**
+	 * Default constructor
+	 */
 	public CategorialClass()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 }

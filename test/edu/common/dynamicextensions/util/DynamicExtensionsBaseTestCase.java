@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.List;
 
 import junit.framework.TestCase;
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
@@ -28,7 +27,6 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.JDBCDAO;

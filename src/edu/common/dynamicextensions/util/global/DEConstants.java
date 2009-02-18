@@ -88,7 +88,8 @@ public class DEConstants
 	public static final String IDENTIFIER = "identifier";
 	public static final String LIST_OF_CONTAINER = "listofContainer";
 	public static final String ISCATEGORY = "_IsCategory";
-	public static final String COLLECTIONATTRIBUTE = "CollectionAttribute";
+	public static final String COLLECTIONATTRIBUTE = "collectionAttribute";
+	public static final String COLLECTION_ATTRIBUTE_CLASS = "CollectionAttributeClass";
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
 

@@ -28,7 +28,7 @@ public abstract class DatabaseProperties extends DynamicExtensionBaseDomainObjec
 	 */
 	public DatabaseProperties()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

@@ -35,6 +35,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 */
 	public TextArea()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

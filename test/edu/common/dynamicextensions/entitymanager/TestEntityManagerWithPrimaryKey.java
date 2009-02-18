@@ -5,8 +5,6 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.List;
 
-import oracle.jdbc.dbaccess.DBType;
-
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
@@ -22,12 +20,10 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 

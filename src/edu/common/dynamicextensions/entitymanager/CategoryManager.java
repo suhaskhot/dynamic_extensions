@@ -79,7 +79,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 */
 	protected CategoryManager()
 	{
-
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

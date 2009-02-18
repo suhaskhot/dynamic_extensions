@@ -27,6 +27,7 @@ public class LoadRecordListProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected LoadRecordListProcessor()
 	{
+		// TODO Auto-generated constructor stub
 	}
 
 	/**

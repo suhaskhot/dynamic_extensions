@@ -42,8 +42,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 		if (valueObject != null)
 		{
 			String value = (String) valueObject;
-			if (attributeTypeInformation != null
-					&& attributeTypeInformation instanceof StringAttributeTypeInformation)
+			if (attributeTypeInformation instanceof StringAttributeTypeInformation)
 			{
 				ArrayList<String> placeHolders = new ArrayList<String>();
 

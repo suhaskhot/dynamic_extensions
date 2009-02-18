@@ -45,7 +45,7 @@ public interface IPathFinder
     List<IInterModelAssociation> getInterModelAssociations(Long sourceEntityId);
     
     /**
-     * Finds all curated paths defined for given source and desination entity.
+     * Finds all curated paths defined for given source and destination entity.
      * If no curated path is present, a empty set will be returned.
      * @param source The source entity
      * @param destination The destination entity

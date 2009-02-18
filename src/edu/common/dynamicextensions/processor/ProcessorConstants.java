@@ -21,7 +21,7 @@ public class ProcessorConstants
 	public static final String ADD_SUBFORM_CONTROL = "AddSubFormControl";
 	public static final String ADD_SUBFORM_TYPE = "Sub Form";
 
-	// Datattype constants.
+	// Datatype constants.
 	public static final String DATATYPE_STRING = "Text";
 	public static final String DATATYPE_DATE = "Date";
 	public static final String DATATYPE_BOOLEAN = "Yes/No";

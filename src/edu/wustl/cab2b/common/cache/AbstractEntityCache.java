@@ -103,22 +103,21 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     }
 
     /**
-     * Refreshes the entity cache.
+     * Refresh the entity cache.
      * @throws RemoteException 
      */
     public final void refreshCache() {
-        logger.info("Initialising cache, this may take few minutes...");
+        logger.info("Initializing cache, this may take few minutes...");
 
         Collection<EntityGroupInterface> entityGroups = null;
         try {
             entityGroups = getCab2bEntityGroups();
         } catch (RemoteException e) {
-            //TODO: Handle this execption properly.
             logger.error("Error while collecting caB2B entity groups. Error: " + e.getMessage());
         }
         createCache(entityGroups);
         
-        logger.info("Initialising cache DONE");
+        logger.info("Initializing cache DONE");
     }
 
     /**
@@ -329,7 +328,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     /**
      * This method returns the entity group of given name from cache.
      * @param name name of the entity group
-     * @return enttity group
+     * @return entity group
      */
     public EntityGroupInterface getEntityGroupByName(String name) {
         for (EntityGroupInterface group : cab2bEntityGroups) {
@@ -343,7 +342,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     /**
      * This method returns all the entity groups which are to be cached. 
      * These will typically be the metadata entitygroups present is local caB2B database. 
-     * It should not return entitygroups for datalist or experiment
+     * It should not return entitygroups for data list or experiment
      * @return Returns the entity groups
      * @throws RemoteException 
      */

@@ -240,7 +240,7 @@ public class DomainModelProcessor {
         RoleInterface role = deFactory.createRole();
         role.setAssociationsType(DEConstants.AssociationType.ASSOCIATION);
         role.setName(edge.getRoleName());
-        //Bug# 10295: Workaround to fix the max cardinality = 0. Assuming these cases are MANY
+        //Bug# 10295: Work around to fix the max cardinality = 0. Assuming these cases are MANY
         if (maxCardinality == 0) {
             role.setMaximumCardinality(DEConstants.Cardinality.MANY);
         } else {

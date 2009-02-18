@@ -136,7 +136,7 @@ public class PathFinder
 	}
 
 	/**
-	 * Finds all curated paths defined for given source and desination entity. If no curated path is present, a empty
+	 * Finds all curated paths defined for given source and destination entity. If no curated path is present, a empty
 	 * set will be returned.
 	 * 
 	 * @param source The source entity

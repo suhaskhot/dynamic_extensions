@@ -218,7 +218,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 * It will retrieve the DataType of the column specified in the columnNumber
 	 * @param query To be executed
 	 * @param columnNumber Of which dataType is required
-	 * @return Dataype of the column
+	 * @return Data type of the column
 	 */
 	protected int getColumntype(String query, int columnNumber)
 	{

@@ -84,10 +84,8 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			// TODO Auto-generated catch block
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			e.printStackTrace();
 		}
 	}
 

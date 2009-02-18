@@ -22,7 +22,7 @@ public class ErrorCodeHandler {
     public static String getValue(String theKey) {
         return bundle.getString(theKey);
     }
-// TODO looks like this code is not used anymore.
+// TODO looks like this code is not used any more.
 //  Need to check it and remove it
 //
 //    /**

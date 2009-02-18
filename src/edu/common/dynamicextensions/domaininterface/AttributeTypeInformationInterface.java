@@ -16,7 +16,7 @@ public interface AttributeTypeInformationInterface
 {
 
 	/**
-	 * Returns the data element associated with the attribute.The data elment specify the
+	 * Returns the data element associated with the attribute.The data element specify the
 	 * source of permissible values.
 	 * @return DataElementInterface
 	 *

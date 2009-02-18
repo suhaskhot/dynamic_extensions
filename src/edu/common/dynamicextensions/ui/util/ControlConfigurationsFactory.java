@@ -612,7 +612,7 @@ public final class ControlConfigurationsFactory
 	 * Returns ImplicitRules : The rules which are not going to be shown on ui.
 	 * @param controlName name of the control selected by user
 	 * @param dataType dataType selected by user.
-	 * @return ArrayList list of all the rules related to control and its datatType selected.
+	 * @return ArrayList list of all the rules related to control and its dataType selected.
 	 */
 	public ArrayList getImplicitRules(String controlName, String dataType)
 	{
@@ -645,7 +645,7 @@ public final class ControlConfigurationsFactory
 	 * Returns ExplicitRules : The rules which are will be shown on ui.
 	 * @param controlName selected by user
 	 * @param dataType selected by user
-	 * @return ArrayList list of all the Explicit rules related to control and its datatType selected.
+	 * @return ArrayList list of all the Explicit rules related to control and its dataType selected.
 	 */
 	public ArrayList getExplicitRules(String controlName, String dataType)
 	{
@@ -817,7 +817,7 @@ public final class ControlConfigurationsFactory
 	 * Returns ExplicitRules : The rules which are will be shown on ui.
 	 * @param controlName selected by user
 	 * @param dataType selected by user
-	 * @return ArrayList list of all the Explicit rules related to control and its datatType selected.
+	 * @return ArrayList list of all the Explicit rules related to control and its dataType selected.
 	 */
 	public ArrayList getCommonExplicitRules(String controlName)
 	{

@@ -167,13 +167,12 @@ class MemoryCache extends GraphPathFinderCache {
      */
     Set<Path> getAllPaths() {
         Set<Path> res = new HashSet<Path>();
-        Iterator<Entry<SourceDestinationPair, PathsOnIgnoringNodes>> calcPathsIter = this.calculatedPaths.entrySet().iterator();
-        while (calcPathsIter.hasNext()) {
-            Map.Entry<SourceDestinationPair, PathsOnIgnoringNodes> entry = calcPathsIter.next();
+        Iterator<Entry<SourceDestinationPair, PathsOnIgnoringNodes>> calculatedPathsIter = this.calculatedPaths.entrySet().iterator();
+        while (calculatedPathsIter.hasNext()) {
+            Map.Entry<SourceDestinationPair, PathsOnIgnoringNodes> entry = calculatedPathsIter.next();
             for (Set<Path> paths : entry.getValue().getAllEntries().values()) {
                 res.addAll(paths);
             }
-            // calcPathsIter.remove();
         }
         return res;
     }

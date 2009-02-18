@@ -775,7 +775,7 @@ public class DynamicExtensionBaseQueryBuilder
 				}
 				catch (DAOException e)
 				{
-					throw new DynamicExtensionsApplicationException(e.getMessage());
+					throw new DynamicExtensionsApplicationException(e.getMessage(),e);
 				}
 			}
 		}
@@ -2589,11 +2589,8 @@ public class DynamicExtensionBaseQueryBuilder
 	{
 		List<String> mdfyAttrQries = new ArrayList<String>();
 
-		if (isAttributeColumnToBeExcluded(attribute))
+		if (!isAttributeColumnToBeExcluded(attribute))
 		{
-			return mdfyAttrQries;
-		}
-
 		String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
 		String oldTypeClass = savedAttr.getAttributeTypeInformation().getClass().getName();
 
@@ -2602,35 +2599,7 @@ public class DynamicExtensionBaseQueryBuilder
 			checkIfDataTypeChangeAllowable(attribute);
 			mdfyAttrQries = getAttributeDataTypeChangedQuery(attribute, savedAttr, attrRlbkQries);
 		}
-		/*	if (attribute.getIsPrimaryKey() && !savedAttr.getIsPrimaryKey())
-			{
-				mdfyAttrQries.add(addNotNullConstraint(attribute));
-				attrRlbkQries.add(addNotNullConstraint(savedAttr));
-				String uniqCnstrQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
-						+ WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
-						+ UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD + WHITESPACE
-						+ OPENING_BRACKET + columnName + CLOSING_BRACKET;
-				String uniqCnstrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-						+ DROP_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-						+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX;
-
-				mdfyAttrQries.add(uniqCnstrQry);
-				attrRlbkQries.add(uniqCnstrRlbkQry);
-			}
-			else if (!attribute.getIsPrimaryKey() && savedAttr.getIsPrimaryKey())
-			{
-				String uniqCnstrQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + DROP_KEYWORD
-						+ WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName + UNDERSCORE
-						+ UNIQUE_CONSTRAINT_SUFFIX;
-				String uniqCnstrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-						+ ADD_KEYWORD + WHITESPACE + CONSTRAINT_KEYWORD + WHITESPACE + columnName
-						+ UNDERSCORE + UNIQUE_CONSTRAINT_SUFFIX + WHITESPACE + UNIQUE_KEYWORD
-						+ WHITESPACE + OPENING_BRACKET + columnName + CLOSING_BRACKET;
-
-				mdfyAttrQries.add(uniqCnstrQry);
-				attrRlbkQries.add(uniqCnstrRlbkQry);
-			}*/
-
+		}
 		return mdfyAttrQries;
 	}
 
@@ -3392,7 +3361,7 @@ public class DynamicExtensionBaseQueryBuilder
 				}
 				catch (DAOException e)
 				{
-					throw new DynamicExtensionsSystemException("Not able to create DAO object.");
+					throw new DynamicExtensionsSystemException("Not able to create DAO object.",e);
 				}
 				finally
 				{
@@ -3402,7 +3371,7 @@ public class DynamicExtensionBaseQueryBuilder
 					}
 					catch (DAOException e)
 					{
-						throw new DynamicExtensionsSystemException("Not able to create DAO object.");
+						throw new DynamicExtensionsSystemException("Not able to create DAO object.",e);
 					}
 				}
 			}

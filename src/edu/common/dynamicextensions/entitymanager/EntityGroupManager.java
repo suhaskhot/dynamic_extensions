@@ -449,7 +449,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException("DAOException", null);
+				throw new DynamicExtensionsSystemException("DAOException", e);
 			}
 		}
 	}

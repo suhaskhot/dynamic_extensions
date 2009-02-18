@@ -1229,10 +1229,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				recordValues.putAll(getAttributeValues(selColNames, query.toString(), colNames));
 			}
 		}
-		catch (SQLException e)
-		{
-			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
@@ -1294,7 +1290,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	private Map<AbstractAttributeInterface, Object> getAttributeValues(List<String> selColNames,
 			String query, Map<String, AttributeInterface> columnNames)
-			throws DynamicExtensionsSystemException, SQLException, DAOException
+			throws DynamicExtensionsSystemException, DAOException
 	{
 		Map<AbstractAttributeInterface, Object> records = new HashMap<AbstractAttributeInterface, Object>();
 
@@ -1318,15 +1314,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		catch (SQLException e)
 		{
-			throw new SQLException(e.getMessage());
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
 		}
 		catch (IOException e)
 		{
-			throw new SQLException(e.getMessage());
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new SQLException(e.getMessage());
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
 		}
 		finally
 		{

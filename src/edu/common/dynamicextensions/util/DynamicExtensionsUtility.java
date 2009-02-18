@@ -1316,7 +1316,7 @@ public class DynamicExtensionsUtility
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException(e.getMessage());
+			throw new DynamicExtensionsSystemException("Exception occured while creating instance of DynamicExtensionsCacheManager",e);
 
 		}
 	}
@@ -1347,7 +1347,7 @@ public class DynamicExtensionsUtility
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException(e.getMessage());
+			throw new DynamicExtensionsSystemException("Exception occured while creating instance of DynamicExtensionsCacheManager",e);
 		}
 	}
 
@@ -1378,7 +1378,7 @@ public class DynamicExtensionsUtility
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException(e.getMessage());
+			throw new DynamicExtensionsSystemException("Exception occured while creating instance of DynamicExtensionsCacheManager",e);
 		}
 	}
 
@@ -1908,7 +1908,7 @@ public class DynamicExtensionsUtility
 		}
 		catch (ParseException e)
 		{
-			throw new DynamicExtensionsSystemException("Unable to parse given date.");
+			throw new DynamicExtensionsSystemException("Unable to parse given date.",e);
 		}
 
 		String appName=DynamicExtensionDAO.getInstance().getAppName();
@@ -1919,7 +1919,7 @@ public class DynamicExtensionsUtility
 		}
 		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException("Unable to JDBCDAO object.");
+			throw new DynamicExtensionsSystemException("Unable to JDBCDAO object.",e);
 		}
 		formattedvalue = jdbcDao.getStrTodateFunction() + "('" + simpleDateFormat.format(date) + "','"
 				+ ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";

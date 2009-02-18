@@ -105,13 +105,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			e.printStackTrace();
-			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY");
+			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY",e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			e.printStackTrace();
-			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY");
+			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY",e);
 		}
 	}
 

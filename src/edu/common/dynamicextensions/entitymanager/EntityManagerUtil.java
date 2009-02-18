@@ -211,12 +211,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + tableName);
+					"Could not fetch the next identifier for table " + tableName,e);
 		}
 		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Could not fetch the next identifier for table " + tableName);
+					"Could not fetch the next identifier for table " + tableName,e);
 		}
 	}
 

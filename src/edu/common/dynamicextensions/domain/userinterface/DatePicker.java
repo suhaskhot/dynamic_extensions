@@ -82,8 +82,7 @@ public class DatePicker extends Control implements DatePickerInterface
 				}
 				catch (ParseException e)
 				{
-					e.printStackTrace();
-					throw new DynamicExtensionsSystemException("Error while parsing date");
+					throw new DynamicExtensionsSystemException("Error while parsing date",e);
 				}
 				defaultValue = new SimpleDateFormat(ControlsUtility
 						.getDateFormat(dateTypeInformation)).format(date);

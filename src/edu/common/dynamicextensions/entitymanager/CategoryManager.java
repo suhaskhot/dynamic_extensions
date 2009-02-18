@@ -609,17 +609,18 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	private boolean isAllRelatedCategoryAttributesCollection(CategoryEntityInterface catEntity)
 	{
 		Collection<CategoryAttributeInterface> catAttributes = catEntity.getAllCategoryAttributes();
-
+		boolean flag = true;
 		for (CategoryAttributeInterface catAttribute : catAttributes)
 		{
 			if (catAttribute.getIsRelatedAttribute() == null
 					|| catAttribute.getIsRelatedAttribute() == false)
 			{
-				return false;
+				flag = false;
+				break;
 			}
 		}
 
-		return true;
+		return flag;
 	}
 
 	/**
@@ -887,10 +888,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param jdbcDAO
 	 * @param userId
 	 * @throws SQLException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void insertRelatedAttributeRecordsForRootCategoryEntity(
 			CategoryEntityInterface rootCatEntity, StringBuffer colNamesValues,
-			Map<String, List<Long>> records, JDBCDAO jdbcDao, Long userId) throws SQLException
+			Map<String, List<Long>> records, JDBCDAO jdbcDao, Long userId) throws DynamicExtensionsSystemException
 	{
 		String entTableName = rootCatEntity.getEntity().getTableProperties().getName();
 		List<Long> recordIds = records.get(DynamicExtensionsUtility
@@ -1860,9 +1862,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param userId
 	 * @param jdbcDAO
 	 * @throws SQLException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void clearCategoryEntityData(CategoryEntityInterface categoryEnt, Long recordId,
-			Stack<String> rlbkQryStack, Long userId, JDBCDAO jdbcDao) throws SQLException
+			Stack<String> rlbkQryStack, Long userId, JDBCDAO jdbcDao) throws DynamicExtensionsSystemException
 	{
 		CategoryEntityInterface catEntity = categoryEnt;
 
@@ -2110,7 +2113,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @return a list of identifier, record identifier depending upon column name passed.
 	 * @throws SQLException
 	 */
-	private List<Long> getResultIDList(String query, String columnName) throws SQLException
+	private List<Long> getResultIDList(String query, String columnName) throws DynamicExtensionsSystemException
 	{
 		List<Long> recordIds = new ArrayList<Long>();
 		ResultSet resultSet = null;
@@ -2130,7 +2133,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		}
 		catch (DAOException e)
 		{
-			throw new SQLException(e.getMessage());
+			throw new DynamicExtensionsSystemException("Error executing query ",e);
+		}
+		catch (NumberFormatException e)
+		{
+			throw new DynamicExtensionsSystemException("Error executing query ",e);
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Error executing query ",e);
 		}
 		finally
 		{
@@ -2140,7 +2151,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			}
 			catch (DAOException e)
 			{
-				throw new SQLException(e.getMessage());
+				throw new DynamicExtensionsSystemException("Error executing query ",e);
 			}
 		}
 
@@ -2215,20 +2226,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * This method executes a SQL query.
 	 * @param query
 	 * @throws SQLException
+	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void executeUpdateQuery(String query, Long userId,JDBCDAO jdbcDao) throws SQLException
+	private void executeUpdateQuery(String query, Long userId,JDBCDAO jdbcDao) throws DynamicExtensionsSystemException
 	{
 		try
 		{
-			/*commented this code because this insert method is empty.
-			 * jdbcDAO.insert(DomainObjectFactory.getInstance().createDESQLAudit(userId, query), null,
-					false, false);*/
-
 			jdbcDao.executeUpdate(query);
 		}
 		catch (DAOException e)
 		{
-			throw new SQLException(e.getMessage());
+			throw new DynamicExtensionsSystemException(e.getMessage(),e);
 		}
 	}
 

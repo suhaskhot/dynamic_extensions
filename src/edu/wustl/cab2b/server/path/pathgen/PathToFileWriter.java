@@ -7,6 +7,7 @@ import java.util.Set;
 
 import edu.wustl.cab2b.common.util.Constants;
 import edu.wustl.cab2b.server.path.PathConstants;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * Util to write a set of paths to a file. Each path is written as one line. The
@@ -69,8 +70,8 @@ public class PathToFileWriter {
                 writer.flush();
             }
             writer.close();
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
+        } catch (IOException e) {
+        	Logger.out.debug(e.getMessage());
         }
     }
 }

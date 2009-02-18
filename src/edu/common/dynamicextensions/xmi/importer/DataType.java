@@ -332,9 +332,9 @@ enum DataType {
 	 */
 	public static DataType get(String value)
 	{
-		DataType[] allDataypes = DataType.values();
+		DataType[] allDatatypes = DataType.values();
 
-		for (DataType dataType : allDataypes)
+		for (DataType dataType : allDatatypes)
 		{
 			if (dataType.value.equalsIgnoreCase(value))
 			{

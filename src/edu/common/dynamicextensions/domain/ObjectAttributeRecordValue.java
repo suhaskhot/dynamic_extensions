@@ -24,6 +24,11 @@ public class ObjectAttributeRecordValue extends DynamicExtensionBaseDomainObject
 			ObjectAttributeRecordValueInterface
 {
 
+	/**
+	 * added default serial version UID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Object object;
 
 	/**

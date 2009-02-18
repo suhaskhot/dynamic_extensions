@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
@@ -259,7 +260,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			}
 			catch (DAOException e)
 			{
-				e.printStackTrace();
+				Logger.out.debug(e.getMessage());
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 		}
@@ -393,7 +394,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				}
 				catch (DAOException e)
 				{
-					e.printStackTrace();
+					Logger.out.debug(e.getMessage());
 				}				
 				isChanged = isPrimaryKeyChanged(entity, dbaseCopy);
 			}

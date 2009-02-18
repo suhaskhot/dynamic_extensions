@@ -6,7 +6,7 @@ import java.util.Collection;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 
 /**
- * Rules are the validations put by the end user on the Attributes of the Enitites they create.
+ * Rules are the validations put by the end user on the Attributes of the Entities they create.
  * @author sujay_narkar
  * @version 1.0
  */

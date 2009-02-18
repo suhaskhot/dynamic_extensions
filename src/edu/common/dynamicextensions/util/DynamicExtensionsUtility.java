@@ -171,12 +171,12 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * It will verify weather the Inherited Tag is present on the given attribute parameter or not & will return boolean accordingly
-	 * @param attaibute to check for taggedValue
+	 * @param attribute to check for taggedValue
 	 * @return true if "Inherited" tagged value present.
 	 */
-	public static boolean isInheritedTaggPresent(AttributeInterface attaibute)
+	public static boolean isInheritedTaggPresent(AttributeInterface attribute)
 	{
-		Collection<TaggedValueInterface> taggValueColl = attaibute.getTaggedValueCollection();
+		Collection<TaggedValueInterface> taggValueColl = attribute.getTaggedValueCollection();
 		boolean isPresent = false;
 		for (TaggedValueInterface taggedValue : taggValueColl)
 		{
@@ -191,16 +191,16 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * It will add the taggedValue to the given attribute in parameter with key "derived" and its value also"derived" 
-	 * @param attaibute
+	 * @param attribute
 	 */
-	public static void addInheritedTaggedValue(AttributeInterface attaibute)
+	public static void addInheritedTaggedValue(AttributeInterface attribute)
 	{
-		if (!DynamicExtensionsUtility.isInheritedTaggPresent(attaibute))
+		if (!DynamicExtensionsUtility.isInheritedTaggPresent(attribute))
 		{
 			TaggedValueInterface taggedValue = new edu.common.dynamicextensions.domain.TaggedValue();
 			taggedValue.setKey(XMIConstants.TAGGED_VALUE_INHERITED);
 			taggedValue.setValue(XMIConstants.TAGGED_VALUE_INHERITED);
-			attaibute.addTaggedValue(taggedValue);
+			attribute.addTaggedValue(taggedValue);
 		}
 	}
 
@@ -379,7 +379,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 *
+	 * initialize application variables
 	 */
 	public static void initialiseApplicationVariables()
 	{
@@ -424,6 +424,10 @@ public class DynamicExtensionsUtility
 		}
 	}
 
+	/**
+	 * @param abstractAttributeInterface
+	 * @return attributeTypeInformation
+	 */
 	public static AttributeTypeInformationInterface getAttributeTypeInformation(
 			AbstractAttributeInterface abstractAttributeInterface)
 	{
@@ -538,21 +542,33 @@ public class DynamicExtensionsUtility
 		return Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 	}
 
+	/**
+	 * @return current month.
+	 */
 	public static int getCurrentMonth()
 	{
 		return (Calendar.getInstance().get(Calendar.MONTH) + 1);
 	}
 
+	/**
+	 * @return current year.
+	 */
 	public static int getCurrentYear()
 	{
 		return Calendar.getInstance().get(Calendar.YEAR);
 	}
 
+	/**
+	 * @return current Hour.
+	 */
 	public static int getCurrentHours()
 	{
 		return Calendar.getInstance().get(Calendar.HOUR);
 	}
 
+	/**
+	 * @return current minutes.
+	 */
 	public static int getCurrentMinutes()
 	{
 		return Calendar.getInstance().get(Calendar.MINUTE);
@@ -576,14 +592,13 @@ public class DynamicExtensionsUtility
 			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 			clonedObject = objectInputStream.readObject();
 		}
-		catch (IOException ioe)
+		catch (IOException e)
 		{
-
-			ioe.printStackTrace();
+			Logger.out.error(e);
 		}
-		catch (ClassNotFoundException cnfe)
+		catch (ClassNotFoundException e)
 		{
-			cnfe.printStackTrace();
+			Logger.out.error(e);
 		}
 
 		return clonedObject;
@@ -640,6 +655,10 @@ public class DynamicExtensionsUtility
 		});
 	}
 
+	/**
+	 * @param entity Entity Object
+	 * @return entityGroup of a entity
+	 */
 	public static EntityGroupInterface getEntityGroup(EntityInterface entity)
 	{
 		EntityGroupInterface entityGroup = null;
@@ -749,6 +768,11 @@ public class DynamicExtensionsUtility
 		}
 	}
 
+	/**
+	 * @param entity Entity Object
+	 * @param attributeName attribute name
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	public static void validateDuplicateNamesWithinEntity(EntityInterface entity,
 			String attributeName) throws DynamicExtensionsApplicationException
 	{
@@ -1062,6 +1086,11 @@ public class DynamicExtensionsUtility
 		return result;
 	}
 
+	/**
+	 * @param date1 date in string format
+	 * @param date2 date in string format
+	 * @return
+	 */
 	public static boolean areBothDatesOfSameFormat(String date1, String date2)
 	{
 		if (date1.length() != date2.length())
@@ -1229,6 +1258,10 @@ public class DynamicExtensionsUtility
 		//        }
 	}
 
+	/**
+	 * @param association
+	 * @return table name
+	 */
 	public static String getTableName(AssociationInterface association)
 	{
 		String tableName = "";

@@ -535,7 +535,7 @@ public class DynamicExtensionUtility
 		}
 		catch (BaseDynamicExtensionsException e)
 		{
-			throw new RemoteException(e.getMessage());
+			throw new RemoteException(e.getMessage(),e);
 		}
 
 		for (EntityGroupInterface entityGroup : allEntityGroups)

@@ -63,12 +63,12 @@ public class XMIImportValidator
 				System.out.println(ApplicationProperties.getValue("validationError")
 						+ ApplicationProperties.getValue("defValueOORange", placeHolders));
 
-				throw new DynamicExtensionsApplicationException(e.getMessage());
+				throw new DynamicExtensionsApplicationException(e.getMessage(),e);
 			}
 			catch (DataTypeFactoryInitializationException e)
 			{
 				System.out.println(e.getMessage());
-				throw new DynamicExtensionsApplicationException(e.getMessage());
+				throw new DynamicExtensionsApplicationException(e.getMessage(),e);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public class XMIImportValidator
 				System.out.println(ApplicationProperties.getValue("validationError")
 						+ ApplicationProperties.getValue("defValueFor")
 						+ ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList()));
-				throw new DynamicExtensionsSystemException(e.getMessage());
+				throw new DynamicExtensionsSystemException(e.getMessage(),e);
 
 			}
 		}

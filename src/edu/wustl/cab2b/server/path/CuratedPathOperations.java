@@ -35,7 +35,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage());
+			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage(),e);
 		}
 		return (ICuratedPath) curatePathList.get(0);
 	}
@@ -55,7 +55,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage());
+			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage(),e);
 		}
 		return curatePathList;
 	}
@@ -72,7 +72,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to save curatedPath, Exception:" + e.getMessage());
+			throw new RuntimeException("Unable to save curatedPath, Exception:" + e.getMessage(),e);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage());
+			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage(),e);
 		}
 		return (IPath) pathList.get(0);
 	}

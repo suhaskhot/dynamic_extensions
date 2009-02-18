@@ -975,7 +975,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		catch (Exception e)
 		{
 			logger.error(e.getMessage(), e);
-			throw new RuntimeException("Error occurred while generating globus certificates",
+			throw new RuntimeException("Error occurred while generating globus certificates",e,
 					ErrorCodeConstants.CDS_004);
 		}
 	}
@@ -997,7 +997,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			catch (IOException e)
 			{
 				logger.error(e.getMessage(), e);
-				throw new RuntimeException("Unable to copy CA certificates to [user.home]/.globus",
+				throw new RuntimeException("Unable to copy CA certificates to [user.home]/.globus",e,
 						ErrorCodeConstants.CDS_003);
 			}
 		}

@@ -40,7 +40,7 @@ public class CategoryOperations extends DefaultBizLogic {
         try {
             insert(category);
         } catch (BizLogicException e) {
-            throw new RuntimeException(ErrorCodeConstants.CATEGORY_SAVE_ERROR);
+            throw new RuntimeException(ErrorCodeConstants.CATEGORY_SAVE_ERROR,e);
         }
     }
 
@@ -56,7 +56,7 @@ public class CategoryOperations extends DefaultBizLogic {
         try {
             list = retrieve(Category.class.getName(), "deEntityId", entityId);
         } catch (BizLogicException e) {
-            throw new RuntimeException(ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR);
+            throw new RuntimeException(ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR,e);
         }
         Category category = getCategoryFromList(list);
         postRetrievalProcess(category, EntityCache.getInstance());
@@ -75,7 +75,7 @@ public class CategoryOperations extends DefaultBizLogic {
         try {
             list = retrieve(Category.class.getName(), "id", categoryId);
         } catch (BizLogicException e) {
-            throw new RuntimeException(ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR);
+            throw new RuntimeException(ErrorCodeConstants.CATEGORY_RETRIEVE_ERROR,e);
         }
         if (list == null || list.isEmpty()) {
             return null;

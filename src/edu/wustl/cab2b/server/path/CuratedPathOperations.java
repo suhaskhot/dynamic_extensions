@@ -35,7 +35,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage(),e);
+			throw new RuntimeException("Unable to retrieve object, Exception:" + e.getMessage(),e);
 		}
 		return (ICuratedPath) curatePathList.get(0);
 	}
@@ -55,7 +55,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage(),e);
+			throw new RuntimeException("Unable to retrieve object, Exception:" + e.getMessage(),e);
 		}
 		return curatePathList;
 	}
@@ -90,7 +90,7 @@ public class CuratedPathOperations extends DefaultBizLogic
 		}
 		catch (BizLogicException e)
 		{
-			throw new RuntimeException("Unable to retreive object, Exception:" + e.getMessage(),e);
+			throw new RuntimeException("Unable to retrieve object, Exception:" + e.getMessage(),e);
 		}
 		return (IPath) pathList.get(0);
 	}

@@ -45,8 +45,8 @@ public class DatabaseCleaner
 		}		
 		catch (DynamicExtensionsSystemException e)
 		{
-			System.out.println("Can not clean the database");
-			e.printStackTrace();
+			Logger.out.info("Can not clean the database");
+			Logger.out.error(e.getMessage());
 		}
 
 	}

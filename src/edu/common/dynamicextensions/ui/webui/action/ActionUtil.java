@@ -82,7 +82,7 @@ public class ActionUtil
 	/**
 	 * Returns the namevaluebeans for tools
 	 * @param list list of tools
-	 * @return List of namevaluebeans fo rtools
+	 * @return List of namevaluebeans for tools
 	 */
 	public static List getToolsList(List list)
 	{

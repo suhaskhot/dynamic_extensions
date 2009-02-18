@@ -71,10 +71,12 @@ public class CategoryGenerationUtil
 
 	/**
 	 * Sets the root category entity for the category.
+	 * @param category
+	 * @param rootContainer
 	 * @param containerCollection
 	 * @param paths
 	 * @param absolutePath
-	 * @return
+	 * @param containerNameInstanceMap
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -398,18 +400,18 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param catgeoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * @param categoryNameInCSV
 	 * @return
 	 */
-	public static String getEntityName(String catgeoryNameInCSV)
+	public static String getEntityName(String categoryNameInCSV)
 	{
-		return catgeoryNameInCSV.substring(0, catgeoryNameInCSV.indexOf("["));
+		return categoryNameInCSV.substring(0, categoryNameInCSV.indexOf("["));
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param catgeoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * @param categoryNameInCSV
 	 * @return
 	 */
 	public static String getEntityNameForAssociationMap(String categoryEntityInstancePath)
@@ -426,8 +428,8 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param catgeoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * @param categoryNameInCSV
 	 * @return
 	 */
 	public static String getCategoryEntityName(String categoryEntityInstancePath)
@@ -443,8 +445,8 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param catgeoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * @param categoryNameInCSV
 	 * @return
 	 */
 	public static String getEntityNameFromCategoryEntityInstancePath(
@@ -461,8 +463,8 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Nnmber]
-	 * @param catgeoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * @param categoryNameInCSV
 	 * @return
 	 */
 	public static EntityInterface getEntityFromEntityAssociationMap(

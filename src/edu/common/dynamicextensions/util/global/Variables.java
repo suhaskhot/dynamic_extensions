@@ -9,7 +9,8 @@
 
 package edu.common.dynamicextensions.util.global;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author aarti_sharma
@@ -19,7 +20,7 @@ public class Variables
 {
 
 	public static String dynamicExtensionsHome = new String();
-	public static Vector databaseDefinitions = new Vector();
+	public static List databaseDefinitions = new ArrayList();	
 	public static String databaseDriver = new String();
 	public static String[] databasenames;
 	public static boolean containerFlag = true;

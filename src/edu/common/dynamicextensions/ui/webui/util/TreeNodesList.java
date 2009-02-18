@@ -1,19 +1,20 @@
 
 package edu.common.dynamicextensions.ui.webui.util;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TreeNodesList
 {
 
-	Vector childNodeList = null;
+	List childNodeList = null;
 	private int length = 0;
 
 	/**
 	 */
 	public TreeNodesList()
 	{
-		childNodeList = new Vector();
+		childNodeList = new ArrayList();
 	}
 
 	/**

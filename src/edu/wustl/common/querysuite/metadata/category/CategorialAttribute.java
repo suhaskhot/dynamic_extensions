@@ -14,6 +14,11 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 public class CategorialAttribute extends AbstractCategorialAttribute implements Serializable
 {
 
+	/**
+	 * added default serial version
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private Long deCategoryAttributeId;
 
 	private AttributeInterface categoryAttribute;

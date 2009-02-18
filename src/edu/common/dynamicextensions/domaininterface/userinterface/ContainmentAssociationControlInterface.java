@@ -15,12 +15,12 @@ public interface ContainmentAssociationControlInterface extends AbstractContainm
 
 	/**
 	 * This method returns true if the cardinality of the Containment Association is One to Many.
-	 * @return true if Caridnality is One to Many, false otherwise.
+	 * @return true if Cardinality is One to Many, false otherwise.
 	 */
 	boolean isCardinalityOneToMany();
 
 	/**
-	 * This method generates the HMTL for this containement as a Link.
+	 * This method generates the HTML for this containment as a Link.
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */

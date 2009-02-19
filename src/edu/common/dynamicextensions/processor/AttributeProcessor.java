@@ -137,7 +137,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				attribute = createAssociation();
 				AssociationInterface association = (AssociationInterface) attribute;
-				association.setIsCollection(new Boolean(true));
+				association.setIsCollection(Boolean.TRUE);
 				//populate information common to attributes
 				populateAttributeCommonInfo(association, attributeUIBeanInformationIntf);
 			}
@@ -393,7 +393,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		if (attributeInterface instanceof AttributeInterface)
 		{
-			Boolean isIdentified = new Boolean(strIsIdentified);
+			Boolean isIdentified = Boolean.valueOf(strIsIdentified);
 			((AttributeInterface) attributeInterface).setIsIdentified(isIdentified);
 		}
 	}
@@ -911,7 +911,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					{
 						permissibleValueIntf = DomainObjectFactory.getInstance()
 								.createBooleanValue();
-						Boolean value = new Boolean(permissibleValue);
+						Boolean value = Boolean.valueOf(permissibleValue);
 						((BooleanValue) permissibleValueIntf).setValue(value);
 					}
 					else if (DynamicExtensionsUtility.isDataTypeNumeric(attributeType))
@@ -1044,7 +1044,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			booleanValue = DomainObjectFactory.getInstance().createBooleanValue();
 		}
 		booleanValue
-				.setValue(new Boolean(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
+				.setValue(Boolean.valueOf(attributeUIBeanInformationIntf.getAttributeDefaultValue()));
 		booleanAttributeIntf.setDefaultValue(booleanValue);
 	}
 
@@ -1152,11 +1152,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			if ((attributeUIBeanInformationIntf.getAttributeSize() != null)
 					&& (!attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
 			{
-				size = new Integer(attributeUIBeanInformationIntf.getAttributeSize());
+				size = Integer.valueOf(attributeUIBeanInformationIntf.getAttributeSize());
 			}
 			else
 			{
-				size = new Integer(0);
+				size = Integer.valueOf(0);
 			}
 			stringAttributeIntf.setSize(size);
 		}
@@ -1266,7 +1266,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
-					defaultValue = new Integer(attributeUIBeanInformationIntf
+					defaultValue = Integer.valueOf(attributeUIBeanInformationIntf
 							.getAttributeDefaultValue());
 				}
 			}

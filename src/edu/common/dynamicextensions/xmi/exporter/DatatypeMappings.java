@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.entitymanager.DataTypeFactory;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author preeti_lodha
@@ -115,7 +116,7 @@ public enum DatatypeMappings {
 	 */
 	public String getJavaClassMapping()
 	{
-		System.out.println("Java Mapping for datatype not found");
+		Logger.out.info("Java Mapping for datatype not found");
 		return null;
 	}
 

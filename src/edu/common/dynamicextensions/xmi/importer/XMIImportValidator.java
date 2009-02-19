@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.ui.interfaces.AbstractAttributeUIBeanInterfa
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author falguni_sachde
@@ -56,18 +57,17 @@ public class XMIImportValidator
 			{
 				ApplicationProperties.initBundle("ApplicationResources");
 				List<String> placeHolders = new ArrayList<String>();
-				placeHolders.add(defaultValue + "");
+				placeHolders.add(defaultValue.toString());
 				placeHolders.add(attribute.getName());
 				placeHolders.add(min);
 				placeHolders.add(max);
-				System.out.println(ApplicationProperties.getValue("validationError")
+				Logger.out.info(ApplicationProperties.getValue("validationError")
 						+ ApplicationProperties.getValue("defValueOORange", placeHolders));
 
 				throw new DynamicExtensionsApplicationException(e.getMessage(),e);
 			}
 			catch (DataTypeFactoryInitializationException e)
 			{
-				System.out.println(e.getMessage());
 				throw new DynamicExtensionsApplicationException(e.getMessage(),e);
 			}
 		}
@@ -106,7 +106,7 @@ public class XMIImportValidator
 			catch (DynamicExtensionsValidationException e)
 			{
 				ApplicationProperties.initBundle("ApplicationResources");
-				System.out.println(ApplicationProperties.getValue("validationError")
+				Logger.out.info(ApplicationProperties.getValue("validationError")
 						+ ApplicationProperties.getValue("defValueFor")
 						+ ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList()));
 				throw new DynamicExtensionsSystemException(e.getMessage(),e);
@@ -159,7 +159,7 @@ public class XMIImportValidator
 			List<String> placeHolders = new ArrayList<String>();
 			placeHolders.add(booleanVal);
 			placeHolders.add(attribute.getName());
-			System.out.println(ApplicationProperties.getValue("validationError")
+			Logger.out.info(ApplicationProperties.getValue("validationError")
 					+ ApplicationProperties.getValue("defValueBoolInvalid", placeHolders));
 
 			throw new DynamicExtensionsApplicationException("Validation failed");

@@ -60,7 +60,7 @@ public class XMIImporter
 			//	fileName = fileName.replaceAll("\\\\", "//");	
 
 			File file = new File(fileName);
-			System.out.println("Filename = " + file.getName());
+			Logger.out.info("Filename = " + file.getName());
 
 			String packageName = "";
 			if (args.length > 1)
@@ -79,8 +79,8 @@ public class XMIImporter
 				domainModelName = file.getName().substring(0, indexOfExtension);
 			}
 
-			System.out.println("Package name = " + packageName);
-			System.out.println("Name of the file = " + domainModelName);
+			Logger.out.info("Package name = " + packageName);
+			Logger.out.info("Name of the file = " + domainModelName);
 
 			// get the default repository
 			rep = MDRManager.getDefault().getDefaultRepository();
@@ -108,13 +108,12 @@ public class XMIImporter
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			xmiImportProcessor.setXmiConfigurationObject(xmiConfiguration);
 			xmiImportProcessor.processXmi(uml, domainModelName, packageName, containerNames);
-			System.out.println("--------------- Done ------------");
+			Logger.out.info("--------------- Done ------------");
 
 		}
 		catch (Exception e)
 		{
-			System.out.println("Fatal error reading XMI.");
-			Logger.out.debug(e.getMessage());
+			Logger.out.debug("Fatal error reading XMI."+e.getMessage(),e);
 		}
 		finally
 		{
@@ -127,7 +126,7 @@ public class XMIImporter
 			}
 			catch (IOException e)
 			{
-				System.out.println("Error. Specified file does not exist.");
+				Logger.out.info("Error. Specified file does not exist.");
 			}
 			XMIUtilities.cleanUpRepository();
 
@@ -210,11 +209,10 @@ public class XMIImporter
 	private static MofPackage getUmlPackage(ModelPackage umlMM)
 	{
 		// iterate through all instances of package
-		System.out.println("Here");
 		for (Iterator it = umlMM.getMofPackage().refAllOfClass().iterator(); it.hasNext();)
 		{
 			MofPackage pkg = (MofPackage) it.next();
-			System.out.println("\n\nName = " + pkg.getName());
+			Logger.out.info("\n\nName = " + pkg.getName());
 
 			// is the package topmost and is it named "UML"?
 			if (pkg.getContainer() == null && "UML".equals(pkg.getName()))

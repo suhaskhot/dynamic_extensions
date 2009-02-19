@@ -87,6 +87,7 @@ import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.Constants;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  *
@@ -498,7 +499,7 @@ public class XMIImportProcessor
 	 * @param entityGroupName
 	 * @param packageName
 	 * @return
-	 * @throws DAOException
+	 * @throws BizLogicException
 	 */
 	private List<EntityGroupInterface> retrieveEntityGroup(String entityGroupName,
 			String packageName) throws BizLogicException
@@ -580,7 +581,7 @@ public class XMIImportProcessor
 		for (Model model : modelColl)
 		{
 			Collection ownedElementColl = model.getOwnedElement();
-			System.out.println("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
+			Logger.out.info("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
 			Iterator iter = ownedElementColl.iterator();
 
 			StringTokenizer tokens = new StringTokenizer(packageName, XMIConstants.DOT_SEPARATOR);
@@ -2013,7 +2014,7 @@ public class XMIImportProcessor
 		String listBoxHeight = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTISELECT);
 		if (listBoxHeight == null || listBoxHeight.trim().equals(""))
 		{
-			listBoxHeight = "" + edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE;
+			listBoxHeight = Integer.toString(edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE);
 		}
 		return listBoxHeight;
 	}
@@ -2123,7 +2124,7 @@ public class XMIImportProcessor
 		String width = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DISPLAY_WIDTH);
 		if (width == null || width.trim().equals(""))
 		{
-			width = "" + (edu.common.dynamicextensions.ui.util.Constants.DEFAULT_COLUMN_SIZE);
+			width = Integer.toString(edu.common.dynamicextensions.ui.util.Constants.DEFAULT_COLUMN_SIZE);
 		}
 		if (width != null && (Integer.parseInt(width)) > 999)
 		{
@@ -2175,7 +2176,7 @@ public class XMIImportProcessor
 		String noOFRows = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTILINE);
 		if (noOFRows == null || noOFRows.trim().equals(""))
 		{
-			noOFRows = "" + edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE;
+			noOFRows = Integer.toString(edu.common.dynamicextensions.ui.util.Constants.DEFAULT_ROW_SIZE);
 		}
 		return noOFRows;
 	}

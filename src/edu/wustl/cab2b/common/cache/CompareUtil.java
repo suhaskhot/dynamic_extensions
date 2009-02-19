@@ -120,8 +120,7 @@ public class CompareUtil {
         if (className == null) {
             return null;
         }
-        String onlyClassName = className.substring(className.lastIndexOf('.') + 1, className.length());
-        return onlyClassName;
+        return className.substring(className.lastIndexOf('.') + 1, className.length());
     }
     private static String getString(PermissibleValueInterface permissibleValue) {
         if (permissibleValue.getValueAsObject() == null) { 

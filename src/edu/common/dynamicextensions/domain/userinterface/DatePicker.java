@@ -250,9 +250,7 @@ public class DatePicker extends Control implements DatePickerInterface
 		String day = date.substring(8, date.length()); // 01
 
 		date = month + "-" + day + "-" + year;
-		defaultValue = date + time;
-
-		return defaultValue;
+		return (date + time);
 	}
 
 	/**

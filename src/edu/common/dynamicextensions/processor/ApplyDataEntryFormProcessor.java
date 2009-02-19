@@ -135,8 +135,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface entity = (Entity) container.getAbstractEntity();
 			//Correct this:
 			Map map = attributeValueMap;
-			Boolean edited = entityManager.editData(entity, map, recordIdentifier, userId);
-			return edited;
+			return entityManager.editData(entity, map, recordIdentifier, userId);
 		}
 		else
 		{

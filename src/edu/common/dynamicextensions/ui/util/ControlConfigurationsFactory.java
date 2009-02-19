@@ -20,6 +20,7 @@ import org.w3c.dom.NodeList;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.validation.ValidatorRuleInterface;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author preeti_munot
@@ -102,7 +103,7 @@ public final class ControlConfigurationsFactory
 					}
 					else
 					{
-						System.out.println("InputStream null...Please check");
+						Logger.out.info("InputStream null...Please check");
 					}
 				}
 			}
@@ -844,8 +845,8 @@ public final class ControlConfigurationsFactory
 		while (iter.hasNext())
 		{
 			NameValueBean nvb = iter.next();
-			System.out.println(nvb.getName() + " " + nvb.getValue());
-			System.out.println(ccf.getControlJspName(nvb.getName()));
+			Logger.out.info(nvb.getName() + " " + nvb.getValue());
+			Logger.out.info(ccf.getControlJspName(nvb.getName()));
 		}
 		//ccf.getRulesMap("TextControl");
 	}

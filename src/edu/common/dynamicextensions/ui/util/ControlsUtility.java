@@ -652,7 +652,7 @@ public class ControlsUtility
 							&& !controlInterface.getCaption().equals(""))
 					{
 						controlCaption = controlInterface.getCaption();
-							controlSequenceNumber = controlInterface.getSequenceNumber() + "";
+							controlSequenceNumber = controlInterface.getSequenceNumber().toString();
 							controlName = DynamicExtensionsUtility.getControlName(controlInterface);
 							if (controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
 							{

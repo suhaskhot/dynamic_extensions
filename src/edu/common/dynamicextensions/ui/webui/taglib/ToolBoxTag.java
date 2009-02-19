@@ -345,7 +345,7 @@ public class ToolBoxTag extends TagSupport
 
 		if (messageKeys == null)
 		{
-			messageKeys = new Boolean(false);
+			messageKeys = Boolean.FALSE;
 		}
 		if (messageKeys.booleanValue() && bundleName == null)
 		{
@@ -354,7 +354,7 @@ public class ToolBoxTag extends TagSupport
 		}
 		if (showSelected == null)
 		{
-			showSelected = new Boolean(true);
+			showSelected = Boolean.TRUE;
 		}
 		if (height == null)
 		{
@@ -476,8 +476,7 @@ public class ToolBoxTag extends TagSupport
 	 */
 	private ResourceBundle initializeResourceBundle()
 	{
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("ApplicationResources");
-		return resourceBundle;
+		return ResourceBundle.getBundle("ApplicationResources");
 	}
 
 	/**

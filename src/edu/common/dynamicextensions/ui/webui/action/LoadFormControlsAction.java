@@ -54,14 +54,13 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 
 			//For edit operation reinitialize sequence numbers
 			String controlOperation = controlsForm.getControlOperation();
-			if ((controlOperation != null)
-					&& (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)))
+			if (controlOperation != null
+					&& controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)
+					&& containerInterface != null && controlsForm != null)
 			{
-				if (containerInterface != null && controlsForm != null)
-				{
+			
 					ControlsUtility.reinitializeSequenceNumbers(containerInterface
 							.getControlCollection(), controlsForm.getControlsSequenceNumbers());
-				}
 			}
 			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor

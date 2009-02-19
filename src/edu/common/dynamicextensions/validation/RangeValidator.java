@@ -52,10 +52,8 @@ public class RangeValidator implements ValidatorRuleInterface
 		}
 
 		/* Check for the validity of the range of the number against the predefined range*/
-		if (valueObject != null)
+		if (valueObject != null && !((String) valueObject).trim().equals(""))
 		{
-			if (!((String) valueObject).trim().equals(""))
-			{
 				AttributeTypeInformationInterface attributeTypeInformation = attribute
 						.getAttributeTypeInformation();
 
@@ -88,7 +86,6 @@ public class RangeValidator implements ValidatorRuleInterface
 						}
 					}
 				}
-			}
 		}
 
 		return valid;
@@ -107,21 +104,15 @@ public class RangeValidator implements ValidatorRuleInterface
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
 
-		if (parameterName.equals(Constants.MIN_VALUE))
+		if (parameterName.equals(Constants.MIN_VALUE) && Long.parseLong(value) < Long.parseLong(parameterValue))
 		{
-			if (Long.parseLong(value) < Long.parseLong(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Minimum");
-			}
 		}
-		else if (parameterName.equals(Constants.MAX_VALUE))
+		else if (parameterName.equals(Constants.MAX_VALUE) && Long.parseLong(value) > Long.parseLong(parameterValue))
 		{
-			if (Long.parseLong(value) > Long.parseLong(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Maximum");
-			}
 		}
 	}
 
@@ -145,13 +136,10 @@ public class RangeValidator implements ValidatorRuleInterface
 						"dynExtn.validation.Range.Minimum");
 			}
 		}
-		else if (parameterName.equals(Constants.MAX_VALUE))
+		else if (parameterName.equals(Constants.MAX_VALUE) && Integer.parseInt(value) > Integer.parseInt(parameterValue))
 		{
-			if (Integer.parseInt(value) > Integer.parseInt(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Maximum");
-			}
 		}
 	}
 
@@ -175,13 +163,11 @@ public class RangeValidator implements ValidatorRuleInterface
 						"dynExtn.validation.Range.Minimum");
 			}
 		}
-		else if (parameterName.equals(Constants.MAX_VALUE))
+		else if (parameterName.equals(Constants.MAX_VALUE)
+				&& Short.parseShort(value) > Short.parseShort(parameterValue))
 		{
-			if (Short.parseShort(value) > Short.parseShort(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Maximum");
-			}
 		}
 	}
 
@@ -197,21 +183,15 @@ public class RangeValidator implements ValidatorRuleInterface
 		String parameterName = parameter.getKey();
 		String parameterValue = parameter.getValue();
 
-		if (parameterName.equals(Constants.MIN_VALUE))
+		if (parameterName.equals(Constants.MIN_VALUE) && Double.parseDouble(value) < Double.parseDouble(parameterValue))
 		{
-			if (Double.parseDouble(value) < Double.parseDouble(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Minimum");
-			}
 		}
-		else if (parameterName.equals(Constants.MAX_VALUE))
+		else if (parameterName.equals(Constants.MAX_VALUE) && Double.parseDouble(value) > Double.parseDouble(parameterValue))
 		{
-			if (Double.parseDouble(value) > Double.parseDouble(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Maximum");
-			}
 		}
 	}
 
@@ -235,13 +215,10 @@ public class RangeValidator implements ValidatorRuleInterface
 						"dynExtn.validation.Range.Minimum");
 			}
 		}
-		else if (parameterName.equals(Constants.MAX_VALUE))
+		else if (parameterName.equals(Constants.MAX_VALUE) && Float.parseFloat(value) > Float.parseFloat(parameterValue))
 		{
-			if (Float.parseFloat(value) > Float.parseFloat(parameterValue))
-			{
 				reportOutOfRangeInput(controlCaption, parameterValue,
 						"dynExtn.validation.Range.Maximum");
-			}
 		}
 	}
 

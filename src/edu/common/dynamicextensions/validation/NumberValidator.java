@@ -356,10 +356,8 @@ public class NumberValidator implements ValidatorRuleInterface
 		int decimalPlaces = ((NumericAttributeTypeInformation) attributeTypeInformation)
 				.getDecimalPlaces();
 
-		if (value != null)
+		if (value != null && value.contains("."))
 		{
-			if (value.contains("."))
-			{
 				int decimalPointIndex = value.indexOf(".");
 				String stringAfterDecimalPoint = value.substring(decimalPointIndex + 1, value
 						.length());
@@ -370,7 +368,6 @@ public class NumberValidator implements ValidatorRuleInterface
 							"precision (" + decimalPlaces + ")",
 							"dynExtn.validation.Number.numberOfDigitsExceedsPrecision");
 				}
-			}
 		}
 	}
 

@@ -112,13 +112,10 @@ public class DateValidator implements ValidatorRuleInterface
 				valid = false;
 			}
 
-			if (valid && isFromDateRangeValidator.length == 0)
+			if (valid && isFromDateRangeValidator.length == 0 && tempDate.after(new Date()))
 			{
-				if (tempDate.after(new Date()))
-				{
 					reportInvalidInput(controlCaption, "today's date.",
 							"dynExtn.validation.Date.Max");
-				}
 			}
 
 			if (!valid)

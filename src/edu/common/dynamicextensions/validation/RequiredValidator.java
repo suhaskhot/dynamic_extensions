@@ -32,13 +32,10 @@ public class RequiredValidator implements ValidatorRuleInterface
 							"dynExtn.validation.RequiredValidator", controlCaption);
 				}
 			}
-			else if (valueObject instanceof String)
+			else if (valueObject instanceof String && ((String) valueObject).trim().equals(""))
 			{
-				if (((String) valueObject).trim().equals(""))
-				{
 					throw new DynamicExtensionsValidationException("Validation failed", null,
 							"dynExtn.validation.RequiredValidator", controlCaption);
-				}
 			}
 		}
 		else

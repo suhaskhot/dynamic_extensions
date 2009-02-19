@@ -412,10 +412,8 @@ public class CategoryValidator
 		{
 			Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
 
-			if (isMultiSelect != null && isMultiSelect == true)
+			if (isMultiSelect != null && isMultiSelect == true && abstractAttribute != null)
 			{
-				if (abstractAttribute != null)
-				{
 					if (!(abstractAttribute instanceof AssociationInterface))
 					{
 						throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -437,13 +435,10 @@ public class CategoryValidator
 									+ attributeName);
 						}
 					}
-				}
 			}
 		}
 		else
 		{
-			if (abstractAttribute != null)
-			{
 				if (abstractAttribute instanceof AssociationInterface)
 				{
 					Boolean isCollection = ((AssociationInterface) abstractAttribute)
@@ -457,7 +452,6 @@ public class CategoryValidator
 										+ attributeName);
 					}
 				}
-			}
 		}
 	}
 

@@ -218,12 +218,10 @@ public class XMIImportProcessor
 		//Creating entities and entity group.
 		for (UmlClass umlClass : umlClassColl)
 		{
-			if (xmiConfigurationObject.isEntityGroupSystemGenerated())
+			if (xmiConfigurationObject.isEntityGroupSystemGenerated()
+					&& !umlClass.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
 			{
-				if (!umlClass.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
-				{
 					umlClass.setName(XMIConstants.CATISSUE_PACKAGE + umlClass.getName());
-				}
 			}
 			EntityInterface entity = entityGroup.getEntityByName(umlClass.getName());
 
@@ -241,12 +239,9 @@ public class XMIImportProcessor
 			populateEntityProperties(entity, umlClass, entityVsMapTagValues);
 
 			//			For static models
-			if (xmiConfigurationObject.isEntityGroupSystemGenerated())
+			if (xmiConfigurationObject.isEntityGroupSystemGenerated() && !entity.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
 			{
-				if (!entity.getName().startsWith(XMIConstants.CATISSUE_PACKAGE))
-				{
 					entity.setName(XMIConstants.CATISSUE_PACKAGE + entity.getName());
-				}
 			}
 			umlClassIdVsEntity.put(umlClass.refMofId(), entity);
 		}
@@ -762,14 +757,11 @@ public class XMIImportProcessor
 	{
 		//Not showing id attribute on UI if Id attribute is to be added by DE which is specified in xmiConfiguration Object
 		AttributeInterface originalAttribute = null;
-		if ((umlAttribute.getName().equalsIgnoreCase(DEConstants.ID) || umlAttribute.getName()
-				.equalsIgnoreCase(Constants.IDENTIFIER)))
+		if (((umlAttribute.getName().equalsIgnoreCase(DEConstants.ID) || umlAttribute.getName()
+				.equalsIgnoreCase(Constants.IDENTIFIER)))&& xmiConfigurationObject.isAddIdAttribute())
 		{
 			//If id attribute is system generated then dont create attribute for user given Id attribute
-			if (xmiConfigurationObject.isAddIdAttribute())
-			{
 				return null;
-			}
 		}
 		DataType dataType = DataType.get(umlAttribute.getType().getName());
 		if (dataType != null)
@@ -1471,16 +1463,13 @@ public class XMIImportProcessor
 	{
 		for (TaggedValue taggedValue : taggedValueColl)
 		{
-			if (taggedValue.getType() != null)
+			if (taggedValue.getType() != null && taggedValue.getType().getName().equalsIgnoreCase(tagName))
 			{
-				if (taggedValue.getType().getName().equalsIgnoreCase(tagName))
-				{
 					Collection<String> dataValueColl = taggedValue.getDataValue();
 					for (String value : dataValueColl)
 					{
 						return value;
 					}
-				}
 			}
 		}
 		return "";
@@ -1698,7 +1687,7 @@ public class XMIImportProcessor
 			while (it.hasNext())
 			{
 				AbstractAttributeInterface originalAttr = it.next();
-				if (originalAttr.getId() == null)
+				if (originalAttr.getId() == null && originalAttr instanceof AssociationInterface)
 				{
 					/*
 					 * Bug Id:7316
@@ -1706,10 +1695,7 @@ public class XMIImportProcessor
 					 * Hence, new association objects are saved in a list and then removed from entity
 					 * so that they can be added again to the entity object
 					 */
-					if (originalAttr instanceof AssociationInterface)
-					{
 						savedAssociation.add(originalAttr);
-					}
 				}
 			}
 			Collection<AbstractAttributeInterface> attributesToRemove = new HashSet<AbstractAttributeInterface>();
@@ -2092,12 +2078,9 @@ public class XMIImportProcessor
 	 */
 	private boolean isMultiselectTagValue(Map<String, String> taggedValueMap)
 	{
-		if (taggedValueMap != null)
+		if (taggedValueMap != null && taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
 		{
-			if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
-			{
 				return true;
-			}
 		}
 		return false;
 	}
@@ -2108,12 +2091,9 @@ public class XMIImportProcessor
 	 */
 	private String getMultiselectTagValue(Map<String, String> taggedValueMap)
 	{
-		if (taggedValueMap != null)
+		if (taggedValueMap != null && taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
 		{
-			if (taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTISELECT))
-			{
 				return taggedValueMap.get(XMIConstants.TAGGED_VALUE_MULTISELECT);
-			}
 		}
 		return null;
 	}
@@ -3006,14 +2986,11 @@ public class XMIImportProcessor
 		{
 			//		For static models
 			String temp = "";
-			if (xmiConfigurationObject.isEntityGroupSystemGenerated())
+			if (xmiConfigurationObject.isEntityGroupSystemGenerated() && !containerName.startsWith(XMIConstants.CATISSUE_PACKAGE))
 			{
-				if (!containerName.startsWith(XMIConstants.CATISSUE_PACKAGE))
-				{
 					temp = containerName;
 					containerName = "";
 					containerName = XMIConstants.CATISSUE_PACKAGE + temp;
-				}
 			}
 			List containerList = (ArrayList) entityNameVsContainers.get(containerName);
 			if (containerList == null || containerList.size() < 1)

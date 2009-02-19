@@ -867,12 +867,9 @@ public class XMIExporter implements XMIExportInterface
 				while (entityAttribIter.hasNext())
 				{
 					Object attribute = entityAttribIter.next();
-					if (attribute instanceof Attribute)
+					if (attribute instanceof Attribute && ((Attribute) attribute).getName().equals(attributeName))
 					{
-						if (((Attribute) attribute).getName().equals(attributeName))
-						{
 							return (Attribute) attribute;
-						}
 					}
 				}
 			}
@@ -1646,15 +1643,13 @@ public class XMIExporter implements XMIExportInterface
 					umlAssociation.getTaggedValue().add(directionTaggedValue);
 				}
 				//If association is many-to-many add "correlation-table" tagged value
-				if (XMIConstants.ASSOC_MANY_MANY.equals(getAssociationType(association)))
+				if (XMIConstants.ASSOC_MANY_MANY.equals(getAssociationType(association))
+						&& association.getConstraintProperties() != null)
 				{
-					if (association.getConstraintProperties() != null)
-					{
 						String corelnTableName = association.getConstraintProperties().getName();
 						umlAssociation.getTaggedValue().add(
 								createTaggedValue(XMIConstants.TAGGED_VALUE_CORELATION_TABLE,
 										corelnTableName));
-					}
 				}
 
 			}

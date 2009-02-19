@@ -710,15 +710,12 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		String heading = "";
 
 		String[] headingDetails = readLine();
-		if (headingDetails != null && headingDetails.length != 0)
+		if (headingDetails != null && headingDetails.length != 0 && headingDetails[0].startsWith(CategoryConstants.HEADING))
 		{
-			if (headingDetails[0].startsWith(CategoryConstants.HEADING))
-			{
 				CategoryValidator.checkIfHeadingIsAppropriate(headingDetails[0], lineNumber);
 
 				heading = headingDetails[0].split("~")[1];
 				readNext();
-			}
 		}
 
 		return heading;

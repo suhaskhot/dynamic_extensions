@@ -197,15 +197,14 @@ public class CompareUtil {
         static int compare(SemanticPropertyInterface patternSemanticProperty,
                                    SemanticPropertyInterface cachedSemanticProperty) {
             int index = -1;
-            if (cachedSemanticProperty.getConceptCode() != null) {
+            if (cachedSemanticProperty.getConceptCode() != null
+            		&& patternSemanticProperty.getConceptCode() != null) {
                 // TODO this null check is because caTissue
                 // has some permissible values without
                 // concept codes. This will never be the case with models from cDSR
-                if (patternSemanticProperty.getConceptCode() != null) {
                     String patternConceptCode = patternSemanticProperty.getConceptCode();
 
                     index = Utility.indexOfRegEx(patternConceptCode, cachedSemanticProperty.getConceptCode());
-                }
             }
             return index;
         }

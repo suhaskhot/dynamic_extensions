@@ -337,11 +337,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					}
 					else
 					{
-						if (attributeTypeInformation instanceof DoubleAttributeTypeInformation
-								|| attributeTypeInformation instanceof FloatAttributeTypeInformation)
+						if ((attributeTypeInformation instanceof DoubleAttributeTypeInformation
+								|| attributeTypeInformation instanceof FloatAttributeTypeInformation)&&
+								(value.length() != 0 && !value.contains("E")))
 						{
-							if (value.length() != 0 && !value.contains("E"))
-							{
 								if (decimalPlaces != 0)
 								{
 									value = value + ".";
@@ -352,7 +351,6 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 									value = value + "0";
 								}
 								recordMap.put(currentAttribute, value);
-							}
 						}
 					}
 				}
@@ -363,18 +361,15 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 				if (association.getAssociationType() != null)
 				{
 					String associationType = association.getAssociationType().getValue();
-					if (associationType != null)
+					if (associationType != null && recordMap.get(object) != null
+							&& associationType.equals(AssociationType.CONTAINTMENT.getValue()))
 					{
-						if (recordMap.get(object) != null
-								&& associationType.equals(AssociationType.CONTAINTMENT.getValue()))
-						{
 							List<Map<BaseAbstractAttributeInterface, Object>> innerRecordsList = (List<Map<BaseAbstractAttributeInterface, Object>>) recordMap
 									.get(object);
 							for (Map<BaseAbstractAttributeInterface, Object> innerMap : innerRecordsList)
 							{
 								addPrecisionZeroes(innerMap, processedAttributes);
 							}
-						}
 					}
 				}
 			}

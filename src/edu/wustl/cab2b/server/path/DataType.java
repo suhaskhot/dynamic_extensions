@@ -72,7 +72,7 @@ enum DataType {
                 UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
                 for (Enumeration e : arr) {
                     IntegerValueInterface value = domainObjectFactory.createIntegerValue();
-                    value.setValue(new Integer(e.getPermissibleValue()));
+                    value.setValue(Integer.valueOf(e.getPermissibleValue()));
                     DynamicExtensionUtility.setSemanticMetadata(value, e.getSemanticMetadata());
                     userDefinedDE.addPermissibleValue(value);
                 }
@@ -154,7 +154,7 @@ enum DataType {
                     logger.info("boolean Attribute has permissible value : " + e.getPermissibleValue());
                     //TODO what is meaning of permissible values for boolean???
                     //is any string processing needed??
-                    value.setValue(new Boolean(e.getPermissibleValue()));
+                    value.setValue(Boolean.valueOf(e.getPermissibleValue()));
                     DynamicExtensionUtility.setSemanticMetadata(value, e.getSemanticMetadata());
                     userDefinedDE.addPermissibleValue(value);
                 }

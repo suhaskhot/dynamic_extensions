@@ -338,8 +338,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			DomainObjectFactory factory = DomainObjectFactory.getInstance();
 			AttributeInterface idAttribute = factory.createLongAttribute();
 			idAttribute.setName(ID_ATTRIBUTE_NAME);
-			idAttribute.setIsPrimaryKey(new Boolean(true));
-			idAttribute.setIsNullable(new Boolean(false));
+			idAttribute.setIsPrimaryKey(Boolean.TRUE);
+			idAttribute.setIsNullable(Boolean.FALSE);
 			ColumnPropertiesInterface column = factory.createColumnProperties();
 			column.setName(IDENTIFIER);
 			idAttribute.setColumnProperties(column);

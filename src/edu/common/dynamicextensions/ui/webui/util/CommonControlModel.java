@@ -701,7 +701,7 @@ public class CommonControlModel extends AbstractActionForm
 		this.attributeMultiSelect = attributeMultiSelect;
 		if (attributeMultiSelect != null)
 		{
-			isMultiSelect = new Boolean(attributeMultiSelect
+			isMultiSelect = Boolean.valueOf(attributeMultiSelect
 					.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT));
 		}
 	}
@@ -867,11 +867,11 @@ public class CommonControlModel extends AbstractActionForm
 	{
 		if ((attributenoOfCols == null) || (attributenoOfCols.trim().equals("")))
 		{
-			columns = new Integer(0); //blank values will be considered as 0
+			columns = Integer.valueOf(0); //blank values will be considered as 0
 		}
 		else
 		{
-			columns = new Integer(attributenoOfCols);
+			columns = Integer.valueOf(attributenoOfCols);
 		}
 		return columns;
 	}
@@ -902,11 +902,11 @@ public class CommonControlModel extends AbstractActionForm
 	{
 		if ((attributeNoOfRows == null) || (attributeNoOfRows.trim().equals("")))
 		{
-			rows = new Integer(0); //blank values will be considered as 0
+			rows = Integer.valueOf(0); //blank values will be considered as 0
 		}
 		else
 		{
-			rows = new Integer(attributeNoOfRows);
+			rows = Integer.valueOf(attributeNoOfRows);
 		}
 
 		return rows;
@@ -920,11 +920,11 @@ public class CommonControlModel extends AbstractActionForm
 	{
 		if ((attributeSequenceNumber != null) && (attributeSequenceNumber.trim().equals("")))
 		{
-			sequenceNumber = new Integer(0); //blank values will be considered as 0
+			sequenceNumber = Integer.valueOf(0); //blank values will be considered as 0
 		}
 		else
 		{
-			sequenceNumber = new Integer(attributeSequenceNumber);
+			sequenceNumber = Integer.valueOf(attributeSequenceNumber);
 		}
 		return sequenceNumber;
 	}
@@ -1055,7 +1055,7 @@ public class CommonControlModel extends AbstractActionForm
 	public void setAttributeIsPassword(String attributeIsPassword)
 	{
 		this.attributeIsPassword = attributeIsPassword;
-		isPassword = new Boolean(attributeIsPassword);
+		isPassword = Boolean.valueOf(attributeIsPassword);
 	}
 
 	/**
@@ -1323,7 +1323,7 @@ public class CommonControlModel extends AbstractActionForm
 	public void setAttributeDisplayAsURL(String attributeDisplayAsURL)
 	{
 		this.attributeDisplayAsURL = attributeDisplayAsURL;
-		this.isUrl = new Boolean(attributeDisplayAsURL);
+		this.isUrl = Boolean.valueOf(attributeDisplayAsURL);
 	}
 
 	public String[] getOptionConceptCodes()

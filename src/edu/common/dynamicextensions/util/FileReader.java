@@ -49,9 +49,7 @@ public class FileReader
 	public static String getSystemIndependantFilePath(String path)
 			throws DynamicExtensionsSystemException
 	{
-		path = path.replace(" ", "%20");
-
-		File file = new File(path);
+		File file = new File(path.replace(" ", "%20"));
 		return file.getAbsolutePath();
 	}
 

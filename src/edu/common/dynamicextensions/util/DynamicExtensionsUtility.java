@@ -242,11 +242,11 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method clears data value for all controls within container
-	 * @param baseContainer
+	 * @param baseContainerObject Container Object
 	 */
-	public static void cleanContainerControlsValue(ContainerInterface baseContainer)
+	public static void cleanContainerControlsValue(ContainerInterface baseContainerObject)
 	{
-
+		ContainerInterface baseContainer=baseContainerObject;
 		while (baseContainer != null)
 		{
 			Collection controlCollection = baseContainer.getControlCollection();
@@ -910,14 +910,14 @@ public class DynamicExtensionsUtility
 	/**
 	 * This method checks if the date string is as per the given format or not.
 	 * @param dateFormat Format of the date (e.g. MM-DD-YYYY)
-	 * @param strDate Date value in String.
+	 * @param strAsDate Date value in String.
 	 * @return true if date is valid, false otherwise
 	 */
-	public static boolean isDateValid(String dateFormat, String strDate)
+	public static boolean isDateValid(String dateFormat, String strAsDate)
 	{
 		boolean isDateValid = false;
 		Date date = null;
-
+		String strDate=strAsDate;
 		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
 			strDate = formatMonthAndYearDate(strDate,false);
@@ -1023,17 +1023,18 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method compares the two date strings.
-	 * @param date1 the first date value.
-	 * @param date2 the second date value.
+	 * @param strDate1 the first date value.
+	 * @param strDate2 the second date value.
 	 * @param dateFormat the format of both date.
 	 * @return -1 if date1 is lesser than date2
 	 * 			0 if date1 is equals to date2
 	 * 			1 if date1 is greater than date2.
 	 */
-	public static int compareDates(String date1, String date2, String dateFormat)
+	public static int compareDates(String strDate1, String strDate2, String dateFormat)
 	{
 		int result = 0;
-
+		String date1=strDate1;
+		String date2=strDate2;
 		if (areBothDatesOfSameFormat(date1, date2))
 		{
 			result = 1;
@@ -1135,12 +1136,12 @@ public class DynamicExtensionsUtility
 	public static String getSQLDateFormat(String dateFormat)
 	{
 		CommonServiceLocator locator= CommonServiceLocator.getInstance();
-		String sqlDateFormat = locator.getDatePattern();
+		StringBuffer sqlDateFormat = new StringBuffer(locator.getDatePattern());
 		if (dateFormat != null && dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-			sqlDateFormat = sqlDateFormat + " " + locator.getTimePattern();
+			sqlDateFormat.append(" ").append(locator.getTimePattern());
 		}
-		return sqlDateFormat;
+		return sqlDateFormat.toString();
 	}
 
 	/**
@@ -2160,14 +2161,14 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getEscapedStringValue(String value)
 	{
-
-		value = replaceUtil(value, "'", "&#39");
-		value = replaceUtil(value, "\"", "&#34");
-		if (value != null)
+		String replacedValue=value;
+		replacedValue = replaceUtil(replacedValue, "'", "&#39");
+		replacedValue = replaceUtil(replacedValue, "\"", "&#34");
+		if (replacedValue != null)
 		{
-			value = value.trim();
+			replacedValue = replacedValue.trim();
 		}
-		return value;
+		return replacedValue;
 	}
 
 	/**
@@ -2208,16 +2209,17 @@ public class DynamicExtensionsUtility
 	public static String getCategoryEntityName(String categoryEntityName)
 	{
 		Pattern p = Pattern.compile("[]]");
-		if (categoryEntityName != null && categoryEntityName.length() > 0)
+		String entityName=categoryEntityName;
+		if (entityName != null && entityName.length() > 0)
 		{
-			Matcher m = p.matcher(categoryEntityName);
+			Matcher m = p.matcher(entityName);
 			StringBuffer sb = new StringBuffer();
 			boolean result = m.find();
 			// Loop through and create a new String
 			// with the replacements
 			while (result)
 			{
-				m.appendReplacement(sb, categoryEntityName.subSequence(m.start(), m.end()) + " ");
+				m.appendReplacement(sb, entityName.subSequence(m.start(), m.end()) + " ");
 				result = m.find();
 			}
 			//Add the last segment of input to
@@ -2225,9 +2227,9 @@ public class DynamicExtensionsUtility
 			m.appendTail(sb);
 
 			String[] categoryEntityNameArray = sb.toString().trim().split(" ");
-			categoryEntityName = categoryEntityNameArray[categoryEntityNameArray.length - 1];
+			entityName = categoryEntityNameArray[categoryEntityNameArray.length - 1];
 		}
-		return categoryEntityName;
+		return entityName;
 	}
 
 	/**

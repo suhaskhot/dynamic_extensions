@@ -240,12 +240,10 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 						.getContainerCollection();
 				for (ContainerInterface currentContainer : containerCollection)
 				{
-					if (currentContainer.getId() != null)
+					if (currentContainer.getId() != null && currentContainer.getId().toString().equals(targetContainerId))
 					{
-						if (currentContainer.getId().toString().equals(targetContainerId))
-						{
 							targetContainer = currentContainer;
-						}
+					
 					}
 				}
 			}

@@ -307,12 +307,10 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					}
 				}
 			}
-			if ((containerName != null) && (containerName.equals(currentContainerName)))
+			if ((containerName != null) && (containerName.equals(currentContainerName))
+					&& addNewNode)
 			{
-				if (addNewNode)
-				{
-					getNewEntityNode();
-				}
+				getNewEntityNode();
 			}
 			xmlNodeForContainer.append("</item>");
 		}

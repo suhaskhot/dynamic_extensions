@@ -167,14 +167,12 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 			groupProcessor.populateEntityGroupDetails(objEntityGroup, groupUIBean);
 		}
 
-		if (createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW))
+		if (createGroupAs.equals(ProcessorConstants.GROUP_CREATEAS_NEW)
+				&& (groupOperation != null) && (groupOperation.equals(ProcessorConstants.SAVE_GROUP)))
 		{
-			//if group to be saved
-			if ((groupOperation != null) && (groupOperation.equals(ProcessorConstants.SAVE_GROUP)))
-			{
+		
 				//Save to DB 
 				objEntityGroup = groupProcessor.saveEntityGroup(objEntityGroup);
-			}
 		}
 		return objEntityGroup;
 	}

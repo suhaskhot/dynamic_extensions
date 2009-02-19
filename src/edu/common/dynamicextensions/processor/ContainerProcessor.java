@@ -125,13 +125,10 @@ public class ContainerProcessor extends BaseDynamicExtensionsProcessor
 							.getContainerCollection();
 					for (ContainerInterface currentContainer : containerCollection)
 					{
-						if (currentContainer.getId() != null)
+						if (currentContainer.getId() != null && currentContainer.getId().toString().equals(
+								containerUIBean.getParentForm()))
 						{
-							if (currentContainer.getId().toString().equals(
-									containerUIBean.getParentForm()))
-							{
-								parentContainer = currentContainer;
-							}
+							parentContainer = currentContainer;
 						}
 					}
 				}

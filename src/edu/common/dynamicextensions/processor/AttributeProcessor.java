@@ -282,13 +282,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						.getContainerCollection();
 				for (ContainerInterface container : containerCollection)
 				{
-					if (container.getId() != null)
+					if (container.getId() != null && container.getId().toString().equals(
+							attributeUIBeanInformationIntf.getFormName()))
 					{
-						if (container.getId().toString().equals(
-								attributeUIBeanInformationIntf.getFormName()))
-						{
-							targetEntity = entity;
-						}
+						targetEntity = entity;
 					}
 				}
 			}
@@ -778,12 +775,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		if (attributeUIBeanInformationIntf != null)
 		{
 			String displayChoice = attributeUIBeanInformationIntf.getDisplayChoice();
-			if (displayChoice != null)
+			if (displayChoice != null && displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
 			{
-				if (displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED))
-				{
-					dataEltInterface = getDataElementForUserDefinedValues(attributeUIBeanInformationIntf);
-				}
+				dataEltInterface = getDataElementForUserDefinedValues(attributeUIBeanInformationIntf);
 			}
 		}
 		return dataEltInterface;
@@ -1070,10 +1064,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			try
 			{
-				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT))
+				if (dateValueType.equalsIgnoreCase(ProcessorConstants.DATE_VALUE_SELECT)
+						&& attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
 				{
-					if (attributeUIBeanInformationIntf.getAttributeDefaultValue() != null)
-					{
+						
 						String value = "";
 						if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 						{
@@ -1108,7 +1102,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 							XMIImportValidator.verifyDefaultValueForDateIsInRange(attribute,
 									attributeUIBeanInformationIntf, value);
 						}
-					}
+					
 				}
 
 			}
@@ -2312,13 +2306,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		boolean isChanged = false;
 		if (originalAttributeType.getDataType() != null
-				&& newAttributeTypeInformation.getDataType() != null)
+				&& newAttributeTypeInformation.getDataType() != null
+				&& !originalAttributeType.getDataType().equals(
+						newAttributeTypeInformation.getDataType()))
 		{
-			if (!originalAttributeType.getDataType().equals(
-					newAttributeTypeInformation.getDataType()))
-			{
-				isChanged = true;
-			}
+			isChanged = true;
 		}
 		return isChanged;
 	}

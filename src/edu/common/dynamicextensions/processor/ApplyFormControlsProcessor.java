@@ -209,12 +209,10 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	{
 		//if combobox/optionbutton control has been selected then set the DataElement object for set of permissible values
 		String userSelectedControl = controlUIBean.getUserSelectedTool();
-		if (userSelectedControl != null)
+		if ((userSelectedControl != null)&& ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
+				|| (userSelectedControl
+						.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL))))
 		{
-			if ((userSelectedControl.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
-					|| (userSelectedControl
-							.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL)))
-			{
 				AttributeTypeInformationInterface attributeTypeInformation = DynamicExtensionsUtility
 						.getAttributeTypeInformation(abstractAttribute);
 				if (attributeTypeInformation != null)
@@ -224,7 +222,6 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					attributeTypeInformation.setDataElement(attributeProcessor
 							.getDataElementInterface(attributeUIBean));
 				}
-			}
 		}
 
 	}

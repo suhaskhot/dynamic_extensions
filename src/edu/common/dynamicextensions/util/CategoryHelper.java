@@ -117,14 +117,14 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategoryEntity(java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryInterface[])
 	 */
 	public ContainerInterface createOrUpdateCategoryEntityAndContainer(EntityInterface entity,
-			String containerCaption, CategoryInterface category, String... categoryEntityName)
+			String containerCaptionValue, CategoryInterface category, String... categoryEntityName)
 	{
 		String newCategoryEntityName = (categoryEntityName.length > 0
 				? categoryEntityName[0]
 				: null);
 		CategoryEntityInterface categoryEntity = createOrUpdateCategoryEntity(category, entity,
 				newCategoryEntityName);
-
+		String containerCaption=containerCaptionValue;
 		if (containerCaption == null)
 		{
 			containerCaption = entity.getName() + "_category_entity_container";
@@ -683,11 +683,12 @@ public class CategoryHelper implements CategoryHelperInterface
 	}
 
 	/**
+	 * @param captionValue
 	 * @param abstractEntity category entity
 	 * @return container object for category entity
 	 */
 	private ContainerInterface createContainer(AbstractEntityInterface abstractEntity,
-			String caption)
+			String captionValue)
 	{
 		ContainerInterface container = null;
 		if (abstractEntity.getContainerCollection().size() > 0)
@@ -704,7 +705,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			container.setAbstractEntity(abstractEntity);
 			abstractEntity.addContainer(container);
 		}
-
+		String caption=captionValue;
 		if (caption == null)
 		{
 			caption = abstractEntity.getName() + " category container";

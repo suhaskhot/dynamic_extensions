@@ -72,7 +72,7 @@ public class CategoryGenerationUtil
 	/**
 	 * Sets the root category entity for the category.
 	 * @param category
-	 * @param rootContainer
+	 * @param rootContainerObject
 	 * @param containerCollection
 	 * @param paths
 	 * @param absolutePath
@@ -81,12 +81,12 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void setRootContainer(CategoryInterface category,
-			ContainerInterface rootContainer, List<ContainerInterface> containerCollection,
+			ContainerInterface rootContainerObject, List<ContainerInterface> containerCollection,
 			Map<String, List<AssociationInterface>> paths, Map<String, List<String>> absolutePath,
 			Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-
+		ContainerInterface rootContainer=rootContainerObject;
 		//		ContainerInterface rootContainer = null;
 		//		for (ContainerInterface containerInterface : containerCollection)
 		//		{

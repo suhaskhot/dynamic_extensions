@@ -61,7 +61,7 @@ public class CategoryCreator
 				}
 
 				HashMap<CategoryInterface, Boolean> objCategoryMap = new HashMap<CategoryInterface, Boolean>();
-				objCategoryMap.put(category, new Boolean(isEdited));
+				objCategoryMap.put(category, Boolean.valueOf(isEdited));
 				categories.add(objCategoryMap);
 			}
 

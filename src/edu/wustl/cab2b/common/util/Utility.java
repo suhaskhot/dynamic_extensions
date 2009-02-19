@@ -621,13 +621,14 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * This method replaces the occurrence of find string with replacement in
 	 * original string.
 	 * 
-	 * @param original
+	 * @param originalString
 	 * @param find
 	 * @param replacement
 	 * @return
 	 */
-	public static String replaceAllWords(String original, String find, String replacement)
+	public static String replaceAllWords(String originalString, String find, String replacement)
 	{
+		String original=originalString;
 		if (original == null || find == null || replacement == null)
 		{
 			return null;
@@ -719,20 +720,20 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 */
 	public static String getFormattedString(String[] splitStrings)
 	{
-		String returner = "";
+		StringBuffer returner = new StringBuffer();
 		for (int i = 0; i < splitStrings.length; i++)
 		{
 			String str = splitStrings[i];
 			if (i == splitStrings.length - 1)
 			{
-				returner += str;
+				returner.append(str);
 			}
 			else
 			{
-				returner += str + " ";
+				returner.append(str).append(' ');
 			}
 		}
-		return returner;
+		return returner.toString();
 	}
 
 	/**
@@ -882,11 +883,12 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * If not format is not specified then the default format will be dd/MM/yyyy HH:mm. For example, 01/01/1000 01:01
 	 * 
 	 * @param date
-	 * @param dateFormat
+	 * @param dateFormatAsString
 	 * @return
 	 */
-	public static String getFormattedDate(Date date, String dateFormat)
+	public static String getFormattedDate(Date date, String dateFormatAsString)
 	{
+		String dateFormat=dateFormatAsString;
 		if (null == dateFormat || dateFormat.length() == 0)
 		{
 			dateFormat = "dd/MM/yyyy HH:mm";

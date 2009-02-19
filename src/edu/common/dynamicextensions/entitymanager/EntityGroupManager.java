@@ -425,7 +425,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 				List count = (List) result.get(0);
 				if (count != null && !count.isEmpty())
 				{
-					int noOfOccurances = new Integer((String) count.get(0)).intValue();
+					int noOfOccurances = Integer.valueOf((String) count.get(0)).intValue();
 					if (noOfOccurances > 0)
 					{
 						throw new DynamicExtensionsApplicationException(

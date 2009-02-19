@@ -1346,7 +1346,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						.getCategoryEntityName(catAssociation.getCategoryEntity().getName()));
 
 				// Foreign key column name.
-				String fKeyColName = new String();
+				String fKeyColName = "";
 
 				String selectQuery = "SELECT IDENTIFIER FROM "
 						+ catAssociation.getCategoryEntity().getTableProperties().getName()

@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
+import edu.wustl.common.util.logger.Logger;
+
 /**
  * 
  * @author chandrakant_talele
@@ -41,7 +43,7 @@ public class LoadModelUtil {
 	 */
     public static void main(String[] args) throws Exception {
         if (args.length != 1 || args[0].trim().equals("")) {
-            System.out.println("Please provide a property file");
+        	Logger.out.info("Please provide a property file");
             return;
         }
         Properties p = new Properties();
@@ -63,7 +65,7 @@ public class LoadModelUtil {
             con = DriverManager.getConnection(url, userName, password);
             for (String entityGroupName : entityGroupNames) {
                 String xmlFilePath = p.getProperty(entityGroupName + ".file").trim();
-                System.out.println("Loading model : " + xmlFilePath);
+                Logger.out.info("Loading model : " + xmlFilePath);
                 PathBuilder.loadSingleModel(con, xmlFilePath, entityGroupName, maxPathlength);
             }
         } finally {

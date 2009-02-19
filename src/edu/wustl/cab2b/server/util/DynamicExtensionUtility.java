@@ -52,6 +52,7 @@ import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.cab2b.server.path.PathConstants;
 import edu.wustl.common.querysuite.queryobject.DataType;
+import edu.wustl.common.util.logger.Logger;
 import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 
 /**
@@ -448,7 +449,7 @@ public class DynamicExtensionUtility
 				break;
 				
 			default:
-				System.out.println("Data type value not in specified types");
+				Logger.out.info("Data type value not in specified types");
 
 		}
 		attribute.setName(source.getName());

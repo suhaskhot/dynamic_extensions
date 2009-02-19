@@ -178,11 +178,11 @@ public class Path {
      */
     public String toString() {
         String delimiter = "#";
-        String s = fromNode().toString();
+        StringBuffer length = new StringBuffer(fromNode().toString());
         for (Node intermediateNode : getIntermediateNodes()) {
-            s += delimiter + intermediateNode;
+        	length.append(delimiter).append(intermediateNode);
         }
-        s += delimiter + toNode();
-        return s;
+        length.append(delimiter).append(toNode());
+        return length.toString();
     }
 }

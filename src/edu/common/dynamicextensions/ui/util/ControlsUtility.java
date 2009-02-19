@@ -67,13 +67,10 @@ public class ControlsUtility
 		String defaultValue = null;
 		AttributeTypeInformationInterface abstractAttributeType = null;
 
-		if (abstractAttribute != null)
+		if (abstractAttribute != null && abstractAttribute instanceof AttributeInterface)
 		{
-			if (abstractAttribute instanceof AttributeInterface)
-			{
-				abstractAttributeType = ((AttributeInterface) abstractAttribute)
+			abstractAttributeType = ((AttributeInterface) abstractAttribute)
 						.getAttributeTypeInformation();
-			}
 		}
 		if (abstractAttributeType != null)
 		{
@@ -651,12 +648,10 @@ public class ControlsUtility
 				{
 					controlInterface = DynamicExtensionsUtility.getControlBySequenceNumber(
 							controlCollection, counter);
-					if (controlInterface != null)
+					if (controlInterface != null && controlInterface.getCaption() != null
+							&& !controlInterface.getCaption().equals(""))
 					{
-						if (controlInterface.getCaption() != null
-								&& !controlInterface.getCaption().equals(""))
-						{
-							controlCaption = controlInterface.getCaption();
+						controlCaption = controlInterface.getCaption();
 							controlSequenceNumber = controlInterface.getSequenceNumber() + "";
 							controlName = DynamicExtensionsUtility.getControlName(controlInterface);
 							if (controlName.equals(ProcessorConstants.ADD_SUBFORM_CONTROL))
@@ -671,7 +666,6 @@ public class ControlsUtility
 							controlInformationObject = new ControlInformationObject(controlCaption,
 									controlDatatype, controlSequenceNumber);
 							childList.add(controlInformationObject);
-						}
 					}
 				}
 			}

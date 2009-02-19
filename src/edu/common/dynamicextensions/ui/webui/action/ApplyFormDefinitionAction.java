@@ -223,10 +223,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			ContainerInterface childContainer, FormDefinitionForm formDefinitionForm)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		if ((parentContainer != null) && (childContainer != null))
+		if (parentContainer != null && childContainer != null && childContainer.getId() != null)
 		{
-			if (childContainer.getId() != null)
-			{
+			
 				AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
 						.getAssociationControl(parentContainer, childContainer.getId().toString());
 
@@ -246,7 +245,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 								parentContainer, childContainer, formDefinitionForm);
 					}
 				}
-			}
+			
 		}
 	}
 
@@ -284,15 +283,12 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		applyFormDefinitionProcessor.addSubFormControlToContainer(mainFormContainer,
 				subFormContainer, association);
 
-		if (isNewEnityCreated(formDefinitionForm))
+		if (isNewEnityCreated(formDefinitionForm) && subFormContainer != null)
 		{
 			//if new entity is created, set its container id in form and container interface in cache.
-			if (subFormContainer != null)
-			{
-				applyFormDefinitionProcessor.associateParentGroupToNewEntity(subFormContainer,
+			applyFormDefinitionProcessor.associateParentGroupToNewEntity(subFormContainer,
 						mainFormContainer);
 				updateCacheReferences(request, subFormContainer);
-			}
 		}
 	}
 
@@ -349,12 +345,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	private boolean isNewEnityCreated(FormDefinitionForm formDefinitionForm)
 	{
-		if (formDefinitionForm != null)
+		if (formDefinitionForm != null && ProcessorConstants.CREATE_AS_NEW.equals(formDefinitionForm.getCreateAs()))
 		{
-			if (ProcessorConstants.CREATE_AS_NEW.equals(formDefinitionForm.getCreateAs()))
-			{
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}

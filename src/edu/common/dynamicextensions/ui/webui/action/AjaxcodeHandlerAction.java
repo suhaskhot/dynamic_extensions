@@ -78,10 +78,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				if (operation.trim().equals("selectFormNameFromTree"))
 				{
 					String selectedFormName = request.getParameter("selectedFormName");
-					selectedFormName = rectifySelectedName(selectedFormName);
-					if (selectedFormName != null)
+					String rectifySelectName=rectifySelectedName(selectedFormName);
+					if (rectifySelectName != null)
 					{
-						returnXML = getSelectedFormDetails(request, selectedFormName);
+						returnXML = getSelectedFormDetails(request, rectifySelectName);
 					}
 				}
 				else if (operation.trim().equals("selectFormNameFromAssociationTree"))

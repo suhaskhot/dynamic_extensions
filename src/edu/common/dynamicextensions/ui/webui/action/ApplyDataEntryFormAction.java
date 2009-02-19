@@ -117,9 +117,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
-					String recordIdentifier = dataEntryForm.getRecordIdentifier();
-					recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
-							recordIdentifier);
+					String recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
+							dataEntryForm.getRecordIdentifier());
 					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
 							WebUIManagerConstants.SUCCESS, dataEntryForm.getContainerId());
 				}
@@ -669,6 +668,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			String recordIdentifier) throws NumberFormatException,
 			DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
+		String identifier=recordIdentifier;
 		Map<BaseAbstractAttributeInterface, Object> rootValueMap = (Map<BaseAbstractAttributeInterface, Object>) valueMapStack
 				.firstElement();
 		ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
@@ -684,10 +684,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 
 		String messageKey = "app.successfulDataInsertionMessage";
-		if (recordIdentifier != null && !recordIdentifier.equals(""))
+		if (identifier != null && !identifier.equals(""))
 		{
 			Boolean edited = applyDataEntryFormProcessor.editDataEntryForm(rootContainerInterface,
-					rootValueMap, Long.valueOf(recordIdentifier));
+					rootValueMap, Long.valueOf(identifier));
 			if (edited.booleanValue())
 			{
 				saveMessages(request, getMessageString(messageKey));
@@ -695,12 +695,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else
 		{
-			recordIdentifier = applyDataEntryFormProcessor.insertDataEntryForm(
+			identifier = applyDataEntryFormProcessor.insertDataEntryForm(
 					rootContainerInterface, rootValueMap);
 			saveMessages(request, getMessageString(messageKey));
 		}
 
-		return recordIdentifier;
+		return identifier;
 	}
 
 	/**

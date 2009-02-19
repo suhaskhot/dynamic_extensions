@@ -31,21 +31,21 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String id = request.getParameter("containerIdentifier");
-		String actionForward = "/LoadGroupDefinitionAction.do?operationMode=";
+		StringBuffer actionForward = new StringBuffer("/LoadGroupDefinitionAction.do?operationMode=");
 		String callbackUrl = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
 		String userId = request.getParameter(WebUIManagerConstants.USER_ID);
 		if (id == null)
 		{
 			CacheManager.clearCache(request);
-			actionForward = actionForward + "AddNewForm";
+			actionForward.append("AddNewForm");
 		}
 		else
 		{
-			actionForward = actionForward + "EditForm" + "&containerIdentifier=" + id;
+			 actionForward.append("EditForm&containerIdentifier=").append(id);
 		}
 		CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callbackUrl);
 		CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
-		return new ActionForward(actionForward);
+		return new ActionForward(actionForward.toString());
 	}
 
 }

@@ -570,13 +570,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	private List<EntityInterface> getParentEntityList(EntityInterface entity)
 	{
+		EntityInterface thisEntity=entity;
 		List<EntityInterface> entities = new ArrayList<EntityInterface>();
-		entities.add(entity);
+		entities.add(thisEntity);
 
-		while (entity.getParentEntity() != null)
+		while (thisEntity.getParentEntity() != null)
 		{
-			entities.add(0, entity.getParentEntity());
-			entity = entity.getParentEntity();
+			entities.add(0, thisEntity.getParentEntity());
+			thisEntity = thisEntity.getParentEntity();
 		}
 
 		return entities;
@@ -591,17 +592,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			Map<AbstractAttributeInterface, ?> dataValue)
 	{
 		Map<EntityInterface, Map<?, ?>> entityMap = new HashMap<EntityInterface, Map<?, ?>>();
-
+		Map<AbstractAttributeInterface, ?> dataValueMap=dataValue;
 		// Ensuring null check in case of category inheritance.
-		if (dataValue == null)
+		if (dataValueMap == null)
 		{
-			dataValue = new HashMap();
+			dataValueMap = new HashMap();
 		}
 
-		for (AbstractAttributeInterface abstrAttribute : dataValue.keySet())
+		for (AbstractAttributeInterface abstrAttribute : dataValueMap.keySet())
 		{
 			EntityInterface attrEntity = abstrAttribute.getEntity();
-			Object value = dataValue.get(abstrAttribute);
+			Object value = dataValueMap.get(abstrAttribute);
 
 			Map<AbstractAttributeInterface, Object> entDataValMap = (Map) entityMap.get(attrEntity);
 			if (entDataValMap == null)
@@ -623,6 +624,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			JDBCDAO jdbcDao, Long parentRecId, Long... userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		Map<?, ?> dataValueMap=dataValue;
 		Long usrId = ((userId != null && userId.length != 0) ? userId[0] : null);
 
 		if (entity == null)
@@ -631,9 +633,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 
 		// If empty, insert row with only identifier column value.
-		if (dataValue == null)
+		if (dataValueMap == null)
 		{
-			dataValue = new HashMap();
+			dataValueMap = new HashMap();
 		}
 
 		Long identifier = null;
@@ -673,13 +675,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		Object value = null;
 		List<String> queries = new ArrayList<String>();
 
-		Set<?> uiColumns = dataValue.keySet();
+		Set<?> uiColumns = dataValueMap.keySet();
 		Iterator<?> uiColIter = uiColumns.iterator();
 		while (uiColIter.hasNext())
 		{
 			AbstractAttribute attribute = (AbstractAttribute) uiColIter.next();
 
-			value = dataValue.get(attribute);
+			value = dataValueMap.get(attribute);
 			if (value == null || value.toString().length() == 0)
 			{
 				continue;
@@ -799,14 +801,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			List<String> columnNames, List<Object> columnValues)
 			throws DynamicExtensionsApplicationException
 	{
+		Object object=value;
 		// Get the primitive attribute.
 		AttributeInterface primitiveAttr = (AttributeInterface) attribute;
 
 		// Populate FileAttributeRecordValue hibernate object.
 		if (primitiveAttr.getAttributeTypeInformation() instanceof FileAttributeTypeInformation
-				&& !(value instanceof String))
+				&& !(object instanceof String))
 		{
-			populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) value,
+			populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) object,
 					primitiveAttr);
 		}
 		else
@@ -816,33 +819,33 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				columnNames.add(primitiveAttr.getColumnProperties().getName());
 				if (primitiveAttr.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					if (value != null && value.toString().length() != 0)
+					if (object != null && object.toString().length() != 0)
 					{
 						String dateFormat = ((DateAttributeTypeInformation) primitiveAttr
 								.getAttributeTypeInformation()).getFormat();
-						value = new Timestamp(new SimpleDateFormat(dateFormat).parse(
-								value.toString()).getTime());
+						object = new Timestamp(new SimpleDateFormat(dateFormat).parse(
+								object.toString()).getTime());
 					}
 				}
 				else if (primitiveAttr.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
 				{
 					ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 					ObjectOutputStream oStream = new ObjectOutputStream(bStream);
-					oStream.writeObject(value);
+					oStream.writeObject(object);
 
-					value = bStream.toByteArray();
+					object = bStream.toByteArray();
 				}
 				else if (primitiveAttr.getAttributeTypeInformation() instanceof StringAttributeTypeInformation)
 				{
-					value = DynamicExtensionsUtility.getEscapedStringValue(value.toString());
+					object = DynamicExtensionsUtility.getEscapedStringValue(object.toString());
 				}
-				if (value == null || value.toString().length() == 0)
+				if (object == null || object.toString().length() == 0)
 				{
 					columnValues.add(null);
 				}
 				else
 				{
-					columnValues.add(value);
+					columnValues.add(object);
 				}
 			}
 			catch (ParseException e)
@@ -1614,14 +1617,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			DynamicExtensionsApplicationException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
+		EntityInterface parentEntity=entity;
 		do
 		{
-			Map<AbstractAttributeInterface, Object> recForSingleEnt = getEntityRecordById(entity,
+			Map<AbstractAttributeInterface, Object> recForSingleEnt = getEntityRecordById(parentEntity,
 					recordId);
 			recordValues.putAll(recForSingleEnt);
-			entity = entity.getParentEntity();
+			parentEntity = parentEntity.getParentEntity();
 		}
-		while (entity != null);
+		while (parentEntity != null);
 
 		return recordValues;
 	}

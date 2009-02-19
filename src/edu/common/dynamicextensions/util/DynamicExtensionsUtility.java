@@ -700,7 +700,7 @@ public class DynamicExtensionsUtility
 					{
 						try
 						{
-							integer = new Integer(str);
+							integer = Integer.valueOf(str);
 							integerList.add(integer);
 						}
 						catch (NumberFormatException e)
@@ -954,8 +954,7 @@ public class DynamicExtensionsUtility
 		String appName=DynamicExtensionDAO.getInstance().getAppName();		
 		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
 		IDEDBUtility dbUtility=DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
-		String formattedStr=dbUtility.formatMonthAndYearDate(strDate,removeTime);		
-		return formattedStr;
+		return dbUtility.formatMonthAndYearDate(strDate,removeTime);
 	}
 
 	/**

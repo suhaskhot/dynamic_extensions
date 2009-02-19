@@ -134,8 +134,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return queryBuilder;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	/**
+	 * Persists the entity to the database. Also creates the dynamic tables and associations
+	 * between those tables using the meta data information in the entity object.
+	 * @param entity entity to be persisted
+	 * @return entity persisted entity
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityInterface persistEntity(EntityInterface entity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -186,8 +191,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadata(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	/**
+	 * This method is used to save the meta data information  
+	 * of the given entity without creating its data table.
+	 * @param entityInterface entity to be persisted
+	 * @return entity persisted entity
 	 */
 	public EntityInterface persistEntityMetadata(EntityInterface entity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -307,8 +315,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociations(java.lang.Long, java.lang.Long)
+	/**
+	 * Returns a collection of association objects given the source entity id and
+	 * target entity id.
+	 * @param srcEntityId source entity Id
+	 * @param tgtEntityId target entity Id
+	 * @return associations collection of association
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Collection<AssociationInterface> getAssociations(Long srcEntityId, Long tgtEntityId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -326,8 +340,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return associations;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByName(java.lang.String)
+	/**
+	 * Returns an entity object given the entity name;
+	 * @param entityName entity name
+	 * @return entity
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityInterface getEntityByName(String entityName)
 			throws DynamicExtensionsSystemException
@@ -338,8 +356,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociation(java.lang.String, java.lang.String)
+	/**
+	 * Returns an association object given the entity name and source role name.
+	 * @param entityName
+	 * @param srcRoleName
+	 * @return associations collection of association
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Collection<AssociationInterface> getAssociation(String entityName, String srcRoleName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -357,8 +380,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return associations;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationByName(java.lang.String)
+	/**
+	 * Returns an association object given the association name.
+	 * @param assoName name of association
+	 * @return association
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public AssociationInterface getAssociationByName(String assoName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -381,8 +408,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return association;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociation(java.lang.String, java.lang.String, java.lang.String)
+	/**
+	 * @param srcEntName source entity name
+	 * @param assoName association name
+	 * @param tgtEntName target entity name
+	 * @return association
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public AssociationInterface getAssociation(String srcEntName, String assoName, String tgtEntName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -408,8 +440,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return association;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntitiesByConceptCode(java.lang.String)
+	/**
+	 * Returns a collection of entities given the entity concept code.
+	 * @param conceptCode
+	 * @return entities collection of entities
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Collection<EntityInterface> getEntitiesByConceptCode(String conceptCode)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -426,8 +462,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entities;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllEntities()
+	/**
+	 * Returns all entities in the whole system
+	 * @return collection of entities
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Collection<EntityInterface> getAllEntities() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -436,8 +475,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return getAllObjects(EntityInterface.class.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.Long)
+	/**
+	 * Returns a single  entity for given identifier
+	 * @param identifier id of entity
+	 * @return entity
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityInterface getEntityByIdentifier(Long identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException

@@ -41,6 +41,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author preeti_lodha
@@ -213,9 +214,9 @@ public class XMIUtilities
 			{
 
 				Transformer trans = transFact.newTransformer(xsltSource);
-				System.out.println("Transforming");
+				Logger.out.info("Transforming");
 				trans.transform(xmlSource, result);
-				System.out.println("Done");
+				Logger.out.info("Done");
 			}
 		}
 

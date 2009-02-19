@@ -697,10 +697,10 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		containmentAssociationControl.setContainer(container);
 		containmentAssociationControl.setBaseAbstractAttribute(attributeIntf);
 		//attributeIntf.setControl((Control) containmentAssociationControl);
-		Integer containerSequenceNumber = new Integer(1);
+		Integer containerSequenceNumber = Integer.valueOf(1);
 		if (container.getControlCollection() != null)
 		{
-			containerSequenceNumber = new Integer(container.getControlCollection().size() + 1);
+			containerSequenceNumber = Integer.valueOf(container.getControlCollection().size() + 1);
 		}
 		containmentAssociationControl.setSequenceNumber(containerSequenceNumber);
 

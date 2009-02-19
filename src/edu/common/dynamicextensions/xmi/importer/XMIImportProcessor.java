@@ -885,7 +885,7 @@ public class XMIImportProcessor
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		AssociationInterface association = createAssociation();
-		association.setIsCollection(new Boolean(true));
+		association.setIsCollection(Boolean.TRUE);
 
 		EntityInterface targetEntity = factory.createEntity();
 		EntityManagerUtil.addIdAttribute(targetEntity);
@@ -1601,7 +1601,7 @@ public class XMIImportProcessor
 
 		Collection<AbstractAttributeInterface> abstractAttributeCollection = entityInterface
 				.getAbstractAttributeCollection();
-		Integer sequenceNumber = new Integer(0);
+		Integer sequenceNumber = Integer.valueOf(0);
 		ControlInterface controlInterface;
 		for (AbstractAttributeInterface abstractAttributeInterface : abstractAttributeCollection)
 		{
@@ -1866,7 +1866,7 @@ public class XMIImportProcessor
 			//For Text Control
 			if (newcontrol instanceof TextFieldInterface)
 			{
-				controlModel.setColumns(new Integer(0));
+				controlModel.setColumns(Integer.valueOf(0));
 			}
 			//For creating Association or Attribute
 			populateControlModel(controlModel, editedAttribute);
@@ -2284,17 +2284,17 @@ public class XMIImportProcessor
 		{
 			if (attrTypeInfo instanceof FloatAttributeTypeInformation)
 			{
-				precisionDigits = new Integer(
+				precisionDigits = Integer.valueOf(
 						edu.common.dynamicextensions.ui.util.Constants.FLOAT_PRECISION);
 			}
 			else if (attrTypeInfo instanceof DoubleAttributeTypeInformation)
 			{
-				precisionDigits = new Integer(
+				precisionDigits = Integer.valueOf(
 						edu.common.dynamicextensions.ui.util.Constants.DOUBLE_PRECISION);
 			}
 			else
 			{
-				precisionDigits = new Integer(edu.common.dynamicextensions.ui.util.Constants.ZERO);
+				precisionDigits = Integer.valueOf(edu.common.dynamicextensions.ui.util.Constants.ZERO);
 			}
 		}
 		else
@@ -2677,7 +2677,7 @@ public class XMIImportProcessor
 
 					BooleanValueInterface booleanValue = DomainObjectFactory.getInstance()
 							.createBooleanValue();
-					booleanValue.setValue(new Boolean(defaultValue));
+					booleanValue.setValue(Boolean.valueOf(defaultValue));
 
 					((BooleanAttributeTypeInformation) attributeTypeInformation)
 							.setDefaultValue(booleanValue);
@@ -2924,7 +2924,7 @@ public class XMIImportProcessor
 			ControlsModel controlModel) throws DynamicExtensionsSystemException
 	{
 		ArrayList<String> ruleNames = new ArrayList<String>();
-		String ruleName = new String();
+		String ruleName = "";
 		int i = 0;
 
 		Set<String> keySetForRuleTaggedValueMap = taggedValueRuleMap.keySet();
@@ -3011,7 +3011,7 @@ public class XMIImportProcessor
 				if (!containerName.startsWith(XMIConstants.CATISSUE_PACKAGE))
 				{
 					temp = containerName;
-					containerName = new String();
+					containerName = "";
 					containerName = XMIConstants.CATISSUE_PACKAGE + temp;
 				}
 			}

@@ -194,7 +194,7 @@ public class DynamicExtensionBaseQueryBuilder
 	 * then modify primary key of the entity and again apply the foreign key constraint of its child  
 	 * @param entity for which to check weather primary key is changed
 	 * @param dbaseCopy database copy of the entity
-	 * @param attrRlbkQries rolback query list 
+	 * @param attrRlbkQries rollback query list 
 	 * @return List<String> which are queries to be executed
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
@@ -1412,8 +1412,7 @@ public class DynamicExtensionBaseQueryBuilder
 			List<String> revQueries) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		List<String> queries = getCreateCategoryEntityTableQuery(catEntity, revQueries);
-		return queries;
+		return getCreateCategoryEntityTableQuery(catEntity, revQueries);
 	}
 
 	/**
@@ -3620,7 +3619,6 @@ public class DynamicExtensionBaseQueryBuilder
 	 */
 	protected Object convertValueToObject(Object valueObj) throws DynamicExtensionsSystemException
 	{
-		Object value = "";
-		return value;
+		return (Object)"";
 	}
 }

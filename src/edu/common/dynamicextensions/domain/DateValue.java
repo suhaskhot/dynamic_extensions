@@ -69,12 +69,9 @@ public class DateValue extends PermissibleValue implements DateValueInterface
 	public boolean equals(Object obj)
 	{
 		boolean isEqual = false;
-		if (obj instanceof DateValue)
+		if (obj instanceof DateValue && (value!= null && value.equals(((DateValue) obj).getValue())))
 		{
-			if (value!= null && value.equals(((DateValue) obj).getValue()))
-			{
-				isEqual = true;
-			}
+			isEqual = true;
 		}
 		return isEqual;
 	}

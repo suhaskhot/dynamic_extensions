@@ -126,8 +126,7 @@ public class XMIUtilities
 
 	public static XmiWriter getXMIWriter()
 	{
-		XmiWriter writer = (XmiWriter) Lookup.getDefault().lookup(XmiWriter.class);
-		return writer;
+		return (XmiWriter) Lookup.getDefault().lookup(XmiWriter.class);
 
 	}
 

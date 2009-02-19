@@ -61,8 +61,7 @@ public class CommonPropertyLoader {
      */
     public static String[] getIndexServiceUrls() {
         String allUrls = props.getProperty("indexurls");
-        String[] urls = allUrls.split(",");
-        return urls;
+        return allUrls.split(",");
     }
     
     /**

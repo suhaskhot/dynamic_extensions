@@ -38,8 +38,7 @@ public class CategoryGenerationUtil
 	 */
 	public static EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup)
 	{
-		EntityInterface entityInterface = entityGroup.getEntityByName(entityName);
-		return entityInterface;
+		return entityGroup.getEntityByName(entityName);
 	}
 
 	/**

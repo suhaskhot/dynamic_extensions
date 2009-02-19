@@ -1243,15 +1243,15 @@ public class XMIExporter implements XMIExportInterface
 			if (associationDisplayAttrColl != null
 					&& !associationDisplayAttrColl.isEmpty())
 			{// Attributes to be displayed in drop down
-				String attributeNames = "";
+				StringBuffer attributeNames = new StringBuffer();
 				for (AssociationDisplayAttributeInterface associationDisplayAttribute : associationDisplayAttrColl)
 				{
-					attributeNames = attributeNames + XMIConstants.COMMA
-							+ associationDisplayAttribute.getAttribute().getName();
+					attributeNames.append(XMIConstants.COMMA)
+							.append(associationDisplayAttribute.getAttribute().getName());
 				}
 				taggedValues.add(createTaggedValue(
 						XMIConstants.TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN,
-						attributeNames));
+						attributeNames.toString()));
 			}
 			if (selectControl instanceof ListBoxInterface)
 			{
@@ -1497,10 +1497,10 @@ public class XMIExporter implements XMIExportInterface
 			{
 				for (RuleParameterInterface ruleParam : ruleParamColl)
 				{
-					String temp = ruleTag;
-					temp = temp + XMIConstants.SEPARATOR + ruleParam.getName();
+					StringBuffer temp = new StringBuffer(ruleTag);
+					temp.append(XMIConstants.SEPARATOR).append(ruleParam.getName());
 					ruleValue = ruleParam.getValue();
-					taggedValues.add(createTaggedValue(temp, ruleValue));
+					taggedValues.add(createTaggedValue(temp.toString(), ruleValue));
 				}
 			}
 		}

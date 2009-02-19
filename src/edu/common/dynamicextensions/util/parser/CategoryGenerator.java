@@ -137,7 +137,7 @@ public class CategoryGenerator
 				Map<String, String> categoryEntityNameInstanceMap = new HashMap<String, String>();
 				boolean hasRelatedAttributes = false;
 
-				String previousEntityName = new String();
+				String previousEntityName = "";
 				boolean firstTimeinDisplayLabel = false;
 				HashMap<String, List> sequenceMap = new HashMap<String, List>();
 

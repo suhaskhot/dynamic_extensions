@@ -1745,7 +1745,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			if (doubleValue.getValue() != 0)
 			{
 				attributeUIBeanInformationIntf
-						.setAttributeDefaultValue(doubleValue.getValue() + "");
+						.setAttributeDefaultValue(doubleValue.getValue().toString());
 			}
 			else
 			{
@@ -1777,7 +1777,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			FloatValue floatValue = (FloatValue) floatAttributeInformation.getDefaultValue();
 			if (floatValue.getValue() != 0)
 			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue() + "");
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(floatValue.getValue().toString());
 			}
 			else
 			{
@@ -1809,8 +1809,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			LongValue longDefaultValue = (LongValue) longAttributeInformation.getDefaultValue();
 			if (longDefaultValue.getValue() != 0)
 			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue()
-						+ "");
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(longDefaultValue.getValue().toString());
 			}
 			else
 			{
@@ -1843,8 +1842,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			if (shortDefaultValue.getValue() != 0)
 			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue
-						.getValue()
-						+ "");
+						.getValue().toString());
 			}
 			else
 			{
@@ -1878,8 +1876,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			if (integerDefaultValue.getValue() != 0)
 			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue
-						.getValue()
-						+ "");
+						.getValue().toString());
 			}
 			else
 			{
@@ -1910,8 +1907,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			BooleanValue booleanDefaultValue = (BooleanValue) booleanAttributeInformation
 					.getDefaultValue();
-			attributeUIBeanInformationIntf.setAttributeDefaultValue(booleanDefaultValue.getValue()
-					+ "");
+			attributeUIBeanInformationIntf.setAttributeDefaultValue(booleanDefaultValue
+					.getValue().toString());
 		}
 		else
 		{

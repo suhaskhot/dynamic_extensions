@@ -215,7 +215,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 					label = associationObj.getLabel();
 					if ((id != null) && (label != null))
 					{
-						associationTreeXML.append(getXMLNode(id + "", label, false, false));
+						associationTreeXML.append(getXMLNode(id.toString(), label, false, false));
 						associationTreeXML.append(getAssociationTreeXML(associationObj
 								.getAssociationTreeObjectCollection()));
 						associationTreeXML.append("</item>");

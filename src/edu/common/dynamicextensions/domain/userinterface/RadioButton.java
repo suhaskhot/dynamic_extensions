@@ -58,20 +58,20 @@ public class RadioButton extends Control implements RadioButtonInterface
 				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof DoubleTypeInformationInterface)
 		{
 			double doubleValue = Double.parseDouble(defaultValue);
-			defaultValue = doubleValue + "";
+			defaultValue = Double.toString(doubleValue);
 		}
 		else if (defaultValue.length() > 0
 				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof LongTypeInformationInterface)
 		{
 			long longValue = Long.parseLong(defaultValue);
-			defaultValue = longValue + "";
+			defaultValue = Long.toString(longValue);
 
 		}
 		else if (defaultValue.length() > 0
 				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof FloatTypeInformationInterface)
 		{
 			float floatValue = Float.parseFloat(defaultValue);
-			defaultValue = floatValue + "";
+			defaultValue = Float.toString(floatValue);
 
 		}
 		String disabled = "";

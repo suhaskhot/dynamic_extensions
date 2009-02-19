@@ -620,7 +620,7 @@ public class ControlsUtility
 							controlsCollection, sequenceNumbers[i].intValue());
 					if (control != null)
 					{
-						control.setSequenceNumber(new Integer(i + 1));
+						control.setSequenceNumber(Integer.valueOf(i + 1));
 					}
 				}
 			}

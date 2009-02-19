@@ -46,8 +46,8 @@ public abstract class AbstractContainmentControl extends Control
 
 		if (this.getParentContainer().getShowAssociationControlsAsLink())
 		{
-			String link = containerInterface.generateLink(getParentContainer());
-			link = UserInterfaceiUtility.getControlHTMLAsARow(this, link);
+			String previousLink = containerInterface.generateLink(getParentContainer());
+			String link = UserInterfaceiUtility.getControlHTMLAsARow(this, previousLink);
 			return link;
 		}
 

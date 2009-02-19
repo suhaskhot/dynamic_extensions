@@ -835,11 +835,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 *
-	 * @param csvString
+	 * @param csvValue
 	 * @return
 	 */
-	private String[][] getValuesFromCsv(String csvString)
+	private String[][] getValuesFromCsv(String csvValue)
 	{
+		String csvString=csvValue;
 		if (csvString == null)
 		{
 			csvString = "";
@@ -851,11 +852,11 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			csvValues[i] = new String[rowsStrings.length];
 		}
-
+		String rowString;
 		for (int i = 0; i < rowsStrings.length; i++)
 		{
-			rowsStrings[i] = rowsStrings[i].trim();
-			String[] columnValues = rowsStrings[i].split("\t");
+			rowString = rowsStrings[i].trim();
+			String[] columnValues = rowString.split("\t");
 
 			int j = 2;
 			while (j < columnValues.length)

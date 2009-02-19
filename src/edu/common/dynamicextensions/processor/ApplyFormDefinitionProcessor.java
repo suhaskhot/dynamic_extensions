@@ -53,17 +53,18 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * This method creates a Container if not present in cache. Then it will call to ContainerProcessor will
 	 * populate this Object with the data from actionform.Then EntityProcessor's methods will be called to either create and Populate
 	 * or create and save the entity, Then finally this entity is added to the container.
-	 * @param container : Container object
+	 * @param containerObject : Container object
 	 * @param actionForm : Form object
 	 * @param isActionSave : flag stating whether the object is to be saved to DB
 	 * @return ContainerInterface : Container object
 	 * @throws DynamicExtensionsApplicationException :Exception thrown by Entity Manager
 	 * @throws DynamicExtensionsSystemException :Exception thrown by Entity Manager
 	 */
-	public ContainerInterface addEntityToContainer(ContainerInterface container,
+	public ContainerInterface addEntityToContainer(ContainerInterface containerObject,
 			FormDefinitionForm actionForm, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		ContainerInterface container=containerObject;
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (container == null)
 		{
@@ -114,17 +115,19 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
+	 * @param associationObject Association Object
 	 * @param formDefinitionForm
 	 * @param containerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 *
 	 */
-	public AssociationInterface associateEntity(AssociationInterface association,
+	public AssociationInterface associateEntity(AssociationInterface associationObject,
 			ContainerInterface sourceContainer, ContainerInterface targetContainer,
 			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
+		AssociationInterface association=associationObject;
 		if ((formDefinitionForm != null) && (targetContainer != null) && (sourceContainer != null))
 		{
 			EntityInterface targetEntity = (EntityInterface) targetContainer.getAbstractEntity();
@@ -185,6 +188,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
+	 * @param associationObject Association Object
 	 * @param associationType
 	 * @param sourceEntity
 	 * @param targetEntity
@@ -192,11 +196,12 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param targetCardinality
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private AssociationInterface associateEntity(AssociationInterface association,
+	private AssociationInterface associateEntity(AssociationInterface associationObject,
 			AssociationType associationType, EntityInterface sourceEntity,
 			EntityInterface targetEntity, Cardinality sourceCardinality,
 			Cardinality targetCardinality) throws DynamicExtensionsSystemException
 	{
+		AssociationInterface association=associationObject;
 		if (association == null)
 		{
 			association = DomainObjectFactory.getInstance().createAssociation();

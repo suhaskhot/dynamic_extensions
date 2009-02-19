@@ -45,7 +45,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 	}
 
 	/**
-	 * 
+	 * @param containerObject Container Object
 	 * @param groupUIBean
 	 * @param operationMode 
 	 * @return
@@ -53,9 +53,10 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public EntityGroupInterface saveGroupDetails(GroupUIBeanInterface groupUIBean,
-			ContainerInterface container, String operationMode, HttpServletRequest request)
+			ContainerInterface containerObject, String operationMode, HttpServletRequest request)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		ContainerInterface container=containerObject;
 		GroupProcessor groupProcessor = GroupProcessor.getInstance();
 		String groupOperation = groupUIBean.getGroupOperation();
 		EntityGroupInterface objEntityGroup = null;

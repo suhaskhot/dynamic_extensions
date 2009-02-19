@@ -64,15 +64,16 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * A call to ContainerProcessor will update the actionform with the data from cacheObject. 
-	 * @param containerInterface : Container interface
+	 * @param containerInterfaceObject : Container interface
 	 * @param containerUIBeanInterface : container UI Bean Interface object containing information added by user
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public void populateContainerInformation(ContainerInterface containerInterface,
+	public void populateContainerInformation(ContainerInterface containerInterfaceObject,
 			ContainerUIBeanInterface containerUIBeanInterface, EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
+		ContainerInterface containerInterface=containerInterfaceObject;
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();
 		if (containerInterface == null)
 		{
@@ -328,9 +329,9 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private String getNewEntityNode()
 	{
-		String xmlNodeForNewEntity = getXMLNode(null, "New Form", true, true);
-		xmlNodeForNewEntity = xmlNodeForNewEntity + "</item>";
-		return xmlNodeForNewEntity;
+		StringBuffer xmlNodeForNewEntity = new StringBuffer(getXMLNode(null, "New Form", true, true));
+		xmlNodeForNewEntity.append("</item>");
+		return xmlNodeForNewEntity.toString();
 	}
 
 	/**

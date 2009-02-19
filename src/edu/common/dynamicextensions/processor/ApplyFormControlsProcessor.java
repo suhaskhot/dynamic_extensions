@@ -250,7 +250,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					word = wordsInCaption[i];
 					if ((word != null) && (!word.trim().equalsIgnoreCase("")))
 					{
-						attributeName = attributeName + word;
+						attributeName=word;
 					}
 				}
 			}

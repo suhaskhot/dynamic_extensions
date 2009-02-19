@@ -2444,8 +2444,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			if (resultSet != null)
 			{
 				resultSet.next();
-				Long identifier = resultSet.getLong(IDENTIFIER);
-				return identifier;
+				return resultSet.getLong(IDENTIFIER);
 			}
 		}
 		catch (DAOException e)

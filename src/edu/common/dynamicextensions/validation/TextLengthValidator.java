@@ -60,7 +60,7 @@ public class TextLengthValidator implements ValidatorRuleInterface
 				if ((size > 0) && length > size)
 				{
 					placeHolders.add(controlCaption);
-					placeHolders.add(new Long(size).toString());
+					placeHolders.add(Long.toString(size));
 					throw new DynamicExtensionsValidationException("Validation failed", null,
 							"dynExtn.validation.TextLength", placeHolders);
 				}

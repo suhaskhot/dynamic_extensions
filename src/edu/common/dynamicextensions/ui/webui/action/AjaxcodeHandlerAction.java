@@ -285,7 +285,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		Collection<ControlInterface> controlCollection = container.getControlCollection();
 		for (ControlInterface control : controlCollection)
 		{
-			System.out.println("[" + control.getSequenceNumber() + "] = [" + control.getCaption()
+			Logger.out.info("[" + control.getSequenceNumber() + "] = [" + control.getCaption()
 					+ "]");
 		}
 

@@ -191,7 +191,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 				childContainerId = childContainer.getCaption();
 			}
 			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
-					.getAssociationControl(parentContainer, childContainerId + "");
+					.getAssociationControl(parentContainer, childContainerId);
 			if (containmentAssociationControl != null)
 			{
 				AssociationInterface association = null;

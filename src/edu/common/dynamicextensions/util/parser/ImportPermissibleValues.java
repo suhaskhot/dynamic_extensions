@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * @author kunal_kamble
@@ -189,18 +190,16 @@ public class ImportPermissibleValues
 			}
 
 			String filePath = args[0];
-			System.out.println("---- The .csv file path is " + filePath + " ----");
+			Logger.out.info("The .csv file path is:" + filePath);
 
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();
 
-			System.out.println("Added permissible values successfully!!!!");
+			Logger.out.info("Added permissible values successfully!!!!");
 		}
 		catch (Exception ex)
 		{
-			System.out.println("\n----------");
-			System.out.println("Exception: ");
-			System.out.println("----------");
+			Logger.out.info("Exception: ",ex);
 			throw new RuntimeException(ex);
 		}
 	}

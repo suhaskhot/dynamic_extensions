@@ -238,8 +238,7 @@ public class PathFinder
 		{
 			logger.info("Finding intramodel paths between : " + srcName + " and " + desName);
 			List<PathRecord> pathRecords = getPathRecords(srcEntityId, desEntityId);
-			List<IPath> pathList = new ArrayList<IPath>(getPathList(pathRecords));
-			return pathList;
+			return new ArrayList<IPath>(getPathList(pathRecords));
 		}
 		else
 		{
@@ -450,8 +449,7 @@ public class PathFinder
 	public IPath getPathById(Long id)
 	{
 		PathRecord pathRecord = idVsPathRecord.get(id);
-		Path path = getPath(pathRecord);
-		return path;
+		return getPath(pathRecord);
 	}
 
 	/**

@@ -562,7 +562,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 							else
 							{
 								// If rule name is not correctly spelled as 'range', then throw an exception.
-								if (!CategoryCSVConstants.RANGE.toLowerCase().equals(
+								if (!CategoryCSVConstants.RANGE.equalsIgnoreCase(
 										rangeValue.trim()))
 								{
 									throw new DynamicExtensionsSystemException(
@@ -578,7 +578,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					else
 					{
 						// If rule name is not correctly spelled as 'required', then throw an exception.
-						if (!CategoryCSVConstants.REQUIRED.toLowerCase().equals(ruleValue.trim()))
+						if (!CategoryCSVConstants.REQUIRED.equalsIgnoreCase(ruleValue.trim()))
 						{
 							throw new DynamicExtensionsSystemException(ApplicationProperties
 									.getValue(CategoryConstants.CREATE_CAT_FAILS)

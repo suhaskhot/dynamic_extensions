@@ -1082,14 +1082,12 @@ public class DynamicExtensionsUtility
 	 */
 	public static boolean areBothDatesOfSameFormat(String date1, String date2)
 	{
+		boolean returnValue=false;
 		if (date1.length() != date2.length())
 		{
-			return true;
+			returnValue= true;
 		}
-		else
-		{
-			return false;
-		}
+		return returnValue;
 	}
 
 	/**
@@ -1330,8 +1328,7 @@ public class DynamicExtensionsUtility
 					.getInstance();
 			deCacheManager.removeObjectFromCache(DEConstants.LIST_OF_CONTAINER);
 			deCacheManager.addObjectToCache(DEConstants.LIST_OF_CONTAINER, (HashMap) containerMap);
-			System.out.println("ON Startup caching containers.Size of Container ----------"
-					+ containerList.size());
+			Logger.out.info("ON Startup caching containers.Size of Container:"+ containerList.size());
 
 		}
 		catch (BizLogicException e)

@@ -235,7 +235,7 @@ public class DatabaseCleaner
 		int index = args[1].lastIndexOf("/");
 		String databaseName = args[1].substring(index + 1);
 		String url = args[1].substring(0, index);
-		System.out.println(url + " " + databaseName);
+		Logger.out.info(url + " " + databaseName);
 
 		try
 		{

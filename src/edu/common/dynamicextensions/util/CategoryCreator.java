@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.util.parser.CategoryGenerator;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  * 
@@ -35,7 +36,7 @@ public class CategoryCreator
 			}
 
 			String filePath = args[0];
-			System.out.println("---- The .csv file path is " + filePath + " ----");
+			Logger.out.info("The .csv file path is:" + filePath);
 
 			CategoryGenerator categoryGenerator = new CategoryGenerator(filePath);
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -53,11 +54,11 @@ public class CategoryCreator
 
 				if (isEdited)
 				{
-					System.out.println("Edited category " + category.getName() + " successfully");
+					Logger.out.info("Edited category " + category.getName() + " successfully");
 				}
 				else
 				{
-					System.out.println("Saved category " + category.getName() + " successfully");
+					Logger.out.info("Saved category " + category.getName() + " successfully");
 				}
 
 				HashMap<CategoryInterface, Boolean> objCategoryMap = new HashMap<CategoryInterface, Boolean>();
@@ -69,9 +70,7 @@ public class CategoryCreator
 		}
 		catch (Exception ex)
 		{
-			System.out.println("\n----------");
-			System.out.println("Exception: ");
-			System.out.println("----------");
+			Logger.out.info("Exception:",ex);
 			throw new RuntimeException(ex.getCause().getLocalizedMessage());
 		}
 	}

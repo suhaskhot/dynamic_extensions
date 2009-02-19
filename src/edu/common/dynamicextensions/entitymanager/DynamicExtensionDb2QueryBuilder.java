@@ -143,22 +143,16 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 				str = (String) value;
 			}
 
-			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT) && str.length() != 0)
 			{
-				if (str.length() != 0)
-				{
-					str = DynamicExtensionsUtility.formatMonthAndYearDate(str,false);
-
-				}
+				str = DynamicExtensionsUtility.formatMonthAndYearDate(str,false);
 			}
 
-			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && str.length() != 0)
 			{
-				if (str.length() != 0)
-				{
-					str = DynamicExtensionsUtility.formatYearDate(str,false);
+				
+				str = DynamicExtensionsUtility.formatYearDate(str,false);
 
-				}
 			}
 			// if user not enter any value for date field its getting saved as 00-00-0000 ,which is throwing exception
 			//So to avoid it store null value in database
@@ -212,12 +206,9 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 					formattedvalue = "1";
 				}
 			}
-			else if (formattedvalue != null)
+			else if (formattedvalue != null && formattedvalue.trim().length() == 0)
 			{
-				if (formattedvalue.trim().length() == 0)
-				{
-					formattedvalue = null;
-				}
+				formattedvalue = null;
 
 			}
 

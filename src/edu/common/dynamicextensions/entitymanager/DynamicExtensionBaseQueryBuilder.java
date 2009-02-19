@@ -2403,13 +2403,11 @@ public class DynamicExtensionBaseQueryBuilder
 		else
 		{
 			// Previously not excluded, but now needs to excluded.
-			if (!attribute.getColumnProperties().getName().equalsIgnoreCase(IDENTIFIER))
+			if (!attribute.getColumnProperties().getName().equalsIgnoreCase(IDENTIFIER)
+					&& (!isAttributeColumnToBeExcluded(dbaseCopy)
+							&& isAttributeColumnToBeExcluded(attribute)))
 			{
-				if (!isAttributeColumnToBeExcluded(dbaseCopy)
-						&& isAttributeColumnToBeExcluded(attribute))
-				{
-					isColRemoved = true;
-				}
+				isColRemoved = true;
 			}
 		}
 
@@ -2452,10 +2450,10 @@ public class DynamicExtensionBaseQueryBuilder
 
 		Collection<AssociationInterface> savedAsso = dbaseCopy.getAssociationCollection();
 
-		if (entity.getTableProperties() != null)
+		if (entity.getTableProperties() != null && (savedAsso != null && !savedAsso.isEmpty()))
 		{
-			if (savedAsso != null && !savedAsso.isEmpty())
-			{
+			
+			
 				Iterator<AssociationInterface> savedAssoIter = savedAsso.iterator();
 				while (savedAssoIter.hasNext())
 				{
@@ -2472,7 +2470,7 @@ public class DynamicExtensionBaseQueryBuilder
 								attrRlbkQries, isAddAssoQuery));
 					}
 				}
-			}
+			
 		}
 
 		Logger.out.debug("Exiting processRemovedAssociation method");
@@ -2495,10 +2493,8 @@ public class DynamicExtensionBaseQueryBuilder
 		Collection<CategoryAssociationInterface> savedAsso = dbaseCopy
 				.getCategoryAssociationCollection();
 
-		if (catEntity.getTableProperties() != null)
+		if (catEntity.getTableProperties() != null && savedAsso != null)
 		{
-			if (savedAsso != null)
-			{
 				for (CategoryAssociationInterface savedCatAsso : savedAsso)
 				{
 					CategoryAssociation association = (CategoryAssociation) catEntity
@@ -2513,7 +2509,7 @@ public class DynamicExtensionBaseQueryBuilder
 						assoQueries.add(remAssoQuery);
 					}
 				}
-			}
+			
 		}
 
 		Logger.out.debug("Exiting processRemovedAssociation method");
@@ -3327,20 +3323,14 @@ public class DynamicExtensionBaseQueryBuilder
 				str = (String) value;
 			}
 
-			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT) && str.length() != 0)
 			{
-				if (str.length() != 0)
-				{
 					str = dbUtility.formatMonthAndYearDate(str,true);
-				}
 			}
 
-			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && str.length() != 0)
 			{
-				if (str.length() != 0)
-				{
-					str = dbUtility.formatMonthAndYearDate(str,true);					
-				}
+				str = dbUtility.formatMonthAndYearDate(str,true);					
 			}
 			// For MySQL5 if user does not enter any value for date field, it gets saved as 00-00-0000,
 			// which is throwing exception so to avoid it store null value in database.
@@ -3378,12 +3368,10 @@ public class DynamicExtensionBaseQueryBuilder
 		else
 		{
 			// Quick fix.
-			if (value instanceof List)
+			if (value instanceof List && ((List) value).size() > 0)
 			{
-				if (((List) value).size() > 0)
-				{
-					frmtedValue = ((List) value).get(0).toString();
-				}
+				frmtedValue = ((List) value).get(0).toString();
+				
 			}
 			else
 			{
@@ -3392,12 +3380,9 @@ public class DynamicExtensionBaseQueryBuilder
 
 			// In case of MySQL5, if the column data type is one of double, float or integer, 
 			// then it is not possible to pass '' as  a value in insert-update query so pass null as value.
-			if (attrTypInfo instanceof NumericAttributeTypeInformation)
+			if (attrTypInfo instanceof NumericAttributeTypeInformation && frmtedValue.trim().length() == 0)
 			{
-				if (frmtedValue.trim().length() == 0)
-				{
-					frmtedValue = null;
-				}
+				frmtedValue = null;
 			}
 			if (attrTypInfo instanceof BooleanAttributeTypeInformation)
 			{

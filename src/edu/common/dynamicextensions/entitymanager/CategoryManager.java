@@ -565,13 +565,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				.getAllCategoryAttributes();
 		for (CategoryAttributeInterface catAttribute : catAttributes)
 		{
-			if (catAttribute.getIsRelatedAttribute() != null
-					&& catAttribute.getIsRelatedAttribute())
+			if ((catAttribute.getIsRelatedAttribute() != null
+					&& catAttribute.getIsRelatedAttribute())&& (!catAttribute.getAbstractAttribute().getEntity().equals(
+							rootCatEntity.getEntity())))
 			{
 				// In case of related attributes, check if it is parent's attribute.
-				if (!catAttribute.getAbstractAttribute().getEntity().equals(
-						rootCatEntity.getEntity()))
-				{
+				
 					StringBuffer columnNames = new StringBuffer();
 					StringBuffer columnValues = new StringBuffer();
 					StringBuffer columnNamesValues = new StringBuffer();
@@ -596,7 +595,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							executeUpdateQuery(query, userId, jdbcDao);
 						}
 					}
-				}
+				
 			}
 		}
 	}
@@ -1840,13 +1839,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				for (AssociationInterface association : entity.getParentEntity()
 						.getAssociationCollection())
 				{
-					if (association.getTargetEntity() == catAssociation.getTargetCategoryEntity()
-							.getEntity())
+					if ((association.getTargetEntity() == catAssociation.getTargetCategoryEntity()
+							.getEntity())&&!rootEntRecords.containsKey(association))
 					{
-						if (!rootEntRecords.containsKey(association))
-						{
-							rootEntRecords.put(association, new ArrayList());
-						}
+						rootEntRecords.put(association, new ArrayList());
 					}
 				}
 

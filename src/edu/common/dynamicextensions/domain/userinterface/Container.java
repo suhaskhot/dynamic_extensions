@@ -317,12 +317,9 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public void removeControl(ControlInterface controlInterface)
 	{
-		if ((controlInterface != null) && (controlCollection != null))
+		if ((controlInterface != null) && (controlCollection != null) && (controlCollection.contains(controlInterface)))
 		{
-			if (controlCollection.contains(controlInterface))
-			{
-				controlCollection.remove(controlInterface);
-			}
+			controlCollection.remove(controlInterface);
 		}
 	}
 

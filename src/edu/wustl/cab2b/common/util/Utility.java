@@ -365,8 +365,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	public static String getOnlyEntityName(EntityInterface entity)
 	{
 		String name = entity.getName();
-		String displayName = name.substring(name.lastIndexOf('.') + 1, name.length());
-		return displayName;
+		return name.substring(name.lastIndexOf('.') + 1, name.length());
 	}
 
 	/**

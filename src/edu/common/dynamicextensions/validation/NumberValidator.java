@@ -171,8 +171,8 @@ public class NumberValidator implements ValidatorRuleInterface
 				EntityManagerConstantsInterface.INTEGER_ATTRIBUTE_TYPE);
 
 		BigInteger numberValue = new BigInteger(value);
-		String strIntegerMin = new Integer(Integer.MIN_VALUE).toString();
-		String strIntegerMax = new Integer(Integer.MAX_VALUE).toString();
+		String strIntegerMin = Integer.valueOf(Integer.MIN_VALUE).toString();
+		String strIntegerMax = Integer.valueOf(Integer.MAX_VALUE).toString();
 		BigInteger integerMin = new BigInteger(strIntegerMin);
 		BigInteger integerMax = new BigInteger(strIntegerMax);
 

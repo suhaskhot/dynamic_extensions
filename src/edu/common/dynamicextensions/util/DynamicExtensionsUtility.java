@@ -432,13 +432,10 @@ public class DynamicExtensionsUtility
 			AbstractAttributeInterface abstractAttributeInterface)
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = null;
-		if (abstractAttributeInterface != null)
+		if (abstractAttributeInterface instanceof AttributeInterface)
 		{
-			if (abstractAttributeInterface instanceof AttributeInterface)
-			{
-				attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface)
+			attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface)
 						.getAttributeTypeInformation();
-			}
 		}
 		return attributeTypeInformation;
 	}
@@ -978,12 +975,10 @@ public class DynamicExtensionsUtility
 	public static boolean isCheckBoxChecked(String value)
 	{
 		boolean isChecked = false;
-		if (value != null && value.trim().length() > 0)
+		if ((value != null && value.trim().length() > 0)
+				&& (value.equals("1") || value.equals("true")))
 		{
-			if (value.equals("1") || value.equals("true"))
-			{
 				isChecked = true;
-			}
 		}
 		return isChecked;
 	}
@@ -1010,12 +1005,9 @@ public class DynamicExtensionsUtility
 	public static String getCheckboxSelectionValue(String value)
 	{
 		String checkboxValue = "";
-		if (value != null && value.trim().length() > 0)
+		if (value != null && value.trim().length() > 0 && value.equalsIgnoreCase(getValueForCheckBox(true)))
 		{
-			if (value.equalsIgnoreCase(getValueForCheckBox(true)))
-			{
 				checkboxValue = "checked";
-			}
 		}
 		return checkboxValue;
 	}
@@ -1053,15 +1045,12 @@ public class DynamicExtensionsUtility
 			//09-12-2007 0:0
 		}
 
-		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && Integer.parseInt(date1) > Integer.parseInt(date2))
 		{
 			//date1 = formatYearDate(date1);
 			//date2 = formatYearDate(date2);
-			if (Integer.parseInt(date1) > Integer.parseInt(date2))
-			{
 				result = 1;
 				return result;
-			}
 			//09-12-2007 0:0
 		}
 
@@ -1452,24 +1441,19 @@ public class DynamicExtensionsUtility
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 			if (objCategoryEntity.getParentCategoryEntity() != null
 					&& !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity()
-							.getName()))
+							.getName())
+							&& ((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
 			{
-				if (((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
-				{
 					getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),
 							objCategoryMap);
-				}
 			}
 			if (!objCategoryMap.containsKey(categoryEntity.getName())
 					&& objCategoryEntity.isCreateTable())
 			{
-				if (objCategoryEntity.getId() == null)
+				if (objCategoryEntity.getId() == null && objCategoryEntity.isCreateTable())
 				{
 					//Only includes those category entity for which table is required to be created
-					if (objCategoryEntity.isCreateTable())
-					{
 						objCategoryMap.put(categoryEntity.getName(), objCategoryEntity);
-					}
 				}
 			}
 			else
@@ -1481,14 +1465,11 @@ public class DynamicExtensionsUtility
 			{
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
 						.getTargetCategoryEntity();
-				if (objCEntity != null && objCEntity.isCreateTable())
+				if (objCEntity != null && objCEntity.isCreateTable() && !objCategoryMap.containsKey(categoryAssociationInterface
+						.getTargetCategoryEntity().getName()))
 				{
-					if (!objCategoryMap.containsKey(categoryAssociationInterface
-							.getTargetCategoryEntity().getName()))
-					{
 						getUnsavedCategoryEntityList(categoryAssociationInterface
 								.getTargetCategoryEntity(), objCategoryMap);
-					}
 				}
 			}
 		}
@@ -1512,20 +1493,16 @@ public class DynamicExtensionsUtility
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 			if (categoryEntity.getParentCategoryEntity() != null
 					&& !objCategoryMap.containsKey(categoryEntity.getParentCategoryEntity()
-							.getName()))
+							.getName())
+							&& ((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
 			{
-				if (((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
-				{
 					getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
 							objCategoryMap);
-				}
 			}
-			if (!objCategoryMap.containsKey(categoryEntity.getName()))
+			if (!objCategoryMap.containsKey(categoryEntity.getName())&&
+					objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
 			{
-				if (objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
-				{
 					objCategoryMap.put(categoryEntity.getName(), categoryEntity);
-				}
 			}
 			else
 			{
@@ -1536,14 +1513,12 @@ public class DynamicExtensionsUtility
 			{
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
 						.getTargetCategoryEntity();
-				if (objCEntity != null && objCEntity.isCreateTable() && objCEntity.getId() != null)
+				if (objCEntity != null && objCEntity.isCreateTable() && objCEntity.getId() != null
+						&& !objCategoryMap.containsKey(categoryAssociationInterface
+								.getTargetCategoryEntity().getName()))
 				{
-					if (!objCategoryMap.containsKey(categoryAssociationInterface
-							.getTargetCategoryEntity().getName()))
-					{
 						getSavedCategoryEntityList(categoryAssociationInterface
 								.getTargetCategoryEntity(), objCategoryMap);
-					}
 				}
 			}
 		}
@@ -1849,10 +1824,9 @@ public class DynamicExtensionsUtility
 			for (ControlInterface control : controlCollection)
 			{
 				isPresent = false;
-				if (control instanceof ContainmentAssociationControl || control instanceof ListBox)
+				if ((control instanceof ContainmentAssociationControl || control instanceof ListBox)&&
+				sequenceNumbers != null)
 				{
-					if (sequenceNumbers != null)
-					{
 						for (Integer sequenceNumber : sequenceNumbers)
 						{
 							if (control.getSequenceNumber() != null
@@ -1865,7 +1839,6 @@ public class DynamicExtensionsUtility
 						{
 							listOfIds.add(control.getBaseAbstractAttribute().getId());
 						}
-					}
 				}
 			}
 		}
@@ -2067,12 +2040,9 @@ public class DynamicExtensionsUtility
 	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption,
 			String formName) throws DynamicExtensionsApplicationException
 	{
-		if (caption != null && !caption.equals(formName))
+		if (caption != null && !caption.equals(formName) && entityGroup.getEntityByName(formName) != null)
 		{
-			if (entityGroup.getEntityByName(formName) != null)
-			{
-				reportDuplicateEntityName();
-			}
+			reportDuplicateEntityName();
 		}
 	}
 

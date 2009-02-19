@@ -106,19 +106,19 @@ public class CacheManager
 	{
 		List<Long> deletedIdList = (List<Long>) getObjectFromCache(request,
 				WebUIManagerConstants.DELETED_ASSOCIATION_IDS);
-		String associationIds = "";
+		StringBuffer associationIds = new StringBuffer();
 		if (deletedIdList != null)
 		{
 			for (int i = 0; i < deletedIdList.size(); i++)
 			{
-				associationIds += deletedIdList.get(i);
+				associationIds.append(deletedIdList.get(i));
 				if (i < deletedIdList.size() - 1)
 				{
-					associationIds += "_";
+					associationIds.append('_');
 				}
 			}
 		}
 
-		return associationIds;
+		return associationIds.toString();
 	}
 }

@@ -1127,7 +1127,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	/**
 	 * This method test for updating data for a multiSelect attribute
 	 */
-	/* public void testEditRecordWithMultiselectAttrubteUpdate()
+	/* public void testEditRecordWithMultiselectAttrubuteUpdate()
 	 {
 	     EntityGroup entityGroup = (EntityGroup) DomainObjectFactory.getInstance().createEntityGroup();
 	     entityGroup.setName("testGroup"+ new Double(Math.random()).toString());

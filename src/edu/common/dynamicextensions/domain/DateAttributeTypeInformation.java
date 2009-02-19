@@ -73,17 +73,17 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 	public PermissibleValueInterface getPermissibleValueForString(String value)
 			throws ParseException
 	{
-		value = value.replace("/", "-");
+		String permissibleValue = value.replace("/", "-");
 
-		if (value.length() != format.length())
+		if (permissibleValue.length() != format.length())
 		{
-			throw new ParseException("DATE VALUE " + value + " INVALID FOR " + format
+			throw new ParseException("DATE VALUE " + permissibleValue + " INVALID FOR " + format
 					+ " DATE FORMAT.", 0);
 		}
 
-		if (value.endsWith("0000") || value.contains("."))
+		if (permissibleValue.endsWith("0000") || permissibleValue.contains("."))
 		{
-			throw new ParseException("DATE VALUE " + value + " INVALID FOR " + format
+			throw new ParseException("DATE VALUE " + permissibleValue + " INVALID FOR " + format
 					+ " DATE FORMAT.", 0);
 		}
 
@@ -91,23 +91,23 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 
 		if (format.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
-			Utility.parseDate(value, format);
-			value = DynamicExtensionsUtility.formatMonthAndYearDate(value,false);
+			Utility.parseDate(permissibleValue, format);
+			permissibleValue = DynamicExtensionsUtility.formatMonthAndYearDate(permissibleValue,false);
 		}
 		if (format.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 		{
-			Utility.parseDate(value, format);
-			value = DynamicExtensionsUtility.formatYearDate(value,false);
+			Utility.parseDate(permissibleValue, format);
+			permissibleValue = DynamicExtensionsUtility.formatYearDate(permissibleValue,false);
 		}
 
 		Date date = null;
 		if (format.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-			date = Utility.parseDate(value, ProcessorConstants.DATE_TIME_FORMAT);
+			date = Utility.parseDate(permissibleValue, ProcessorConstants.DATE_TIME_FORMAT);
 		}
 		else
 		{
-			date = Utility.parseDate(value, ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+			date = Utility.parseDate(permissibleValue, ProcessorConstants.SQL_DATE_ONLY_FORMAT);
 		}
 
 		dateValue.setValue(date);

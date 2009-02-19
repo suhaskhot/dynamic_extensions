@@ -37,12 +37,13 @@ public class SemanticPropertyBuilderUtil
 	public static Collection<SemanticPropertyInterface> getSymanticPropertyCollection(
 			String conceptCodes)
 	{
-		if (conceptCodes == null || conceptCodes.trim().length() == 0)
+		String codes=conceptCodes;
+		if (codes == null || codes.trim().length() == 0)
 		{
-			conceptCodes = " ";
+			codes = " ";
 		}
 		Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
-		String[] individualConceptCodes = conceptCodes.split("[,]");
+		String[] individualConceptCodes = codes.split("[,]");
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
 		SemanticPropertyInterface semanticPropertyInterface = null;

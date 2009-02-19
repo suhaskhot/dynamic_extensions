@@ -36,15 +36,16 @@ public class ValidatorUtil
 	/**
 	 * @param attributeValueMap  key - AttributeInterface
 	 *                           value - value that user has entered for this attribute
-	 * @return errorList if any
+	 * @return listOfError if any
 	 * @throws DynamicExtensionsSystemException : Exception
 	 * @throws DynamicExtensionsValidationException
 	 */
 	public static List<String> validateEntity(
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> errorList,
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> listOfError,
 			ContainerInterface containerInterface) throws DynamicExtensionsSystemException,
 			DynamicExtensionsValidationException
 	{
+		List<String> errorList=listOfError;
 		if (errorList == null)
 		{
 			errorList = new ArrayList<String>();

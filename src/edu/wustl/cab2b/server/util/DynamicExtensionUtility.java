@@ -75,15 +75,16 @@ public class DynamicExtensionUtility
 	public static EntityInterface persistEntity(EntityInterface entity)
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityInterface entityToPersist;
 		try
 		{
 			if (CREATE_TABLE_FOR_ENTITY)
 			{
-				entity = entityManager.persistEntity(entity);
+				entityToPersist = entityManager.persistEntity(entity);
 			}
 			else
 			{
-				entity = entityManager.persistEntityMetadata(entity);
+				entityToPersist = entityManager.persistEntityMetadata(entity);
 			}
 		}
 		catch (BaseDynamicExtensionsException e)
@@ -91,7 +92,7 @@ public class DynamicExtensionUtility
 			throw new RuntimeException("Unable to persist Entity in Dynamic Extension", e,
 					ErrorCodeConstants.DE_0002);
 		}
-		return entity;
+		return entityToPersist;
 	}
 
 	/**
@@ -103,16 +104,17 @@ public class DynamicExtensionUtility
 	 */
 	public static EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroup)
 	{
+		EntityGroupInterface entityGroupObject=null;
 		try
 		{
-			entityGroup = persistEGroup(entityGroup);
+			entityGroupObject = persistEGroup(entityGroup);
 		}
 		catch (BaseDynamicExtensionsException e)
 		{
 			throw new RuntimeException("Unable to persist Entity Group in Dynamic Extension", e,
 					ErrorCodeConstants.DE_0001);
 		}
-		return entityGroup;
+		return entityGroupObject;
 	}
 
 	/**
@@ -128,16 +130,16 @@ public class DynamicExtensionUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-
+		EntityGroupInterface entityGroupObject;
 		if (CREATE_TABLE_FOR_ENTITY)
 		{
-			entityGroup = entityGroupManager.persistEntityGroup(entityGroup);
+			entityGroupObject = entityGroupManager.persistEntityGroup(entityGroup);
 		}
 		else
 		{
-			entityGroup = entityGroupManager.persistEntityGroupMetadata(entityGroup);
+			entityGroupObject = entityGroupManager.persistEntityGroupMetadata(entityGroup);
 		}
-		return entityGroup;
+		return entityGroupObject;
 	}
 
 	/**

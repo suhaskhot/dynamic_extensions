@@ -2542,13 +2542,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				+ "'");
 		query.append(CLOSING_BRACKET);
 		query.append(CLOSING_BRACKET);
-		System.out.println("Query = " + query.toString());
+		Logger.out.info("Query = " + query.toString());
 
 		ResultSet resultSet = null;
 		JDBCDAO jdbcDao = null;
 		try
 		{
-			System.out.println("Query = " + query.toString());
+			Logger.out.info("Query = " + query.toString());
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			resultSet = jdbcDao.getQueryResultSet(query.toString());
 			if (resultSet != null)

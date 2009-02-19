@@ -179,8 +179,6 @@ public abstract class AbstractMetadataManager
 			{
 				Logger.out.debug("Required Obejct not found: Object Name*" + objectName
 						+ "*   identifier  *" + identifier + "*");
-				System.out.println("Required Obejct not found: Object Name*" + objectName
-						+ "*   identifier  *" + identifier + "*");
 				throw new DynamicExtensionsApplicationException("OBJECT_NOT_FOUND");
 			}
 
@@ -333,23 +331,23 @@ public abstract class AbstractMetadataManager
 		for (int counter = 0; counter < substParams.size(); counter++)
 		{
 			HQLPlaceHolderObject plcHolderObj = (HQLPlaceHolderObject) substParams
-					.get(counter + "");
+					.get(Integer.toBinaryString(counter));
 			String objectType = plcHolderObj.getType();
 			if (objectType.equals("string"))
 			{
-				query.setString(counter, plcHolderObj.getValue() + "");
+				query.setString(counter, plcHolderObj.getValue().toString());
 			}
 			else if (objectType.equals("integer"))
 			{
-				query.setInteger(counter, Integer.parseInt(plcHolderObj.getValue() + ""));
+				query.setInteger(counter, Integer.parseInt(plcHolderObj.getValue().toString()));
 			}
 			else if (objectType.equals("long"))
 			{
-				query.setLong(counter, Long.parseLong(plcHolderObj.getValue() + ""));
+				query.setLong(counter, Long.parseLong(plcHolderObj.getValue().toString()));
 			}
 			else if (objectType.equals("boolean"))
 			{
-				query.setBoolean(counter, Boolean.parseBoolean(plcHolderObj.getValue() + ""));
+				query.setBoolean(counter, Boolean.parseBoolean(plcHolderObj.getValue().toString()));
 			}
 		}
 

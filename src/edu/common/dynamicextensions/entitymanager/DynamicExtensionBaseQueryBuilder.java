@@ -3002,7 +3002,7 @@ public class DynamicExtensionBaseQueryBuilder
 				while (queryIter.hasNext())
 				{
 					String query = queryIter.next();
-					System.out.println("Query: " + query);
+					Logger.out.info("Query: " + query);
 					jdbcDao.executeUpdate(query);
 					if (revQryIter.hasNext())
 					{

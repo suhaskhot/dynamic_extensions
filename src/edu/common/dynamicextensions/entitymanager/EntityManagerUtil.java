@@ -129,7 +129,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 */
 	public int executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
 	{
-		System.out.println(query);
+		Logger.out.info(query);
 		try
 		{
 			return jdbcDao.executeUpdate(query);

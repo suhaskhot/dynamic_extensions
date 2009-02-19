@@ -351,8 +351,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			GroupProcessor groupProcessor = GroupProcessor.getInstance();
 			entityGroup = groupProcessor.getEntityGroupByIdentifier(selectedGroupName);
 		}
-		String groupDetailsXML = getGroupDetailsXML(request, entityGroup);
-		return groupDetailsXML;
+		return getGroupDetailsXML(request, entityGroup);
 	}
 
 	/**
@@ -521,8 +520,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		String xmlParentNode = "forms";
 		String xmlIdNode = "form-id";
 		String xmlNameNode = "form-name";
-		String responseXML = getResponseXMLString(xmlParentNode, xmlIdNode, xmlNameNode, formNames);
-		return responseXML;
+		return getResponseXMLString(xmlParentNode, xmlIdNode, xmlNameNode, formNames);
 	}
 
 	/**

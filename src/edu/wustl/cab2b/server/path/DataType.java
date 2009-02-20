@@ -1,6 +1,7 @@
 package edu.wustl.cab2b.server.path;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.util.global.DEConstants.ValueDomainType;
 import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import gov.nih.nci.cagrid.metadata.common.Enumeration;
 import gov.nih.nci.cagrid.metadata.common.UMLAttribute;
 import gov.nih.nci.cagrid.metadata.common.ValueDomain;
@@ -347,8 +349,8 @@ enum DataType {
      * @return Returns the DataType
      */
     public static DataType get(String value) {
-
-        DataType dataType = dataTypeMap.get(value.toLowerCase());
+    	Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+        DataType dataType = dataTypeMap.get(value.toLowerCase(locale));
         if (dataType == null) {
             //throw new RuntimeException("unknown data-type found : " + value);
             //for the time being setting this as error to get all such attributes

@@ -997,7 +997,7 @@ public class XMIExporter implements XMIExportInterface
 				Attribute umlAttribute = createDataAttribute(attribute);
 				classFeatures.add(umlAttribute);
 				//If primary key : add as operation
-				if (attribute.getIsPrimaryKey() == true)
+				if (attribute.getIsPrimaryKey())
 				{
 					Operation primaryKeyOperationSpecn = createPrimaryKeyOperation(attribute,
 							umlAttribute);
@@ -1254,7 +1254,7 @@ public class XMIExporter implements XMIExportInterface
 			{
 				ListBoxInterface listBox = (ListBoxInterface) control;
 				if (listBox.getIsMultiSelect() != null && listBox.getNoOfRows() != null
-						&& listBox.getIsMultiSelect().booleanValue() != false)
+						&& listBox.getIsMultiSelect().booleanValue())
 				{//Multiselect
 					taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_MULTISELECT,
 							listBox.getNoOfRows().toString()));
@@ -1417,7 +1417,7 @@ public class XMIExporter implements XMIExportInterface
 			}
 		}
 		if (attribute.getIsIdentified() != null
-				&& attribute.getIsIdentified().booleanValue() != false)
+				&& attribute.getIsIdentified().booleanValue())
 		{// PHI attribute
 			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PHI_ATTRIBUTE, attribute
 					.getIsIdentified().toString()));
@@ -1444,13 +1444,13 @@ public class XMIExporter implements XMIExportInterface
 					.toString()));
 		}
 		Boolean isPassword = textField.getIsPassword();
-		if (isPassword != null && isPassword.booleanValue() == true)
+		if (isPassword != null && isPassword.booleanValue())
 		{
 			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_PASSWORD, isPassword
 					.toString()));
 		}
 		Boolean isUrl = textField.getIsUrl();
-		if (isUrl != null && isUrl.booleanValue() == true)
+		if (isUrl != null && isUrl.booleanValue())
 		{
 			taggedValues.add(createTaggedValue(XMIConstants.TAGGED_VALUE_URL, isUrl.toString()));
 		}
@@ -1827,7 +1827,7 @@ public class XMIExporter implements XMIExportInterface
 		AttributeInterface collectionTypeAttribute = null;
 		for (AssociationInterface association : associationCollection)
 		{
-			if (association.getIsCollection() == true)
+			if (association.getIsCollection())
 			{
 				Collection<AbstractAttributeInterface> attributeCollection = association
 						.getTargetEntity().getAllAbstractAttributes();
@@ -1847,7 +1847,7 @@ public class XMIExporter implements XMIExportInterface
 				{
 					ListBoxInterface listBox = (ListBoxInterface) control;
 					if (listBox.getIsMultiSelect() != null && listBox.getNoOfRows() != null
-							&& listBox.getIsMultiSelect().booleanValue() != false)
+							&& listBox.getIsMultiSelect().booleanValue())
 					{
 						tagValueForCollectionTypeAttr
 								.setKey(XMIConstants.TAGGED_VALUE_MULTISELECT);

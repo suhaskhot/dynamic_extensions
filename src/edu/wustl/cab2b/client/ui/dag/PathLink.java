@@ -15,11 +15,6 @@ public class PathLink extends GraphLink
 	private int destExpressionId;
 	private int sourceExpressionId;
 
-	public PathLink()
-	{
-		super();
-	}
-
 	public void setPath(IPath path)
 	{
 		m_path = path;

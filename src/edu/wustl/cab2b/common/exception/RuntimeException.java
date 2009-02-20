@@ -10,7 +10,7 @@ public class RuntimeException extends java.lang.RuntimeException implements Cab2
     protected String errorCode;
 
     public RuntimeException() {
-    	// TODO Auto-generated constructor stub
+    	super();
     }
 
     public RuntimeException(Throwable throwable) {

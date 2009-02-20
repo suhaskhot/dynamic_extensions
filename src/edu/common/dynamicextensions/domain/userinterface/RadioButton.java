@@ -28,14 +28,6 @@ public class RadioButton extends Control implements RadioButtonInterface
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Empty Constructor
-	 */
-	public RadioButton()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method generates the HTML code for RadioButton control on the HTML form
 	 * @return HTML code for RadioButton
 	 * @throws DynamicExtensionsSystemException

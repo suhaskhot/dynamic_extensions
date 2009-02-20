@@ -14,14 +14,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 public class DataGrid extends Control implements DataGridInterface
 {
 
-	/**
-	 * Empty Constructor
-	 */
-	public DataGrid()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface#setAttribute(edu.common.dynamicextensions.domaininterface.AttributeInterface)
 	 */

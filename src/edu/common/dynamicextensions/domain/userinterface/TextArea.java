@@ -31,14 +31,6 @@ public class TextArea extends Control implements TextAreaInterface
 	protected Integer rows;
 
 	/**
-	 * Empty Constructor 
-	 */
-	public TextArea()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @hibernate.property name="columns" type="integer" column="TEXTAREA_COLUMNS" 
 	 * @return Returns the columns.
 	 */

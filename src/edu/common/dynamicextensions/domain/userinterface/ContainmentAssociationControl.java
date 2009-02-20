@@ -28,14 +28,6 @@ public class ContainmentAssociationControl extends AbstractContainmentControl
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 */
-	public ContainmentAssociationControl()
-	{
-		super();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#getControlHTML(java.lang.String)

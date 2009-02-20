@@ -33,14 +33,6 @@ public class View extends DynamicExtensionBaseDomainObject implements Serializab
 	protected Collection<ContainerInterface> containerCollection = new HashSet<ContainerInterface>();
 
 	/**
-	 * Empty Constructor
-	 */
-	public View()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
 	 * @hibernate.generator-param name="sequence" value="DYEXTN_VIEW_SEQ"

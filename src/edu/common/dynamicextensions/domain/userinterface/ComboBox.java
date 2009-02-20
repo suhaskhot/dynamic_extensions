@@ -30,14 +30,6 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	List listOfValues = null;
 
 	/**
-	 * Empty Constructor
-	 */
-	public ComboBox()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method generates the HTML code for ComboBox control on the HTML form
 	 * @return HTML code for ComboBox
 	 * @throws DynamicExtensionsSystemException if HTMLComponentName() fails.

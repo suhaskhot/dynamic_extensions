@@ -67,14 +67,6 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	}
 
 	/**
-	 * Default Constructor
-	 */
-	public ListBox()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns whether the ListBox has a multiselect property or not.
 	 * @hibernate.property name="isMultiSelect" type="boolean" column="MULTISELECT"
 	 * @return whether the ListBox has a multiselect property or not.

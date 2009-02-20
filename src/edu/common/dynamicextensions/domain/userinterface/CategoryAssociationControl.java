@@ -19,13 +19,6 @@ public class CategoryAssociationControl extends AbstractContainmentControl
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Default constructor
-	 */
-	public CategoryAssociationControl()
-	{
-		super();
-	}
 
 	/**
 	 * This method returns true if the cardinality of the Containment Association is One to Many.

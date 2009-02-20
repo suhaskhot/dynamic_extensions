@@ -22,14 +22,6 @@ public class CheckBox extends Control implements CheckBoxInterface
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Empty Constructor
-	 */
-	public CheckBox()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateEditModeHTML()
 	 */

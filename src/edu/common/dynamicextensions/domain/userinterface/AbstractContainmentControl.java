@@ -31,14 +31,6 @@ public abstract class AbstractContainmentControl extends Control
 	 */
 	protected ContainerInterface container;
 
-	/**
-	 * Empty Constructor
-	 */
-	public AbstractContainmentControl()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = this.getContainer();

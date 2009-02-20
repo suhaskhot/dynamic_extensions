@@ -39,14 +39,6 @@ public class TextField extends Control implements TextFieldInterface
 	protected Boolean isUrl;
 
 	/**
-	 * Empty Constructor
-	 */
-	public TextField()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @hibernate.property name="columns" type="integer" column="NO_OF_COLUMNS"
 	 * @return Returns the columns.
 	 */
@@ -92,7 +84,7 @@ public class TextField extends Control implements TextFieldInterface
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
 
-		if (isUrl != null && isUrl.booleanValue() == true)
+		if (isUrl != null && isUrl)
 		{
 			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
 					+ defaultValue

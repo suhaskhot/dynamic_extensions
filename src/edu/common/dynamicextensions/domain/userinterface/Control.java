@@ -108,14 +108,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	protected List<FormControlNotesInterface> formNotes = new LinkedList<FormControlNotesInterface>();
 
 	/**
-	 * Empty Constructor
-	 */
-	public Control()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @hibernate.property name="caption" type="string" column="CAPTION" length="800"
 	 * @return Returns the caption.
 	 */

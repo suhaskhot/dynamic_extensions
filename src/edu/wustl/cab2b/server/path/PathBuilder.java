@@ -181,7 +181,7 @@ public class PathBuilder
 		Set<Path> paths = graphPathfinder.getAllPaths(adjacencyMatrix, replicationNodes, null,
 				maxPathLength);
 
-		PathToFileWriter.writePathsToFile(paths, entityIds.toArray(new Long[0]), append);
+		PathToFileWriter.writePathsToFile(paths, entityIds.toArray(new Long[entityIds.size()]), append);
 	}
 
 	/**
@@ -465,7 +465,7 @@ public class PathBuilder
 			}
 		}
 		entitySequence.add(lastEntityId);
-		return entitySequence.toArray(new Long[0]);
+		return entitySequence.toArray(new Long[entitySequence.size()]);
 	}
 
 	/**

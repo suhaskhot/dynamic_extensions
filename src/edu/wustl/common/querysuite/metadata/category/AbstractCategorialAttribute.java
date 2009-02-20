@@ -80,15 +80,6 @@ public abstract class AbstractCategorialAttribute<C extends AbstractCategorialCl
 	}
 
 	/**
-	 * Default Constructor.
-	 * Required for hibernate.
-	 */
-	public AbstractCategorialAttribute()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @return Returns the sourceClassAttribute.
 	 */
 	public AttributeInterface getSourceClassAttribute()

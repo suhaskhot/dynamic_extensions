@@ -22,14 +22,6 @@ public class Category extends AbstractCategory<CategorialClass, Category> implem
 	private EntityInterface categoryEntity;
 
 	/**
-	 * Default constructor. Required for hibernate.
-	 */
-	public Category()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @return the categoryEntity
 	 */
 	public EntityInterface getCategoryEntity()

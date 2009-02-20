@@ -34,14 +34,6 @@ public class RuleParameter extends DynamicExtensionBaseDomainObject
 	protected String value;
 
 	/**
-	 * Empty constructor.
-	 */
-	public RuleParameter()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
 	 * @hibernate.generator-param name="sequence" value="DYEXTN_RULE_PARAMETER_SEQ"

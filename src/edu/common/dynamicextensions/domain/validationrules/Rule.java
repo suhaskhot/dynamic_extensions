@@ -38,14 +38,6 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	protected Boolean isImplicitRule = Boolean.TRUE;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public Rule()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns the Unique Identifier of the Object.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"

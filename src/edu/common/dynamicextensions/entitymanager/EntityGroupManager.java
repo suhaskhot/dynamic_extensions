@@ -55,7 +55,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 	 */
 	protected EntityGroupManager()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

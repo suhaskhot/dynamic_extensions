@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.action.BaseDynamicExtensionsAction;
 import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.util.global.CommonServiceLocator;
 
 /**
  * @author kunal_kamble
@@ -68,9 +70,10 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 		for (int i = startFetch; i < total && i < querySpecificNVBeans.size(); i++)
 		{
 			JSONObject jsonObject = new JSONObject();
+			Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 			if (query == null
-					|| querySpecificNVBeans.get(i).getName().toLowerCase().contains(
-							query.toLowerCase()) || query.length() == 0)
+					|| querySpecificNVBeans.get(i).getName().toLowerCase(locale).contains(
+							query.toLowerCase(locale)) || query.length() == 0)
 			{
 				jsonObject.put("id", querySpecificNVBeans.get(i).getValue());
 				jsonObject.put("field", querySpecificNVBeans.get(i).getName());
@@ -96,9 +99,10 @@ public class ComboDataAction extends BaseDynamicExtensionsAction
 	private void populateQuerySpecificNameValueBeansList(List<NameValueBean> querySpecificNVBeans,
 			List<NameValueBean> nameValueBeans, String query)
 	{
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		for (NameValueBean nvb : nameValueBeans)
 		{
-			if (nvb.getName().toLowerCase().contains(query.toLowerCase()))
+			if (nvb.getName().toLowerCase(locale).contains(query.toLowerCase(locale)))
 			{
 				querySpecificNVBeans.add(nvb);
 			}

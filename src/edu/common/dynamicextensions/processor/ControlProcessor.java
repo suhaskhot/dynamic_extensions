@@ -54,7 +54,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected ControlProcessor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.COMBOBOX_CONTROL))
 			{
 				if ((controlUIBeanInterface.getIsMultiSelect() != null)
-						&& (controlUIBeanInterface.getIsMultiSelect().booleanValue() == true))
+						&& (controlUIBeanInterface.getIsMultiSelect().booleanValue()))
 				{
 					controlInterface = getListBoxControl(controlIntf, controlUIBeanInterface,
 							entityGroup);

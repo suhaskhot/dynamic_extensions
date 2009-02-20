@@ -33,6 +33,7 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 	 */
 	private ApplyGroupDefinitionProcessor()
 	{
+		super();
 	}
 
 	/**

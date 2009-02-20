@@ -30,7 +30,7 @@ public class GroupProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private GroupProcessor()
 	{
-
+		super();
 	}
 
 	/**

@@ -19,7 +19,7 @@ public class DeleteRecordProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected DeleteRecordProcessor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

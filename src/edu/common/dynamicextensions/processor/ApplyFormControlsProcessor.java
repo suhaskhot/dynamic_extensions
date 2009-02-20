@@ -30,7 +30,7 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected ApplyFormControlsProcessor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

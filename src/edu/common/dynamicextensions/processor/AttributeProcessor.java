@@ -92,7 +92,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected AttributeProcessor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
@@ -633,7 +633,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			for (RuleInterface rule : attributeRuleCollection)
 			{
 				String attributeRuleName = rule.getName();
-				if (allValidationRules.contains(attributeRuleName) == false)
+				if (allValidationRules.contains(attributeRuleName))
 				{
 					obsoleteRules.add(rule);
 				}

@@ -18,7 +18,7 @@ public class LoadFormPreviewProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected LoadFormPreviewProcessor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

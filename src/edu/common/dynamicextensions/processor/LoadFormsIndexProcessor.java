@@ -24,7 +24,7 @@ public class LoadFormsIndexProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	protected LoadFormsIndexProcessor()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

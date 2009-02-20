@@ -33,11 +33,6 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 
 	private Long userId;
 
-	public ApplyDataEntryFormProcessor()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/**
 	 * This method returns the instance of ApplyDataEntryFormProcessor.
 	 * @return ApplyDataEntryFormProcessor Instance of ApplyDataEntryFormProcessor

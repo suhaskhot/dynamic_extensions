@@ -29,14 +29,6 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 {
 
 	/**
-	 *
-	 */
-	public LoadGroupDefinitionProcessor()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns the instance of LoadGroupDefinitionProcessor.
 	 * @return LoadGroupDefinitionProcessor Instance of LoadGroupDefinitionProcessor
 	 */

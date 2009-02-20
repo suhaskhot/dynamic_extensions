@@ -116,6 +116,7 @@ public class GroupForm extends AbstractActionForm implements GroupUIBeanInterfac
 	 */
 	public GroupForm()
 	{
+		super();
 		this.createGroupAs = ProcessorConstants.DEFAULT_GROUP_CREATEAS;
 	}
 

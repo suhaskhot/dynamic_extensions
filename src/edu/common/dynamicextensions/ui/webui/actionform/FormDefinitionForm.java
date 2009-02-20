@@ -170,6 +170,7 @@ public class FormDefinitionForm extends AbstractActionForm
 	 */
 	public FormDefinitionForm()
 	{
+		super();
 		createAs = ProcessorConstants.DEFAULT_FORM_CREATEAS;
 	}
 

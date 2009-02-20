@@ -140,7 +140,10 @@ public class DataTypeFactory
 		{
 			DataTypeInformation dataTypeInfo = (DataTypeInformation) dataTypeMap
 					.get(primitiveAttribute);
-			databaseDataType = (dataTypeInfo != null) ? dataTypeInfo.getDatabaseDataType() : null;
+			if(dataTypeInfo != null)
+			{
+				databaseDataType = dataTypeInfo.getDatabaseDataType();
+			}
 		}
 		else
 		{
@@ -157,10 +160,10 @@ public class DataTypeFactory
 	public DataTypeInformation getDataTypePrecisionScaleInformation(String dataType)
 	{
 		DataTypeInformation dataTypeInfo = null;
-		dataTypeInfo = (dataTypeMap != null)
-				? (DataTypeInformation) dataTypeMap.get(dataType)
-				: null;
-
+		if(dataTypeMap != null)
+		{
+			dataTypeInfo=(DataTypeInformation) dataTypeMap.get(dataType);
+		}
 		return dataTypeInfo;
 	}
 

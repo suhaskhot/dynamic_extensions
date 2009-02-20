@@ -17,14 +17,6 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 			BooleanTypeInformationInterface
 {
 
-	/**
-	 * Empty Constructor.
-	 */
-	public BooleanAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor
-	}
-
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */

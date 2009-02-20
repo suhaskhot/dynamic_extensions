@@ -28,14 +28,6 @@ public class StringAttributeTypeInformation extends AttributeTypeInformation
 	protected Integer size;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public StringAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @see java.lang.Object#finalize()
 	 */
 	public void finalize() throws Throwable

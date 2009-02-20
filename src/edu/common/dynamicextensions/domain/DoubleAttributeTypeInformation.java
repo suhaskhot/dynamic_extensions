@@ -18,12 +18,9 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 {
 
 	/**
-	 * Empty Constructor.
+	 * Serial version id.
 	 */
-	public DoubleAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
+	private static final long serialVersionUID = 7901101750879429344L;
 
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()

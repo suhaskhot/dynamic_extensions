@@ -38,7 +38,7 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	 */
 	protected NumericAttributeTypeInformation()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**

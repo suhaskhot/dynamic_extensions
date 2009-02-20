@@ -47,14 +47,6 @@ public class SemanticProperty extends DynamicExtensionBaseDomainObject
 	protected int sequenceNumber = 0;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public SemanticProperty()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns the Unique identifier.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"

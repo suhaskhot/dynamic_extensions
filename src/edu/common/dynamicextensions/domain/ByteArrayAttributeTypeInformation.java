@@ -26,14 +26,6 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation
 	protected String contentType;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public ByteArrayAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns the Content type of the binary data (or file), e.g. JPG, DOC etc..
 	 * @hibernate.property name="contentType" type="string" column="CONTENT_TYPE" 
 	 * @return the Content type of the binary data (or file).

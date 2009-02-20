@@ -39,14 +39,6 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute
 	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
 
 	/**
-	 * Empty constructor
-	 */
-	public AbstractAttribute()
-	{
-		// TODO Auto-generated constructor
-	}
-
-	/**
 	 * This method returns the Collection of rules.
 	 * @hibernate.set name="ruleCollection" table="DYEXTN_RULE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"

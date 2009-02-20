@@ -17,14 +17,6 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 			IntegerTypeInformationInterface
 {
 
-	/**
-	 * Empty Constructor.
-	 */
-	public IntegerAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */

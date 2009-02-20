@@ -17,14 +17,6 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 			ShortTypeInformationInterface
 {
 
-	/**
-	 * Empty Constructor.
-	 */
-	public ShortAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */

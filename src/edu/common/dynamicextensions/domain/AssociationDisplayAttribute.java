@@ -32,15 +32,6 @@ public class AssociationDisplayAttribute extends DynamicExtensionBaseDomainObjec
 	private AttributeInterface attribute;
 
 	/**
-	 * default constructor.
-	 */
-	public AssociationDisplayAttribute()
-	{
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @return id identifier
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"

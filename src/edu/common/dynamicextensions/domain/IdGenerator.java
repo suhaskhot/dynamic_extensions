@@ -19,12 +19,6 @@ public class IdGenerator extends DynamicExtensionBaseDomainObject implements IdG
 	/** nullable persistent field. */
 	private Long nextAvailableId;
 
-	/** default constructor. */
-	public IdGenerator()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/**
 	 * @hibernate.id name="id" column="id" type="java.lang.Long"
 	 * length="11" generator-class="assigned"

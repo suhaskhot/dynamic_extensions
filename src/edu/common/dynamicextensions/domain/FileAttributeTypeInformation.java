@@ -30,14 +30,6 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
 
 	/**
-	 * Empty Constructor.
-	 */
-	public FileAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @hibernate.set name="fileExtensionCollection" table="DYEXTN_FILE_EXTENSIONS"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_ID"

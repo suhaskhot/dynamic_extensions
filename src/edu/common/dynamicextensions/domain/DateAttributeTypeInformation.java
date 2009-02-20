@@ -33,14 +33,6 @@ public class DateAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	protected String format;
 
-	/**
-	 * Empty Constructor
-	 */
-	public DateAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/**This method returns the format of the DateAttributeTypeInformation.
 	 * @hibernate.property name="format" type="string" column="FORMAT"
 	 * @return Returns the format.

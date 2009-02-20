@@ -72,11 +72,6 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 */
 	protected Boolean isRelatedAttribute;
 
-	public CategoryAttribute()
-	{
-		super();
-	}
-
 	/**
 	 * This method returns the Collection of Column Properties of the Attribute.
 	 * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES" cascade="all" inverse="false" lazy="false"

@@ -171,16 +171,6 @@ public abstract class AttributeTypeInformation extends DynamicExtensionBaseDomai
 
 	/**
 	 *
-	 *
-	 */
-	public AttributeTypeInformation()
-	{
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 *
 	 * @param value
 	 * @return
 	 * @throws ParseException

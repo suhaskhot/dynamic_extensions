@@ -32,15 +32,6 @@ public class Category extends AbstractMetadata implements CategoryInterface
 	protected Collection<CategoryEntityInterface> relatedAttributeCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
 
 	/**
-	 *
-	 *
-	 */
-	public Category()
-	{
-		super();
-	}
-
-	/**
 	 * @hibernate.many-to-one column="ROOT_CATEGORY_ELEMENT" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
 	 * @return the rootCategoryElement.
 	 */

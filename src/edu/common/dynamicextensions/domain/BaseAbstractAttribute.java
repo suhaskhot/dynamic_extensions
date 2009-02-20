@@ -17,12 +17,4 @@ public abstract class BaseAbstractAttribute extends AbstractMetadata
 			BaseAbstractAttributeInterface
 {
 
-	/**
-	 * Empty constructor.
-	 */
-	public BaseAbstractAttribute()
-	{
-		// TODO Auto-generated constructor
-	}
-
 }

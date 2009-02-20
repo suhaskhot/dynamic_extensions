@@ -35,14 +35,6 @@ public class DESQLAudit extends DynamicExtensionBaseDomainObject implements DESQ
 	private String queryExecuted;
 
 	/**
-	 * Default constructor  
-	 */
-	public DESQLAudit()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @return
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"

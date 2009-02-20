@@ -17,14 +17,6 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 			LongTypeInformationInterface
 {
 
-	/**
-	 * Empty Constructor.
-	 */
-	public LongAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */

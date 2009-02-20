@@ -17,14 +17,6 @@ public class AttributeRecord extends DynamicExtensionBaseDomainObject
 {
 
 	/**
-	 * Empty Constructor.
-	 */
-	public AttributeRecord()
-	{
-		super();
-	}
-
-	/**
 	 * Serial Version Unique Identifier
 	 */
 	protected static final long serialVersionUID = 1234567890L;

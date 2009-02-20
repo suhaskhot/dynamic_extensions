@@ -28,15 +28,6 @@ public class Path extends DynamicExtensionBaseDomainObject implements PathInterf
 	protected Collection<PathAssociationRelationInterface> pathAssociationRelationCollection = new HashSet<PathAssociationRelationInterface>();
 
 	/**
-	 *
-	 *
-	 */
-	public Path()
-	{
-		super();
-	}
-
-	/**
 	 * This method returns the unique identifier of the Path.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"

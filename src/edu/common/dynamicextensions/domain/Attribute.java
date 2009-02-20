@@ -123,14 +123,6 @@ public class Attribute extends AbstractAttribute
 	}
 
 	/**
-	 * Empty constructor.
-	 */
-	public Attribute()
-	{
-		// TODO Auto-generated constructor
-	}
-
-	/**
 	 * This method returns whether the Attribute is identifiable or not.
 	 * @hibernate.property name="isIdentified" type="boolean" column="IS_IDENTIFIED"
 	 * @return whether the Attribute is identifiable or not.

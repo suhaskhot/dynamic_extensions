@@ -22,12 +22,6 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 public class TaggedValue extends DynamicExtensionBaseDomainObject implements TaggedValueInterface
 {
 
-	public TaggedValue()
-	{
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	/**
 	 * Key part of the tagged value.
 	 */

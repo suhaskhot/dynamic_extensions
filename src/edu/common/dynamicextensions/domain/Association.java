@@ -74,14 +74,6 @@ public class Association extends AbstractAttribute
 	protected Boolean isSystemGenerated = false;
 
 	/**
-	 * Empty Constructor.
-	 */
-	public Association()
-	{
-		// TODO Auto-generated constructor
-	}
-
-	/**
 	 * This method returns whether the Attribute is a Collection or not.
 	 * @hibernate.property name="isCollection" type="boolean" column="IS_COLLECTION"
 	 * @return whether the Attribute is a Collection or not.

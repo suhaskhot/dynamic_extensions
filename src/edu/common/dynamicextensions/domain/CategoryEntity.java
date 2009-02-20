@@ -81,16 +81,6 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	protected Boolean isCreateTable = Boolean.TRUE;
 
 	/**
-	 *
-	 *
-	 */
-	public CategoryEntity()
-	{
-		super();
-
-	}
-
-	/**
 	 * This method returns the number of entries.
 	 * @hibernate.property name="numberOfEntries" type="integer" column="NUMBER_OF_ENTRIES"
 	 * @return the maximum cardinality.

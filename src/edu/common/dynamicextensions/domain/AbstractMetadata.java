@@ -79,14 +79,6 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	protected Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
 
 	/**
-	 * Empty Constructor
-	 */
-	public AbstractMetadata()
-	{
-		// TODO Auto-generated constructor
-	}
-
-	/**
 	 * This method returns the Created Date of the AbstractMetadata.
 	 * @hibernate.property name="createdDate" type="date" column="CREATED_DATE" 
 	 * @return the createdDate of the AbstractMetadata.

@@ -41,14 +41,6 @@ public class Role extends DynamicExtensionBaseDomainObject implements RoleInterf
 	protected String name;
 
 	/**
-	 * Empty constructor.
-	 */
-	public Role()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns the Unique identifier of this Object.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"

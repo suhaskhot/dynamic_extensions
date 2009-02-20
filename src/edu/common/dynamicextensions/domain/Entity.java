@@ -106,14 +106,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	}
 
 	/**
-	 * Empty Constructor.
-	 */
-	public Entity()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * This method returns the Collection of primaryKeyAttributes.
 	 * @hibernate.list name="PrimaryKeyAttributeCollection" table="DYEXTN_ENTIY_COMPOSITE_KEY_REL"
 	 * cascade="save-update" inverse="false" lazy="false"

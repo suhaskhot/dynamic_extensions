@@ -59,15 +59,6 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	protected Collection<ContainerInterface> mainContainerCollection = new HashSet<ContainerInterface>();
 
 	/**
-	 * Empty Constructor
-	 */
-	public EntityGroup()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-
-	/**
 	 * This method returns the Collection of the Entities in the group.
 	 * @hibernate.set name="entityCollection" table="DYEXTN_ENTITY"
 	 * cascade="save-update" inverse="false" lazy="false"

@@ -43,12 +43,6 @@ public class PathAssociationRelation extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected Long targetInstanceId;
-
-	public PathAssociationRelation()
-	{
-		super();
-	}
-
 	/**
 	 * This method returns the unique identifier of the PathAssociationRelation.
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"

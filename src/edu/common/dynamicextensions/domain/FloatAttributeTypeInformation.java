@@ -16,15 +16,6 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 		implements
 			FloatTypeInformationInterface
 {
-
-	/**
-	 * Empty Constructor.
-	 */
-	public FloatAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */

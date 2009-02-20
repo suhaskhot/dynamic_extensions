@@ -19,14 +19,6 @@ public class ObjectAttributeTypeInformation extends AttributeTypeInformation
 {
 
 	/**
-	 * Empty Constructor.
-	 */
-	public ObjectAttributeTypeInformation()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()

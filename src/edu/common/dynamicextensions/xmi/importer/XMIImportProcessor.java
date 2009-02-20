@@ -143,15 +143,6 @@ public class XMIImportProcessor
 	private Map<AssociationInterface, Map<String, String>> associationVsMapTagValues = new HashMap<AssociationInterface, Map<String, String>>();
 
 	/**
-	 * Default constructor
-	 *
-	 */
-	public XMIImportProcessor()
-	{
-		super();
-	}
-
-	/**
 	 * @return
 	 */
 	public XMIConfiguration getXmiConfigurationObject()
@@ -2593,7 +2584,7 @@ public class XMIImportProcessor
 						controlInterface = deFactory.createComboBox();
 					}
 					if ((controlModel.getIsMultiSelect() != null)
-							&& (controlModel.getIsMultiSelect().booleanValue() == true))
+							&& (controlModel.getIsMultiSelect().booleanValue()))
 					{
 						controlInterface = controlProcessor.getListBoxControl(controlInterface,
 								controlModel);

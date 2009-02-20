@@ -67,13 +67,6 @@ public class TreeGeneratorTag extends TagSupport
 	}
 
 	/**
-	 */
-	public TreeGeneratorTag()
-	{
-		super();
-	}
-
-	/**
 	 * @return EVAL_BODY_INCLUDE
 	 * @throws JspException : JSP Exception
 	 */

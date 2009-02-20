@@ -25,8 +25,9 @@ import edu.wustl.common.querysuite.metadata.category.Category;
 public class EntityCache extends AbstractEntityCache {
     private static final long serialVersionUID = 1234567890L;
 
-    private EntityCache() {
-        
+    private EntityCache() 
+    {
+    	super();
     }
     /**
      * @return the singleton instance of the EntityCache class.

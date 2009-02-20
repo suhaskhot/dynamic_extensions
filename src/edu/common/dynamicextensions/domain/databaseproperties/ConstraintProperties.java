@@ -20,15 +20,6 @@ public class ConstraintProperties extends DatabaseProperties
 {
 
 	/**
-	 * Empty constructor
-	 *
-	 */
-	public ConstraintProperties()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	 * The source entity key through which constraint is related.
 	 * e.g. Used in case of foreign key constraint in one to many relation.
 	 */

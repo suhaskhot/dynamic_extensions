@@ -23,15 +23,6 @@ public abstract class DatabaseProperties extends DynamicExtensionBaseDomainObjec
 	protected String name;
 
 	/**
-	 *
-	 *
-	 */
-	public DatabaseProperties()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
 	* @hibernate.id name="id" column="IDENTIFIER" type="long"
 	* length="30" unsaved-value="null" generator-class="native"
 	* @hibernate.generator-param name="sequence" value="DYEXTN_DATABASE_PROPERTIES_SEQ"

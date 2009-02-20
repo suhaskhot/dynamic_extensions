@@ -344,7 +344,7 @@ public class DatabaseCache extends GraphPathFinderCache
 
 	DatabaseCache()
 	{
-		// for testing purpose
+		super();
 	}
 }
 

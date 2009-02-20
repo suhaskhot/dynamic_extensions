@@ -137,6 +137,6 @@ public class SQLQueryUtil {
             results.add(oneRow);
         }
 
-        return results.toArray(new String[0][0]);
+        return results.toArray(new String[results.size()][noOfColumns]);
     }
 }

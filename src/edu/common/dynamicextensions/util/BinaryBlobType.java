@@ -57,14 +57,6 @@ public class BinaryBlobType implements CompositeUserType
 	protected boolean isBlob = true;
 
 	/**
-	 * Creates new instance of BinaryBlobType
-	 */
-	public BinaryBlobType()
-	{
-		//isBlob = "blob".equalsIgnoreCase(PropertiesHelper.getString("hibernate.binary_or_blob", Environment.getProperties(), "binary"));
-	}
-
-	/**
 	 * Get the "property names" that may be used in a
 	 * query.
 	 *

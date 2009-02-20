@@ -17,15 +17,6 @@ import edu.common.dynamicextensions.util.global.DEConstants;
 public class CacheManager
 {
 
-	/**
-	 * Create a new CacheManager instance
-	 *
-	 */
-	public CacheManager()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
 	static Map cacheMap;
 
 	/**

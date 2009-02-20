@@ -98,7 +98,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	protected EntityManager()
 	{
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/**
@@ -866,7 +866,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					{
 						String dateFormat = ((DateAttributeTypeInformation) primitiveAttr
 								.getAttributeTypeInformation()).getFormat();
-						object = new Timestamp(new SimpleDateFormat(dateFormat).parse(
+						object = new Timestamp(new SimpleDateFormat(dateFormat,CommonServiceLocator.getInstance().getDefaultLocale()).parse(
 								object.toString()).getTime());
 					}
 				}
@@ -1414,7 +1414,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 				valueObj = resultSet.getTimestamp(index + 1);
 
-				SimpleDateFormat sdFormatter = new SimpleDateFormat(format);
+				SimpleDateFormat sdFormatter = new SimpleDateFormat(format,CommonServiceLocator.getInstance().getDefaultLocale());
 				value = sdFormatter.format((java.util.Date) valueObj);
 			}
 			else

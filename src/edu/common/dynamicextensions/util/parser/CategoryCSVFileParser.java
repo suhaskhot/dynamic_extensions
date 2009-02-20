@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -27,6 +28,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.exception.DAOException;
 
 /**
@@ -196,12 +198,13 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		String[] nextLine = readLine();
 		int counter;
 		boolean permissibleValuesPresent = false;
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		for (counter = 0; counter < nextLine.length; counter++)
 		{
-			if (nextLine[counter].toLowerCase().startsWith(
-					CategoryCSVConstants.PERMISSIBLE_VALUES.toLowerCase())
-					|| nextLine[counter].toLowerCase().startsWith(
-							CategoryCSVConstants.PERMISSIBLE_VALUES_FILE.toLowerCase()))
+			if (nextLine[counter].toLowerCase(locale).startsWith(
+					CategoryCSVConstants.PERMISSIBLE_VALUES.toLowerCase(locale))
+					|| nextLine[counter].toLowerCase(locale).startsWith(
+							CategoryCSVConstants.PERMISSIBLE_VALUES_FILE.toLowerCase(locale)))
 			{
 				permissibleValuesPresent = true;
 				break;
@@ -365,10 +368,11 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public Map<String, String> getPermissibleValueOptions()
 	{
 		Map<String, String> permissibleValueOptions = new HashMap<String, String>();
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		for (String string : readLine())
 		{
-			if (string.toLowerCase().startsWith(
-					CategoryCSVConstants.PERMISSIBLE_VALUE_OPTIONS.toLowerCase() + "~"))
+			if (string.toLowerCase(locale).startsWith(
+					CategoryCSVConstants.PERMISSIBLE_VALUE_OPTIONS.toLowerCase(locale) + "~"))
 			{
 				String[] controlOptionsValue = string.split("~")[1].split(":");
 
@@ -414,8 +418,9 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasDisplayLable()
 	{
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		if (readLine()[0].trim().toLowerCase().startsWith(
-				CategoryCSVConstants.DISPLAY_LABLE.toLowerCase()))
+				CategoryCSVConstants.DISPLAY_LABLE.toLowerCase(locale)))
 		{
 			return true;
 		}
@@ -488,9 +493,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public Map<String, String> getControlOptions()
 	{
 		Map<String, String> controlOptions = new HashMap<String, String>();
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		for (String string : readLine())
 		{
-			if (string.toLowerCase().startsWith(CategoryCSVConstants.OPTIONS.toLowerCase() + "~"))
+			if (string.toLowerCase(locale).startsWith(CategoryCSVConstants.OPTIONS.toLowerCase(locale) + "~"))
 			{
 				String[] controlOptionsValue = string.split("~")[1].split(":");
 
@@ -513,24 +519,24 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			throws DynamicExtensionsSystemException
 	{
 		Map<String, Object> rules = new HashMap<String, Object>();
-
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		for (String string : readLine())
 		{
-			if (string.trim().toLowerCase().startsWith(
-					CategoryCSVConstants.RULES.toLowerCase() + "~"))
+			if (string.trim().toLowerCase(locale).startsWith(
+					CategoryCSVConstants.RULES.toLowerCase(locale) + "~"))
 			{
 				String[] rulesValues = string.trim().split("~")[1].split(":");
 
 				for (String ruleValue : rulesValues)
 				{
-					if (ruleValue.trim().toLowerCase().startsWith(
-							CategoryCSVConstants.RANGE.toLowerCase()))
+					if (ruleValue.trim().toLowerCase(locale).startsWith(
+							CategoryCSVConstants.RANGE.toLowerCase(locale)))
 					{
 						String[] rangeValues = ruleValue.trim().split("-");
 						for (String rangeValue : rangeValues)
 						{
-							if (!(rangeValue.trim().toLowerCase()
-									.startsWith(CategoryCSVConstants.RANGE.toLowerCase())))
+							if (!(rangeValue.trim().toLowerCase(locale)
+									.startsWith(CategoryCSVConstants.RANGE.toLowerCase(locale))))
 							{
 								String[] minMaxValues = rangeValue.trim().split("&");
 								boolean isDateRange = false;
@@ -556,7 +562,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 								}
 								else
 								{
-									rules.put(CategoryCSVConstants.RANGE.toLowerCase(), valuesMap);
+									rules.put(CategoryCSVConstants.RANGE.toLowerCase(locale), valuesMap);
 								}
 							}
 							else
@@ -619,8 +625,9 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean hasRelatedAttributes()
 	{
 		boolean flag = false;
-		if (readLine()[0].trim().toLowerCase().startsWith(
-				CategoryCSVConstants.RELATED_ATTIBUTE.toLowerCase()))
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		if (readLine()[0].trim().toLowerCase(locale).startsWith(
+				CategoryCSVConstants.RELATED_ATTIBUTE.toLowerCase(locale)))
 		{
 			flag = true;
 		}
@@ -633,9 +640,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean hasInsatanceInformation()
 	{
 		boolean flag = false;
+		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
 		if (readLine() != null
-				&& readLine()[0].trim().toLowerCase().startsWith(
-						CategoryCSVConstants.INSTANCE.toLowerCase()))
+				&& readLine()[0].trim().toLowerCase(locale).startsWith(
+						CategoryCSVConstants.INSTANCE.toLowerCase(locale)))
 		{
 			flag = true;
 		}

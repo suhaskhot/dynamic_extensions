@@ -997,7 +997,7 @@ public class CommonControlModel extends AbstractActionForm
 	public void setIsMultiSelect(Boolean isMultiSelect)
 	{
 		this.isMultiSelect = isMultiSelect;
-		if ((isMultiSelect != null) && (isMultiSelect == true))
+		if ((isMultiSelect != null) && isMultiSelect)
 		{
 			this.attributeMultiSelect = ProcessorConstants.LIST_TYPE_MULTI_SELECT;
 		}

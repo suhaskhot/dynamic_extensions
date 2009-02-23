@@ -56,7 +56,7 @@ public class InheritanceUtil {
     }
 
     /**
-     * Returns actual association if passed association is a derieved one. Else
+     * Returns actual association if passed association is a derived one. Else
      * returns the passed association
      * @param association
      *            Attribute for which actual association is expected.

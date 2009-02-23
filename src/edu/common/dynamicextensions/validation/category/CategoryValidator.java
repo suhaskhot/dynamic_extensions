@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.exception.DAOException;
 
 /**
@@ -144,6 +146,7 @@ public class CategoryValidator
 	public static void checkRangeAgainstAttributeValueRange(AttributeInterface attribute,
 			Map<String, Object> rules) throws DynamicExtensionsSystemException, ParseException
 	{
+		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
 		if (attribute == null)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -159,10 +162,10 @@ public class CategoryValidator
 			{
 				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.DATE_RANGE);
 			}
-			else if (rules.containsKey(CategoryCSVConstants.RANGE.toLowerCase()))
+			else if (rules.containsKey(CategoryCSVConstants.RANGE.toLowerCase(locale)))
 			{
 				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.RANGE
-						.toLowerCase());
+						.toLowerCase(locale));
 			}
 
 			if (catMinMaxValues != null && !catMinMaxValues.isEmpty())
@@ -183,8 +186,9 @@ public class CategoryValidator
 	private static void validateRangeValues(AttributeInterface attribute,
 			Map<String, Object> catMinMaxValues) throws DynamicExtensionsSystemException
 	{
-		String minValue = (String) catMinMaxValues.get(CategoryCSVConstants.MIN.toLowerCase());
-		String maxValue = (String) catMinMaxValues.get(CategoryCSVConstants.MAX.toLowerCase());
+		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
+		String minValue = (String) catMinMaxValues.get(CategoryCSVConstants.MIN.toLowerCase(locale));
+		String maxValue = (String) catMinMaxValues.get(CategoryCSVConstants.MAX.toLowerCase(locale));
 
 		Map<String, String> values = new HashMap<String, String>();
 
@@ -204,14 +208,14 @@ public class CategoryValidator
 					if (ruleParameter.getName().equalsIgnoreCase(CategoryCSVConstants.MIN))
 					{
 						String min = ruleParameter.getValue();
-						values.put(CategoryCSVConstants.MIN.toLowerCase(), min);
+						values.put(CategoryCSVConstants.MIN.toLowerCase(locale), min);
 						validateRange(minValue, attribute, values);
 						values.clear();
 					}
 					if (ruleParameter.getName().equalsIgnoreCase(CategoryCSVConstants.MAX))
 					{
 						String max = ruleParameter.getValue();
-						values.put(CategoryCSVConstants.MAX.toLowerCase(), max);
+						values.put(CategoryCSVConstants.MAX.toLowerCase(locale), max);
 						validateRange(maxValue, attribute, values);
 						values.clear();
 					}
@@ -412,7 +416,7 @@ public class CategoryValidator
 		{
 			Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
 
-			if (isMultiSelect != null && isMultiSelect == true && abstractAttribute != null)
+			if (isMultiSelect != null && isMultiSelect && abstractAttribute != null)
 			{
 					if (!(abstractAttribute instanceof AssociationInterface))
 					{
@@ -426,7 +430,7 @@ public class CategoryValidator
 					{
 						Boolean isCollection = ((AssociationInterface) abstractAttribute)
 								.getIsCollection();
-						if (isCollection != null && isCollection == false)
+						if (isCollection != null && !isCollection)
 						{
 							throw new DynamicExtensionsSystemException(ApplicationProperties
 									.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -443,7 +447,7 @@ public class CategoryValidator
 				{
 					Boolean isCollection = ((AssociationInterface) abstractAttribute)
 							.getIsCollection();
-					if (isCollection != null && isCollection == true)
+					if (isCollection != null && isCollection)
 					{
 						throw new DynamicExtensionsSystemException(
 								ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)

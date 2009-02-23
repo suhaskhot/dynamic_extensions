@@ -125,7 +125,7 @@ public class Utility {
 
     // TODO COPIED From edu.wustl.common.Utility
     public static String parseClassName(String fullyQualifiedName) {
-        return fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf(".") + 1);
+        return fullyQualifiedName.substring(fullyQualifiedName.lastIndexOf('.') + 1);
     }
 
     // END COPY

@@ -10,7 +10,7 @@ public class AttributeCanonicalFormProvider extends AbstractMetadataCanonicalFor
     }
 
     @Override
-    protected AttributeInterface getObjectFromEntityCache(Long id) {
-        return EntityCache.getInstance().getAttributeById(id);
+    protected AttributeInterface getObjectFromEntityCache(Long identifier) {
+        return EntityCache.getInstance().getAttributeById(identifier);
     }
 }

@@ -10,7 +10,7 @@ public class AssociationCanonicalFormProvider extends AbstractMetadataCanonicalF
     }
 
     @Override
-    protected AssociationInterface getObjectFromEntityCache(Long id) {
-        return EntityCache.getInstance().getAssociationById(id);
+    protected AssociationInterface getObjectFromEntityCache(Long identifier) {
+        return EntityCache.getInstance().getAssociationById(identifier);
     }
 }

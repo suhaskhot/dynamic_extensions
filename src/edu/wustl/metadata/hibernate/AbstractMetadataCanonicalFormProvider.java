@@ -10,12 +10,12 @@ public abstract class AbstractMetadataCanonicalFormProvider<T extends AbstractMe
         implements
             CanonicalFormProvider<T, Long> {
 
-    public final boolean equals(T o1, T o2) {
-        if (o1 == null && o2 == null) {
+    public final boolean equals(T object1, T object2) {
+        if (object1 == null && object2 == null) {
             return true;
         }
         // TODO check this
-        return o1.equals(o2);
+        return object1.equals(object2);
     }
 
     public final T nullSafeFromCanonicalForm(Long entityId) {
@@ -32,5 +32,5 @@ public abstract class AbstractMetadataCanonicalFormProvider<T extends AbstractMe
 
     public abstract Class<T> objectClass();
 
-    protected abstract T getObjectFromEntityCache(Long id);
+    protected abstract T getObjectFromEntityCache(Long identifier);
 }

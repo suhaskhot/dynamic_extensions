@@ -196,7 +196,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				container, categoryAttribute, permValueOptions, lineNumber,
 				permissibleValueNameList);
 		control.setCaption(controlCaption);
-		updateCommonControlProperties(control, controlCaption, container);
+		updateCommonControlProperties(control, controlCaption);
 		return control;
 	}
 
@@ -512,20 +512,18 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(
 				sourceContainer, targetContainer, categoryAssociation, targetContainer.getCaption());
-		updateCommonControlProperties(categoryAssociationControl, targetContainer.getCaption(),
-				sourceContainer);
+		updateCommonControlProperties(categoryAssociationControl, targetContainer.getCaption());
 		return categoryAssociationControl;
 	}
 
 	/**
 	 * @param path
 	 * @param associationList
-	 * @param entityGroup
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void updatePath(PathInterface path, List<AssociationInterface> associationList,
-			EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
+	private void updatePath(PathInterface path, List<AssociationInterface> associationList) 
+		throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
@@ -565,16 +563,16 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				String sourceEntity = entityArray[counter];
 				String targetEntity = entityArray[counter + 1];
-				if (sourceEntity.indexOf("[") == -1 || sourceEntity.indexOf("]") == -1)
+				if (sourceEntity.indexOf('[') == -1 || sourceEntity.indexOf(']') == -1)
 				{
 					throw new DynamicExtensionsSystemException(
 							"ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT " + instance);
 
 				}
 				associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(
-						sourceEntity.indexOf("[") + 1, sourceEntity.indexOf("]"))));
+						sourceEntity.indexOf('[') + 1, sourceEntity.indexOf(']'))));
 				associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(
-						targetEntity.indexOf("[") + 1, targetEntity.indexOf("]"))));
+						targetEntity.indexOf('[') + 1, targetEntity.indexOf(']'))));
 				counter++;
 			}
 		}
@@ -630,7 +628,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		PathInterface path = addPathBetweenCategoryEntities(sourceCategoryEntity,
 				targetCategoryEntity);
-		updatePath(path, associationList, entityGroup);
+		updatePath(path, associationList);
 		targetCategoryEntity.setNumberOfEntries(numberOfentries);
 
 		CategoryAssociationInterface categoryAssociation = DomainObjectFactory.getInstance()
@@ -1561,8 +1559,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 	}
 
-	private void updateCommonControlProperties(ControlInterface control, String caption,
-			ContainerInterface parentContainer)
+	/**
+	 * @param control
+	 * @param caption
+	 */
+	private void updateCommonControlProperties(ControlInterface control, String caption)
 	{
 		control.setCaption(caption);
 		//control.setSequenceNumber(getNextSequenceNumber(parentContainer));

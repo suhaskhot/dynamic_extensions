@@ -94,14 +94,14 @@ public class DateRangeValidator implements ValidatorRuleInterface
 							"dynExtn.validation.Date", placeHolders);
 				}
 
-				if (parameterName.equals("min"))
+				if ("min".equals(parameterName))
 				{
-					checkMinDate(parameterDate, valueDate, attributeName, parameterValue,
+					checkMinDate(parameterDate, valueDate, parameterValue,
 							controlCaption);
 				}
-				else if (parameterName.equals("max"))
+				else if ("max".equals(parameterName))
 				{
-					checkMaxDate(parameterDate, valueDate, attributeName, parameterValue,
+					checkMaxDate(parameterDate, valueDate, parameterValue,
 							controlCaption);
 				}
 			}
@@ -112,12 +112,11 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	/**
 	 * @param parameterDate
 	 * @param valueDate
-	 * @param attributeName
 	 * @param parameterValue
 	 * @param controlCaption
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkMinDate(Date parameterDate, Date valueDate, String attributeName,
+	private void checkMinDate(Date parameterDate, Date valueDate,
 			String parameterValue, String controlCaption)
 			throws DynamicExtensionsValidationException
 	{
@@ -135,12 +134,11 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	/**
 	 * @param parameterDate
 	 * @param valueDate
-	 * @param attributeName
 	 * @param parameterValue
 	 * @param controlCaption
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkMaxDate(Date parameterDate, Date valueDate, String attributeName,
+	private void checkMaxDate(Date parameterDate, Date valueDate,
 			String parameterValue, String controlCaption)
 			throws DynamicExtensionsValidationException
 	{

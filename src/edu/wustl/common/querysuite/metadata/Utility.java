@@ -32,22 +32,22 @@ public class Utility {
     }
 
     /**
-     * @param s1 String
-     * @param s2 String
-     * @param s3 String
-     * @param s4 String
+     * @param string1 String
+     * @param string2 String
+     * @param string3 String
+     * @param string4 String
      * @return Concatenated string made after connecting s1, s2, s3, s4 by
      *         {@link Constants#CONNECTOR}
      */
-    public static String concatStrings(String s1, String s2, String s3, String s4) {
+    public static String concatStrings(String string1, String string2, String string3, String string4) {
         StringBuffer buff = new StringBuffer();
-        buff.append(s1);
+        buff.append(string1);
         buff.append(CONNECTOR);
-        buff.append(s2);
+        buff.append(string2);
         buff.append(CONNECTOR);
-        buff.append(s3);
+        buff.append(string3);
         buff.append(CONNECTOR);
-        buff.append(s4);
+        buff.append(string4);
         return buff.toString();
 
     }
@@ -59,9 +59,9 @@ public class Utility {
      */
     public static boolean isEnumerated(AttributeInterface attribute) {
         if (attribute.getAttributeTypeInformation().getDataElement() instanceof UserDefinedDEInterface) {
-            UserDefinedDEInterface de = (UserDefinedDEInterface) attribute.getAttributeTypeInformation()
+            UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attribute.getAttributeTypeInformation()
                     .getDataElement();
-            return de.getPermissibleValueCollection().size() != 0;
+            return userDefinedDE.getPermissibleValueCollection().size() != 0;
         }
         return false;
     }
@@ -73,9 +73,9 @@ public class Utility {
      */
     public static Collection<PermissibleValueInterface> getPermissibleValues(AttributeInterface attribute) {
         if (isEnumerated(attribute)) {
-            UserDefinedDEInterface de = (UserDefinedDEInterface) attribute.getAttributeTypeInformation()
+            UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attribute.getAttributeTypeInformation()
                     .getDataElement();
-            return de.getPermissibleValueCollection();
+            return userDefinedDE.getPermissibleValueCollection();
         }
         return new ArrayList<PermissibleValueInterface>(0);
     }

@@ -10,7 +10,7 @@ public class AssociationTreeObject
 	/**
 	 * 
 	 */
-	Long id;
+	Long identifier;
 
 	/**
 	 * 
@@ -20,12 +20,12 @@ public class AssociationTreeObject
 
 	/**
 	 * 
-	 * @param id
+	 * @param identifier
 	 * @param label
 	 */
-	public AssociationTreeObject(Long id, String label)
+	public AssociationTreeObject(Long identifier, String label)
 	{
-		this.id = id;
+		this.identifier = identifier;
 		this.label = label;
 	}
 
@@ -80,16 +80,16 @@ public class AssociationTreeObject
 	 */
 	public Long getId()
 	{
-		return id;
+		return identifier;
 	}
 
 	/**
 	 * 
-	 * @param id
+	 * @param identifier
 	 */
-	public void setId(Long id)
+	public void setId(Long identifier)
 	{
-		this.id = id;
+		this.identifier = identifier;
 	}
 
 	/**

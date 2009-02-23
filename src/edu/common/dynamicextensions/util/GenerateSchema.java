@@ -46,14 +46,14 @@ public class GenerateSchema
 		
 		File file = new File("db.properties");
 		BufferedInputStream stram = new BufferedInputStream(new FileInputStream(file));  
-		Properties p = new Properties();
-		p.load(stram);
+		Properties properties = new Properties();
+		properties.load(stram);
 		stram.close();
 		
 		
 			
 		Configuration cfg = new Configuration();
-		cfg.setProperties(p);
+		cfg.setProperties(properties);
 		cfg.addDirectory(new File("./src"));
 		new SchemaExport(cfg).setOutputFile("query.sql").setDelimiter(";").create(isToPrintOnConsole, isToExecuteOnDB);
 //		if(isToExecuteOnDB)

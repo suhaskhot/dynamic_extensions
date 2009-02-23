@@ -127,30 +127,30 @@ public class BinaryBlobType implements CompositeUserType
 	 * Compare two instances of the class mapped by this type for persistence "equality".
 	 * Equality of the persistent state.
 	 *
-	 * @param x
-	 * @param y
+	 * @param object1
+	 * @param object2
 	 * @return boolean
 	 * @throws org.hibernate.HibernateException
 	 *
 	 */
-	public boolean equals(Object x, Object y) throws HibernateException
+	public boolean equals(Object object1, Object object2) throws HibernateException
 	{
-		return Hibernate.BINARY.isEqual(x, y);
+		return Hibernate.BINARY.isEqual(object1, object2);
 	}
 
 	/**
 	 * Get a hashcode for the instance, consistent with persistence "equality"
 	 */
-	public int hashCode(Object x) throws HibernateException
+	public int hashCode(Object object) throws HibernateException
 	{
-		return Hibernate.BINARY.getHashCode(x, null);
+		return Hibernate.BINARY.getHashCode(object, null);
 	}
 
 	/**
 	 * Retrieve an instance of the mapped class from a JDBC resultset. Implementors
 	 * should handle possibility of null values.
 	 *
-	 * @param rs      a JDBC result set
+	 * @param resultSet      a JDBC result set
 	 * @param names   the column names
 	 * @param session
 	 * @param owner   the containing entity
@@ -159,12 +159,12 @@ public class BinaryBlobType implements CompositeUserType
 	 *
 	 * @throws java.sql.SQLException
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+	public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException
 	{
 		if (isBlob)
 		{
-			Blob blob = (Blob) Hibernate.BLOB.nullSafeGet(rs, names, session, owner);
+			Blob blob = (Blob) Hibernate.BLOB.nullSafeGet(resultSet, names, session, owner);
 			if (blob == null)
 			{
 				return null;
@@ -176,7 +176,7 @@ public class BinaryBlobType implements CompositeUserType
 		}
 		else
 		{
-			return Hibernate.BINARY.nullSafeGet(rs, names, session, owner);
+			return Hibernate.BINARY.nullSafeGet(resultSet, names, session, owner);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class BinaryBlobType implements CompositeUserType
 	 * should handle possibility of null values. A multi-column type should be written
 	 * to parameters starting from <tt>index</tt>.
 	 *
-	 * @param st      a JDBC prepared statement
+	 * @param prepStatement      a JDBC prepared statement
 	 * @param value   the object to write
 	 * @param index   statement parameter index
 	 * @param session
@@ -193,24 +193,24 @@ public class BinaryBlobType implements CompositeUserType
 	 *
 	 * @throws java.sql.SQLException
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index,
+	public void nullSafeSet(PreparedStatement prepStatement, Object value, int index,
 			SessionImplementor session) throws HibernateException, SQLException
 	{
 		if (isBlob)
 		{
 			if (value == null)
 			{
-				Hibernate.BLOB.nullSafeSet(st, value, index, session);
+				Hibernate.BLOB.nullSafeSet(prepStatement, value, index, session);
 			}
 			else
 			{
 				Blob blob = Hibernate.createBlob((byte[]) value);
-				Hibernate.BLOB.nullSafeSet(st, blob, index, session);
+				Hibernate.BLOB.nullSafeSet(prepStatement, blob, index, session);
 			}
 		}
 		else
 		{
-			Hibernate.BINARY.nullSafeSet(st, value, index, session);
+			Hibernate.BINARY.nullSafeSet(prepStatement, value, index, session);
 		}
 	}
 
@@ -307,10 +307,10 @@ public class BinaryBlobType implements CompositeUserType
 		{
 			output = new ByteArrayOutputStream();
 			byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-			int n = 0;
-			while (-1 != (n = input.read(buffer)))
+			int pointerPosition = 0;
+			while (-1 != (pointerPosition = input.read(buffer)))
 			{
-				output.write(buffer, 0, n);
+				output.write(buffer, 0, pointerPosition);
 			}
 			return output.toByteArray();
 

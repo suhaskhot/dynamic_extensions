@@ -224,7 +224,7 @@ public class DynamicExtensionsUtility
 		try
 		{
 			// After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
-			List objectList = bizLogic.retrieve(objectName, DEConstants.ID, new Long(identifier));
+			List objectList = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, new Long(identifier));
 
 			if (objectList == null || objectList.isEmpty())
 			{
@@ -635,19 +635,19 @@ public class DynamicExtensionsUtility
 		Collections.sort(list, new Comparator()
 		{
 
-			public int compare(Object o1, Object o2)
+			public int compare(Object object1, Object object2)
 			{
-				String s1 = "";
-				String s2 = "";
-				if (o1 != null)
+				String obj1Name = "";
+				String obj2Name = "";
+				if (object1 != null)
 				{
-					s1 = ((NameValueBean) o1).getName();
+					obj1Name = ((NameValueBean) object1).getName();
 				}
-				if (o2 != null)
+				if (object2 != null)
 				{
-					s2 = ((NameValueBean) o2).getName();
+					obj2Name = ((NameValueBean) object2).getName();
 				}
-				return s1.compareTo(s2);
+				return obj1Name.compareTo(obj2Name);
 			}
 		});
 	}
@@ -1208,9 +1208,9 @@ public class DynamicExtensionsUtility
 		if (role.getMinimumCardinality().equals(Cardinality.MANY)
 				|| role.getMaximumCardinality().equals(Cardinality.ZERO))
 		{
-			Cardinality e = role.getMinimumCardinality();
+			Cardinality cardinality = role.getMinimumCardinality();
 			role.setMinimumCardinality(role.getMaximumCardinality());
-			role.setMaximumCardinality(e);
+			role.setMaximumCardinality(cardinality);
 		}
 
 		if (role.getMaximumCardinality().equals(Cardinality.ZERO))
@@ -1560,18 +1560,18 @@ public class DynamicExtensionsUtility
 			boolean isAddColumnForInheritance) throws DynamicExtensionsSystemException
 	{
 		EntityInterface parentEntity = childEntity.getParentEntity();
-		Long id = childEntity.getId();
+		Long identifier = childEntity.getId();
 		Entity dbaseCopy;
-		if (id == null && parentEntity != null)
+		if (identifier == null && parentEntity != null)
 		{
 			getConstraintKeyProperties(childEntity, parentEntity, isAddColumnForInheritance);
 		}
-		else if (id != null)
+		else if (identifier != null)
 		{
 			try
 			{
 				dbaseCopy = (Entity) DynamicExtensionsUtility.getCleanObject(Entity.class
-						.getCanonicalName(), id);
+						.getCanonicalName(), identifier);
 			}
 			catch (DAOException e)
 			{
@@ -1649,9 +1649,9 @@ public class DynamicExtensionsUtility
 	public static ConstraintPropertiesInterface getConstraintPropertiesForAssociation(
 			AssociationInterface association) throws DynamicExtensionsSystemException
 	{
-		Long id = association.getId();
+		Long identifier = association.getId();
 		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
-		if (id == null)
+		if (identifier == null)
 		{
 			constraintProperties = getConstraintKeyPropertiesForAssociation(association);
 
@@ -1661,7 +1661,7 @@ public class DynamicExtensionsUtility
 			AssociationInterface dbaseCopy;
 			try
 			{
-				dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(Association.class.getCanonicalName(),id);
+				dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(Association.class.getCanonicalName(),identifier);
 			}
 			catch (DAOException e)
 			{
@@ -1861,13 +1861,13 @@ public class DynamicExtensionsUtility
 			return "";
 		}
 		String res = "";
-		int i = str.indexOf(one, 0);
+		int index = str.indexOf(one, 0);
 		int lastpos = 0;
-		while (i != -1)
+		while (index != -1)
 		{
-			res += str.substring(lastpos, i) + another;
-			lastpos = i + one.length();
-			i = str.indexOf(one, lastpos);
+			res += str.substring(lastpos, index) + another;
+			lastpos = index + one.length();
+			index = str.indexOf(one, lastpos);
 		}
 		res += str.substring(lastpos);
 		return res;
@@ -2174,25 +2174,25 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getCategoryEntityName(String categoryEntityName)
 	{
-		Pattern p = Pattern.compile("[]]");
+		Pattern pattern = Pattern.compile("[]]");
 		String entityName=categoryEntityName;
 		if (entityName != null && entityName.length() > 0)
 		{
-			Matcher m = p.matcher(entityName);
-			StringBuffer sb = new StringBuffer();
-			boolean result = m.find();
+			Matcher matcher = pattern.matcher(entityName);
+			StringBuffer stringBuff = new StringBuffer();
+			boolean result = matcher.find();
 			// Loop through and create a new String
 			// with the replacements
 			while (result)
 			{
-				m.appendReplacement(sb, entityName.subSequence(m.start(), m.end()) + " ");
-				result = m.find();
+				matcher.appendReplacement(stringBuff, entityName.subSequence(matcher.start(), matcher.end()) + " ");
+				result = matcher.find();
 			}
 			//Add the last segment of input to
 			//the new String
-			m.appendTail(sb);
+			matcher.appendTail(stringBuff);
 
-			String[] categoryEntityNameArray = sb.toString().trim().split(" ");
+			String[] categoryEntityNameArray = stringBuff.toString().trim().split(" ");
 			entityName = categoryEntityNameArray[categoryEntityNameArray.length - 1];
 		}
 		return entityName;

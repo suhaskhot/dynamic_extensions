@@ -96,7 +96,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			String operation = formDefinitionForm.getOperation();
 			if (operation.equals(DEConstants.SAVE_FORM))
 			{
-				saveContainer(request, formDefinitionForm);
+				saveContainer(request);
 				saveMessages(request, getSuccessMessage(formDefinitionForm));
 			}
 
@@ -131,11 +131,10 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * This method saves the Container in the Database, that is currently in the Cache.
 	 * @param request
-	 * @param formDefinitionForm
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void saveContainer(HttpServletRequest request, FormDefinitionForm formDefinitionForm)
+	private void saveContainer(HttpServletRequest request)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		ContainerProcessor containerProcessor = ContainerProcessor.getInstance();

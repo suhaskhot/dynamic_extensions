@@ -1856,7 +1856,7 @@ public class DynamicExtensionsUtility
 			return str;
 		}
 		//    	 In a string replace one substring with another
-		if (str.equals(""))
+		if ("".equals(str))
 		{
 			return "";
 		}

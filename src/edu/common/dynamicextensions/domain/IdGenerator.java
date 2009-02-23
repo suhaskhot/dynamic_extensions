@@ -29,11 +29,11 @@ public class IdGenerator extends DynamicExtensionBaseDomainObject implements IdG
 	}
 
 	/**
-	 * @param id id
+	 * @param identifier id
 	 */
-	public void setId(Long id)
+	public void setId(Long identifier)
 	{
-		this.id = id;
+		this.id = identifier;
 	}
 
 	/**

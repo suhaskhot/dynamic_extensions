@@ -329,17 +329,17 @@ public class Entity extends AbstractEntity implements EntityInterface
 
 	/**
 	 * This method returns the attribute for the given corresponding identifier.
-	 * @param id identifier of the desired AbstractAttribute.
+	 * @param identifier identifier of the desired AbstractAttribute.
 	 * @return the matched instance of AbstractAttribute.
 	 */
-	public AttributeInterface getAttributeByIdentifier(Long id)
+	public AttributeInterface getAttributeByIdentifier(Long identifier)
 	{
 		AttributeInterface attribute = null;
 		Collection<AttributeInterface> attributeCollection = getAttributeCollection();
 
 		for (AttributeInterface attributeIterator : attributeCollection)
 		{
-			if (attributeIterator.getId() != null && attributeIterator.getId().equals(id))
+			if (attributeIterator.getId() != null && attributeIterator.getId().equals(identifier))
 			{
 				attribute = attributeIterator;
 				break;
@@ -350,17 +350,17 @@ public class Entity extends AbstractEntity implements EntityInterface
 
 	/**
 	 * This method returns the attribute for the given corresponding identifier.
-	 * @param id identifier of the desired AbstractAttribute.
+	 * @param identifier identifier of the desired AbstractAttribute.
 	 * @return the matched instance of AbstractAttribute.
 	 */
-	public AssociationInterface getAssociationByIdentifier(Long id)
+	public AssociationInterface getAssociationByIdentifier(Long identifier)
 	{
 		AssociationInterface association = null;
 		Collection<AssociationInterface> associationCollection = getAssociationCollection();
 
 		for (AssociationInterface associationIterator : associationCollection)
 		{
-			if (associationIterator.getId() != null && associationIterator.getId().equals(id))
+			if (associationIterator.getId() != null && associationIterator.getId().equals(identifier))
 			{
 				association = associationIterator;
 				break;

@@ -45,9 +45,9 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	/** 
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setId(java.lang.Long)
 	 */
-	public void setId(Long id)
+	public void setId(Long identifier)
 	{
-		this.id = id;
+		this.id = identifier;
 	}
 
 	/**

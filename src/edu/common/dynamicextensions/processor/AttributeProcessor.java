@@ -449,9 +449,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (attributeTypeInformation instanceof ByteArrayAttributeTypeInformation)
 			{
-				populateByteArrayAttributeInterface(
-						(ByteArrayAttributeTypeInformation) attributeTypeInformation,
-						attributeUIBeanInformationIntf);
+				populateByteArrayAttributeInterface();
 			}
 			else if (attributeTypeInformation instanceof FileAttributeTypeInformation)
 			{
@@ -573,9 +571,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param byteArrayAttribute : Byte Array Attribute
 	 * @param attributeUIBeanInformationIntf : UI bean containing information entered  by the user
 	 */
-	private void populateByteArrayAttributeInterface(
-			ByteArrayAttributeTypeInformation byteArrayAttribute,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
+	private void populateByteArrayAttributeInterface()
 	{
 		//TODO : Code for byte array attribute initialization
 	}
@@ -913,8 +909,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					else if (DynamicExtensionsUtility.isDataTypeNumeric(attributeType))
 					{
 						permissibleValueIntf = getPermissibleValueInterfaceForNumber(
-								attributeUIBeanInformationIntf, permissibleValue,
-								permissibleValueDesc, pvSemanticPropColln);
+								attributeUIBeanInformationIntf, permissibleValue);
 					}
 					//populate common properties
 					if (permissibleValueIntf instanceof PermissibleValue)
@@ -944,7 +939,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
-			String permissibleValue, String permissibleValueDesc, Collection pvSemanticPropColln)
+			String permissibleValue)
 			throws DynamicExtensionsApplicationException
 	{
 

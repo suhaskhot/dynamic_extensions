@@ -97,7 +97,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		DataEntryForm dataEntryForm = (DataEntryForm) form;
 		Set<AttributeInterface> attributes = new HashSet<AttributeInterface>();
 		addPrecisionZeroes(recordMap, attributes);
-		updateStacks(request, dataEntryForm, containerInterface, recordMap, containerStack,
+		updateStacks(dataEntryForm, containerStack,
 				valueMapStack);
 
 		if ((!containerStack.isEmpty()) && (!valueMapStack.isEmpty()))
@@ -229,16 +229,11 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * 
-	 * @param request
 	 * @param form
-	 * @param containerInterface
-	 * @param recordMap
 	 * @param containerStack
 	 * @param valueMapStack
 	 */
-	private void updateStacks(HttpServletRequest request, DataEntryForm dataEntryForm,
-			ContainerInterface containerInterface,
-			Map<BaseAbstractAttributeInterface, Object> recordMap,
+	private void updateStacks(DataEntryForm dataEntryForm,
 			Stack<ContainerInterface> containerStack,
 			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
@@ -324,7 +319,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 					String value = (String) recordMap.get(currentAttribute);
 					if (value.contains(".") && !value.contains("E"))
 					{
-						int placesAfterDecimal = value.length() - (value.indexOf(".") + 1);
+						int placesAfterDecimal = value.length() - (value.indexOf('.') + 1);
 
 						if (placesAfterDecimal != decimalPlaces)
 						{

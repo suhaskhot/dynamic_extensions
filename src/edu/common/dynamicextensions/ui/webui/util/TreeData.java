@@ -177,23 +177,23 @@ public class TreeData
 				defaultClassName = EXPANDED_CLASS_NAME;
 			}
 			String style = null;
-			String id = "";
+			String identifier = "";
 			if (! "0".equals(parent))
 			{
-				id = treeName + "N" + parent;
+				identifier = treeName + "N" + parent;
 				if (isTreeExpanded)
 				{
-					print("<ul class=expandedTree id='" + id + "' >");
+					print("<ul class=expandedTree id='" + identifier + "' >");
 				}
 				else
 				{
-					print("<ul class=collapsedTree id='" + id + "' >");
+					print("<ul class=collapsedTree id='" + identifier + "' >");
 				}
 			}
 			else
 			{
-				id = treeName + "N" + parent;
-				print("<ul  id='" + id + "' >");
+				identifier = treeName + "N" + parent;
+				print("<ul  id='" + identifier + "' >");
 			}
 			for (int i = 0; i < nodeList.getLength(); i++)
 			{
@@ -220,8 +220,8 @@ public class TreeData
 					}
 					if (hasChild)
 					{
-						id = treeName + "P" + parent + i;
-						print("<li " + style + " class='" + defaultClassName + "' id='" + id + "'>");
+						identifier = treeName + "P" + parent + i;
+						print("<li " + style + " class='" + defaultClassName + "' id='" + identifier + "'>");
 						if (displayRadioButton)
 						{
 							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='"
@@ -246,18 +246,18 @@ public class TreeData
 					else
 					//Means it is a leaf node
 					{
-						id = treeName + "L" + parent + i;
+						identifier = treeName + "L" + parent + i;
 						if (getNodeClickedFunction() != null)
 						{
 							node.setHref("javascript:changeSelection('" + fieldForSelectedObject
-									+ "','" + id + "','" + node.getSequenceNumber() + "');"
+									+ "','" + identifier + "','" + node.getSequenceNumber() + "');"
 									+ getNodeClickedFunction() + "('" + fieldForSelectedObject
 									+ "Name')");
 						}
 						else
 						{
 							node.setHref("javascript:changeSelection('" + fieldForSelectedObject
-									+ "','" + id + "','" + node.getSequenceNumber() + "');");
+									+ "','" + identifier + "','" + node.getSequenceNumber() + "');");
 						}
 						if ( "".equals(node.getTarget()))
 						{
@@ -270,7 +270,7 @@ public class TreeData
 									+ node.getSequenceNumber() + "' />");
 						}
 						print("<a class=treeview href=\"" + node.getHref() + "\"  title=\""
-								+ node.getToolTip() + "\" id='" + id + "'>" + node.getText()
+								+ node.getToolTip() + "\" id='" + identifier + "'>" + node.getText()
 								+ "</a>");
 					}
 

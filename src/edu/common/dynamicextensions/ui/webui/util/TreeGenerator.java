@@ -44,23 +44,23 @@ public class TreeGenerator
 	{
 		TreeData treedata = new TreeData();
 		treedata.setImagesUrl("images/");
-		int i = 0;
-		TreeNode node = new TreeNode(rootName, i++);
+		int counter = 0;
+		TreeNode node = new TreeNode(rootName, counter++);
 
 		TreeNode subNode = null;
 		if (container != null)
 		{
 			String containerName = container.getCaption();
-			subNode = new TreeNode(containerName, i++);
+			subNode = new TreeNode(containerName, counter++);
 			node.add(subNode);
 		}
 		if (subNode == null)
 		{
-			node.add(new TreeNode("New Form", i));
+			node.add(new TreeNode("New Form", counter));
 		}
 		else
 		{
-			subNode.add(new TreeNode("New Form", i));
+			subNode.add(new TreeNode("New Form", counter));
 		}
 		treedata.add(node);
 		return treedata;

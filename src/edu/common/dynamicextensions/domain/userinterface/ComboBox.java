@@ -106,7 +106,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'"
 				+ defaultValue + "'," + "selectOnFocus:true,applyTo: '" + htmlComponentName
 				+ "'});";
-		if (!defaultValue.equals(""))
+		if (!"".equals(defaultValue))
 		{
 			htmlString = htmlString
 					+ "ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){combo.setValue('"

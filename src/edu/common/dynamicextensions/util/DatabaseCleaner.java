@@ -232,7 +232,7 @@ public class DatabaseCleaner
 		String query = null;
 		Connection conn = null;
 
-		int index = args[1].lastIndexOf("/");
+		int index = args[1].lastIndexOf('/');
 		String databaseName = args[1].substring(index + 1);
 		String url = args[1].substring(0, index);
 		Logger.out.info(url + " " + databaseName);
@@ -271,7 +271,7 @@ public class DatabaseCleaner
 		String query = null;
 		Connection conn = null;
 
-		int index = args[1].lastIndexOf("=");
+		int index = args[1].lastIndexOf('=');
 		String databaseName = args[1].substring(index + 1);
 		String url = args[1].substring(0, index);
 

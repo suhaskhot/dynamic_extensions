@@ -217,7 +217,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 
 		Map<String, Collection<SemanticPropertyInterface>> pvVsSemanticPropertyCollection = new LinkedHashMap<String, Collection<SemanticPropertyInterface>>();
 
-		int indexOfTilda = nextLine[counter].indexOf("~");
+		int indexOfTilda = nextLine[counter].indexOf('~');
 		String permissibleValueKey = nextLine[counter].substring(0, indexOfTilda);
 
 		if (CategoryCSVConstants.PERMISSIBLE_VALUES.equalsIgnoreCase(permissibleValueKey))
@@ -227,8 +227,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			int pvStringLength = 1;
 			while (pvStringLength <= originalPVString.trim().length())
 			{
-				int indexOFColon = pvString.indexOf(":");
-				int indexOfConceptCodeStart = pvString.indexOf("<");
+				int indexOFColon = pvString.indexOf(':');
+				int indexOfConceptCodeStart = pvString.indexOf('{');
 				if (indexOFColon < indexOfConceptCodeStart
 						|| (indexOFColon == -1 && indexOfConceptCodeStart == -1))
 				{
@@ -243,7 +243,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					permiValue = pvString.substring(0, indexOfConceptCodeStart);
 					pvStringLength = pvStringLength + permiValue.length();
 
-					int conceptCodeEnd = pvString.indexOf(">");
+					int conceptCodeEnd = pvString.indexOf('}');
 					if (pvString.charAt(conceptCodeEnd + 1) == ':')
 					{
 						pvStringLength = pvStringLength + 1;
@@ -276,7 +276,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 				}
 				else
 				{//Concept Code not defined
-					int indexOfColon = pvString.indexOf(":");
+					int indexOfColon = pvString.indexOf(':');
 					if (indexOfColon != -1)
 					{
 						permiValue = pvString.substring(0, indexOfColon);
@@ -309,8 +309,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					{
 						Collection<SemanticPropertyInterface> semanticPropertyCollection = null;
 						String pvString = line.trim();
-						int indexOfConceptCodeStart = pvString.indexOf("<");
-						int conceptCodeEnd = pvString.indexOf(">");
+						int indexOfConceptCodeStart = pvString.indexOf('{');
+						int conceptCodeEnd = pvString.indexOf('}');
 						String pv = "";
 						if (indexOfConceptCodeStart != -1 && conceptCodeEnd != -1)
 						{

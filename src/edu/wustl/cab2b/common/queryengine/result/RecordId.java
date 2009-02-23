@@ -17,23 +17,23 @@ public class RecordId implements Serializable
 	 * The "identifier" is the value for the id attribute as obtained from
 	 * {@link edu.wustl.cab2b.common.util.Utility#getIdAttribute(EntityInterface)}.
 	 */
-	private String id;
+	private String identifier;
 
 	private String url;
 
-	public RecordId(String id, String url)
+	public RecordId(String identifier, String url)
 	{
-		if (id == null || url == null)
+		if (identifier == null || url == null)
 		{
 			throw new IllegalArgumentException();
 		}
-		this.id = id;
+		this.identifier = identifier;
 		this.url = url;
 	}
 
 	public String getId()
 	{
-		return id;
+		return identifier;
 	}
 
 	public String getUrl()

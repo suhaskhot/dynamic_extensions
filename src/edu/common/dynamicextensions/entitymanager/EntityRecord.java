@@ -40,11 +40,11 @@ public class EntityRecord implements EntityRecordInterface, Serializable
 	}
 
 	/**
-	 * @param id id
+	 * @param identifier id
 	 */
-	public EntityRecord(Long id)
+	public EntityRecord(Long identifier)
 	{
-		recordId = id;
+		recordId = identifier;
 	}
 
 	/**

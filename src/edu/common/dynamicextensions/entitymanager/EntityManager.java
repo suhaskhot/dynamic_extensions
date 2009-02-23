@@ -1546,8 +1546,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			while (resultSet.next())
 			{
 				EntityRecordInterface entityRecord = new EntityRecord();
-				Long id = resultSet.getLong(1);
-				entityRecord.setRecordId(id);
+				Long identifier = resultSet.getLong(1);
+				entityRecord.setRecordId(identifier);
 
 				Object[] values = new Object[recMetadata.getAttributeList().size()];
 

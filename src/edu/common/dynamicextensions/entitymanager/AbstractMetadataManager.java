@@ -173,7 +173,7 @@ public abstract class AbstractMetadataManager
 		try
 		{
 			// After moving to MYSQL 5.2, the type checking is strict so changing the identifier to Long.
-			List objects = bizLogic.retrieve(objectName, DEConstants.ID, new Long(identifier));
+			List objects = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, new Long(identifier));
 
 			if (objects == null || objects.isEmpty())
 			{
@@ -266,11 +266,11 @@ public abstract class AbstractMetadataManager
 				}
 
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(exception));
-				DynamicExtensionsSystemException ex = new DynamicExtensionsSystemException(message,
+				DynamicExtensionsSystemException xception = new DynamicExtensionsSystemException(message,
 						exception);
 
-				ex.setErrorCode(DYEXTN_S_000);
-				throw ex;
+				xception.setErrorCode(DYEXTN_S_000);
+				throw xception;
 			}
 		}
 	}
@@ -654,16 +654,16 @@ public abstract class AbstractMetadataManager
 	{
 		List<EntityRecord> records = new ArrayList<EntityRecord>();
 		EntityRecord entityRecord;
-		String id;
+		String identifier;
 
 		for (List innnerList : results)
 		{
 			if (innnerList != null && !innnerList.isEmpty())
 			{
-				id = (String) innnerList.get(0);
-				if (id != null)
+				identifier = (String) innnerList.get(0);
+				if (identifier != null)
 				{
-					entityRecord = new EntityRecord(new Long(id));
+					entityRecord = new EntityRecord(new Long(identifier));
 					records.add(entityRecord);
 				}
 			}

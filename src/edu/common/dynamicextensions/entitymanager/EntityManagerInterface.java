@@ -140,12 +140,12 @@ public interface EntityManagerInterface
 
 	/**
 	 * Returns the entity based on the id passed.
-	 * @param id
+	 * @param identifier
 	 * @return
 	 * @throws DynamicExtensionsSystemException thrown in case of fatal system exceptions
 	 * @throws DynamicExtensionsApplicationException thrown in case application specific errors.
 	 */
-	EntityInterface getEntityByIdentifier(Long id) throws DynamicExtensionsSystemException,
+	EntityInterface getEntityByIdentifier(Long identifier) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
 	/**
@@ -579,13 +579,13 @@ public interface EntityManagerInterface
 	 * @param entity
 	 * @param dataValue
 	 * @param jdbcDAO
-	 * @param id
+	 * @param identifier
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	Long insertDataForHeirarchy(EntityInterface entity,
-			Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDao, Long... id)
+			Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDao, Long... identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**

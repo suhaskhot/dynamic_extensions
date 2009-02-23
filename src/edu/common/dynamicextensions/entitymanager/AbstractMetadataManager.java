@@ -333,19 +333,19 @@ public abstract class AbstractMetadataManager
 			HQLPlaceHolderObject plcHolderObj = (HQLPlaceHolderObject) substParams
 					.get(Integer.toBinaryString(counter));
 			String objectType = plcHolderObj.getType();
-			if (objectType.equals("string"))
+			if ("string".equals(objectType))
 			{
 				query.setString(counter, plcHolderObj.getValue().toString());
 			}
-			else if (objectType.equals("integer"))
+			else if ("integer".equals(objectType))
 			{
 				query.setInteger(counter, Integer.parseInt(plcHolderObj.getValue().toString()));
 			}
-			else if (objectType.equals("long"))
+			else if ("long".equals(objectType))
 			{
 				query.setLong(counter, Long.parseLong(plcHolderObj.getValue().toString()));
 			}
-			else if (objectType.equals("boolean"))
+			else if ("boolean".equals(objectType))
 			{
 				query.setBoolean(counter, Boolean.parseBoolean(plcHolderObj.getValue().toString()));
 			}

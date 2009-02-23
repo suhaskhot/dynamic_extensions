@@ -83,16 +83,16 @@ public class DateValidator implements ValidatorRuleInterface
 
 			try
 			{
-				SimpleDateFormat sf = new SimpleDateFormat(dateFormat);
-				sf.setLenient(false);
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+				simpleDateFormat.setLenient(false);
 
 				if (isFromDateRangeValidator.length == 0)
 				{
-					tempDate = sf.parse(value);
+					tempDate = simpleDateFormat.parse(value);
 				}
 				else
 				{
-					sf.parse(value);
+					simpleDateFormat.parse(value);
 				}
 			}
 			catch (ParseException parseException)

@@ -72,7 +72,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 					&& (selectedControl instanceof ContainmentAssociationControl))
 			{
 				loadContainmentAssociationControl(request,
-						(ContainmentAssociationControl) selectedControl, controlsForm);
+						(ContainmentAssociationControl) selectedControl);
 				String operationMode = request.getParameter("operationMode");
 				request.setAttribute("operationMode", operationMode);
 				request.setAttribute("currentContainerName", containerInterface.getCaption());
@@ -111,7 +111,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * @param selectedControl
 	 */
 	private void loadContainmentAssociationControl(HttpServletRequest request,
-			ContainmentAssociationControl selectedControl, ControlsForm controlsForm)
+			ContainmentAssociationControl selectedControl)
 	{
 		//controlsForm.setCurrentContainerName(currentContainerName)
 		//update cache refernces

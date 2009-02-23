@@ -579,7 +579,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAttributeInterface catAttribute : catAttributes)
 		{
 			if (catAttribute.getIsRelatedAttribute() == null
-					|| catAttribute.getIsRelatedAttribute() == false)
+					|| !catAttribute.getIsRelatedAttribute())
 			{
 				flag = false;
 				break;
@@ -608,12 +608,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAttributeInterface catAttribute : catAttributes)
 		{
 			if (catAttribute.getIsRelatedAttribute() == null
-					|| catAttribute.getIsRelatedAttribute() == false)
+					|| !catAttribute.getIsRelatedAttribute())
 			{
 				return false;
 			}
-			else if (catAttribute.getIsRelatedAttribute() == true
-					&& (catAttribute.getIsVisible() != null && catAttribute.getIsVisible() == true))
+			else if (catAttribute.getIsRelatedAttribute()
+					&& (catAttribute.getIsVisible() != null && catAttribute.getIsVisible()))
 			{
 				return false;
 			}
@@ -694,7 +694,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAttributeInterface catAttribute : catAttributes)
 		{
 			if (catAttribute.getIsRelatedAttribute() != null
-					&& catAttribute.getIsRelatedAttribute() == true)
+					&& catAttribute.getIsRelatedAttribute())
 			{
 				AttributeInterface attribute = catAttribute.getAbstractAttribute().getEntity()
 						.getAttributeByName(catAttribute.getAbstractAttribute().getName());
@@ -1752,8 +1752,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						.getAllCategoryAttributes())
 				{
 					if ((catAttribute == rootCECatAttr)
-							&& (catAttribute.getIsRelatedAttribute() == null || catAttribute
-									.getIsRelatedAttribute() == false))
+							&& (catAttribute.getIsRelatedAttribute() == null || !catAttribute
+									.getIsRelatedAttribute()))
 					{
 						rootEntRecords.put(abstrAttribute, entityValue);
 					}

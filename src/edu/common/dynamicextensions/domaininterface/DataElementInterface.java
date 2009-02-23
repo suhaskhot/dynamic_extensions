@@ -17,8 +17,8 @@ public interface DataElementInterface extends DynamicExtensionBaseDomainObjectIn
 
 	/**
 	 * This method sets the unique identifier of DataElement.
-	 * @param id the unique identifier to be set.
+	 * @param identifier the unique identifier to be set.
 	 */
-	void setId(Long id);
+	void setId(Long identifier);
 
 }

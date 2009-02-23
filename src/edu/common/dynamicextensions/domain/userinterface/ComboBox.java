@@ -77,10 +77,10 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		{
 			parentContainerId = this.getParentContainer().getId().toString();
 		}
-		String id = "";
+		String identifier = "";
 		if (this.getId() != null)
 		{
-			id = this.getId().toString();
+			identifier = this.getId().toString();
 		}
 		/* Bug Id:9030
 		 * textComponent is the name of the text box.
@@ -90,7 +90,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		String textComponent = "combo" + htmlComponentName;
 		String htmlString = "<script>Ext.onReady(function(){ "
 				+ "var myUrl= 'ComboDataAction.do?controlId= "
-				+ id
+				+ identifier
 				+ "~containerIdentifier="
 				+ parentContainerId
 				+ "';"
@@ -127,7 +127,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "<div name='comboScript' style='display:none'>"
 				+ "Ext.onReady(function(){ "
 				+ "var myUrl='ComboDataAction.do?controlId= "
-				+ id
+				+ identifier
 				+ "~containerIdentifier="
 				+ parentContainerId
 				+ "';var ds = new Ext.data.Store({"

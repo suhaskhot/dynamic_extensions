@@ -111,17 +111,17 @@ public interface EntityInterface extends AbstractEntityInterface
 
 	/**
 	 * Method returns  attribute based on the id passed.
-	 * @param id Long identifier of the abstract attribute
+	 * @param identifier Long identifier of the abstract attribute
 	 * @return
 	 */
-	AttributeInterface getAttributeByIdentifier(Long id);
+	AttributeInterface getAttributeByIdentifier(Long identifier);
 
 	/**
 	 * Method returns  association based on the id passed.
-	 * @param id Long identifier of the abstract attribute
+	 * @param identifier Long identifier of the abstract attribute
 	 * @return
 	 */
-	AssociationInterface getAssociationByIdentifier(Long id);
+	AssociationInterface getAssociationByIdentifier(Long identifier);
 
 	/**
 	 * @return Returns the inheritanceStrategy.

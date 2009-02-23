@@ -47,9 +47,9 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 
 	/**
 	 * This method sets the unique identifier of the AbstractMetadata.
-	 * @param id The identifier to set.
+	 * @param identifier The identifier to set.
 	 */
-	void setId(Long id);
+	void setId(Long identifier);
 
 	/**
 	 * The last updated date of metadata object.

@@ -186,8 +186,7 @@ public class XMIImportProcessor
 
 		validate();
 
-		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName,
-				packageName);
+		List<EntityGroupInterface> entityGroupColl = retrieveEntityGroup(entityGroupName);
 
 		if (entityGroupColl == null || entityGroupColl.isEmpty())
 		{//Add
@@ -268,7 +267,7 @@ public class XMIImportProcessor
 		{
 			for (UmlAssociation umlAssociation : umlAssociationColl)
 			{
-				addAssociation(umlAssociation, parentIdVsChildrenIds);
+				addAssociation(umlAssociation);
 			}
 		}
 
@@ -488,12 +487,11 @@ public class XMIImportProcessor
 
 	/**
 	 * @param entityGroupName
-	 * @param packageName
 	 * @return
 	 * @throws BizLogicException
 	 */
-	private List<EntityGroupInterface> retrieveEntityGroup(String entityGroupName,
-			String packageName) throws BizLogicException
+	private List<EntityGroupInterface> retrieveEntityGroup(String entityGroupName)
+			throws BizLogicException
 	{
 		List<EntityGroupInterface> entityGroupColl = null;
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
@@ -1140,11 +1138,9 @@ public class XMIImportProcessor
 	 * It taggs replicated association to identify them later on and mark them inherited.
 	 * Also a back pointer is added to replicated association go get original association.
 	 * @param umlAssociation umlAssociation to process
-	 * @param parentIdVsChildrenIds Map with key as UML-id of parent class and value as list of UML-id of all children classes.
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void addAssociation(UmlAssociation umlAssociation,
-			Map<String, List<String>> parentIdVsChildrenIds)
+	private void addAssociation(UmlAssociation umlAssociation)
 			throws DynamicExtensionsSystemException
 	{
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();
@@ -1177,7 +1173,7 @@ public class XMIImportProcessor
 					targetAssociationEnd = assoEnd;
 				}
 			}
-			if (direction.equals("")
+			if ("".equals(direction)
 					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_DEST_SRC)
 					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_SRC_DEST)
 					|| direction
@@ -1190,7 +1186,7 @@ public class XMIImportProcessor
 		{//bidirectional
 			sourceAssociationEnd = associationEnds.get(0);
 			targetAssociationEnd = associationEnds.get(1);
-			if (direction.equals("")
+			if ("".equals(direction)
 					|| direction.equalsIgnoreCase(XMIConstants.TAGGED_VALUE_ASSOC_BIDIRECTIONAL))
 			{
 				direction = DEConstants.AssociationDirection.BI_DIRECTIONAL.toString();

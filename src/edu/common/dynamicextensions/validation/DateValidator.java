@@ -6,12 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.wustl.common.util.global.CommonServiceLocator;
 
 /**
  * @author chetan_patil
@@ -83,7 +85,8 @@ public class DateValidator implements ValidatorRuleInterface
 
 			try
 			{
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+				Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat,locale);
 				simpleDateFormat.setLenient(false);
 
 				if (isFromDateRangeValidator.length == 0)

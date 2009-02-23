@@ -68,7 +68,17 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 				&& (createGroupAs.equals(ProcessorConstants.GROUP_CREATEFROM_EXISTING)))
 		{
 			//entityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean.getGroupName());
-			if (container != null)
+			if (container == null)
+			{
+				objEntityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean
+						.getGroupName());
+				container = DomainObjectFactory.getInstance().createContainer();
+				container.setCaption("New Form");
+				CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
+				CacheManager.addObjectToCache(request, DEConstants.ENTITYGROUP_INTERFACE,
+						objEntityGroup);
+			}
+			else
 			{
 				EntityInterface entity = (EntityInterface) container.getAbstractEntity();
 				EntityGroupInterface existingEntityGroup = DynamicExtensionsUtility
@@ -109,16 +119,6 @@ public class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsProcesso
 						objEntityGroup = existingEntityGroup;
 					}
 				}
-			}
-			else
-			{
-				objEntityGroup = groupProcessor.getEntityGroupByIdentifier(groupUIBean
-						.getGroupName());
-				container = DomainObjectFactory.getInstance().createContainer();
-				container.setCaption("New Form");
-				CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
-				CacheManager.addObjectToCache(request, DEConstants.ENTITYGROUP_INTERFACE,
-						objEntityGroup);
 			}
 		}
 		else if ((createGroupAs != null)

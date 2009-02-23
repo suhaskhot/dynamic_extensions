@@ -855,16 +855,16 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			rowString = rowsStrings[i].trim();
 			String[] columnValues = rowString.split("\t");
 
-			int j = 2;
-			while (j < columnValues.length)
+			int counter = 2;
+			while (counter < columnValues.length)
 			{
-				if (columnValues[j] != null)
+				if (columnValues[counter] != null)
 				{
-					csvValues[j - 2][i] = columnValues[j++];
+					csvValues[counter - 2][i] = columnValues[counter++];
 				}
 				else
 				{
-					csvValues[j - 2][i] = "";
+					csvValues[counter - 2][i] = "";
 				}
 			}
 		}
@@ -1522,7 +1522,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		attributeUIBeanInformationIntf.setMinTemp("");
 		attributeUIBeanInformationIntf.setMaxTemp("");
 
-		int i = 0;
+		int counter = 0;
 		if (attributeInterface.getRuleCollection() != null
 				&& !attributeInterface.getRuleCollection().isEmpty())
 		{
@@ -1531,7 +1531,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			while (rulesIter.hasNext())
 			{
 				RuleInterface rule = (RuleInterface) rulesIter.next();
-				ruleNames[i++] = rule.getName();
+				ruleNames[counter++] = rule.getName();
 				if (rule.getRuleParameterCollection() != null
 						&& !rule.getRuleParameterCollection().isEmpty())
 				{

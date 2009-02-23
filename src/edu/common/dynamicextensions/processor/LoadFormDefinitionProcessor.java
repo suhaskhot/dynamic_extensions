@@ -143,8 +143,8 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				if (associationObj != null)
 				{
 					String label = associationObj.getLabel();
-					String id = DEConstants.GROUP_PREFIX + associationObj.getId();
-					definedEntitiesXML.append(getXMLNode(id, label, false, false));
+					String identifier = DEConstants.GROUP_PREFIX + associationObj.getId();
+					definedEntitiesXML.append(getXMLNode(identifier, label, false, false));
 					definedEntitiesXML.append(getAssociationTreeXML(associationObj
 							.getAssociationTreeObjectCollection()));
 					definedEntitiesXML.append("</item>");
@@ -158,7 +158,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	/**
 	 * @param text
 	 */
-	private String getXMLNode(String id, String text, boolean showSelected, boolean showExpanded)
+	private String getXMLNode(String identifier, String text, boolean showSelected, boolean showExpanded)
 	{
 		StringBuffer xmlNode = new StringBuffer();
 		if (text != null)
@@ -166,7 +166,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			xmlNode.append("<item text='");
 			xmlNode.append(text);
 			xmlNode.append("' ");
-			if (id == null) //if id is null put name as id.
+			if (identifier == null) //if id is null put name as id.
 			{
 				xmlNode.append(" id='");
 				xmlNode.append(text);
@@ -175,7 +175,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			else
 			{
 				xmlNode.append(" id='");
-				xmlNode.append(id);
+				xmlNode.append(identifier);
 				xmlNode.append("' ");
 			}
 			if (showExpanded)
@@ -203,7 +203,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		if (associationsCollection != null)
 		{
 			AssociationTreeObject associationObj = null;
-			Long id = null;
+			Long identifier = null;
 			String label = null;
 			Iterator<AssociationTreeObject> iterator = associationsCollection.iterator();
 			while (iterator.hasNext())
@@ -211,11 +211,11 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				associationObj = iterator.next();
 				if (associationObj != null)
 				{
-					id = associationObj.getId();
+					identifier = associationObj.getId();
 					label = associationObj.getLabel();
-					if ((id != null) && (label != null))
+					if ((identifier != null) && (label != null))
 					{
-						associationTreeXML.append(getXMLNode(id.toString(), label, false, false));
+						associationTreeXML.append(getXMLNode(identifier.toString(), label, false, false));
 						associationTreeXML.append(getAssociationTreeXML(associationObj
 								.getAssociationTreeObjectCollection()));
 						associationTreeXML.append("</item>");

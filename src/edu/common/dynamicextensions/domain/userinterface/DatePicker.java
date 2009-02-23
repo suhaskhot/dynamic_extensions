@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain.userinterface;
 
 import java.text.ParseException;
@@ -25,7 +26,8 @@ import edu.wustl.common.util.global.CommonServiceLocator;
  * @hibernate.joined-subclass table="DYEXTN_DATEPICKER"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class DatePicker extends Control implements DatePickerInterface {
+public class DatePicker extends Control implements DatePickerInterface
+{
 
 	/**
 	 * default serial UID
@@ -41,56 +43,59 @@ public class DatePicker extends Control implements DatePickerInterface {
 	 * @throws DynamicExtensionsSystemException
 	 *             if couldn't generate the HTML name for the Control.
 	 */
-	protected String generateEditModeHTML()
-			throws DynamicExtensionsSystemException {
+	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
+	{
 		AttributeTypeInformationInterface attributeTypeInformation = ((AttributeMetadataInterface) this
 				.getBaseAbstractAttribute()).getAttributeTypeInformation();
-		String dateFormat = ControlsUtility
-				.getDateFormat(attributeTypeInformation);
+		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformation);
 
 		String defaultValue = (String) this.value;
-		if (value == null) {
-			defaultValue = this.getAttibuteMetadataInterface()
-					.getDefaultValue();
-			if (defaultValue != null
-					&& this.getAttibuteMetadataInterface() != null
-					&& this.getAttibuteMetadataInterface() instanceof CategoryAttribute) {
+		if (value == null)
+		{
+			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			if (defaultValue != null && this.getAttibuteMetadataInterface() != null
+					&& this.getAttibuteMetadataInterface() instanceof CategoryAttribute)
+			{
 				CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) this
 						.getAttibuteMetadataInterface();
 				DateTypeInformationInterface dateTypeInformation = (DateTypeInformationInterface) ((AttributeInterface) categoryAttribute
 						.getAbstractAttribute()).getAttributeTypeInformation();
 				defaultValue = reverseDate(defaultValue);
 				Date date = null;
-				try {
-					if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT)) {
+				try
+				{
+					if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
+					{
 						SimpleDateFormat format = new SimpleDateFormat(
-								ProcessorConstants.DATE_TIME_FORMAT,
-								CommonServiceLocator.getInstance()
-										.getDefaultLocale());
-						date = format.parse(defaultValue);
-					} else {
-						SimpleDateFormat format = new SimpleDateFormat(
-								ProcessorConstants.SQL_DATE_ONLY_FORMAT,
-								CommonServiceLocator.getInstance()
-										.getDefaultLocale());
+								ProcessorConstants.DATE_TIME_FORMAT, CommonServiceLocator
+										.getInstance().getDefaultLocale());
 						date = format.parse(defaultValue);
 					}
-				} catch (ParseException e) {
-					throw new DynamicExtensionsSystemException(
-							"Error while parsing date", e);
+					else
+					{
+						SimpleDateFormat format = new SimpleDateFormat(
+								ProcessorConstants.SQL_DATE_ONLY_FORMAT, CommonServiceLocator
+										.getInstance().getDefaultLocale());
+						date = format.parse(defaultValue);
+					}
+				}
+				catch (ParseException e)
+				{
+					throw new DynamicExtensionsSystemException("Error while parsing date", e);
 				}
 				defaultValue = new SimpleDateFormat(ControlsUtility
-						.getDateFormat(dateTypeInformation),
-						CommonServiceLocator.getInstance().getDefaultLocale())
-						.format(date);
+						.getDateFormat(dateTypeInformation), CommonServiceLocator.getInstance()
+						.getDefaultLocale()).format(date);
 			}
-			if (defaultValue == null) {
+			if (defaultValue == null)
+			{
 				if (this.getDateValueType() != null
-						&& this.getDateValueType().equals(
-								ProcessorConstants.DATE_VALUE_TODAY)) {
-					defaultValue = Utility.parseDateToString(new Date(),
-							dateFormat);
-				} else {
+						&& this.getDateValueType().equals(ProcessorConstants.DATE_VALUE_TODAY))
+				{
+					defaultValue = Utility.parseDateToString(new Date(), dateFormat);
+				}
+				else
+				{
 					defaultValue = "";
 				}
 			}
@@ -99,7 +104,8 @@ public class DatePicker extends Control implements DatePickerInterface {
 		String htmlComponentName = getHTMLComponentName();
 		String output = null;
 
-		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT)) {
+		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
+		{
 			output = "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
@@ -108,8 +114,7 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ defaultValue
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
-							+ ProcessorConstants.TRUE
-							: "")
+							+ ProcessorConstants.TRUE : "")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -129,9 +134,10 @@ public class DatePicker extends Control implements DatePickerInterface {
 			output += "<SCRIPT>printCalendar('" + htmlComponentName + "',"
 					+ DynamicExtensionsUtility.getCurrentDay() + ","
 					+ DynamicExtensionsUtility.getCurrentMonth() + ","
-					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>"
-					+ "</DIV>";
-		} else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT)) {
+					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>";
+		}
+		else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
+		{
 			output = "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
@@ -140,8 +146,7 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ defaultValue
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
-							+ ProcessorConstants.TRUE
-							: "")
+							+ ProcessorConstants.TRUE : "")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -163,9 +168,10 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ DynamicExtensionsUtility.getCurrentMonth() + ","
 					+ DynamicExtensionsUtility.getCurrentYear() + ","
 					+ DynamicExtensionsUtility.getCurrentHours() + ","
-					+ DynamicExtensionsUtility.getCurrentMinutes()
-					+ ");</SCRIPT>" + "</DIV>";
-		} else if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT)) {
+					+ DynamicExtensionsUtility.getCurrentMinutes() + ");</SCRIPT>" + "</DIV>";
+		}
+		else if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+		{
 			output = "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
@@ -174,8 +180,7 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ defaultValue
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
-							+ ProcessorConstants.TRUE
-							: "")
+							+ ProcessorConstants.TRUE : "")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -191,11 +196,12 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">"
-					+ "<SCRIPT>printMonthYearCalendar('" + htmlComponentName
-					+ "'," + DynamicExtensionsUtility.getCurrentMonth() + ","
-					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>"
-					+ "</DIV>";
-		} else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT)) {
+					+ "<SCRIPT>printMonthYearCalendar('" + htmlComponentName + "',"
+					+ DynamicExtensionsUtility.getCurrentMonth() + ","
+					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>";
+		}
+		else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+		{
 
 			output = "<input class='font_bl_nor' name='"
 					+ htmlComponentName
@@ -205,8 +211,7 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ defaultValue
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
-							+ ProcessorConstants.TRUE
-							: "")
+							+ ProcessorConstants.TRUE : "")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -223,8 +228,7 @@ public class DatePicker extends Control implements DatePickerInterface {
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
 			output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
-					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>"
-					+ "</DIV>";
+					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>";
 		}
 
 		return output;
@@ -234,7 +238,8 @@ public class DatePicker extends Control implements DatePickerInterface {
 	 * @param defaultValue
 	 * @return defaultValue
 	 */
-	private String reverseDate(String defaultValue) {
+	private String reverseDate(String defaultValue)
+	{
 		// Date is like 1900-01-01 00:00:00.0 for MySQL5
 		String date = defaultValue.substring(0, 10); // 1900-01-01
 		String time = defaultValue.substring(10, defaultValue.length()); // 00:00:00.0
@@ -251,7 +256,8 @@ public class DatePicker extends Control implements DatePickerInterface {
 	 * @param attributeInterface
 	 *            attribute type object
 	 */
-	public void setAttribute(AbstractAttributeInterface attributeInterface) {
+	public void setAttribute(AbstractAttributeInterface attributeInterface)
+	{
 		// TODO empty method.
 	}
 
@@ -262,7 +268,8 @@ public class DatePicker extends Control implements DatePickerInterface {
 	 *                     column="DATE_VALUE_TYPE"
 	 * @return Returns the dateValueType.
 	 */
-	public String getDateValueType() {
+	public String getDateValueType()
+	{
 		return dateValueType;
 	}
 
@@ -270,19 +277,20 @@ public class DatePicker extends Control implements DatePickerInterface {
 	 * @param dateValueType
 	 *            set the date type value
 	 */
-	public void setDateValueType(String dateValueType) {
+	public void setDateValueType(String dateValueType)
+	{
 		this.dateValueType = dateValueType;
 	}
 
 	/**
 	 * Generate HTML for viewing data
 	 */
-	protected String generateViewModeHTML()
-			throws DynamicExtensionsSystemException {
+	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	{
 		String htmlString = "";
-		if (value != null) {
-			htmlString = "<span class = 'font_bl_nor'> "
-					+ this.value.toString() + "</span>";
+		if (value != null)
+		{
+			htmlString = "<span class = 'font_bl_nor'> " + this.value.toString() + "</span>";
 		}
 
 		return htmlString;

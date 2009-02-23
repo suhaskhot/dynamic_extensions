@@ -47,15 +47,15 @@ public class DataFileLoader implements DataFileLoaderInterface {
         sql.deleteCharAt(sql.length() - 1);
         sql.append(')');
 
-        PreparedStatement ps = null;
+        PreparedStatement preparedStatement = null;
         try {
-            ps = con.prepareStatement(sql.toString());
+            preparedStatement = con.prepareStatement(sql.toString());
             String oneRecord = reader.readLine();
             while (oneRecord != null) {
                 String[] values = oneRecord.split(fieldSeperator);
-                process(dataTypes, values, columnCount, ps);
-                ps.executeUpdate();
-                ps.clearParameters();
+                process(dataTypes, values, columnCount, preparedStatement);
+                preparedStatement.executeUpdate();
+                preparedStatement.clearParameters();
                 oneRecord = reader.readLine();
             }
             reader.close();
@@ -72,20 +72,20 @@ public class DataFileLoader implements DataFileLoaderInterface {
             throw new RuntimeException("Error while loading path information into database", e,
                     ErrorCodeConstants.DB_0006);
         } finally {
-            close(ps);
+            close(preparedStatement);
         }
         logger.debug("Leaving method loadDataFromFile()");
     }
 
-    private void process(Class<?>[] dataTypes, String[] values, int columnCount, PreparedStatement ps)
+    private void process(Class<?>[] dataTypes, String[] values, int columnCount, PreparedStatement preparedStatement)
             throws SQLException {
         for (int j = 0; j < columnCount; j++) {
             if (dataTypes[j].equals(String.class)) {
-                ps.setString(j + 1, values[j]);
+                preparedStatement.setString(j + 1, values[j]);
             } else if (dataTypes[j].equals(Long.class)) {
-                ps.setLong(j + 1, Long.parseLong(values[j]));
+                preparedStatement.setLong(j + 1, Long.parseLong(values[j]));
             } else if (dataTypes[j].equals(Integer.class)) {
-                ps.setInt(j + 1, Integer.parseInt(values[j]));
+                preparedStatement.setInt(j + 1, Integer.parseInt(values[j]));
             }
         }
     }
@@ -100,10 +100,10 @@ public class DataFileLoader implements DataFileLoaderInterface {
         return reader;
     }
 
-    private void close(PreparedStatement ps) {
-        if (ps != null) {
+    private void close(PreparedStatement preparedStatement) {
+        if (preparedStatement != null) {
             try {
-                ps.close();
+                preparedStatement.close();
             } catch (SQLException e) {
                 logger.error(e);
             }

@@ -57,7 +57,7 @@ public class SQLQueryUtil {
     public static String[][] executeQuery(String sql, Connection connection, Object... params) {
         
         PreparedStatement prepareStatement = null;
-        ResultSet rs = null;
+        ResultSet resultSet = null;
         logger.debug("Executing the SQL :  " + sql);
         try {
             prepareStatement = connection.prepareStatement(sql);    
@@ -80,8 +80,8 @@ public class SQLQueryUtil {
                     prepareStatement.setObject(index++, param);
                 }
             }
-            rs = prepareStatement.executeQuery();
-            return getResult(rs);
+            resultSet = prepareStatement.executeQuery();
+            return getResult(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Exception while firing Parameterized query.", e,ErrorCodeConstants.DB_0003);
         }
@@ -113,26 +113,26 @@ public class SQLQueryUtil {
      */
     public static String[][] executeQuery(PreparedStatement prepareStatement) {
         try {
-            ResultSet rs = prepareStatement.executeQuery();
-            return getResult(rs);
+            ResultSet resultSet = prepareStatement.executeQuery();
+            return getResult(resultSet);
         } catch (SQLException e) {
             throw new RuntimeException("Exception while firing Parameterized query.", e,ErrorCodeConstants.DB_0003);
         }
     }
     
     /**
-     * @param rs Result set to process
+     * @param resultSet Result set to process
      * @return String[][] created by getting all records of result set
      * @throws SQLException if some error occurred while processing result set
      */
-    private static String[][] getResult(ResultSet rs) throws SQLException {
+    private static String[][] getResult(ResultSet resultSet) throws SQLException {
         List<String[]> results = new ArrayList<String[]>();
-        int noOfColumns = rs.getMetaData().getColumnCount();
+        int noOfColumns = resultSet.getMetaData().getColumnCount();
 
-        while (rs.next()) {
+        while (resultSet.next()) {
             String[] oneRow = new String[noOfColumns];
             for (int i = 1; i <= noOfColumns; i++) {
-                oneRow[i - 1] = rs.getString(i);
+                oneRow[i - 1] = resultSet.getString(i);
             }
             results.add(oneRow);
         }

@@ -145,14 +145,14 @@ public class DynamicExtensionUtility
 
 	/**
 	 * Returns the Entity for given Identifier
-	 * @param id Id of the entity
+	 * @param identifier Id of the entity
 	 * @return Actual Entity for given id.
 	 */
-	public static EntityInterface getEntityById(Long id)
+	public static EntityInterface getEntityById(Long identifier)
 	{
 		try
 		{
-			return EntityManager.getInstance().getEntityByIdentifier(id);
+			return EntityManager.getInstance().getEntityByIdentifier(identifier);
 		}
 		catch (BaseDynamicExtensionsException e)
 		{
@@ -162,15 +162,15 @@ public class DynamicExtensionUtility
 
 	/**
 	 * Returns the Association for given Identifier
-	 * @param id Id of the Association
+	 * @param identifier Id of the Association
 	 * @return Actual Association for given id.
 	 */
-	public static AssociationInterface getAssociationById(Long id)
+	public static AssociationInterface getAssociationById(Long identifier)
 	{
 		try
 		{
 			AssociationInterface association = EntityManager.getInstance()
-					.getAssociationByIdentifier(id);
+					.getAssociationByIdentifier(identifier);
 			return association;
 		}
 		catch (BaseDynamicExtensionsException e)
@@ -181,12 +181,12 @@ public class DynamicExtensionUtility
 
 	/**
 	 * Returns the entity group of given entity Id
-	 * @param id Entity Id
+	 * @param identifier Entity Id
 	 * @return Returns parent Entity Group
 	 */
-	public static EntityGroupInterface getEntityGroupForEntityId(Long id)
+	public static EntityGroupInterface getEntityGroupForEntityId(Long identifier)
 	{
-		EntityInterface entity = getEntityById(id);
+		EntityInterface entity = getEntityById(identifier);
 		return Utility.getEntityGroup(entity);
 	}
 
@@ -250,14 +250,14 @@ public class DynamicExtensionUtility
 
 	/**
 	 * This method adds a tag to entity group to distinguish it as metadata entity group. 
-	 * @param eg
+	 * @param entityGroup
 	 */
-	public static void markMetadataEntityGroup(EntityGroupInterface eg)
+	public static void markMetadataEntityGroup(EntityGroupInterface entityGroup)
 	{
 		TaggedValueInterface taggedValue = DomainObjectFactory.getInstance().createTaggedValue();
 		taggedValue.setKey(METADATA_ENTITY_GROUP);
 		taggedValue.setValue(METADATA_ENTITY_GROUP);
-		eg.addTaggedValue(taggedValue);
+		entityGroup.addTaggedValue(taggedValue);
 	}
 
 	/**

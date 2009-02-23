@@ -125,7 +125,7 @@ public class MetadataSearch
 					matchedClass = entityCache.getCategoriesAttributes(attributeCollection);
 					resultantMatchedClass = createResultClass(resultantMatchedClass, matchedClass);
 					break;
-				case Constants.PV :
+				case Constants.PERMISSIBLEVALUE :
 					Collection<PermissibleValueInterface> pvCollection = createSearchPermissibleValue(searchString);
 					matchedClass = entityCache.getEntityOnPermissibleValueParameters(pvCollection);
 					resultantMatchedClass = createResultClass(resultantMatchedClass, matchedClass);
@@ -322,7 +322,7 @@ public class MetadataSearch
 					matchedClass = entityCache.getEntityOnAttributeParameters(attributeCollection);
 					resultantMatchedClass = createResultClass(resultantMatchedClass, matchedClass);
 					break;
-				case Constants.PV :
+				case Constants.PERMISSIBLEVALUE :
 					Collection<PermissibleValueInterface> pvCollection = createSearchPermissibleValueConceptCode(searchString);
 					matchedClass = entityCache.getEntityOnPermissibleValueParameters(pvCollection);
 					resultantMatchedClass = createResultClass(resultantMatchedClass, matchedClass);

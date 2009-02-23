@@ -23,7 +23,7 @@ public class ControlInformationObject
 	private String identifier;
 
 	/**
-	 * Retuurn the control name
+	 * Return the control name
 	 * @return : Control Name
 	 */
 	public String getControlName()

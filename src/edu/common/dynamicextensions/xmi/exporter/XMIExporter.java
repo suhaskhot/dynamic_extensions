@@ -273,7 +273,7 @@ public class XMIExporter implements XMIExportInterface
 
 									cnstKeyPropColl = association.getConstraintProperties()
 											.getTgtEntityConstraintKeyPropertiesCollection();
-									Integer i = 1;
+									Integer counter = 1;
 									for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
 									{
 										foreignKey = cnstrKeyProp
@@ -284,10 +284,10 @@ public class XMIExporter implements XMIExportInterface
 										foreignKeyOperationName = generateForeignkeyOperationName(
 												association.getTargetEntity().getName(),
 												association.getEntity().getName().concat(
-														i.toString()));
+														counter.toString()));
 										foreignKeyOperationNameMappings.put(foreignKey,
 												foreignKeyOperationName);
-										i++;
+										counter++;
 									}
 								}
 								//For many-to-one association foreign key is in source entity
@@ -295,7 +295,7 @@ public class XMIExporter implements XMIExportInterface
 								{
 									cnstKeyPropColl = association.getConstraintProperties()
 											.getSrcEntityConstraintKeyPropertiesCollection();
-									Integer i = 1;
+									Integer counter = 1;
 									for (ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
 									{
 										foreignKey = cnstrKeyProp
@@ -304,7 +304,7 @@ public class XMIExporter implements XMIExportInterface
 										foreignKeyOperationName = generateForeignkeyOperationName(
 												association.getEntity().getName(), association
 														.getTargetEntity().getName().concat(
-																i.toString()));
+																counter.toString()));
 										//Generate foreign key operation name and add it to foreignKeyOperationNameMappings map
 										foreignKeyOperationNameMappings.put(foreignKey,
 												foreignKeyOperationName);

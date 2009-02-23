@@ -166,15 +166,15 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 				String newControlType = controlUIBean.getUserSelectedTool();
 				ControlInterface newControl = null;
 
-				if (!oldControlType.equals(newControlType))
-				{
-					newControl = controlProcessor.createAndPopulateControl(newControlType,
-							controlUIBean, entityGroup);
-				}
-				else
+				if (oldControlType.equals(newControlType))
 				{
 					newControl = controlProcessor.populateControlInterface(controlUIBean
 							.getUserSelectedTool(), control, controlUIBean, entityGroup);
+				}
+				else
+				{
+					newControl = controlProcessor.createAndPopulateControl(newControlType,
+							controlUIBean, entityGroup);
 				}
 
 				//update control

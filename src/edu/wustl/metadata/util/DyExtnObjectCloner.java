@@ -41,9 +41,9 @@ public class DyExtnObjectCloner extends ObjectCloner
 	private static class DyExtnResolveObjectInputStream extends CloneInputStream
 	{
 
-		DyExtnResolveObjectInputStream(InputStream in) throws IOException
+		DyExtnResolveObjectInputStream(InputStream inputStream) throws IOException
 		{
-			super(in);
+			super(inputStream);
 			enableResolveObject(true);
 		}
 
@@ -99,21 +99,21 @@ public class DyExtnObjectCloner extends ObjectCloner
 
 		private static final long serialVersionUID = -1324920205387970975L;
 
-		private final Long id;
+		private final Long identifier;
 
 		ReplacementForEntity(EntityInterface entity)
 		{
-			this.id = entity.getId();
+			this.identifier = entity.getId();
 		}
 
 		public Long getId()
 		{
-			return id;
+			return identifier;
 		}
 
 		public EntityInterface getOrigObject()
 		{
-			return EntityCache.getInstance().getEntityById(id);
+			return EntityCache.getInstance().getEntityById(identifier);
 		}
 	};
 
@@ -125,21 +125,21 @@ public class DyExtnObjectCloner extends ObjectCloner
 
 		private static final long serialVersionUID = 9194062618296956803L;
 
-		private final Long id;
+		private final Long identifier;
 
 		ReplacementForAttribute(AttributeInterface attr)
 		{
-			this.id = attr.getId();
+			this.identifier = attr.getId();
 		}
 
 		public Long getId()
 		{
-			return id;
+			return identifier;
 		}
 
 		public AttributeInterface getOrigObject()
 		{
-			return EntityCache.getInstance().getAttributeById(id);
+			return EntityCache.getInstance().getAttributeById(identifier);
 		}
 
 	};
@@ -152,21 +152,21 @@ public class DyExtnObjectCloner extends ObjectCloner
 
 		private static final long serialVersionUID = 6784553723374640799L;
 
-		private final Long id;
+		private final Long identifier;
 
 		ReplacementForAssociation(AssociationInterface assoc)
 		{
-			this.id = assoc.getId();
+			this.identifier = assoc.getId();
 		}
 
 		public Long getId()
 		{
-			return id;
+			return identifier;
 		}
 
 		public AssociationInterface getOrigObject()
 		{
-			return EntityCache.getInstance().getAssociationById(id);
+			return EntityCache.getInstance().getAssociationById(identifier);
 		}
 	};
 

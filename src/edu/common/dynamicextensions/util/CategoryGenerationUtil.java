@@ -405,7 +405,7 @@ public class CategoryGenerationUtil
 	 */
 	public static String getEntityName(String categoryNameInCSV)
 	{
-		return categoryNameInCSV.substring(0, categoryNameInCSV.indexOf("["));
+		return categoryNameInCSV.substring(0, categoryNameInCSV.indexOf('['));
 	}
 
 	/**

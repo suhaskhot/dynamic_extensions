@@ -311,11 +311,11 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						String pvString = line.trim();
 						int indexOfConceptCodeStart = pvString.indexOf('{');
 						int conceptCodeEnd = pvString.indexOf('}');
-						String pv = "";
+						String permissibleVale = "";
 						if (indexOfConceptCodeStart != -1 && conceptCodeEnd != -1)
 						{
 							semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
-							pv = pvString.substring(0, indexOfConceptCodeStart);
+							permissibleVale = pvString.substring(0, indexOfConceptCodeStart);
 							String tempCodesString = pvString.substring(
 									indexOfConceptCodeStart + 1, conceptCodeEnd);
 							String[] conceptString = tempCodesString.split(":");
@@ -338,10 +338,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						}
 						else
 						{
-							pv = pvString;
+							permissibleVale = pvString;
 						}
 						pvVsSemanticPropertyCollection.put(DynamicExtensionsUtility
-								.getEscapedStringValue(pv), semanticPropertyCollection);
+								.getEscapedStringValue(permissibleVale), semanticPropertyCollection);
 					}
 				}
 			}

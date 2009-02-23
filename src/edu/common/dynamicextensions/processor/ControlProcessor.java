@@ -133,12 +133,12 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			}
 			else if (userSelectedControlName.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL))
 			{
-				controlInterface = getCheckBoxControl(controlIntf, controlUIBeanInterface);
+				controlInterface = getCheckBoxControl(controlIntf);
 			}
 			else if (userSelectedControlName
 					.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL))
 			{
-				controlInterface = getRadioButtonControl(controlIntf, controlUIBeanInterface);
+				controlInterface = getRadioButtonControl(controlIntf);
 			}
 			else if (userSelectedControlName
 					.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL))
@@ -212,8 +212,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for radiobutton
 	 */
-	private ControlInterface getRadioButtonControl(ControlInterface controlInterface,
-			ControlUIBeanInterface controlUIBeanInterface)
+	private ControlInterface getRadioButtonControl(ControlInterface controlInterface)
 	{
 		RadioButtonInterface radioButtonIntf = null;
 		if (controlInterface == null)
@@ -230,11 +229,9 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * @param controlInterface : Control Interface (Domain Object Interface)
-	 * @param controlUIBeanInterface : Control UI Information interface containing information added by user on UI
 	 * @return : Control interface populated with required information for checkbox
 	 */
-	private ControlInterface getCheckBoxControl(ControlInterface controlInterface,
-			ControlUIBeanInterface controlUIBeanInterface)
+	private ControlInterface getCheckBoxControl(ControlInterface controlInterface)
 	{
 		CheckBoxInterface checkBox = null;
 		if (controlInterface == null)
@@ -550,8 +547,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 		if (controlInterface instanceof ContainmentAssociationControl)
 		{
-			populateContainmentAssociationAttributesInUIBean(
-					(ContainmentAssociationControl) controlInterface, controlUIBeanInterface);
+			populateContainmentAssociationAttributesInUIBean();
 		}
 	}
 
@@ -559,8 +555,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 	 * @param control
 	 * @param controlUIBeanInterface
 	 */
-	private void populateContainmentAssociationAttributesInUIBean(
-			ContainmentAssociationControl control, ControlUIBeanInterface controlUIBeanInterface)
+	private void populateContainmentAssociationAttributesInUIBean()
 	{
 		// TODO This method will be provided if required.
 	}

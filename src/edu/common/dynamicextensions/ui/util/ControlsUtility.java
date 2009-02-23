@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -53,6 +54,7 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.ControlInformationObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.util.global.CommonServiceLocator;
 
 public class ControlsUtility
 {
@@ -249,12 +251,13 @@ public class ControlsUtility
 	{
 		String defaultValue = null;
 		DateValueInterface dateValue = (DateValueInterface) dateAttribute.getDefaultValue();
+		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
 		if (dateValue != null)
 		{
 			Date defaultDate = dateValue.getValue();
 			if (defaultDate != null)
 			{
-				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute))
+				defaultValue = new SimpleDateFormat(getDateFormat(dateAttribute),locale)
 						.format(defaultDate);
 			}
 		}
@@ -482,11 +485,11 @@ public class ControlsUtility
 	{
 		DateValueInterface dateValue = (DateValueInterface) permissibleValue;
 		NameValueBean nameValueBean = null;
-
+		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
 		if (dateValue != null && dateValue.getValue() != null)
 		{
 			nameValueBean = new NameValueBean();
-			String date = new SimpleDateFormat(getDateFormat(dateAttribute)).format(dateValue
+			String date = new SimpleDateFormat(getDateFormat(dateAttribute),locale).format(dateValue
 					.getValue());
 			nameValueBean.setName(date);
 			nameValueBean.setValue(date);

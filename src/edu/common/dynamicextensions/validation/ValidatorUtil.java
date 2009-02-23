@@ -220,7 +220,7 @@ public class ValidatorUtil
 			for (RuleInterface rule : attributeRuleCollection)
 			{
 				String ruleName = rule.getName();
-				if (!ruleName.equals("unique"))
+				if (!"unique".equals(ruleName))
 				{
 					Object valueObject = attributeValueNode.getValue();
 					if (valueObject instanceof List)
@@ -295,7 +295,7 @@ public class ValidatorUtil
 			for (RuleInterface rule : attributeRuleCollection)
 			{
 				String ruleName = rule.getName();
-				if (ruleName.equals("unique"))
+				if ("unique".equals(ruleName))
 				{
 					Map<String, String> parameterMap = new HashMap<String, String>();
 					if (recordId != null)

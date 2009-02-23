@@ -84,7 +84,7 @@ public class DEConstants
 	public static final int DATA_TABLE_STATE_NOT_CREATED = 2;
 	public static final int DATA_TABLE_STATE_ALREADY_PRESENT = 3;
 
-	public static final String ID = "id";
+	public static final String OBJ_IDENTIFIER = "id";
 	public static final String IDENTIFIER = "identifier";
 	public static final String LIST_OF_CONTAINER = "listofContainer";
 	public static final String ISCATEGORY = "_IsCategory";

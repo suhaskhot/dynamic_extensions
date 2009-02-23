@@ -75,7 +75,7 @@ public class ControlsForm extends CommonControlModel
 			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.DATEPICKER_CONTROL))
 			{
 				//Special case for Date picker Control
-				getErrorsForDatePickerControl(validator, errors);
+				getErrorsForDatePickerControl(errors);
 			}
 			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.FILEUPLOAD_CONTROL))
 			{
@@ -85,16 +85,19 @@ public class ControlsForm extends CommonControlModel
 			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.CHECKBOX_CONTROL))
 			{
 				//Special case for Check box control
-				getErrorsForCheckBoxControl(validator, errors);
+				getErrorsForCheckBoxControl(errors);
 			}
 			else if (userSelectedTool.equalsIgnoreCase(ProcessorConstants.RADIOBUTTON_CONTROL))
 			{
-				getErrorsForRadioButtonControl(validator, errors);
+				getErrorsForRadioButtonControl(errors);
 			}
 		}
 	}
 
-	private void getErrorsForRadioButtonControl(Validator validator, ActionErrors errors)
+	/**
+	 * @param errors
+	 */
+	private void getErrorsForRadioButtonControl(ActionErrors errors)
 	{
 		if (displayChoice != null
 				&& displayChoice.equalsIgnoreCase(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED)
@@ -106,10 +109,9 @@ public class ControlsForm extends CommonControlModel
 	}
 
 	/**
-	 * @param validator :validator
 	 * @param errors : action errors
 	 */
-	private void getErrorsForCheckBoxControl(Validator validator, ActionErrors errors)
+	private void getErrorsForCheckBoxControl(ActionErrors errors)
 	{
 		// Radio button checked status 
 		if (attributeDefaultValue == null)
@@ -127,13 +129,13 @@ public class ControlsForm extends CommonControlModel
 	private void getErrorsForFileUploadControl(Validator validator, ActionErrors errors)
 	{
 		// Numeric default value.
-		if (!(isNaturalNumber(attributeSize, validator) || (validator.isDouble(attributeSize))))
+		if (!(isNaturalNumber(attributeSize) || (validator.isDouble(attributeSize))))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.naturalNumericField", ApplicationProperties
 							.getValue("eav.att.MaximumFileSize")));
 		}
-		if (!isNaturalNumber(attributenoOfCols, validator))
+		if (!isNaturalNumber(attributenoOfCols))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.naturalNumericField", ApplicationProperties
@@ -142,10 +144,9 @@ public class ControlsForm extends CommonControlModel
 	}
 
 	/**
-	 * @param validator :validator
 	 * @param errors : action errors
 	 */
-	private void getErrorsForDatePickerControl(Validator validator, ActionErrors errors)
+	private void getErrorsForDatePickerControl(ActionErrors errors)
 	{
 		String dateFormat = DynamicExtensionsUtility.getDateFormat(this.format);
 
@@ -254,7 +255,7 @@ public class ControlsForm extends CommonControlModel
 		//NUMBER OF ROWS SHLD BE NUMERIC
 		if ((attributeMultiSelect != null)
 				&& (attributeMultiSelect.equals(ProcessorConstants.LIST_TYPE_MULTI_SELECT))
-				&& !isNaturalNumber(attributeNoOfRows, validator))
+				&& !isNaturalNumber(attributeNoOfRows))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 						"errors.item.naturalNumericField", ApplicationProperties
@@ -272,7 +273,7 @@ public class ControlsForm extends CommonControlModel
 		checkRequiredFieldsForTextControl(validator, errors);
 
 		//1. Check for text field width
-		if (!isNaturalNumber(attributenoOfCols, validator))
+		if (!isNaturalNumber(attributenoOfCols))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.naturalNumericField", ApplicationProperties
@@ -317,7 +318,7 @@ public class ControlsForm extends CommonControlModel
 		{
 			this.attributeDecimalPlaces = "0";
 		}
-		if (!isNaturalNumber(attributeDecimalPlaces, validator))
+		if (!isNaturalNumber(attributeDecimalPlaces))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.naturalNumericField", ApplicationProperties
@@ -347,7 +348,7 @@ public class ControlsForm extends CommonControlModel
 		}
 
 		//Numeric default value
-		if (!(isNumeric(attributeDefaultValue, validator) || (validator
+		if (!(isNumeric(attributeDefaultValue) || (validator
 				.isDouble(attributeDefaultValue))))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
@@ -355,14 +356,14 @@ public class ControlsForm extends CommonControlModel
 							.getValue("eav.att.DefaultValue")));
 		}
 
-		boolean isMinValid = isNumeric(min, validator);
+		boolean isMinValid = isNumeric(min);
 		if (!isMinValid)
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
 					ApplicationProperties.getValue("eav.att.Minimum")));
 		}
 
-		boolean isMaxValid = isNumeric(max, validator);
+		boolean isMaxValid = isNumeric(max);
 		if (!isMaxValid)
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.item.numericField",
@@ -397,7 +398,7 @@ public class ControlsForm extends CommonControlModel
 		}
 
 		//Size : maximum characters shld be numeric
-		if (!isNaturalNumber(attributeSize, validator))
+		if (!isNaturalNumber(attributeSize))
 		{
 			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
 					"errors.item.naturalNumericField", ApplicationProperties
@@ -406,7 +407,7 @@ public class ControlsForm extends CommonControlModel
 
 		//Number of lines for multiline textbox shld be numeric
 		if ((linesType != null) && (linesType.equals(ProcessorConstants.LINE_TYPE_MULTILINE))
-				&& !isNaturalNumber(attributeNoOfRows, validator))
+				&& !isNaturalNumber(attributeNoOfRows))
 		{
 		
 				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
@@ -464,7 +465,7 @@ public class ControlsForm extends CommonControlModel
 	 * @param stringFld
 	 * @return
 	 */
-	private boolean isNumeric(String stringFld, Validator validator)
+	private boolean isNumeric(String stringFld)
 	{
 		if (stringFld != null)
 		{
@@ -480,7 +481,11 @@ public class ControlsForm extends CommonControlModel
 		return false;
 	}
 
-	private boolean isNaturalNumber(String stringFld, Validator validator)
+	/**
+	 * @param stringFld
+	 * @return
+	 */
+	private boolean isNaturalNumber(String stringFld)
 	{
 		if (stringFld != null)
 		{

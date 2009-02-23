@@ -23,7 +23,7 @@ public interface Constants
 	int ATTRIBUTE_WITH_DESCRIPTION = 5;
 
 	/** Metadata search configuration parameter : Used when a permissible value is to be included in search*/
-	int PV = 3;
+	int PERMISSIBLEVALUE = 3;
 
 	/** Metadata search configuration parameter : Used when a text based search is desired*/
 	int BASED_ON_TEXT = 0;

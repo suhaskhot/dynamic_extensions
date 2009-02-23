@@ -6,7 +6,7 @@ import static edu.wustl.cab2b.common.util.Constants.ATTRIBUTE_WITH_DESCRIPTION;
 import static edu.wustl.cab2b.common.util.Constants.CLASS;
 import static edu.wustl.cab2b.common.util.Constants.CLASS_WITH_DESCRIPTION;
 import static edu.wustl.cab2b.common.util.Constants.CONNECTOR;
-import static edu.wustl.cab2b.common.util.Constants.PV;
+import static edu.wustl.cab2b.common.util.Constants.PERMISSIBLEVALUE;
 import static edu.wustl.cab2b.common.util.Constants.TYPE_CATEGORY;
 
 import java.io.File;
@@ -122,22 +122,22 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	}
 
 	/**
-	 * @param s1 String
-	 * @param s2 String
-	 * @param s3 String
-	 * @param s4 String
+	 * @param string1 String
+	 * @param string2 String
+	 * @param string3 String
+	 * @param string4 String
 	 * @return Concatenated string made after connecting s1, s2, s3, s4 by {@link Constants#CONNECTOR}
 	 */
-	public static String concatStrings(String s1, String s2, String s3, String s4)
+	public static String concatStrings(String string1, String string2, String string3, String string4)
 	{
 		StringBuffer buff = new StringBuffer();
-		buff.append(s1);
+		buff.append(string1);
 		buff.append(CONNECTOR);
-		buff.append(s2);
+		buff.append(string2);
 		buff.append(CONNECTOR);
-		buff.append(s3);
+		buff.append(string3);
 		buff.append(CONNECTOR);
-		buff.append(s4);
+		buff.append(string4);
 		return buff.toString();
 	}
 
@@ -290,9 +290,9 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	{
 		if (attribute.getAttributeTypeInformation().getDataElement() instanceof UserDefinedDEInterface)
 		{
-			UserDefinedDEInterface de = (UserDefinedDEInterface) attribute
+			UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attribute
 					.getAttributeTypeInformation().getDataElement();
-			return de.getPermissibleValueCollection().size() != 0;
+			return userDefinedDE.getPermissibleValueCollection().size() != 0;
 		}
 		return false;
 	}
@@ -308,9 +308,9 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	{
 		if (isEnumerated(attribute))
 		{
-			UserDefinedDEInterface de = (UserDefinedDEInterface) attribute
+			UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attribute
 					.getAttributeTypeInformation().getDataElement();
-			return de.getPermissibleValueCollection();
+			return userDefinedDE.getPermissibleValueCollection();
 		}
 		return new ArrayList<PermissibleValueInterface>(0);
 	}
@@ -331,10 +331,10 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			return name;
 		}
 
-		EntityGroupInterface eg = getEntityGroup(entity);
+		EntityGroupInterface entityGroup = getEntityGroup(entity);
 
 		// As per Bug# 4577 <class name> (app_name v<version name>) e.g. Participant (caTissue Core v1.1)
-		String projectName = eg.getLongName();
+		String projectName = entityGroup.getLongName();
 		if ("caFE Server 1.1".equals(projectName))
 		{
 			projectName = "caFE Server";
@@ -345,7 +345,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		buff.append(" (");
 		buff.append(projectName);
 
-		String version = eg.getVersion();
+		String version = entityGroup.getVersion();
 		if (version != null)
 		{
 			buff.append(" v");
@@ -376,7 +376,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	public static String getPathDisplayString(IPath path)
 	{
 		String text = getHtmlRepresentation(path);
-		StringBuffer sb = new StringBuffer();
+		StringBuffer stringBuff = new StringBuffer();
 		int textLength = text.length();
 		int currentStart = 0;
 		String currentString = null;
@@ -388,7 +388,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			int lastIndex = currentStart + offset;
 			currentString = text.substring(currentStart, lastIndex);
 			strLen = strLen + currentString.length() + len;
-			sb.append(currentString);
+			stringBuff.append(currentString);
 			int index = text.indexOf("<B>----></B>", lastIndex);
 			if (index == -1)
 			{
@@ -410,8 +410,8 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			{
 				len = index - strLen;
 				currentString = text.substring(lastIndex, (lastIndex + len));
-				sb.append(currentString);
-				sb.append("<P>");
+				stringBuff.append(currentString);
+				stringBuff.append("<P>");
 			}
 			else
 			{
@@ -419,8 +419,8 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 				{
 					currentStart = offset;
 				}
-				sb.append(text.substring(currentStart));
-				return sb.toString();
+				stringBuff.append(text.substring(currentStart));
+				return stringBuff.toString();
 			}
 
 			currentStart = currentStart + offset + len;
@@ -429,8 +429,8 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 				break;
 			}
 		}
-		sb.append(text.substring(currentStart));
-		return sb.toString();
+		stringBuff.append(text.substring(currentStart));
+		return stringBuff.toString();
 	}
 
 	static String getHtmlRepresentation(IPath path)
@@ -655,15 +655,15 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		try
 		{
 			URL url = getResource(propertyfile);
-			InputStream is = url.openStream();
-			if (is == null)
+			InputStream inputStream = url.openStream();
+			if (inputStream == null)
 			{
 				logger.error("Unable fo find property file : " + propertyfile
 						+ "\n please put this file in classpath");
 			}
 
 			properties = new Properties();
-			properties.load(is);
+			properties.load(inputStream);
 		}
 		catch (IOException e)
 		{
@@ -1035,7 +1035,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 		if (searchPv)
 		{
-			target.add(PV);
+			target.add(PERMISSIBLEVALUE);
 		}
 		return toIntArray(target);
 	}

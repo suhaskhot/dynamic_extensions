@@ -169,7 +169,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		Set<Path> set = new HashSet<Path>(0);
 		try
 		{
-			setParams(databaseCacheId, src.getId(), des.getId(), nodesInSet);
+			setParams(src.getId(), des.getId(), nodesInSet);
 			set = getResults(src, src, ignoredNodes);
 		}
 		catch (SQLException e)
@@ -225,7 +225,7 @@ public class DatabaseCache extends GraphPathFinderCache
 	 * ins.number_of_ignored_nodes > 0 )
 	 */
 
-	private void setParams(int databaseId, int src, int des, String nodesInSet) throws SQLException
+	private void setParams(int src, int des, String nodesInSet) throws SQLException
 	{
 		getPathsOnIgnoringNodes.setInt(1, databaseCacheId);
 		getPathsOnIgnoringNodes.setInt(2, src);

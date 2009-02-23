@@ -239,7 +239,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				dataEntryForm.setErrorList(new ArrayList<String>());
 			}
 
-			if (dataEntryOperation.equals("insertChildData"))
+			if ("insertChildData".equals(dataEntryOperation))
 			{
 				if ((errorList != null) && !(errorList.isEmpty()))
 				{
@@ -257,7 +257,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					actionForward = mapping.findForward("loadChildContainer");
 				}
 			}
-			else if (dataEntryOperation.equals("insertParentData"))
+			else if ("insertParentData".equals(dataEntryOperation))
 			{
 				if ((errorList != null) && !(errorList.isEmpty()))
 				{
@@ -744,7 +744,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				for (FileExtension fileExtensionsIterator : fileExtensionsCollection)
 				{
 					validFileExtension = fileExtensionsIterator.getFileExtension();
-					selectedfileExt = selectedFile.substring(selectedFile.lastIndexOf(".") + 1,
+					selectedfileExt = selectedFile.substring(selectedFile.lastIndexOf('.') + 1,
 							selectedFile.length());
 					allFileExtension = validFileExtension + "," + allFileExtension;
 
@@ -760,7 +760,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				allFileExtension = allFileExtension.substring(0, allFileExtension.length() - 1);
 			}
-			if (isValidExtension == false && !allFileExtension.equals(""))
+			if (isValidExtension == false && !"".equals(allFileExtension))
 			{
 				List<String> parameterList = new ArrayList<String>();
 				parameterList.add(allFileExtension);

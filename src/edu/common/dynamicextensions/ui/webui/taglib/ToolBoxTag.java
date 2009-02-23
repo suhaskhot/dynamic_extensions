@@ -34,7 +34,7 @@ public class ToolBoxTag extends TagSupport
 	/**
 	 * Unique Tag Id
 	 */
-	protected String id = null;
+	protected String identifier = null;
 
 	/**
 	 * List of Id-Value pairs.
@@ -122,16 +122,16 @@ public class ToolBoxTag extends TagSupport
 	 */
 	public String getId()
 	{
-		return id;
+		return identifier;
 	}
 
 	/**
-	 * @param id The id to set.
+	 * @param identifier The id to set.
 	 * @since TODO
 	 */
-	public void setId(String id)
+	public void setId(String identifier)
 	{
-		this.id = id;
+		this.identifier = identifier;
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class ToolBoxTag extends TagSupport
 	 */
 	private boolean isDataValid()
 	{
-		if (id == null)
+		if (identifier == null)
 		{
 			Logger.out.debug("Selector Tag  Id is must");
 			return false;
@@ -404,10 +404,10 @@ public class ToolBoxTag extends TagSupport
 			return EVAL_PAGE;
 		}
 		Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
-		StringBuffer sb = new StringBuffer();
-		sb.append("\n<div id=\"" + id + "\"  class=\"formField\"  style=\"height: ");
-		sb.append(height);
-		sb.append("; width:" + width + ";  overflow-y: auto; \">\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
+		StringBuffer htmlString = new StringBuffer();
+		htmlString.append("\n<div id=\"" + identifier + "\"  class=\"formField\"  style=\"height: ");
+		htmlString.append(height);
+		htmlString.append("; width:" + width + ";  overflow-y: auto; \">\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
 		Iterator toolsListIterator = toolsList.iterator();
 		String toolName = null, toolCaption = null;
 		NameValueBean tool = null;
@@ -427,27 +427,27 @@ public class ToolBoxTag extends TagSupport
 				Logger.out.debug("Tool [" + toolName + "] Caption [" + toolCaption + "]");
 				if ((toolName != null) && (toolCaption != null))
 				{
-					sb.append("<tr><td width='100%' ");
+					htmlString.append("<tr><td width='100%' ");
 					if (selectedUserOption != null && toolName.equals(selectedUserOption))
 					{
 						classname = "toolLabelTextSelected";
-						sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
+						htmlString.append("\n<label class='" + classname + "' value=\"" + toolCaption
 								+ "\" id='" + toolName + "' border=\"1\" />");
 					}
 					else
 					{
 						classname = "toolLabelText";
-						sb.append("\n<label class='" + classname + "' value=\"" + toolCaption
+						htmlString.append("\n<label class='" + classname + "' value=\"" + toolCaption
 								+ "\" id='" + toolName
 								+ "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName
-								+ "');" + onClick + "('" + toolName + "','" + id + "')\"/>");
+								+ "');" + onClick + "('" + toolName + "','" + identifier + "')\"/>");
 					}
 					if (imagePath != null)
 					{
-						sb.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
+						htmlString.append("<img align=\"left\" src='" + imagePath + "' />&nbsp;");
 					}
-					sb.append(toolCaption);
-					sb.append("</label>\n</td></tr>");
+					htmlString.append(toolCaption);
+					htmlString.append("</label>\n</td></tr>");
 				}
 				else
 				{
@@ -455,13 +455,13 @@ public class ToolBoxTag extends TagSupport
 				}
 			}
 		}
-		sb.append("</tr>\n</table> \n</div> <input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"");
-		sb.append(selectedUserOption);
-		sb.append("\"/>");
+		htmlString.append("</tr>\n</table> \n</div> <input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"");
+		htmlString.append(selectedUserOption);
+		htmlString.append("\"/>");
 		try
 		{
 			JspWriter out = pageContext.getOut();
-			out.println(sb.toString());
+			out.println(htmlString.toString());
 		}
 		catch (Exception e)
 		{
@@ -505,23 +505,23 @@ public class ToolBoxTag extends TagSupport
 	{
 		super.release();
 		this.toolsList = null;
-		this.id = null;
+		this.identifier = null;
 		this.onClick = null;
 	}
 
 	/**
 	 * 
-	 * @param id Object
+	 * @param identifier Object
 	 * @return boolean
 	 */
-	public boolean isOptionEnabled(Object id)
+	public boolean isOptionEnabled(Object identifier)
 	{
 		Iterator disableListIterator = disableList.iterator();
 		String optionId = null;
 		while (disableListIterator.hasNext())
 		{
 			optionId = (String) disableListIterator.next();
-			if (optionId.equals(id))
+			if (optionId.equals(identifier))
 			{
 				return false;
 			}

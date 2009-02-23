@@ -89,7 +89,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					String selectedFormId = request.getParameter("selectedFormId");
 					if (selectedFormId != null)
 					{
-						returnXML = getSelectedFormDetailsById(request, selectedFormId);
+						returnXML = getSelectedFormDetailsById(selectedFormId);
 					}
 				}
 				else if (operation.trim().equals("selectGroup"))
@@ -113,11 +113,11 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				}
 				else if (operation.trim().equals("changeGroup"))
 				{
-					returnXML = changeGroup(request, response);
+					returnXML = changeGroup(request);
 				}
 				else if (operation.trim().equals("changeForm"))
 				{
-					returnXML = changeForm(request, response);
+					returnXML = changeForm(request);
 				}
 
 			}
@@ -157,13 +157,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param request
 	 * @param selectedFormId
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String getSelectedFormDetailsById(HttpServletRequest request, String selectedFormId)
+	private String getSelectedFormDetailsById(String selectedFormId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerForSelectedForm = null;
@@ -351,15 +350,14 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			GroupProcessor groupProcessor = GroupProcessor.getInstance();
 			entityGroup = groupProcessor.getEntityGroupByIdentifier(selectedGroupName);
 		}
-		return getGroupDetailsXML(request, entityGroup);
+		return getGroupDetailsXML(entityGroup);
 	}
 
 	/**
-	 * @param request
 	 * @param entityGroup
 	 * @return
 	 */
-	private String getGroupDetailsXML(HttpServletRequest request, EntityGroupInterface entityGroup)
+	private String getGroupDetailsXML(EntityGroupInterface entityGroup)
 	{
 		String groupDescription = null;
 		if (entityGroup != null)
@@ -506,12 +504,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * @param request
-	 * @param actionForm
+	 * @return response xml string
 	 * @throws IOException
-	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private String changeGroup(HttpServletRequest request, HttpServletResponse response)
+	private String changeGroup(HttpServletRequest request)
 			throws IOException, DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
@@ -612,13 +610,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * @param request
-	 * @param response
 	 * @param actionForm
 	 * @throws IOException
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String changeForm(HttpServletRequest request, HttpServletResponse response)
+	private String changeForm(HttpServletRequest request)
 			throws IOException, DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{

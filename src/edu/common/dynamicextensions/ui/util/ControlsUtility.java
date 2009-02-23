@@ -270,7 +270,7 @@ public class ControlsUtility
 	{
 		String dateFormat = null;
 		/*
-		 * While creating a categoy of type date if original attribute
+		 * While creating a category of type date if original attribute
 		 * is of type String then line
 		 * ((DateTypeInformationInterface) dateAttribute).getFormat();
 		 * will throw a class cast exception

@@ -518,16 +518,16 @@ public class XMIImportProcessor
 	 */
 	private void addTaggedValue(String packageName)
 	{
-		TaggedValueInterface tv = DomainObjectFactory.getInstance().createTaggedValue();
-		tv.setKey("PackageName");
-		tv.setValue(packageName);
+		TaggedValueInterface taggedValue = DomainObjectFactory.getInstance().createTaggedValue();
+		taggedValue.setKey("PackageName");
+		taggedValue.setValue(packageName);
 
 		Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
 		if (tvColl == null)
 		{
 			tvColl = new HashSet<TaggedValueInterface>();
 		}
-		tvColl.add(tv);
+		tvColl.add(taggedValue);
 		entityGroup.setTaggedValueCollection(tvColl);
 	}
 
@@ -640,10 +640,10 @@ public class XMIImportProcessor
 		//		else
 		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
-			Object o = i.next();//
-			if (o instanceof org.omg.uml.modelmanagement.UmlPackage)
+			Object object = i.next();//
+			if (object instanceof org.omg.uml.modelmanagement.UmlPackage)
 			{
-				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
+				org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) object;
 				if (token.equalsIgnoreCase(subPkg.getName()))
 				{
 					processSelectedPackage(subPkg, tokens, umlClassColl, umlAssociationColl,
@@ -671,7 +671,7 @@ public class XMIImportProcessor
 		isPackagePresent = true;
 		for (Iterator i = parentPkg.getOwnedElement().iterator(); i.hasNext();)
 		{
-			Object o = i.next();
+			Object object = i.next();
 			/*	if (o instanceof org.omg.uml.modelmanagement.UmlPackage && !(packageName.equals(parentPkg.getName())))
 			 {
 			 org.omg.uml.modelmanagement.UmlPackage subPkg = (org.omg.uml.modelmanagement.UmlPackage) o;
@@ -679,17 +679,17 @@ public class XMIImportProcessor
 			 }
 			 else*/
 
-			if (o instanceof UmlAssociation)
+			if (object instanceof UmlAssociation)
 			{
-				associations.add((UmlAssociation) o);
+				associations.add((UmlAssociation) object);
 			}
-			else if (o instanceof Generalization)
+			else if (object instanceof Generalization)
 			{
-				generalizations.add((Generalization) o);
+				generalizations.add((Generalization) object);
 			}
-			else if (o instanceof UmlClass)
+			else if (object instanceof UmlClass)
 			{
-				UmlClass umlClass = (UmlClass) o;
+				UmlClass umlClass = (UmlClass) object;
 				boolean isEntityADatatype = checkEntityWithDataTypeEntities(umlClass.getName());
 				if (isEntityADatatype)
 				{//Skipping classes having datatype names eg Integer,String etc.
@@ -747,7 +747,7 @@ public class XMIImportProcessor
 	{
 		//Not showing id attribute on UI if Id attribute is to be added by DE which is specified in xmiConfiguration Object
 		AttributeInterface originalAttribute = null;
-		if (((umlAttribute.getName().equalsIgnoreCase(DEConstants.ID) || umlAttribute.getName()
+		if (((umlAttribute.getName().equalsIgnoreCase(DEConstants.OBJ_IDENTIFIER) || umlAttribute.getName()
 				.equalsIgnoreCase(Constants.IDENTIFIER)))&& xmiConfigurationObject.isAddIdAttribute())
 		{
 			//If id attribute is system generated then dont create attribute for user given Id attribute
@@ -816,11 +816,11 @@ public class XMIImportProcessor
 		Collection atts = new ArrayList();
 		for (Iterator i = klass.getFeature().iterator(); i.hasNext();)
 		{
-			Object o = i.next();
-			if (o instanceof Attribute)
+			Object object = i.next();
+			if (object instanceof Attribute)
 			{
-				atts.add(o);
-				Attribute att = (Attribute) o;
+				atts.add(object);
+				Attribute att = (Attribute) object;
 				createAttribute(att, entity);
 			}
 		}
@@ -833,10 +833,10 @@ public class XMIImportProcessor
 			{
 				for (Iterator i = superClass.getFeature().iterator(); i.hasNext();)
 				{
-					Object o = i.next();
-					if (o instanceof Attribute)
+					Object object = i.next();
+					if (object instanceof Attribute)
 					{
-						Attribute att = (Attribute) o;
+						Attribute att = (Attribute) object;
 						if (attsMap.get(att.getName()) == null)
 						{
 							attsMap.put(att.getName(), att);
@@ -1671,10 +1671,10 @@ public class XMIImportProcessor
 			Collection<AbstractAttributeInterface> originalAttributeColl = ((EntityInterface) containerInterface
 					.getAbstractEntity()).getAbstractAttributeCollection();
 
-			Iterator<AbstractAttributeInterface> it = originalAttributeColl.iterator();
-			while (it.hasNext())
+			Iterator<AbstractAttributeInterface> abstrAttrIter = originalAttributeColl.iterator();
+			while (abstrAttrIter.hasNext())
 			{
-				AbstractAttributeInterface originalAttr = it.next();
+				AbstractAttributeInterface originalAttr = abstrAttrIter.next();
 				if (originalAttr.getId() == null && originalAttr instanceof AssociationInterface)
 				{
 					/*
@@ -2047,8 +2047,8 @@ public class XMIImportProcessor
 		String fileFormat = taggedValueMap.get(XMIConstants.TAGGED_VALUE_FILE_FORMATS);
 		if (fileFormat != null)
 		{
-			StringTokenizer st = new StringTokenizer(fileFormat, ",");
-			int size = st.countTokens();
+			StringTokenizer stringTokenizer = new StringTokenizer(fileFormat, ",");
+			int size = stringTokenizer.countTokens();
 
 			String[] fileformats = new String[size];
 
@@ -2829,10 +2829,10 @@ public class XMIImportProcessor
 				.get(XMIConstants.TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN);
 		if (attributesInAssociationDropDownTagValue != null)
 		{
-			StringTokenizer st = new StringTokenizer(attributesInAssociationDropDownTagValue, ",");
-			while (st.hasMoreTokens())
+			StringTokenizer stringTokenizer = new StringTokenizer(attributesInAssociationDropDownTagValue, ",");
+			while (stringTokenizer.hasMoreTokens())
 			{
-				String attributeName = st.nextToken();
+				String attributeName = stringTokenizer.nextToken();
 				for (AttributeInterface attr : targetEntityAttrColl)
 				{
 					if (attributeName.equals(attr.getName()))
@@ -2893,22 +2893,22 @@ public class XMIImportProcessor
 	{
 		ArrayList<String> ruleNames = new ArrayList<String>();
 		String ruleName = "";
-		int i = 0;
+		int counter = 0;
 
 		Set<String> keySetForRuleTaggedValueMap = taggedValueRuleMap.keySet();
 		for (String key : keySetForRuleTaggedValueMap)
 		{
-			StringTokenizer st = new StringTokenizer(key, XMIConstants.SEPARATOR);
+			StringTokenizer stringTokenizer = new StringTokenizer(key, XMIConstants.SEPARATOR);
 			int tokenNumber = 0;
-			int count = st.countTokens();
+			int count = stringTokenizer.countTokens();
 
 			// Seting Rule Tagged Values and parameter values to ControlsModel.
 			if (count <= 3)
 			{
-				while (st.hasMoreTokens())
+				while (stringTokenizer.hasMoreTokens())
 				{
 					tokenNumber++;
-					String tokenName = st.nextToken();
+					String tokenName = stringTokenizer.nextToken();
 					// Finding Rule name.
 					if (tokenNumber == 2)
 					{
@@ -2939,7 +2939,7 @@ public class XMIImportProcessor
 		String[] ruleNamesString = new String[ruleNames.size()];
 		for (String ruleStringName : ruleNames)
 		{
-			ruleNamesString[i++] = ruleStringName;
+			ruleNamesString[counter++] = ruleStringName;
 		}
 
 		controlModel.setValidationRules(ruleNamesString);

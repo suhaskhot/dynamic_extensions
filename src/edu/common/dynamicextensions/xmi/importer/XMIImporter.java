@@ -45,7 +45,7 @@ public class XMIImporter
 	 */
 	public static void main(String[] args)
 	{
-		FileInputStream in = null;
+		FileInputStream fileInputStream = null;
 		try
 		{
 			if (args.length == 0)
@@ -89,13 +89,13 @@ public class XMIImporter
 
 			init();
 
-			in = new FileInputStream(file);
+			fileInputStream = new FileInputStream(file);
 
 			// start a read-only transaction
 			rep.beginTrans(true);
 
 			// read the document
-			reader.read(in, null, uml);
+			reader.read(fileInputStream, null, uml);
 			List<String> containerNames = readFile(args[2]);
 
 			XMIConfiguration xmiConfiguration = XMIConfiguration.getInstance();
@@ -122,7 +122,7 @@ public class XMIImporter
 			MDRManager.getDefault().shutdownAll();
 			try
 			{
-				in.close();
+				fileInputStream.close();
 			}
 			catch (IOException e)
 			{
@@ -149,11 +149,11 @@ public class XMIImporter
 		//read each line of text file
 		while ((line = bufRdr.readLine()) != null)
 		{
-			StringTokenizer st = new StringTokenizer(line, ",");
-			while (st.hasMoreTokens())
+			StringTokenizer stringTokenizer = new StringTokenizer(line, ",");
+			while (stringTokenizer.hasMoreTokens())
 			{
 				//get next token and store it in the array
-				containerNames.add(st.nextToken());
+				containerNames.add(stringTokenizer.nextToken());
 			}
 		}
 		return containerNames;

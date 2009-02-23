@@ -760,7 +760,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				allFileExtension = allFileExtension.substring(0, allFileExtension.length() - 1);
 			}
-			if (isValidExtension == false && !"".equals(allFileExtension))
+			if (!isValidExtension && !"".equals(allFileExtension))
 			{
 				List<String> parameterList = new ArrayList<String>();
 				parameterList.add(allFileExtension);

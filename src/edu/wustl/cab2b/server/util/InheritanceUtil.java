@@ -74,7 +74,7 @@ public class InheritanceUtil {
                 break;
             }
         }
-        if (originalAssociationPointer.equals("")) {
+        if ("".equals(originalAssociationPointer)) {
             throw new RuntimeException(
                     "Inconsistent database state !!! Found one inherited association without, tagged value having key as Constants.ORIGINAL_ASSOCIATION_POINTER");
         }

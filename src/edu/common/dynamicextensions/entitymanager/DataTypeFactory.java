@@ -136,7 +136,11 @@ public class DataTypeFactory
 			throws DataTypeFactoryInitializationException
 	{
 		String databaseDataType = null;
-		if (dataTypeMap != null)
+		if (dataTypeMap == null)
+		{
+			throw new DataTypeFactoryInitializationException("Cannot find populated dataType Map.");
+		}
+		else
 		{
 			DataTypeInformation dataTypeInfo = (DataTypeInformation) dataTypeMap
 					.get(primitiveAttribute);
@@ -144,10 +148,6 @@ public class DataTypeFactory
 			{
 				databaseDataType = dataTypeInfo.getDatabaseDataType();
 			}
-		}
-		else
-		{
-			throw new DataTypeFactoryInitializationException("Cannot find populated dataType Map.");
 		}
 
 		return databaseDataType;

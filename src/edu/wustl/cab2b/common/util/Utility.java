@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -67,6 +68,7 @@ import edu.wustl.cab2b.common.queryengine.result.IRecord;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.DataType;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 import gov.nih.nci.cagrid.syncgts.bean.SyncDescription;
@@ -892,7 +894,8 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		{
 			dateFormat = "dd/MM/yyyy HH:mm";
 		}
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat,locale);
 		return simpleDateFormat.format(date);
 	}
 

@@ -30,18 +30,18 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		String id = request.getParameter("containerIdentifier");
+		String identifier = request.getParameter("containerIdentifier");
 		StringBuffer actionForward = new StringBuffer("/LoadGroupDefinitionAction.do?operationMode=");
 		String callbackUrl = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
 		String userId = request.getParameter(WebUIManagerConstants.USER_ID);
-		if (id == null)
+		if (identifier == null)
 		{
 			CacheManager.clearCache(request);
 			actionForward.append("AddNewForm");
 		}
 		else
 		{
-			 actionForward.append("EditForm&containerIdentifier=").append(id);
+			 actionForward.append("EditForm&containerIdentifier=").append(identifier);
 		}
 		CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callbackUrl);
 		CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);

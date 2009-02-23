@@ -31,9 +31,9 @@ public class TestActionClass extends Action
 		super.execute(arg0, arg1, arg2, arg3);
 		ServletContext otherContext = getServlet().getServletContext().getContext("/catissuecore");
 		otherContext.setAttribute("a", "abcd");
-		String t = "http://" + arg2.getServerName() + ":" + arg2.getServerPort()
+		String forwardPath = "http://" + arg2.getServerName() + ":" + arg2.getServerPort()
 				+ "/catissuecore/DefineAnnotations.do";
-		arg3.sendRedirect(t);
+		arg3.sendRedirect(forwardPath);
 		return null;
 	}
 

@@ -77,21 +77,21 @@ public class BaseDynamicExtensionsAction extends DispatchAction
 
 	/**
 	 * 
-	 * @param e Exception e 
+	 * @param exception Exception e 
 	 * @param request HttpServletRequest request
 	 */
-	protected String catchException(Exception e, HttpServletRequest request)
+	protected String catchException(Exception exception, HttpServletRequest request)
 	{
 		List<ActionError> list = new ArrayList<ActionError>();
-		boolean isSystemException = handleException(e, list);
+		boolean isSystemException = handleException(exception, list);
 		ActionErrors errors = getErrorMessages(list);
 		saveErrors(request, errors);
 		String actionForwardString = null;
 		if (isSystemException)
 		{
 			actionForwardString = DEConstants.SYSTEM_EXCEPTION;
-			Logger.out.info(DynamicExtensionsUtility.getStackTrace(e));
-			request.setAttribute("exceptionString", DynamicExtensionsUtility.getStackTrace(e));
+			Logger.out.info(DynamicExtensionsUtility.getStackTrace(exception));
+			request.setAttribute("exceptionString", DynamicExtensionsUtility.getStackTrace(exception));
 		}
 		return actionForwardString;
 	}

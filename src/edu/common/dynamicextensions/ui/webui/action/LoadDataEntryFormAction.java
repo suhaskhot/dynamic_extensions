@@ -128,13 +128,13 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private String getContainerId(HttpServletRequest request)
 	{
-		String id = "";
-		id = request.getParameter("containerIdentifier");
-		if (id == null || id.equals(""))
+		String identifier = "";
+		identifier = request.getParameter("containerIdentifier");
+		if (identifier == null || identifier.equals(""))
 		{
-			id = (String) request.getAttribute("containerIdentifier");
+			identifier = (String) request.getAttribute("containerIdentifier");
 		}
-		return id;
+		return identifier;
 	}
 
 	/**

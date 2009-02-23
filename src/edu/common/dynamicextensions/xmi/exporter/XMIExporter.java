@@ -416,7 +416,7 @@ public class XMIExporter implements XMIExportInterface
 				UmlClass parentClass = entityDataClassMappings.get(entity.getParentEntity()
 						.getName());
 				UmlClass childClass = entityDataClassMappings.get(entity.getName());
-				createForeignKeyAttribute(entity, childClass);
+				createForeignKeyAttribute(entity);
 				Generalization generalization = createGeneralization(parentClass, childClass);
 				entitySQLRelationships.add(generalization);
 			}
@@ -428,10 +428,9 @@ public class XMIExporter implements XMIExportInterface
 	 * This will add the column created for inheritance relationship to the data 
 	 * class and there foreignKey constraint operation name 
 	 * @param entity child entity 
-	 * @param childClass umlclass corresponding to the entity
 	 * @throws DataTypeFactoryInitializationException 
 	 */
-	private void createForeignKeyAttribute(EntityInterface entity, UmlClass childClass)
+	private void createForeignKeyAttribute(EntityInterface entity)
 			throws DataTypeFactoryInitializationException
 	{
 		Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl = entity
@@ -554,7 +553,7 @@ public class XMIExporter implements XMIExportInterface
 						|| (associationType.equals(XMIConstants.ASSOC_ONE_MANY)))
 				{
 
-					getForeignKeyAttribute(association.getEntity(), association.getTargetEntity(),
+					getForeignKeyAttribute(association.getTargetEntity(),
 							constraintProperties.getTgtEntityConstraintKeyPropertiesCollection(),
 							association.getSourceRole().getName());
 					//One-One OR One-Many source will have primary key, target has foreign key
@@ -576,7 +575,7 @@ public class XMIExporter implements XMIExportInterface
 				}
 				else if (associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 				{
-					getForeignKeyAttribute(association.getTargetEntity(), association.getEntity(),
+					getForeignKeyAttribute(association.getEntity(),
 							constraintProperties.getSrcEntityConstraintKeyPropertiesCollection(),
 							association.getTargetRole().getName());
 					//Many-One source will have foreign key, target primary key
@@ -617,14 +616,14 @@ public class XMIExporter implements XMIExportInterface
 	}
 
 	/**
-	 * @param sqlClass
-	 * @param columnName
-	 * @return
+	 * @param foreignKeyEntity
+	 * @param cnstKeyPropColl
+	 * @param implementedAssociationName
+	 * @return null
 	 * @throws DataTypeFactoryInitializationException
 	 */
 	@SuppressWarnings("unchecked")
-	private Attribute getForeignKeyAttribute(EntityInterface primaryKeyEntity,
-			EntityInterface foreignKeyEntity,
+	private Attribute getForeignKeyAttribute(EntityInterface foreignKeyEntity,
 			Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl,
 			String implementedAssociationName) throws DataTypeFactoryInitializationException
 	{

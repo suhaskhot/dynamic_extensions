@@ -335,7 +335,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 		// As per Bug# 4577 <class name> (app_name v<version name>) e.g. Participant (caTissue Core v1.1)
 		String projectName = eg.getLongName();
-		if (projectName.equals("caFE Server 1.1"))
+		if ("caFE Server 1.1".equals(projectName))
 		{
 			projectName = "caFE Server";
 		}

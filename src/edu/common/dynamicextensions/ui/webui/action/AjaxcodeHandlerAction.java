@@ -97,7 +97,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					String selectedGroupName = request.getParameter("selectedGroupName");
 					if (selectedGroupName != null)
 					{
-						returnXML = getSelectedGroupDetails(request, selectedGroupName);
+						returnXML = getSelectedGroupDetails(selectedGroupName);
 					}
 				}
 				else if (operation.trim().equals("deleteRowsForContainment"))
@@ -335,13 +335,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param request
 	 * @param selectedGroupName
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String getSelectedGroupDetails(HttpServletRequest request, String selectedGroupName)
+	private String getSelectedGroupDetails(String selectedGroupName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroup = null;

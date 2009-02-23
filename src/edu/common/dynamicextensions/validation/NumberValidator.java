@@ -281,7 +281,7 @@ public class NumberValidator implements ValidatorRuleInterface
 		{
 			if (value.contains("."))
 			{
-				int decimalPointIndex = value.indexOf(".");
+				int decimalPointIndex = value.indexOf('.');
 				String stringBeforeDecimalPoint = value.substring(0, decimalPointIndex);
 				String stringAfterDecimalPoint = value.substring(decimalPointIndex + 1, value
 						.length());
@@ -358,7 +358,7 @@ public class NumberValidator implements ValidatorRuleInterface
 
 		if (value != null && value.contains("."))
 		{
-				int decimalPointIndex = value.indexOf(".");
+				int decimalPointIndex = value.indexOf('.');
 				String stringAfterDecimalPoint = value.substring(decimalPointIndex + 1, value
 						.length());
 

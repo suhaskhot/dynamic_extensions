@@ -29,7 +29,7 @@ public class DateValidator implements ValidatorRuleInterface
 			throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
-		valid = validateDate(attribute, valueObject, parameterMap, controlCaption);
+		valid = validateDate(attribute, valueObject, controlCaption);
 
 		return valid;
 	}
@@ -49,7 +49,7 @@ public class DateValidator implements ValidatorRuleInterface
 			boolean isFromDateRangeValidator) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;
-		valid = validateDate(attribute, valueObject, parameterMap, controlCaption,
+		valid = validateDate(attribute, valueObject, controlCaption,
 				isFromDateRangeValidator);
 
 		return valid;
@@ -59,14 +59,13 @@ public class DateValidator implements ValidatorRuleInterface
 	 * Validate user input for permissible date values.
 	 * @param attribute
 	 * @param valueObject
-	 * @param parameterMap
 	 * @param controlCaption
 	 * @param isFromDateRangeValidator
 	 * @return
 	 * @throws DynamicExtensionsValidationException
 	 */
 	private boolean validateDate(AttributeMetadataInterface attribute, Object valueObject,
-			Map<String, String> parameterMap, String controlCaption,
+			String controlCaption,
 			boolean... isFromDateRangeValidator) throws DynamicExtensionsValidationException
 	{
 		boolean valid = true;

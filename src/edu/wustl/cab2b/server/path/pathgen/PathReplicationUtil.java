@@ -82,8 +82,8 @@ class PathReplicationUtil {
         return res;
     }
 
-    private static Node createNode(int id) {
-        return new Node(id);
+    private static Node createNode(int identifier) {
+        return new Node(identifier);
     }
 
     private static Set<Path> processSelfEdge(Node origNode, Set<Integer> repNodes) {

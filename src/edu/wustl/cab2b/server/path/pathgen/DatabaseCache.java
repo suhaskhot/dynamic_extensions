@@ -64,15 +64,15 @@ public class DatabaseCache extends GraphPathFinderCache
 	{
 		checkAlive();
 		HashSet<Path> pathSet = new HashSet<Path>();
-		ResultSet rs = null;
+		ResultSet resultSet = null;
 		try
 		{
-			rs = getAllPaths.executeQuery();
-			while (rs.next())
+			resultSet = getAllPaths.executeQuery();
+			while (resultSet.next())
 			{
-				String intermediatePath = rs.getString(1);
-				int src = rs.getInt(2);
-				int des = rs.getInt(3);
+				String intermediatePath = resultSet.getString(1);
+				int src = resultSet.getInt(2);
+				int des = resultSet.getInt(3);
 				List<Node> intermediateNodes = getNodeList(intermediatePath);
 				pathSet.add(new Path(new Node(src), new Node(des), intermediateNodes));
 			}
@@ -84,11 +84,11 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 		finally
 		{
-			if (rs != null)
+			if (resultSet != null)
 			{
 				try
 				{
-					rs.close();
+					resultSet.close();
 				}
 				catch (SQLException e)
 				{
@@ -128,7 +128,7 @@ public class DatabaseCache extends GraphPathFinderCache
 		}
 	}
 
-	private void execute(PreparedStatement ps, Object... params)
+	private void execute(PreparedStatement preparedStatement, Object... params)
 	{
 		int index = 1;
 		try
@@ -137,15 +137,15 @@ public class DatabaseCache extends GraphPathFinderCache
 			{
 				if (param instanceof String)
 				{
-					ps.setString(index++, (String) param);
+					preparedStatement.setString(index++, (String) param);
 				}
 				else if (param instanceof Integer)
 				{
-					ps.setInt(index++, (Integer) param);
+					preparedStatement.setInt(index++, (Integer) param);
 				}
 			}
-			ps.execute();
-			ps.clearParameters();
+			preparedStatement.execute();
+			preparedStatement.clearParameters();
 		}
 		catch (SQLException e)
 		{
@@ -199,9 +199,9 @@ public class DatabaseCache extends GraphPathFinderCache
 	{
 		try
 		{
-			Statement s = conn.createStatement();
-			s.executeUpdate("delete from TEMP_PATH");
-			s.executeUpdate("delete from IGNORED_NODE_SET");
+			Statement statement = conn.createStatement();
+			statement.executeUpdate("delete from TEMP_PATH");
+			statement.executeUpdate("delete from IGNORED_NODE_SET");
 			addPath.close();
 			addIgnoredNodeSet.close();
 			getPathsOnIgnoringNodes.close();
@@ -244,13 +244,13 @@ public class DatabaseCache extends GraphPathFinderCache
 		// if no records then return null
 		boolean isEmpty = true;
 		HashSet<Path> set = new HashSet<Path>();
-		ResultSet rs = getPathsOnIgnoringNodes.executeQuery();
+		ResultSet resultSet = getPathsOnIgnoringNodes.executeQuery();
 		try
 		{
-			while (rs.next())
+			while (resultSet.next())
 			{
 				isEmpty = false;
-				String intermediatePath = rs.getString(1);
+				String intermediatePath = resultSet.getString(1);
 				if (intermediatePath == null)
 				{
 					break;
@@ -260,14 +260,14 @@ public class DatabaseCache extends GraphPathFinderCache
 				nodesInPath.retainAll(nodesToIgnore);
 				if (nodesInPath.isEmpty())
 				{
-					Path p = new Path(src, des, nodes);
-					set.add(p);
+					Path path = new Path(src, des, nodes);
+					set.add(path);
 				}
 			}
 		}
 		finally
 		{
-			rs.close();
+			resultSet.close();
 		}
 		getPathsOnIgnoringNodes.clearParameters();
 		if (isEmpty)
@@ -356,11 +356,11 @@ public class DatabaseCache extends GraphPathFinderCache
 class IdGenerator
 {
 
-	static int id;
+	static int identifier;
 
 	static synchronized int getNextId()
 	{
-		return id++;
+		return identifier++;
 	}
 }
 

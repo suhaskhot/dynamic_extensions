@@ -6,10 +6,10 @@ package edu.wustl.cab2b.server.path.pathgen;
  * @author srinath_k
  */
 public class Node {
-    private int id;
+    private int identifier;
 
-    Node(int id) {
-        this.id = id;
+    Node(int identifier) {
+        this.identifier = identifier;
     }
 
     /**
@@ -23,7 +23,7 @@ public class Node {
         }
         if (obj instanceof Node) {
             Node node = (Node) obj;
-            if (node.id == id) {
+            if (node.identifier == identifier) {
                 return true;
             }
         }
@@ -35,7 +35,7 @@ public class Node {
      * @return hash code
      */
     public int hashCode() {
-        return id;
+        return identifier;
     }
 
     /**
@@ -43,7 +43,7 @@ public class Node {
      * @return
      */
     public int getId() {
-        return id;
+        return identifier;
     }
 
     /**
@@ -59,6 +59,6 @@ public class Node {
      * @return This Object string
      */
     public String toString() {
-        return String.valueOf(id);
+        return String.valueOf(identifier);
     }
 }

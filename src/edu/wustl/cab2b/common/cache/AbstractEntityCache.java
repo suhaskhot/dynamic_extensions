@@ -242,13 +242,13 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     /**
      * Returns the Entity for given Identifier
      * 
-     * @param id Id of the entity
+     * @param identifier Id of the entity
      * @return Actual Entity for given id.
      */
-    public EntityInterface getEntityById(Long id) {
-        EntityInterface entity = idVsEntity.get(id);
+    public EntityInterface getEntityById(Long identifier) {
+        EntityInterface entity = idVsEntity.get(identifier);
         if (entity == null) {
-            throw new RuntimeException("Entity with given id is not present in cache : " + id);
+            throw new RuntimeException("Entity with given id is not present in cache : " + identifier);
         }
         return entity;
     }
@@ -256,24 +256,24 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     /**
      * Checks if entity with given id is present in cache.
      * 
-     * @param id the entity id
+     * @param identifier the entity id
      * @return <code>true</code> - if entity with given id is present in
      *         cache; <code>false</code> otherwise.
      */
-    public boolean isEntityPresent(Long id) {
-        return idVsEntity.containsKey(id);
+    public boolean isEntityPresent(Long identifier) {
+        return idVsEntity.containsKey(identifier);
     }
 
     /**
      * Returns the Attribute for given Identifier
      * 
-     * @param id Id of the Attribute
+     * @param identifier Id of the Attribute
      * @return Actual Attribute for given id.
      */
-    public AttributeInterface getAttributeById(Long id) {
-        AttributeInterface attribute = idVsAttribute.get(id);
+    public AttributeInterface getAttributeById(Long identifier) {
+        AttributeInterface attribute = idVsAttribute.get(identifier);
         if (attribute == null) {
-            throw new RuntimeException("Attribute with given id is not present in cache : " + id);
+            throw new RuntimeException("Attribute with given id is not present in cache : " + identifier);
         }
         return attribute;
     }
@@ -281,13 +281,13 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     /**
      * Returns the Association for given Identifier
      * 
-     * @param id Id of the Association
+     * @param identifier Id of the Association
      * @return Actual Association for given id.
      */
-    public AssociationInterface getAssociationById(Long id) {
-        AssociationInterface association = idVsAssociation.get(id);
+    public AssociationInterface getAssociationById(Long identifier) {
+        AssociationInterface association = idVsAssociation.get(identifier);
         if (association == null) {
-            throw new RuntimeException("Association with given id is not present in cache : " + id);
+            throw new RuntimeException("Association with given id is not present in cache : " + identifier);
         }
         return association;
     }

@@ -106,7 +106,7 @@ public class CompareUtil {
         for (Map.Entry<MatchCause, OrderedPair> entry : map.entrySet()) {
             MatchCause cause = entry.getKey();
             OrderedPair pair = entry.getValue(); 
-            int index = causeVsComparator.get(cause).compare(pair.o1, pair.o2);
+            int index = causeVsComparator.get(cause).compare(pair.object1, pair.object2);
             if (index != -1) {
                 MatchedClassEntry matchedClassEntry = new MatchedClassEntry(cachedEntity);
                 matchedClassEntry.setPositionOf(cause, index);
@@ -130,36 +130,36 @@ public class CompareUtil {
     }
 
     private interface MetadataSearchComparator {
-        int compare(Object o1, Object o2);
+        int compare(Object object1, Object object2);
     }
 
     private static class OrderedPair {
-        private Object o1;
+        private Object object1;
 
-        private Object o2;
+        private Object object2;
 
-        public OrderedPair(Object o1, Object o2) {
-            this.o1 = o1;
-            this.o2 = o2;
+        public OrderedPair(Object object1, Object object2) {
+            this.object1 = object1;
+            this.object2 = object2;
         }
 
     }
     private static class StringComparator implements MetadataSearchComparator {
-        public int compare(Object o1, Object o2) {
-            if (o1 == null || o2 == null) {
+        public int compare(Object object1, Object object2) {
+            if (object1 == null || object2 == null) {
                 return -1;
             }
-            return Utility.indexOfRegEx((String) o1, (String) o2);
+            return Utility.indexOfRegEx((String) object1, (String) object2);
         }
     }
 
     static class SemanticPropertyCollectionComparator implements MetadataSearchComparator {
         @SuppressWarnings("unchecked")
-        public int compare(Object o1, Object o2) {
-            if (o1 == null || o2 == null) {
+        public int compare(Object object1, Object object2) {
+            if (object1 == null || object2 == null) {
                 return -1;
             }
-            return compare((Collection<SemanticPropertyInterface>) o1, (Collection<SemanticPropertyInterface>) o2);
+            return compare((Collection<SemanticPropertyInterface>) object1, (Collection<SemanticPropertyInterface>) object2);
         }
 
         /**

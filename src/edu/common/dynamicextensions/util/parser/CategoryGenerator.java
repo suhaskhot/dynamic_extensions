@@ -158,7 +158,7 @@ public class CategoryGenerator
 					{
 						displayLabel = categoryFileParser.getDisplyLable();
 						container = createForm(entityGroup, containerCollection,
-								entityNameAssociationMap, category, categoryEntityNameInstanceMap);
+								category, categoryEntityNameInstanceMap);
 
 						firstTimeinDisplayLabel = true;
 						previousEntityName = null;
@@ -845,7 +845,6 @@ public class CategoryGenerator
 	/**
 	 * @param entityGroup
 	 * @param containerCollection
-	 * @param associationNamesMap
 	 * @param category
 	 * @param categoryEntityNameInstanceMap
 	 * @return
@@ -854,7 +853,6 @@ public class CategoryGenerator
 	 */
 	private ContainerInterface createForm(EntityGroupInterface entityGroup,
 			List<ContainerInterface> containerCollection,
-			Map<String, List<AssociationInterface>> associationNamesMap,
 			CategoryInterface category, Map<String, String> categoryEntityNameInstanceMap)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -1902,9 +1903,9 @@ public class DynamicExtensionsUtility
 		{
 			str = (String) value;
 		}
-
+		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR);
+				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR,locale);
 		try
 		{
 			date = simpleDateFormat.parse(str);

@@ -190,9 +190,9 @@ public class PathBuilder
 	 * @param connection
 	 *            Database connection to use.
 	 */
-	static void transformAndLoadPaths(Connection connection, EntityGroupInterface eg)
+	static void transformAndLoadPaths(Connection connection, EntityGroupInterface entityGroup)
 	{
-		loadCache(eg);
+		loadCache(entityGroup);
 		try
 		{
 			registerIntraModelAssociations(connection, associationSet);
@@ -317,13 +317,13 @@ public class PathBuilder
 		if (transformedPaths % 200 == 0)
 		{
 			Float percentage = (((float) transformedPaths) / totalPaths) * 100;
-			String s = percentage.toString();
-			int index = s.indexOf(((char) '.'));
-			if (s.length() >= index + 3)
+			String percentageAsString = percentage.toString();
+			int index = percentageAsString.indexOf(((char) '.'));
+			if (percentageAsString.length() >= index + 3)
 			{
-				s = s.substring(0, index + 3);
+				percentageAsString = percentageAsString.substring(0, index + 3);
 			}
-			logger.info(s + " %");
+			logger.info(percentageAsString + " %");
 		}
 	}
 
@@ -597,7 +597,7 @@ public class PathBuilder
 	/**
 	 * Initializes the cache for building paths.
 	 */
-	private static void loadCache(EntityGroupInterface eg)
+	private static void loadCache(EntityGroupInterface entGroup)
 	{
 		EntityCache.getInstance().refreshCache();
 		for (EntityGroupInterface entityGroup : EntityCache.getInstance().getEntityGroups())
@@ -619,7 +619,7 @@ public class PathBuilder
 				}
 			}
 		}
-		for (EntityInterface entity : eg.getEntityCollection())
+		for (EntityInterface entity : entGroup.getEntityCollection())
 		{
 			for (AssociationInterface association : entity.getAssociationCollection())
 			{

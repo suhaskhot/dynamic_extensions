@@ -46,17 +46,17 @@ public class LoadModelUtil {
         	Logger.out.info("Please provide a property file");
             return;
         }
-        Properties p = new Properties();
-        p.load(new FileInputStream(new File(args[0])));
+        Properties properties = new Properties();
+        properties.load(new FileInputStream(new File(args[0])));
 
-        String driver = p.getProperty("db.driver");
-        String server = p.getProperty("db.server");
-        String port = p.getProperty("db.port");
-        String dbName = p.getProperty("db.name");
-        String userName = p.getProperty("db.userName");
-        String password = p.getProperty("db.password");
-        int maxPathlength = Integer.parseInt(p.getProperty("max.path.length"));
-        String[] entityGroupNames = p.getProperty("entity.group.names").split(",");
+        String driver = properties.getProperty("db.driver");
+        String server = properties.getProperty("db.server");
+        String port = properties.getProperty("db.port");
+        String dbName = properties.getProperty("db.name");
+        String userName = properties.getProperty("db.userName");
+        String password = properties.getProperty("db.password");
+        int maxPathlength = Integer.parseInt(properties.getProperty("max.path.length"));
+        String[] entityGroupNames = properties.getProperty("entity.group.names").split(",");
 
         String url = "jdbc:mysql://" + server + ":" + port + "/" + dbName;
         Connection con = null;
@@ -64,7 +64,7 @@ public class LoadModelUtil {
             Class.forName(driver).newInstance();
             con = DriverManager.getConnection(url, userName, password);
             for (String entityGroupName : entityGroupNames) {
-                String xmlFilePath = p.getProperty(entityGroupName + ".file").trim();
+                String xmlFilePath = properties.getProperty(entityGroupName + ".file").trim();
                 Logger.out.info("Loading model : " + xmlFilePath);
                 PathBuilder.loadSingleModel(con, xmlFilePath, entityGroupName, maxPathlength);
             }

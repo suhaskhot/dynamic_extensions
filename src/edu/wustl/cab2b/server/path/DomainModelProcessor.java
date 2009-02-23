@@ -358,10 +358,10 @@ public class DomainModelProcessor {
      * is based on name. For a attribute, if attribute with same name present in
      * parent hirarchy then it is considered as inherited.
      * 
-     * @param eg Entity Group top process
+     * @param entityGroup Entity Group top process
      */
-    void markInheritedAttributes(EntityGroupInterface eg) {
-        for (EntityInterface entity : eg.getEntityCollection()) {
+    void markInheritedAttributes(EntityGroupInterface entityGroup) {
+        for (EntityInterface entity : entityGroup.getEntityCollection()) {
             if (entity.getParentEntity() != null) {
                 Collection<AttributeInterface> parentAttributeCollection = entity.getParentEntity().getAttributeCollection();
                 for (AttributeInterface attributeFromChild : entity.getAttributeCollection()) {
@@ -467,9 +467,9 @@ public class DomainModelProcessor {
     	// TODO Auto-generated constructor stub
     }
 
-    EntityGroupInterface saveEntityGroup(EntityGroupInterface eg) throws DynamicExtensionsSystemException,
+    EntityGroupInterface saveEntityGroup(EntityGroupInterface entityGroup) throws DynamicExtensionsSystemException,
             DynamicExtensionsApplicationException {
-        return DynamicExtensionUtility.persistEGroup(eg);
+        return DynamicExtensionUtility.persistEGroup(entityGroup);
     }
 
 }

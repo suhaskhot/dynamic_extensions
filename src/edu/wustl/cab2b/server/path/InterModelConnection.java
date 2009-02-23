@@ -103,14 +103,14 @@ class InterModelConnection {
      * Returns whether this object is equal to o  
      * @return 
      */
-    public boolean equals(Object o) {
-        if (o == this) {
+    public boolean equals(Object object) {
+        if (object == this) {
             return true;
         }
-        if (!(o instanceof InterModelConnection)) {
+        if (!(object instanceof InterModelConnection)) {
             return false;
         }
-        InterModelConnection other = (InterModelConnection) o;
+        InterModelConnection other = (InterModelConnection) object;
         return leftEntityId.equals(other.leftEntityId) && leftAttributeId.equals(other.leftAttributeId)
                 && rightEntityId.equals(other.rightEntityId) && rightAttributeId.equals(other.rightAttributeId);
     }

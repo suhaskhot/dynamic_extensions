@@ -23,15 +23,15 @@ public class CuratedPathOperations extends DefaultBizLogic
 	//TODO need to take care of post processing of PATH similar to Curated path, Path should also be populated
 	/**
 	 * This method returns the CuratedPath for the given curated path identifier
-	 * @param id identifier of the curated path
+	 * @param identifier identifier of the curated path
 	 * @return curated path
 	 */
-	public ICuratedPath getCuratePathById(Long id)
+	public ICuratedPath getCuratePathById(Long identifier)
 	{
 		List<?> curatePathList = null;
 		try
 		{
-			curatePathList = retrieve(CuratedPath.class.getName(), "id", id);
+			curatePathList = retrieve(CuratedPath.class.getName(), "id", identifier);
 		}
 		catch (BizLogicException e)
 		{
@@ -78,15 +78,15 @@ public class CuratedPathOperations extends DefaultBizLogic
 
 	/**
 	 * This method returns the Path object for the given path identifier
-	 * @param id identifier of the path
+	 * @param identifier identifier of the path
 	 * @return path object
 	 */
-	public IPath getPathById(Long id)
+	public IPath getPathById(Long identifier)
 	{
 		List<?> pathList = null;
 		try
 		{
-			pathList = retrieve(Path.class.getName(), "pathId", id);
+			pathList = retrieve(Path.class.getName(), "pathId", identifier);
 		}
 		catch (BizLogicException e)
 		{

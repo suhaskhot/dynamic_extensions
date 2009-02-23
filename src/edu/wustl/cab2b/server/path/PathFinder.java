@@ -443,12 +443,12 @@ public class PathFinder
 	}
 
 	/**
-	 * @param id Path id for which a path is expected.
+	 * @param identifier Path id for which a path is expected.
 	 * @return IPath object for given pathId
 	 */
-	public IPath getPathById(Long id)
+	public IPath getPathById(Long identifier)
 	{
-		PathRecord pathRecord = idVsPathRecord.get(id);
+		PathRecord pathRecord = idVsPathRecord.get(identifier);
 		return getPath(pathRecord);
 	}
 
@@ -623,11 +623,11 @@ public class PathFinder
 		deIdVsAssociationId = new HashMap<Long, Long>(intraModelRecords.length);
 		for (String[] intraModelRecord : intraModelRecords)
 		{
-			Long id = Long.parseLong(intraModelRecord[0]);
+			Long identifier = Long.parseLong(intraModelRecord[0]);
 			Long deAssociationId = Long.parseLong(intraModelRecord[1]);
 			AssociationInterface association = getCache().getAssociationById(deAssociationId);
-			idVsIassociation.put(id, new IntraModelAssociation(association));
-			deIdVsAssociationId.put(deAssociationId, id);
+			idVsIassociation.put(identifier, new IntraModelAssociation(association));
+			deIdVsAssociationId.put(deAssociationId, identifier);
 		}
 		leftEntityVsInterModelAssociation = new HashMap<Long, List<IInterModelAssociation>>(
 				interModelRecords.length);
@@ -638,13 +638,13 @@ public class PathFinder
 			Long targetEntityId = Long.parseLong(interModelRecord[2]);
 			Long targetAttributeId = Long.parseLong(interModelRecord[3]);
 
-			Long id = Long.parseLong(interModelRecord[4]);
+			Long identifier = Long.parseLong(interModelRecord[4]);
 
 			AttributeInterface sourceAttribute = getAttribute(sourceEntityId, sourceAttributeId);
 			AttributeInterface targetAttribute = getAttribute(targetEntityId, targetAttributeId);
 			InterModelAssociation association = new InterModelAssociation(sourceAttribute,
 					targetAttribute);
-			idVsIassociation.put(id, association);
+			idVsIassociation.put(identifier, association);
 
 			List<IInterModelAssociation> list = leftEntityVsInterModelAssociation
 					.get(sourceEntityId);
@@ -699,14 +699,14 @@ public class PathFinder
 		// IntraModelAssociation association = (IntraModelAssociation) intraModelAssociation;
 		// This class knows the underline class so casting it.
 		Long deAssociationId = association.getDynamicExtensionsAssociation().getId();
-		Long id = deIdVsAssociationId.get(deAssociationId);
-		if (id == null)
+		Long identifier = deIdVsAssociationId.get(deAssociationId);
+		if (identifier == null)
 		{
 			logger.error("No IAssociation found for DE association : " + deAssociationId);
 			throw new RuntimeException("No IAssociation found for DE association : "
 					+ deAssociationId);
 		}
-		return id;
+		return identifier;
 	}
 
 	void addInterModelConnection(InterModelConnection imc)
@@ -774,10 +774,10 @@ public class PathFinder
 		// TODO need to take care of this similar to Curated path, Path should also be populated
 		for (IPath path : curatedPath.getPaths())
 		{
-			Path p = (Path) path;
+			Path paath = (Path) path;
 			// TODO this casting will be removed once we have hibernate layer for path
-			PathRecord pathRec = new PathRecord(p.getPathId(), p.getSourceEntityId(), p
-					.getIntermediatePaths(), p.getTargetEntityId());
+			PathRecord pathRec = new PathRecord(paath.getPathId(), paath.getSourceEntityId(), paath
+					.getIntermediatePaths(), paath.getTargetEntityId());
 			paths.add(getPath(pathRec));
 		}
 		curatedPath.setPaths(paths);

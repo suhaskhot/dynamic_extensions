@@ -14,11 +14,11 @@ public class InterModelConnectionBizLogic {
 	
 	/**
 	 * Saves intermodel connection
-	 * @param a1
-	 * @param a2
+	 * @param attribute1
+	 * @param attribute2
 	 */
-    public void saveInterModelConnection(AttributeInterface a1, AttributeInterface a2) {
-        saveInterModelConnection(new InterModelConnection(a1, a2));
+    public void saveInterModelConnection(AttributeInterface attribute1, AttributeInterface attribute2) {
+        saveInterModelConnection(new InterModelConnection(attribute1, attribute2));
     }
 
     /**
@@ -36,14 +36,14 @@ public class InterModelConnectionBizLogic {
         ConnectionUtil.close(conn);
     }
 
-    private void saveInterModelConnection(InterModelConnection imc, long id, Connection conn) {
+    private void saveInterModelConnection(InterModelConnection imc, long identifier, Connection conn) {
         String sql = "insert into inter_model_association(association_id, left_entity_id, left_attribute_id, right_entity_id, right_attribute_id) values (";
-        sql = sql + id + "," + imc.getLeftEntityId() + "," + imc.getLeftAttributeId() + ","
+        sql = sql + identifier + "," + imc.getLeftEntityId() + "," + imc.getLeftAttributeId() + ","
                 + imc.getRightEntityId() + "," + imc.getRightAttributeId() + ");";
         SQLQueryUtil.executeUpdate(sql, conn);
 
         sql = "insert into association(association_id, association_type) values (";
-        sql = sql + id + "," + AssociationType.INTER_MODEL_ASSOCIATION.getValue() + ");";
+        sql = sql + identifier + "," + AssociationType.INTER_MODEL_ASSOCIATION.getValue() + ");";
         SQLQueryUtil.executeUpdate(sql, conn);
         // TODO transaction??
 

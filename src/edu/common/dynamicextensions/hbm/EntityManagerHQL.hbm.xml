@@ -36,6 +36,12 @@
 	       	where association.entity.id = ? AND
        			   	association.targetEntity.id = ?
 	</query>
+	
+	<query name="getAssociationIds">
+       select association.id from Association association
+	       	where association.entity.id = ? AND
+       			   	association.targetEntity.id = ?
+	</query>
 
 	<query name="getAllContainersByEntityGroupId">
 	   from edu.common.dynamicextensions.domain.userinterface.Container container

@@ -1464,7 +1464,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			ContainerInterface rootContainer, Long associationContainerId)
 	{
 		AbstractContainmentControlInterface associationControl = null;
-		if (rootContainer == null)
+		if (rootContainer == null || associationContainerId == null)
 		{
 			return associationControl;
 		}

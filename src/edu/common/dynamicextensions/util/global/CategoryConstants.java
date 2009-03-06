@@ -33,6 +33,8 @@ public class CategoryConstants
 	public final static String NO_TEXTAREA = "incorrectControlTypeTextArea";
 
 	public final static String WRONG_INST_INFO = "wrongInstanceInformation";
+	
+	public final static String INCORRECT_INST_INFO = "incorrectInstanceInformation";
 
 	public final static String NULL_CONTROL = "nullControl";
 

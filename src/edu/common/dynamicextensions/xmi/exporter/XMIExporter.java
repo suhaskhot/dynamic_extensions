@@ -1155,7 +1155,7 @@ public class XMIExporter implements XMIExportInterface
 			umlGroupPackage.getOwnedElement().addAll(umlRelationships);
 
 			//TAGGED VALUES : Create
-			Collection<TaggedValue> groupTaggedValues = getTaggedValues(entityGroup);
+			Collection<TaggedValue> groupTaggedValues = getTaggedValues(entityGroup, xmiVersion);
 			//TAGGED VALUES : Add
 			umlGroupPackage.getTaggedValue().addAll(groupTaggedValues);
 
@@ -1168,7 +1168,7 @@ public class XMIExporter implements XMIExportInterface
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private Collection<TaggedValue> getTaggedValues(AbstractMetadataInterface abstractMetadataObj)
+	private Collection<TaggedValue> getTaggedValues(AbstractMetadataInterface abstractMetadataObj, String xmiVersion)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<TaggedValue> taggedValues = new ArrayList<TaggedValue>();
@@ -1184,7 +1184,7 @@ public class XMIExporter implements XMIExportInterface
 		taggedValues.add(createTaggedValue("lastUpdated",Utility.parseDateToString(abstractMetadataObj.getLastUpdated(), Constants.DATE_PATTERN_MM_DD_YYYY)));*/
 
 		addConceptCodeTaggedValues(abstractMetadataObj, taggedValues);
-		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityManagerInterface entityManager = null;
 		if (abstractMetadataObj instanceof AttributeInterface)
 		{
 			AttributeInterface attribute = (AttributeInterface) abstractMetadataObj;
@@ -1193,17 +1193,26 @@ public class XMIExporter implements XMIExportInterface
 
 			AttributeTypeInformationInterface attrTypeInfo = attribute
 					.getAttributeTypeInformation();
-			//setting UI properties tag values			
-			ControlInterface control = entityManager
-					.getControlByAbstractAttributeIdentifier(attribute.getId());
-			setUIPropertiesTagValues(taggedValues, attrTypeInfo, control, attribute);
+			
+			if (XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
+			{
+				entityManager = EntityManager.getInstance();
+				//setting UI properties tag values			
+				ControlInterface control = entityManager
+						.getControlByAbstractAttributeIdentifier(attribute.getId());
+				setUIPropertiesTagValues(taggedValues, attrTypeInfo, control, attribute);
+			}
 		}
 		else if (abstractMetadataObj instanceof AssociationInterface)
 		{//Association tag values
 			AssociationInterface association = (AssociationInterface) abstractMetadataObj;
-			ControlInterface control = entityManager
-					.getControlByAbstractAttributeIdentifier(association.getId());
-			setAssociationTagValues(control, taggedValues);
+			if (XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
+			{
+				entityManager = EntityManager.getInstance();
+				ControlInterface control = entityManager
+						.getControlByAbstractAttributeIdentifier(association.getId());
+				setAssociationTagValues(control, taggedValues);
+			}
 		}
 
 		Collection<TaggedValueInterface> taggedValueCollection = abstractMetadataObj
@@ -1780,15 +1789,15 @@ public class XMIExporter implements XMIExportInterface
 			Collection<Attribute> umlEntityAttributes;
 			if (XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
 			{
-				umlEntityAttributes = createUMLAttributes(getAllAttributesForEntity(entity));
+				umlEntityAttributes = createUMLAttributes(getAllAttributesForEntity(entity), xmiVersion);
 			}
 			else
 			{
-				umlEntityAttributes = createUMLAttributes(entity.getEntityAttributes());
+				umlEntityAttributes = createUMLAttributes(entity.getEntityAttributes(), xmiVersion);
 			}
 			umlEntityClass.getFeature().addAll(umlEntityAttributes);
 			//Create and add tagged values to entity
-			Collection<TaggedValue> entityTaggedValues = getTaggedValues(entity);
+			Collection<TaggedValue> entityTaggedValues = getTaggedValues(entity, xmiVersion);
 			umlEntityClass.getTaggedValue().addAll(entityTaggedValues);
 			umlEntityClass.getTaggedValue().add(
 					createTaggedValue(XMIConstants.TAGGED_VALUE_DOCUMENTATION, entity.getName()));
@@ -1868,7 +1877,7 @@ public class XMIExporter implements XMIExportInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	private Collection<Attribute> createUMLAttributes(
-			Collection<AttributeInterface> entityAttributes)
+			Collection<AttributeInterface> entityAttributes, String xmiVersion)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ArrayList<Attribute> umlAttributes = new ArrayList<Attribute>();
@@ -1878,7 +1887,7 @@ public class XMIExporter implements XMIExportInterface
 			while (entityAttributesIter.hasNext())
 			{
 				AttributeInterface attribute = (AttributeInterface) entityAttributesIter.next();
-				Attribute umlAttribute = createUMLAttribute(attribute);
+				Attribute umlAttribute = createUMLAttribute(attribute, xmiVersion);
 				umlAttributes.add(umlAttribute);
 			}
 		}
@@ -1892,7 +1901,7 @@ public class XMIExporter implements XMIExportInterface
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	@SuppressWarnings("unchecked")
-	private Attribute createUMLAttribute(AttributeInterface entityAttribute)
+	private Attribute createUMLAttribute(AttributeInterface entityAttribute, String xmiVersion)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Attribute umlAttribute = null;
@@ -1913,7 +1922,7 @@ public class XMIExporter implements XMIExportInterface
 					.getJavaClassMapping());
 			umlAttribute.setType(typeClass);
 			//Tagged Values
-			Collection<TaggedValue> attributeTaggedValues = getTaggedValues(entityAttribute);
+			Collection<TaggedValue> attributeTaggedValues = getTaggedValues(entityAttribute, xmiVersion);
 			umlAttribute.getTaggedValue().addAll(attributeTaggedValues);
 			umlAttribute.getTaggedValue()
 					.add(

@@ -871,7 +871,8 @@ public class XMIImportProcessor
 
 		EntityInterface targetEntity = factory.createEntity();
 		EntityManagerUtil.addIdAttribute(targetEntity);
-		targetEntity.setName(DEConstants.COLLECTION_ATTRIBUTE_CLASS+ umlAttribute.getName()
+		targetEntity.setName(DEConstants.COLLECTIONATTRIBUTECLASS
+				+ umlAttribute.getName()
 				+ IdGeneratorUtil.getInstance().getNextUniqeId());
 		attribute.setName(DEConstants.COLLECTIONATTRIBUTE
 				+ IdGeneratorUtil.getInstance().getNextUniqeId());
@@ -886,10 +887,14 @@ public class XMIImportProcessor
 			association.setTargetEntity(targetEntity);
 			association.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 			association.setName(umlAttribute.getName());
-			association.setSourceRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION, entity
-					.getName(), Cardinality.ONE, Cardinality.ONE));
-			association.setTargetRole(EntityManagerUtil.getRole(AssociationType.ASSOCIATION,
-					targetEntity.getName(), Cardinality.ONE, Cardinality.MANY));
+			association.setSourceRole(EntityManagerUtil.getRole(
+					AssociationType.ASSOCIATION,
+					DEConstants.COLLECTIONATTRIBUTEROLE + entity.getName(),
+					Cardinality.ONE, Cardinality.ONE));
+			association.setTargetRole(EntityManagerUtil.getRole(
+					AssociationType.ASSOCIATION,
+					DEConstants.COLLECTIONATTRIBUTEROLE + targetEntity.getName(),
+					Cardinality.ONE, Cardinality.MANY));
 		}
 		entity.addAbstractAttribute(association);
 		//association.populateAssociationForConstraintProperties();

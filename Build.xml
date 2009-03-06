@@ -178,6 +178,7 @@
 	    				<include name="**/ui/interfaces/*.class"/>
 	    				<include name="**/ui/util/*.class"/>
 		    			<include name="**/ui/webui/util/*.class"/>
+	    				<include name="**/ui/webui/actionform/*.class"/>
 	    				<include name="**/processor/**/*.class"/>
 	    				<include name="**/dao/impl/**/*.class"/>
 	    				<include name="**/wustl/cab2b/**/*.class"/>

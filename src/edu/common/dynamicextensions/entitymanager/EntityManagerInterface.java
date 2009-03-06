@@ -67,6 +67,18 @@ public interface EntityManagerInterface
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
+	 * Returns a collection of association ids given the source entity id and
+	 * target entity id.
+	 * @param sourceEntityId
+	 * @param targetEntityId
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	Collection<Long> getAssociationIds(Long sourceEntityId, Long targetEntityId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	
+	/**
 	 * Returns an entity object given the entity name;
 	 * @param entityName
 	 * @return

@@ -339,6 +339,32 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return associations;
 	}
+	
+	/**
+	 * Returns a collection of association identifiers given the source entity id and
+	 * target entity id.
+	 * @param srcEntityId source entity Id
+	 * @param tgtEntityId target entity Id
+	 * @return associations collection of association
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<Long> getAssociationIds(Long srcEntityId, Long tgtEntityId)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		// Create a map of substitution parameters.
+		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+		substParams.put("0", new NamedQueryParam(DBTypes.LONG, srcEntityId));
+		substParams.put("1", new NamedQueryParam(DBTypes.LONG, tgtEntityId));
+
+		// Following method is called to execute the stored HQL, the name of which is given as 
+		// the first parameter. The second parameter is the map which contains the actual values 
+		// that are replaced for the place holders.
+		Collection<Long> associationIds = executeHQL("getAssociationIds", substParams);
+
+		return associationIds;
+	}
+	
 
 	/**
 	 * Returns an entity object given the entity name;

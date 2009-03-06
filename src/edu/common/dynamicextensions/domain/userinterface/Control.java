@@ -284,11 +284,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		{
 			stringBuffer.append("<span class='font_red'>");
 			stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior());
-			stringBuffer.append("&nbsp; </span> </td> <td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
+			stringBuffer.append("&nbsp; </span> </td> <td class='formRequiredLabel_withoutBorder' valign='top'>");
 		}
 		else
 		{
-			stringBuffer.append("&nbsp; </td> <td class='formRequiredLabel_withoutBorder' width='20%' valign='top'>");
+			stringBuffer.append("&nbsp; </td> <td class='formRequiredLabel_withoutBorder' valign='top'>");
 		}
 		if (this instanceof ComboBox)
 		{

@@ -241,7 +241,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		List<Map<BaseAbstractAttributeInterface, Object>> dataValMaps = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		dataValMaps.add(dataValue);
-		Long identifier = ((userId != null || userId.length > 0) ? userId[0] : null);
+		Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
 		List<Long> recordIds = insertData(category, dataValMaps, identifier);
 
 		return recordIds.get(0);
@@ -260,7 +260,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			Long identifier = ((userId != null || userId.length > 0) ? userId[0] : null);
+			Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
 
 			for (Map<BaseAbstractAttributeInterface, ?> dataValMap : dataValMaps)
 			{
@@ -316,7 +316,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Map<CategoryEntityInterface, Map<BaseAbstractAttributeInterface, Object>> entityValMap = initialiseEntityValueMap(dataValue);
 		Long parentRecId = null;
 		Long parntCatRecId = null;
-		Long identifier = ((userId != null || userId.length > 0) ? userId[0] : null);
+		Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
 
 		for (CategoryEntityInterface categoryEntity : catEntities)
 		{
@@ -391,12 +391,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			Long parentRecId, Long... userId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException, SQLException
 	{
-		Long identifier = null;
+
 
 		Map<String, Long> keyMap = new HashMap<String, Long>();
 		Map<String, Long> fullKeyMap = new HashMap<String, Long>();
 		Map<String, List<Long>> records = new HashMap<String, List<Long>>();
-		Long idntfier = ((userId != null || userId.length > 0) ? userId[0] : null);
+		Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
 		CategoryInterface category = catEntity.getCategory();
 
 		if (catEntity == null)
@@ -418,7 +418,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			Map<AbstractAttributeInterface, Object> attributes = new HashMap<AbstractAttributeInterface, Object>();
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			Long entityId = entityManager.insertDataForHeirarchy(catEntity.getEntity(), attributes,
-					jdbcDao, idntfier);
+					jdbcDao, identifier);
 			keyMap.put(rootCatEntName, entityId);
 			fullKeyMap.put(rootCatEntName, entityId);
 
@@ -452,7 +452,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					+ " (IDENTIFIER, ACTIVITY_STATUS, " + RECORD_ID + ") VALUES (" + catEntId
 					+ ", 'ACTIVE', " + entityId + ")";
 
-			executeUpdateQuery(insertQuery, idntfier, jdbcDao);
+			executeUpdateQuery(insertQuery, identifier, jdbcDao);
 			logDebug("insertData", "categoryEntityTableInsertQuery is : " + insertQuery);
 		}
 
@@ -487,18 +487,18 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		// Insert records for category attributes.
 		insertRecordsForCategoryEntityTree(entityFKColName, catEntFKColName, srcCatEntityId,
 				srcEntityId, catEntity, catAttributes, keyMap, fullKeyMap, records,
-				areMultplRecrds, isNoCatAttrPrsnt, jdbcDao, idntfier);
+				areMultplRecrds, isNoCatAttrPrsnt, jdbcDao, identifier);
 
 		// Insert records for category associations.
 		insertRecordsForCategoryEntityTree(entityFKColName, catEntFKColName, srcCatEntityId,
 				srcEntityId, catEntity, catAssociations, keyMap, fullKeyMap, records,
-				areMultplRecrds, isNoCatAttrPrsnt, jdbcDao, idntfier);
+				areMultplRecrds, isNoCatAttrPrsnt, jdbcDao, identifier);
 
 		Long rootCERecId = getRootCategoryEntityRecordId(category.getRootCategoryElement(),
 				(Long) fullKeyMap.get(rootCatEntName));
 
 		insertRecordsForRelatedAttributes(rootCERecId, category.getRootCategoryElement(), records,
-				jdbcDao, idntfier);
+				jdbcDao, identifier);
 
 		if (parentRecId != null)
 		{
@@ -659,14 +659,14 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			CategoryAssociationInterface catAssociation = getCategoryAssociationWithRootCategoryEntity(
 					rootCatEntity, categoryEntity);
 
-			if (catAssociation == null)
-			{
-				// Pass the category entity, which is parent category entity of  
-				// root category entity so we have to insert into parent entity table.
-				insertRelatedAttributeRecordsForRootCategoryEntity(categoryEntity, colNamesValues,
-						records, jdbcDao, identifier);
-			}
-			else
+			//Commented this code since insertAllParentRelatedCategoryAttributesCollection method already inserts data for the related parent attribute.
+//			{
+//				// Pass the category entity, which is parent category entity of  
+//				// root category entity so we have to insert into parent entity table.
+//				insertRelatedAttributeRecordsForRootCategoryEntity(categoryEntity, colNamesValues,
+//						records, jdbcDAO, identifier);
+//			}
+			if (catAssociation != null)
 			{
 				insertRelatedAttributeRecordsForCategoryEntity(categoryEntity, catAssociation,
 						columnNames, columnValues, colNamesValues, rootRecordId, records, jdbcDao,
@@ -732,7 +732,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				.getAbstractAttribute();
 		EntityInterface targetEntity = association.getTargetEntity();
 		String tgtEntTblName = targetEntity.getTableProperties().getName();
-		List<Long> ids = records.get(catAttribute.getCategoryEntity().getName());
+		List<Long> ids = records.get(DynamicExtensionsUtility.getCategoryEntityName(catAttribute
+				.getCategoryEntity().getName()));
 		for (Long id : ids)
 		{
 			Long identifier = entityManagerUtil.getNextIdentifier(tgtEntTblName);
@@ -1023,7 +1024,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		CategoryInterface category = rootCatEntity.getCategory();
 
 		Long entityRecId = getRootCategoryEntityRecordId(rootCatEntity, recordId);
-		Long identifier = ((userId != null || userId.length > 0) ? userId[0] : null);
+		Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
 		List<Long> entityRecIds = new ArrayList<Long>();
 		entityRecIds.add(entityRecId);
 

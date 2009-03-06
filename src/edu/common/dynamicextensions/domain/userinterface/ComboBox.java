@@ -102,16 +102,13 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "hiddenName: '"
 				+ textComponent
 				+ "',displayField:'excerpt',valueField: 'id',"
-				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'"
-				+ defaultValue + "'," + "selectOnFocus:true,applyTo: '" + htmlComponentName
-				+ "'});";
-		if (!"".equals(defaultValue))
-		{
-			htmlString = htmlString
-					+ "ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){combo.setValue('"
-					+ defaultValue + "',false);});";
-		}
+				+ "typeAhead: 'false',width:200,pageSize:15,forceSelection: 'true',queryParam : 'query',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500" + isDisabled
+				+ ",emptyText:'" + defaultValue + "',valueNotFoundText:'',"
+				+ "selectOnFocus:'true',applyTo: '" + htmlComponentName + "'});";
+
+		htmlString = htmlString
+				+ "ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
 
 		htmlString = htmlString
 				+ "});</script>"
@@ -123,7 +120,10 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "' "
 				+ " name='"
 				+ htmlComponentName
-				+ "' size='20'/>"
+				+ "' value ='"
+				+ defaultValue
+				+ "' "
+				+ " size='20'/>"
 				+ "<div name='comboScript' style='display:none'>"
 				+ "Ext.onReady(function(){ "
 				+ "var myUrl='ComboDataAction.do?controlId= "
@@ -138,13 +138,20 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "hiddenName: '"
 				+ textComponent
 				+ "',displayField:'excerpt',valueField: 'id',"
-				+ "typeAhead: true,width:200,pageSize:15,forceSelection: true,queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 1" + isDisabled + ",emptyText:'"
-				+ defaultValue + "'," + "selectOnFocus:true,applyTo: '" + htmlComponentName
-				+ "'});});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div>"
+				+ "typeAhead: 'false',width:200,pageSize:15,forceSelection: 'true',queryParam : 'query',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500"
+				+ isDisabled
+				+ ",emptyText:'"
+				+ defaultValue
+				+ "',valueNotFoundText:'',"
+				+ "selectOnFocus:'true',applyTo: '"
+				+ htmlComponentName
+				+ "'});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
+				+ "});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div>"
 				+ "<input type='text' onmouseover=\"showToolTip('" + htmlComponentName
 				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
-				+ "' size='20' class='font_bl_nor' />" + "</div>" + "</div>" + "</div>";
+				+ "' value ='" + defaultValue + "' size='20' class='font_bl_nor' />" + "</div>"
+				+ "</div>" + "</div>";
 
 		return htmlString;
 	}

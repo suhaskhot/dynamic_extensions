@@ -13,6 +13,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
@@ -108,6 +109,8 @@ public abstract class AbstractMetadataManager
 
 		// Get the instance of the default biz logic.
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+		String DEAppName=DynamicExtensionDAO.getInstance().getAppName();
+		defaultBizLogic.setAppName(DEAppName);
 		List objects = new ArrayList();
 
 		try

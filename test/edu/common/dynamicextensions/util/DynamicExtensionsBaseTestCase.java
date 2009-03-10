@@ -29,6 +29,7 @@ import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
@@ -41,7 +42,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	static
 	{
 		System.setProperty("app.propertiesFile",System.getProperty("user.dir")+"/build.xml");
-		Logger.configureLogger(System.getProperty("user.dir")+"/src/");
+		LoggerConfig.configureLogger(System.getProperty("user.dir")+"/src/");
 		try
 		{
 			ErrorKey.init("~");

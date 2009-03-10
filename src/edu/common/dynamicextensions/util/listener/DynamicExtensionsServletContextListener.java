@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 
 /**
  * 
@@ -65,7 +66,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		 * Configuring the Logger class so that it can be utilized by
 		 * the entire application
 		 */
-		Logger.configure(applicationResourcesPath);
+		LoggerConfig.configureLogger(applicationResourcesPath);
 
 		Logger.out.info(ApplicationProperties.getValue("dynamicExtensions.home")
 				+ Variables.dynamicExtensionsHome);

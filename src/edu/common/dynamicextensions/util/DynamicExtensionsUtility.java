@@ -94,6 +94,7 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
@@ -386,7 +387,7 @@ public class DynamicExtensionsUtility
 	{
 		if (Logger.out == null)
 		{
-			Logger.configure("");
+			LoggerConfig.configureLogger("");
 		}
 	}
 

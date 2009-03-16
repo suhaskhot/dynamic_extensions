@@ -98,4 +98,10 @@ public interface EntityGroupManagerInterface
 	void checkForDuplicateEntityGroupName(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
+	/**
+	 * @param entityGroup
+	 * @param tagKey
+	 * @return
+	 */
+	public String getTaggedValue(EntityGroupInterface entityGroup, String tagKey);
 }

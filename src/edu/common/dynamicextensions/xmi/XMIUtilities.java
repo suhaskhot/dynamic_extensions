@@ -11,8 +11,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.jmi.reflect.RefPackage;
 import javax.jmi.xmi.XmiWriter;
@@ -266,6 +269,54 @@ public class XMIUtilities
 		{
 			(new File("mdr.btx")).delete();
 		}
+	}
+
+	/**
+	 * This method returns the UmlAttributes for the given Umlclass from XMI.
+	 * boolean includeInherited - Specifies whether inherited attributes should be included or not.
+	 * @param klass
+	 * @param includeInherited
+	 * @return
+	 */
+	public static Collection getAttributes(UmlClass klass, boolean includeInherited)
+	{
+		Collection atts = new ArrayList();
+		if (includeInherited)
+		{
+			Map attsMap = new HashMap();
+			UmlClass superClass = klass;
+			do
+			{
+				for (Iterator i = superClass.getFeature().iterator(); i.hasNext();)
+				{
+					Object o = i.next();
+					if (o instanceof Attribute)
+					{
+						Attribute att = (Attribute) o;
+						if (attsMap.get(att.getName()) == null)
+						{
+							attsMap.put(att.getName(), att);
+						}
+					}
+				}
+				superClass = getSuperClass(superClass);
+			}
+			while (superClass != null);
+
+			atts = attsMap.values();
+		}
+		else
+		{
+			for (Iterator i = klass.getFeature().iterator(); i.hasNext();)
+			{
+				Object o = i.next();
+				if (o instanceof Attribute)
+				{
+					atts.add(o);
+				}
+			}
+		}
+		return atts;
 	}
 
 }

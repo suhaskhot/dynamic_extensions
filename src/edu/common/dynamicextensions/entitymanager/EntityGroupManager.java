@@ -356,11 +356,12 @@ public class EntityGroupManager extends AbstractMetadataManager
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public boolean validateEntityGroup(EntityGroupInterface entityGroup)
-	throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		try
 		{
-			EntityGroup dbaseCopy = (EntityGroup)DynamicExtensionsUtility.getCleanObject(EntityGroup.class.getCanonicalName(), entityGroup.getId());
+			EntityGroup dbaseCopy = (EntityGroup) DynamicExtensionsUtility.getCleanObject(
+					EntityGroup.class.getCanonicalName(), entityGroup.getId());
 			Collection<EntityInterface> entities = entityGroup.getEntityCollection();
 			for (EntityInterface entObject : entities)
 			{
@@ -379,9 +380,9 @@ public class EntityGroupManager extends AbstractMetadataManager
 				}
 			}
 		}
-		catch(DAOException exception)
+		catch (DAOException exception)
 		{
-			throw new DynamicExtensionsSystemException(exception.getMessage(),exception);
+			throw new DynamicExtensionsSystemException(exception.getMessage(), exception);
 		}
 		return true;
 	}
@@ -438,7 +439,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 		{
 			throw new DynamicExtensionsSystemException("Error while checking for duplicate group",
 					e);
-		}		
+		}
 		finally
 		{
 			try
@@ -450,6 +451,27 @@ public class EntityGroupManager extends AbstractMetadataManager
 				throw new DynamicExtensionsSystemException("DAOException", e);
 			}
 		}
+	}
+
+	/**
+	 * @param entityGroup
+	 * @param tagKey
+	 * @return
+	 */
+	public String getTaggedValue(EntityGroupInterface entityGroup, String tagKey)
+	{
+		String tagValue = null;
+		Collection<TaggedValueInterface> taggedValues = entityGroup.getTaggedValueCollection();
+
+		for (TaggedValueInterface taggedValue : taggedValues)
+		{
+			if (taggedValue.getKey().equalsIgnoreCase(tagKey))
+			{
+				tagValue = taggedValue.getValue();
+				break;
+			}
+		}
+		return tagValue;
 	}
 
 }

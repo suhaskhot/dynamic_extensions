@@ -283,6 +283,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 
 	/**
 	 * This method return the Collection of Association excluding collection attribute.
+	 * Associations having both entities of same entity group will only return	
 	 * @return the Collection of Association.
 	 */
 	public Collection<AssociationInterface> getAssociationCollectionExcludingCollectionAttributes()
@@ -293,7 +294,9 @@ public class Entity extends AbstractEntity implements EntityInterface
 		{
 			for (AssociationInterface association : AssociationsCollection)
 			{
-				if (!association.getIsCollection())
+				if (association.getEntity().getEntityGroup().getName().equals(
+						association.getTargetEntity().getEntityGroup().getName())
+						&& !association.getIsCollection())
 				{
 					entityAssociations.add(association);
 				}
@@ -360,7 +363,8 @@ public class Entity extends AbstractEntity implements EntityInterface
 
 		for (AssociationInterface associationIterator : associationCollection)
 		{
-			if (associationIterator.getId() != null && associationIterator.getId().equals(identifier))
+			if (associationIterator.getId() != null
+					&& associationIterator.getId().equals(identifier))
 			{
 				association = associationIterator;
 				break;
@@ -632,14 +636,13 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	public AttributeInterface getEntityAttributeByName(String attributeName)
 	{
-		
+
 		Collection<AbstractAttributeInterface> abstractAttributeCollection = new ArrayList<AbstractAttributeInterface>();
 		abstractAttributeCollection
 				.addAll(getAbstractAttributeCollectionIncludingInheritedAttribute());
-		return searchAttributeByNameInCollection(abstractAttributeCollection,attributeName);
+		return searchAttributeByNameInCollection(abstractAttributeCollection, attributeName);
 	}
-	
-	
+
 	/**
 	 * It will search the attribute in the given given abstractAttributeCollection parameter which is having the same name given in the 
 	 * second attribute name parameter.
@@ -648,8 +651,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 * @return
 	 */
 	private AttributeInterface searchAttributeByNameInCollection(
-			Collection<AbstractAttributeInterface> abstractAttributeCollection,
-			String attributeName)
+			Collection<AbstractAttributeInterface> abstractAttributeCollection, String attributeName)
 	{
 		AttributeInterface attribute = null;
 		AbstractAttributeInterface abstractAttribute = null;

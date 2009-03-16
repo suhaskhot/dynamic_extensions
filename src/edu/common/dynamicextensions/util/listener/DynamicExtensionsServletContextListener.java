@@ -9,7 +9,9 @@ import javax.servlet.ServletContextListener;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 
@@ -26,14 +28,31 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 	 */
 	public void contextInitialized(ServletContextEvent sce)
 	{
+		
+		String propDirPath=sce.getServletContext().getRealPath("WEB-INF")
+		+ System.getProperty("file.separator") + "classes";
+
 		/**
 		 * Getting Application Properties file path
 		 */
-		String applicationResourcesPath = sce.getServletContext().getRealPath("WEB-INF")
-				+ System.getProperty("file.separator") + "classes"
-				+ System.getProperty("file.separator")
+		String applicationResourcesPath = propDirPath+ System.getProperty("file.separator")
 				+ sce.getServletContext().getInitParameter("applicationproperties");
-
+		
+		/**
+		 * Configuring the Logger class so that it can be utilized by
+		 * the entire application
+		 */
+		
+		LoggerConfig.configureLogger(propDirPath);
+		try
+		{
+			ErrorKey.init("~");
+		
+		}
+		catch (Exception ex)
+		{
+			Logger.out.error(ex.getMessage(), ex);
+		}
 		/**
 		 * Initializing ApplicationProperties with the class 
 		 * corresponding to resource bundle of the application
@@ -45,6 +64,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		 * Getting and storing Home path for the application
 		 */
 		Variables.dynamicExtensionsHome = sce.getServletContext().getRealPath("");
+		CommonServiceLocator.getInstance().setAppHome(sce.getServletContext().getRealPath(""));
 
 		/**
 		 * Creating Logs Folder inside catissue home
@@ -61,12 +81,6 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		 * by the Logger for creating log file
 		 */
 		System.setProperty("dynamicExtensions.home", Variables.dynamicExtensionsHome + "/Logs");
-
-		/**
-		 * Configuring the Logger class so that it can be utilized by
-		 * the entire application
-		 */
-		LoggerConfig.configureLogger(applicationResourcesPath);
 
 		Logger.out.info(ApplicationProperties.getValue("dynamicExtensions.home")
 				+ Variables.dynamicExtensionsHome);

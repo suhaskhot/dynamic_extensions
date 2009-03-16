@@ -56,6 +56,7 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_CONCEPT_DEFINITION = "ConceptDefinition";
 	public static final String TAGGED_VALUE_RULE = "Rule";
 	public static final String TAGGED_VALUE_MULTISELECT = "Multiselect";
+	public static final String TAGGED_VALUE_MULTISELECT_TABLE_NAME = "Multiselect_TableName";
 	public static final String MULTILINE = "MultiLine";
 	public static final String TAGGED_VALUE_DISPLAY_WIDTH = "DisplayWidth";
 	public static final String TAGGED_VALUE_PHI_ATTRIBUTE = "PHI";
@@ -82,7 +83,7 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_PROPERTY_QUALIFIER_CONCEPT_PREFERRED_NAME = "PropertyQualifierConceptPreferredName";
 	public static final String TAGGED_VALUE_OWNER_REVIEWED = "OWNER_REVIEWED";
 	public static final String TAGGED_VALUE_CURATOR_REVIEWED = "CURATOR_REVIEWED";
-
+	public static final String TAGGED_NAME_PACKAGE_NAME = "PackageName";
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW = "Logical View";
 	public static final String PACKAGE_NAME_LOGICAL_MODEL = "Logical Model";
@@ -121,6 +122,7 @@ public class XMIConstants
 	//Separators
 	public static final String COMMA = ",";
 	public static final String SEPARATOR = "_";
+	public static final String COLON_SEPARATOR = ":";
 	public static final String DOT_SEPARATOR = ".";
 	public static final String TAGGED_VALUE_TYPE = "type";
 	public static final String DEFAULT_PACKAGE = "Default";
@@ -129,6 +131,10 @@ public class XMIConstants
 
 	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "255";
 	public static final String MAX_LENGTH_LIMIT = "999";
-
+	public static final String TAGGED_VALUE_REFERENCED_PRIMARY_KEY = "referenced-primaryKey";
+	public static final String TAGGED_VALUE_ASSOCIATION_NAME = "association-name";
 	public static final String ID_ATTRIBUTE_NAME = "id";
+	public static final String TAGGED_VALUE_ASSN_ENTITY = "association-entity";
+	public static final String ASSN_SRC_ENTITY = "SRC_ENTITY";
+	public static final String ASSN_TGT_ENTITY = "TGT_ENTITY";
 }

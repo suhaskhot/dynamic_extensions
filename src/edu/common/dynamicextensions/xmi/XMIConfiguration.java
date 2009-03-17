@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.xmi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This class is used For configuring the ImportXmi Process . for giving some optional FLags
  * Which are used for different purpose like saving only metadata, should Id name allowed or not etc.
@@ -39,11 +42,103 @@ public class XMIConfiguration
 	 */
 	private boolean isAdddIdAttr = true;
 
+	/**
+	 * This is used for  that the default package is set or not by end-user  at the time of importxmi ,
+	 * by default it is set to true.  
+	 */
+	private boolean isDefaultPackage = true;
+	/**
+	 * This is used to indicate the name of Entity group to skip,for which do not create entity
+	 * by default it is set to null.  
+	 */
+	private String skipEntityGroup = null;
+	/**
+	 * This is used to indicate the list of name of Skip entity ,for which do not create entity 
+	 * by default it is set to empty list.  
+	 */
+	private List<String> skipEntityNames = new ArrayList<String>();
+
+	/**
+	 * This is used to set the default package name  by end-user  at the time of importxmi ,
+	 * by default it is set to catissue package.  
+	 */
+	private String defaultPackagePrefix = XMIConstants.CATISSUE_PACKAGE;
+
+	/**
+	 * 
+	 */
 	private static XMIConfiguration xmiConfiguration;
 
+	/**
+	 * 
+	 */
 	private XMIConfiguration()
 	{
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isDefaultPackage()
+	{
+		return isDefaultPackage;
+	}
+
+	/**
+	 * @param isDefaultPackage
+	 */
+	public void setDefaultPackage(boolean isDefaultPackage)
+	{
+		this.isDefaultPackage = isDefaultPackage;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSkipEntityGroup()
+	{
+		return skipEntityGroup;
+	}
+
+	/**
+	 * @param skipEntityGroup
+	 */
+	public void setSkipEntityGroup(String skipEntityGroup)
+	{
+		this.skipEntityGroup = skipEntityGroup;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<String> getSkipEntityNames()
+	{
+		return skipEntityNames;
+	}
+
+	/**
+	 * @param skipEntityNames
+	 */
+	public void setSkipEntityNames(List<String> skipEntityNames)
+	{
+		this.skipEntityNames = skipEntityNames;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getDefaultPackagePrefix()
+	{
+		return defaultPackagePrefix;
+	}
+
+	/**
+	 * @param defaultPackagePrefix
+	 */
+	public void setDefaultPackagePrefix(String defaultPackagePrefix)
+	{
+		this.defaultPackagePrefix = defaultPackagePrefix;
 	}
 
 	/**

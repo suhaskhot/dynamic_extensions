@@ -226,7 +226,8 @@ public class DynamicExtensionsUtility
 		try
 		{
 			// After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
-			List objectList = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, new Long(identifier));
+			List objectList = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, new Long(
+					identifier));
 
 			if (objectList == null || objectList.isEmpty())
 			{
@@ -248,7 +249,7 @@ public class DynamicExtensionsUtility
 	 */
 	public static void cleanContainerControlsValue(ContainerInterface baseContainerObject)
 	{
-		ContainerInterface baseContainer=baseContainerObject;
+		ContainerInterface baseContainer = baseContainerObject;
 		while (baseContainer != null)
 		{
 			Collection controlCollection = baseContainer.getControlCollection();
@@ -397,7 +398,7 @@ public class DynamicExtensionsUtility
 	public static void initialiseApplicationInfo()
 	{
 
-		CommonServiceLocator serviceLocator=CommonServiceLocator.getInstance();
+		CommonServiceLocator serviceLocator = CommonServiceLocator.getInstance();
 		String fileName = Variables.dynamicExtensionsHome + System.getProperty("file.separator")
 				+ ApplicationProperties.getValue("application.version.file");
 		CVSTagReader cvsTagReader = new CVSTagReader();
@@ -437,7 +438,7 @@ public class DynamicExtensionsUtility
 		if (abstractAttributeInterface instanceof AttributeInterface)
 		{
 			attributeTypeInformation = ((AttributeInterface) abstractAttributeInterface)
-						.getAttributeTypeInformation();
+					.getAttributeTypeInformation();
 		}
 		return attributeTypeInformation;
 	}
@@ -916,15 +917,15 @@ public class DynamicExtensionsUtility
 	{
 		boolean isDateValid = false;
 		Date date = null;
-		String strDate=strAsDate;
+		String strDate = strAsDate;
 		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
-			strDate = formatMonthAndYearDate(strDate,false);
+			strDate = formatMonthAndYearDate(strDate, false);
 			//09-12-2007 0:0
 		}
 		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 		{
-			strDate = formatYearDate(strDate,false);
+			strDate = formatYearDate(strDate, false);
 			//09-12-2007 0:0
 		}
 
@@ -948,23 +949,24 @@ public class DynamicExtensionsUtility
 	 * @param strDate
 	 * @return
 	 */
-	public static String formatMonthAndYearDate(String strDate,boolean removeTime)
+	public static String formatMonthAndYearDate(String strDate, boolean removeTime)
 	{
-		String appName=DynamicExtensionDAO.getInstance().getAppName();		
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
 		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
-		IDEDBUtility dbUtility=DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
-		return dbUtility.formatMonthAndYearDate(strDate,removeTime);
+		IDEDBUtility dbUtility = DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
+		return dbUtility.formatMonthAndYearDate(strDate, removeTime);
 	}
 
 	/**
 	 * @param strDate
 	 * @return
 	 */
-	public static String formatYearDate(String strDate,boolean removeTime)
+	public static String formatYearDate(String strDate, boolean removeTime)
 	{
-		String appName=DynamicExtensionDAO.getInstance().getAppName();
-		String dbType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
-		return DynamicExtensionDBFactory.getInstance().getDbUtility(dbType).formatYearDate(strDate,removeTime);		
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
+		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		return DynamicExtensionDBFactory.getInstance().getDbUtility(dbType).formatYearDate(strDate,
+				removeTime);
 	}
 
 	/**
@@ -980,7 +982,7 @@ public class DynamicExtensionsUtility
 		if ((value != null && value.trim().length() > 0)
 				&& (value.equals("1") || value.equals("true")))
 		{
-				isChecked = true;
+			isChecked = true;
 		}
 		return isChecked;
 	}
@@ -994,9 +996,10 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getValueForCheckBox(boolean ischecked)
 	{
-		String appName=DynamicExtensionDAO.getInstance().getAppName();
-		String dbType=DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
-		return DynamicExtensionDBFactory.getInstance().getDbUtility(dbType).getValueForCheckBox(ischecked);
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
+		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
+		return DynamicExtensionDBFactory.getInstance().getDbUtility(dbType).getValueForCheckBox(
+				ischecked);
 	}
 
 	/**
@@ -1007,9 +1010,10 @@ public class DynamicExtensionsUtility
 	public static String getCheckboxSelectionValue(String value)
 	{
 		String checkboxValue = "";
-		if (value != null && value.trim().length() > 0 && value.equalsIgnoreCase(getValueForCheckBox(true)))
+		if (value != null && value.trim().length() > 0
+				&& value.equalsIgnoreCase(getValueForCheckBox(true)))
 		{
-				checkboxValue = "checked";
+			checkboxValue = "checked";
 		}
 		return checkboxValue;
 	}
@@ -1026,8 +1030,8 @@ public class DynamicExtensionsUtility
 	public static int compareDates(String strDate1, String strDate2, String dateFormat)
 	{
 		int result = 0;
-		String date1=strDate1;
-		String date2=strDate2;
+		String date1 = strDate1;
+		String date2 = strDate2;
 		if (areBothDatesOfSameFormat(date1, date2))
 		{
 			result = 1;
@@ -1042,17 +1046,18 @@ public class DynamicExtensionsUtility
 				result = 1;
 				return result;
 			}
-			date1 = formatMonthAndYearDate(date1,false);
-			date2 = formatMonthAndYearDate(date2,false);
+			date1 = formatMonthAndYearDate(date1, false);
+			date2 = formatMonthAndYearDate(date2, false);
 			//09-12-2007 0:0
 		}
 
-		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && Integer.parseInt(date1) > Integer.parseInt(date2))
+		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT)
+				&& Integer.parseInt(date1) > Integer.parseInt(date2))
 		{
 			//date1 = formatYearDate(date1);
 			//date2 = formatYearDate(date2);
-				result = 1;
-				return result;
+			result = 1;
+			return result;
 			//09-12-2007 0:0
 		}
 
@@ -1084,10 +1089,10 @@ public class DynamicExtensionsUtility
 	 */
 	public static boolean areBothDatesOfSameFormat(String date1, String date2)
 	{
-		boolean returnValue=false;
+		boolean returnValue = false;
 		if (date1.length() != date2.length())
 		{
-			returnValue= true;
+			returnValue = true;
 		}
 		return returnValue;
 	}
@@ -1123,7 +1128,7 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getSQLDateFormat(String dateFormat)
 	{
-		CommonServiceLocator locator= CommonServiceLocator.getInstance();
+		CommonServiceLocator locator = CommonServiceLocator.getInstance();
 		StringBuffer sqlDateFormat = new StringBuffer(locator.getDatePattern());
 		if (dateFormat != null && dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
@@ -1141,6 +1146,7 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException
 	{
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
+		defaultBizLogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
 		List objectList = new ArrayList();
 		ContainerInterface containerInterface = null;
 		if (caption == null || caption.trim().length() == 0)
@@ -1281,9 +1287,15 @@ public class DynamicExtensionsUtility
 	 */
 	public static EntityGroupInterface retrieveEntityGroup(String name)
 	{
-		DefaultBizLogic bizlogic = new DefaultBizLogic();
+		//DefaultBizLogic bizlogic = new DefaultBizLogic();
 		Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
 		EntityGroupInterface entityGroup = null;
+		DefaultBizLogic bizlogic = BizLogicFactory.getDefaultBizLogic();
+		bizlogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
+		System.out.println("-retrieveEntityGroup APP NAME-----"
+				+ DynamicExtensionDAO.getInstance().getAppName());
+		bizlogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
+		//
 
 		try
 		{
@@ -1298,7 +1310,7 @@ public class DynamicExtensionsUtility
 		}
 		catch (BizLogicException e)
 		{
-			Logger.out.debug(e.getMessage(),e);
+			Logger.out.debug(e.getMessage(), e);
 
 		}
 
@@ -1330,14 +1342,16 @@ public class DynamicExtensionsUtility
 					.getInstance();
 			deCacheManager.removeObjectFromCache(DEConstants.LIST_OF_CONTAINER);
 			deCacheManager.addObjectToCache(DEConstants.LIST_OF_CONTAINER, (HashMap) containerMap);
-			Logger.out.info("ON Startup caching containers.Size of Container:"+ containerList.size());
+			Logger.out.info("ON Startup caching containers.Size of Container:"
+					+ containerList.size());
 
 		}
 		catch (BizLogicException e)
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException("Exception occured while creating instance of DynamicExtensionsCacheManager",e);
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
 
 		}
 	}
@@ -1368,7 +1382,8 @@ public class DynamicExtensionsUtility
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException("Exception occured while creating instance of DynamicExtensionsCacheManager",e);
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
 		}
 	}
 
@@ -1386,7 +1401,8 @@ public class DynamicExtensionsUtility
 			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
 					.getInstance();
 			Map containerMap = new HashMap();
-			containerMap = (HashMap) deCacheManager.getObjectFromCache(DEConstants.LIST_OF_CONTAINER);
+			containerMap = (HashMap) deCacheManager
+					.getObjectFromCache(DEConstants.LIST_OF_CONTAINER);
 			if (containerMap != null)
 			{
 				containerMap.put(updatedContainer.getId(), updatedContainer);
@@ -1399,7 +1415,8 @@ public class DynamicExtensionsUtility
 		{
 			Logger.out
 					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException("Exception occured while creating instance of DynamicExtensionsCacheManager",e);
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
 		}
 	}
 
@@ -1441,10 +1458,11 @@ public class DynamicExtensionsUtility
 			if (objCategoryEntity.getParentCategoryEntity() != null
 					&& !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity()
 							.getName())
-							&& ((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
+					&& ((CategoryEntity) objCategoryEntity.getParentCategoryEntity())
+							.isCreateTable())
 			{
-					getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),
-							objCategoryMap);
+				getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),
+						objCategoryMap);
 			}
 			if (!objCategoryMap.containsKey(categoryEntity.getName())
 					&& objCategoryEntity.isCreateTable())
@@ -1452,7 +1470,7 @@ public class DynamicExtensionsUtility
 				if (objCategoryEntity.getId() == null && objCategoryEntity.isCreateTable())
 				{
 					//Only includes those category entity for which table is required to be created
-						objCategoryMap.put(categoryEntity.getName(), objCategoryEntity);
+					objCategoryMap.put(categoryEntity.getName(), objCategoryEntity);
 				}
 			}
 			else
@@ -1464,11 +1482,13 @@ public class DynamicExtensionsUtility
 			{
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
 						.getTargetCategoryEntity();
-				if (objCEntity != null && objCEntity.isCreateTable() && !objCategoryMap.containsKey(categoryAssociationInterface
-						.getTargetCategoryEntity().getName()))
+				if (objCEntity != null
+						&& objCEntity.isCreateTable()
+						&& !objCategoryMap.containsKey(categoryAssociationInterface
+								.getTargetCategoryEntity().getName()))
 				{
-						getUnsavedCategoryEntityList(categoryAssociationInterface
-								.getTargetCategoryEntity(), objCategoryMap);
+					getUnsavedCategoryEntityList(categoryAssociationInterface
+							.getTargetCategoryEntity(), objCategoryMap);
 				}
 			}
 		}
@@ -1493,15 +1513,15 @@ public class DynamicExtensionsUtility
 			if (categoryEntity.getParentCategoryEntity() != null
 					&& !objCategoryMap.containsKey(categoryEntity.getParentCategoryEntity()
 							.getName())
-							&& ((CategoryEntity) objCategoryEntity.getParentCategoryEntity()).isCreateTable())
+					&& ((CategoryEntity) objCategoryEntity.getParentCategoryEntity())
+							.isCreateTable())
 			{
-					getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(),
-							objCategoryMap);
+				getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(), objCategoryMap);
 			}
-			if (!objCategoryMap.containsKey(categoryEntity.getName())&&
-					objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
+			if (!objCategoryMap.containsKey(categoryEntity.getName())
+					&& objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
 			{
-					objCategoryMap.put(categoryEntity.getName(), categoryEntity);
+				objCategoryMap.put(categoryEntity.getName(), categoryEntity);
 			}
 			else
 			{
@@ -1512,12 +1532,14 @@ public class DynamicExtensionsUtility
 			{
 				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
 						.getTargetCategoryEntity();
-				if (objCEntity != null && objCEntity.isCreateTable() && objCEntity.getId() != null
+				if (objCEntity != null
+						&& objCEntity.isCreateTable()
+						&& objCEntity.getId() != null
 						&& !objCategoryMap.containsKey(categoryAssociationInterface
 								.getTargetCategoryEntity().getName()))
 				{
-						getSavedCategoryEntityList(categoryAssociationInterface
-								.getTargetCategoryEntity(), objCategoryMap);
+					getSavedCategoryEntityList(categoryAssociationInterface
+							.getTargetCategoryEntity(), objCategoryMap);
 				}
 			}
 		}
@@ -1577,8 +1599,8 @@ public class DynamicExtensionsUtility
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException(e.getMessage(),e);
-			}			
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
 			if (EntityManagerUtil.isParentChanged((Entity) childEntity, dbaseCopy)
 					|| EntityManagerUtil.isPrimaryKeyChanged(parentEntity))
 			{
@@ -1663,13 +1685,14 @@ public class DynamicExtensionsUtility
 			AssociationInterface dbaseCopy;
 			try
 			{
-				dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(Association.class.getCanonicalName(),identifier);
+				dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(
+						Association.class.getCanonicalName(), identifier);
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException(e.getMessage(),e);
-			}			
-			
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
 			if (EntityManagerUtil.isCardinalityChanged(association, dbaseCopy)
 					|| EntityManagerUtil.isPrimaryKeyChanged(association.getEntity())
 					|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity()))
@@ -1823,21 +1846,21 @@ public class DynamicExtensionsUtility
 			for (ControlInterface control : controlCollection)
 			{
 				isPresent = false;
-				if ((control instanceof ContainmentAssociationControl || control instanceof ListBox)&&
-				sequenceNumbers != null)
+				if ((control instanceof ContainmentAssociationControl || control instanceof ListBox)
+						&& sequenceNumbers != null)
 				{
-						for (Integer sequenceNumber : sequenceNumbers)
+					for (Integer sequenceNumber : sequenceNumbers)
+					{
+						if (control.getSequenceNumber() != null
+								&& control.getSequenceNumber().equals(sequenceNumber))
 						{
-							if (control.getSequenceNumber() != null
-									&& control.getSequenceNumber().equals(sequenceNumber))
-							{
-								isPresent = true;
-							}
+							isPresent = true;
 						}
-						if (!isPresent)
-						{
-							listOfIds.add(control.getBaseAbstractAttribute().getId());
-						}
+					}
+					if (!isPresent)
+					{
+						listOfIds.add(control.getBaseAbstractAttribute().getId());
+					}
 				}
 			}
 		}
@@ -1904,30 +1927,30 @@ public class DynamicExtensionsUtility
 		{
 			str = (String) value;
 		}
-		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR,locale);
+				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR, locale);
 		try
 		{
 			date = simpleDateFormat.parse(str);
 		}
 		catch (ParseException e)
 		{
-			throw new DynamicExtensionsSystemException("Unable to parse given date.",e);
+			throw new DynamicExtensionsSystemException("Unable to parse given date.", e);
 		}
 
-		String appName=DynamicExtensionDAO.getInstance().getAppName();
-		JDBCDAO jdbcDao=null;
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
+		JDBCDAO jdbcDao = null;
 		try
 		{
 			jdbcDao = (JDBCDAO) DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
 		}
 		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException("Unable to JDBCDAO object.",e);
+			throw new DynamicExtensionsSystemException("Unable to JDBCDAO object.", e);
 		}
-		formattedvalue = jdbcDao.getStrTodateFunction() + "('" + simpleDateFormat.format(date) + "','"
-				+ ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";
+		formattedvalue = jdbcDao.getStrTodateFunction() + "('" + simpleDateFormat.format(date)
+				+ "','" + ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";
 
 		return formattedvalue;
 	}
@@ -2039,7 +2062,8 @@ public class DynamicExtensionsUtility
 	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption,
 			String formName) throws DynamicExtensionsApplicationException
 	{
-		if (caption != null && !caption.equals(formName) && entityGroup.getEntityByName(formName) != null)
+		if (caption != null && !caption.equals(formName)
+				&& entityGroup.getEntityByName(formName) != null)
 		{
 			reportDuplicateEntityName();
 		}
@@ -2129,7 +2153,7 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getEscapedStringValue(String value)
 	{
-		String replacedValue=value;
+		String replacedValue = value;
 		replacedValue = replaceUtil(replacedValue, "'", "&#39");
 		replacedValue = replaceUtil(replacedValue, "\"", "&#34");
 		if (replacedValue != null)
@@ -2177,7 +2201,7 @@ public class DynamicExtensionsUtility
 	public static String getCategoryEntityName(String categoryEntityName)
 	{
 		Pattern pattern = Pattern.compile("[]]");
-		String entityName=categoryEntityName;
+		String entityName = categoryEntityName;
 		if (entityName != null && entityName.length() > 0)
 		{
 			Matcher matcher = pattern.matcher(entityName);
@@ -2187,7 +2211,9 @@ public class DynamicExtensionsUtility
 			// with the replacements
 			while (result)
 			{
-				matcher.appendReplacement(stringBuff, entityName.subSequence(matcher.start(), matcher.end()) + " ");
+				matcher.appendReplacement(stringBuff, entityName.subSequence(matcher.start(),
+						matcher.end())
+						+ " ");
 				result = matcher.find();
 			}
 			//Add the last segment of input to
@@ -2207,19 +2233,21 @@ public class DynamicExtensionsUtility
 	 * @return object from database
 	 * @throws DAOException generic DAO exception.
 	 */
-	public static Object getCleanObject(String sourceObjectName, Long identifier) throws DAOException
+	public static Object getCleanObject(String sourceObjectName, Long identifier)
+			throws DAOException
 	{
-		HibernateDAO hibernateDao=null;
+		HibernateDAO hibernateDao = null;
 		try
 		{
-			String appName=DynamicExtensionDAO.getInstance().getAppName();			
-			hibernateDao = (HibernateDAO)DAOConfigFactory.getInstance().getDAOFactory(appName).getDAO();
+			String appName = DynamicExtensionDAO.getInstance().getAppName();
+			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+					.getDAO();
 			hibernateDao.openSession(null);
 			return hibernateDao.retrieveById(sourceObjectName, identifier);
 		}
 		finally
-		{	
-			hibernateDao.closeSession();			
+		{
+			hibernateDao.closeSession();
 		}
 	}
 
@@ -2229,10 +2257,10 @@ public class DynamicExtensionsUtility
 	 */
 	public static JDBCDAO getJDBCDAO() throws DAOException
 	{
-		
-		String appName=DynamicExtensionDAO.getInstance().getAppName();			
+
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
 		JDBCDAO jdbcDao = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
-		jdbcDao.openSession(null);	
+		jdbcDao.openSession(null);
 		return jdbcDao;
 	}
 
@@ -2242,9 +2270,10 @@ public class DynamicExtensionsUtility
 	 */
 	public static HibernateDAO getHibernateDAO() throws DAOException
 	{
-		String appName=DynamicExtensionDAO.getInstance().getAppName();			
-		HibernateDAO hibernateDao = (HibernateDAO)DAOConfigFactory.getInstance().getDAOFactory(appName).getDAO();
-		hibernateDao.openSession(null);	
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
+		HibernateDAO hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(
+				appName).getDAO();
+		hibernateDao.openSession(null);
 		return hibernateDao;
 	}
 

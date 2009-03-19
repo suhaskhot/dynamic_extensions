@@ -27,6 +27,7 @@ import org.omg.uml.modelmanagement.ModelClass;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ByteArrayAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -321,11 +322,11 @@ public class XMIImportProcessor
 			}
 		}
 		//TODO Uncomment check about processinheritance method call 
-		/*if (!umlGeneralisationColl.isEmpty())
+		if (!umlGeneralisationColl.isEmpty())
 		{
 			processInheritance(parentIdVsChildrenIds);
 			//			markInheritedAttributes(entityGroup);
-		}*/
+		}
 
 		//Retrieving  all containers corresponding to the given entity group.
 		if (entityGroup.getId() != null)
@@ -549,15 +550,15 @@ public class XMIImportProcessor
 	 * @return
 	 * @throws BizLogicException
 	 */
-	private List<EntityGroupInterface> retrieveEntityGroup(String entityGroupName)
-			throws BizLogicException
+	private List retrieveEntityGroup(String entityGroupName) throws BizLogicException
 	{
 		List<EntityGroupInterface> entityGroupColl = null;
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-
+		defaultBizLogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
 		entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class.getName(),
 				edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
-
+		System.out.println("---xmi import processor entity group found size"
+				+ entityGroupColl.size());
 		return entityGroupColl;
 	}
 

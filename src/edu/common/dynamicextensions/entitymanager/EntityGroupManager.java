@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
@@ -214,6 +215,7 @@ public class EntityGroupManager extends AbstractMetadataManager
 		// that returns the particular object depending on the value of a particular 
 		// column of the associated table.
 		DefaultBizLogic defBizLogic = BizLogicFactory.getDefaultBizLogic();
+		defBizLogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
 
 		try
 		{

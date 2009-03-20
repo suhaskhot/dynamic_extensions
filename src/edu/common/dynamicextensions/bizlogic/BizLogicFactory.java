@@ -9,6 +9,7 @@
 
 package edu.common.dynamicextensions.bizlogic;
 
+import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.util.global.Constants;
@@ -37,7 +38,7 @@ public class BizLogicFactory
 		}
 		else
 		{
-			abstractBizLogic = new DefaultBizLogic();
+			abstractBizLogic = new DefaultBizLogic(DynamicExtensionDAO.getInstance().getAppName());
 		}
 		return abstractBizLogic;
 	}
@@ -48,7 +49,7 @@ public class BizLogicFactory
 	 */
 	public static DefaultBizLogic getDefaultBizLogic()
 	{
-		return new DefaultBizLogic();
+		return new DefaultBizLogic(DynamicExtensionDAO.getInstance().getAppName());
 	}
 
 	/**

@@ -42,7 +42,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
-import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
@@ -340,7 +339,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 			parentRecId = insertDataForSingleCategoryEntity(categoryEntity, valueMap, jdbcDao,
 					parentRecId, identifier);
-			parntCatRecId = getRootCategoryRecordId(categoryEntity, parentRecId);
+			parntCatRecId = getRootCategoryRecordId(categoryEntity, parentRecId,jdbcDao);
 		}
 
 		return parntCatRecId;
@@ -353,7 +352,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws SQLException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private Long getRootCategoryRecordId(CategoryEntityInterface catEntity, Long parentRecId)
+	private Long getRootCategoryRecordId(CategoryEntityInterface catEntity, Long parentRecId,JDBCDAO jdbcDao)
 			throws SQLException, DynamicExtensionsSystemException
 	{
 		CategoryInterface category = catEntity.getCategory();
@@ -366,7 +365,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		Long rootCERecId = null;
 
-		List<Long> results = getResultIDList(query.toString(), IDENTIFIER);
+		List<Long> results = getResultIDList(query.toString(), IDENTIFIER,jdbcDao);
 		if (!results.isEmpty())
 		{
 			rootCERecId = (Long) results.get(0);
@@ -495,7 +494,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				areMultplRecrds, isNoCatAttrPrsnt, jdbcDao, identifier);
 
 		Long rootCERecId = getRootCategoryEntityRecordId(category.getRootCategoryElement(),
-				(Long) fullKeyMap.get(rootCatEntName));
+				(Long) fullKeyMap.get(rootCatEntName),jdbcDao);
 
 		insertRecordsForRelatedAttributes(rootCERecId, category.getRootCategoryElement(), records,
 				jdbcDao, identifier);
@@ -920,7 +919,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					String selectQuery = "SELECT IDENTIFIER FROM " + catEntTblName + " WHERE "
 							+ RECORD_ID + " = " + id;
 
-					List<Long> resultIds = getResultIDList(selectQuery, "IDENTIFIER");
+					List<Long> resultIds = getResultIDList(selectQuery, "IDENTIFIER",jdbcDao);
 					if (resultIds.isEmpty())
 					{
 						Long catEntId = entityManagerUtil.getNextIdentifier(catEntTblName);
@@ -1022,25 +1021,21 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			SQLException
 	{
 		CategoryInterface category = rootCatEntity.getCategory();
-
-		Long entityRecId = getRootCategoryEntityRecordId(rootCatEntity, recordId);
-		Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
-		List<Long> entityRecIds = new ArrayList<Long>();
-		entityRecIds.add(entityRecId);
-
-		Map<AbstractAttributeInterface, Object> rootCERecords = new HashMap<AbstractAttributeInterface, Object>();
-		populateRootEntityRecordMap(rootCatEntity, rootCERecords, dataValue);
-
 		JDBCDAO jdbcDao = null;
-
 		Boolean isEdited = false;
-
-		// Roll back queries for category entity records.
-		Stack<String> rlbkQryStack = new Stack<String>();
-
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			Long entityRecId = getRootCategoryEntityRecordId(rootCatEntity, recordId,jdbcDao);
+			Long identifier = ((userId != null && userId.length > 0) ? userId[0] : null);
+			List<Long> entityRecIds = new ArrayList<Long>();
+			entityRecIds.add(entityRecId);
+	
+			Map<AbstractAttributeInterface, Object> rootCERecords = new HashMap<AbstractAttributeInterface, Object>();
+			populateRootEntityRecordMap(rootCatEntity, rootCERecords, dataValue);
+	
+			// Roll back queries for category entity records.
+			Stack<String> rlbkQryStack = new Stack<String>();		
 
 			// Clear all records from entity table.
 			EntityManagerInterface entityManager = EntityManager.getInstance();
@@ -1104,7 +1099,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						recordsMap, areMultplRecrds, isNoCatAttrPrsnt, jdbcDao, identifier);
 
 				Long rootCatEntId = getRootCategoryEntityRecordId(
-						category.getRootCategoryElement(), (Long) fullKeyMap.get(catEntityName));
+						category.getRootCategoryElement(), (Long) fullKeyMap.get(catEntityName),jdbcDao);
 
 				insertRecordsForRelatedAttributes(rootCatEntId, category.getRootCategoryElement(),
 						recordsMap, jdbcDao, identifier);
@@ -1295,7 +1290,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						+ catAssociation.getCategoryEntity().getTableProperties().getName()
 						+ " WHERE " + RECORD_ID + " = " + sourceEntityId;
 
-				List<Long> identifiers = getResultIDList(selectQuery, "IDENTIFIER");
+				List<Long> identifiers = getResultIDList(selectQuery, "IDENTIFIER",jdbcDao);
 
 				Long resultId = null;
 				if (identifiers != null && !identifiers.isEmpty())
@@ -1457,28 +1452,28 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	{
 		Map<BaseAbstractAttributeInterface, Object> dataValue = new HashMap<BaseAbstractAttributeInterface, Object>();
 
-		HibernateDAO hibernateDAO = null;
+		JDBCDAO jdbcDAO = null;
 
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
-			retrieveRecords(rootCatEntity, dataValue, recordId);
+			jdbcDAO = DynamicExtensionsUtility.getJDBCDAO();
+			retrieveRecords(rootCatEntity, dataValue, recordId,jdbcDAO);
 		}
 		catch (DAOException e)
 		{
 			throw (DynamicExtensionsSystemException) handleRollback(e,
-					"Error while retrieving data", hibernateDAO, true);
+					"Error while retrieving data", jdbcDAO, true);
 		}
 		finally
 		{
 			try
 			{
-				DynamicExtensionsUtility.closeHibernateDAO(hibernateDAO);
+				DynamicExtensionsUtility.closeJDBCDAO(jdbcDAO);
 			}
 			catch (DAOException e)
 			{
 				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
-						hibernateDAO, true);
+						jdbcDAO, true);
 			}
 		}
 
@@ -1548,7 +1543,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	private void retrieveRecords(CategoryEntityInterface catEntity,
-			Map<BaseAbstractAttributeInterface, Object> dataValue, long rootCatEntRecId)
+			Map<BaseAbstractAttributeInterface, Object> dataValue, long rootCatEntRecId,JDBCDAO jdbcDAO)
 			throws SQLException, DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
@@ -1566,7 +1561,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			selRecIdQuery = "SELECT " + RECORD_ID + " FROM " + catEntTblName
 					+ " WHERE IDENTIFIER = " + rootCatEntRecId;
 
-			List<Long> identifiers = getResultIDList(selRecIdQuery, RECORD_ID);
+			List<Long> identifiers = getResultIDList(selRecIdQuery, RECORD_ID,jdbcDAO);
 
 			if (identifiers != null && !identifiers.isEmpty())
 			{
@@ -1627,7 +1622,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 							+ catAssociation.getCategoryEntity().getTableProperties().getName()
 							+ " WHERE " + RECORD_ID + " = " + recordId;
 
-					List<Long> identifiers = getResultIDList(selectQuery, "IDENTIFIER");
+					List<Long> identifiers = getResultIDList(selectQuery, "IDENTIFIER",jdbcDAO);
 
 					if (identifiers != null && !identifiers.isEmpty())
 					{
@@ -1648,13 +1643,13 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				List<Map<BaseAbstractAttributeInterface, Object>> innerRecords = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 				dataValue.put(catAssociation, innerRecords);
 
-				List<Long> recordIds = getResultIDList(selRecIdQuery, RECORD_ID);
+				List<Long> recordIds = getResultIDList(selRecIdQuery, RECORD_ID,jdbcDAO);
 				for (Long recId : recordIds)
 				{
 					Map<BaseAbstractAttributeInterface, Object> innerRecord = new HashMap<BaseAbstractAttributeInterface, Object>();
 					innerRecords.add(innerRecord);
 
-					retrieveRecords(targetCatEnt, innerRecord, recId);
+					retrieveRecords(targetCatEnt, innerRecord, recId,jdbcDAO);
 				}
 			}
 		}
@@ -1823,7 +1818,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 								.getTgtEntityConstraintKeyProperties()
 								.getTgtForiegnKeyColumnProperties().getName() + " = " + recordId;
 
-				List<Long> recordIds = getResultIDList(selectQuery, "IDENTIFIER");
+				List<Long> recordIds = getResultIDList(selectQuery, "IDENTIFIER",jdbcDao);
 				for (Long recId : recordIds)
 				{
 					clearCategoryEntityData(catAssociation.getTargetCategoryEntity(), recId,
@@ -1865,7 +1860,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws SQLException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private Long getRootCategoryEntityRecordId(CategoryEntityInterface rootCatEntity, Long recordId)
+	private Long getRootCategoryEntityRecordId(CategoryEntityInterface rootCatEntity, Long recordId,JDBCDAO jdbcDao)
 			throws SQLException, DynamicExtensionsSystemException
 	{
 		StringBuffer query = new StringBuffer();
@@ -1875,7 +1870,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		Long rootCatEntRecId = null;
 
-		List<Long> results = getResultIDList(query.toString(), RECORD_ID);
+		List<Long> results = getResultIDList(query.toString(), RECORD_ID,jdbcDao);
 		if (!results.isEmpty())
 		{
 			rootCatEntRecId = (Long) results.get(0);
@@ -2055,18 +2050,15 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @return a list of identifier, record identifier depending upon column name passed.
 	 * @throws SQLException
 	 */
-	private List<Long> getResultIDList(String query, String columnName)
+	private List<Long> getResultIDList(String query, String columnName,JDBCDAO jdbcDao)
 			throws DynamicExtensionsSystemException
 	{
 		List<Long> recordIds = new ArrayList<Long>();
 		ResultSet resultSet = null;
 		Object value = null;
-		JDBCDAO jdbcDAO = null;
-
 		try
 		{
-			jdbcDAO = DynamicExtensionsUtility.getJDBCDAO();
-			resultSet = jdbcDAO.getQueryResultSet(query);
+			resultSet = jdbcDao.getQueryResultSet(query);
 
 			while (resultSet.next())
 			{
@@ -2086,18 +2078,6 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		{
 			throw new DynamicExtensionsSystemException("Error executing query ", e);
 		}
-		finally
-		{
-			try
-			{
-				DynamicExtensionsUtility.closeJDBCDAO(jdbcDAO);
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException("Error executing query ", e);
-			}
-		}
-
 		return recordIds;
 	}
 

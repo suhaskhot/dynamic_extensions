@@ -10,7 +10,6 @@
 
 package edu.common.dynamicextensions.util.global;
 
-
 /**
  * This class stores the constants used in the operations in the application.
  * @author Sujay Narkar
@@ -26,7 +25,7 @@ public class DEConstants
 	public static final int ENTITY_DATA_FORM_ID = 304;
 	public static final int ENTITY_DATA_INFO_FORM_IDI = 305;
 	public static final int ENTITY_SELECTION_FORM_ID = 306;
-
+	public static final String DEPRECATED = "deprecated_";
 	public static final String FORM_DEFINITION_FORM = "formDefinitionForm";
 	public static final String CONTROLS_FORM = "controlsForm";
 	public static final String CACHE_MAP = "cacheMap";
@@ -99,7 +98,7 @@ public class DEConstants
 	public static final String ORACLE_DATABASE = "ORACLE";
 	public static final String POSTGRESQL_DATABASE = "DATABASE";
 	public static final String MSSQLSERVER_DATABASE = "MSSQLSERVER";
-	
+
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);
 

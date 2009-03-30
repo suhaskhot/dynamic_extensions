@@ -63,6 +63,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -156,6 +158,8 @@ public class XMIImportProcessor
 	private Map<AssociationInterface, Map<String, String>> associationVsMapTagValues = new HashMap<AssociationInterface, Map<String, String>>();
 
 	private Map<String, Map<String, String>> columnNameVsMapTagValues = new HashMap<String, Map<String, String>>();
+
+	private List<String> multiselectMigartionScripts = new ArrayList<String>();
 
 	/**
 	 * @return
@@ -305,7 +309,7 @@ public class XMIImportProcessor
 		{
 			//addPrimaryKeyOfParentToChild(entity);
 			processCompositeKey(entity);
-			populateMultiselectAttribute(entity);
+			//populateMultiselectAttribute(entity);
 		}
 		// populate entity for generating constraint properties if it has any parent set
 		for (EntityInterface entity : entityGroup.getEntityCollection())
@@ -361,6 +365,7 @@ public class XMIImportProcessor
 				xmiConfigurationObject.isCreateTable(), xmiConfigurationObject.isDefaultPackage(),
 				xmiConfigurationObject.getDefaultPackagePrefix());
 
+		EntityManagerUtil.executeDML(multiselectMigartionScripts);
 		return mainContainerList;
 	}
 
@@ -855,8 +860,10 @@ public class XMIImportProcessor
 	 * @param umlPackage 
 	 * @return the unsaved entity for given UML class
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private EntityInterface createEntity(UmlClass umlClass) throws DynamicExtensionsSystemException
+	private EntityInterface createEntity(UmlClass umlClass)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String name = umlClass.getName();
 		//EntityInterface entity = deFactory.createEntity();
@@ -876,9 +883,10 @@ public class XMIImportProcessor
 	 * @param attrColl
 	 * @param entity
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private AttributeInterface createAttribute(Attribute umlAttribute, EntityInterface entity)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//Not showing id attribute on UI if Id attribute is to be added by DE which is specified in xmiConfiguration Object
 		AttributeInterface originalAttribute = null;
@@ -925,11 +933,14 @@ public class XMIImportProcessor
 				if (isMultiselectTagValue(taggedValueMap)
 						&& !entity.isMultiselectAttributePresent(umlAttribute.getName()))
 				{
-					AttributeInterface attribute = dataType.createAttribute(umlAttribute);
-					addMultiselectAttribute(attribute, umlAttribute, taggedValueMap, entity);
+					removeAttribute(entity, originalAttribute, taggedValueMap, dataType,
+							umlAttribute);
 				}
-				addSemanticPropertyForAttributes(originalAttribute, attrVsMapTagValues
-						.get(originalAttribute));
+				else
+				{
+					addSemanticPropertyForAttributes(originalAttribute, attrVsMapTagValues
+							.get(originalAttribute));
+				}
 
 			}
 
@@ -944,9 +955,10 @@ public class XMIImportProcessor
 	 * @param includeInherited
 	 * @param entity in which to add the attributes
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	public void addAttributes(UmlClass klass, EntityInterface entity)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Collection atts = new ArrayList();
 		for (Iterator i = klass.getFeature().iterator(); i.hasNext();)
@@ -991,13 +1003,42 @@ public class XMIImportProcessor
 	}
 
 	/**
+	 * @param entity
+	 * @param originalAttribute
+	 * @param taggedValueMap
+	 * @param dataType
+	 * @param umlAttribute
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void removeAttribute(EntityInterface entity, AttributeInterface originalAttribute,
+			Map<String, String> taggedValueMap, DataType dataType, Attribute umlAttribute)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		originalAttribute.setName(DEConstants.DEPRECATED + originalAttribute.getName());
+		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+		ControlInterface controlInterface = entityManagerInterface
+				.getControlByAbstractAttributeIdentifier(originalAttribute.getId());
+
+		AttributeInterface attribute = dataType.createAttribute(umlAttribute);
+		addSemanticPropertyForAttributes(attribute, attrVsMapTagValues.get(originalAttribute));
+		AssociationInterface association = addMultiselectAttribute(attribute, umlAttribute,
+				taggedValueMap, entity);
+		controlInterface.setBaseAbstractAttribute(association);
+		multiselectMigartionScripts.add(EntityManagerUtil
+				.getSqlScriptToMigrateOldDataForMultiselectAttribute(entity, association,
+						attribute, originalAttribute));
+
+	}
+
+	/**
 	 * addMultiselectAttribute.
 	 * @param attribute
 	 * @param umlAttribute
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	private void addMultiselectAttribute(AttributeInterface attribute, Attribute umlAttribute,
-			Map<String, String> taggedValueMap, EntityInterface entity)
+	private AssociationInterface addMultiselectAttribute(AttributeInterface attribute,
+			Attribute umlAttribute, Map<String, String> taggedValueMap, EntityInterface entity)
 			throws DynamicExtensionsSystemException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
@@ -1037,12 +1078,12 @@ public class XMIImportProcessor
 					Cardinality.MANY));
 		}
 		entity.addAbstractAttribute(association);
-		//association.populateAssociationForConstraintProperties();
+		association.populateAssociationForConstraintProperties();
 		Map<String, String> valueMap = new HashMap<String, String>();
 		valueMap.put(XMIConstants.TAGGED_VALUE_MULTISELECT, getMultiselectTagValue(taggedValueMap));
 		taggedValueMap.remove(XMIConstants.TAGGED_VALUE_MULTISELECT);
 		associationVsMapTagValues.put(association, valueMap);
-
+		return association;
 	}
 
 	/**

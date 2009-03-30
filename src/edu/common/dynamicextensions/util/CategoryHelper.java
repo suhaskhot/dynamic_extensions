@@ -61,6 +61,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.wustl.common.util.global.ApplicationProperties;
 
@@ -105,11 +106,11 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY",e);
+			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY", e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
-			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY",e);
+			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY", e);
 		}
 	}
 
@@ -124,7 +125,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				: null);
 		CategoryEntityInterface categoryEntity = createOrUpdateCategoryEntity(category, entity,
 				newCategoryEntityName);
-		String containerCaption=containerCaptionValue;
+		String containerCaption = containerCaptionValue;
 		if (containerCaption == null)
 		{
 			containerCaption = entity.getName() + "_category_entity_container";
@@ -232,10 +233,10 @@ public class CategoryHelper implements CategoryHelperInterface
 			for (RuleInterface rule : attributeRules)
 			{
 				if (rule.getIsImplicitRule() != null
-						&& (rule.getIsImplicitRule()
-								|| rule.getName().equals(CategoryCSVConstants.REQUIRED)))
+						&& (rule.getIsImplicitRule() || rule.getName().equals(
+								CategoryCSVConstants.REQUIRED)))
 				{
-						rules.add(rule);
+					rules.add(rule);
 				}
 			}
 		}
@@ -417,18 +418,22 @@ public class CategoryHelper implements CategoryHelperInterface
 		BaseAbstractAttributeInterface categoryAttribute = null;
 		for (ControlInterface control : container.getControlCollection())
 		{
-			if (control.getBaseAbstractAttribute() instanceof CategoryAssociation)
+			if (!(control.getBaseAbstractAttribute() instanceof CategoryAssociation)
+					&& (((CategoryAttributeInterface) control.getBaseAbstractAttribute())
+							.getAbstractAttribute().getName().equals(attributeName)))
 			{
-
+				categoryAttribute = control.getBaseAbstractAttribute();
+				break;
 			}
-			else
+			else if (((CategoryAttributeInterface) control.getBaseAbstractAttribute())
+					.getAbstractAttribute().getName().startsWith(DEConstants.DEPRECATED))
 			{
-				if (((CategoryAttributeInterface) control.getBaseAbstractAttribute())
-						.getAbstractAttribute().getName().equals(attributeName))
-				{
-					categoryAttribute = control.getBaseAbstractAttribute();
-					break;
-				}
+				categoryAttribute = control.getBaseAbstractAttribute();
+				((CategoryAttributeInterface) categoryAttribute)
+						.setAbstractAttribute(((CategoryEntityInterface) container
+								.getAbstractEntity()).getEntity().getAbstractAttributeByName(
+								attributeName));
+				break;
 			}
 		}
 
@@ -522,9 +527,8 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void updatePath(PathInterface path, List<AssociationInterface> associationList) 
-		throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private void updatePath(PathInterface path, List<AssociationInterface> associationList)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 
@@ -701,7 +705,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			container.setAbstractEntity(abstractEntity);
 			abstractEntity.addContainer(container);
 		}
-		String caption=captionValue;
+		String caption = captionValue;
 		if (caption == null)
 		{
 			caption = abstractEntity.getName() + " category container";

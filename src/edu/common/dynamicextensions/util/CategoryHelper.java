@@ -445,8 +445,9 @@ public class CategoryHelper implements CategoryHelperInterface
 				categoryAttribute = control.getBaseAbstractAttribute();
 				break;
 			}
-			else if (((CategoryAttributeInterface) control.getBaseAbstractAttribute())
-					.getAbstractAttribute().getName().startsWith(DEConstants.DEPRECATED))
+			else if (!(control.getBaseAbstractAttribute() instanceof CategoryAssociation)
+					&& ((CategoryAttributeInterface) control.getBaseAbstractAttribute())
+							.getAbstractAttribute().getName().startsWith(DEConstants.DEPRECATED))
 			{
 				categoryAttribute = control.getBaseAbstractAttribute();
 				((CategoryAttributeInterface) categoryAttribute)

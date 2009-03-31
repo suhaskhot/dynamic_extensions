@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.common.util.logger.LoggerConfig;
 
 /**
  * @author kunal_kamble
@@ -33,6 +34,10 @@ import edu.wustl.common.util.logger.Logger;
 public class ImportPermissibleValues
 {
 
+	static 
+	{
+		LoggerConfig.configureLogger(System.getProperty("user.dir"));
+	}
 	private CategoryCSVFileParser categoryCSVFileParser;
 
 	private static final String ENTITY_GROUP = "Entity_Group";

@@ -254,4 +254,13 @@ public interface CategoryHelperInterface
 	void setOptions(
 			DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
 			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param entity
+	 * @param attributeName
+	 * @param categoryEntity
+	 * @return
+	 */
+	public CategoryAttributeInterface getCategoryAttribute(EntityInterface entity,
+			String attributeName, CategoryEntityInterface categoryEntity);
 }

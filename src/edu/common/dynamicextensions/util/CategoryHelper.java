@@ -75,6 +75,8 @@ public class CategoryHelper implements CategoryHelperInterface
 
 	CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
+	private static final String CATEGORY_ATTRIBUTE_NAME_POSTFIX = "Category Attribute";
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategory(java.lang.String)
 	 */
@@ -332,6 +334,24 @@ public class CategoryHelper implements CategoryHelperInterface
 		categoryEntity.addCategoryAttribute(categoryAttribute);
 		categoryAttribute.setCategoryEntity(categoryEntity);
 
+		return categoryAttribute;
+	}
+
+	/**
+	 * @param entity
+	 * @param attributeName
+	 * @param categoryEntity
+	 * @return
+	 */
+	public CategoryAttributeInterface getCategoryAttribute(EntityInterface entity,
+			String attributeName, CategoryEntityInterface categoryEntity)
+	{
+		CategoryAttributeInterface categoryAttribute = categoryEntity
+				.getAttributeByName(attributeName + " " + CATEGORY_ATTRIBUTE_NAME_POSTFIX);
+		if (categoryAttribute == null)
+		{
+			categoryAttribute = createCategoryAttribute(entity, attributeName, categoryEntity);
+		}
 		return categoryAttribute;
 	}
 

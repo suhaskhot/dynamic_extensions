@@ -309,7 +309,7 @@ public class XMIImportProcessor
 		{
 			//addPrimaryKeyOfParentToChild(entity);
 			processCompositeKey(entity);
-			//populateMultiselectAttribute(entity);
+			populateMultiselectAttribute(entity);
 		}
 		// populate entity for generating constraint properties if it has any parent set
 		for (EntityInterface entity : entityGroup.getEntityCollection())
@@ -498,9 +498,6 @@ public class XMIImportProcessor
 		else if (xmiConfigurationObject.isAddIdAttribute())
 		{
 			EntityManagerUtil.addIdAttribute(entity);
-			entity
-					.addPrimaryKeyAttribute(entity
-							.getAttributeByName(XMIConstants.ID_ATTRIBUTE_NAME));
 		}
 		entityVsPrimaryKeyNameList.put(entity, primaryKeyAttributeNameList);
 	}
@@ -1078,7 +1075,9 @@ public class XMIImportProcessor
 					Cardinality.MANY));
 		}
 		entity.addAbstractAttribute(association);
-		association.populateAssociationForConstraintProperties();
+		// Commented the line as it does not set constraint properties -- because the primarykey attribute 
+		// collection is empty at this stage
+		//association.populateAssociationForConstraintProperties();
 		Map<String, String> valueMap = new HashMap<String, String>();
 		valueMap.put(XMIConstants.TAGGED_VALUE_MULTISELECT, getMultiselectTagValue(taggedValueMap));
 		taggedValueMap.remove(XMIConstants.TAGGED_VALUE_MULTISELECT);

@@ -27,7 +27,7 @@
 
         <property
             name="auditDate"
-            type="date"
+            type="timestamp"
             update="true"
             insert="true"
             column="AUDIT_DATE"

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -13,12 +14,12 @@ public interface DESQLAuditInterface
 	/**
 	 * @return audit date
 	 */
-	Date getAuditDate();
+	Timestamp getAuditDate();
 
 	/**
 	 * @param auditDate
 	 */
-	void setAuditDate(Date auditDate);
+	void setAuditDate(Timestamp auditDate);
 
 	/**
 	 * @return sql query executed

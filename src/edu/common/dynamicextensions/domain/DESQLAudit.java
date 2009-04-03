@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import edu.common.dynamicextensions.domaininterface.DESQLAuditInterface;
 
@@ -27,7 +27,7 @@ public class DESQLAudit extends DynamicExtensionBaseDomainObject implements DESQ
 	/**
 	 * audited on 
 	 */
-	private Date auditDate;
+	private Timestamp auditDate;
 
 	/**
 	 * sql query executed
@@ -46,15 +46,15 @@ public class DESQLAudit extends DynamicExtensionBaseDomainObject implements DESQ
 	}
 
 	/**
-	 * @hibernate.property name="auiditDate" type="date" column="AUDIT_DATE"
+	 * @hibernate.property name="auiditDate" type="timestamp" column="AUDIT_DATE"
 	 * @return Returns the caption.
 	 */
-	public Date getAuditDate()
+	public Timestamp getAuditDate()
 	{
 		return auditDate;
 	}
 
-	public void setAuditDate(Date auditDate)
+	public void setAuditDate(Timestamp auditDate)
 	{
 		this.auditDate = auditDate;
 	}

@@ -339,7 +339,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return associations;
 	}
-	
+
 	/**
 	 * Returns a collection of association identifiers given the source entity id and
 	 * target entity id.
@@ -364,7 +364,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		return associationIds;
 	}
-	
 
 	/**
 	 * Returns an entity object given the entity name;
@@ -595,18 +594,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			throw (DynamicExtensionsSystemException) handleRollback(e,
 					"Error while inserting data", jdbcDAo, true);
 		}
-		finally
+		/*finally
 		{
-			try
-			{
-				DynamicExtensionsUtility.closeJDBCDAO(jdbcDAo);
-			}
-			catch (DAOException e)
-			{
-				throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
-						jdbcDAo, true);
-			}
+			*/try
+		{
+			DynamicExtensionsUtility.closeJDBCDAO(jdbcDAo);
 		}
+		catch (DAOException e)
+		{
+			throw (DynamicExtensionsSystemException) handleRollback(e, "Error while closing",
+					jdbcDAo, true);
+		}
+		//}
 
 		return recordIds;
 	}
@@ -639,7 +638,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 */
 	private List<EntityInterface> getParentEntityList(EntityInterface entity)
 	{
-		EntityInterface thisEntity=entity;
+		EntityInterface thisEntity = entity;
 		List<EntityInterface> entities = new ArrayList<EntityInterface>();
 		entities.add(thisEntity);
 
@@ -661,7 +660,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			Map<AbstractAttributeInterface, ?> dataValue)
 	{
 		Map<EntityInterface, Map<?, ?>> entityMap = new HashMap<EntityInterface, Map<?, ?>>();
-		Map<AbstractAttributeInterface, ?> dataValueMap=dataValue;
+		Map<AbstractAttributeInterface, ?> dataValueMap = dataValue;
 		// Ensuring null check in case of category inheritance.
 		if (dataValueMap == null)
 		{
@@ -693,7 +692,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			JDBCDAO jdbcDao, Long parentRecId, Long... userId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Map<?, ?> dataValueMap=dataValue;
+		Map<?, ?> dataValueMap = dataValue;
 		Long usrId = ((userId != null && userId.length != 0) ? userId[0] : null);
 
 		if (entity == null)
@@ -737,7 +736,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		columnNames.add(Constants.ACTIVITY_STATUS_COLUMN);
 		columnValues.add(Status.ACTIVITY_STATUS_ACTIVE.toString());
 		queryValues.append(Status.ACTIVITY_STATUS_ACTIVE.toString());
-		queryValues.append(COMMA);
 
 		String tableName = entity.getTableProperties().getName();
 
@@ -771,7 +769,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					insertQuery.append(attribute.getName() + UNDERSCORE + CONTENT_TYPE);
 					queryValues.append(((FileAttributeRecordValue) value).getContentType());
 					insertQuery.append(COMMA);
-					queryValues.append(((FileAttributeRecordValue) value).getFileContent());
+					insertQuery.append(((AttributeInterface) attribute).getColumnProperties()
+							.getName());
+					queryValues.append(COMMA);
+					queryValues.append("FILE CONTENTS ARE NOT AUDITED!");
 				}
 				else
 				{
@@ -824,8 +825,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			queryValues.append(CLOSING_BRACKET);
 			insertQuery.append(queryValues);
 
-			/*	dao.insert(DomainObjectFactory.getInstance().createDESQLAudit(usrId,
-						insertQuery.toString()), null, false, false);*/
+			queryBuilder.auditQuery(jdbcDao, insertQuery.toString(), usrId);
 
 			for (String query : queries)
 			{
@@ -838,15 +838,9 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				{
 					throw new DynamicExtensionsSystemException("Exception in query execution", e);
 				}
-
-				/*dao.insert(DomainObjectFactory.getInstance().createDESQLAudit(usrId,
-						insertQuery.toString()), null, false, false);*/
+				queryBuilder.auditQuery(jdbcDao, query, usrId);
 			}
 
-		}
-		catch (SQLException e)
-		{
-			throw new DynamicExtensionsApplicationException("Exception in query execution", e);
 		}
 		catch (DAOException e)
 		{
@@ -870,7 +864,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			List<String> columnNames, List<Object> columnValues)
 			throws DynamicExtensionsApplicationException
 	{
-		Object object=value;
+		Object object = value;
 		// Get the primitive attribute.
 		AttributeInterface primitiveAttr = (AttributeInterface) attribute;
 
@@ -892,7 +886,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 					{
 						String dateFormat = ((DateAttributeTypeInformation) primitiveAttr
 								.getAttributeTypeInformation()).getFormat();
-						object = new Timestamp(new SimpleDateFormat(dateFormat,CommonServiceLocator.getInstance().getDefaultLocale()).parse(
+						object = new Timestamp(new SimpleDateFormat(dateFormat,
+								CommonServiceLocator.getInstance().getDefaultLocale()).parse(
 								object.toString()).getTime());
 					}
 				}
@@ -1387,15 +1382,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		catch (SQLException e)
 		{
-			throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 		finally
 		{
@@ -1440,7 +1435,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 				valueObj = resultSet.getTimestamp(index + 1);
 
-				SimpleDateFormat sdFormatter = new SimpleDateFormat(format,CommonServiceLocator.getInstance().getDefaultLocale());
+				SimpleDateFormat sdFormatter = new SimpleDateFormat(format, CommonServiceLocator
+						.getInstance().getDefaultLocale());
 				value = sdFormatter.format((java.util.Date) valueObj);
 			}
 			else
@@ -1686,11 +1682,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			DynamicExtensionsApplicationException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
-		EntityInterface parentEntity=entity;
+		EntityInterface parentEntity = entity;
 		do
 		{
-			Map<AbstractAttributeInterface, Object> recForSingleEnt = getEntityRecordById(parentEntity,
-					recordId);
+			Map<AbstractAttributeInterface, Object> recForSingleEnt = getEntityRecordById(
+					parentEntity, recordId);
 			recordValues.putAll(recForSingleEnt);
 			parentEntity = parentEntity.getParentEntity();
 		}

@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.entitymanager;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,6 +56,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.ConstraintKeyPropertiesComparator;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.common.util.Utility;
@@ -62,6 +64,7 @@ import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.HashedDataHandler;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
@@ -296,29 +299,31 @@ public class DynamicExtensionBaseQueryBuilder
 		{
 			for (EntityInterface depEntity : entityColl)
 			{
-				if (depEntity.getParentEntity() != null && depEntity.getParentEntity().equals(entity))
+				if (depEntity.getParentEntity() != null
+						&& depEntity.getParentEntity().equals(entity))
 				{
-	
-					dbDepEntity = (EntityInterface) DynamicExtensionsUtility.getCleanObject(Entity.class.getCanonicalName(), depEntity.getId());
+
+					dbDepEntity = (EntityInterface) DynamicExtensionsUtility.getCleanObject(
+							Entity.class.getCanonicalName(), depEntity.getId());
 					dbDepEntityParent = dbDepEntity.getParentEntity();
 					frnCnstrRemQry = queryBuilder.getForeignKeyRemoveConstraintQueryForInheritance(
 							dbDepEntity, dbDepEntityParent);
 					queries.add(frnCnstrRemQry);
-	
+
 					frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbDepEntity,
 							dbDepEntityParent);
 					attrRlbkQries.add(frnCnstrRlbkQry);
-	
-					queries.addAll(queryBuilder.getAddColumnQueryForForeignKeyConstraint(dbDepEntity,
-							dbDepEntityParent, attrRlbkQries, false));
-	
+
+					queries.addAll(queryBuilder.getAddColumnQueryForForeignKeyConstraint(
+							dbDepEntity, dbDepEntityParent, attrRlbkQries, false));
+
 				}
 			}
 		}
-		catch(DAOException exception)
+		catch (DAOException exception)
 		{
-			throw new DynamicExtensionsSystemException(exception.getMessage(),exception);
-		}		
+			throw new DynamicExtensionsSystemException(exception.getMessage(), exception);
+		}
 		return queries;
 	}
 
@@ -722,8 +727,8 @@ public class DynamicExtensionBaseQueryBuilder
 					for (Long cntnmntRecId : recordIds)
 					{
 						Map<AbstractAttributeInterface, Object> recordMap = EntityManager
-								.getInstance().getRecordForSingleEntity(association.getTargetEntity(),
-										cntnmntRecId);
+								.getInstance().getRecordForSingleEntity(
+										association.getTargetEntity(), cntnmntRecId);
 						cntnmntRecords.add(recordMap);
 					}
 					assocValues.put(association, cntnmntRecords);
@@ -744,10 +749,10 @@ public class DynamicExtensionBaseQueryBuilder
 		if (noOfMany2OneAsso != 0)
 		{
 			ResultSet resultSet = null;
-			JDBCDAO jdbcDao=null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
-				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 				resultSet = jdbcDao.getQueryResultSet(mnyToOneAssQry.toString());
 
 				resultSet.next();
@@ -775,7 +780,7 @@ public class DynamicExtensionBaseQueryBuilder
 				}
 				catch (DAOException e)
 				{
-					throw new DynamicExtensionsApplicationException(e.getMessage(),e);
+					throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 				}
 			}
 		}
@@ -893,7 +898,7 @@ public class DynamicExtensionBaseQueryBuilder
 					+ recordId);
 
 			ResultSet resultSet = null;
-			JDBCDAO jdbcDao =null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
 				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
@@ -944,8 +949,8 @@ public class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public List<String> getAssociationInsertDataQuery(JDBCDAO jdbcDao,AssociationInterface asso, List<Long> recIds,
-			Long srcRecId) throws DynamicExtensionsApplicationException,
+	public List<String> getAssociationInsertDataQuery(JDBCDAO jdbcDao, AssociationInterface asso,
+			List<Long> recIds, Long srcRecId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException
 	{
 		List<String> queries = new ArrayList<String>();
@@ -958,7 +963,7 @@ public class DynamicExtensionBaseQueryBuilder
 		Association association = (Association) asso;
 		if (association.getSourceRole().getAssociationsType().equals(AssociationType.CONTAINTMENT))
 		{
-			verifyCardinalityConstraints(jdbcDao,asso, srcRecId);
+			verifyCardinalityConstraints(jdbcDao, asso, srcRecId);
 		}
 
 		String sourceKey;
@@ -2404,8 +2409,7 @@ public class DynamicExtensionBaseQueryBuilder
 		{
 			// Previously not excluded, but now needs to excluded.
 			if (!attribute.getColumnProperties().getName().equalsIgnoreCase(IDENTIFIER)
-					&& (!isAttributeColumnToBeExcluded(dbaseCopy)
-							&& isAttributeColumnToBeExcluded(attribute)))
+					&& (!isAttributeColumnToBeExcluded(dbaseCopy) && isAttributeColumnToBeExcluded(attribute)))
 			{
 				isColRemoved = true;
 			}
@@ -2452,25 +2456,24 @@ public class DynamicExtensionBaseQueryBuilder
 
 		if (entity.getTableProperties() != null && (savedAsso != null && !savedAsso.isEmpty()))
 		{
-			
-			
-				Iterator<AssociationInterface> savedAssoIter = savedAsso.iterator();
-				while (savedAssoIter.hasNext())
+
+			Iterator<AssociationInterface> savedAssoIter = savedAsso.iterator();
+			while (savedAssoIter.hasNext())
+			{
+				Association savedAssociation = (Association) savedAssoIter.next();
+				Association association = (Association) entity
+						.getAssociationByIdentifier(savedAssociation.getId());
+
+				// Removed.
+				if (association == null)
 				{
-					Association savedAssociation = (Association) savedAssoIter.next();
-					Association association = (Association) entity
-							.getAssociationByIdentifier(savedAssociation.getId());
+					boolean isAddAssoQuery = false;
 
-					// Removed.
-					if (association == null)
-					{
-						boolean isAddAssoQuery = false;
-
-						assoQueries.addAll(getQueryPartForAssociation(savedAssociation,
-								attrRlbkQries, isAddAssoQuery));
-					}
+					assoQueries.addAll(getQueryPartForAssociation(savedAssociation, attrRlbkQries,
+							isAddAssoQuery));
 				}
-			
+			}
+
 		}
 
 		Logger.out.debug("Exiting processRemovedAssociation method");
@@ -2495,21 +2498,21 @@ public class DynamicExtensionBaseQueryBuilder
 
 		if (catEntity.getTableProperties() != null && savedAsso != null)
 		{
-				for (CategoryAssociationInterface savedCatAsso : savedAsso)
-				{
-					CategoryAssociation association = (CategoryAssociation) catEntity
-							.getAssociationByIdentifier(savedCatAsso.getId());
+			for (CategoryAssociationInterface savedCatAsso : savedAsso)
+			{
+				CategoryAssociation association = (CategoryAssociation) catEntity
+						.getAssociationByIdentifier(savedCatAsso.getId());
 
-					// Removed.
-					if (association == null)
-					{
-						boolean isAddAssoQuery = false;
-						String remAssoQuery = getQueryPartForAssociation(savedCatAsso,
-								attrRlbkQries, isAddAssoQuery);
-						assoQueries.add(remAssoQuery);
-					}
+				// Removed.
+				if (association == null)
+				{
+					boolean isAddAssoQuery = false;
+					String remAssoQuery = getQueryPartForAssociation(savedCatAsso, attrRlbkQries,
+							isAddAssoQuery);
+					assoQueries.add(remAssoQuery);
 				}
-			
+			}
+
 		}
 
 		Logger.out.debug("Exiting processRemovedAssociation method");
@@ -2586,14 +2589,15 @@ public class DynamicExtensionBaseQueryBuilder
 
 		if (!isAttributeColumnToBeExcluded(attribute))
 		{
-		String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
-		String oldTypeClass = savedAttr.getAttributeTypeInformation().getClass().getName();
+			String newTypeClass = attribute.getAttributeTypeInformation().getClass().getName();
+			String oldTypeClass = savedAttr.getAttributeTypeInformation().getClass().getName();
 
-		if (!newTypeClass.equals(oldTypeClass))
-		{
-			checkIfDataTypeChangeAllowable(attribute);
-			mdfyAttrQries = getAttributeDataTypeChangedQuery(attribute, savedAttr, attrRlbkQries);
-		}
+			if (!newTypeClass.equals(oldTypeClass))
+			{
+				checkIfDataTypeChangeAllowable(attribute);
+				mdfyAttrQries = getAttributeDataTypeChangedQuery(attribute, savedAttr,
+						attrRlbkQries);
+			}
 		}
 		return mdfyAttrQries;
 	}
@@ -2651,7 +2655,7 @@ public class DynamicExtensionBaseQueryBuilder
 			try
 			{
 				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-				resultSet=jdbcDao.getQueryResultSet(query.toString());
+				resultSet = jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
@@ -2753,7 +2757,7 @@ public class DynamicExtensionBaseQueryBuilder
 						"Can not check the availability of data", e);
 			}
 			finally
-			{				
+			{
 				try
 				{
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
@@ -2785,7 +2789,7 @@ public class DynamicExtensionBaseQueryBuilder
 		JDBCDAO jdbcDao = null;
 		try
 		{
-			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			resultSet = jdbcDao.getQueryResultSet(query.toString());
 			resultSet.next();
 			Long count = resultSet.getLong(1);
@@ -2813,7 +2817,7 @@ public class DynamicExtensionBaseQueryBuilder
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
-			
+
 		}
 	}
 
@@ -2990,12 +2994,12 @@ public class DynamicExtensionBaseQueryBuilder
 			Stack<String> rlbkQryStack) throws DynamicExtensionsSystemException
 	{
 
-		JDBCDAO jdbcDao =null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			Iterator<String> revQryIter = revQueries.iterator();
-		
+
 			if (queries != null && !queries.isEmpty())
 			{
 				Iterator<String> queryIter = queries.iterator();
@@ -3008,16 +3012,14 @@ public class DynamicExtensionBaseQueryBuilder
 					{
 						rlbkQryStack.push(revQryIter.next());
 					}
-					
-										
+
 				}
 			}
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception occured while forming the data tables for entity", e,
-					DYEXTN_S_002);
+					"Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
 		}
 		finally
 		{
@@ -3043,11 +3045,11 @@ public class DynamicExtensionBaseQueryBuilder
 	public Object[] executeDMLQuery(String query) throws DynamicExtensionsSystemException
 	{
 
-		JDBCDAO jdbcDao = null;			
+		JDBCDAO jdbcDao = null;
 		ResultSet resultSet = null;
 		try
 		{
-			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			resultSet = jdbcDao.getQueryResultSet(query);
 
 			List<Object> objects = new ArrayList<Object>();
@@ -3062,17 +3064,15 @@ public class DynamicExtensionBaseQueryBuilder
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception occured while forming the data tables for entity", e,
-					DYEXTN_S_002);
+					"Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
 		}
 		catch (SQLException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception occured while forming the data tables for entity", e,
-					DYEXTN_S_002);
+					"Exception occured while forming the data tables for entity", e, DYEXTN_S_002);
 		}
 		finally
-		{			
+		{
 			try
 			{
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
@@ -3080,8 +3080,8 @@ public class DynamicExtensionBaseQueryBuilder
 			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}		
-		}		
+			}
+		}
 	}
 
 	/**
@@ -3099,7 +3099,7 @@ public class DynamicExtensionBaseQueryBuilder
 		JDBCDAO jdbcDao = null;
 		try
 		{
-			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			resultSet = jdbcDao.getQueryResultSet(query);
 
 			while (resultSet.next())
@@ -3119,7 +3119,7 @@ public class DynamicExtensionBaseQueryBuilder
 		finally
 		{
 			try
-			{			
+			{
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)
@@ -3141,8 +3141,9 @@ public class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	protected void verifyCardinalityConstraints(JDBCDAO jdbcDao,AssociationInterface asso, Long srcRecId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	protected void verifyCardinalityConstraints(JDBCDAO jdbcDao, AssociationInterface asso,
+			Long srcRecId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		EntityInterface tgtEnt = asso.getTargetEntity();
 		Cardinality srcMaxCard = asso.getSourceRole().getMaximumCardinality();
@@ -3165,7 +3166,7 @@ public class DynamicExtensionBaseQueryBuilder
 			ResultSet resultSet = null;
 			try
 			{
-				resultSet =jdbcDao.getQueryResultSet(query.toString());
+				resultSet = jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 
 				// If another source record is already using target record, throw exception.
@@ -3218,8 +3219,8 @@ public class DynamicExtensionBaseQueryBuilder
 			JDBCDAO jdbcDao = null;
 			try
 			{
-				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
-				resultSet=jdbcDao.getQueryResultSet(query.toString());
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				resultSet = jdbcDao.getQueryResultSet(query.toString());
 				resultSet.next();
 				// If another source record is already using target record, throw exception.
 				if (resultSet.getInt(1) != 0)
@@ -3246,7 +3247,7 @@ public class DynamicExtensionBaseQueryBuilder
 				{
 					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
-				
+
 			}
 		}
 	}
@@ -3274,10 +3275,10 @@ public class DynamicExtensionBaseQueryBuilder
 	public Object getFormattedValue(AbstractAttribute attribute, Object value)
 			throws DynamicExtensionsSystemException
 	{
-		String appName=DynamicExtensionDAO.getInstance().getAppName();
+		String appName = DynamicExtensionDAO.getInstance().getAppName();
 		String dbType = DAOConfigFactory.getInstance().getDAOFactory(appName).getDataBaseType();
-		IDEDBUtility dbUtility=DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
-		
+		IDEDBUtility dbUtility = DynamicExtensionDBFactory.getInstance().getDbUtility(dbType);
+
 		String frmtedValue = null;
 		if (attribute == null)
 		{
@@ -3325,12 +3326,12 @@ public class DynamicExtensionBaseQueryBuilder
 
 			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT) && str.length() != 0)
 			{
-					str = dbUtility.formatMonthAndYearDate(str,true);
+				str = dbUtility.formatMonthAndYearDate(str, true);
 			}
 
 			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && str.length() != 0)
 			{
-				str = dbUtility.formatMonthAndYearDate(str,true);					
+				str = dbUtility.formatMonthAndYearDate(str, true);
 			}
 			// For MySQL5 if user does not enter any value for date field, it gets saved as 00-00-0000,
 			// which is throwing exception so to avoid it store null value in database.
@@ -3340,17 +3341,16 @@ public class DynamicExtensionBaseQueryBuilder
 			}
 			else
 			{
-				JDBCDAO jdbcDao=null;
+				JDBCDAO jdbcDao = null;
 				try
 				{
 					jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-					frmtedValue = jdbcDao.getStrTodateFunction()
-						+ "('" + str.trim() + "','"
-						+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
+					frmtedValue = jdbcDao.getStrTodateFunction() + "('" + str.trim() + "','"
+							+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
 				}
 				catch (DAOException e)
 				{
-					throw new DynamicExtensionsSystemException("Not able to create DAO object.",e);
+					throw new DynamicExtensionsSystemException("Not able to create DAO object.", e);
 				}
 				finally
 				{
@@ -3360,7 +3360,8 @@ public class DynamicExtensionBaseQueryBuilder
 					}
 					catch (DAOException e)
 					{
-						throw new DynamicExtensionsSystemException("Not able to create DAO object.",e);
+						throw new DynamicExtensionsSystemException(
+								"Not able to create DAO object.", e);
 					}
 				}
 			}
@@ -3371,7 +3372,7 @@ public class DynamicExtensionBaseQueryBuilder
 			if (value instanceof List && ((List) value).size() > 0)
 			{
 				frmtedValue = ((List) value).get(0).toString();
-				
+
 			}
 			else
 			{
@@ -3380,13 +3381,14 @@ public class DynamicExtensionBaseQueryBuilder
 
 			// In case of MySQL5, if the column data type is one of double, float or integer, 
 			// then it is not possible to pass '' as  a value in insert-update query so pass null as value.
-			if (attrTypInfo instanceof NumericAttributeTypeInformation && frmtedValue.trim().length() == 0)
+			if (attrTypInfo instanceof NumericAttributeTypeInformation
+					&& frmtedValue.trim().length() == 0)
 			{
 				frmtedValue = null;
 			}
 			if (attrTypInfo instanceof BooleanAttributeTypeInformation)
 			{
-				dbUtility.getValueForCheckBox(Boolean.parseBoolean(frmtedValue));				
+				dbUtility.getValueForCheckBox(Boolean.parseBoolean(frmtedValue));
 			}
 			if (frmtedValue != null)
 			{
@@ -3427,7 +3429,7 @@ public class DynamicExtensionBaseQueryBuilder
 		JDBCDAO jdbcDao = null;
 		try
 		{
-			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			resultSet = jdbcDao.getQueryResultSet(query.toString());
 			resultSet.next();
 			Long count = resultSet.getLong(1);
@@ -3453,7 +3455,7 @@ public class DynamicExtensionBaseQueryBuilder
 			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}			
+			}
 		}
 		return isPresent;
 	}
@@ -3527,14 +3529,14 @@ public class DynamicExtensionBaseQueryBuilder
 		JDBCDAO jdbcDao = null;
 		try
 		{
-			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			jdbcDao.executeUpdate(query.toString());
 			jdbcDao.commit();
 		}
 		catch (DAOException e)
 		{
 			connectionRollBack(jdbcDao);
-		}		
+		}
 		finally
 		{
 			try
@@ -3543,7 +3545,7 @@ public class DynamicExtensionBaseQueryBuilder
 			}
 			catch (DAOException e)
 			{
-				throw new DynamicExtensionsSystemException(e.getMessage(),e);
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 		}
 	}
@@ -3553,8 +3555,7 @@ public class DynamicExtensionBaseQueryBuilder
 	 * @param connection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void connectionRollBack(JDBCDAO jdbcDao)
-			throws DynamicExtensionsSystemException
+	private static void connectionRollBack(JDBCDAO jdbcDao) throws DynamicExtensionsSystemException
 	{
 		try
 		{
@@ -3604,6 +3605,32 @@ public class DynamicExtensionBaseQueryBuilder
 	 */
 	protected Object convertValueToObject(Object valueObj) throws DynamicExtensionsSystemException
 	{
-		return (Object)"";
+		return (Object) "";
+	}
+
+	/**
+	 * @param jdbcDao
+	 * @param query
+	 * @param userId
+	 * @throws DAOException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws SQLException
+	 */
+	protected void auditQuery(JDBCDAO jdbcDao, String query, Long userId) throws DAOException,
+			DynamicExtensionsSystemException
+	{
+		List<String> columnName = new ArrayList<String>();
+		List<Object> columnValues = new ArrayList<Object>();
+		columnName.add(DEConstants.IDENTIFIER.toUpperCase());
+		columnValues.add(EntityManagerUtil.getNextIdentifier(DEConstants.AUDIT_TABLE_NAME));
+		columnName.add(DEConstants.AUDIT_DATE_COLUMN);
+		columnValues.add(new Timestamp(System.currentTimeMillis()));
+		columnName.add(DEConstants.AUDIT_QUERY_COLUMN);
+		columnValues.add(query);
+		columnName.add(DEConstants.AUDIT_USER_ID_COLUMN);
+		columnValues.add(userId);
+		HashedDataHandler hashedDataHandler = new HashedDataHandler();
+		hashedDataHandler.insertHashedValues(DEConstants.AUDIT_TABLE_NAME, columnValues,
+				columnName, jdbcDao);
 	}
 }

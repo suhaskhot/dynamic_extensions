@@ -9,6 +9,7 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
@@ -890,7 +891,7 @@ public class DomainObjectFactory
 	public DESQLAuditInterface createDESQLAudit(Long userId, String queryExecuted)
 	{
 		DESQLAuditInterface audit = new DESQLAudit();
-		audit.setAuditDate(new Date(System.currentTimeMillis()));
+		audit.setAuditDate(new Timestamp(System.currentTimeMillis()));
 		audit.setUserId(userId);
 		audit.setQueryExecuted(queryExecuted);
 		return audit;

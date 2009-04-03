@@ -99,6 +99,11 @@ public class DEConstants
 	public static final String POSTGRESQL_DATABASE = "DATABASE";
 	public static final String MSSQLSERVER_DATABASE = "MSSQLSERVER";
 
+	public static final String AUDIT_TABLE_NAME = "DYEXTN_SQL_AUDIT";
+	public static final String AUDIT_DATE_COLUMN = "AUDIT_DATE";
+	public static final String AUDIT_QUERY_COLUMN = "QUERY_EXECUTED";
+	public static final String AUDIT_USER_ID_COLUMN = "USER_ID";
+
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);
 

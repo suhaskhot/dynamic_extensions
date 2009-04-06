@@ -286,18 +286,6 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * @param attribute
-	 * @param value
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	public static boolean isValuePresent(AttributeInterface attribute, Object value)
-			throws DynamicExtensionsSystemException
-	{
-		return new DynamicExtensionBaseQueryBuilder().isValuePresent(attribute, value);
-	}
-
-	/**
 	 * @param attributes
 	 * @return
 	 */

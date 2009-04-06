@@ -11,6 +11,8 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
@@ -94,8 +96,7 @@ public class Attribute extends AbstractAttribute
 		AttributeTypeInformationInterface attributeTypeInformationInterface = null;
 		if (attributeTypeInformationCollection != null)
 		{
-			Iterator attributeTypeInfoIterator = attributeTypeInformationCollection
-					.iterator();
+			Iterator attributeTypeInfoIterator = attributeTypeInformationCollection.iterator();
 			attributeTypeInformationInterface = (AttributeTypeInformationInterface) attributeTypeInfoIterator
 					.next();
 		}
@@ -377,5 +378,15 @@ public class Attribute extends AbstractAttribute
 	public DataElementInterface getDataElement()
 	{
 		return this.getAttributeTypeInformation().getDataElement();
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException
+	{
+		return new DynamicExtensionBaseQueryBuilder().isValuePresent(this, value);
 	}
 }

@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  *
@@ -390,6 +391,11 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	public void setIsRelatedAttribute(Boolean isRelatedAttribute)
 	{
 		this.isRelatedAttribute = isRelatedAttribute;
+	}
+
+	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException
+	{
+		return ((AttributeMetadataInterface) this.getAbstractAttribute()).isValuePresent(value);
 	}
 
 }

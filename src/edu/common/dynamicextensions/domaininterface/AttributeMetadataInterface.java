@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domaininterface;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
  * @author kunal_kamble
@@ -58,4 +59,10 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	 */
 	DataElementInterface getDataElement();
 
+	/**
+	 * @param value
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException;
 }

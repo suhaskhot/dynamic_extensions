@@ -10,10 +10,8 @@ import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 
@@ -47,7 +45,7 @@ public class UniqueValidator implements ValidatorRuleInterface
 			NumberValidator numberValidator = new NumberValidator();
 			numberValidator.validate(attribute, valueObject, parameterMap, controlCaption);
 		}
-		if (EntityManagerUtil.isValuePresent((AttributeInterface) attribute, valueObject))
+		if (attribute.isValuePresent(valueObject))
 		{
 			placeHolders.add(controlCaption);
 			placeHolders.add((String) valueObject);

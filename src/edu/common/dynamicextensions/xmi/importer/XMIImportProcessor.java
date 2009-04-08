@@ -460,7 +460,15 @@ public class XMIImportProcessor
 		AttributeInterface primaryAttribute = null;
 		Collection<AttributeInterface> primKeyAttrColl = entity.getPrimaryKeyAttributeCollection();
 		resetPrimaryKeyAttributes(primKeyAttrColl);
-		primKeyAttrColl.clear();
+		//Deleting primary key collection only in case of edited xmi true and isAddIdAttribute=false 
+		//This is specific to CIDER only.As inside Clinportal and Catissue the primarykey will never going to be edited,
+		//so keep the primary key collection  same ,do not clear it.
+
+		if (!xmiConfigurationObject.isAddIdAttribute() && isEditedXmi)
+		{
+			primKeyAttrColl.clear();
+		}
+
 		primaryKey = (String) taggedValueMap.get(XMIConstants.TAGGED_VALUE_PRIMARYKEY);
 		List<String> primaryKeyAttributeNameList = new ArrayList<String>();
 		if (primaryKey != null && !"".equals(primaryKey))

@@ -57,5 +57,7 @@ public class CategoryConstants
 	public final static String NOTE = "NOTE";
 	
 	public final static String PV_EDIT = "pvedit";
+	
+	public static final String TRUE = "true";
 
 }

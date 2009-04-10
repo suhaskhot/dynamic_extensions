@@ -115,7 +115,28 @@ public class CategoryHelper implements CategoryHelperInterface
 			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY", e);
 		}
 	}
-
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.CategoryHelperInterface#saveCategoryMetadata(edu.common.dynamicextensions.domaininterface.CategoryInterface)
+	 */
+	public void saveCategoryMetadata(CategoryInterface category) throws DynamicExtensionsSystemException,
+	DynamicExtensionsApplicationException
+	{
+		try
+		{
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			categoryManager.persistCategoryMetadata(category);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			e.printStackTrace();
+			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY");
+		}
+		catch (DynamicExtensionsApplicationException e)
+		{
+			e.printStackTrace();
+			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY");
+		}
+	}
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategoryEntity(java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryInterface[])
 	 */

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryGenerator;
 import edu.wustl.common.util.logger.Logger;
 
@@ -37,6 +38,12 @@ public class CategoryCreator
 
 			String filePath = args[0];
 			Logger.out.info("The .csv file path is:" + filePath);
+			boolean isPersistMetadataOnly=false;
+			if(args.length >1 && CategoryConstants.TRUE.equalsIgnoreCase(args[1]))
+			{
+				isPersistMetadataOnly =true;
+				
+			}
 
 			CategoryGenerator categoryGenerator = new CategoryGenerator(filePath);
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -50,8 +57,15 @@ public class CategoryCreator
 					isEdited = false;
 				}
 
-				categoryHelper.saveCategory(category);
-
+				if(isPersistMetadataOnly)
+				{
+					categoryHelper.saveCategoryMetadata(category);
+				}
+				else
+				{
+					categoryHelper.saveCategory(category);
+				}
+				
 				if (isEdited)
 				{
 					Logger.out.info("Edited category " + category.getName() + " successfully");

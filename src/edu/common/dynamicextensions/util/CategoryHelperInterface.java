@@ -90,6 +90,16 @@ public interface CategoryHelperInterface
 	 */
 	void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+	
+	/**
+	 * Saves a category metadata Only .
+	 * @param category category object to be saved.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	void saveCategoryMetadata(CategoryInterface category) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
+
 
 	/**
 	 * Create category container and category entity from given entity.

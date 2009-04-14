@@ -2188,5 +2188,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		return attributes;
 	}
+	
+	/**
+	 * It will fetch all the categories present
+	 * @return will return the collection of categories.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<CategoryInterface> getAllCategories()
+		throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		return getAllObjects(CategoryInterface.class.getName());
+	}
 
 }

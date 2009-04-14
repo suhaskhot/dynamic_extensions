@@ -4,8 +4,16 @@ package edu.wustl.cab2b.common.cache;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 
 /**
@@ -72,4 +80,75 @@ public interface IEntityCache
 	 * @param entity entity to add
 	 */
 	void addEntityToCache(EntityInterface entity);
+	
+	/**
+	 * It will return all the categories present in the Database .
+	 * @return Collection of the CategoryInterface in the database.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	Collection<CategoryInterface> getAllCategories() 
+		throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+     * It will return the Category with the id as given identifier in the parameter.
+     * @param identifier.
+     * @return category with given identifier.
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    CategoryInterface getCategoryById(Long identifier) 
+    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+     * It will return the CategoryAttribute with the id as given identifier in the parameter.
+     * @param identifier
+     * @return categoryAttribute with given identifier
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    CategoryAttributeInterface getCategoryAttributeById(Long identifier)
+    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+     * It will return the CategoryEntity with the id as given identifier in the parameter.
+     * @param identifier
+     * @return categoryEntity with given identifier
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    CategoryEntityInterface getCategoryEntityById(Long identifier)
+    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+     * It will return the Container with the id as given identifier in the parameter.
+     * @param identifier
+     * @return Container with given identifier
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    ContainerInterface getContainerById(Long identifier)
+    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    
+    /**
+     * It will return the CategoryAssociation with the id as given identifier in the parameter.
+     * @param identifier
+     * @return CategoryAssociation with given identifier
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    CategoryAssociationInterface getCategoryAssociationById(Long identifier)
+    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
+    /**
+     * It will return the Control with the id as given identifier in the parameter.
+     * @param identifier
+     * @return Control with given identifier
+     * @throws DynamicExtensionsSystemException
+     * @throws DynamicExtensionsApplicationException
+     */
+    ControlInterface getControlById(Long identifier)
+    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    
 }

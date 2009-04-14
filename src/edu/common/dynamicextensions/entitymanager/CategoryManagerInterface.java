@@ -117,5 +117,14 @@ public interface CategoryManagerInterface
 	 */
 	Long getRootCategoryEntityRecordIdByEntityRecordId(Long rootCategoryEntityRecordId,
 			String rootCategoryTableName) throws DynamicExtensionsSystemException;
+	
+	/**
+	 * It will fetch all the categories present
+	 * @return will return the collection of categories.
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	Collection<CategoryInterface> getAllCategories()
+		throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 }

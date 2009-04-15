@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
 
@@ -77,7 +78,7 @@ public interface EntityManagerInterface
 	 */
 	Collection<Long> getAssociationIds(Long sourceEntityId, Long targetEntityId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-	
+
 	/**
 	 * Returns an entity object given the entity name;
 	 * @param entityName
@@ -512,6 +513,21 @@ public interface EntityManagerInterface
 	 */
 	EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
 			boolean isDataTablePresent, boolean copyDataTableState, AssociationInterface association)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+
+	/**
+	 * @param entityInterface
+	 * @param isDataTablePresent
+	 * @param copyDataTableState
+	 * @param association
+	 * @param hibernatedao
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityInterface,
+			boolean isDataTablePresent, boolean copyDataTableState,
+			AssociationInterface association, HibernateDAO hibernatedao)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**

@@ -3058,21 +3058,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			boolean isDataTblPresent, boolean cpyDataTblState, AssociationInterface association)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Entity entity = (Entity) entityObj;
-		if (isDataTblPresent)
-		{
-			((Entity) entityObj).setDataTableState(DATA_TABLE_STATE_ALREADY_PRESENT);
-		}
-		else
-		{
-			((Entity) entityObj).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
-		}
 
 		HibernateDAO hibernateDAO = null;
 		try
 		{
 			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
-			hibernateDAO.update(entity);
+			//Use an overloaded method for update the object
+			this.persistEntityMetadataForAnnotation(entityObj, isDataTblPresent, cpyDataTblState,
+					association, hibernateDAO);
 
 			// Committing the changes done in the hibernate session to the database.
 			hibernateDAO.commit();
@@ -3108,6 +3101,58 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				// following method to do that.
 				//rollbackQueries(stack, entity, e, hibernateDAO);
 				Logger.out.error("The cause of the exception is - " + e.getMessage());
+			}
+		}
+
+		logDebug("persistEntity", "exiting the method");
+
+		return entityObj;
+	}
+
+	/**
+	 * This method is overloaded to take hibernatedao as argument ,it will be called from importxmi
+	 * @param entityObj
+	 * @param isDataTblPresent
+	 * @param cpyDataTblState
+	 * @param association
+	 * @param hibernateDAO
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityObj,
+			boolean isDataTblPresent, boolean cpyDataTblState, AssociationInterface association,
+			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		Entity entity = (Entity) entityObj;
+		if (isDataTblPresent)
+		{
+			((Entity) entityObj).setDataTableState(DATA_TABLE_STATE_ALREADY_PRESENT);
+		}
+		else
+		{
+			((Entity) entityObj).setDataTableState(DATA_TABLE_STATE_NOT_CREATED);
+		}
+		try
+		{
+			hibernateDAO.update(entity);
+
+		}
+		catch (Exception e)
+		{
+			// If there is any exception while storing the meta data,
+			// we need to roll back the queries that were fired. 
+			// So calling the following method to do that.
+			//rollbackQueries(stack, entity, e, hibernateDAO);
+
+			if (e instanceof DynamicExtensionsApplicationException)
+			{
+				throw (DynamicExtensionsApplicationException) e;
+			}
+			else
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
 		}
 

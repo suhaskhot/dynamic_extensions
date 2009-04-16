@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -36,6 +37,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -51,6 +53,8 @@ import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.cab2b.server.path.PathConstants;
+import edu.wustl.common.bizlogic.AbstractBizLogic;
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.DataType;
 import edu.wustl.common.util.logger.Logger;
 import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
@@ -528,20 +532,23 @@ public class DynamicExtensionUtility
 	 * @return Cab2b Entity Groups
 	 * @throws RemoteException
 	 */
-	public static Collection<EntityGroupInterface> getCab2bEntityGroups() throws RemoteException
+	public static Collection<EntityGroupInterface> getSystemGeneratedEntityGroups() throws RemoteException
 	{
 		List<EntityGroupInterface> entityGroups = new ArrayList<EntityGroupInterface>();
-
+		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Collection<EntityGroupInterface> allEntityGroups = new HashSet<EntityGroupInterface>();
+		Object object = null;
 		try
 		{
-			allEntityGroups = EntityManager.getInstance().getAllEntitiyGroups();
+			allEntityGroups = bizLogic.retrieve(EntityGroupInterface.class.getName(), "isSystemGenerated", new Boolean(true));
 		}
-		catch (BaseDynamicExtensionsException e)
+		catch (BizLogicException e)
 		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			throw new RemoteException(e.getMessage(),e);
+			
 		}
-
 		for (EntityGroupInterface entityGroup : allEntityGroups)
 		{
 			if (isEntityGroupMetadata(entityGroup))
@@ -552,6 +559,22 @@ public class DynamicExtensionUtility
 		return entityGroups;
 	}
 
+	public static List<ContainerInterface> getAllContainers() throws RemoteException
+	{
+    	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+    	List<ContainerInterface> containerList=new ArrayList<ContainerInterface>();
+    	try
+		{
+			containerList = bizLogic.retrieve(ContainerInterface.class.getName());
+		}
+		catch (BizLogicException e)
+		{
+			throw new RemoteException(
+					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
+
+		}
+		return containerList;
+	}
 	/**
 	 * This method checks if the given entity group is a metadata entity group or not.
 	 * @param entityGroup
@@ -570,7 +593,7 @@ public class DynamicExtensionUtility
 				break;
 			}
 		}
-		return (hasMetadataTag && isSuccessfullyLoaded(tags));
+		return (hasMetadataTag && isSuccessfullyLoaded(tags) && entityGroup.getIsSystemGenerated());
 	}
 
 	private static boolean isSuccessfullyLoaded(Collection<TaggedValueInterface> taggedValues)

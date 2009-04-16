@@ -214,7 +214,7 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
-	public static Object getObjectByIdentifier(String objectName, String identifier)
+	private static Object getObjectByIdentifier(String objectName, String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();

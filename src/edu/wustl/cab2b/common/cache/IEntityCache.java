@@ -87,8 +87,8 @@ public interface IEntityCache
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	Collection<CategoryInterface> getAllCategories() 
-		throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	Collection<CategoryInterface> getAllCategories(); 
+		
     
     /**
      * It will return the Category with the id as given identifier in the parameter.
@@ -97,8 +97,8 @@ public interface IEntityCache
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    CategoryInterface getCategoryById(Long identifier) 
-    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    CategoryInterface getCategoryById(Long identifier); 
+    	
     
     /**
      * It will return the CategoryAttribute with the id as given identifier in the parameter.
@@ -107,8 +107,8 @@ public interface IEntityCache
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    CategoryAttributeInterface getCategoryAttributeById(Long identifier)
-    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    CategoryAttributeInterface getCategoryAttributeById(Long identifier);
+    	
     
     /**
      * It will return the CategoryEntity with the id as given identifier in the parameter.
@@ -117,8 +117,8 @@ public interface IEntityCache
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    CategoryEntityInterface getCategoryEntityById(Long identifier)
-    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    CategoryEntityInterface getCategoryEntityById(Long identifier);
+    	
     
     /**
      * It will return the Container with the id as given identifier in the parameter.
@@ -127,8 +127,8 @@ public interface IEntityCache
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    ContainerInterface getContainerById(Long identifier)
-    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    ContainerInterface getContainerById(Long identifier);
+    	
     
     
     /**
@@ -138,8 +138,8 @@ public interface IEntityCache
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    CategoryAssociationInterface getCategoryAssociationById(Long identifier)
-    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    CategoryAssociationInterface getCategoryAssociationById(Long identifier);
+    	
     
     /**
      * It will return the Control with the id as given identifier in the parameter.
@@ -148,7 +148,7 @@ public interface IEntityCache
      * @throws DynamicExtensionsSystemException
      * @throws DynamicExtensionsApplicationException
      */
-    ControlInterface getControlById(Long identifier)
-    	throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+    ControlInterface getControlById(Long identifier);
+    	
     
 }

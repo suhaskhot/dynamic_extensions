@@ -13,15 +13,23 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Utility;
+import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
 import edu.wustl.common.querysuite.metadata.category.Category;
 
 /**
@@ -45,7 +53,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
     /**
      * Set of all the entity groups loaded as metadata in caB2B.
      */
-    private Set<EntityGroupInterface> cab2bEntityGroups;
+    private Set<EntityGroupInterface> cab2bEntityGroups = new HashSet<EntityGroupInterface>();
 
     /**
      * The EntityCache object. Needed for singleton
@@ -81,7 +89,37 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
      * needed because there is no back pointer from PV to Entity
      */
     protected Map<PermissibleValueInterface, EntityInterface> permissibleValueVsEntity = new HashMap<PermissibleValueInterface, EntityInterface>();
-
+    
+    /**
+     * Set of all the DyanamicExtensions categories loaded in the database. 
+     */
+    protected Set<CategoryInterface> deCategories = new HashSet<CategoryInterface>();
+    
+    /**
+     * Set of all the container Loaded in the database.
+     */
+    protected Set<ContainerInterface> containers = new HashSet<ContainerInterface>();
+    
+    /**
+     * Map with KEY as dynamic extension CategoryAttribute's identifier and Value as CategoryAttribute object
+     */
+    protected Map<Long,CategoryAttributeInterface> idVsCategoryAttribute = new HashMap<Long, CategoryAttributeInterface>();
+    
+    /**
+     * Map with KEY as dynamic extension CategoryEntity's's identifier and Value as CategoryEntity object
+     */
+    protected Map<Long,CategoryEntityInterface> idVsCaegoryEntity = new HashMap<Long, CategoryEntityInterface>();
+    
+    /**
+     * Map with KEY as dynamic extension CategoryAssociations's identifier and Value as CategoryAssociations object
+     */
+    protected Map<Long,CategoryAssociationInterface> idVsCaegoryAssociation = new HashMap<Long, CategoryAssociationInterface>();
+    
+    /**
+     * Map with KEY as dynamic extension Controls's identifier and Value as Control object
+     */
+    protected Map<Long,ControlInterface> idVsControl = new HashMap<Long, ControlInterface>();
+    
     /**
      * This method gives the singleton cache object. If cache is not present then it throws {@link UnsupportedOperationException}
      * @return The singleton cache object.
@@ -110,32 +148,129 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
         logger.info("Initializing cache, this may take few minutes...");
 
         Collection<EntityGroupInterface> entityGroups = null;
+        List<ContainerInterface> containerList=null; 
         try {
-            entityGroups = getCab2bEntityGroups();
+            entityGroups = getSystemGeneratedEntityGroups();
+            containerList = DynamicExtensionUtility.getAllContainers();
         } catch (RemoteException e) {
             logger.error("Error while collecting caB2B entity groups. Error: " + e.getMessage());
         }
-        createCache(entityGroups);
+        createCache(containerList,entityGroups);
         
         logger.info("Initializing cache DONE");
     }
 
-    /**
-     * Initializes the data structures by processing one entity group at a time.
-     * @param entityGroups Entitygroups to cache
-     */
-    private void createCache(Collection<EntityGroupInterface> entityGroups) {
-        Set<EntityGroupInterface> entityGroupsSet = new HashSet<EntityGroupInterface>();
-        for (EntityGroupInterface entityGroup : entityGroups) {
-            entityGroupsSet.add(entityGroup);
-            for (EntityInterface entity : entityGroup.getEntityCollection()) {
-                addEntityToCache(entity);
-            }
-        }
-        cab2bEntityGroups = Collections.unmodifiableSet(entityGroupsSet);
-    }
+    
 
-    /**
+	/**
+     * Initializes the data structures by processing container & entity group one by one at a time.
+     * @param containerList list of containers to be cached.
+	 * @param entityGroups list of system generated entity groups to be cached.
+	 */
+	private void createCache(List<ContainerInterface> containerList, Collection<EntityGroupInterface> entityGroups)
+	{
+		Set<ContainerInterface> containerSet = new HashSet<ContainerInterface>();
+		Set<EntityGroupInterface> entityGroupsSet = new HashSet<EntityGroupInterface>();
+		Set<CategoryInterface> categorySet = new HashSet<CategoryInterface>();
+		for(ContainerInterface container : containerList)
+		{
+			containerSet.add(container);
+			createControlCache(container.getControlCollection());
+			addAbstractEntityToCache(container.getAbstractEntity(),entityGroupsSet,categorySet);
+		}
+		 for (EntityGroupInterface entityGroup : entityGroups)
+		 {
+			 entityGroupsSet.add(entityGroup);
+	         for (EntityInterface entity : entityGroup.getEntityCollection()) 
+	         {
+	        	 addEntityToCache(entity);
+	         }
+		 }
+		
+		containers = Collections.unmodifiableSet(containerSet);
+		deCategories =  Collections.unmodifiableSet(categorySet);
+		cab2bEntityGroups =  Collections.unmodifiableSet(entityGroupsSet);
+	}
+
+	/**
+	 * Adds all controls into cache.
+     * @param controlCollection collection of control objects which are  to be cached.
+	 */
+	private void createControlCache(Collection<ControlInterface> controlCollection)
+	{
+		for(ControlInterface control : controlCollection)
+		{
+			idVsControl.put(control.getId(), control);
+		}
+	}
+	
+	/**
+	 * Adds abstract Entity (which can be 'CategoryEnity' or 'Entity') into cache.
+     * @param abstractEntity which should be cached.
+	 * @param entityGroupsSet in which the entityGroup of the abstractEntity is cached. 
+	 * @param categorySet in which the category of the abstractEntity is cached.
+	 */
+	private void addAbstractEntityToCache(AbstractEntityInterface abstractEntity, Set<EntityGroupInterface> entityGroupsSet, Set<CategoryInterface> categorySet)
+	{
+		if(abstractEntity instanceof CategoryEntityInterface )
+		{
+			CategoryEntityInterface categoryEntity = (CategoryEntityInterface) abstractEntity;
+			if(categoryEntity.getCategory()!= null)
+			{
+				categorySet.add(categoryEntity.getCategory());
+			}
+			addCategoryEntityToCache(categoryEntity );
+		}
+		else
+		{
+			EntityInterface entity = (EntityInterface)abstractEntity;
+			entityGroupsSet.add(entity.getEntityGroup());
+			addEntityToCache(entity);
+			
+		}
+	}
+
+	/**
+	 * Adds CategoryEnity into cache.
+	 * @param categoryEntity which should be cached.
+	 */
+	private void addCategoryEntityToCache(CategoryEntityInterface categoryEntity)
+	{
+		 idVsCaegoryEntity.put(categoryEntity.getId(),categoryEntity);
+	     createCategoryAttributeCache(categoryEntity);
+	     createCategoryAssociationCache(categoryEntity);
+	}
+
+	
+
+	/**
+	 * It will add all the categoryAssociations of the categoryEntity in the cache. 
+	 * @param categoryEntity whose all categoryAssociations should be cached.
+	 */
+	private void createCategoryAssociationCache(CategoryEntityInterface categoryEntity)
+	{
+		for(CategoryAssociationInterface assocition : categoryEntity.getCategoryAssociationCollection())
+		{
+			idVsCaegoryAssociation.put(assocition.getId(), assocition);
+		}
+		
+	}
+
+	/**
+	 * It will add all the categoryAttributes of the categoryEntity in the cache.
+	 * @param categoryEntity whose all categoryAttributes should be cached.
+	 */
+	private void createCategoryAttributeCache(CategoryEntityInterface categoryEntity)
+	{
+		for(CategoryAttributeInterface categoryAttribute : categoryEntity.getCategoryAttributeCollection())
+		{
+			 idVsCategoryAttribute.put(categoryAttribute.getId(), categoryAttribute);
+		}
+		
+		
+	}
+
+	 /**
      * Adds all attribute of given entity into cache
      * @param entity Entity to process
      */
@@ -331,13 +466,131 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
      * @return entity group
      */
     public EntityGroupInterface getEntityGroupByName(String name) {
+    	EntityGroupInterface entityGroup =null;
         for (EntityGroupInterface group : cab2bEntityGroups) {
             if (group.getName().equals(name)) {
-                return group;
+                entityGroup=group;
             }
         }
-        return null;
+        return entityGroup;
     }
+    /**
+	 * It will return all the categories present in the Database .
+	 * @return Collection of the CategoryInterface in the database.
+	 */
+	public Collection<CategoryInterface> getAllCategories()
+	{
+		return deCategories;
+	}
+
+	/**
+	 * It will return the Category with the id as given identifier in the parameter.
+	 * @param identifier.
+	 * @return category with given identifier.
+	 */
+	public CategoryInterface getCategoryById(Long identifier)
+	{
+		CategoryInterface category=null;
+		for(CategoryInterface deCategory : deCategories)
+		{
+			if(deCategory.getId().equals(identifier))
+			{
+				category=deCategory;
+			}
+				
+		}
+		if(category==null)
+		{
+			throw new RuntimeException("Category with given id is not present in cache : " + identifier);
+		}
+		return category;
+	}
+
+	/**
+	 * It will return the CategoryAttribute with the id as given identifier in the parameter.
+	 * @param identifier
+	 * @return categoryAttribute with given identifier
+	 */
+	public CategoryAttributeInterface getCategoryAttributeById(Long identifier)
+	{
+		CategoryAttributeInterface categoryAttribute =  idVsCategoryAttribute.get(identifier);
+		if(categoryAttribute ==null)
+		{
+			throw new RuntimeException("Category Attribute with given id is not present in cache : " + identifier);
+		}
+		return categoryAttribute;
+	}
+
+	/**
+	 * It will return the CategoryAssociation with the id as given identifier in the parameter.
+	 * @param identifier
+	 * @return CategoryAssociation with given identifier
+	 */
+	public CategoryAssociationInterface getCategoryAssociationById(Long identifier)
+	{
+		CategoryAssociationInterface categoryAssociation = idVsCaegoryAssociation.get(identifier);
+		if(categoryAssociation==null)
+		{
+			throw new RuntimeException("Category Association with given id is not present in cache : " + identifier);
+		}
+		return categoryAssociation;
+		
+	}
+
+	/**
+	 * It will return the CategoryEntity with the id as given identifier in the parameter.
+	 * @param identifier
+	 * @return categoryEntity with given identifier
+	 */
+	public CategoryEntityInterface getCategoryEntityById(Long identifier)
+	{
+		CategoryEntityInterface categoryEntity = idVsCaegoryEntity.get(identifier);
+		if(categoryEntity == null)
+		{
+			throw new RuntimeException("Category Entity with given id is not present in cache : " + identifier);
+		}
+		return categoryEntity;
+		
+	}
+
+	/**
+	 * It will return the Container with the id as given identifier in the parameter.
+	 * @param identifier
+	 * @return Container with given identifier
+	 */
+	public ContainerInterface getContainerById(Long identifier)
+	{
+		ContainerInterface container =null;
+		for(ContainerInterface mainContainer : containers)
+		{
+			if(mainContainer.getId().equals(identifier))
+			{
+				container=mainContainer;
+			}
+		}
+		if(container == null)
+		{
+			throw new RuntimeException("container with given id is not present in cache : " + identifier);
+		}
+		return container;
+		
+	}
+	
+	/**
+	 * It will return the Control with the id as given identifier in the parameter.
+	 * @param identifier
+	 * @return Control with given identifier
+	 */
+	public ControlInterface getControlById(Long identifier)
+	{
+		ControlInterface control = idVsControl.get(identifier);
+		if(control == null)
+		{
+			throw new RuntimeException("Control with given id is not present in cache : " + identifier);
+		}
+		return control;
+	}
+	
 
     /**
      * This method returns all the entity groups which are to be cached. 
@@ -346,5 +599,5 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
      * @return Returns the entity groups
      * @throws RemoteException 
      */
-    protected abstract Collection<EntityGroupInterface> getCab2bEntityGroups() throws RemoteException;
+    protected abstract Collection<EntityGroupInterface> getSystemGeneratedEntityGroups() throws RemoteException;
 }

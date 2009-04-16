@@ -263,9 +263,34 @@ public interface EntityInterface extends AbstractEntityInterface
 
 	/**
 	 * This method return the Collection of Attributes including the new Attributes which are 
-	 * added because of inheritance
+	 * added because of inheritance which are its own local attributes.
 	 * @return
 	 */
 	Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes();
+	
+	/**
+	 * It will search the attribute in the entity attributes with including 
+	 * inherited attributes which are its own local attributes. 
+	 * if not found will search the attribute in the parent entity & so on
+	 * @param attributeName
+	 * @return attribute found else null
+	 */
+	AttributeInterface getAttributeByNameIncludingInheritedAttribute(String attributeName);
+		
+	/**
+	 * It will return the collection of abstract attributes of the entity including inheritedAttributes 
+	 * which are its own local attributes as well as of its parent & so on.
+	 * @return Collection of abstractAttributes
+	 */
+	Collection<AbstractAttributeInterface> getAllAbstractAttributesIncludingInheritedAttributes();
+	
+	/**
+	 * It will return the collection of attributes of the entity including inheritedAttributes, 
+	 * which are its own local attributes as well as of its parent & so on.
+	 * @return Collection of Attributes
+	 */
+	Collection<AttributeInterface> getAllAttributesIncludingInheritedAttributes();
+	
+
 
 }

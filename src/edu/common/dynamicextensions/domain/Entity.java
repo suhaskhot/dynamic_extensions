@@ -237,7 +237,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 
 	/**
 	 * This method return the Collection of Attributes including the new Attributes which are 
-	 * added because of inheritance
+	 * added because of inheritance which are its own local attributes.
 	 * @return the Collection of Attributes.
 	 */
 	public Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes()
@@ -629,6 +629,53 @@ public class Entity extends AbstractEntity implements EntityInterface
 	}
 
 	/**
+	 * It will search the attribute in the entity attributes with including inherited attributes
+	 * which are its own local attributes. 
+	 * if not found will search the attribute in the parent entity & so on
+	 * @param attributeName
+	 * @return attribute found else null
+	 */
+	public AttributeInterface getAttributeByNameIncludingInheritedAttribute(String attributeName)
+	{
+		return searchAttributeByNameInCollection(this
+				.getAllAbstractAttributesIncludingInheritedAttributes(), attributeName);
+	}
+
+	/**
+	 * It will return the collection of abstract attributes of the entity including inheritedAttributes
+	 * which are its own local attributes as well as of its parent & so on.
+	 * @return Collection of abstractAttributes
+	 */
+	public Collection<AbstractAttributeInterface> getAllAbstractAttributesIncludingInheritedAttributes()
+	{
+		Collection<AbstractAttributeInterface> abstractAttributeCollection = new ArrayList<AbstractAttributeInterface>();
+		abstractAttributeCollection.addAll(getAllAssociations());
+		abstractAttributeCollection.addAll(getAllAttributesIncludingInheritedAttributes());
+		return abstractAttributeCollection;
+	}
+
+	/**
+	 * It will return the collection of attributes of the entity including inheritedAttributes
+	 * which are its own local attributes , as well as of its parent & so on.
+	 * @return Collection of Attributes
+	 */
+	public Collection<AttributeInterface> getAllAttributesIncludingInheritedAttributes()
+	{
+
+		Collection<AttributeInterface> attributeCollection = new ArrayList<AttributeInterface>();
+		attributeCollection.addAll(getAttributeCollectionWithInheritedAttributes());
+		EntityInterface parentEntity = this.parentEntity;
+		while (parentEntity != null)
+		{
+			attributeCollection
+					.addAll(parentEntity.getAttributeCollectionWithInheritedAttributes());
+			parentEntity = parentEntity.getParentEntity();
+		}
+
+		return attributeCollection;
+	}
+
+	/**
 	 * It will retrieve the Attribute with the given name in the All attributes of entity including its inherited Attributes
 	 * Will return the matched attribute which is present in the same entity or null. 
 	 * @param attributeName
@@ -685,7 +732,8 @@ public class Entity extends AbstractEntity implements EntityInterface
 	}
 
 	/**
-	 * This method return the Collection of Attributes including all its inherited attributes.
+	 * This method return the Collection of Attributes including all its inherited attributes
+	 * which are its own local attributes.
 	 * @return the Collection of Attributes.
 	 */
 	private Collection<AbstractAttributeInterface> getAbstractAttributeCollectionIncludingInheritedAttribute()

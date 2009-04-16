@@ -584,21 +584,31 @@ public class XMIImportProcessor
 	}
 
 	/**
+	 * It will update tagged value if present in the entityGroup with same Key else will
+	 * add the new taggedValue in it.
 	 * @param packageName
 	 */
 	private void addTaggedValue(String packageName)
 	{
-		TaggedValueInterface tvalue = DomainObjectFactory.getInstance().createTaggedValue();
-		tvalue.setKey(XMIConstants.TAGGED_NAME_PACKAGE_NAME);
-		tvalue.setValue(packageName);
-
 		Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
 		if (tvColl == null)
 		{
 			tvColl = new HashSet<TaggedValueInterface>();
 		}
-		tvColl.add(tvalue);
-		entityGroup.setTaggedValueCollection(tvColl);
+		// It will serach the tag with same key in the tvColl so that it will not add the tag multiple times
+		TaggedValueInterface taggedValue = getTaggedValueObject(tvColl, XMIConstants.TAGGED_NAME_PACKAGE_NAME);
+		// If tag not present it will create new one & add it to the object. else willuse same previous object
+		if(taggedValue==null)
+		{
+			taggedValue= DomainObjectFactory.getInstance().createTaggedValue();
+			taggedValue.setKey(XMIConstants.TAGGED_NAME_PACKAGE_NAME);
+			taggedValue.setValue(packageName);
+			tvColl.add(taggedValue);
+		}
+		else
+		{
+			taggedValue.setValue(packageName);
+		}
 	}
 
 	/**
@@ -905,8 +915,8 @@ public class XMIImportProcessor
 		DataType dataType = DataType.get(umlAttribute.getType().getName());
 		if (dataType != null)
 		{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
-
-			originalAttribute = entity.getAttributeByName(umlAttribute.getName());
+			
+			originalAttribute = entity.getAttributeByNameIncludingInheritedAttribute(umlAttribute.getName());
 			if (originalAttribute == null)
 			{//New attribute has been created
 				AttributeInterface attribute = dataType.createAttribute(umlAttribute);
@@ -1135,9 +1145,9 @@ public class XMIImportProcessor
 	{
 		Map<String, String> tagNameVsTagValue = new HashMap<String, String>();
 		String tagName;
+		Collection<TaggedValueInterface> deTaggedValueCollection=new HashSet<TaggedValueInterface>();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		TaggedValueInterface tag;
-		abstrMetaDataObj.removeAllTaggedValues();
 		for (TaggedValue taggedValue : taggedValueColl)
 		{
 			if (taggedValue.getType() != null)
@@ -1149,18 +1159,52 @@ public class XMIImportProcessor
 					if (tagName.startsWith(XMIConstants.TAGGED_NAME_PREFIX))
 					{
 						tagName = tagName.replaceFirst(XMIConstants.TAGGED_NAME_PREFIX, "");
-						tag = factory.createTaggedValue();
-						tag.setKey(tagName);
-						tag.setValue(value);
-						abstrMetaDataObj.addTaggedValue(tag);
+						// it will retrieve the tag which is already present on the  abstrMetaDataObj in case of edit xmi
+						tag = getTaggedValueObject(abstrMetaDataObj.getTaggedValueCollection(), tagName);
+						//if tag not found then create the new one 
+						if(tag == null)
+						{
+							tag = factory.createTaggedValue();
+							tag.setKey(tagName);
+							tag.setValue(value);
+						}
+						// if tag found then only change the value of the tag with current value.  
+						else
+						{
+							tag.setValue(value); 
+						}
+						deTaggedValueCollection.add(tag);
 					}
 					tagNameVsTagValue.put(tagName, value);
 				}
 
 			}
 		}
-
+		//it will clear the old taggedValue collection & add the new tagged value collection in abstrMetaDataObj.
+		abstrMetaDataObj.getTaggedValueCollection().clear();
+		abstrMetaDataObj.getTaggedValueCollection().addAll(deTaggedValueCollection);
 		return tagNameVsTagValue;
+	}
+
+	
+	/**
+	 * @param taggedValueColl
+	 * @param key
+	 * @return
+	 */
+	private TaggedValueInterface getTaggedValueObject(
+			Collection<TaggedValueInterface> taggedValueColl, String key)
+	{
+		TaggedValueInterface taggedValue =null;
+		for (TaggedValueInterface tag : taggedValueColl)
+		{
+			if(tag.getKey().equals(key))
+			{
+				taggedValue=tag;
+				break;
+			}
+		}
+		return taggedValue;
 	}
 
 	/**

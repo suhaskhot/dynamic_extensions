@@ -36,6 +36,16 @@ public interface IPathFinder
      * @return Returns the list of IPath present between given source and destination
      */
     List<IPath> getAllPossiblePaths(EntityInterface source,EntityInterface destination);
+    
+    /**
+     * Finds all possible paths in which the source entity can be connected to a destination entity.
+     * Returns list of all possible paths. This method can be used when a new class is added in DAG view.
+     * This method is specific to query.
+     * @param source Starting point of the path.
+     * @param destination End of the path 
+     * @return Returns the list of IPath present between given source and destination
+     */
+    List<IPath> getAllPathsForQuery(EntityInterface source, EntityInterface destination);
 
     /**
      * Returns all the InterModelAssociations where given entity is present.

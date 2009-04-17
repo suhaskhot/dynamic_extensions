@@ -111,6 +111,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			{
 				try
 				{
+					jdbcDao.closeStatement(resultSet);
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e)
@@ -196,6 +197,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 					{
 						try
 						{
+							jdbcDao.closeStatement(resultSet);
 							DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 						}
 						catch (DAOException e)
@@ -255,6 +257,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)

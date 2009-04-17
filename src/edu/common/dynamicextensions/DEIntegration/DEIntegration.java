@@ -138,6 +138,7 @@ public class DEIntegration implements IntegrationInterface
 		}
 		finally
 		{
+			jdbcDao.closeStatement(resultSet);
 			DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 		}
 
@@ -335,6 +336,7 @@ public class DEIntegration implements IntegrationInterface
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)

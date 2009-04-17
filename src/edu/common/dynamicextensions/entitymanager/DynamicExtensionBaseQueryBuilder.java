@@ -776,6 +776,7 @@ public class DynamicExtensionBaseQueryBuilder
 			{
 				try
 				{
+					jdbcDao.closeStatement(resultSet);
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e)
@@ -929,6 +930,7 @@ public class DynamicExtensionBaseQueryBuilder
 				{
 					try
 					{
+						jdbcDao.closeStatement(resultSet);
 						DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 					}
 					catch (DAOException e)
@@ -2662,6 +2664,7 @@ public class DynamicExtensionBaseQueryBuilder
 				{
 					isDataPresent = true;
 				}
+				jdbcDao.commit();
 			}
 			catch (DAOException e)
 			{
@@ -2679,7 +2682,7 @@ public class DynamicExtensionBaseQueryBuilder
 				{
 					try
 					{
-						jdbcDao.commit();
+						jdbcDao.closeStatement(resultSet);
 						DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 					}
 					catch (DAOException e)
@@ -2760,6 +2763,7 @@ public class DynamicExtensionBaseQueryBuilder
 			{
 				try
 				{
+					jdbcDao.closeStatement(resultSet);
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e)
@@ -2811,6 +2815,7 @@ public class DynamicExtensionBaseQueryBuilder
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)
@@ -3075,6 +3080,7 @@ public class DynamicExtensionBaseQueryBuilder
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)
@@ -3120,6 +3126,7 @@ public class DynamicExtensionBaseQueryBuilder
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)
@@ -3184,6 +3191,17 @@ public class DynamicExtensionBaseQueryBuilder
 			{
 				throw new DynamicExtensionsSystemException(e.getMessage(), e);
 			}
+			finally
+			{
+				try
+				{
+					jdbcDao.closeStatement(resultSet);
+				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException(e.getMessage(), e);
+				}
+			}
 		}
 	}
 
@@ -3241,6 +3259,7 @@ public class DynamicExtensionBaseQueryBuilder
 			{
 				try
 				{
+					jdbcDao.closeStatement(resultSet);
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e)
@@ -3450,6 +3469,7 @@ public class DynamicExtensionBaseQueryBuilder
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)

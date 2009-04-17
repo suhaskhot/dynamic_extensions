@@ -1394,6 +1394,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		finally
 		{
+			jdbcDao.closeStatement(resultSet);
 			DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 		}
 
@@ -1591,6 +1592,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			try
 			{
+				jdbcDao.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 			}
 			catch (DAOException e)
@@ -2526,6 +2528,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				try
 				{
+					jdbcDao.closeStatement(resultSet);
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e)
@@ -2598,6 +2601,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				try
 				{
+					jdbcDao.closeStatement(resultSet);
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e)
@@ -2910,31 +2914,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		finally
 		{
+			jdbcDAO.closeStatement(resultSet);
 			DynamicExtensionsUtility.closeJDBCDAO(jdbcDAO);
 		}
 
 		return fileRecordValue;
-	}
-
-	/**
-	 * @param query
-	 * @return
-	 * @throws SQLException
-	 * @throws DAOException 
-	 */
-	public ResultSet executeQuery(String query) throws SQLException, DAOException
-	{
-		ResultSet resultSet = null;
-		JDBCDAO jdbcDAO = DynamicExtensionsUtility.getJDBCDAO();
-		try
-		{
-			resultSet = jdbcDAO.getQueryResultSet(query);
-		}
-		finally
-		{
-			DynamicExtensionsUtility.closeJDBCDAO(jdbcDAO);
-		}
-		return resultSet;
 	}
 
 	/* (non-Javadoc)

@@ -2078,6 +2078,17 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		{
 			throw new DynamicExtensionsSystemException("Error executing query ", e);
 		}
+		finally
+		{
+			try
+			{
+				jdbcDao.closeStatement(resultSet);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error executing query ", e);
+			}
+		}
 		return recordIds;
 	}
 
@@ -2135,6 +2146,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		{
 			try
 			{
+				jdbcDAO.closeStatement(resultSet);
 				DynamicExtensionsUtility.closeJDBCDAO(jdbcDAO);
 			}
 			catch (DAOException e)

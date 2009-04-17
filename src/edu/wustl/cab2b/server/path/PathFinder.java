@@ -291,6 +291,29 @@ public class PathFinder
 		}
 		return new ArrayList<IPath>(0);
 	}
+	
+	/**
+	 * Finds all possible paths present between given "source" to "destination". 
+	 * Returns list of all possible paths.<br>
+	 * If no path found it returns a empty list. This method can be used when a new class is added in DAG view.
+	 * 
+	 * @param source Start of the path.
+	 * @param destination End of the path
+	 * @return Returns the List<IPath>
+	 */
+	public List<IPath> getAllPathsForQuery(EntityInterface source, EntityInterface destination)
+	{
+		logger.debug("Entering in method getAllPathsForQuery()");
+		Long desEntityId = destination.getId();
+		String desName = destination.getName();
+
+		Long srcEntityId = source.getId();
+		String srcName = source.getName();
+		
+		logger.info("Finding intramodel paths for query between : " + srcName + " and " + desName);
+		List<PathRecord> pathRecords = getPathRecords(srcEntityId, desEntityId);
+		return new ArrayList<IPath>(getPathList(pathRecords));
+	}
 
 	/**
 	 * Connect each path of passes "prePaths" to each path of passed "postPaths" by association. If "prePaths" is

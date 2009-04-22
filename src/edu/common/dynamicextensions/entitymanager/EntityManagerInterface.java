@@ -773,4 +773,69 @@ public interface EntityManagerInterface
 	Map<AbstractAttributeInterface, Object> getRecordForSingleEntity(EntityInterface entity,
 			Long recordId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+	
+	/**
+	 * @param pathAssociationRelationId  identifier of pathAssociationRelationId
+	 * @return association Id based on pathAssociationRelationId
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getAssociationIdFrmPathAssoRelationId(Long pathAssociationRelationId)
+					throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param pathId identifier of Path
+	 * @return collection of PathAssociationRelationIds
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Collection<Long> getPathAssociationRelationIds(Long pathId)
+					throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param associationId  identifier of association
+	 * @return source entity name
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getSrcEntityNameFromAssociationId(Long associationId)
+					throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param associationId  identifier of association
+	 * @return target entity name
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getTgtEntityNameFromAssociationId(Long associationId)
+					throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param associationRelationId  PathAssociationRelationId
+	 * @return instanceId of the source categoryEntity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getSrcInstanceIdFromAssociationRelationId(Long associationRelationId)
+					throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param associationRelationId  PathAssociationRelationId
+	 * @return instanceId of the target categoryEntity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getTgtInstanceIdFromAssociationRelationId(Long associationRelationId)
+					throws DynamicExtensionsSystemException;
+	
+	
+	/**
+	 * @return categoryEntityId collection
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Collection<Long> getAllCategoryEntityId()
+					throws DynamicExtensionsSystemException;
+	
+	/**
+	 * @param categoryId identifier of category entity
+	 * @return name of category
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public String getCategoryEntityNameByCategoryEntityId(Long categoryId)
+					throws DynamicExtensionsSystemException;
+
 }

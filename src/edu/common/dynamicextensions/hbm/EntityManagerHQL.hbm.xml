@@ -314,4 +314,43 @@
    		select entity.entityGroup.name 
    			   from Entity entity where entity.name = ?
    </query>
+   	<query name="getPathAssociationRelationIdCollection">
+		select pathAssociation.id
+		from edu.common.dynamicextensions.domain.PathAssociationRelation pathAssociation
+		where pathAssociation.path.id =?
+	</query>	
+	<query name="getAssoIdFrmPathAssoRelationId">
+		select pathAssociation.association.id
+		from edu.common.dynamicextensions.domain.PathAssociationRelation pathAssociation
+		where pathAssociation.id =?
+	</query>
+	<query name="getSrcEntityNameFromAssociationId">
+		select association.entity.name
+		from Association association
+		where association.id =?
+	</query>
+	<query name="getTgtEntityNameFromAssociationId">
+		select association.targetEntity.name
+		from Association association
+		where association.id =?
+	</query>
+	<query name="getSrcInstanceIdFromAssociationRelationId">
+		select pathAssociation.sourceInstanceId
+		from edu.common.dynamicextensions.domain.PathAssociationRelation pathAssociation
+		where pathAssociation.id =?
+	</query>
+	<query name="getTgtInstanceIdFromAssociationRelationId">
+		select pathAssociation.targetInstanceId
+		from edu.common.dynamicextensions.domain.PathAssociationRelation pathAssociation
+		where pathAssociation.id =?
+	</query>
+	<query name="getAllCategoryEntityId">
+		select catEntity.id
+        from  edu.common.dynamicextensions.domain.CategoryEntity catEntity 	
+	</query>
+	<query name="getCategoryEntityNameByCategoryEntityId">
+		select catEntity.name
+        from  edu.common.dynamicextensions.domain.CategoryEntity catEntity 
+        where catEntity.id=?
+	</query>
 </hibernate-mapping>

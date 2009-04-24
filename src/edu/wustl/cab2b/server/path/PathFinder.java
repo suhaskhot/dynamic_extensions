@@ -2,6 +2,7 @@
 package edu.wustl.cab2b.server.path;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,6 +74,15 @@ public class PathFinder
 	 */
 	public static synchronized PathFinder getInstance(Connection con)
 	{
+		try
+		{
+			System.out.println("PathFinder.getInstance()==" + con.isClosed());
+		}
+		catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (pathFinder == null)
 		{
 			logger.info("PathFinder Called first Time.Loading cache...");
@@ -116,6 +126,7 @@ public class PathFinder
 	 */
 	private void populateCache(Connection con)
 	{
+		System.out.println("PathFinder.populateCache()");
 		setInterModelConnections(cacheInterModelConnections(con));
 		pathRecordCache = cachePathRecords(con);
 		idVsAssociation = cacheAssociationTypes(con);
@@ -145,6 +156,8 @@ public class PathFinder
 	 */
 	public Set<ICuratedPath> getCuratedPaths(EntityInterface source, EntityInterface destination)
 	{
+		System.out.println("PathFinder.getCuratedPaths()");
+		System.out.println(source.getId() + "---" + destination.getId());
 		HashSet<EntityInterface> entitySet = new HashSet<EntityInterface>(2);
 		entitySet.add(source);
 		entitySet.add(destination);
@@ -163,6 +176,7 @@ public class PathFinder
 				curatedPaths.add(curatedPath);
 			}
 		}
+		System.out.println("curatedpath size=" + curatedPaths.size());
 		return curatedPaths;
 	}
 
@@ -174,6 +188,7 @@ public class PathFinder
 	 */
 	public Set<ICuratedPath> autoConnect(Set<EntityInterface> entitySet)
 	{
+		System.out.println("PathFinder.autoConnect()" + entitySet.size());
 		String entityIdSet = CuratedPath.getStringRepresentation(entitySet);
 		Set<ICuratedPath> curatedPathSet = entitySetVsCuratedPath.get(entityIdSet);
 
@@ -225,7 +240,8 @@ public class PathFinder
 	 */
 	public List<IPath> getAllPossiblePaths(EntityInterface source, EntityInterface destination)
 	{
-		logger.debug("Entering in method getAllPossiblePaths()");
+		logger.info("Entering in method getAllPossiblePaths() between ==" + source.getId() + "=="
+				+ destination.getId());
 		Long desEntityId = destination.getId();
 		String desName = destination.getName();
 		EntityGroupInterface desEntityGroup = Utility.getEntityGroup(destination);
@@ -291,7 +307,7 @@ public class PathFinder
 		}
 		return new ArrayList<IPath>(0);
 	}
-	
+
 	/**
 	 * Finds all possible paths present between given "source" to "destination". 
 	 * Returns list of all possible paths.<br>
@@ -309,7 +325,7 @@ public class PathFinder
 
 		Long srcEntityId = source.getId();
 		String srcName = source.getName();
-		
+
 		logger.info("Finding intramodel paths for query between : " + srcName + " and " + desName);
 		List<PathRecord> pathRecords = getPathRecords(srcEntityId, desEntityId);
 		return new ArrayList<IPath>(getPathList(pathRecords));
@@ -406,10 +422,12 @@ public class PathFinder
 	 */
 	private Set<InterModelConnection> cacheInterModelConnections(Connection con)
 	{
+		System.out.println("PathFinder.cacheInterModelConnections()---starts" + con);
 		String sql = "select LEFT_ENTITY_ID,LEFT_ATTRIBUTE_ID,RIGHT_ENTITY_ID,RIGHT_ATTRIBUTE_ID from INTER_MODEL_ASSOCIATION";
 		String[][] result = executeQuery(sql, con);
 		Set<InterModelConnection> interModelConnections = new HashSet<InterModelConnection>(
 				result.length);
+		System.out.println("PathFinder.cacheInterModelConnections()---result size" + result.length);
 		for (int i = 0; i < result.length; i++)
 		{
 			Long leftEntityId = Long.parseLong(result[i][0]);
@@ -422,7 +440,8 @@ public class PathFinder
 
 			interModelConnections.add(new InterModelConnection(leftAttr, rightAttr));
 		}
-
+		System.out
+				.println("PathFinder.cacheInterModelConnections()" + interModelConnections.size());
 		return interModelConnections;
 	}
 
@@ -502,7 +521,7 @@ public class PathFinder
 	 */
 	private Map<String, List<PathRecord>> cachePathRecords(Connection connection)
 	{
-		logger.debug("Entering in method cachePathRecords");
+		logger.info("Entering in method cachePathRecords");
 		String sql = "select PATH_ID,FIRST_ENTITY_ID,INTERMEDIATE_PATH,LAST_ENTITY_ID from PATH";
 
 		String[][] resultSet = executeQuery(sql, connection);
@@ -528,7 +547,7 @@ public class PathFinder
 				pathRecordCache.put(key, list);
 			}
 		}
-		logger.debug("Leaving method cachePathRecords");
+		logger.info("Leaving method cachePathRecords");
 		return pathRecordCache;
 	}
 
@@ -636,6 +655,7 @@ public class PathFinder
 	 */
 	private Map<Long, IAssociation> cacheAssociationTypes(Connection con)
 	{
+		System.out.println("PathFinder.cacheAssociationTypes()--start" + con);
 		String[][] intraModelRecords = executeQuery(
 				"select ASSOCIATION_ID,DE_ASSOCIATION_ID from INTRA_MODEL_ASSOCIATION", con);
 		String[][] interModelRecords = executeQuery(
@@ -678,7 +698,7 @@ public class PathFinder
 			}
 			list.add(association);
 		}
-
+		System.out.println("PathFinder.cacheAssociationTypes()---end" + idVsIassociation.size());
 		return idVsIassociation;
 	}
 

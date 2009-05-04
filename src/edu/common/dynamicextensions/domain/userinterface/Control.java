@@ -67,7 +67,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	/**
 	 * Sequence number of the control.This governs in which order it will be shown on the UI.
 	 */
-	protected Integer sequenceNumber = null;
+	protected Integer sequenceNumber = 1;
+
+	/**
+	 * Sequence number of the control.This governs in which order it will be shown on the UI.
+	 */
+	protected Integer yPosition = 1;
 
 	/**
 	 * Tool tip message for the control.
@@ -101,6 +106,25 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected String heading;
+
+	/**
+	 * Decides whether the control should be disabled or not
+	 */
+	protected Boolean showLabel = true;
+
+	/**
+	 * @hibernate.property name="showLabel" type="boolean" column="SHOW_LABEL"
+	 * @return Returns the isHidden.
+	 */
+	public Boolean getShowLabel()
+	{
+		return showLabel;
+	}
+
+	public void setShowLabel(Boolean showLabel)
+	{
+		this.showLabel = showLabel;
+	}
 
 	/**
 	 * 
@@ -234,7 +258,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		}
 		else
 		{
-			htmlString = getControlHTML(innerHTML);
+			if (this.baseAbstractAttribute != null)
+			{
+				htmlString = getControlHTML(innerHTML);
+			}
+			else
+			{
+				htmlString = innerHTML;
+			}
 		}
 
 		this.isSubControl = false;
@@ -245,7 +276,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(this);
 		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append("<tr valign='top'><tr>");
 
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
@@ -253,7 +283,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		if ((this.heading != null)
 				|| (this.getFormNotes() != null && this.getFormNotes().size() != 0))
 		{
-			stringBuffer.append("<td width='100%' colspan='3' align='left'>");
+			stringBuffer.append("<tr><td width='100%' colspan='3' align='left'>");
 
 			if (this.heading != null && this.heading.length() != 0)
 			{
@@ -272,33 +302,49 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 				}
 			}
 
-			stringBuffer.append("</td>");
+			stringBuffer.append("</td></tr>");
 		}
-		else
+		if (this.yPosition != null && this.yPosition <= 1)
 		{
-			stringBuffer.append("<td></td>");
-		}
-		stringBuffer.append("</tr> <td valign='top' class='formRequiredNotice_withoutBorder' width='2%'>");
 
-		if (isControlRequired)
-		{
-			stringBuffer.append("<span class='font_red'>");
-			stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior());
-			stringBuffer.append("&nbsp; </span> </td> <td class='formRequiredLabel_withoutBorder' valign='top'>");
+			stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
+
+			if (isControlRequired)
+			{
+				stringBuffer.append("<span class='font_red'>");
+				stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior());
+				stringBuffer.append("&nbsp; </span> </td> ");
+			}
+			else
+			{
+				stringBuffer.append("&nbsp; </td> ");
+			}
+			if (this instanceof ComboBox)
+			{
+				stringBuffer.append("<br/>");
+			}
+
+			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
 		}
-		else
+
+		if (this.showLabel != null && this.showLabel)
 		{
-			stringBuffer.append("&nbsp; </td> <td class='formRequiredLabel_withoutBorder' valign='top'>");
+			stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
+					.getCaption()));
 		}
-		if (this instanceof ComboBox)
+
+		if (this.yPosition != null && this.yPosition <= 1)
 		{
-			stringBuffer.append("<br/>");
+			stringBuffer.append("</td>");
+
+			stringBuffer.append("<td class='formField_withoutBorder' valign='top'>");
 		}
-		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
-				.getCaption()));
-		stringBuffer.append("</td> <td class='formField_withoutBorder' valign='top'> &nbsp;");
+		else if (this.showLabel != null && this.showLabel)
+		{
+			stringBuffer.append("&nbsp;");
+		}
 		stringBuffer.append(htmlString);
-		stringBuffer.append("</td></tr><tr><td></td></tr>");
+
 		return stringBuffer.toString();
 	}
 
@@ -330,45 +376,24 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		this.value = value;
 	}
 
-	//	/**
-	//	 * @hibernate.many-to-one  cascade="save-update" column="ABSTRACT_ATTRIBUTE_ID" class="edu.common.dynamicextensions.domain.AbstractAttribute" constrained="true"
-	//	 */
-	//	public AbstractAttributeInterface getAbstractAttribute()
-	//	{
-	//		return this.abstractAttribute;
-	//	}
-	//
-	//	/**
-	//	 * @param abstractAttribute The abstractAttribute to set.
-	//	 */
-	//	public void setAbstractAttribute(AbstractAttributeInterface abstractAttributeInterface)
-	//	{
-	//		this.abstractAttribute = abstractAttributeInterface;
-	//	}
-
 	/**
 	 * @return String
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String getHTMLComponentName() throws DynamicExtensionsSystemException
 	{
-		//		AbstractAttributeInterface abstractAttributeInterface = this.getAbstractAttribute();
-		//		EntityInterface entity = abstractAttributeInterface.getEntity();
-		//		Long entityIdentifier = entity.getId();
-		//		EntityManagerInterface entityManager = EntityManager.getInstance();
-		//		ContainerInterface container = null;
-		//		if (entityIdentifier != null)
-		//		{
-		//			container = entityManager.getContainerByEntityIdentifier(entityIdentifier);
-		//		}
-		String htmlComponentName = null;
+		StringBuffer htmlComponentName = new StringBuffer();
 		ContainerInterface parentContainer = this.getParentContainer();
 		if (this.getSequenceNumber() != null)
 		{
-			htmlComponentName = "Control_" + parentContainer.getIncontextContainer().getId() + "_"
-					+ parentContainer.getId() + "_" + this.getSequenceNumber();
+			htmlComponentName.append("Control_" + parentContainer.getIncontextContainer().getId()
+					+ "_" + parentContainer.getId() + "_");
+			if (yPosition != null)
+			{
+				htmlComponentName.append(this.getSequenceNumber() + "_" + this.getYPosition());
+			}
 		}
-		return htmlComponentName;
+		return htmlComponentName.toString();
 	}
 
 	/**
@@ -396,7 +421,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		Control control = (Control) object;
 		Integer thisSequenceNumber = this.sequenceNumber;
 		Integer otherSequenceNumber = control.getSequenceNumber();
-		return thisSequenceNumber.compareTo(otherSequenceNumber);
+		if (thisSequenceNumber.equals(otherSequenceNumber) && yPosition != null
+				&& control.yPosition != null)
+		{
+			return control.yPosition.compareTo(this.yPosition);
+		}
+		return otherSequenceNumber.compareTo(thisSequenceNumber);
 	}
 
 	/**
@@ -520,6 +550,33 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	public void setFormNotes(List<FormControlNotesInterface> formNotes)
 	{
 		this.formNotes = formNotes;
+	}
+
+	/**
+	 * @param xPosition
+	 * @param yPosition
+	 */
+	public void setControlPosition(int xPosition, int yPosition)
+	{
+		this.sequenceNumber = xPosition;
+		this.yPosition = yPosition;
+	}
+
+	/**
+	 * @hibernate.property name="yPosition" type="integer" column="yPosition"
+	 * @return
+	 */
+	public Integer getYPosition()
+	{
+		return yPosition;
+	}
+
+	/**
+	 * @param position
+	 */
+	public void setYPosition(Integer position)
+	{
+		yPosition = position;
 	}
 
 }

@@ -25,6 +25,14 @@
         </id>
 
         <property
+            name="showLabel"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="SHOW_LABEL"
+        />
+
+        <property
             name="caption"
             type="string"
             update="true"
@@ -130,6 +138,14 @@
                   class="edu.common.dynamicextensions.domain.FormControlNotes"
               />
         </list>
+
+        <property
+            name="column"
+            type="integer"
+            update="true"
+            insert="true"
+            column="yPosition"
+        />
 
         <!--
             To add non XDoclet property mappings, create a file named
@@ -348,6 +364,17 @@
         />
 
         </joined-subclass>
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.Label"
+            table="DYEXTN_LABEL"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
 
         </joined-subclass>
         <joined-subclass

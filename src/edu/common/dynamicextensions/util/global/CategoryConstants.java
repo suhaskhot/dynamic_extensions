@@ -58,6 +58,10 @@ public class CategoryConstants
 	
 	public final static String PV_EDIT = "pvedit";
 	
+	public final static String SINGLE_LINE_DISPLAY_START = "SingleLineDisplay:start";
+	
+	public final static String SINGLE_LINE_DISPLAY_END = "SingleLineDisplay:end";
+	
 	public static final String TRUE = "true";
 
 }

@@ -104,4 +104,6 @@ public interface CategoryCSVConstants
 	String DYEXTN_ERROR_MESSAGES_FILE = "DynamicExtensionsErrorsMessages";
 
 	String TEXT_AREA = "textArea";
+
+	String SEPARATOR = "separator";
 }

@@ -117,8 +117,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
-					String recordIdentifier = storeParentContainer(valueMapStack, containerStack, request,
-							dataEntryForm.getRecordIdentifier());
+					String recordIdentifier = storeParentContainer(valueMapStack, containerStack,
+							request, dataEntryForm.getRecordIdentifier());
 					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
 							WebUIManagerConstants.SUCCESS, dataEntryForm.getContainerId());
 				}
@@ -177,17 +177,21 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				DEConstants.CALLBACK_URL);
 		if (calllbackURL != null && !calllbackURL.equals(""))
 		{
-			if(calllbackURL.contains("?"))
+			if (calllbackURL.contains("?"))
 			{
-				calllbackURL = calllbackURL + "&" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier + "&"
-				+ WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant + "&containerId=" + containerId;
+				calllbackURL = calllbackURL + "&" + WebUIManager.getRecordIdentifierParameterName()
+						+ "=" + recordIdentifier + "&"
+						+ WebUIManager.getOperationStatusParameterName() + "="
+						+ webUIManagerConstant + "&containerId=" + containerId;
 			}
 			else
 			{
-				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName() + "=" + recordIdentifier + "&"
-				+ WebUIManager.getOperationStatusParameterName() + "=" + webUIManagerConstant + "&containerId=" + containerId;
+				calllbackURL = calllbackURL + "?" + WebUIManager.getRecordIdentifierParameterName()
+						+ "=" + recordIdentifier + "&"
+						+ WebUIManager.getOperationStatusParameterName() + "="
+						+ webUIManagerConstant + "&containerId=" + containerId;
 			}
-			
+
 			CacheManager.clearCache(request);
 			response.sendRedirect(calllbackURL);
 			isCallbackURL = true;
@@ -344,21 +348,16 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
-			if (control != null)
+			if (control != null && control.getBaseAbstractAttribute() != null)
 			{
 				Integer controlSequenceNumber = control.getSequenceNumber();
 				if (controlSequenceNumber != null)
 				{
-					String controlSequence = control.getParentContainer().getIncontextContainer()
-							.getId()
-							+ "_"
-							+ control.getParentContainer().getId()
-							+ "_"
-							+ controlSequenceNumber;
+					String controlName = control.getHTMLComponentName();
 
 					if (rowId != null && !rowId.equals(""))
 					{
-						controlSequence = controlSequence + "_" + rowId;
+						controlName = controlName + "_" + rowId;
 					}
 
 					BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control
@@ -370,24 +369,24 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 							CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) abstractAttribute;
 							if (categoryAttribute.getAbstractAttribute() instanceof AssociationMetadataInterface)
 							{
-								collectAssociationValues(request, dataEntryForm, controlSequence,
+								collectAssociationValues(request, dataEntryForm, controlName,
 										control, attributeValueMap, processOneToMany);
 							}
 							else
 							{
-								collectAttributeValues(request, dataEntryForm, controlSequence,
+								collectAttributeValues(request, dataEntryForm, controlName,
 										control, attributeValueMap);
 							}
 						}
 						else
 						{
-							collectAttributeValues(request, dataEntryForm, controlSequence,
-									control, attributeValueMap);
+							collectAttributeValues(request, dataEntryForm, controlName, control,
+									attributeValueMap);
 						}
 					}
 					else if (abstractAttribute instanceof AssociationMetadataInterface)
 					{
-						collectAssociationValues(request, dataEntryForm, controlSequence, control,
+						collectAssociationValues(request, dataEntryForm, controlName, control,
 								attributeValueMap, processOneToMany);
 					}
 				}
@@ -401,7 +400,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 *
 	 * @param request
 	 * @param dataEntryForm
-	 * @param sequence
+	 * @param controlName
 	 * @param control
 	 * @param attributeValueMap
 	 * @throws DynamicExtensionsSystemException
@@ -409,7 +408,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws FileNotFoundException
 	 */
 	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm,
-			String sequence, ControlInterface control,
+			String controlName, ControlInterface control,
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
 			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
@@ -459,8 +458,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			List valueList = new ArrayList();
 			if (control instanceof ListBoxInterface)
 			{
-				String[] selectedValues = (String[]) request.getParameterValues("Control_"
-						+ sequence);
+				String[] selectedValues = (String[]) request.getParameterValues(controlName);
 				ListBoxInterface listBoxInterface = (ListBoxInterface) control;
 				association = listBoxInterface.getBaseAbstractAttributeAssociation();
 				if (association != null)
@@ -499,7 +497,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			}
 			else if (control instanceof ComboBoxInterface)
 			{
-				String selectedValue = request.getParameter("comboControl_" + sequence);
+				String selectedValue = request.getParameter(controlName);
 
 				if (selectedValue != null && selectedValue.trim().length() != 0)
 				{
@@ -563,16 +561,17 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 *
 	 * @param request
 	 * @param dataEntryForm
-	 * @param sequence
+	 * @param controlName
 	 * @param control
 	 * @param attributeValueMap
 	 * @throws FileNotFoundException
 	 * @throws IOException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm,
-			String sequence, ControlInterface control,
+			String controlName, ControlInterface control,
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
-			throws FileNotFoundException, IOException
+			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
 		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control
 				.getBaseAbstractAttribute();
@@ -580,14 +579,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		if (control instanceof ListBoxInterface)
 		{
-			String selectedListValue = request.getParameter("Control_" + sequence);
+			String selectedListValue = request.getParameter(controlName);
 			attributeValue = selectedListValue;
 			attributeValueMap.put(abstractAttribute, attributeValue);
 		}
 		else if (control instanceof FileUploadInterface)
 		{
 			FormFile formFile = null;
-			formFile = (FormFile) dataEntryForm.getValue("Control_" + sequence);
+			formFile = (FormFile) dataEntryForm.getValue(controlName);
 			boolean isValidExtension = true;
 			if (!formFile.getFileName().equals(""))
 			{
@@ -612,7 +611,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else if (control instanceof ComboBoxInterface)
 		{
-			String value = request.getParameter("comboControl_" + sequence);
+			String value = request.getParameter("combo" + controlName);
 			if (value != null && value.equalsIgnoreCase("undefined"))
 			{
 				value = "1";
@@ -623,7 +622,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		else
 		{
-			String value = request.getParameter("Control_" + sequence);
+			String value = request.getParameter(controlName);
 
 			value = DynamicExtensionsUtility.getEscapedStringValue(value);
 
@@ -668,7 +667,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			String recordIdentifier) throws NumberFormatException,
 			DynamicExtensionsApplicationException, DynamicExtensionsSystemException, SQLException
 	{
-		String identifier=recordIdentifier;
+		String identifier = recordIdentifier;
 		Map<BaseAbstractAttributeInterface, Object> rootValueMap = (Map<BaseAbstractAttributeInterface, Object>) valueMapStack
 				.firstElement();
 		ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
@@ -695,8 +694,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		else
 		{
-			identifier = applyDataEntryFormProcessor.insertDataEntryForm(
-					rootContainerInterface, rootValueMap);
+			identifier = applyDataEntryFormProcessor.insertDataEntryForm(rootContainerInterface,
+					rootValueMap);
 			saveMessages(request, getMessageString(messageKey));
 		}
 

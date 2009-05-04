@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationC
 import edu.common.dynamicextensions.domain.userinterface.DataGrid;
 import edu.common.dynamicextensions.domain.userinterface.DatePicker;
 import edu.common.dynamicextensions.domain.userinterface.FileUploadControl;
+import edu.common.dynamicextensions.domain.userinterface.Label;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domain.userinterface.RadioButton;
 import edu.common.dynamicextensions.domain.userinterface.TextArea;
@@ -898,4 +899,11 @@ public class DomainObjectFactory
 
 	}
 
+	/**
+	 * @return
+	 */
+	public Label createLabelControl()
+	{
+		return new Label();
+	}
 }

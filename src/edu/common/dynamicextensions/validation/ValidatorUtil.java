@@ -111,7 +111,7 @@ public class ValidatorUtil
 					return control;
 				}
 			}
-			else
+			else if(controlInterface.getBaseAbstractAttribute() != null)
 			{
 				if (controlInterface.getBaseAbstractAttribute().equals(attributeMetadataInterface))
 				{
@@ -187,7 +187,7 @@ public class ValidatorUtil
 			{
 				ControlInterface control = getControlForAbstractAttribute(
 						(AttributeMetadataInterface) abstractAttribute, containerInterface);
-				if (control != null)
+				if (control != null && control.getBaseAbstractAttribute() != null)
 				{
 					errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
 				}

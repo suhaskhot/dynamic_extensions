@@ -115,11 +115,12 @@ public class CategoryHelper implements CategoryHelperInterface
 			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY", e);
 		}
 	}
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.util.CategoryHelperInterface#saveCategoryMetadata(edu.common.dynamicextensions.domaininterface.CategoryInterface)
 	 */
-	public void saveCategoryMetadata(CategoryInterface category) throws DynamicExtensionsSystemException,
-	DynamicExtensionsApplicationException
+	public void saveCategoryMetadata(CategoryInterface category)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		try
 		{
@@ -137,6 +138,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY");
 		}
 	}
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.categoryManager.CategoryHelperInterface#createCategoryEntity(java.lang.String, edu.common.dynamicextensions.domaininterface.CategoryInterface[])
 	 */
@@ -219,8 +221,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		control = createOrUpdateControl(controlType, controlCaption, heading, controlNotes,
 				container, categoryAttribute, permValueOptions, lineNumber,
 				permissibleValueNameList);
-		control.setCaption(controlCaption);
-		updateCommonControlProperties(control, controlCaption);
 		return control;
 	}
 
@@ -430,11 +430,13 @@ public class CategoryHelper implements CategoryHelperInterface
 			case CHECK_BOX_CONTROL :
 				control = createOrUpdateCheckBoxControl(container, categoryAttribute);
 				break;
+			case LABEL_CONTROL :
+				CheckBoxInterface labelControl = (CheckBoxInterface) control;
+
 			default :
 				throw new DynamicExtensionsSystemException("ERROR: INCORRECT CONTROL TYPE");
 		}
-
-		control.setCaption(controlCaption);
+		updateContainerAndControl(container, control, categoryAttribute, controlCaption);
 
 		if (heading.length() != 0)
 		{
@@ -459,6 +461,10 @@ public class CategoryHelper implements CategoryHelperInterface
 		BaseAbstractAttributeInterface categoryAttribute = null;
 		for (ControlInterface control : container.getControlCollection())
 		{
+			if (control.getBaseAbstractAttribute() == null)
+			{
+				continue;
+			}
 			if (!(control.getBaseAbstractAttribute() instanceof CategoryAssociation)
 					&& (((CategoryAttributeInterface) control.getBaseAbstractAttribute())
 							.getAbstractAttribute().getName().equals(attributeName)))
@@ -559,7 +565,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		CategoryAssociationControlInterface categoryAssociationControl = createCategoryAssociationControl(
 				sourceContainer, targetContainer, categoryAssociation, targetContainer.getCaption());
-		updateCommonControlProperties(categoryAssociationControl, targetContainer.getCaption());
+		categoryAssociationControl.setCaption(targetContainer.getCaption());
 		return categoryAssociationControl;
 	}
 
@@ -782,7 +788,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		{
 			textField = DomainObjectFactory.getInstance().createTextField();
 			textField.setColumns(50);
-			updateContainerAndControl(container, textField, baseAbstractAttribute);
 		}
 
 		return textField;
@@ -856,8 +861,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			{
 				selectControl = DomainObjectFactory.getInstance().createComboBox();
 			}
-
-			updateContainerAndControl(container, selectControl, baseAbstractAttribute);
 		}
 
 		if (categoryAttribute.getId() != null
@@ -1092,17 +1095,15 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @param container
 	 * @param control
 	 * @param baseAbstractAttribute
+	 * @param controlCaption 
 	 */
 	private void updateContainerAndControl(ContainerInterface container, ControlInterface control,
-			BaseAbstractAttributeInterface baseAbstractAttribute)
+			BaseAbstractAttributeInterface baseAbstractAttribute, String controlCaption)
 	{
-
-		int sequenceNumber = getNextSequenceNumber(container);
 		container.addControl(control);
-		control.setSequenceNumber(sequenceNumber);
-
 		control.setParentContainer((Container) container);
 		control.setBaseAbstractAttribute(baseAbstractAttribute);
+		control.setCaption(controlCaption);
 	}
 
 	/**
@@ -1127,7 +1128,7 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (datePicker == null)
 		{
 			datePicker = DomainObjectFactory.getInstance().createDatePicker();
-			updateContainerAndControl(container, datePicker, baseAbstractAttribute);
+
 		}
 
 		datePicker.setDateValueType(ProcessorConstants.DATE_ONLY_FORMAT);
@@ -1157,7 +1158,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (fileUpload == null)
 		{
 			fileUpload = DomainObjectFactory.getInstance().createFileUploadControl();
-			updateContainerAndControl(container, fileUpload, baseAbstractAttribute);
 		}
 
 		return fileUpload;
@@ -1187,7 +1187,6 @@ public class CategoryHelper implements CategoryHelperInterface
 			textArea = DomainObjectFactory.getInstance().createTextArea();
 			textArea.setColumns(50);
 			textArea.setRows(5);
-			updateContainerAndControl(container, textArea, baseAbstractAttribute);
 		}
 
 		return textArea;
@@ -1220,7 +1219,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (radioButton == null)
 		{
 			radioButton = DomainObjectFactory.getInstance().createRadioButton();
-			updateContainerAndControl(container, radioButton, baseAbstractAttribute);
 		}
 
 		if (baseAbstractAttribute.getId() != null
@@ -1269,7 +1267,6 @@ public class CategoryHelper implements CategoryHelperInterface
 		if (checkBox == null)
 		{
 			checkBox = DomainObjectFactory.getInstance().createCheckBox();
-			updateContainerAndControl(container, checkBox, baseAbstractAttribute);
 		}
 
 		return checkBox;
@@ -1595,6 +1592,9 @@ public class CategoryHelper implements CategoryHelperInterface
 					checkboxControl.setIsReadOnly(false);
 					checkboxControl.setIsHidden(false);
 					break;
+				case LABEL_CONTROL :
+					CheckBoxInterface labelControl = (CheckBoxInterface) control;
+					break;
 				default :
 					throw new DynamicExtensionsSystemException("ERROR: INCORRECT CONTROL TYPE");
 			}
@@ -1605,14 +1605,18 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 	}
 
-	/**
-	 * @param control
-	 * @param caption
-	 */
-	private void updateCommonControlProperties(ControlInterface control, String caption)
+	public ControlInterface addOrUpdateLabelControl(EntityInterface entity,
+			ContainerInterface container, String controlCaption, long lineNumber, int xPosition,
+			int yPosition)
 	{
-		control.setCaption(caption);
-		//control.setSequenceNumber(getNextSequenceNumber(parentContainer));
+		ControlInterface controlInterface = container.getControlByPosition(xPosition, yPosition);
+		if (controlInterface == null)
+		{
+			controlInterface = DomainObjectFactory.getInstance().createLabelControl();
+		}
+		controlInterface.setControlPosition(xPosition, yPosition);
+		updateContainerAndControl(container, controlInterface, null, controlCaption);
+		return controlInterface;
 	}
 
 }

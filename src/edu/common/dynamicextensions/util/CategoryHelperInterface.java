@@ -40,7 +40,7 @@ public interface CategoryHelperInterface
 		TEXT_FIELD_CONTROL("textField"), LIST_BOX_CONTROL("listBox"), DATE_PICKER_CONTROL(
 				"datePicker"), FILE_UPLOAD_CONTROL("fileUpload"), RADIO_BUTTON_CONTROL(
 				"radioButton"), TEXT_AREA_CONTROL("textArea"), CHECK_BOX_CONTROL("checkBox"), COMBO_BOX_CONTROL(
-				"comboBox");
+				"comboBox"),LABEL_CONTROL("label");
 
 		String value;
 
@@ -273,4 +273,9 @@ public interface CategoryHelperInterface
 	 */
 	public CategoryAttributeInterface getCategoryAttribute(EntityInterface entity,
 			String attributeName, CategoryEntityInterface categoryEntity);
+	
+	public ControlInterface addOrUpdateLabelControl(EntityInterface entity,
+			ContainerInterface container, String controlCaption,
+			long lineNumber, int xPosition, int yPosition);
+
 }

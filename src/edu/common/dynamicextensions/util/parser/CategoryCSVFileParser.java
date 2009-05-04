@@ -198,7 +198,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		String[] nextLine = readLine();
 		int counter;
 		boolean permissibleValuesPresent = false;
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		for (counter = 0; counter < nextLine.length; counter++)
 		{
 			if (nextLine[counter].toLowerCase(locale).startsWith(
@@ -340,8 +340,10 @@ public class CategoryCSVFileParser extends CategoryFileParser
 						{
 							permissibleVale = pvString;
 						}
-						pvVsSemanticPropertyCollection.put(DynamicExtensionsUtility
-								.getEscapedStringValue(permissibleVale), semanticPropertyCollection);
+						pvVsSemanticPropertyCollection
+								.put(DynamicExtensionsUtility
+										.getEscapedStringValue(permissibleVale),
+										semanticPropertyCollection);
 					}
 				}
 			}
@@ -368,7 +370,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public Map<String, String> getPermissibleValueOptions()
 	{
 		Map<String, String> permissibleValueOptions = new HashMap<String, String>();
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		for (String string : readLine())
 		{
 			if (string.toLowerCase(locale).startsWith(
@@ -418,7 +420,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean hasDisplayLable()
 	{
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		if (readLine()[0].trim().toLowerCase().startsWith(
 				CategoryCSVConstants.DISPLAY_LABLE.toLowerCase(locale)))
 		{
@@ -493,10 +495,11 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public Map<String, String> getControlOptions()
 	{
 		Map<String, String> controlOptions = new HashMap<String, String>();
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		for (String string : readLine())
 		{
-			if (string.toLowerCase(locale).startsWith(CategoryCSVConstants.OPTIONS.toLowerCase(locale) + "~"))
+			if (string.toLowerCase(locale).startsWith(
+					CategoryCSVConstants.OPTIONS.toLowerCase(locale) + "~"))
 			{
 				String[] controlOptionsValue = string.split("~")[1].split(":");
 
@@ -519,7 +522,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			throws DynamicExtensionsSystemException
 	{
 		Map<String, Object> rules = new HashMap<String, Object>();
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		for (String string : readLine())
 		{
 			if (string.trim().toLowerCase(locale).startsWith(
@@ -562,14 +565,14 @@ public class CategoryCSVFileParser extends CategoryFileParser
 								}
 								else
 								{
-									rules.put(CategoryCSVConstants.RANGE.toLowerCase(locale), valuesMap);
+									rules.put(CategoryCSVConstants.RANGE.toLowerCase(locale),
+											valuesMap);
 								}
 							}
 							else
 							{
 								// If rule name is not correctly spelled as 'range', then throw an exception.
-								if (!CategoryCSVConstants.RANGE.equalsIgnoreCase(
-										rangeValue.trim()))
+								if (!CategoryCSVConstants.RANGE.equalsIgnoreCase(rangeValue.trim()))
 								{
 									throw new DynamicExtensionsSystemException(
 											ApplicationProperties
@@ -625,7 +628,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean hasRelatedAttributes()
 	{
 		boolean flag = false;
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		if (readLine()[0].trim().toLowerCase(locale).startsWith(
 				CategoryCSVConstants.RELATED_ATTIBUTE.toLowerCase(locale)))
 		{
@@ -640,7 +643,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public boolean hasInsatanceInformation()
 	{
 		boolean flag = false;
-		Locale locale=CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		if (readLine() != null
 				&& readLine()[0].trim().toLowerCase(locale).startsWith(
 						CategoryCSVConstants.INSTANCE.toLowerCase(locale)))
@@ -718,15 +721,63 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		String heading = "";
 
 		String[] headingDetails = readLine();
-		if (headingDetails != null && headingDetails.length != 0 && headingDetails[0].startsWith(CategoryConstants.HEADING))
+		if (headingDetails != null && headingDetails.length != 0
+				&& headingDetails[0].startsWith(CategoryConstants.HEADING))
 		{
-				CategoryValidator.checkIfHeadingIsAppropriate(headingDetails[0], lineNumber);
+			CategoryValidator.checkIfHeadingIsAppropriate(headingDetails[0], lineNumber);
 
-				heading = headingDetails[0].split("~")[1];
-				readNext();
+			heading = headingDetails[0].split("~")[1];
+			readNext();
 		}
 
 		return heading;
+	}
+
+	@Override
+	public boolean isSingleLineDisplayEnd() throws IOException
+	{
+		boolean singleLineDisplayEnds = false;
+		if (readLine().length > 0
+				&& readLine()[0].equalsIgnoreCase(CategoryConstants.SINGLE_LINE_DISPLAY_END))
+		{
+			inSignleLineDisplay = false;
+			singleLineDisplayEnds = true;
+		}
+		return singleLineDisplayEnds;
+	}
+
+	@Override
+	public boolean isSingleLineDisplayStarted() throws IOException
+	{
+		if (readLine().length > 0
+				&& readLine()[0].equalsIgnoreCase(CategoryConstants.SINGLE_LINE_DISPLAY_START))
+		{
+			inSignleLineDisplay = true;
+			readNext();
+		}
+		return inSignleLineDisplay;
+	}
+
+	@Override
+	public boolean hasSeparator()
+	{
+		boolean flag = false;
+		if (CategoryCSVConstants.SEPARATOR.equalsIgnoreCase(readLine()[0].split(":")[0].trim()))
+		{
+			flag = true;
+		}
+		return flag;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#getSeparator()
+	 * Separator:'<separator_string>' 
+	 */
+	public String getSeparator()
+	{
+		String separator = readLine()[0].substring(readLine()[0].indexOf(":") + 2, readLine()[0]
+				.length() - 1);
+		return separator;
 	}
 
 }

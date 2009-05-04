@@ -22,6 +22,8 @@ public abstract class CategoryFileParser extends FileReader
 
 	protected CategoryValidator categoryValidator;
 
+	protected boolean inSignleLineDisplay;
+
 	/**
 	 * @param filePath
 	 * @throws DynamicExtensionsSystemException
@@ -201,7 +203,32 @@ public abstract class CategoryFileParser extends FileReader
 			IOException;
 
 	/**
-	 * 
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws IOException
 	 */
 	public abstract String getHeading() throws DynamicExtensionsSystemException, IOException;
+
+	/**
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract boolean isSingleLineDisplayStarted() throws IOException;
+
+	/**
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract boolean isSingleLineDisplayEnd() throws IOException;
+
+	/**
+	 * @return
+	 */
+	public abstract boolean hasSeparator();
+
+	/**
+	 * @return
+	 */
+	public abstract String getSeparator();
+
 }

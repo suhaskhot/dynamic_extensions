@@ -223,4 +223,12 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 */
 	String generateLink(ContainerInterface containerInterface)
 			throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param xPosition
+	 * @param yPosition
+	 * @return
+	 */
+	public abstract ControlInterface getControlByPosition(Integer xPosition, Integer yPosition);
+
 }

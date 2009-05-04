@@ -309,7 +309,8 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public void removeControl(ControlInterface controlInterface)
 	{
-		if ((controlInterface != null) && (controlCollection != null) && (controlCollection.contains(controlInterface)))
+		if ((controlInterface != null) && (controlCollection != null)
+				&& (controlCollection.contains(controlInterface)))
 		{
 			controlCollection.remove(controlInterface);
 		}
@@ -334,7 +335,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
 		Collections.sort(controlsList);
-		Collections.reverse(controlsList);
+		//Collections.reverse(controlsList);
 
 		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
 
@@ -407,27 +408,43 @@ public class Container extends DynamicExtensionBaseDomainObject
 			addCaption(stringBuffer);
 		}
 
-		/*	List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
-		 .getControlCollection());
-		 */
 		List<ControlInterface> controlsList = getAllControls();
-		//Collections.sort(controlsList);
+		int lastRow = 0;
+		int i = 0;
+
 		for (ControlInterface control : controlsList)
 		{
+
 			Object value = containerValueMap.get(control.getBaseAbstractAttribute());
 			control.setValue(value);
+			if (lastRow == control.getSequenceNumber())
+			{
+				stringBuffer.append("&nbsp;");
+			}
+			else
+			{
+				if (i != 0)
+				{
+					stringBuffer.append("</td></tr><tr><td height='3'></td></tr>");
+				}
+				stringBuffer.append("<tr valign='center'>");
+			}
 			stringBuffer.append(control.generateHTML());
+			i++;
+			lastRow = control.getSequenceNumber();
+
 		}
+		stringBuffer.append("</td></tr>");
 		this.showAssociationControlsAsLink = false;
 		return stringBuffer.toString();
 	}
 
 	private void addCaption(StringBuffer stringBuffer)
 	{
-		stringBuffer.append("<tr><td class='td_color_6e81a6' colspan='3' align='left'>");
+		stringBuffer.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
 		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
 				.getCaption()));
-		stringBuffer.append("</td></tr>");
+		stringBuffer.append("<tr><td height='5'></td></tr>");
 	}
 
 	/**
@@ -564,6 +581,29 @@ public class Container extends DynamicExtensionBaseDomainObject
 	public void setAddCaption(Boolean addCaption)
 	{
 		this.addCaption = addCaption;
+	}
+
+	/**
+	 * @param xPosition
+	 * @param yPosition
+	 * @return
+	 */
+	public ControlInterface getControlByPosition(Integer xPosition, Integer yPosition)
+	{
+		ControlInterface control = null;
+		for (ControlInterface controlInterface : controlCollection)
+		{
+			if (controlInterface.getSequenceNumber() != null
+					&& controlInterface.getSequenceNumber().equals(xPosition))
+			{
+				if (controlInterface.getSequenceNumber() != null
+						&& controlInterface.getYPosition().equals(yPosition))
+				{
+					control = controlInterface;
+				}
+			}
+		}
+		return control;
 	}
 
 }

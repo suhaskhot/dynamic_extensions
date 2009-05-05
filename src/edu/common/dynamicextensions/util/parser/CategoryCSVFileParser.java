@@ -495,22 +495,7 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	public Map<String, String> getControlOptions()
 	{
 		Map<String, String> controlOptions = new HashMap<String, String>();
-		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-		for (String string : readLine())
-		{
-			if (string.toLowerCase(locale).startsWith(
-					CategoryCSVConstants.OPTIONS.toLowerCase(locale) + "~"))
-			{
-				String[] controlOptionsValue = string.split("~")[1].split(":");
-
-				for (String optionValue : controlOptionsValue)
-				{
-					controlOptions.put(optionValue.split("=")[0], optionValue.split("=")[1]);
-				}
-
-			}
-		}
-
+		populateOptionsMap(controlOptions, CategoryCSVConstants.OPTIONS);
 		return controlOptions;
 	}
 
@@ -778,6 +763,45 @@ public class CategoryCSVFileParser extends CategoryFileParser
 		String separator = readLine()[0].substring(readLine()[0].indexOf(":") + 2, readLine()[0]
 				.length() - 1);
 		return separator;
+	}
+
+	@Override
+	public boolean hasCommonControlOptions()
+	{
+		boolean flag = false;
+		if (CategoryCSVConstants.COMMON_OPTIONS.equalsIgnoreCase(readLine()[0].split("~")[0].trim()))
+		{
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	public Map<String, String> getCommonControlOptions()
+	{
+		Map<String, String> controlOptions = new HashMap<String, String>();
+		populateOptionsMap(controlOptions, CategoryCSVConstants.COMMON_OPTIONS);
+		return controlOptions;
+	}
+	
+	
+	private void populateOptionsMap(Map<String, String> controlOptions, String optionConstant)
+	{
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		for (String string : readLine())
+		{
+			if (string.toLowerCase(locale).startsWith(
+					optionConstant.toLowerCase(locale) + "~"))
+			{
+				String[] controlOptionsValue = string.split("~")[1].split(":");
+
+				for (String optionValue : controlOptionsValue)
+				{
+					controlOptions.put(optionValue.split("=")[0], optionValue.split("=")[1]);
+				}
+			}
+		}
+
 	}
 
 }

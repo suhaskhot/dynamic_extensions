@@ -12,10 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import edu.common.dynamicextensions.domain.CategoryAssociation;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
-import edu.common.dynamicextensions.domain.userinterface.CategoryAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -143,9 +141,11 @@ public class CategoryGenerator
 
 				String previousEntityName = "";
 				boolean firstTimeinDisplayLabel = false;
-				HashMap<String, List> sequenceMap = new HashMap<String, List>();
+				//HashMap<String, List> sequenceMap = new HashMap<String, List>();
 				int controlXPosition = 1;
 				int controlYPosition = 0;
+				
+				Map<String, String> commonControlOptions = null;
 
 				while (categoryFileParser.readNext())
 				{
@@ -176,7 +176,6 @@ public class CategoryGenerator
 					{
 						lastControl = processSubcategory(firstTimeinDisplayLabel, entityInterface,
 								categoryEntityName);
-						//controlXPosition ++;
 					}
 					else
 					{
@@ -184,12 +183,12 @@ public class CategoryGenerator
 						if (categoryFileParser.isSingleLineDisplayStarted())
 						{
 							controlYPosition++;
-							//continue;
 						}
 						if (categoryFileParser.isSingleLineDisplayEnd())
 						{
 							controlYPosition = 0;
 							controlXPosition++;
+							commonControlOptions = null;
 							continue;
 						}
 						if (categoryFileParser.hasSeparator())
@@ -200,7 +199,11 @@ public class CategoryGenerator
 
 							continue;
 						}
-
+						if(categoryFileParser.hasCommonControlOptions())
+						{
+							commonControlOptions = categoryFileParser.getCommonControlOptions();
+							categoryFileParser.readNext();
+						}
 						String heading = categoryFileParser.getHeading();
 
 						List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
@@ -235,7 +238,7 @@ public class CategoryGenerator
 								containerCollection, getCategoryEntityName(categoryEntityName,
 										categoryFileParser.getEntityName()));
 
-						//Set this flag when attribute is just after display label,and set previous entity name ,so that we can verify whether all attributes are of same entity or other entities also.
+						/*//Set this flag when attribute is just after display label,and set previous entity name ,so that we can verify whether all attributes are of same entity or other entities also.
 						if (firstTimeinDisplayLabel)
 						{
 							firstTimeinDisplayLabel = false;
@@ -254,7 +257,7 @@ public class CategoryGenerator
 							}
 							listofEntities.add(container.getAbstractEntity().getName());
 							sequenceMap.put(previousEntityName, listofEntities);
-						}
+						}*/
 						AttributeInterface attribute = entityInterface
 								.getAttributeByName(attributeName);
 
@@ -337,7 +340,12 @@ public class CategoryGenerator
 								.get(categoryFileParser.getControlType()));
 
 						Map<String, String> controlOptions = categoryFileParser.getControlOptions();
-
+						
+						if(commonControlOptions != null)
+						{
+							categoryHelper.setOptions(lastControl, commonControlOptions, categoryFileParser
+								.getLineNumber());
+						}
 						categoryHelper.setOptions(lastControl, controlOptions, categoryFileParser
 								.getLineNumber());
 
@@ -510,7 +518,7 @@ public class CategoryGenerator
 	 * This function rearranges the sequences ,so that display is as per CSV file
 	 * @param containerObject
 	 * @param sequenceMap
-	 */
+	 *//*
 	private void rearrangeControlSequence(ContainerInterface containerObject,
 			HashMap<String, List> sequenceMap)
 	{
@@ -617,9 +625,9 @@ public class CategoryGenerator
 
 	}
 
-	/**
+	*//**
 	 * @param sequenceMap
-	 */
+	 *//*
 	private void rearrangeSequenceMap(HashMap<String, List> sequenceMap)
 	{
 
@@ -641,12 +649,12 @@ public class CategoryGenerator
 
 	}
 
-	/**
+	*//**
 	 * @param sequenceMap
 	 * @param listofEntities
 	 * @param toberemoveKey
 	 * @param elist
-	 */
+	 *//*
 	private void findEntities(HashMap<String, List> sequenceMap, List<String> listofEntities,
 			List<String> toberemoveKey, List<String> elist)
 	{
@@ -662,7 +670,7 @@ public class CategoryGenerator
 			}
 		}
 
-	}
+	}*/
 
 	/**
 	 * @param childCategoryEntity

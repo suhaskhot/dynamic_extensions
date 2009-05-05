@@ -106,4 +106,6 @@ public interface CategoryCSVConstants
 	String TEXT_AREA = "textArea";
 
 	String SEPARATOR = "separator";
+	
+	String COMMON_OPTIONS = "commonOptions";
 }

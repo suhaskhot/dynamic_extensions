@@ -231,4 +231,14 @@ public abstract class CategoryFileParser extends FileReader
 	 */
 	public abstract String getSeparator();
 
+	/**
+	 * @return
+	 */
+	public abstract boolean hasCommonControlOptions();
+
+	/**
+	 * @return
+	 */
+	public abstract Map<String, String> getCommonControlOptions();
+	
 }

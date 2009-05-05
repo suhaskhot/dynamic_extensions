@@ -140,7 +140,7 @@
         </list>
 
         <property
-            name="column"
+            name="YPosition"
             type="integer"
             update="true"
             insert="true"

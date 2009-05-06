@@ -593,6 +593,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	{
 		JDBCDAO jdbcDao = null;
 
+		System.out.println(queryList);
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();

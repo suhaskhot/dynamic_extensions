@@ -7,7 +7,7 @@ public interface WebUIManagerConstants
 	/**
 	 *
 	 */
-	String CREATE_CONTAINER_URL = "/dynamicExtensions/DisplayContainer.do";
+	String CREATE_CONTAINER_URL = "/DisplayContainer.do";
 
 	/**
 	 *
@@ -20,7 +20,7 @@ public interface WebUIManagerConstants
 	/**
 	 *
 	 */
-	String DYNAMIC_EXTENSIONS_INTERFACE_ACTION_URL = "/dynamicExtensions/DynamicExtensionsInterfaceAction";
+	String DYNAMIC_EXTENSIONS_INTERFACE_ACTION_URL = "/DynamicExtensionsInterfaceAction";
 	/**
 	 *
 	 */
@@ -28,7 +28,7 @@ public interface WebUIManagerConstants
 	/**
 	 *
 	 */
-	String LOAD_DATA_ENTRY_FORM_ACTION_URL = "/dynamicExtensions/LoadDataEntryFormAction.do?dataEntryOperation=insertParentData";
+	String LOAD_DATA_ENTRY_FORM_ACTION_URL = "/LoadDataEntryFormAction.do?dataEntryOperation=insertParentData";
 	/**
 	 *
 	 */

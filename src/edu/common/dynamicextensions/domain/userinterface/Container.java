@@ -526,7 +526,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		}
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer
-				.append("<img src='images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'><a href='#' style='cursor:hand' class='set1' onclick='showChildContainerInsertDataPage(");
+				.append("<img src='de/images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'><a href='#' style='cursor:hand' class='set1' onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(containerInterface.getId());
 		stringBuffer.append(",this)'>");
 		stringBuffer.append(detailsString);

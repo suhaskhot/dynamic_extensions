@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
@@ -65,10 +67,24 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 			generateOutput(res, entityInterfaceJSONArray);
 		}
 
-		JSONObject requestObject = new JSONObject(json.toString());
+		JSONObject requestObject = null;
+		try
+		{
+			requestObject = new JSONObject(json.toString());
+		} catch (JSONException e1)
+		{
+			Logger.out.error(e1.getMessage());
+		}
 
 		//check which operation needs to be performed
-		String operation = requestObject.getString("operation");
+		String operation = null;
+		try
+		{
+			operation = requestObject.getString("operation");
+		} catch (JSONException e1)
+		{
+			Logger.out.error(e1.getMessage());
+		}
 
 		//depending upon the operation execute the appropriate steps
 		if (operation.equalsIgnoreCase(GET_ALL_CONTAINERS))
@@ -101,10 +117,22 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 				{
 					JSONObject containerInterfaceJSONObject = new JSONObject();
 					containerInterface = (ContainerInterface) entityIterator.next();
-					containerInterfaceJSONObject.put(CONTAINER_NAME, containerInterface
-							.getCaption());
-					containerInterfaceJSONObject.put(CONTAINER_IDENTIFIER, containerInterface
-							.getId());
+					try
+					{
+						containerInterfaceJSONObject.put(CONTAINER_NAME, containerInterface
+								.getCaption());
+					} catch (JSONException e)
+					{
+						Logger.out.error(e.getMessage());
+					}
+					try
+					{
+						containerInterfaceJSONObject.put(CONTAINER_IDENTIFIER, containerInterface
+								.getId());
+					} catch (JSONException e)
+					{
+						Logger.out.error(e.getMessage());
+					}
 
 					entityInterfaceJSONArray.put(containerInterfaceJSONObject);
 				}

@@ -200,7 +200,52 @@
 	        </jar>
 	    </target>
 	<!-- Create dynamic extensions jar Begins-->
+		
+	<!-- Create dynamic extensions web jar Begins-->
+    <target name="create_dyn_ext_web_jar" depends="compile" >
+	   <delete file="${interface.dir}/DynamicExtensions.jar"/>
+	   <jar taskname="buildJar" jarfile="${interface.dir}/DynamicExtensions.jar">
+    		<fileset dir="${target.dir}" >
+	    			<include name="**/domain/**/*.class"/>
+	    			<include name="**/DEIntegration/**.class"/>
+    				<include name="**/domaininterface/**/*.class"/>
+    				<include name="**/entitymanager/**.class"/>
+    				<include name="**/exception/*.class"/>
+	    			<include name="**/hbm/**/*.*"/>
+	    			<include name="**/dynamicextensions/util/**/*.*"/>
+	    			<include name="**/dynamicextensions/validation/**/*.*"/>
+	    			<include name="**/common/util/**/*.*"/>
+	    			<include name="**/dynamicextensions/bizlogic/**/*.class"/>
+    				<include name="DynamicExtensionsErrorsMessages.properties"/>
+    				<include name="DynamicExtensionsFileFormats.properties"/>
+					<include name="ApplicationResources.properties"/>
+    				<include name="*.xml"/>
+	    			<include name="**/xmi/**/*.*"/>
+    				<include name="*.xsl"/>
+    				<include name="**/ui/interfaces/*.class"/>
+    				<include name="**/ui/util/*.class"/>
+	    			<include name="**/ui/webui/util/*.class"/>
+    				<include name="**/ui/webui/actionform/*.class"/>
+    				<include name="**/processor/**/*.class"/>
+					<include name="**/wustl/cab2b/**/*.class"/>
+					<include name="**/wustl/common/**/*.class"/>
+					<include name="**/wustl/metadata/**/*.class"/>
+	    			<exclude name="**/*Test*.class"/>
 
+
+   		    </fileset>
+        	 <manifest>
+        	      <attribute name="Built-By" value="${DynamicExtensions.jar.creator}"/>
+
+        	      <section name="${DynamicExtensions.jar.details}">
+        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+        	      	<attribute name="Date" value="${DynamicExtensions.jar.date}"/>
+        	      </section>
+        	 </manifest>
+        </jar>
+    </target>
+	<!-- Create dynamic extensions web jar ends-->
+	
 	<target name="create_dyn_ext_interface_sourcezip" depends="compile" >
 		<delete  file="${interface.src.dir}/DynamicExtensions-src.zip"/>
 		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >
@@ -218,22 +263,40 @@
 	    		 </fileset>
 
 			<fileset dir="${test.dir}" >
-
-				    		 </fileset>
+			</fileset>
 	   </zip>
 	</target>
 
+	<!-- Creates the Dynamic Extensions zip of the application -->
+	<target name="create_dynamic_extensions_zip" depends="create_dyn_ext_web_jar" >
+		<delete  file="dynamicextensions.zip"/>
+		<zip destfile="dynamicextensions.zip" >
+			<fileset dir="${base.dir}">
+				<include name="de/css/**/*"/>
+				<include name="de/images/**/*"/>
+				<include name="de/jss/**/*"/>
+				<include name="de/pages/**/*"/>
+				<include name="de/dhtml_comp/**/*"/>
+				<include name="runtime/**/*"/>
+				<include name="WEB-INF/classes/**/*"/>
+				<include name="WEB-INF/dynamicextensions-struts-config.xml"/>
+				<include name="WEB-INF/dynamicExtensions.tld"/>
+				<include name="DynamicExtensionsInterface/DynamicExtensions.jar" />
+			</fileset>
+	   </zip>
+	</target>
+	<!-- Creates the Dynamic Extensions zip of the application -->
 
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
 	<target name="build_app_war" depends="compile">
 		<delete file="dynamicExtensions.war"/>
 		<war destfile="dynamicExtensions.war" webxml="WEB-INF/web.xml">
 			<fileset dir="${base.dir}">
-				<include name="css/**/*"/>
-				<include name="images/**/*"/>
-				<include name="jss/**/*"/>
-				<include name="pages/**/*"/>
-				<include name="dhtml_comp/**/*"/>
+				<include name="de/css/**/*"/>
+				<include name="de/images/**/*"/>
+				<include name="de/jss/**/*"/>
+				<include name="de/pages/**/*"/>
+				<include name="de/dhtml_comp/**/*"/>
 				<include name="runtime/**/*"/>
 				<include name="WEB-INF/**/*"/>
 				<include name="error.jsp"/>

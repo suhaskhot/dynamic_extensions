@@ -409,19 +409,13 @@ public class DynamicExtensionsUtility
 		Logger.out.info("Name: " + DynamicExtensionDAO.getInstance().getAppName());
 		Logger.out.info("CVS TAG: " + Variables.applicationCvsTag);
 		Logger.out.info("Path: " + serviceLocator.getAppHome());
-		//Logger.out.info("Database Name: " + Variables.databaseName);
 		Logger.out.info("========================================================");
 
 		try
 		{
 			Logger.out.info("Preloading the DE metadata....This may take a few minutes");
-			EntityManager.getInstance().getAllContainers();
 		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch (DynamicExtensionsApplicationException e)
+		catch (Exception e)
 		{
 			throw new RuntimeException(e);
 		}

@@ -127,7 +127,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ ", 'MM-dd-yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
 					+ "', event, 1900, 2020);\" href=\"javascript://\">"
-					+ "&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY]</span></A>"
+					+ "&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY]</span></A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -159,7 +159,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ ", 'MM-dd-yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
 					+ "', event, 1900, 2020);\" href=\"javascript://\">"
-					+ "&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY HH:MM]</span></A>"
+					+ "&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY HH:MM]</span></A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">"
@@ -192,7 +192,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ 0
 					+ ", 'MM-yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
-					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-YYYY]</span></A>"
+					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-YYYY]</span></A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">"
@@ -223,7 +223,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ 0
 					+ ", 'yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
-					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[YYYY]</span></A>"
+					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[YYYY]</span></A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";

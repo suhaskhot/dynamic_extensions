@@ -88,7 +88,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
 							+ optionName + "' checked " + disabled + "  >" + "<label for=\""
 							+ htmlComponentName + "\">" + optionName
-							+ "</label> <img src='images/spacer.gif' width='2' height='2'>";
+							+ "</label> <img src='de/images/spacer.gif' width='2' height='2'>";
 				}
 				else
 				{
@@ -96,7 +96,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
 							+ optionName + "' " + disabled + " >" + "<label for=\""
 							+ htmlComponentName + "\">" + optionName
-							+ "</label> <img src='images/spacer.gif' width='2' height='2'>";
+							+ "</label> <img src='de/images/spacer.gif' width='2' height='2'>";
 				}
 			}
 		}

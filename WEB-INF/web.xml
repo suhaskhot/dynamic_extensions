@@ -38,7 +38,7 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
        
 		<init-param>
 			<param-name>config</param-name>
-			<param-value>/WEB-INF/struts-config.xml</param-value>
+			<param-value>/WEB-INF/dynamicextensions-struts-config.xml</param-value>
 		</init-param>
 		<init-param>
 			<param-name>debug</param-name>
@@ -78,7 +78,7 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
   
 	<!--Usual Welcome-file-list-->
 	<welcome-file-list>
-		<welcome-file>/pages/index.jsp</welcome-file>
+		<welcome-file>/de/pages/index.jsp</welcome-file>
 	</welcome-file-list>
 
 	<taglib>

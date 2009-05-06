@@ -166,12 +166,12 @@ public class UserInterfaceiUtility
 		if (subContainer.getMode().equals("edit"))
 		{
 			stringBuffer
-					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'><img src='images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('");
+					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'><img src='de/images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('");
 			stringBuffer.append(subContainer.getId());
 			stringBuffer.append("')\"><map alt='Delete'><area href='javascript:removeCheckedRow('");
 			stringBuffer.append(subContainer.getId());
 			stringBuffer
-					.append("')' shape='default'></map></td><td align='right'><img src='images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('");
+					.append("')' shape='default'></map></td><td align='right'><img src='de/images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('");
 			//stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
 			//		+ "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));

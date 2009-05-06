@@ -28,12 +28,20 @@
 	<property name="mysql.dir" value="${base.dir}/SQL/MySql"/>
 	<property name="oracle.dir" value="${base.dir}/SQL/Oracle"/>
 	<property name="common.dir" value="${base.dir}/SQL/Common"/>
-
+	<property name="meta.dir" value="${base.dir}/META-INF"/>
 
 	<property name="temp.hdoclet.dir" value="${base.dir}/temp"/>
 
 	<property name="junit.report.dir" value="${base.dir}/junit"/>
+	<tstamp>
+	    <format property="TODAY_IND" pattern="d-MMMM-yyyy" locale="en,IND"/>
+	</tstamp>
 
+	<loadfile property="dist.revision" srcFile="./.svn/entries">  
+		<filterchain>  
+			<headfilter lines="1" skip="4"/>
+		</filterchain>  
+	</loadfile>
 	<path id="app.classpath">
 		<pathelement location="${base.dir}/lib/postgresql-8.1-405.jdbc3.jar"/>
 		<fileset dir="${lib.dir}">
@@ -189,14 +197,14 @@
 
 
 	   		    </fileset>
-	        	 <manifest>
-	        	      <attribute name="Built-By" value="${DynamicExtensions.jar.creator}"/>
-
-	        	      <section name="${DynamicExtensions.jar.details}">
-	        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-	        	      	<attribute name="Date" value="${DynamicExtensions.jar.date}"/>
-	        	      </section>
-	        	 </manifest>
+    	   		<manifest>
+   	   				<section name="${DynamicExtensions.jar.details}">
+   	   	    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+   	   					<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+   	   					<attribute name="Build-on" value="${TODAY_IND}" />
+   	   					<attribute name="SVN-URL" value="${dist.revision}" />
+   	   	    	    </section>
+   		   		</manifest>
 	        </jar>
 	    </target>
 	<!-- Create dynamic extensions jar Begins-->
@@ -234,14 +242,14 @@
 
 
    		    </fileset>
-        	 <manifest>
-        	      <attribute name="Built-By" value="${DynamicExtensions.jar.creator}"/>
-
-        	      <section name="${DynamicExtensions.jar.details}">
-        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-        	      	<attribute name="Date" value="${DynamicExtensions.jar.date}"/>
-        	      </section>
-        	 </manifest>
+	   		<manifest>
+   				<section name="${DynamicExtensions.jar.details}">
+   	    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+   					<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+   					<attribute name="Build-on" value="${TODAY_IND}" />
+   					<attribute name="SVN-URL" value="${dist.revision}" />
+   	    	    </section>
+			</manifest>
         </jar>
     </target>
 	<!-- Create dynamic extensions web jar ends-->
@@ -268,7 +276,7 @@
 	</target>
 
 	<!-- Creates the Dynamic Extensions zip of the application -->
-	<target name="create_dynamic_extensions_zip" depends="create_dyn_ext_web_jar" >
+	<target name="create_dynamic_extensions_zip" depends="create_dyn_ext_web_jar,version_info" >
 		<delete  file="dynamicextensions.zip"/>
 		<zip destfile="dynamicextensions.zip" >
 			<fileset dir="${base.dir}">
@@ -282,6 +290,7 @@
 				<include name="WEB-INF/dynamicextensions-struts-config.xml"/>
 				<include name="WEB-INF/dynamicExtensions.tld"/>
 				<include name="DynamicExtensionsInterface/DynamicExtensions.jar" />
+				<include name="META-INF/MANIFEST.MF" />
 			</fileset>
 	   </zip>
 	</target>
@@ -306,6 +315,14 @@
 				<include name="**/log4j.jar"/>
 				<include name="ApplicationVersionInfo.txt"/>
 			</fileset>
+			<manifest>
+				<section name="${DynamicExtensions.jar.details}">
+	    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+					<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+					<attribute name="Build-on" value="${TODAY_IND}" />
+					<attribute name="SVN-URL" value="${dist.revision}" />
+	    	    </section>
+	   		</manifest>
  		</war>
 	</target>
 
@@ -542,14 +559,14 @@
 			    			<include name="**/WebUIManagerConstants.class"/>
 	 	  		    </fileset>
 
-		        	 <manifest>
-		        	      <attribute name="Built-By" value="Sujay Narkar"/>
-
-		        	      <section name="${DynamicExtensions.jar.details}">
-		        	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-		        	      	<attribute name="Date" value="${DynamicExtensions.jar.date}"/>
-		        	      </section>
-		        	 </manifest>
+	    	   		<manifest>
+    	   				<section name="${DynamicExtensions.jar.details}">
+    	   	    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+    	   					<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+    	   					<attribute name="Build-on" value="${TODAY_IND}" />
+    	   					<attribute name="SVN-URL" value="${dist.revision}" />
+    	   	    	    </section>
+	    	   		</manifest>
 		        </jar>
 		    </target>
 		<!-- Create dynamic extensions jar Ends-->
@@ -683,4 +700,19 @@
 		            </classpath>
 				</java>
 		</target>
+	
+	<!-- DE version information starts -->
+	<target name="version_info">
+		<delete file="${meta.dir}/MANIFEST.MF" />
+		<mkdir dir="${meta.dir}" />
+		<manifest file="${meta.dir}/MANIFEST.MF" >
+			<section name="${DynamicExtensions.jar.details}">
+    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+				<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+				<attribute name="Build-on" value="${TODAY_IND}" />
+				<attribute name="SVN-URL" value="${dist.revision}" />
+    	    </section>
+		</manifest>
+	</target>
+	<!-- DE version information ends -->
 </project>

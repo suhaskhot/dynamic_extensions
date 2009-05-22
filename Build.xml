@@ -208,7 +208,7 @@
 	        </jar>
 	    </target>
 	<!-- Create dynamic extensions jar Begins-->
-		
+
 	<!-- Create dynamic extensions web jar Begins-->
     <target name="create_dyn_ext_web_jar" depends="compile" >
 	   <delete file="${interface.dir}/DynamicExtensions.jar"/>
@@ -219,6 +219,8 @@
     				<include name="**/domaininterface/**/*.class"/>
     				<include name="**/entitymanager/**.class"/>
     				<include name="**/exception/*.class"/>
+	    			<include name="**/dao/impl/*.class"/>
+					<include name="**/interfaceactions/**.class"/>
 	    			<include name="**/hbm/**/*.*"/>
 	    			<include name="**/dynamicextensions/util/**/*.*"/>
 	    			<include name="**/dynamicextensions/validation/**/*.*"/>
@@ -227,20 +229,20 @@
     				<include name="DynamicExtensionsErrorsMessages.properties"/>
     				<include name="DynamicExtensionsFileFormats.properties"/>
 					<include name="ApplicationResources.properties"/>
+    				<include name="displaytype-classname-mapping.properties"/>
+					<include name="dbutil.properties"/>
+					<include name="DynamicExtensionDAO.properties"/>
+					<include name="hibernate.properties"/>
+					<include name="uicontrols-captions.properties.properties"/>
     				<include name="*.xml"/>
 	    			<include name="**/xmi/**/*.*"/>
     				<include name="*.xsl"/>
-    				<include name="**/ui/interfaces/*.class"/>
-    				<include name="**/ui/util/*.class"/>
-	    			<include name="**/ui/webui/util/*.class"/>
-    				<include name="**/ui/webui/actionform/*.class"/>
+    				<include name="**/ui/**/*.class"/>
     				<include name="**/processor/**/*.class"/>
 					<include name="**/wustl/cab2b/**/*.class"/>
 					<include name="**/wustl/common/**/*.class"/>
 					<include name="**/wustl/metadata/**/*.class"/>
 	    			<exclude name="**/*Test*.class"/>
-
-
    		    </fileset>
 	   		<manifest>
    				<section name="${DynamicExtensions.jar.details}">
@@ -253,23 +255,22 @@
         </jar>
     </target>
 	<!-- Create dynamic extensions web jar ends-->
-	
+
 	<target name="create_dyn_ext_interface_sourcezip" depends="compile" >
 		<delete  file="${interface.src.dir}/DynamicExtensions-src.zip"/>
 		<zip destfile="${interface.src.dir}/DynamicExtensions-src.zip" >
-		      	<fileset dir="${src.dir}" >
-		      		<include name="**/domain/**/*.java"/>
-    				<include name="**/domaininterface/**/*.java"/>
-    				<include name="**/entitymanager/**.java"/>
-	    			<include name="**/dynamicextensions/bizlogic/**/*.java"/>
-    				<include name="**/exception/*.java"/>
-	    			<include name="**/hbm/**/*.*"/>
-	    			<include name="**/dynamicextensions/util/**/*.java"/>
-	    			<include name="**/common/util/**/*.java"/>
-	 				<include name="*.properties"/>
-	  				<include name="*.xml"/>
-	    		 </fileset>
-
+		 	<fileset dir="${src.dir}" >
+		      	<include name="**/domain/**/*.java"/>
+    			<include name="**/domaininterface/**/*.java"/>
+    			<include name="**/entitymanager/**.java"/>
+	    		<include name="**/dynamicextensions/bizlogic/**/*.java"/>
+    			<include name="**/exception/*.java"/>
+	    		<include name="**/hbm/**/*.*"/>
+	    		<include name="**/dynamicextensions/util/**/*.java"/>
+	    		<include name="**/common/util/**/*.java"/>
+	 			<include name="*.properties"/>
+	  			<include name="*.xml"/>
+	    	</fileset>
 			<fileset dir="${test.dir}" >
 			</fileset>
 	   </zip>
@@ -286,7 +287,6 @@
 				<include name="de/pages/**/*"/>
 				<include name="de/dhtml_comp/**/*"/>
 				<include name="runtime/**/*"/>
-				<include name="WEB-INF/classes/**/*"/>
 				<include name="WEB-INF/dynamicextensions-struts-config.xml"/>
 				<include name="WEB-INF/dynamicExtensions.tld"/>
 				<include name="DynamicExtensionsInterface/DynamicExtensions.jar" />
@@ -551,24 +551,23 @@
 	</target>
 
 	<!-- Create dynamic extensions jar Begins-->
-		    <target name="create_dyn_ext_communication_jar" depends="compile" >
-		    	<delete file="DynamicExtensionsCommunication.jar"/>
-	    	   <jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
-		    		<fileset dir="${target.dir}" >
-		    				<include name="**/WebUIManager.class"/>
-			    			<include name="**/WebUIManagerConstants.class"/>
-	 	  		    </fileset>
-
-	    	   		<manifest>
-    	   				<section name="${DynamicExtensions.jar.details}">
-    	   	    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
-    	   					<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
-    	   					<attribute name="Build-on" value="${TODAY_IND}" />
-    	   					<attribute name="SVN-URL" value="${dist.revision}" />
-    	   	    	    </section>
-	    	   		</manifest>
-		        </jar>
-		    </target>
+	<target name="create_dyn_ext_communication_jar" depends="compile" >
+		<delete file="DynamicExtensionsCommunication.jar"/>
+	    	<jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
+		    	<fileset dir="${target.dir}" >
+		    		<include name="**/WebUIManager.class"/>
+			    	<include name="**/WebUIManagerConstants.class"/>
+	 	  		</fileset>
+	    	   	<manifest>
+    	   			<section name="${DynamicExtensions.jar.details}">
+    	   	    	    <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+    	   				<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+    	   				<attribute name="Build-on" value="${TODAY_IND}" />
+    	   				<attribute name="SVN-URL" value="${dist.revision}" />
+    	   	    	</section>
+	    	   	</manifest>
+		    </jar>
+		</target>
 		<!-- Create dynamic extensions jar Ends-->
 
 	<!-- Since XDoclet isn't already able to parse java 1.5 source code,
@@ -715,4 +714,31 @@
 		</manifest>
 	</target>
 	<!-- DE version information ends -->
+	<!-- run build_plus_start starts -->
+	<target name="run_build_plus">
+		<input message="Have you updated thresholds in tools.properties in build_plus (y/n):  " addproperty="y" defaultvalue="n" validargs="y,n"/>   
+		<echo message="${y}"></echo>
+		<if>
+			<equals arg1="" arg2="${y}" />
+			<then>
+				<fail message="please override update tools.properties file" />
+			</then>
+			<else>
+				<if>
+					<not>
+						<equals arg1="y" arg2="${y}" />
+					</not>
+					<then>
+						<fail message="'please override update tools.properties file" />
+					</then>
+				</if>
+			</else>
+		</if>
+		<copy file="${base.dir}/conf/tools.properties" todir="${build_plus.dir.path}/javabe/usersettings/" overwrite="true">
+		</copy>
+		<exec dir="${build_plus.dir.path}/javabe/batch/" executable="cmd">
+		  <arg line="/c build.bat"/>
+		</exec>
+	</target>
+	<!-- run build_plus_start ends -->
 </project>

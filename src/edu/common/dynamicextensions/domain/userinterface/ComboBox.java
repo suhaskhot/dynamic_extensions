@@ -89,7 +89,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		 */
 		String textComponent = "combo" + htmlComponentName;
 		String htmlString = "<script>Ext.onReady(function(){ "
-				+ "var myUrl= 'ComboDataAction.do?controlId= "
+				+ "var myUrl= 'DEComboDataAction.do?controlId= "
 				+ identifier
 				+ "~containerIdentifier="
 				+ parentContainerId
@@ -126,7 +126,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ " size='20'/>"
 				+ "<div name='comboScript' style='display:none'>"
 				+ "Ext.onReady(function(){ "
-				+ "var myUrl='ComboDataAction.do?controlId= "
+				+ "var myUrl='DEComboDataAction.do?controlId= "
 				+ identifier
 				+ "~containerIdentifier="
 				+ parentContainerId

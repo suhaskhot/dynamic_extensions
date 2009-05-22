@@ -317,7 +317,7 @@
    	<query name="getPathAssociationRelationIdCollection">
 		select pathAssociation.id
 		from edu.common.dynamicextensions.domain.PathAssociationRelation pathAssociation
-		where pathAssociation.path.id =?
+		where pathAssociation.path.id =? order by pathAssociation.id desc
 	</query>	
 	<query name="getAssoIdFrmPathAssoRelationId">
 		select pathAssociation.association.id

@@ -30,7 +30,7 @@ import edu.wustl.common.util.global.CommonServiceLocator;
  * This action is called in the auto complete dropdown combo box
  *
  */
-public class ComboDataAction extends BaseDynamicExtensionsAction
+public class DEComboDataAction extends BaseDynamicExtensionsAction
 {
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,

@@ -218,12 +218,12 @@ PUBLIC
 			scope="request">
 			<forward name="success" path="/LoadRecordListAction.do" />
 		</action>
-		<action path="/ComboDataAction" 
-		type="edu.common.dynamicextensions.util.global.ComboDataAction" 
+		<action path="/DEComboDataAction" 
+		type="edu.common.dynamicextensions.util.global.DEComboDataAction" 
 		name="recordListForm"
 		validate="false"
 		scope="request">
-		<forward name="success" path="/ComboDataAction.do" />
+		<forward name="success" path="/DEComboDataAction.do" />
 	</action>
 		
 	</action-mappings>	

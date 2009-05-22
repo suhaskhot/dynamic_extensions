@@ -150,10 +150,19 @@ public class UpgradeCategoryEntityName implements DynamicExtensionsQueryBuilderC
 						.getSrcInstanceIdFromAssociationRelationId(pathAssociationRelationId);
 				Long tgtInstanceId = entityManager
 						.getTgtInstanceIdFromAssociationRelationId(pathAssociationRelationId);
-				categoryEntityName.append(srcEntityName + DEConstants.OPENING_SQUARE_BRACKET
-						+ srcInstanceId + DEConstants.CLOSING_SQUARE_BRACKET + tgtEntityName
-						+ DEConstants.OPENING_SQUARE_BRACKET + tgtInstanceId.toString()
-						+ DEConstants.CLOSING_SQUARE_BRACKET);
+				if(categoryEntityName.toString().trim().length()>0 && categoryEntityName.toString().contains(srcEntityName))
+				{
+					categoryEntityName.append(tgtEntityName
+							+ DEConstants.OPENING_SQUARE_BRACKET + tgtInstanceId.toString()
+							+ DEConstants.CLOSING_SQUARE_BRACKET);
+				}
+				else
+				{
+					categoryEntityName.append(srcEntityName + DEConstants.OPENING_SQUARE_BRACKET
+							+ srcInstanceId + DEConstants.CLOSING_SQUARE_BRACKET + tgtEntityName
+							+ DEConstants.OPENING_SQUARE_BRACKET + tgtInstanceId.toString()
+							+ DEConstants.CLOSING_SQUARE_BRACKET);
+				}
 			}
 		}
 		return categoryEntityName.toString();

@@ -251,7 +251,7 @@
 													</tr>
 													<c:choose>
 														<c:when test='${formDefinitionForm.operationMode == "EditSubForm" || formDefinitionForm.operationMode == "AddSubForm"}'>
-															<tr valign = "top" >
+															<tr valign = "top" height="5%" >
 																<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
 																<td class="formRequiredLabelWithoutBorder"  width="20%">
 																		<bean:message key="eav.form.viewAs"/> :

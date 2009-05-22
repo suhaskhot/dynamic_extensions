@@ -285,7 +285,6 @@ function printCal(id,day1, day2, day3, day4, day5, day6, day7, first, month1, mo
 	{
 		shouldUseTime = displayTime;
 	}
-    shouldUseTime = displayTime;
     if(displayTime=='true')
     {
         document.write('<tr>');

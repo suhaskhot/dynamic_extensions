@@ -242,7 +242,7 @@
 			)
    </query>
    <query name="getEntityGroupId">
-   		select abstractMetadata.id from AbstractMetadata abstractMetadata where abstractMetadata.name = ?
+   		select entityGroup.id from EntityGroup entityGroup where entityGroup.name = ?
    </query>
    <query name="getEntityId">
    		select entity.id from Entity entity where entity.entityGroup.id = ? and entity.name = ?

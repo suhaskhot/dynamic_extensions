@@ -3462,14 +3462,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return entityGroupName;
 	}
-	
+
 	/**
 	 * @param pathAssociationRelationId  identifier of pathAssociationRelationId
 	 * @return association Id based on pathAssociationRelationId
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getAssociationIdFrmPathAssoRelationId(Long pathAssociationRelationId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -3482,30 +3482,31 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param pathId identifier of Path
 	 * @return collection of PathAssociationRelationIds
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Collection<Long> getPathAssociationRelationIds(Long pathId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
 		substParams.put("0", new NamedQueryParam(DBTypes.LONG, pathId));
 		Collection<Long> pathAssociationRelationIdCollection = null;
-		pathAssociationRelationIdCollection = executeHQL("getPathAssociationRelationIdCollection", substParams);
+		pathAssociationRelationIdCollection = executeHQL("getPathAssociationRelationIdCollection",
+				substParams);
 		return pathAssociationRelationIdCollection;
 	}
-	
+
 	/**
 	 * @param associationId  identifier of association
 	 * @return source entity name
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String getSrcEntityNameFromAssociationId(Long associationId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -3518,14 +3519,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param associationId  identifier of association
 	 * @return target entity name
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String getTgtEntityNameFromAssociationId(Long associationId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -3538,14 +3539,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param associationRelationId  PathAssociationRelationId
 	 * @return instanceId of the source categoryEntity
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getSrcInstanceIdFromAssociationRelationId(Long associationRelationId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -3558,14 +3559,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param associationRelationId PathAssociationRelationId
 	 * @return instanceId of the target categoryEntity
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public Long getTgtInstanceIdFromAssociationRelationId(Long associationRelationId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -3578,26 +3579,25 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @return categoryEntityId collection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<Long> getAllCategoryEntityId()
-					throws DynamicExtensionsSystemException
+	public Collection<Long> getAllCategoryEntityId() throws DynamicExtensionsSystemException
 	{
 		Collection<Long> caegoryEntityIdCollection = null;
 		caegoryEntityIdCollection = executeHQL("getAllCategoryEntityId", new HashMap());
 		return caegoryEntityIdCollection;
 	}
-	
+
 	/**
 	 * @param categoryId identifier of category entity
 	 * @return name of category
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String getCategoryEntityNameByCategoryEntityId(Long categoryId)
-					throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();

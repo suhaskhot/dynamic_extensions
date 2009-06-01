@@ -34,6 +34,7 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.integration.EntityMapCondition;
@@ -719,6 +720,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		StringBuffer queryValues = new StringBuffer();
 		List<Object> columnValues = new ArrayList<Object>();
 		List<String> columnNames = new ArrayList<String>();
+		List<Object> columnNullValues = new ArrayList<Object>();
 
 		StringBuffer insertQuery = new StringBuffer(INSERT_INTO_KEYWORD);
 		insertQuery.append(entity.getTableProperties().getName() + WHITESPACE);
@@ -756,7 +758,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			if (attribute instanceof AttributeInterface)
 			{
-				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
+				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues,
+						columnNullValues);
 				if (((AttributeInterface) attribute).getAttributeTypeInformation() instanceof FileAttributeTypeInformation
 						&& !(value instanceof String))
 				{
@@ -861,7 +864,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws IOException
 	 */
 	private void updateColumnNamesAndColumnValues(AbstractAttribute attribute, Object value,
-			List<String> columnNames, List<Object> columnValues)
+			List<String> columnNames, List<Object> columnValues, List<Object> columnNullValues)
 			throws DynamicExtensionsApplicationException
 	{
 		Object object = value;
@@ -869,11 +872,17 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		AttributeInterface primitiveAttr = (AttributeInterface) attribute;
 
 		// Populate FileAttributeRecordValue hibernate object.
-		if (primitiveAttr.getAttributeTypeInformation() instanceof FileAttributeTypeInformation
-				&& !(object instanceof String))
+		if (primitiveAttr.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 		{
-			populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) object,
-					primitiveAttr);
+			//DO NOT change this if and combined it with above if  ,it will change logic flow in case of FILE type attribute
+			if (!(object instanceof String))
+			{
+				populateFileAttribute(columnNames, columnValues, (FileAttributeRecordValue) object,
+						primitiveAttr);
+				columnNullValues.add(null);
+				columnNullValues.add(null);
+				columnNullValues.add(null);
+			}
 		}
 		else
 		{
@@ -906,10 +915,31 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				if (object == null || object.toString().length() == 0)
 				{
 					columnValues.add(null);
+					if (primitiveAttr.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+					{
+						columnNullValues.add(java.sql.Types.DATE);
+					}
+					else if (primitiveAttr.getAttributeTypeInformation() instanceof StringAttributeTypeInformation)
+					{
+						columnNullValues.add(java.sql.Types.VARCHAR);
+					}
+					else if (primitiveAttr.getAttributeTypeInformation() instanceof NumericAttributeTypeInformation)
+					{
+						columnNullValues.add(java.sql.Types.NUMERIC);
+					}
+					else if (primitiveAttr.getAttributeTypeInformation() instanceof ObjectAttributeTypeInformation)
+					{
+						columnNullValues.add(java.sql.Types.BLOB);
+					}
+					else
+					{
+						columnNullValues.add(null);
+					}
 				}
 				else
 				{
 					columnValues.add(object);
+					columnNullValues.add(null);
 				}
 			}
 			catch (ParseException e)
@@ -1054,7 +1084,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		List<String> columnNames = new ArrayList<String>();
 		List<Object> columnValues = new ArrayList<Object>();
-
+		List<Object> columnNullValues = new ArrayList<Object>();
 		String tableName = entity.getTableProperties().getName();
 
 		Set<?> uiColumnSet = dataValue.keySet();
@@ -1074,7 +1104,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 			if (attribute instanceof AttributeInterface)
 			{
-				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues);
+				updateColumnNamesAndColumnValues(attribute, value, columnNames, columnValues,
+						columnNullValues);
 			}
 			else
 			{
@@ -1160,13 +1191,22 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				query.append(recordId);
 				PreparedStatement preparedStatement = jdbcDao
 						.getPreparedStatement(query.toString());
-				int colCount = 1;
-
-				for (Object columnValue : columnValues)
+				for (int index = 0; index < columnValues.size(); index++)
 				{
-					preparedStatement.setObject(colCount++, columnValue);
-					auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?") + 1,
-							columnValue == null ? "" : columnValue.toString());
+					Object columnValue = columnValues.get(index);
+					Object columnNullValue = columnNullValues.get(index);
+					if (columnNullValue != null)
+					{
+						preparedStatement.setNull(index + 1, Integer.valueOf(columnNullValue
+								.toString()));
+					}
+					else
+					{
+						preparedStatement.setObject(index + 1, columnValue);
+						auditQuery.replace(auditQuery.indexOf("?"), auditQuery.indexOf("?") + 1,
+								columnValue == null ? "" : columnValue.toString());
+					}
+
 				}
 
 				preparedStatement.setMaxFieldSize(1);

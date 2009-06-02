@@ -52,6 +52,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
@@ -92,6 +93,9 @@ import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  *
@@ -159,7 +163,7 @@ public class XMIImportProcessor
 
 	private Map<String, Map<String, String>> columnNameVsMapTagValues = new HashMap<String, Map<String, String>>();
 
-	private List<String> multiselectMigartionScripts = new ArrayList<String>();
+	private Map<AssociationInterface, String> multiselectMigartionScripts = new HashMap<AssociationInterface, String>();
 
 	/**
 	 * @return
@@ -218,6 +222,7 @@ public class XMIImportProcessor
 			isEditedXmi = true;
 			entityGroup = entityGroupColl.get(0);
 		}
+
 		//Static models of caTissue and Clinportal are system generated entity groups
 		entityGroup.setIsSystemGenerated(xmiConfigurationObject.isEntityGroupSystemGenerated());
 
@@ -311,20 +316,13 @@ public class XMIImportProcessor
 			processCompositeKey(entity);
 			populateMultiselectAttribute(entity);
 		}
-		// populate entity for generating constraint properties if it has any parent set
-		for (EntityInterface entity : entityGroup.getEntityCollection())
-		{
-			entity.populateEntityForConstraintProperties(xmiConfigurationObject
-					.isAddColumnForInherianceInChild());
-		}
 
-		if (umlAssociationColl != null)
-		{
-			for (UmlAssociation umlAssociation : umlAssociationColl)
-			{
-				addAssociation(umlAssociation);
-			}
-		}
+		// Populate entity for generating constraint properties if it has any parent set.
+		XMIImporterUtil.populateEntityForConstraintProperties(entityGroup, xmiConfigurationObject);
+
+		// Add associations.
+		addAssociation(umlAssociationColl);
+
 		//TODO Uncomment check about processinheritance method call 
 		if (!umlGeneralisationColl.isEmpty())
 		{
@@ -365,8 +363,57 @@ public class XMIImportProcessor
 				xmiConfigurationObject.isCreateTable(), xmiConfigurationObject.isDefaultPackage(),
 				xmiConfigurationObject.getDefaultPackagePrefix());
 
-		EntityManagerUtil.executeDML(multiselectMigartionScripts);
+		// Execute data migration scripts for attributes that were changed from a normal attribute to 
+		// a multiselect attribute.
+		List<String> multiSelMigrationQueries = EntityManagerUtil
+				.updateSqlScriptToMigrateOldDataForMultiselectAttribute(multiselectMigartionScripts);
+		EntityManagerUtil.executeDML(multiSelMigrationQueries);
+
 		return mainContainerList;
+	}
+
+	/**
+	 * @param umlAssociationColl
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException 
+	 */
+	private void addAssociation(List<UmlAssociation> umlAssociationColl)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		HibernateDAO hibernateDao = null;
+		try
+		{
+			String appName = DynamicExtensionDAO.getInstance().getAppName();
+			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+					.getDAO();
+			hibernateDao.openSession(null);
+
+			if (umlAssociationColl != null)
+			{
+				for (UmlAssociation umlAssociation : umlAssociationColl)
+				{
+					addAssociation(umlAssociation, hibernateDao);
+				}
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Exception encountered while populating constraint properties for entity.");
+		}
+		finally
+		{
+			try
+			{
+				hibernateDao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception encountered while closing session.");
+			}
+		}
+
 	}
 
 	/**
@@ -567,8 +614,13 @@ public class XMIImportProcessor
 		defaultBizLogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
 		entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class.getName(),
 				edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
-		System.out.println("---xmi import processor entity group found size"
-				+ entityGroupColl.size());
+		Logger.out.info(" ");
+		Logger.out.info("#################################");
+		Logger.out.info("##   EntityGroup present = " + (entityGroupColl.size() > 0 ? "Y" : "N")
+				+ "   ##");
+		Logger.out.info("#################################");
+		Logger.out.info(" ");
+
 		return entityGroupColl;
 	}
 
@@ -596,11 +648,12 @@ public class XMIImportProcessor
 			tvColl = new HashSet<TaggedValueInterface>();
 		}
 		// It will serach the tag with same key in the tvColl so that it will not add the tag multiple times
-		TaggedValueInterface taggedValue = getTaggedValueObject(tvColl, XMIConstants.TAGGED_NAME_PACKAGE_NAME);
+		TaggedValueInterface taggedValue = getTaggedValueObject(tvColl,
+				XMIConstants.TAGGED_NAME_PACKAGE_NAME);
 		// If tag not present it will create new one & add it to the object. else willuse same previous object
-		if(taggedValue==null)
+		if (taggedValue == null)
 		{
-			taggedValue= DomainObjectFactory.getInstance().createTaggedValue();
+			taggedValue = DomainObjectFactory.getInstance().createTaggedValue();
 			taggedValue.setKey(XMIConstants.TAGGED_NAME_PACKAGE_NAME);
 			taggedValue.setValue(packageName);
 			tvColl.add(taggedValue);
@@ -650,7 +703,9 @@ public class XMIImportProcessor
 		for (Model model : modelColl)
 		{
 			Collection ownedElementColl = model.getOwnedElement();
-			Logger.out.info("MODEL OWNED ELEMENT SIZE: " + ownedElementColl.size());
+			Logger.out.info(" ");
+			Logger.out.info("MODEL OWNED ELEMENT COLLECTION SIZE = " + ownedElementColl.size());
+			Logger.out.info(" ");
 			Iterator iter = ownedElementColl.iterator();
 
 			StringTokenizer tokens = new StringTokenizer(packageName, XMIConstants.DOT_SEPARATOR);
@@ -915,8 +970,9 @@ public class XMIImportProcessor
 		DataType dataType = DataType.get(umlAttribute.getType().getName());
 		if (dataType != null)
 		{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
-			
-			originalAttribute = entity.getAttributeByNameIncludingInheritedAttribute(umlAttribute.getName());
+
+			originalAttribute = entity.getAttributeByNameIncludingInheritedAttribute(umlAttribute
+					.getName());
 			if (originalAttribute == null)
 			{//New attribute has been created
 				AttributeInterface attribute = dataType.createAttribute(umlAttribute);
@@ -1040,10 +1096,9 @@ public class XMIImportProcessor
 		AssociationInterface association = addMultiselectAttribute(attribute, umlAttribute,
 				taggedValueMap, entity);
 		controlInterface.setBaseAbstractAttribute(association);
-		multiselectMigartionScripts.add(EntityManagerUtil
+		multiselectMigartionScripts.put(association, EntityManagerUtil
 				.getSqlScriptToMigrateOldDataForMultiselectAttribute(entity, association,
 						attribute, originalAttribute));
-
 	}
 
 	/**
@@ -1145,7 +1200,7 @@ public class XMIImportProcessor
 	{
 		Map<String, String> tagNameVsTagValue = new HashMap<String, String>();
 		String tagName;
-		Collection<TaggedValueInterface> deTaggedValueCollection=new HashSet<TaggedValueInterface>();
+		Collection<TaggedValueInterface> deTaggedValueCollection = new HashSet<TaggedValueInterface>();
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		TaggedValueInterface tag;
 		for (TaggedValue taggedValue : taggedValueColl)
@@ -1160,9 +1215,10 @@ public class XMIImportProcessor
 					{
 						tagName = tagName.replaceFirst(XMIConstants.TAGGED_NAME_PREFIX, "");
 						// it will retrieve the tag which is already present on the  abstrMetaDataObj in case of edit xmi
-						tag = getTaggedValueObject(abstrMetaDataObj.getTaggedValueCollection(), tagName);
+						tag = getTaggedValueObject(abstrMetaDataObj.getTaggedValueCollection(),
+								tagName);
 						//if tag not found then create the new one 
-						if(tag == null)
+						if (tag == null)
 						{
 							tag = factory.createTaggedValue();
 							tag.setKey(tagName);
@@ -1171,7 +1227,7 @@ public class XMIImportProcessor
 						// if tag found then only change the value of the tag with current value.  
 						else
 						{
-							tag.setValue(value); 
+							tag.setValue(value);
 						}
 						deTaggedValueCollection.add(tag);
 					}
@@ -1186,7 +1242,6 @@ public class XMIImportProcessor
 		return tagNameVsTagValue;
 	}
 
-	
 	/**
 	 * @param taggedValueColl
 	 * @param key
@@ -1195,12 +1250,12 @@ public class XMIImportProcessor
 	private TaggedValueInterface getTaggedValueObject(
 			Collection<TaggedValueInterface> taggedValueColl, String key)
 	{
-		TaggedValueInterface taggedValue =null;
+		TaggedValueInterface taggedValue = null;
 		for (TaggedValueInterface tag : taggedValueColl)
 		{
-			if(tag.getKey().equals(key))
+			if (tag.getKey().equals(key))
 			{
-				taggedValue=tag;
+				taggedValue = tag;
 				break;
 			}
 		}
@@ -1379,12 +1434,12 @@ public class XMIImportProcessor
 	 * Also a back pointer is added to replicated association go get original association.
 	 * @param umlAssociation umlAssociation to process
 	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void addAssociation(UmlAssociation umlAssociation)
-			throws DynamicExtensionsSystemException
+	private void addAssociation(UmlAssociation umlAssociation, HibernateDAO hibernateDao)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();
-
 		AssociationEnd sourceAssociationEnd = null;
 		AssociationEnd targetAssociationEnd = null;
 
@@ -1491,7 +1546,9 @@ public class XMIImportProcessor
 		association.setSourceRole(sourceRole);
 		association.setTargetEntity(tgtEntity);
 		association.setTargetRole(targetRole);
-		association.populateAssociationForConstraintProperties();
+		association.setConstraintProperties(DynamicExtensionsUtility
+				.populateConstraintPropertiesForAssociation(association, hibernateDao));
+		//association.populateAssociationForConstraintProperties();
 		if (direction.equalsIgnoreCase(DEConstants.AssociationDirection.BI_DIRECTIONAL.toString()))
 		{
 			association.setAssociationDirection(DEConstants.AssociationDirection.BI_DIRECTIONAL);
@@ -1937,7 +1994,7 @@ public class XMIImportProcessor
 			while (abstrAttrIter.hasNext())
 			{
 				AbstractAttributeInterface originalAttr = abstrAttrIter.next();
-				if (originalAttr.getId() == null && originalAttr instanceof AssociationInterface)
+				if (originalAttr.getId() == null)
 				{
 					/*
 					 * Bug Id:7316
@@ -1945,8 +2002,11 @@ public class XMIImportProcessor
 					 * Hence, new association objects are saved in a list and then removed from entity
 					 * so that they can be added again to the entity object
 					 */
-					savedAssociation.add(originalAttr);
-					//check TODO
+					if (originalAttr instanceof AssociationInterface)
+					{
+						savedAssociation.add(originalAttr);
+					}
+
 					abstrAttrIter.remove();
 				}
 			}
@@ -1985,6 +2045,12 @@ public class XMIImportProcessor
 				controlModel.setCaption(editedAttribute.getName());
 				controlModel.setName(editedAttribute.getName());
 				setTaggedValue(controlModel, editedAttribute);
+
+				// If original attribute's default value is "--Select--", and attribute default value of  
+				// control model is "" since no tag has been specified, then keep the 
+				// attribute default value as "--Select--"
+				setDefaultValueForAttribute(controlModel, originalAttributeColl, editedAttribute);
+
 				//Not for Containment Association Control
 				if (!(editedAttribute instanceof AssociationInterface))
 				{
@@ -2016,6 +2082,51 @@ public class XMIImportProcessor
 		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
 		containerList.add(containerInterface);
 		entityNameVsContainers.put(entityInterface.getName(), containerList);
+	}
+
+	/**
+	 * This method sets the default value of attribute in following scenario. If original attribute's 
+	 * default value is "--Select--", and attribute default value of control model is ""
+	 * since no tag has been specified, then keep the attribute default value as "--Select--"
+	 * @param controlModel
+	 * @param originalAttributes
+	 * @param editedAttribute
+	 */
+	private void setDefaultValueForAttribute(ControlsModel controlModel,
+			Collection<AbstractAttributeInterface> originalAttributes,
+			AbstractAttributeInterface editedAttribute)
+	{
+		String ctrlModelAttrDefaultVal = controlModel.getAttributeDefaultValue();
+
+		if (ctrlModelAttrDefaultVal != null && ctrlModelAttrDefaultVal.equalsIgnoreCase(""))
+		{
+			for (AbstractAttributeInterface attribute : originalAttributes)
+			{
+				if (attribute instanceof AttributeInterface
+						&& attribute.getName().equalsIgnoreCase(editedAttribute.getName()))
+				{
+					AttributeTypeInformationInterface attrTypeInfo = ((AttributeInterface) attribute)
+							.getAttributeTypeInformation();
+					PermissibleValueInterface defaultPermissibleValue = attrTypeInfo
+							.getDefaultValue();
+
+					if (defaultPermissibleValue != null)
+					{
+						if (defaultPermissibleValue.getValueAsObject() != null)
+						{
+							String defaultValueAsString = defaultPermissibleValue
+									.getValueAsObject().toString();
+							if (defaultValueAsString != null
+									&& !defaultValueAsString.equalsIgnoreCase(""))
+							{
+								controlModel.setAttributeDefaultValue(defaultValueAsString);
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
 	}
 
 	/**
@@ -2985,7 +3096,7 @@ public class XMIImportProcessor
 
 						//NoOfColumns
 						String width = getDisplayWidthTagValue(taggedValueMap);
-						controlModel.setColumns(Integer.parseInt(width.toString()));
+						controlModel.setColumns(Integer.parseInt(width));
 
 						// Single/Multiline(Number of Lines) tagged Value
 						setMultilineTaggedValue(taggedValueMap, controlModel);
@@ -3218,11 +3329,9 @@ public class XMIImportProcessor
 	}
 
 	/**
-	 * This method removes inherited attributes.
 	 * @param entity
-	 * 
+	 * @param duplicateAttributeCollection
 	 */
-
 	protected void removeInheritedAttributes(EntityInterface entity,
 			List duplicateAttributeCollection)
 	{
@@ -3232,9 +3341,15 @@ public class XMIImportProcessor
 		}
 	}
 
+	
 	/**
-	 * @param umlClasses
-	 * This method creates all containers.
+	 * this method persists changes to database
+	 * @param containerNames
+	 * @param isEntityGroupSystemGenerated
+	 * @param isCreateTable
+	 * @param isDefaultPackage
+	 * @param defaultPackagePrefix
+	 * @throws Exception
 	 */
 	protected void processPersistence(List<String> containerNames,
 			boolean isEntityGroupSystemGenerated, boolean isCreateTable, boolean isDefaultPackage,
@@ -3247,7 +3362,6 @@ public class XMIImportProcessor
 		for (String containerName : containerNames)
 		{
 			//		For static models
-			String temp = "";
 			if (xmiConfigurationObject.isEntityGroupSystemGenerated() && isDefaultPackage)
 			{
 				if (!containerName.startsWith(defaultPackagePrefix))
@@ -3267,7 +3381,7 @@ public class XMIImportProcessor
 			mainContainerList.add(containerInterface);
 		}
 
-		EntityGroupManagerInterface entityManagerInterface = EntityGroupManager.getInstance();
+		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
 		try
 		{
 			//	entityManagerInterface.persistEntityGroupWithAllContainers(entityGroup, mainContainerList);
@@ -3279,15 +3393,15 @@ public class XMIImportProcessor
 			if (xmiConfigurationObject.isEntityGroupSystemGenerated()
 					|| !xmiConfigurationObject.isCreateTable())
 			{//Static Model. Hence saving only metadata
-				entityManagerInterface.persistEntityGroupMetadata(entityGroup);
+				entityGroupManager.persistEntityGroupMetadata(entityGroup);
 				if (skipentityGroup != null)
 				{
-					entityManagerInterface.persistEntityGroupMetadata(skipentityGroup);
+					entityGroupManager.persistEntityGroupMetadata(skipentityGroup);
 				}
 			}
 			else
 			{//Dynamic model
-				entityManagerInterface.persistEntityGroup(entityGroup);
+				entityGroupManager.persistEntityGroup(entityGroup);
 			}
 		}
 		catch (DynamicExtensionsApplicationException e)
@@ -3401,8 +3515,6 @@ public class XMIImportProcessor
 			for (AssociationInterface asson : supplierEntity.getAssociationCollection())
 			{
 				boolean found = false;
-				Cardinality sourceCardinality = asson.getSourceRole().getMaximumCardinality();
-				Cardinality targetCardinality = asson.getTargetRole().getMaximumCardinality();
 
 				for (String assoName : associationNames)
 				{
@@ -3579,8 +3691,8 @@ public class XMIImportProcessor
 	{
 		String mappedAttribute = tagNameVsTagValue.get(XMIConstants.TAGGED_VALUE_MAPPED_ATTRIBUTES);
 
-		Collection<AssociationInterface> a = supplierEntity.getAssociationCollection();
-		Collection<AttributeInterface> da = supplierEntity.getAttributeCollection();
+		supplierEntity.getAssociationCollection();
+		supplierEntity.getAttributeCollection();
 		if (mappedAttribute != null && (!"".equals(mappedAttribute.trim())))
 		{
 			StringTokenizer tokens = new StringTokenizer(mappedAttribute,

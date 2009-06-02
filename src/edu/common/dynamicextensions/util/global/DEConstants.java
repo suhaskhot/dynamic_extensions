@@ -90,6 +90,7 @@ public class DEConstants
 	public static final String COLLECTIONATTRIBUTECLASS = "CollectionAttributeClass";
 	public static final String COLLECTIONATTRIBUTE = "collectionAttribute";
 	public static final String COLLECTIONATTRIBUTEROLE = "collectionAttributeRole";
+	public static final String COLLECTIONATTRIBUTE_OLD = "CollectionAttribute";
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
 

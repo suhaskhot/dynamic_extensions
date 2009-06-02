@@ -76,12 +76,11 @@ public class PathFinder
 	{
 		try
 		{
-			System.out.println("PathFinder.getInstance()==" + con.isClosed());
+			logger.info("PathFinder.getInstance()==" + con.isClosed());
 		}
 		catch (SQLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		if (pathFinder == null)
 		{
@@ -126,7 +125,7 @@ public class PathFinder
 	 */
 	private void populateCache(Connection con)
 	{
-		System.out.println("PathFinder.populateCache()");
+		logger.info("PathFinder.populateCache()");
 		setInterModelConnections(cacheInterModelConnections(con));
 		pathRecordCache = cachePathRecords(con);
 		idVsAssociation = cacheAssociationTypes(con);
@@ -156,8 +155,8 @@ public class PathFinder
 	 */
 	public Set<ICuratedPath> getCuratedPaths(EntityInterface source, EntityInterface destination)
 	{
-		System.out.println("PathFinder.getCuratedPaths()");
-		System.out.println(source.getId() + "---" + destination.getId());
+		logger.info("PathFinder.getCuratedPaths()");
+		logger.info(source.getId() + "---" + destination.getId());
 		HashSet<EntityInterface> entitySet = new HashSet<EntityInterface>(2);
 		entitySet.add(source);
 		entitySet.add(destination);
@@ -176,7 +175,7 @@ public class PathFinder
 				curatedPaths.add(curatedPath);
 			}
 		}
-		System.out.println("curatedpath size=" + curatedPaths.size());
+		logger.info("curatedpath size=" + curatedPaths.size());
 		return curatedPaths;
 	}
 
@@ -188,7 +187,7 @@ public class PathFinder
 	 */
 	public Set<ICuratedPath> autoConnect(Set<EntityInterface> entitySet)
 	{
-		System.out.println("PathFinder.autoConnect()" + entitySet.size());
+		logger.info("PathFinder.autoConnect()" + entitySet.size());
 		String entityIdSet = CuratedPath.getStringRepresentation(entitySet);
 		Set<ICuratedPath> curatedPathSet = entitySetVsCuratedPath.get(entityIdSet);
 
@@ -422,12 +421,12 @@ public class PathFinder
 	 */
 	private Set<InterModelConnection> cacheInterModelConnections(Connection con)
 	{
-		System.out.println("PathFinder.cacheInterModelConnections()---starts" + con);
+		logger.info("PathFinder.cacheInterModelConnections()---starts" + con);
 		String sql = "select LEFT_ENTITY_ID,LEFT_ATTRIBUTE_ID,RIGHT_ENTITY_ID,RIGHT_ATTRIBUTE_ID from INTER_MODEL_ASSOCIATION";
 		String[][] result = executeQuery(sql, con);
 		Set<InterModelConnection> interModelConnections = new HashSet<InterModelConnection>(
 				result.length);
-		System.out.println("PathFinder.cacheInterModelConnections()---result size" + result.length);
+		logger.info("PathFinder.cacheInterModelConnections()---result size" + result.length);
 		for (int i = 0; i < result.length; i++)
 		{
 			Long leftEntityId = Long.parseLong(result[i][0]);
@@ -440,8 +439,7 @@ public class PathFinder
 
 			interModelConnections.add(new InterModelConnection(leftAttr, rightAttr));
 		}
-		System.out
-				.println("PathFinder.cacheInterModelConnections()" + interModelConnections.size());
+		logger.info("PathFinder.cacheInterModelConnections()" + interModelConnections.size());
 		return interModelConnections;
 	}
 
@@ -655,7 +653,7 @@ public class PathFinder
 	 */
 	private Map<Long, IAssociation> cacheAssociationTypes(Connection con)
 	{
-		System.out.println("PathFinder.cacheAssociationTypes()--start" + con);
+		logger.info("PathFinder.cacheAssociationTypes()--start" + con);
 		String[][] intraModelRecords = executeQuery(
 				"select ASSOCIATION_ID,DE_ASSOCIATION_ID from INTRA_MODEL_ASSOCIATION", con);
 		String[][] interModelRecords = executeQuery(

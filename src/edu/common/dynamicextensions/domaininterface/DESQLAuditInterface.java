@@ -2,7 +2,6 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @author kunal_kamble

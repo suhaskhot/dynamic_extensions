@@ -973,7 +973,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			Long value = null;
 			try
 			{
-				value = new Long(permissibleValue);
+				value = Long.valueOf(permissibleValue);
 			}
 			catch (Exception e)
 			{
@@ -1189,7 +1189,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
-					defaultValue = new Short(attributeUIBeanInformationIntf
+					defaultValue = Short.valueOf(attributeUIBeanInformationIntf
 							.getAttributeDefaultValue());
 				}
 			}
@@ -1211,7 +1211,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			if (defaultValue != null)
 			{
-				shortValue.setValue(new Short(defaultValue));
+				shortValue.setValue(Short.valueOf(defaultValue));
 				shortAttributeTypeInfo.setDefaultValue(shortValue);
 			}
 		}
@@ -1317,7 +1317,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			{
 				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
 				{
-					defaultValue = new Long(attributeUIBeanInformationIntf
+					defaultValue = Long.valueOf(attributeUIBeanInformationIntf
 							.getAttributeDefaultValue());
 				}
 			}
@@ -1339,7 +1339,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 			if (defaultValue != null)
 			{
-				longValue.setValue(new Long(defaultValue));
+				longValue.setValue(Long.valueOf(defaultValue));
 				longAttributeTypeInfo.setDefaultValue(longValue);
 			}
 
@@ -2456,7 +2456,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * @return
+	 * this method creates association
+	 * @return association
 	 */
 	public AssociationInterface createAssociation()
 	{

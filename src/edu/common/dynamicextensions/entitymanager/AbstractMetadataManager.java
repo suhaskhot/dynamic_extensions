@@ -36,6 +36,7 @@ import edu.wustl.dao.DAO;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.QueryWhereClause;
+import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.util.NamedQueryParam;
 
@@ -582,14 +583,20 @@ public abstract class AbstractMetadataManager
 
 		List<EntityInterface> savedEntities = DynamicExtensionsUtility
 				.getSavedEntities(entityGroup);
+		
+		HibernateDAO hibernateDAO = null;
 		try
-		{		
+		{
+			String appName = DynamicExtensionDAO.getInstance().getAppName();
+			hibernateDAO = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+					.getDAO();
+			hibernateDAO.openSession(null);
 			for (EntityInterface savedEntity : savedEntities)
 			{	
-				Entity dbaseCopy = (Entity)DynamicExtensionsUtility.getCleanObject(Entity.class.getCanonicalName(), savedEntity.getId());
+				Entity dbaseCopy = (Entity)hibernateDAO.retrieveById(Entity.class.getCanonicalName(), savedEntity.getId());
 
 				List<String> updateQueries = getQueryBuilderInstance().getUpdateEntityQueryList(
-					(Entity) savedEntity, dbaseCopy, revQueries);
+					(Entity) savedEntity, dbaseCopy, revQueries, hibernateDAO);
 				if (updateQueries != null && !updateQueries.isEmpty())
 				{
 					queries.addAll(updateQueries);
@@ -599,6 +606,20 @@ public abstract class AbstractMetadataManager
 		catch(DAOException exception)
 		{
 			throw new DynamicExtensionsSystemException("Not able to retrieve the object.",exception);
+		}
+		finally
+		{
+			if (hibernateDAO != null)
+			{
+				try
+				{
+					hibernateDAO.closeSession();
+				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException("Exception encountered while closing session.");
+				}
+			}
 		}
 		return queries;
 	}

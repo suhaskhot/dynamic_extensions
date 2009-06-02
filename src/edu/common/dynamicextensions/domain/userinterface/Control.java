@@ -319,10 +319,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 			{
 				stringBuffer.append("&nbsp; </td> ");
 			}
-			if (this instanceof ComboBox)
-			{
-				stringBuffer.append("<br/>");
-			}
+//			if (this instanceof ComboBox)
+//			{
+//				stringBuffer.append("<br/>");
+//			}
 
 			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
 		}
@@ -387,10 +387,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		if (this.getSequenceNumber() != null)
 		{
 			htmlComponentName.append("Control_" + parentContainer.getIncontextContainer().getId()
-					+ "_" + parentContainer.getId() + "_");
+					+ "_" + parentContainer.getId() + "_" + this.getSequenceNumber());
 			if (yPosition != null)
 			{
-				htmlComponentName.append(this.getSequenceNumber() + "_" + this.getYPosition());
+				htmlComponentName.append("_" + this.getYPosition());
 			}
 		}
 		return htmlComponentName.toString();

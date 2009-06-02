@@ -65,6 +65,7 @@ import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HashedDataHandler;
+import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
@@ -164,8 +165,8 @@ public class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public List<String> getUpdateEntityQueryList(Entity entity, Entity dbaseCopy,
-			List<String> attrRlbkQries) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			List<String> attrRlbkQries, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Logger.out.debug("getUpdateEntityQueryList : Entering method");
 		List<String> updateQries = new ArrayList<String>();
@@ -177,7 +178,8 @@ public class DynamicExtensionBaseQueryBuilder
 		List<String> entInheQries = getInheritanceQueryList(entity, dbaseCopy, attrRlbkQries);
 
 		// Get the query for any association that is modified.
-		List<String> updAssoQries = getUpdateAssociationsQueryList(entity, dbaseCopy, attrRlbkQries);
+		List<String> updAssoQries = getUpdateAssociationsQueryList(entity, dbaseCopy,
+				attrRlbkQries, hibernateDAO);
 
 		updateQries.addAll(updAttrQries);
 		updateQries.addAll(prmCnstrQueries);
@@ -1685,7 +1687,8 @@ public class DynamicExtensionBaseQueryBuilder
 
 	/**
 	 * This method returns true if a column in not to be created for the attribute.
-	 * @return
+	 * @param attribute
+	 * @return false
 	 */
 	protected boolean isAttributeColumnToBeExcluded(AttributeInterface attribute)
 	{
@@ -1768,7 +1771,6 @@ public class DynamicExtensionBaseQueryBuilder
 		try
 		{
 			DataTypeFactory dataTypeFactory = DataTypeFactory.getInstance();
-
 			AttributeTypeInformationInterface attrTypeInfo = attribute
 					.getAttributeTypeInformation();
 			if (attrTypeInfo instanceof StringAttributeTypeInformation)
@@ -2168,7 +2170,8 @@ public class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsSystemException
 	 */
 	protected List<String> getUpdateAssociationsQueryList(Entity entity, Entity dbaseCopy,
-			List<String> attrRlbkQries) throws DynamicExtensionsSystemException
+			List<String> attrRlbkQries, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
 	{
 		Logger.out.debug("Entering getUpdateAssociationsQueryList method");
 
@@ -2200,8 +2203,9 @@ public class DynamicExtensionBaseQueryBuilder
 				else
 				{
 					if (EntityManagerUtil.isCardinalityChanged(association, assoDbaseCopy)
-							|| EntityManagerUtil.isPrimaryKeyChanged(entity)
-							|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity()))
+							|| EntityManagerUtil.isPrimaryKeyChanged(entity, hibernateDAO)
+							|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity(),
+									hibernateDAO))
 					{
 						isAddAssoQuery = false;
 						assoQueries.addAll(getQueryPartForAssociation(assoDbaseCopy, attrRlbkQries,
@@ -2988,10 +2992,8 @@ public class DynamicExtensionBaseQueryBuilder
 	 * This method executes the queries which generate and or manipulate the data table associated with the entity.
 	 * @param entity Entity for which the data table queries are to be executed.
 	 * @param rlbkQryStack
-	 * @param reverseQueryList2
-	 * @param queryList2
-	 * @param hibernateDAO
-	 * @param session Hibernate Session through which connection is obtained to fire the queries.
+	 * @param queries
+	 * @param revQueries
 	 * @throws DynamicExtensionsSystemException Whenever there is any exception , this exception is thrown with proper message and the exception is
 	 * wrapped inside this exception.
 	 */
@@ -3017,7 +3019,6 @@ public class DynamicExtensionBaseQueryBuilder
 					{
 						rlbkQryStack.push(revQryIter.next());
 					}
-
 				}
 			}
 		}

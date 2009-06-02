@@ -200,6 +200,13 @@ public class XMIUtilities
 		});
 	}
 
+	/**
+	 * @param sourceXmiFileName source XMI file name
+	 * @param targetXmiFileName target XMI file name
+	 * @param xsltFileStream
+	 * @throws TransformerException
+	 * @throws FileNotFoundException
+	 */
 	public static void transform(String sourceXmiFileName, String targetXmiFileName,
 			InputStream xsltFileStream) throws TransformerException, FileNotFoundException
 	{
@@ -309,10 +316,10 @@ public class XMIUtilities
 		{
 			for (Iterator i = klass.getFeature().iterator(); i.hasNext();)
 			{
-				Object o = i.next();
-				if (o instanceof Attribute)
+				Object object = i.next();
+				if (object instanceof Attribute)
 				{
-					atts.add(o);
+					atts.add(object);
 				}
 			}
 		}

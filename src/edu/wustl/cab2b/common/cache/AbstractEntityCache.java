@@ -169,6 +169,8 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable 
 	 */
 	private void createCache(List<ContainerInterface> containerList, Collection<EntityGroupInterface> entityGroups)
 	{
+		logger.info(containerList.size() + "AbstractEntityCache.createCache()"
+				+ entityGroups.size());
 		Set<ContainerInterface> containerSet = new HashSet<ContainerInterface>();
 		Set<EntityGroupInterface> entityGroupsSet = new HashSet<EntityGroupInterface>();
 		Set<CategoryInterface> categorySet = new HashSet<CategoryInterface>();

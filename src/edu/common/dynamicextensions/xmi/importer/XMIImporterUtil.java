@@ -6,10 +6,14 @@ import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.xmi.XMIConfiguration;
 
 public class XMIImporterUtil
 {
@@ -37,6 +41,9 @@ public class XMIImporterUtil
 		}
 	}
 
+	/**
+	 * @return container list
+	 */
 	public static List<ArrayList> getProcessedContainerList()
 	{
 		List<ArrayList> processedContainerListEntityList = new ArrayList<ArrayList>();
@@ -45,5 +52,17 @@ public class XMIImporterUtil
 		processedContainerListEntityList.add(0, processedContainerList);
 		processedContainerListEntityList.add(1, processedEntityList);
 		return processedContainerListEntityList;
+	}
+
+	/**
+	 * @param entityGroup
+	 * @param xmiConfigurationObject
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void populateEntityForConstraintProperties(EntityGroupInterface entityGroup,
+			XMIConfiguration xmiConfigurationObject) throws DynamicExtensionsSystemException
+	{
+		DynamicExtensionsUtility.populateEntityForConstraintProperties(entityGroup,
+				xmiConfigurationObject);
 	}
 }

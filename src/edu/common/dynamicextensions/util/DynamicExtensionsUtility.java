@@ -84,6 +84,7 @@ import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
+import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.AbstractBizLogic;
@@ -252,9 +253,9 @@ public class DynamicExtensionsUtility
 		ContainerInterface baseContainer = baseContainerObject;
 		while (baseContainer != null)
 		{
-			Collection controlCollection = baseContainer.getControlCollection();
+			Collection controls = baseContainer.getControlCollection();
 
-			for (Iterator iterator = controlCollection.iterator(); iterator.hasNext();)
+			for (Iterator iterator = controls.iterator(); iterator.hasNext();)
 			{
 				Control objControl = (Control) iterator.next();
 				if (objControl instanceof AbstractContainmentControl)
@@ -270,6 +271,7 @@ public class DynamicExtensionsUtility
 				}
 				objControl.setValue(null);
 			}
+
 			baseContainer = baseContainer.getBaseContainer();
 		}
 
@@ -406,14 +408,17 @@ public class DynamicExtensionsUtility
 		Variables.applicationCvsTag = cvsTag;
 		Logger.out.info("========================================================");
 		Logger.out.info("Application Information");
-		Logger.out.info("Name: " + DynamicExtensionDAO.getInstance().getAppName());
-		Logger.out.info("CVS TAG: " + Variables.applicationCvsTag);
-		Logger.out.info("Path: " + serviceLocator.getAppHome());
+		Logger.out.info("-----------------------");
+		Logger.out.info("Name : " + DynamicExtensionDAO.getInstance().getAppName());
+		Logger.out.info("CVS TAG : " + Variables.applicationCvsTag);
+		Logger.out.info("Path : " + serviceLocator.getAppHome());
 		Logger.out.info("========================================================");
 
 		try
 		{
-			Logger.out.info("Preloading the DE metadata....This may take a few minutes");
+			Logger.out.info(" ");
+			Logger.out.info("Preloading the DE metadata....this may take a few minutes!!");
+			Logger.out.info(" ");
 		}
 		catch (Exception e)
 		{
@@ -862,8 +867,8 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * @param entity
-	 * @param entitySet
+	 * @param entityGroup
+	 * @return entity collection
 	 */
 	public static List<EntityInterface> getUnsavedEntities(EntityGroupInterface entityGroup)
 	{
@@ -882,7 +887,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * @param entity
+	 * @param entityGroup
 	 * @param entitySet
 	 */
 	public static List<EntityInterface> getSavedEntities(EntityGroupInterface entityGroup)
@@ -940,8 +945,9 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * @param strDate
-	 * @return
+	 * @param strDate start date
+	 * @param removeTime
+	 * @return formated date
 	 */
 	public static String formatMonthAndYearDate(String strDate, boolean removeTime)
 	{
@@ -953,7 +959,8 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * @param strDate
-	 * @return
+	 * @param removeTime
+	 * @return formated date
 	 */
 	public static String formatYearDate(String strDate, boolean removeTime)
 	{
@@ -1286,7 +1293,7 @@ public class DynamicExtensionsUtility
 		EntityGroupInterface entityGroup = null;
 		DefaultBizLogic bizlogic = BizLogicFactory.getDefaultBizLogic();
 		bizlogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
-		System.out.println("-retrieveEntityGroup APP NAME-----"
+		Logger.out.info("-retrieveEntityGroup APP NAME-----"
 				+ DynamicExtensionDAO.getInstance().getAppName());
 		bizlogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
 		//
@@ -1384,6 +1391,7 @@ public class DynamicExtensionsUtility
 	/**
 	 * This method updates the DynamicExtensions cache with updated container
 	 * @param updatedContainer
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void updateDynamicExtensionsCache(ContainerInterface updatedContainer)
 			throws DynamicExtensionsSystemException
@@ -1416,6 +1424,8 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * Method to check if data type is numeric i.e long,integer,short,float,double
+	 * @param dataType
+	 * @return true if data type is numeric
 	 */
 	public static boolean isDataTypeNumeric(String dataType)
 	{
@@ -1622,6 +1632,7 @@ public class DynamicExtensionsUtility
 		cnstrKeyProp.clear();
 		if (parentEntity == null)
 		{
+			Logger.out.info("");
 			//do nothing as parent entity is null
 		}
 		else if ((EntityManagerUtil.isIdAttributePresent(parentEntity) && EntityManagerUtil
@@ -2287,5 +2298,129 @@ public class DynamicExtensionsUtility
 	public static void closeHibernateDAO(HibernateDAO hibernateDao) throws DAOException
 	{
 		hibernateDao.closeSession();
+	}
+
+	/**
+	 * @param entityGroup entityGroup object
+	 * @param xmiConfigurationObject xml configuration
+	 * @throws DynamicExtensionsSystemException fails to populate entity
+	 */
+	public static void populateEntityForConstraintProperties(EntityGroupInterface entityGroup,
+			XMIConfiguration xmiConfigurationObject) throws DynamicExtensionsSystemException
+	{
+		HibernateDAO hibernateDao = null;
+		try
+		{
+			String appName = DynamicExtensionDAO.getInstance().getAppName();
+			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+					.getDAO();
+			hibernateDao.openSession(null);
+
+			// populate entity for generating constraint properties if it has any parent set
+			for (EntityInterface entity : entityGroup.getEntityCollection())
+			{
+				populateEntityForConstraintPropertiesInheritance(entity, xmiConfigurationObject
+						.isAddColumnForInherianceInChild(), hibernateDao);
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Exception encountered while populating constraint properties for entity.");
+		}
+		finally
+		{
+			try
+			{
+				hibernateDao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(
+						"Exception encountered while closing session.");
+			}
+		}
+	}
+
+	/**
+	 * @param childEntity child entity object
+	 * @param isAddColumnForInheritance if true then add column for inheritance
+	 * @param hibernateDao DAO object
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static void populateEntityForConstraintPropertiesInheritance(
+			EntityInterface childEntity, boolean isAddColumnForInheritance,
+			HibernateDAO hibernateDao) throws DynamicExtensionsSystemException
+	{
+		EntityInterface parentEntity = childEntity.getParentEntity();
+		Long identifier = childEntity.getId();
+		Entity dbaseCopy;
+		if (identifier == null && parentEntity != null)
+		{
+			getConstraintKeyProperties(childEntity, parentEntity, isAddColumnForInheritance);
+		}
+		else if (identifier != null)
+		{
+			try
+			{
+				dbaseCopy = (Entity) hibernateDao.retrieveById(Entity.class.getCanonicalName(),
+						identifier);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+			if (EntityManagerUtil.isParentChanged((Entity) childEntity, dbaseCopy)
+					|| EntityManagerUtil.isPrimaryKeyChanged(parentEntity, hibernateDao))
+			{
+				getConstraintKeyProperties(childEntity, parentEntity, isAddColumnForInheritance);
+			}
+		}
+
+	}
+
+	/**
+	 * @param association association object
+	 * @param hibernateDao DAO object
+	 * @return ConstraintProperties
+	 * @throws DynamicExtensionsSystemException fails to set Constraint Key Properties
+	 */
+	public static ConstraintPropertiesInterface populateConstraintPropertiesForAssociation(
+			AssociationInterface association, HibernateDAO hibernateDao)
+			throws DynamicExtensionsSystemException
+	{
+		Long identifier = association.getId();
+		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
+		if (identifier == null)
+		{
+			constraintProperties = getConstraintKeyPropertiesForAssociation(association);
+		}
+		else
+		{
+			AssociationInterface dbaseCopy;
+			try
+			{
+				dbaseCopy = (AssociationInterface) hibernateDao.retrieveById(Association.class
+						.getCanonicalName(), identifier);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
+
+			if (EntityManagerUtil.isCardinalityChanged(association, dbaseCopy)
+					|| EntityManagerUtil.isPrimaryKeyChanged(association.getEntity(), hibernateDao)
+					|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity(),
+							hibernateDao))
+			{
+				association.getConstraintProperties()
+						.getSrcEntityConstraintKeyPropertiesCollection().clear();
+				association.getConstraintProperties()
+						.getTgtEntityConstraintKeyPropertiesCollection().clear();
+				constraintProperties = getConstraintKeyPropertiesForAssociation(association);
+			}
+		}
+
+		return constraintProperties;
 	}
 }

@@ -1,7 +1,5 @@
 package edu.wustl.cab2b.common.queryengine;
 
-import java.util.Date;
-
 import edu.wustl.common.querysuite.factory.QueryObjectFactory;
 
 /**

@@ -3317,8 +3317,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entityId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAttributeId(java.lang.String, java.lang.Long)
+	/**
+	 * @param attrName name of attribute
+	 * @param entityId identifier of entity
+	 * @return attributeId form entity based on attribute name
+	 * @throws DynamicExtensionsSystemException fails to get attributeId form entity based on attribute name
 	 */
 	public Long getAttributeId(String attrName, Long entityId)
 			throws DynamicExtensionsSystemException
@@ -3339,8 +3342,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return attrId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAttributeTypeInformation(java.lang.Long)
+	/**
+	 * @param attrId identifier of an attribute
+	 * @return AttributeTypeInformationInterface based on attribute id
+	 * @throws DynamicExtensionsSystemException fails to get AttributeTypeInformationInterface based on attribute Id
 	 */
 	public AttributeTypeInformationInterface getAttributeTypeInformation(Long attrId)
 			throws DynamicExtensionsSystemException
@@ -3360,8 +3365,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return attrTypeInfo;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getContainerIdByCaption(java.lang.String)
+	/**
+	 * @param contCaption Caption of container
+	 * @return containerId container id
+	 * @throws DynamicExtensionsSystemException fails to get containerId based on container caption
 	 */
 	public Long getContainerIdByCaption(String contCaption) throws DynamicExtensionsSystemException
 	{
@@ -3402,6 +3409,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				subParams.put("0", new NamedQueryParam(DBTypes.LONG, targetEntityId));
 				subParams.put("1", new NamedQueryParam(DBTypes.STRING,
 						DEConstants.COLLECTIONATTRIBUTE + "%"));
+				subParams.put("2", new NamedQueryParam(DBTypes.STRING,
+						DEConstants.COLLECTIONATTRIBUTE_OLD + "%"));
 
 				Collection attributeIds = executeHQL("getMultiSelAttrId", subParams);
 				if (attributeIds != null && !attributeIds.isEmpty())
@@ -3534,10 +3543,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
 		substParams.put("0", new NamedQueryParam(DBTypes.LONG, pathId));
-		Collection<Long> pathAssociationRelationIdCollection = null;
-		pathAssociationRelationIdCollection = executeHQL("getPathAssociationRelationIdCollection",
+		Collection<Long> pathAssoRelationIdCollection = null;
+		pathAssoRelationIdCollection = executeHQL("getPathAssociationRelationIdCollection",
 				substParams);
-		return pathAssociationRelationIdCollection;
+		return pathAssoRelationIdCollection;
 	}
 
 	/**

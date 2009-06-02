@@ -22,6 +22,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
@@ -529,7 +530,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 						.getCanonicalName(), savedEntity.getId());
 
 				List<String> updateQueries = queryBuilder.getUpdateEntityQueryList(
-						(Entity) savedEntity, (Entity) dbaseCopy, revQueries);
+						(Entity) savedEntity, (Entity) dbaseCopy, revQueries, hibernateDAO);
 				if (updateQueries != null && !updateQueries.isEmpty())
 				{
 					queries.addAll(updateQueries);
@@ -556,12 +557,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		return queryBuilder.isDataPresent(tableName);
 	}
 
+	
 	/**
-	 * getRole.
-	 * @param assoType
-	 * @param name
-	 * @param minCard
-	 * @param maxCard
+	 * @param assoType type of association
+	 * @param name name of association
+	 * @param minCard minimum cardinality
+	 * @param maxCard maximum cardinality
 	 * @return
 	 */
 	public static RoleInterface getRole(AssociationType assoType, String name, Cardinality minCard,
@@ -576,6 +577,11 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		return role;
 	}
 
+	/**
+	 * @param tableName table name
+	 * @return number of records
+	 * @throws DynamicExtensionsSystemException
+	 */
 	public static int getNoOfRecordInTable(String tableName)
 			throws DynamicExtensionsSystemException
 	{
@@ -584,9 +590,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * @param jdbcDAO
-	 * @param query query to be executed
-	 * @return
+	 * @param queryList queries to be executed
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void executeDML(List<String> queryList) throws DynamicExtensionsSystemException
@@ -636,11 +640,69 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				+ "(activity_status,identifier,"
 				+ attribute.getColumnProperties().getName()
 				+ ","
-				+ association.getConstraintProperties().getTgtEntityConstraintKeyProperties()
-						.getTgtForiegnKeyColumnProperties().getName() + ") "
+				+ Constants.ASSO_TGT_ENT_CONSTR_KEY_PROP + ") "
 				+ "(select activity_status,identifier,"
 				+ originalAttribute.getColumnProperties().getName() + " ,identifier from "
 				+ entity.getTableProperties().getName() + ")";
+	}
+	
+	/**
+	 * This method replaces deprecated target entity constraint key properties with the new ones.
+	 * @param multiSelMigrationQueries
+	 * @param multiselectMigartionScripts
+	 */
+	public static List<String> updateSqlScriptToMigrateOldDataForMultiselectAttribute(Map<AssociationInterface, String> multiselectMigartionScripts)
+	{
+		List<String> multiSelMigrationQueries = new ArrayList<String>();
+		for (AssociationInterface association : multiselectMigartionScripts.keySet())
+		{
+			String query = changeTgtEntityConstraintKeyPropertiesInQuery(association, multiselectMigartionScripts.get(association));
+			multiSelMigrationQueries.add(query);
+		}
+		
+		return multiSelMigrationQueries;
+	}
+	
+	/**
+	 * This method replaces deprecated target entity constraint key properties with the new ones.
+	 * @param association association whose target constraint key properties has to change
+	 * @param query
+	 */
+	private static String changeTgtEntityConstraintKeyPropertiesInQuery(AssociationInterface association, String query)
+	{
+		String newTgtEntConstrKeyProp = association.getConstraintProperties().getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
+		String newQuery = query.replace(edu.common.dynamicextensions.ui.util.Constants.ASSO_TGT_ENT_CONSTR_KEY_PROP, newTgtEntConstrKeyProp);
+		return newQuery;
+	}
+
+	/**
+	 * @param entity entity object
+	 * @param hibernateDao DAO object
+	 * @return true if primary key of an entity is changed else false
+	 */
+	public static boolean isPrimaryKeyChanged(EntityInterface entity,
+			HibernateDAO hibernateDao)
+	{
+		boolean isChanged = false;
+		if (entity != null)
+		{
+			Long entityId = entity.getId();
+			if (entityId != null)
+			{
+				EntityInterface dbaseCopy = null;
+				try
+				{
+					dbaseCopy = (Entity) hibernateDao.retrieveById(Entity.class
+							.getCanonicalName(), entityId);
+				}
+				catch (DAOException e)
+				{
+					Logger.out.debug(e.getMessage());
+				}
+				isChanged = isPrimaryKeyChanged(entity, dbaseCopy);
+			}
+		}
+		return isChanged;
 	}
 
 }

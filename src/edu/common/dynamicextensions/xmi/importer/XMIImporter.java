@@ -48,6 +48,7 @@ public class XMIImporter
 		FileInputStream fileInputStream = null;
 		try
 		{
+			long startTime = System.currentTimeMillis();
 			if (args.length == 0)
 			{
 				throw new Exception("Please Specify the file name to be imported");
@@ -109,11 +110,20 @@ public class XMIImporter
 			xmiImportProcessor.setXmiConfigurationObject(xmiConfiguration);
 			xmiImportProcessor.processXmi(uml, domainModelName, packageName, containerNames);
 			Logger.out.info("--------------- Done ------------");
+			long endTime = System.currentTimeMillis();
 
+			long totalTime = endTime - startTime;
+
+			Logger.out.info("");
+			Logger.out.info("---------------- IMPORT_XMI Task ----------------");
+			Logger.out.info("Time taken (in seconds) = " + totalTime / 1000);
+			Logger.out.info("Time taken (in minutes) = " + (totalTime / 1000) / 60);
+			Logger.out.info("---------------- IMPORT_XMI Task ----------------");
+			Logger.out.info("");
 		}
 		catch (Exception e)
 		{
-			Logger.out.debug("Fatal error reading XMI."+e.getMessage(),e);
+			Logger.out.debug("Fatal error reading XMI." + e.getMessage(), e);
 		}
 		finally
 		{

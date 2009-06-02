@@ -34,7 +34,7 @@ import edu.wustl.common.util.logger.LoggerConfig;
 public class ImportPermissibleValues
 {
 
-	static 
+	static
 	{
 		LoggerConfig.configureLogger(System.getProperty("user.dir"));
 	}
@@ -55,10 +55,8 @@ public class ImportPermissibleValues
 	}
 
 	/**
-	 *
-	 * @return
-	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 * @throws ParseException
 	 */
 	public void importValues() throws DynamicExtensionsApplicationException,
@@ -184,6 +182,11 @@ public class ImportPermissibleValues
 		}
 	}
 
+	/**
+	 * @param args command line arguments
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
 	public static void main(String args[]) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
@@ -200,11 +203,15 @@ public class ImportPermissibleValues
 			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues(filePath);
 			importPermissibleValues.importValues();
 
-			Logger.out.info("Added permissible values successfully!!!!");
+			Logger.out.info(" ");
+			Logger.out.info("---------------------------------------");
+			Logger.out.info("Added permissible values successfully!!");
+			Logger.out.info("---------------------------------------");
+			Logger.out.info(" ");
 		}
 		catch (Exception ex)
 		{
-			Logger.out.info("Exception: ",ex);
+			Logger.out.info("Exception: ", ex);
 			throw new RuntimeException(ex);
 		}
 	}

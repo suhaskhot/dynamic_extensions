@@ -254,7 +254,7 @@
    		select absAttr.id from AbstractAttribute absAttr where absAttr.entity.id = ? and absAttr.name = ?
    </query>
    <query name="getMultiSelAttrId">
-   		select absAttr.id from AbstractAttribute absAttr where absAttr.entity.id = ? and absAttr.name like ?
+   		select absAttr.id from AbstractAttribute absAttr where absAttr.entity.id = ? and (absAttr.name like ? or absAttr.name like ?)
    </query>
    <query name="getAttributeTypeObject">
    		select attr.attributeTypeInformationCollection from Attribute attr where attr.id = ?

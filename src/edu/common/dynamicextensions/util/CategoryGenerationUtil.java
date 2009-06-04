@@ -266,10 +266,12 @@ public class CategoryGenerationUtil
 			// Path stored is from the root. 
 			List<String> pathsForEntity = paths.get(entityName);
 
-			List<AssociationInterface> assocaitions = new ArrayList<AssociationInterface>();
+			List<AssociationInterface> associations = new ArrayList<AssociationInterface>();
 			Iterator<String> entNamesIter = pathsForEntity.iterator();
 
-			String srcEntityName = entNamesIter.next();
+			String srcEntityName = getEntityNameExcludingAssociationRoleName(entNamesIter.next());
+			String associationRoleName = getAssociationRoleName(srcEntityName);
+			
 			EntityInterface sourceEntity = entityGroup.getEntityByName(srcEntityName);
 			CategoryValidator.checkForNullRefernce(sourceEntity,
 					"ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
@@ -277,26 +279,15 @@ public class CategoryGenerationUtil
 
 			while (entNamesIter.hasNext())
 			{
-				EntityInterface targetEntity = entityGroup.getEntityByName(entNamesIter.next());
-				for (AssociationInterface association : sourceEntity.getAssociationCollection())
-				{
-					if (association.getTargetEntity() == targetEntity)
-					{
-						assocaitions.add(association);
-					}
-				}
+				String targetEntityName = entNamesIter.next();
+				EntityInterface targetEntity = entityGroup.getEntityByName(getEntityNameExcludingAssociationRoleName(targetEntityName));
+				addAssociation(sourceEntity,targetEntity,associationRoleName,associations);
 
 				// Add all parent entity associations also to the list.
 				EntityInterface parentEntity = sourceEntity.getParentEntity();
 				while (parentEntity != null)
 				{
-					for (AssociationInterface association : parentEntity.getAssociationCollection())
-					{
-						if (association.getTargetEntity() == targetEntity)
-						{
-							assocaitions.add(association);
-						}
-					}
+					addAssociation(parentEntity,targetEntity,associationRoleName,associations);
 
 					parentEntity = parentEntity.getParentEntity();
 				}
@@ -305,9 +296,9 @@ public class CategoryGenerationUtil
 				sourceEntity = targetEntity;
 			}
 
-			entityPaths.put(entityName, assocaitions);
+			entityPaths.put(entityName, associations);
 
-			if (pathsForEntity.size() > 1 && assocaitions.isEmpty())
+			if (pathsForEntity.size() > 1 && associations.isEmpty())
 			{
 				CategoryValidator.checkForNullRefernce(null, "ERROR: PATH DEFINED FOR THE ENTITY "
 						+ entityName + " IS NOT CORRECT");
@@ -316,7 +307,65 @@ public class CategoryGenerationUtil
 
 		return entityPaths;
 	}
-
+	/**
+	 * @throws DynamicExtensionsSystemException 
+	 * 
+	 */
+	private static void addAssociation(EntityInterface sourceEntity,EntityInterface targetEntity,String associationRoleName,List<AssociationInterface> associations) throws DynamicExtensionsSystemException
+	{
+		for (AssociationInterface association : sourceEntity.getAssociationCollection())
+		{
+			if (association.getTargetEntity().equals(targetEntity))
+			{
+				if (associationRoleName != null
+						&& associationRoleName.length() > 0
+						&& associationRoleName.equals(association
+								.getTargetRole().getName()))
+				{
+					associations.add(association);
+					break;
+				}
+				else if (associationRoleName != null
+						&& associationRoleName.length() == 0)
+				{
+					associations.add(association);
+					break;
+				}
+				else
+				{
+					CategoryValidator.checkForNullRefernce(null, "ERROR IN DEFINING PATH FOR THE ENTITY "
+							+ sourceEntity.getName() + " IS NOT CORRECT");
+				}
+			}
+		}
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getEntityNameExcludingAssociationRoleName(String entityName)
+	{
+		String newEntityName = entityName;
+		String associationRoleName = getAssociationRoleName(entityName);
+		if (associationRoleName != null && associationRoleName.length() > 0)
+		{
+			newEntityName = entityName.replace(associationRoleName, "");
+		}
+		return newEntityName;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getAssociationRoleName(String entityName)
+	{
+		String associationRoleName = "";
+		if (entityName != null && entityName.indexOf("(") != -1 && entityName.indexOf(")") != -1)
+		{
+			associationRoleName = entityName.substring(entityName.indexOf("("),entityName.indexOf(")") + 1);
+		}
+		return associationRoleName;
+	}
 	/**
 	 * This method gets the relative path.
 	 * @param entityNameList ordered entities names in the path

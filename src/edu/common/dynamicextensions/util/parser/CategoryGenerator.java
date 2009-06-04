@@ -740,7 +740,10 @@ public class CategoryGenerator
 			String entityNameForEntityAssociationMap = CategoryGenerationUtil
 					.getEntityNameForAssociationMap(categoryPaths[0]);
 
-			EntityInterface entity = entityGroup.getEntityByName(entityName);
+			EntityInterface entity = entityGroup
+			.getEntityByName(CategoryGenerationUtil
+					.getEntityNameExcludingAssociationRoleName(entityName));
+			
 			categoryFileParser.readNext();
 			String attributeName = categoryFileParser.getRelatedAttributeName();
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -948,8 +951,8 @@ public class CategoryGenerator
 				// the instance information exists in the entity group.
 				for (int i = 0; i < categoryEntitiesInPath.length; i++)
 				{
-					String entName = categoryEntitiesInPath[i].substring(0,
-							categoryEntitiesInPath[i].indexOf("["));
+					String entName = CategoryGenerationUtil.getEntityNameExcludingAssociationRoleName(categoryEntitiesInPath[i].substring(0,
+							categoryEntitiesInPath[i].indexOf("[")));
 
 					if (i + 1 <= categoryEntitiesInPath.length - 1)
 					{

@@ -40,7 +40,7 @@ public interface CategoryHelperInterface
 		TEXT_FIELD_CONTROL("textField"), LIST_BOX_CONTROL("listBox"), DATE_PICKER_CONTROL(
 				"datePicker"), FILE_UPLOAD_CONTROL("fileUpload"), RADIO_BUTTON_CONTROL(
 				"radioButton"), TEXT_AREA_CONTROL("textArea"), CHECK_BOX_CONTROL("checkBox"), COMBO_BOX_CONTROL(
-				"comboBox"),LABEL_CONTROL("label");
+				"comboBox"), LABEL_CONTROL("label");
 
 		String value;
 
@@ -90,7 +90,7 @@ public interface CategoryHelperInterface
 	 */
 	void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
-	
+
 	/**
 	 * Saves a category metadata Only .
 	 * @param category category object to be saved.
@@ -99,7 +99,6 @@ public interface CategoryHelperInterface
 	 */
 	void saveCategoryMetadata(CategoryInterface category) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
-
 
 	/**
 	 * Create category container and category entity from given entity.
@@ -144,8 +143,7 @@ public interface CategoryHelperInterface
 	 * @param parentContainer parentForm
 	 * @param childContainer childForm
 	 */
-	void setParentContainer(ContainerInterface parentContainer,
-			ContainerInterface childContainer);
+	void setParentContainer(ContainerInterface parentContainer, ContainerInterface childContainer);
 
 	/**
 	 * Associate category containers with each other.
@@ -164,11 +162,11 @@ public interface CategoryHelperInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	CategoryAssociationControlInterface associateCategoryContainers(
-			CategoryInterface category, EntityGroupInterface entityGroup,
-			ContainerInterface sourceContainer, ContainerInterface targetContainer,
-			List<AssociationInterface> associationList, int noOfEntries, String string)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	CategoryAssociationControlInterface associateCategoryContainers(CategoryInterface category,
+			EntityGroupInterface entityGroup, ContainerInterface sourceContainer,
+			ContainerInterface targetContainer, List<AssociationInterface> associationList,
+			int noOfEntries, String string) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * Method returns the next sequenceNumber
@@ -261,21 +259,19 @@ public interface CategoryHelperInterface
 	 * @param nextLine
 	 * @throws DynamicExtensionsSystemException
 	 */
-	void setOptions(
-			DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
+	void setOptions(DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
 			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException;
-	
+
 	/**
 	 * @param entity
 	 * @param attributeName
 	 * @param categoryEntity
 	 * @return
 	 */
-	public CategoryAttributeInterface getCategoryAttribute(EntityInterface entity,
-			String attributeName, CategoryEntityInterface categoryEntity);
-	
-	public ControlInterface addOrUpdateLabelControl(EntityInterface entity,
-			ContainerInterface container, String controlCaption,
-			long lineNumber, int xPosition, int yPosition);
+	CategoryAttributeInterface getCategoryAttribute(EntityInterface entity, String attributeName,
+			CategoryEntityInterface categoryEntity);
+
+	ControlInterface addOrUpdateLabelControl(EntityInterface entity, ContainerInterface container,
+			String controlCaption, long lineNumber, int xPosition, int yPosition);
 
 }

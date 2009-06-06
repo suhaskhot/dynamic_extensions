@@ -64,5 +64,5 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException;
+	boolean isValuePresent(Object value) throws DynamicExtensionsSystemException;
 }

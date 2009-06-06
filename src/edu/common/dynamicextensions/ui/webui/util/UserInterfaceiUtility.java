@@ -77,9 +77,6 @@ public class UserInterfaceiUtility
 		stringBuffer
 				.append("'/> </td></tr><tr width='100%'><td class='formFieldContainer_withoutBorder' colspan='3' align='center'><table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
-		String tableHeaderClass = "formLabelWithTopBorder";
-		String formFieldContainerClass = "formFieldContainerWithTopBorder";
-		String formformRequiredNoticeClass = "formRequiredNoticeWithTopBorder";
 		if (subContainer.getAddCaption())
 		{
 			stringBuffer.append("<tr width='100%'><td class='td_color_6e81a6' colspan='3' align='left'>");
@@ -87,9 +84,6 @@ public class UserInterfaceiUtility
 					.getFormattedStringForCapitalization(subContainer.getCaption()));
 			stringBuffer.append("</td></tr>");
 
-			tableHeaderClass = "formLabel_withoutBorder";
-			formFieldContainerClass = "formFieldContainer_withoutBorder";
-			formformRequiredNoticeClass = "formRequiredNotice_withoutBorder";
 		}
 
 		stringBuffer.append("<tr width='100%'><td colspan='3' width='100%'>");

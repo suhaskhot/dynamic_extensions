@@ -431,7 +431,7 @@ public class CategoryHelper implements CategoryHelperInterface
 				control = createOrUpdateCheckBoxControl(container, categoryAttribute);
 				break;
 			case LABEL_CONTROL :
-				CheckBoxInterface labelControl = (CheckBoxInterface) control;
+				control = (CheckBoxInterface) control;
 
 			default :
 				throw new DynamicExtensionsSystemException("ERROR: INCORRECT CONTROL TYPE");
@@ -1593,7 +1593,7 @@ public class CategoryHelper implements CategoryHelperInterface
 					checkboxControl.setIsHidden(false);
 					break;
 				case LABEL_CONTROL :
-					CheckBoxInterface labelControl = (CheckBoxInterface) control;
+					control = (CheckBoxInterface) control;
 					break;
 				default :
 					throw new DynamicExtensionsSystemException("ERROR: INCORRECT CONTROL TYPE");

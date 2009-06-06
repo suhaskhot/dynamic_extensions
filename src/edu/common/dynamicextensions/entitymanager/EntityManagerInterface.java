@@ -779,7 +779,7 @@ public interface EntityManagerInterface
 	 * @return association Id based on pathAssociationRelationId
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getAssociationIdFrmPathAssoRelationId(Long pathAssociationRelationId)
+	Long getAssociationIdFrmPathAssoRelationId(Long pathAssociationRelationId)
 					throws DynamicExtensionsSystemException;
 	
 	/**
@@ -787,7 +787,7 @@ public interface EntityManagerInterface
 	 * @return collection of PathAssociationRelationIds
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<Long> getPathAssociationRelationIds(Long pathId)
+	Collection<Long> getPathAssociationRelationIds(Long pathId)
 					throws DynamicExtensionsSystemException;
 	
 	/**
@@ -795,7 +795,7 @@ public interface EntityManagerInterface
 	 * @return source entity name
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getSrcEntityNameFromAssociationId(Long associationId)
+	String getSrcEntityNameFromAssociationId(Long associationId)
 					throws DynamicExtensionsSystemException;
 	
 	/**
@@ -803,7 +803,7 @@ public interface EntityManagerInterface
 	 * @return target entity name
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getTgtEntityNameFromAssociationId(Long associationId)
+	String getTgtEntityNameFromAssociationId(Long associationId)
 					throws DynamicExtensionsSystemException;
 	
 	/**
@@ -811,7 +811,7 @@ public interface EntityManagerInterface
 	 * @return instanceId of the source categoryEntity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getSrcInstanceIdFromAssociationRelationId(Long associationRelationId)
+	Long getSrcInstanceIdFromAssociationRelationId(Long associationRelationId)
 					throws DynamicExtensionsSystemException;
 	
 	/**
@@ -819,7 +819,7 @@ public interface EntityManagerInterface
 	 * @return instanceId of the target categoryEntity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Long getTgtInstanceIdFromAssociationRelationId(Long associationRelationId)
+	Long getTgtInstanceIdFromAssociationRelationId(Long associationRelationId)
 					throws DynamicExtensionsSystemException;
 	
 	
@@ -827,7 +827,7 @@ public interface EntityManagerInterface
 	 * @return categoryEntityId collection
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public Collection<Long> getAllCategoryEntityId()
+	Collection<Long> getAllCategoryEntityId()
 					throws DynamicExtensionsSystemException;
 	
 	/**
@@ -835,7 +835,7 @@ public interface EntityManagerInterface
 	 * @return name of category
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getCategoryEntityNameByCategoryEntityId(Long categoryId)
+	String getCategoryEntityNameByCategoryEntityId(Long categoryId)
 					throws DynamicExtensionsSystemException;
 
 }

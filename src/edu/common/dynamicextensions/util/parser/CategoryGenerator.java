@@ -227,8 +227,6 @@ public class CategoryGenerator
 						boolean isAttributePresent = entityInterface
 								.isAttributePresent(attributeName);
 
-						boolean isAttributeCategoryMatched = false;
-
 						CategoryValidator.checkForNullRefernce(getcategoryEntityName(
 								categoryEntityNameInstanceMap, categoryFileParser.getEntityName()),
 								ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)

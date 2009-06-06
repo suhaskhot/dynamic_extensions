@@ -192,15 +192,15 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param xPosition
 	 * @param yPosition
 	 */
-	public void setControlPosition(int xPosition, int yPosition);
+	void setControlPosition(int xPosition, int yPosition);
 
 	/**
 	 * @return
 	 */
-	public Integer getYPosition();
+	Integer getYPosition();
 
 	/**
 	 * @param position
 	 */
-	public void setYPosition(Integer position);
+	void setYPosition(Integer position);
 }

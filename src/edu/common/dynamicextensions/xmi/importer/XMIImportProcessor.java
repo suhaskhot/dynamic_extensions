@@ -3341,7 +3341,6 @@ public class XMIImportProcessor
 		}
 	}
 
-	
 	/**
 	 * this method persists changes to database
 	 * @param containerNames
@@ -3514,7 +3513,6 @@ public class XMIImportProcessor
 
 			for (AssociationInterface asson : supplierEntity.getAssociationCollection())
 			{
-				boolean found = false;
 
 				for (String assoName : associationNames)
 				{
@@ -3545,7 +3543,6 @@ public class XMIImportProcessor
 						//TO DO falguni see how to set constraint properties						
 						asson.getConstraintProperties().getTgtEntityConstraintKeyProperties()
 								.getTgtForiegnKeyColumnProperties().setName(assonColName);
-						found = true;
 						break;
 					}
 

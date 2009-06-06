@@ -335,9 +335,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 
 		if (this.yPosition != null && this.yPosition <= 1)
 		{
-			stringBuffer.append("</td>");
-
-			stringBuffer.append("<td class='formField_withoutBorder' valign='top'>");
+			stringBuffer.append("</td><td class='formField_withoutBorder' valign='top'>");
 		}
 		else if (this.showLabel != null && this.showLabel)
 		{

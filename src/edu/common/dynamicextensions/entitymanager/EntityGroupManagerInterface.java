@@ -103,5 +103,5 @@ public interface EntityGroupManagerInterface
 	 * @param tagKey
 	 * @return
 	 */
-	public String getTaggedValue(EntityGroupInterface entityGroup, String tagKey);
+	String getTaggedValue(EntityGroupInterface entityGroup, String tagKey);
 }

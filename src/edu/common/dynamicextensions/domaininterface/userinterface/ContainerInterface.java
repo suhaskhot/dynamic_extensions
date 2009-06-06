@@ -229,6 +229,6 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @param yPosition
 	 * @return
 	 */
-	public abstract ControlInterface getControlByPosition(Integer xPosition, Integer yPosition);
+	abstract ControlInterface getControlByPosition(Integer xPosition, Integer yPosition);
 
 }

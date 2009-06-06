@@ -47,17 +47,16 @@ public class DateRangeValidator implements ValidatorRuleInterface
 		{
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
-			String attributeName = attribute.getName();
 			String value = (String) valueObject;
 
 			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 			{
-				value = DynamicExtensionsUtility.formatMonthAndYearDate(value,false);
+				value = DynamicExtensionsUtility.formatMonthAndYearDate(value, false);
 				value = value.substring(0, value.length() - 4);
 			}
 			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 			{
-				value = DynamicExtensionsUtility.formatYearDate(value,false);
+				value = DynamicExtensionsUtility.formatYearDate(value, false);
 				value = value.substring(0, value.length() - 4);
 			}
 
@@ -69,13 +68,13 @@ public class DateRangeValidator implements ValidatorRuleInterface
 
 				if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 				{
-					parameterValue = DynamicExtensionsUtility
-							.formatMonthAndYearDate(parameterValue,false);
+					parameterValue = DynamicExtensionsUtility.formatMonthAndYearDate(
+							parameterValue, false);
 					parameterValue = parameterValue.substring(0, parameterValue.length() - 4);
 				}
 				if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 				{
-					parameterValue = DynamicExtensionsUtility.formatYearDate(parameterValue,false);
+					parameterValue = DynamicExtensionsUtility.formatYearDate(parameterValue, false);
 					parameterValue = parameterValue.substring(0, parameterValue.length() - 4);
 				}
 
@@ -90,19 +89,17 @@ public class DateRangeValidator implements ValidatorRuleInterface
 					List<String> placeHolders = new ArrayList<String>();
 					placeHolders.add(controlCaption);
 					placeHolders.add(dateFormat);
-					throw new DynamicExtensionsValidationException("Validation failed", ParseException,
-							"dynExtn.validation.Date", placeHolders);
+					throw new DynamicExtensionsValidationException("Validation failed",
+							ParseException, "dynExtn.validation.Date", placeHolders);
 				}
 
 				if ("min".equals(parameterName))
 				{
-					checkMinDate(parameterDate, valueDate, parameterValue,
-							controlCaption);
+					checkMinDate(parameterDate, valueDate, parameterValue, controlCaption);
 				}
 				else if ("max".equals(parameterName))
 				{
-					checkMaxDate(parameterDate, valueDate, parameterValue,
-							controlCaption);
+					checkMaxDate(parameterDate, valueDate, parameterValue, controlCaption);
 				}
 			}
 		}
@@ -116,9 +113,8 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	 * @param controlCaption
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkMinDate(Date parameterDate, Date valueDate,
-			String parameterValue, String controlCaption)
-			throws DynamicExtensionsValidationException
+	private void checkMinDate(Date parameterDate, Date valueDate, String parameterValue,
+			String controlCaption) throws DynamicExtensionsValidationException
 	{
 		if (valueDate.before(parameterDate))
 		{
@@ -138,9 +134,8 @@ public class DateRangeValidator implements ValidatorRuleInterface
 	 * @param controlCaption
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private void checkMaxDate(Date parameterDate, Date valueDate,
-			String parameterValue, String controlCaption)
-			throws DynamicExtensionsValidationException
+	private void checkMaxDate(Date parameterDate, Date valueDate, String parameterValue,
+			String controlCaption) throws DynamicExtensionsValidationException
 	{
 		if (valueDate.after(parameterDate))
 		{

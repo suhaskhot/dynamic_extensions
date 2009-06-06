@@ -32,7 +32,7 @@ public class DeleteRecordAction extends BaseDynamicExtensionsAction
 		try
 		{
 			String containerIdentifier = request.getParameter("containerIdentifier");
-			Long recordIdentifier = new Long(request.getParameter("recordIdentifier"));
+			Long recordIdentifier = Long.valueOf(request.getParameter("recordIdentifier"));
 
 			ContainerInterface container = DynamicExtensionsUtility
 					.getContainerByIdentifier(containerIdentifier);

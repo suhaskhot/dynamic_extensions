@@ -2063,7 +2063,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			while (resultSet.next())
 			{
 				value = resultSet.getObject(columnName);
-				recordIds.add(new Long(value.toString()));
+				recordIds.add(Long.valueOf(value.toString()));
 			}
 		}
 		catch (DAOException e)

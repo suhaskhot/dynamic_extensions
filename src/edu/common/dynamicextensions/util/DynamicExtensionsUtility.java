@@ -227,8 +227,8 @@ public class DynamicExtensionsUtility
 		try
 		{
 			// After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
-			List objectList = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, new Long(
-					identifier));
+			List objectList = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, Long
+					.valueOf(identifier));
 
 			if (objectList == null || objectList.isEmpty())
 			{

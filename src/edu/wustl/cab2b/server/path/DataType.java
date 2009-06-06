@@ -181,7 +181,7 @@ enum DataType {
                 UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
                 for (Enumeration e : arr) {
                     LongValueInterface value = domainObjectFactory.createLongValue();
-                    value.setValue(new Long(e.getPermissibleValue()));
+                    value.setValue(Long.valueOf(e.getPermissibleValue()));
                     DynamicExtensionUtility.setSemanticMetadata(value, e.getSemanticMetadata());
                     userDefinedDE.addPermissibleValue(value);
                 }

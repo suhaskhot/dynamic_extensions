@@ -155,7 +155,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	private void deleteRecord(String recordIdentfier, ContainerInterface containerInterface)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		Long recordNumber = new Long(recordIdentfier);
+		Long recordNumber = Long.valueOf(recordIdentfier);
 		DeleteRecordProcessor.getInstance().deleteRecord(containerInterface, recordNumber);
 
 	}
@@ -487,7 +487,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						{
 							for (String id : selectedValues)
 							{
-								Long identifier = new Long(id.trim());
+								Long identifier = Long.valueOf(id.trim());
 								valueList.add(identifier);
 							}
 						}
@@ -501,7 +501,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 				if (selectedValue != null && selectedValue.trim().length() != 0)
 				{
-					valueList.add(new Long(selectedValue.trim()));
+					valueList.add(Long.valueOf(selectedValue.trim()));
 				}
 			}
 

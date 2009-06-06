@@ -2893,7 +2893,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	private AssociationTreeObject processGroupBean(NameValueBean groupBean)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		AssociationTreeObject assoTreeObject = new AssociationTreeObject(new Long(groupBean
+		AssociationTreeObject assoTreeObject = new AssociationTreeObject(Long.valueOf(groupBean
 				.getValue()), groupBean.getName());
 
 		// Create a map of substitution parameters.

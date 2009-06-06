@@ -61,12 +61,12 @@ public class IdGeneratorUtil
 			List list = hibernateDAO.executeQuery("from " + IdGenerator.class.getName());
 			if (list.isEmpty())
 			{
-				nextAvailableId = new Long(1);
+				nextAvailableId = Long.valueOf(1);
 				IdGeneratorInterface idGeneratorObject = DomainObjectFactory.getInstance()
 						.createIdGenerator();
 
-				idGeneratorObject.setNextAvailableId(new Long(2));
-				idGeneratorObject.setId(new Long(1));
+				idGeneratorObject.setNextAvailableId(Long.valueOf(2));
+				idGeneratorObject.setId(Long.valueOf(1));
 				hibernateDAO.insert(idGeneratorObject,false);				
 				hibernateDAO.commit();
 				return nextAvailableId;

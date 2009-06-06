@@ -181,7 +181,7 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			UserInterfaceiUtility.clearContainerStack(request);
 
-			Long containerId = new Long(containerIdentifier);
+			Long containerId = Long.valueOf(containerIdentifier);
 			DynamicExtensionsCacheManager deCacheManager;
 			HashMap containerMap = new HashMap();
 

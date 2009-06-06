@@ -314,11 +314,11 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		if (formDefinitionForm != null)
 		{
 			//Get target entity container
-			Long selectedContainerId = new Long(0);
+			Long selectedContainerId = Long.valueOf(0);
 			if (formDefinitionForm.getSelectedObjectId() != null
 					&& formDefinitionForm.getSelectedObjectId().trim().length() != 0)
 			{
-				selectedContainerId = new Long(formDefinitionForm.getSelectedObjectId());
+				selectedContainerId = Long.valueOf(formDefinitionForm.getSelectedObjectId());
 			}
 
 			String createAs = formDefinitionForm.getCreateAs();

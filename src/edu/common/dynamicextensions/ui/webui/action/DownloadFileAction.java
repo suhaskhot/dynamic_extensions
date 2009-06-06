@@ -64,7 +64,7 @@ public class DownloadFileAction extends HttpServlet
 			String recordIdentifier = req.getParameter("recordIdentifier");
 
 			FileAttributeRecordValue fileAttributeRecordValue = entityManagerInterface
-					.getFileAttributeRecordValueByRecordId(attributeInterface, new Long(
+					.getFileAttributeRecordValueByRecordId(attributeInterface, Long.valueOf(
 							recordIdentifier));
 
 			byte[] filedata = fileAttributeRecordValue.getFileContent();

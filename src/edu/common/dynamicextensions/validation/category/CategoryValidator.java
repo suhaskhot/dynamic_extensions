@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.validation.category;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,14 +13,18 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.userinterface.TextField;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -26,9 +32,11 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsValidationExcepti
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
+import edu.common.dynamicextensions.util.parser.CategoryFileParser;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -54,8 +62,7 @@ public class CategoryValidator
 	public CategoryValidator(CategoryCSVFileParser categoryFileParser)
 	{
 		this.categoryFileParser = categoryFileParser;
-		ApplicationProperties
-				.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
+		ApplicationProperties.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
 	}
 
 	/**
@@ -103,7 +110,7 @@ public class CategoryValidator
 		String entityHQL = "select id from Entity entity where entity.entityGroup.id = "
 				+ entityGroupId + " and entity.name = '" + entityName + "'";
 		List entityIdList = DynamicExtensionsUtility.executeQuery(entityHQL);
-		if(entityIdList.isEmpty())
+		if (entityIdList.isEmpty())
 		{
 			throw new DynamicExtensionsSystemException(errorMessage);
 		}
@@ -146,7 +153,7 @@ public class CategoryValidator
 	public static void checkRangeAgainstAttributeValueRange(AttributeInterface attribute,
 			Map<String, Object> rules) throws DynamicExtensionsSystemException, ParseException
 	{
-		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		if (attribute == null)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -186,9 +193,11 @@ public class CategoryValidator
 	private static void validateRangeValues(AttributeInterface attribute,
 			Map<String, Object> catMinMaxValues) throws DynamicExtensionsSystemException
 	{
-		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
-		String minValue = (String) catMinMaxValues.get(CategoryCSVConstants.MIN.toLowerCase(locale));
-		String maxValue = (String) catMinMaxValues.get(CategoryCSVConstants.MAX.toLowerCase(locale));
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		String minValue = (String) catMinMaxValues
+				.get(CategoryCSVConstants.MIN.toLowerCase(locale));
+		String maxValue = (String) catMinMaxValues
+				.get(CategoryCSVConstants.MAX.toLowerCase(locale));
 
 		Map<String, String> values = new HashMap<String, String>();
 
@@ -281,7 +290,7 @@ public class CategoryValidator
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(),e);
+						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(), e);
 			}
 		}
 		else
@@ -297,7 +306,7 @@ public class CategoryValidator
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(),e);
+						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(), e);
 			}
 		}
 	}
@@ -337,7 +346,7 @@ public class CategoryValidator
 	private String getErrorMessageStart()
 	{
 		return ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-				+ categoryFileParser.getLineNumber() + " ";
+				+ categoryFileParser.getLineNumber();
 	}
 
 	/**
@@ -418,7 +427,19 @@ public class CategoryValidator
 
 			if (isMultiSelect != null && isMultiSelect && abstractAttribute != null)
 			{
-					if (!(abstractAttribute instanceof AssociationInterface))
+				if (!(abstractAttribute instanceof AssociationInterface))
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.INVALID_MULTI_SELECT)
+							+ attributeName);
+				}
+				else
+				{
+					Boolean isCollection = ((AssociationInterface) abstractAttribute)
+							.getIsCollection();
+					if (isCollection != null && !isCollection)
 					{
 						throw new DynamicExtensionsSystemException(ApplicationProperties
 								.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -426,36 +447,23 @@ public class CategoryValidator
 										.getValue(CategoryConstants.INVALID_MULTI_SELECT)
 								+ attributeName);
 					}
-					else
-					{
-						Boolean isCollection = ((AssociationInterface) abstractAttribute)
-								.getIsCollection();
-						if (isCollection != null && !isCollection)
-						{
-							throw new DynamicExtensionsSystemException(ApplicationProperties
-									.getValue(CategoryConstants.CREATE_CAT_FAILS)
-									+ ApplicationProperties
-											.getValue(CategoryConstants.INVALID_MULTI_SELECT)
-									+ attributeName);
-						}
-					}
+				}
 			}
 		}
 		else
 		{
-				if (abstractAttribute instanceof AssociationInterface)
+			if (abstractAttribute instanceof AssociationInterface)
+			{
+				Boolean isCollection = ((AssociationInterface) abstractAttribute).getIsCollection();
+				if (isCollection != null && isCollection)
 				{
-					Boolean isCollection = ((AssociationInterface) abstractAttribute)
-							.getIsCollection();
-					if (isCollection != null && isCollection)
-					{
-						throw new DynamicExtensionsSystemException(
-								ApplicationProperties.getValue(CategoryConstants.CREATE_CAT_FAILS)
-										+ ApplicationProperties
-												.getValue(CategoryConstants.INVALID_CONTROL_FOR_MULTI_SELECT)
-										+ attributeName);
-					}
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.INVALID_CONTROL_FOR_MULTI_SELECT)
+							+ attributeName);
 				}
+			}
 		}
 	}
 
@@ -548,6 +556,117 @@ public class CategoryValidator
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param controlType
+	 * @param lastControl
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void validateControlInSingleLine(String controlType, ControlInterface lastControl)
+			throws DynamicExtensionsSystemException
+	{
+		ControlEnum controlEnum = ControlEnum.get(controlType);
+		boolean isValidControlType = true;
+		if (isValidControlType(controlType)
+				&& (controlEnum.equals(ControlEnum.LIST_BOX_CONTROL)
+						|| controlEnum.equals(ControlEnum.COMBO_BOX_CONTROL) || controlEnum
+						.equals(ControlEnum.TEXT_FIELD_CONTROL)))
+		{
+			if (lastControl != null)
+			{
+				List<ControlInterface> controlsWithSameSequenceNumber = getAllControlWithSameSequenceNumber(
+						lastControl.getParentContainer(), lastControl.getSequenceNumber());
+				if (controlsWithSameSequenceNumber != null
+						&& controlsWithSameSequenceNumber.size() > 0)
+				{
+					if (!controlEnum.equals(getAllowedControlType(controlsWithSameSequenceNumber)))
+					{
+						isValidControlType = false;
+					}
+				}
+			}
+
+		}
+		else
+		{
+			isValidControlType = false;
+		}
+
+		if (!isValidControlType)
+		{
+			throw new DynamicExtensionsSystemException(getErrorMessageStart()
+					+ ApplicationProperties
+							.getValue("dyExtn.category.validation.singleLineDisaply")
+					+ categoryFileParser.getLineNumber());
+		}
+
+	}
+
+	/**
+	 * @param controlCollection
+	 * @return
+	 */
+	private static ControlEnum getAllowedControlType(List<ControlInterface> controlCollection)
+	{
+		ControlEnum controlEnum = null;
+		for (ControlInterface controlInterface : controlCollection)
+		{
+			if (controlInterface.getBaseAbstractAttribute() != null)
+			{
+				if (controlInterface instanceof ListBoxInterface)
+				{
+					controlEnum = ControlEnum.LIST_BOX_CONTROL;
+				}
+				else if (controlInterface instanceof TextFieldInterface)
+				{
+					controlEnum = ControlEnum.TEXT_FIELD_CONTROL;
+				}
+				else if (controlInterface instanceof ComboBoxInterface)
+				{
+					controlEnum = ControlEnum.COMBO_BOX_CONTROL;
+				}
+			}
+		}
+		return controlEnum;
+	}
+
+	/**
+	 * @param containerInterface
+	 * @param sequenceNumber
+	 * @return
+	 */
+	private static List<ControlInterface> getAllControlWithSameSequenceNumber(
+			ContainerInterface containerInterface, Integer sequenceNumber)
+	{
+		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
+		List<ControlInterface> controlsWithSameSequenceNumber = new ArrayList<ControlInterface>();
+		if (controlCollection != null && controlCollection.size() > 0)
+		{
+			for (ControlInterface controlInterface : controlCollection)
+			{
+				if (sequenceNumber.equals(controlInterface.getSequenceNumber()))
+				{
+					controlsWithSameSequenceNumber.add(controlInterface);
+				}
+			}
+		}
+		return controlsWithSameSequenceNumber;
+	}
+
+	/**
+	 * @param controlType
+	 * @return
+	 */
+	public static boolean isValidControlType(String controlType)
+	{
+		boolean isValid = true;
+		if (controlType == null)
+		{
+			isValid = false;
+		}
+		return isValid;
+
 	}
 
 }

@@ -38,7 +38,7 @@ import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
- * @author kunal_kamble
+ * @author kunal_kamble 
  * This class creates the category/categories defined in
  * the CSV file.
  */
@@ -133,7 +133,8 @@ public class CategoryGenerator
 				ContainerInterface container = null;
 				EntityInterface entityInterface = null;
 
-				// 5: Get the selected attributes and create the controls for them.
+				// 5: Get the selected attributes and create the controls for
+				// them.
 				List<String> categoryEntityName = null;
 				ControlInterface lastControl = null;
 				categoryEntityNameInstanceMap = new HashMap<String, String>();
@@ -141,10 +142,11 @@ public class CategoryGenerator
 
 				String previousEntityName = "";
 				boolean firstTimeinDisplayLabel = false;
-				//HashMap<String, List> sequenceMap = new HashMap<String, List>();
+				// HashMap<String, List> sequenceMap = new HashMap<String,
+				// List>();
 				int controlXPosition = 1;
 				int controlYPosition = 0;
-				
+
 				Map<String, String> commonControlOptions = null;
 
 				while (categoryFileParser.readNext())
@@ -199,7 +201,7 @@ public class CategoryGenerator
 
 							continue;
 						}
-						if(categoryFileParser.hasCommonControlOptions())
+						if (categoryFileParser.hasCommonControlOptions())
 						{
 							commonControlOptions = categoryFileParser.getCommonControlOptions();
 							categoryFileParser.readNext();
@@ -220,7 +222,8 @@ public class CategoryGenerator
 						entityInterface = entityGroup.getEntityByName(categoryFileParser
 								.getEntityName());
 
-						// Added for category inheritance, check if a given attribute is parent category attribute.
+						// Added for category inheritance, check if a given
+						// attribute is parent category attribute.
 						boolean isAttributePresent = entityInterface
 								.isAttributePresent(attributeName);
 
@@ -238,26 +241,26 @@ public class CategoryGenerator
 								containerCollection, getCategoryEntityName(categoryEntityName,
 										categoryFileParser.getEntityName()));
 
-						/*//Set this flag when attribute is just after display label,and set previous entity name ,so that we can verify whether all attributes are of same entity or other entities also.
-						if (firstTimeinDisplayLabel)
-						{
-							firstTimeinDisplayLabel = false;
-							previousEntityName = ((CategoryEntityInterface) container
-									.getAbstractEntity()).getName();
-						}
-						if ((previousEntityName != null
-								&& !previousEntityName.equals(container.getAbstractEntity()
-										.getName()) && !firstTimeinDisplayLabel))
-						{
-							List listofEntities = sequenceMap.get(container.getAbstractEntity()
-									.getName());
-							if (listofEntities == null)
-							{
-								listofEntities = new ArrayList<String>();
-							}
-							listofEntities.add(container.getAbstractEntity().getName());
-							sequenceMap.put(previousEntityName, listofEntities);
-						}*/
+						/*
+						 * //Set this flag when attribute is just after display
+						 * label,and set previous entity name ,so that we can
+						 * verify whether all attributes are of same entity or
+						 * other entities also. if (firstTimeinDisplayLabel) {
+						 * firstTimeinDisplayLabel = false; previousEntityName =
+						 * ((CategoryEntityInterface) container
+						 * .getAbstractEntity()).getName(); } if
+						 * ((previousEntityName != null &&
+						 * !previousEntityName.equals
+						 * (container.getAbstractEntity() .getName()) &&
+						 * !firstTimeinDisplayLabel)) { List listofEntities =
+						 * sequenceMap.get(container.getAbstractEntity()
+						 * .getName()); if (listofEntities == null) {
+						 * listofEntities = new ArrayList<String>(); }
+						 * listofEntities
+						 * .add(container.getAbstractEntity().getName());
+						 * sequenceMap.put(previousEntityName, listofEntities);
+						 * }
+						 */
 						AttributeInterface attribute = entityInterface
 								.getAttributeByName(attributeName);
 
@@ -294,8 +297,10 @@ public class CategoryGenerator
 						}
 						CategoryEntityInterface categoryEntity = (CategoryEntityInterface) container
 								.getAbstractEntity();
-						// If this is a parent attribute and currently the parent category entity is not created
-						// for given category entity, create parent category hierarchy up to where attribute is found.
+						// If this is a parent attribute and currently the
+						// parent category entity is not created
+						// for given category entity, create parent category
+						// hierarchy up to where attribute is found.
 						if (!isAttributePresent)
 						{
 							EntityInterface parentEntity = entityInterface.getParentEntity();
@@ -321,13 +326,16 @@ public class CategoryGenerator
 
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
+						getCategoryValidator()
+								.validateControlInSingleLine(controlType, lastControl);
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface,
 								attributeName, container, ControlEnum.get(controlType),
 								categoryFileParser.getControlCaption(), heading, controlNotes,
 								rules, permissibleValueOptions, categoryFileParser.getLineNumber(),
 								permissibleValues);
 
-						// Set default value for attribute's IsRelatedAttribute and IsVisible property.
+						// Set default value for attribute's IsRelatedAttribute
+						// and IsVisible property.
 						// This is required in case of edit of category entity.
 						((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface())
 								.setIsRelatedAttribute(false);
@@ -340,11 +348,11 @@ public class CategoryGenerator
 								.get(categoryFileParser.getControlType()));
 
 						Map<String, String> controlOptions = categoryFileParser.getControlOptions();
-						
-						if(commonControlOptions != null)
+
+						if (commonControlOptions != null)
 						{
-							categoryHelper.setOptions(lastControl, commonControlOptions, categoryFileParser
-								.getLineNumber());
+							categoryHelper.setOptions(lastControl, commonControlOptions,
+									categoryFileParser.getLineNumber());
 						}
 						categoryHelper.setOptions(lastControl, controlOptions, categoryFileParser
 								.getLineNumber());
@@ -354,8 +362,10 @@ public class CategoryGenerator
 						CategoryValidator.checkIsMultiSelectValid(entityInterface, attributeName,
 								lastControl);
 
-						// Clear category entity from related attribute collection of root category entity 
-						// only if no category attribute in this category entity is a related category attribute.
+						// Clear category entity from related attribute
+						// collection of root category entity
+						// only if no category attribute in this category entity
+						// is a related category attribute.
 						if (DynamicExtensionsUtility
 								.areNoRelatedCategoryAttributesPresent(container))
 						{
@@ -394,10 +404,11 @@ public class CategoryGenerator
 							containerCollection);
 				}
 
-				//Commented this code since the method is error prone
-				//TODO change this logic to reset the sequnces.
-				//				rearrangeControlSequence((ContainerInterface) category.getRootCategoryElement()
-				//						.getContainerCollection().iterator().next(), sequenceMap);
+				// Commented this code since the method is error prone
+				// TODO change this logic to reset the sequnces.
+				// rearrangeControlSequence((ContainerInterface)
+				// category.getRootCategoryElement()
+				// .getContainerCollection().iterator().next(), sequenceMap);
 				categoryList.add(category);
 
 			}
@@ -441,7 +452,7 @@ public class CategoryGenerator
 			EntityInterface entityInterface, List<String> categoryEntityName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		//Set this flag when sub category is just after display label
+		// Set this flag when sub category is just after display label
 		if (firstTimeinDisplayLabel)
 		{
 			firstTimeinDisplayLabel = false;
@@ -515,164 +526,6 @@ public class CategoryGenerator
 	}
 
 	/**
-	 * This function rearranges the sequences ,so that display is as per CSV file
-	 * @param containerObject
-	 * @param sequenceMap
-	 *//*
-	private void rearrangeControlSequence(ContainerInterface containerObject,
-			HashMap<String, List> sequenceMap)
-	{
-		//The sequencemap contains the keyentityname and list of categoryentity which requires to set after this entity on UI
-		//See for eg. root categoryentity is having 4 controls(category association + othercontrol) ,its sequence number is assigned as  per their parsing
-		//But in one association is specified as with other association under one display label itself ,so only one subcategory name is under rootcategory in CSV
-		//eg. DL :XXX
-		//    class A:A1
-		//    class B:B1
-		//    DL: root
-		//    subcategory:XXX
-		//  So here both attributes will be shown under same display label XXX ,so we need to change category association B's sequence number such that its after class A on UI
-		//
-		List<ControlInterface> listControl = containerObject.getAllControls();
-		rearrangeSequenceMap(sequenceMap);
-		Iterator<String> iterator = sequenceMap.keySet().iterator();
-		while (iterator.hasNext())
-		{
-			String keyName = (String) iterator.next();
-			List<String> entityNameList = sequenceMap.get(keyName);
-			int newSequenceNumber = 0;
-			for (String entityName : entityNameList)
-			{
-				int previousSequenceNumber = 0;
-				for (ControlInterface objControl : listControl)
-				{
-					if (objControl instanceof CategoryAssociationControl)
-					{
-						CategoryAssociationControl obj = ((CategoryAssociationControl) objControl);
-						String categoryName = ((CategoryAssociation) obj.getBaseAbstractAttribute())
-								.getTargetCategoryEntity().getName();
-						if (categoryName.equals(keyName))
-						{
-							previousSequenceNumber = objControl.getSequenceNumber();
-							break;
-						}
-
-					}
-				}
-
-				boolean modified = false;
-				for (int index = 0; index < listControl.size(); index++)
-				{
-					ControlInterface objControl = (ControlInterface) listControl.get(index);
-					if (objControl instanceof CategoryAssociationControl)
-					{
-						CategoryAssociationControl obj = ((CategoryAssociationControl) objControl);
-						String categoryName = ((CategoryAssociation) obj.getBaseAbstractAttribute())
-								.getTargetCategoryEntity().getName();
-						if (categoryName.equals(entityName))
-						{
-
-							if (newSequenceNumber == 0)
-							{
-								newSequenceNumber = ++previousSequenceNumber;
-							}
-							else
-							{
-								newSequenceNumber++;
-							}
-							objControl.setSequenceNumber(newSequenceNumber);
-
-							modified = true;
-
-						}
-						if (modified)
-						{
-							for (int j = 0; j < listControl.size(); j++)
-							{
-								ControlInterface controlObj = listControl.get(j);
-								if (controlObj instanceof CategoryAssociationControl)
-								{
-
-									String targetcategoryName = ((CategoryAssociation) controlObj
-											.getBaseAbstractAttribute()).getTargetCategoryEntity()
-											.getName();
-									if (targetcategoryName.equals(categoryName))
-									{
-										//skip its the same control ,whose sequence is modified.
-									}
-
-									else if (controlObj.getSequenceNumber() == newSequenceNumber)
-									{
-										controlObj.setSequenceNumber(++newSequenceNumber);
-
-									}
-									else if (controlObj.getSequenceNumber() >= newSequenceNumber)
-									{
-										//set all other control who has higher sequence number,increment it by 1
-										controlObj
-												.setSequenceNumber(controlObj.getSequenceNumber() + 1);
-									}
-								}
-							}
-							break;
-
-						}
-					}
-				}
-
-			}
-
-		}
-
-	}
-
-	*//**
-	 * @param sequenceMap
-	 *//*
-	private void rearrangeSequenceMap(HashMap<String, List> sequenceMap)
-	{
-
-		List<String> toberemoveKey = new ArrayList<String>();
-		Iterator<String> iterator = sequenceMap.keySet().iterator();
-		while (iterator.hasNext())
-		{
-			String keyName = (String) iterator.next();
-			List<String> listofEntities = sequenceMap.get(keyName);
-			List<String> elist = new ArrayList<String>();
-			elist.addAll(listofEntities);
-			findEntities(sequenceMap, listofEntities, toberemoveKey, elist);
-			sequenceMap.put(keyName, elist);
-		}
-		for (String key : toberemoveKey)
-		{
-			sequenceMap.remove(key);
-		}
-
-	}
-
-	*//**
-	 * @param sequenceMap
-	 * @param listofEntities
-	 * @param toberemoveKey
-	 * @param elist
-	 *//*
-	private void findEntities(HashMap<String, List> sequenceMap, List<String> listofEntities,
-			List<String> toberemoveKey, List<String> elist)
-	{
-
-		for (String ename : listofEntities)
-		{
-			if (sequenceMap.keySet().contains(ename))
-			{
-				List<String> additionalList = sequenceMap.get(ename);
-				elist.addAll(additionalList);
-				findEntities(sequenceMap, additionalList, toberemoveKey, elist);
-				toberemoveKey.add(ename);
-			}
-		}
-
-	}*/
-
-	/**
 	 * @param childCategoryEntity
 	 * @param parentEntity
 	 * @param entityGroup
@@ -740,10 +593,9 @@ public class CategoryGenerator
 			String entityNameForEntityAssociationMap = CategoryGenerationUtil
 					.getEntityNameForAssociationMap(categoryPaths[0]);
 
-			EntityInterface entity = entityGroup
-			.getEntityByName(CategoryGenerationUtil
+			EntityInterface entity = entityGroup.getEntityByName(CategoryGenerationUtil
 					.getEntityNameExcludingAssociationRoleName(entityName));
-			
+
 			categoryFileParser.readNext();
 			String attributeName = categoryFileParser.getRelatedAttributeName();
 			CategoryHelperInterface categoryHelper = new CategoryHelper();
@@ -774,8 +626,10 @@ public class CategoryGenerator
 			// Added for category inheritance.
 			boolean isAttributePresent = entity.isAttributePresent(attributeName);
 
-			// If this is the parent attribute and currently the parent category entity is not created
-			// for given category entity, create parent category hierarchy up to where attribute is found.
+			// If this is the parent attribute and currently the parent category
+			// entity is not created
+			// for given category entity, create parent category hierarchy up to
+			// where attribute is found.
 			if (!isAttributePresent)
 			{
 				EntityInterface parentEntity = entity.getParentEntity();
@@ -822,7 +676,8 @@ public class CategoryGenerator
 		{
 			parentEntity = childEntity.getParentEntity();
 
-			// Check whether the given cat.entity's parent category entity is created.
+			// Check whether the given cat.entity's parent category entity is
+			// created.
 			// If not created, then create it.
 			if (parentCategoryEntity == null)
 			{
@@ -838,7 +693,8 @@ public class CategoryGenerator
 				childcontainerInterface.setBaseContainer(parentContainer);
 			}
 
-			// Iterate over parent entity's attribute, check whether its present in parent entity.
+			// Iterate over parent entity's attribute, check whether its present
+			// in parent entity.
 			Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity
 					.getAbstractAttributeCollection().iterator();
 
@@ -947,12 +803,14 @@ public class CategoryGenerator
 				String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
 				entityName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
 
-				// Check if instance information is wrong, i.e. entity mentioned in
+				// Check if instance information is wrong, i.e. entity mentioned
+				// in
 				// the instance information exists in the entity group.
 				for (int i = 0; i < categoryEntitiesInPath.length; i++)
 				{
-					String entName = CategoryGenerationUtil.getEntityNameExcludingAssociationRoleName(categoryEntitiesInPath[i].substring(0,
-							categoryEntitiesInPath[i].indexOf("[")));
+					String entName = CategoryGenerationUtil
+							.getEntityNameExcludingAssociationRoleName(categoryEntitiesInPath[i]
+									.substring(0, categoryEntitiesInPath[i].indexOf("[")));
 
 					if (i + 1 <= categoryEntitiesInPath.length - 1)
 					{
@@ -1034,6 +892,7 @@ public class CategoryGenerator
 
 	/**
 	 * handleInstanceException.
+	 * 
 	 * @param sourceInstance
 	 * @param targetInstance
 	 * @throws DynamicExtensionsSystemException
@@ -1100,7 +959,8 @@ public class CategoryGenerator
 	{
 		if (categoryFileParser.getDefaultValue() == null)
 		{
-			//Validation-If category attribute is of type Read-only its default value must be specified 
+			// Validation-If category attribute is of type Read-only its default
+			// value must be specified
 			if (control.getIsReadOnly() != null && control.getIsReadOnly())
 			{
 				String attributeName = ((CategoryAttributeInterface) control
@@ -1131,6 +991,7 @@ public class CategoryGenerator
 
 	/**
 	 * This method populate the main form list for the given entity group
+	 * 
 	 * @param entityGroup
 	 */
 	private void populateMainFormList(EntityGroupInterface entityGroup)

@@ -313,7 +313,7 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private static void addAssociation(EntityInterface sourceEntity,EntityInterface targetEntity,String associationRoleName,List<AssociationInterface> associations) throws DynamicExtensionsSystemException
+	private static void addAssociation(EntityInterface sourceEntity,EntityInterface targetEntity,String associationRoleName,List<AssociationInterface> associations)
 	{
 		for (AssociationInterface association : sourceEntity.getAssociationCollection())
 		{

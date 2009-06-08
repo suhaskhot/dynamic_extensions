@@ -1940,7 +1940,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		Collection<AssociationDisplayAttributeInterface> assoAttributes = assoControl
 				.getAssociationDisplayAttributeCollection();
-
+		if (assoAttributes != null && assoAttributes.isEmpty())
+		{
+			return assoRecords;
+		}
 		if (assoControl instanceof SelectControl)
 		{
 			tgtEntityTable = ((AssociationInterface) ((SelectControl) assoControl)

@@ -324,8 +324,11 @@ public class CategoryGenerator
 
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
-						getCategoryValidator()
-								.validateControlInSingleLine(controlType, lastControl);
+						if (categoryFileParser.isSingleLineDisplayStarted())
+						{
+							getCategoryValidator().validateControlInSingleLine(controlType,
+									lastControl);
+						}
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface,
 								attributeName, container, ControlEnum.get(controlType),
 								categoryFileParser.getControlCaption(), heading, controlNotes,

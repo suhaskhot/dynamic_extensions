@@ -269,10 +269,10 @@ public class CategoryGenerationUtil
 			List<AssociationInterface> associations = new ArrayList<AssociationInterface>();
 			Iterator<String> entNamesIter = pathsForEntity.iterator();
 
-			String srcEntityName = getEntityNameExcludingAssociationRoleName(entNamesIter.next());
+			String srcEntityName = entNamesIter.next();
 			String associationRoleName = getAssociationRoleName(srcEntityName);
-			
-			EntityInterface sourceEntity = entityGroup.getEntityByName(srcEntityName);
+
+			EntityInterface sourceEntity = entityGroup.getEntityByName(getEntityNameExcludingAssociationRoleName(srcEntityName));
 			CategoryValidator.checkForNullRefernce(sourceEntity,
 					"ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
 							+ srcEntityName + " DOES NOT EXIST");
@@ -280,6 +280,7 @@ public class CategoryGenerationUtil
 			while (entNamesIter.hasNext())
 			{
 				String targetEntityName = entNamesIter.next();
+				
 				EntityInterface targetEntity = entityGroup.getEntityByName(getEntityNameExcludingAssociationRoleName(targetEntityName));
 				addAssociation(sourceEntity,targetEntity,associationRoleName,associations);
 
@@ -294,6 +295,7 @@ public class CategoryGenerationUtil
 
 				// Source entity should now be target entity.
 				sourceEntity = targetEntity;
+				associationRoleName = getAssociationRoleName(targetEntityName);
 			}
 
 			entityPaths.put(entityName, associations);
@@ -331,11 +333,6 @@ public class CategoryGenerationUtil
 					associations.add(association);
 					break;
 				}
-				else
-				{
-					CategoryValidator.checkForNullRefernce(null, "ERROR IN DEFINING PATH FOR THE ENTITY "
-							+ sourceEntity.getName() + " IS NOT CORRECT");
-				}
 			}
 		}
 	}
@@ -346,7 +343,7 @@ public class CategoryGenerationUtil
 	public static String getEntityNameExcludingAssociationRoleName(String entityName)
 	{
 		String newEntityName = entityName;
-		String associationRoleName = getAssociationRoleName(entityName);
+		String associationRoleName = getFullAssociationRoleName(entityName);
 		if (associationRoleName != null && associationRoleName.length() > 0)
 		{
 			newEntityName = entityName.replace(associationRoleName, "");
@@ -358,6 +355,19 @@ public class CategoryGenerationUtil
 	 * @return
 	 */
 	public static String getAssociationRoleName(String entityName)
+	{
+		String associationRoleName = "";
+		if (entityName != null && entityName.indexOf("(") != -1 && entityName.indexOf(")") != -1)
+		{
+			associationRoleName = entityName.substring(entityName.indexOf("(") + 1,entityName.indexOf(")"));
+		}
+		return associationRoleName;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getFullAssociationRoleName(String entityName)
 	{
 		String associationRoleName = "";
 		if (entityName != null && entityName.indexOf("(") != -1 && entityName.indexOf(")") != -1)
@@ -454,7 +464,7 @@ public class CategoryGenerationUtil
 	 */
 	public static String getEntityName(String categoryNameInCSV)
 	{
-		return categoryNameInCSV.substring(0, categoryNameInCSV.indexOf('['));
+		return getEntityNameExcludingAssociationRoleName(categoryNameInCSV.substring(0, categoryNameInCSV.indexOf('[')));
 	}
 
 	/**

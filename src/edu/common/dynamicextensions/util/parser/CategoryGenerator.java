@@ -398,7 +398,11 @@ public class CategoryGenerator
 
 				CategoryGenerationUtil.setRootContainer(category, container, containerCollection,
 						entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
-
+				
+				categoryValidator.isRootEntityUsedTwice(category
+						.getRootCategoryElement(), category
+						.getRootCategoryElement().getEntity());
+				
 				if (hasRelatedAttributes)
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
@@ -856,8 +860,6 @@ public class CategoryGenerator
 					}
 				}
 
-				categoryValidator.isRootEntityUsedTwice(entityName, mainFormList,
-						categoryEntityNameInstanceMap);
 				if (!categoryEntityName.contains(categoryEntName))
 				{
 					ContainerInterface container = null;

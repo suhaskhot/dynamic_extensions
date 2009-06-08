@@ -18,6 +18,8 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -354,29 +356,30 @@ public class CategoryValidator
 	 * @param catEntNames
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void isRootEntityUsedTwice(String entityName, List<String> mainForms,
-			Map<String, String> categoryEntityNameInstanceMap)
-			throws DynamicExtensionsSystemException
+	public void isRootEntityUsedTwice(CategoryEntityInterface rootCategoryEntity,EntityInterface rootEntityInterface)
+			throws DynamicExtensionsSystemException 
 	{
-		if (!mainForms.contains(entityName))
+		if (rootCategoryEntity != null)
 		{
-			return;
-		}
-
-		String entName = null;
-		String[] categoryEntitiesInPath = null;
-		for (String categoryEntityName : categoryEntityNameInstanceMap.keySet())
-		{
-			categoryEntitiesInPath = categoryEntityNameInstanceMap.get(categoryEntityName).split(
-					"->");
-			String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
-			entName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
-			if (entName.equals(entityName))
+			for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
+					.getCategoryAssociationCollection())
 			{
-				String errorMessage = getErrorMessageStart()
-						+ ApplicationProperties.getValue(CategoryConstants.ROOT_ENT_TWICE)
-						+ entityName;
-				throw new DynamicExtensionsSystemException(errorMessage);
+				if (categoryAssociationInterface.getTargetCategoryEntity()
+						.getEntity().equals(rootEntityInterface))
+				{
+					String errorMessage = getErrorMessageStart()
+							+ ApplicationProperties
+									.getValue(CategoryConstants.ROOT_ENT_TWICE)
+							+ categoryAssociationInterface
+									.getTargetCategoryEntity().getEntity()
+									.getName();
+					throw new DynamicExtensionsSystemException(errorMessage);
+				} 
+				else 
+				{
+					isRootEntityUsedTwice(categoryAssociationInterface
+							.getTargetCategoryEntity(),rootEntityInterface);
+				}
 			}
 		}
 	}

@@ -588,6 +588,28 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	}
 
 	/**
+	 * This method checks if all category attributes in a category entity are related attributes.
+	 * @param catEntity
+	 * @return true if all category attributes are related attributes, false otherwise
+	 */
+	private boolean isAllRelatedCategoryAttributesCollection(
+			Map<CategoryAttributeInterface, Object> catAttributes)
+	{
+		boolean flag = true;
+		for (CategoryAttributeInterface catAttribute : catAttributes.keySet())
+		{
+			if (catAttribute.getIsRelatedAttribute() == null
+					|| !catAttribute.getIsRelatedAttribute())
+			{
+				flag = false;
+				break;
+			}
+		}
+
+		return flag;
+	}
+
+	/**
 	 * This method checks whether all attributes are invisible type related attributes 
 	 * or visible type related attributes or all are normal attribute.
 	 * @param catEntity
@@ -1394,8 +1416,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						areMultplRecrds = false;
 					}
 
-					// Insert data for category attributes.
-					if (catAttributes.isEmpty())
+					// Insert data for category attributes. If there are no category attributes in a
+					// particular instance, or all are related category attributes, then create a dummy
+					// category attribute so as to link the records.
+					if (catAttributes.isEmpty()
+							|| isAllRelatedCategoryAttributesCollection(catAttributes))
 					{
 						isNoCatAttrPrsnt = true;
 						CategoryAttributeInterface dummyCatAttr = DomainObjectFactory.getInstance()
@@ -1610,9 +1635,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		for (CategoryAssociationInterface catAssociation : catAssociations)
 		{
 			CategoryEntityInterface targetCatEnt = catAssociation.getTargetCategoryEntity();
-			if (targetCatEnt != null
-					&& !isAllRelatedInvisibleCategoryAttributesCollection(targetCatEnt)
-					&& (((CategoryEntity) targetCatEnt).isCreateTable()))
+			if (targetCatEnt != null && (((CategoryEntity) targetCatEnt).isCreateTable()))
 			{
 				catEntTblName = targetCatEnt.getTableProperties().getName();
 
@@ -2200,7 +2223,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		return attributes;
 	}
-	
+
 	/**
 	 * It will fetch all the categories present
 	 * @return will return the collection of categories.
@@ -2208,7 +2231,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Collection<CategoryInterface> getAllCategories()
-		throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		return getAllObjects(CategoryInterface.class.getName());
 	}

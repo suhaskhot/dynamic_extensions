@@ -3,25 +3,23 @@ package edu.common.dynamicextensions.util.global;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.action.BaseDynamicExtensionsAction;
-import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.global.CommonServiceLocator;
 
@@ -48,9 +46,7 @@ public class DEComboDataAction extends BaseDynamicExtensionsAction
 		JSONArray jsonArray = new JSONArray();
 		JSONObject mainJsonObject = new JSONObject();
 
-		DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager.getInstance();
-		ContainerInterface container = (ContainerInterface) ((HashMap) deCacheManager
-				.getObjectFromCache(DEConstants.LIST_OF_CONTAINER)).get(Long.parseLong(containerId));
+		ContainerInterface container =  EntityCache.getInstance().getContainerById(Long.valueOf(containerId));
 
 		List<NameValueBean> nameValueBeans = null;
 		for (ControlInterface control : container.getControlCollection())

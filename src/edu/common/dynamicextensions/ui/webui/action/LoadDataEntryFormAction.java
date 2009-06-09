@@ -2,7 +2,6 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -35,10 +34,10 @@ import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsCacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.actionForm.AbstractActionForm;
 
 /**
@@ -181,19 +180,13 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			UserInterfaceiUtility.clearContainerStack(request);
 
-			Long containerId = Long.valueOf(containerIdentifier);
-			DynamicExtensionsCacheManager deCacheManager;
-			HashMap containerMap = new HashMap();
+			Long containerId =Long.valueOf(containerIdentifier);
 
-			deCacheManager = DynamicExtensionsCacheManager.getInstance();
-			containerMap = (HashMap) deCacheManager.getObjectFromCache(DEConstants.LIST_OF_CONTAINER);
-
-			if (containerMap != null && containerMap.containsKey(containerId))
+			containerInterface = EntityCache.getInstance().getContainerById(containerId);
+			if (containerInterface != null)
 			{
-				containerInterface = (ContainerInterface) containerMap.get(containerId);
 				containerInterface.getContainerValueMap().clear();
 				DynamicExtensionsUtility.cleanContainerControlsValue(containerInterface);
-
 			}
 			else
 			{

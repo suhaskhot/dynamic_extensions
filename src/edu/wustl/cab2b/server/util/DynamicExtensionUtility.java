@@ -561,9 +561,10 @@ public class DynamicExtensionUtility
 
 	public static List<ContainerInterface> getAllContainers() throws RemoteException
 	{
-    	AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-    	List<ContainerInterface> containerList=new ArrayList<ContainerInterface>();
-    	try
+		Logger.out.info("EntityCache in before GetAll containers ");
+		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
+		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
+		try
 		{
 			containerList = bizLogic.retrieve(ContainerInterface.class.getName());
 		}
@@ -573,6 +574,7 @@ public class DynamicExtensionUtility
 					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
 
 		}
+		Logger.out.info("EntityCache in after getAllContainers ");
 		return containerList;
 	}
 	/**

@@ -90,10 +90,6 @@ public class EntityGroupManager extends AbstractMetadataManager
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroup = (EntityGroupInterface) persistDynamicExtensionObject(group);
-
-		// Update the dynamic extension cache for all containers within entity group.
-		DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroup.getId());
-
 		return entityGroup;
 	}
 
@@ -105,10 +101,6 @@ public class EntityGroupManager extends AbstractMetadataManager
 	{
 		addTaggedValue(entityGroup);
 		EntityGroupInterface entGroup = (EntityGroupInterface) persistDynamicExtensionObjectMetdata(entityGroup);
-
-		// Update the dynamic extension cache for all containers within entity group.
-		DynamicExtensionsUtility.updateDynamicExtensionsCache(entGroup.getId());
-
 		return entGroup;
 	}
 

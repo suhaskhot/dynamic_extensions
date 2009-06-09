@@ -57,6 +57,7 @@ import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.global.Constants;
@@ -167,10 +168,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			postProcess(queries, revQueries, rlbkQryStack);
 
 			hibernateDAO.commit();
-
-			// Update the dynamic extension cache for all containers within the entity group.
-			EntityGroupInterface entityGroup = entity.getEntityGroup();
-			DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroup.getId());
+				
 		}
 		catch (DAOException e)
 		{
@@ -216,10 +214,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 
 			hibernateDAO.commit();
-
-			// Update the dynamic extension cache for all containers within the entity group.
-			EntityGroupInterface entityGroup = entity.getEntityGroup();
-			DynamicExtensionsUtility.updateDynamicExtensionsCache(entityGroup.getId());
 		}
 		catch (DAOException e)
 		{

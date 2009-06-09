@@ -72,6 +72,11 @@ public class XMIConfiguration
 	/**
 	 * 
 	 */
+	private List<Long> newEntitiesIds = new ArrayList<Long>();
+
+	/**
+	 * 
+	 */
 	private XMIConfiguration()
 	{
 		// TODO Auto-generated constructor stub
@@ -243,6 +248,22 @@ public class XMIConfiguration
 	public void setAddInheritedAttribute(boolean isAddInheritedAttribute)
 	{
 		this.isAddInheritedAttr = isAddInheritedAttribute;
+	}
+
+	/**
+	 * @return the newEntitiesIds
+	 */
+	public List<Long> getNewEntitiesIds()
+	{
+		return newEntitiesIds;
+	}
+
+	/**
+	 * @param newEntitiesIds the newEntitiesIds to set
+	 */
+	public void setNewEntitiesIds(List<Long> newEntitiesIds)
+	{
+		this.newEntitiesIds = newEntitiesIds;
 	}
 
 }

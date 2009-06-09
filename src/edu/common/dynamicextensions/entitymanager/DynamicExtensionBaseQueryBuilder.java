@@ -3174,7 +3174,7 @@ public class DynamicExtensionBaseQueryBuilder
 			ResultSet resultSet = null;
 			try
 			{
-				resultSet = jdbcDao.getQueryResultSet(query.toString());
+				resultSet = jdbcDao.getQueryResultSet(query);
 				resultSet.next();
 
 				// If another source record is already using target record, throw exception.
@@ -3239,7 +3239,7 @@ public class DynamicExtensionBaseQueryBuilder
 			try
 			{
 				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-				resultSet = jdbcDao.getQueryResultSet(query.toString());
+				resultSet = jdbcDao.getQueryResultSet(query);
 				resultSet.next();
 				// If another source record is already using target record, throw exception.
 				if (resultSet.getInt(1) != 0)

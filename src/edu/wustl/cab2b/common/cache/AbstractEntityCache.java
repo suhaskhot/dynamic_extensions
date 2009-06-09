@@ -552,17 +552,17 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	public void addEntityToCache(EntityInterface entity)
 	{
 		logger.info("adding Entity to cache");
-		if(entity.getContainerCollection()!=null && !entity.getContainerCollection().isEmpty())
+		if(entity.getContainerCollection()==null || entity.getContainerCollection().isEmpty())
+		{
+			createEntityCache(entity);
+		}
+		else
 		{
 			for(Object container : entity.getContainerCollection())
 			{
 				ContainerInterface containerInterface = (ContainerInterface)container;
 				addContainerToCache(containerInterface);
 			}
-		}
-		else
-		{
-			createEntityCache(entity);
 		}
 		logger.info("added entity to cache successfully");
 	}

@@ -6,9 +6,9 @@ import java.io.File;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -92,16 +92,9 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		DynamicExtensionsUtility.initialiseApplicationVariables();
 
 		DynamicExtensionsUtility.initialiseApplicationInfo();
-
-		try
-		{
-			DynamicExtensionsUtility.updateDynamicExtensionsCache();
-		}
-		catch (DynamicExtensionsSystemException e)
-		{
-			Logger.out
-					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-		}
+		Logger.out.info("DynamicExtensionsServletContextListener before Initialising the Cache.");
+		EntityCache.getInstance();
+		Logger.out.info("DynamicExtensionsServletContextListener after Initialising the Cache.");
 	}
 
 	/**

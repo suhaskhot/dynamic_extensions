@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -72,22 +71,19 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterfa
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
-import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
 import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIConstants;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
-import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.CVSTagReader;
@@ -119,8 +115,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
-		controlInterface = (ControlInterface) getObjectByIdentifier(ControlInterface.class
-				.getName(), controlIdentifier);
+		if(controlIdentifier!=null && !"".equals(controlIdentifier ))
+		{
+			controlInterface = EntityCache.getInstance().getControlById(Long.valueOf(controlIdentifier));
+		}
 		return controlInterface;
 	}
 
@@ -135,8 +133,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
-		entityGroupInterface = (EntityGroupInterface) getObjectByIdentifier(
-				EntityGroupInterface.class.getName(), entityGroupIdentifier);
+		if(entityGroupIdentifier!=null & !"".equals(entityGroupIdentifier))
+		{
+			entityGroupInterface = EntityCache.getInstance().getEntityGroupById(Long.valueOf(entityGroupIdentifier));
+		}
 		return entityGroupInterface;
 	}
 
@@ -151,8 +151,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
-		containerInterface = (ContainerInterface) getObjectByIdentifier(ContainerInterface.class
-				.getName(), containerIdentifier);
+		if(containerIdentifier!=null && !"".equals(containerIdentifier ))
+		{
+			containerInterface =EntityCache.getInstance().getContainerById(Long.valueOf(containerIdentifier));
+		}
 		return containerInterface;
 	}
 
@@ -167,8 +169,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = null;
-		attributeInterface = (AttributeInterface) getObjectByIdentifier(AttributeInterface.class
-				.getName(), attributeIdentifier);
+		if(attributeIdentifier!=null && !"".equals(attributeIdentifier))
+		{
+			attributeInterface = EntityCache.getInstance().getAttributeById(Long.valueOf(attributeIdentifier));
+		}
 		return attributeInterface;
 	}
 
@@ -207,42 +211,6 @@ public class DynamicExtensionsUtility
 		}
 	}
 
-	/**
-	 * This method returns object for a given class name and identifer
-	 * @param objectName  name of the class of the object
-	 * @param identifier identifier of the object
-	 * @return  obejct
-	 * @throws DynamicExtensionsSystemException on System exception
-	 * @throws DynamicExtensionsApplicationException on Application exception
-	 */
-	private static Object getObjectByIdentifier(String objectName, String identifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-		Object object = null;
-		if (objectName == null || identifier == null || identifier.trim().length() == 0)
-		{
-			return null;
-		}
-		try
-		{
-			// After moving to MYSQL 5.2 the type checking is strict so changing the identifier to Long
-			List objectList = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, Long
-					.valueOf(identifier));
-
-			if (objectList == null || objectList.isEmpty())
-			{
-				throw new DynamicExtensionsSystemException("OBJECT_NOT_FOUND");
-			}
-
-			object = objectList.get(0);
-		}
-		catch (BizLogicException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-		return object;
-	}
 
 	/**
 	 * This method clears data value for all controls within container
@@ -271,7 +239,7 @@ public class DynamicExtensionsUtility
 				}
 				objControl.setValue(null);
 			}
-
+			
 			baseContainer = baseContainer.getBaseContainer();
 		}
 
@@ -1318,110 +1286,11 @@ public class DynamicExtensionsUtility
 		return entityGroup;
 	}
 
-	/**
-	 * This method will update the cache on server startup time
-	 */
-	public static void updateDynamicExtensionsCache() throws DynamicExtensionsSystemException
-	{
+	
 
-		Map containerMap = null;
-		try
-		{
-			AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-			List containerList = bizLogic.retrieve(ContainerInterface.class.getName());
+	
 
-			containerMap = new HashMap();
-			for (int cnt = 0; cnt < containerList.size(); cnt++)
-			{
-				ContainerInterface objContainer = (ContainerInterface) containerList.get(cnt);
-				containerMap.put(objContainer.getId(), objContainer);
-
-			}
-
-			// getting instance of catissueCoreCacheManager and adding containerMap to cache
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
-					.getInstance();
-			deCacheManager.removeObjectFromCache(DEConstants.LIST_OF_CONTAINER);
-			deCacheManager.addObjectToCache(DEConstants.LIST_OF_CONTAINER, (HashMap) containerMap);
-			Logger.out.info("ON Startup caching containers.Size of Container:"
-					+ containerList.size());
-
-		}
-		catch (BizLogicException e)
-		{
-			Logger.out
-					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
-
-		}
-	}
-
-	/**
-	 * This method updates the DynamicExtensions cache of all container within Entitygroup
-	 *
-	 */
-	public static void updateDynamicExtensionsCache(Long entityGroupId)
-			throws DynamicExtensionsSystemException
-	{
-
-		try
-		{
-			// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
-			EntityManagerInterface entityManager = EntityManager.getInstance();
-			ArrayList containerSet = (ArrayList) entityManager
-					.getAllContainersByEntityGroupId(entityGroupId);
-			Iterator itr = containerSet.iterator();
-			while (itr.hasNext())
-			{
-				ContainerInterface objContainer = (Container) itr.next();
-				DynamicExtensionsUtility.updateDynamicExtensionsCache(objContainer);
-			}
-
-		}
-		catch (Exception e)
-		{
-			Logger.out
-					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
-		}
-	}
-
-	/**
-	 * This method updates the DynamicExtensions cache with updated container
-	 * @param updatedContainer
-	 * @throws DynamicExtensionsSystemException
-	 */
-	public static void updateDynamicExtensionsCache(ContainerInterface updatedContainer)
-			throws DynamicExtensionsSystemException
-	{
-
-		try
-		{
-			// getting instance of DynamicExtensionsCacheManager and adding containerMap to cache
-			DynamicExtensionsCacheManager deCacheManager = DynamicExtensionsCacheManager
-					.getInstance();
-			Map containerMap = new HashMap();
-			containerMap = (HashMap) deCacheManager
-					.getObjectFromCache(DEConstants.LIST_OF_CONTAINER);
-			if (containerMap != null)
-			{
-				containerMap.put(updatedContainer.getId(), updatedContainer);
-			}
-			deCacheManager.removeObjectFromCache(DEConstants.LIST_OF_CONTAINER);
-			deCacheManager.addObjectToCache(DEConstants.LIST_OF_CONTAINER, (HashMap) containerMap);
-
-		}
-		catch (Exception e)
-		{
-			Logger.out
-					.debug("Exception occured while creating instance of DynamicExtensionsCacheManager");
-			throw new DynamicExtensionsSystemException(
-					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
-		}
-	}
-
+	
 	/**
 	 * Method to check if data type is numeric i.e long,integer,short,float,double
 	 * @param dataType

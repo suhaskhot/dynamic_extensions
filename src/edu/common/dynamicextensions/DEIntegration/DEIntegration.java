@@ -124,7 +124,7 @@ public class DEIntegration implements IntegrationInterface
 			jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
 			String entitySql = "select identifier from " + entityTableName + " where " + columnName
 					+ " = " + staticRecId;
-			resultSet = jdbcDao.getQueryResultSet(entitySql.toString()); //util.executeQuery(entitySql);
+			resultSet = jdbcDao.getQueryResultSet(entitySql); //util.executeQuery(entitySql);
 			List recIdList = new ArrayList();
 			while (resultSet.next())
 			{

@@ -581,7 +581,7 @@
 	  <echo message="Pattern used to remove generics : ${generics.match.pattern}"/>
 	  <copy toDir="${temp.hdoclet.dir}" overwrite="true">
 	    <fileset dir="${src.dir}">
-	      <include name="**/*.java"/>
+	    	<include name="**/domain/**/*.java"/>
 	    	<exclude name="**/domain/**/DomainObjectFactory.java"/>
 	    </fileset>
 	  </copy>

@@ -197,6 +197,7 @@ public class XMIImportProcessor
 		List<UmlClass> umlClassColl = new ArrayList<UmlClass>();
 		List<UmlAssociation> umlAssociationColl = new ArrayList<UmlAssociation>();
 		List<Generalization> umlGeneralisationColl = new ArrayList<Generalization>();
+		List<EntityInterface> newEntities = new ArrayList<EntityInterface>();
 		if (xmiConfigurationObject == null)
 		{
 			throw new DynamicExtensionsSystemException(
@@ -273,6 +274,7 @@ public class XMIImportProcessor
 				entity = createEntity(umlClass);
 				entity.setEntityGroup(entityGroup);
 				entityGroup.addEntity(entity);
+				newEntities.add(entity);
 			}
 			else
 			{//Edit
@@ -362,6 +364,12 @@ public class XMIImportProcessor
 		processPersistence(containerNames, xmiConfigurationObject.isEntityGroupSystemGenerated(),
 				xmiConfigurationObject.isCreateTable(), xmiConfigurationObject.isDefaultPackage(),
 				xmiConfigurationObject.getDefaultPackagePrefix());
+
+		List<Long> newEntitiesIds = xmiConfigurationObject.getNewEntitiesIds();
+		for (EntityInterface newEntity : newEntities)
+		{
+			newEntitiesIds.add(newEntity.getId());
+		}
 
 		// Execute data migration scripts for attributes that were changed from a normal attribute to 
 		// a multiselect attribute.

@@ -133,7 +133,7 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
-		if(entityGroupIdentifier!=null & !"".equals(entityGroupIdentifier))
+		if(entityGroupIdentifier!=null && !"".equals(entityGroupIdentifier))
 		{
 			entityGroupInterface = EntityCache.getInstance().getEntityGroupById(Long.valueOf(entityGroupIdentifier));
 		}

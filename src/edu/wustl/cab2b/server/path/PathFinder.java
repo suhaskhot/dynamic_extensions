@@ -102,7 +102,7 @@ public class PathFinder
 	{
 		if (updateMetadataCache)
 		{
-
+            EntityCache.getInstance().refreshCache();
 		}
 		pathFinder.populateCache(con);
 	}

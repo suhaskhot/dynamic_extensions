@@ -1,7 +1,7 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
-import java.util.Set;
+import java.util.Collection;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -78,12 +78,12 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 */
 	void setIsVisible(Boolean isVisible);
 
-	Set<RuleInterface> getRuleCollection();
+	Collection<RuleInterface> getRuleCollection();
 
 	/**
 	 * @param ruleCollection the ruleCollection to set
 	 */
-	void setRuleCollection(Set<RuleInterface> ruleCollection);
+	void setRuleCollection(Collection<RuleInterface> ruleCollection);
 
 	/**
 	 *

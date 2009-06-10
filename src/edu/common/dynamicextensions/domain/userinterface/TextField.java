@@ -160,8 +160,11 @@ public class TextField extends Control implements TextFieldInterface
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface#getIsUrl()
+	/**
+	 * This method returns the Boolean value that decides whether the value of this control should be treated as normal text or URL.
+	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 
+	 * @return the Boolean value	true - value is URL
+	 * 								false - value is normal text.
 	 */
 	public Boolean getIsUrl()
 	{

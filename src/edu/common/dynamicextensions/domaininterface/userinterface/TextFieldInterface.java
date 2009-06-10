@@ -31,9 +31,7 @@ public interface TextFieldInterface extends ControlInterface
 
 	/**
 	 * This method returns the Boolean value that decides whether the value of this control should be treated as normal text or URL.
-	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 
-	 * @return the Boolean value	true - value is URL
-	 * 								false - value is normal text.
+	 * @return
 	 */
 	Boolean getIsUrl();
 

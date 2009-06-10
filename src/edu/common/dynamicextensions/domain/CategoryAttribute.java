@@ -47,7 +47,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	/**
 	 *
 	 */
-	protected Set<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
+	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
 
 	/**
 	 *
@@ -193,7 +193,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.validationrules.Rule"
 	 * @return Collection the ruleCollection associated with the Attribute.
 	 */
-	public Set<RuleInterface> getRuleCollection()
+	public Collection<RuleInterface> getRuleCollection()
 	{
 		return ruleCollection;
 	}
@@ -201,7 +201,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	/**
 	 * @param ruleCollection the ruleCollection to set
 	 */
-	public void setRuleCollection(Set<RuleInterface> ruleCollection)
+	public void setRuleCollection(Collection<RuleInterface> ruleCollection)
 	{
 		this.ruleCollection = ruleCollection;
 	}

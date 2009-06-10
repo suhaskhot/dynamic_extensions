@@ -582,6 +582,7 @@
 	  <copy toDir="${temp.hdoclet.dir}" overwrite="true">
 	    <fileset dir="${src.dir}">
 	    	<include name="**/domain/**/*.java"/>
+	    	<include name="**/domaininterface**/*.java"/>
 	    	<exclude name="**/domain/**/DomainObjectFactory.java"/>
 	    </fileset>
 	  </copy>

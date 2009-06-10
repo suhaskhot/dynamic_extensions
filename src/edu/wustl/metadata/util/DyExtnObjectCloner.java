@@ -6,11 +6,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.common.querysuite.querableobject.QueryableObjectUtility;
+import edu.wustl.common.querysuite.querableobjectinterface.QueryableAttributeInterface;
+import edu.wustl.common.querysuite.querableobjectinterface.QueryableObjectInterface;
 import edu.wustl.common.util.ObjectCloner;
 
 /**
@@ -70,6 +72,16 @@ public class DyExtnObjectCloner extends ObjectCloner
 		@Override
 		protected Object replaceObject(Object obj) throws IOException
 		{
+			//commented cause of  QueryableObject & QueryableAttributes Introduction. Now hose will be 
+			//replaced with id & then retrieved from cache.
+			if (obj instanceof QueryableAttributeInterface)
+			{
+				return new ReplaceForQueryableAttribute((QueryableAttributeInterface) obj);
+			}
+			if (obj instanceof QueryableObjectInterface)
+			{
+				return new ReplaceForQueryableObject((QueryableObjectInterface) obj);
+			}
 			if (obj instanceof EntityInterface)
 			{
 				return new ReplacementForEntity((EntityInterface) obj);
@@ -86,13 +98,65 @@ public class DyExtnObjectCloner extends ObjectCloner
 		}
 	}
 
-	private interface Replacement<D extends AbstractMetadataInterface>
+	private interface Replacement<D>
 	{
 
 		Long getId();
 
 		D getOrigObject();
 	}
+
+	private static class ReplaceForQueryableObject
+			implements
+				Serializable,
+				Replacement<QueryableObjectInterface>
+	{
+
+		private static final long serialVersionUID = -1324920205387970975L;
+
+		private final Long identifier;
+
+		ReplaceForQueryableObject(QueryableObjectInterface entity)
+		{
+			this.identifier = entity.getId();
+		}
+
+		public Long getId()
+		{
+			return identifier;
+		}
+
+		public QueryableObjectInterface getOrigObject()
+		{
+			return QueryableObjectUtility.getQueryableObjectFromCache(identifier);
+		}
+	};
+
+	private static class ReplaceForQueryableAttribute
+			implements
+				Serializable,
+				Replacement<QueryableAttributeInterface>
+	{
+
+		private static final long serialVersionUID = -1324920205387970975L;
+
+		private final Long identifier;
+
+		ReplaceForQueryableAttribute(QueryableAttributeInterface attribute)
+		{
+			this.identifier = attribute.getId();
+		}
+
+		public Long getId()
+		{
+			return identifier;
+		}
+
+		public QueryableAttributeInterface getOrigObject()
+		{
+			return QueryableObjectUtility.getQueryableAttributeFromCache(identifier);
+		}
+	};
 
 	private static class ReplacementForEntity implements Serializable, Replacement<EntityInterface>
 	{

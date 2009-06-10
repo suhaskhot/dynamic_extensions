@@ -19,11 +19,11 @@ public abstract class AbstractMetadataCanonicalFormProvider<T extends AbstractMe
     }
 
     public final T nullSafeFromCanonicalForm(Long entityId) {
-        return entityId != null ? getObjectFromEntityCache(entityId) : null;
+        return entityId == null ? null : getObjectFromEntityCache(entityId);
     }
 
     public final Long nullSafeToCanonicalForm(T abstractMetadataObj) {
-        return abstractMetadataObj != null ? abstractMetadataObj.getId() : null;
+        return abstractMetadataObj == null ? null : abstractMetadataObj.getId();
     }
 
     public final NullableType canonicalFormType() {

@@ -46,6 +46,7 @@ public class XMIImporter
 	public static void main(String[] args)
 	{
 		FileInputStream fileInputStream = null;
+		String appName=null;
 		try
 		{
 			long startTime = System.currentTimeMillis();
@@ -98,14 +99,12 @@ public class XMIImporter
 			// read the document
 			reader.read(fileInputStream, null, uml);
 			List<String> containerNames = readFile(args[2]);
-
-			XMIConfiguration xmiConfiguration = XMIConfiguration.getInstance();
-			xmiConfiguration.setCreateTable(true);
-			xmiConfiguration.setAddIdAttr(true);
-			xmiConfiguration.setAddColumnForInherianceInChild(false);
-			xmiConfiguration.setAddInheritedAttribute(false);
-			xmiConfiguration.setEntityGroupSystemGenerated(false);
-
+			if(args.length>3)
+			{
+				appName=args[3];
+			}
+			XMIConfiguration xmiConfiguration = getXMIConfigurationObject(appName);
+			
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			xmiImportProcessor.setXmiConfigurationObject(xmiConfiguration);
 			xmiImportProcessor.processXmi(uml, domainModelName, packageName, containerNames);
@@ -141,6 +140,34 @@ public class XMIImporter
 			XMIUtilities.cleanUpRepository();
 
 		}
+	}
+
+	/**
+	 * It will return the Configuration object according to the application
+	 * @param appName
+	 * @return
+	 */
+	private static XMIConfiguration getXMIConfigurationObject(String appName)
+	{
+		XMIConfiguration xmiConfiguration = XMIConfiguration.getInstance();
+		xmiConfiguration.setEntityGroupSystemGenerated(false);
+		if("CIDER".equalsIgnoreCase(appName))
+		{
+			xmiConfiguration.setCreateTable(false);
+			xmiConfiguration.setAddIdAttr(false);
+			xmiConfiguration.setAddColumnForInherianceInChild(true);
+			xmiConfiguration.setAddInheritedAttribute(true);
+		}
+		else
+		{
+			xmiConfiguration.setCreateTable(true);
+			xmiConfiguration.setAddIdAttr(true);
+			xmiConfiguration.setAddColumnForInherianceInChild(false);
+			xmiConfiguration.setAddInheritedAttribute(false);
+		}
+		
+		
+		return xmiConfiguration;
 	}
 
 	/**

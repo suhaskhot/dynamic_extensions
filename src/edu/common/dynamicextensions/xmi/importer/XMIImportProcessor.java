@@ -1003,6 +1003,7 @@ public class XMIImportProcessor
 						entity.addAttribute(attribute);
 					}
 				}
+				originalAttribute=attribute;
 			}
 			else
 			{//Attribute has been edited
@@ -2946,7 +2947,8 @@ public class XMIImportProcessor
 					.getAttributeTypeInformation();
 			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) attributeTypeInformation
 					.getDataElement();
-			if (!attributeInterface.getIsPrimaryKey())
+			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.SYSTEM_IDENTIFIER)
+					&& xmiConfigurationObject.isAddIdAttribute()))
 			{
 				Map<String, String> taggedValueMap = attrVsMapTagValues.get(attributeInterface);
 				if (userDefinedDEInterface != null

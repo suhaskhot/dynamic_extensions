@@ -3021,6 +3021,7 @@ public class DynamicExtensionBaseQueryBuilder
 					}
 				}
 			}
+			jdbcDao.commit();
 		}
 		catch (DAOException e)
 		{

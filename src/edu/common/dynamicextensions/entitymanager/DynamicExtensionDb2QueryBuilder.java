@@ -371,9 +371,9 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 		{
 
-			mdfAttrQry = mdfAttrQry + extraColumnQueryStringForFileAttribute(attribute);
+			mdfAttrQry = mdfAttrQry + extraColumnQueryStringForFileAttributeInEditCase(attribute);
 			mdfyAttrRlbkQry = mdfyAttrRlbkQry
-					+ dropExtraColumnQueryStringForFileAttribute(attribute);
+					+ dropExtraColumnQueryStringForFileAttributeInEditCase(savedAttribute);
 
 		}
 		mdfAttrQry = mdfAttrQry + nullQueryKeyword;

@@ -126,15 +126,14 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	/**
 	 * @param jdbcDAO
 	 * @param query query to be executed
-	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
+	public void executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
 	{
 		Logger.out.info(query);
 		try
 		{
-			return jdbcDao.executeUpdate(query);
+			jdbcDao.executeUpdate(query);
 		}
 		catch (DAOException e)
 		{
@@ -145,20 +144,16 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	/**
 	 * @param jdbcDAO
 	 * @param queries
-	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public int executeDMLQueryList(JDBCDAO jdbcDao, List<String> queries)
+	public void executeDMLQueryList(JDBCDAO jdbcDao, List<String> queries)
 			throws DynamicExtensionsSystemException
 	{
-		int result = -1;
-
 		for (String query : queries)
 		{
-			result = executeDML(jdbcDao, query);
+			executeDML(jdbcDao, query);
 		}
-
-		return result;
+		
 	}
 
 	/**

@@ -1677,6 +1677,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				throw new DynamicExtensionsSystemException("Invalid Input");
 			}
 			recordValues = getRecordForSingleEntity(entity, recordId);
+			hibernateDAO.commit();
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{

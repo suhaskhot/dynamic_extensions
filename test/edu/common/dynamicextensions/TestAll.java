@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.categoryManager.TestCategoryManager;
 import edu.common.dynamicextensions.entitymanager.TestEntityManager;
 import edu.common.dynamicextensions.entitymanager.TestEntityManagerForAssociations;
 import edu.common.dynamicextensions.entitymanager.TestEntityManagerForInheritance;
+import edu.common.dynamicextensions.entitymanager.TestEntityManagerWithPrimaryKey;
 import edu.common.dynamicextensions.entitymanager.TestEntityMangerForXMIImportExport;
 
 /**
@@ -38,7 +39,7 @@ public class TestAll
 		suite.addTestSuite(TestEntityManagerForInheritance.class);
 		suite.addTestSuite(TestEntityMangerForXMIImportExport.class);
 		suite.addTestSuite(TestCategoryManager.class);
-//		suite.addTestSuite(TestEntityManagerWithPrimaryKey.class);
+		suite.addTestSuite(TestEntityManagerWithPrimaryKey.class);
 		return suite;
 	}
 }

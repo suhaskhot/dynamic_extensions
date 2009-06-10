@@ -1431,38 +1431,37 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
-//	/**
-//	 * Create category where attributes from a particular class are not chosen,
-//	 * i.e. not selecting attributes from GleasonScore entity.
-//	 * Refer to pathology annotation model.
-//	 */
-//	public void testCIDERModel()
-//	{
-//		CategoryInterface category = null;
-//		try
-//		{
-//			String[] args = {"./xmi/cider.xmi", "edu.wustl.cider.domain", "./csv/cider.csv"};
-//			XMIImporter.main(args);
-//			
-//			String[] args2 = {"./csv/Lab_category.csv","true"};
-//			CategoryCreator categoryCreator = new CategoryCreator();
-//			categoryCreator.main(args2);
-//			
-//			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
-//			category = (CategoryInterface) categoryManager.getObjectByName(Category.class.getName(), "CIDER Test Category");
-//			
-//			assertNotNull(category.getId());
-//			assertNotNull(category.getRootCategoryElement());
-//			assertEquals(category.getName(), "CIDER Test Category");
-//
-//		}
-//		catch (Exception e)
-//		{
-//			e.printStackTrace();
-//			fail();
-//		}
-//	}
+	/**
+	 * Create category where attributes from a particular class are not chosen,
+	 * i.e. not selecting attributes from GleasonScore entity.
+	 * Refer to pathology annotation model.
+	 */
+	public void testCIDERModel()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			String[] args = {"./xmi/cider.xmi", "edu.wustl.cider.domain", "./csv/cider.csv","CIDER"};
+			XMIImporter.main(args);
+			
+			String[] args2 = {"./csv/Lab_category.csv","true"};
+			CategoryCreator categoryCreator = new CategoryCreator();
+			categoryCreator.main(args2);
+			
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(Category.class.getName(), "CIDER Test Category");
+			
+			assertNotNull(category.getId());
+			assertNotNull(category.getRootCategoryElement());
+			assertEquals(category.getName(), "CIDER Test Category");
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 		/**
 		 * Create entity group from pathology annotation model.
 		 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.

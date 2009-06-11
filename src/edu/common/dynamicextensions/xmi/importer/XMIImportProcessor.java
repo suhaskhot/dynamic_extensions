@@ -2088,6 +2088,7 @@ public class XMIImportProcessor
 			//duplicate attributes have been created. Hence removing the duplicate attributes.
 			editedAttributeColl.removeAll(attributesToRemove);
 		}
+		entityInterface.addContainer(containerInterface);
 		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
 		containerList.add(containerInterface);
 		entityNameVsContainers.put(entityInterface.getName(), containerList);

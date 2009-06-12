@@ -28,8 +28,8 @@ function showBuildFormJSP()
 function saveFormDetails()
 {
     document.getElementById('operation').value='saveForm';
-    setWaitCursorforAllObjectHierarchy();
     var formDefinitionForm = document.getElementById('formDefinitionForm');
+    setWaitCursorforAllObjectHierarchy(formDefinitionForm);
     formDefinitionForm.submit();
 }
 function saveFormDetailsOnKeyDown(evt)
@@ -526,6 +526,7 @@ function backToControlForm()
     var dataEntryForm = document.getElementById('dataEntryForm');
     if(dataEntryForm != null)
     {
+        setWaitCursorforAllObjectHierarchy(dataEntryForm);
         dataEntryForm.action= contextParam + "/LoadFormControlsAction.do";
         dataEntryForm.submit();
     }
@@ -600,19 +601,9 @@ function clearControlAttributes()
 
     clearSelectedAttributesList();
 }
-function setWaitCursorforAllObjectHierarchy()
+function setWaitCursorforAllObjectHierarchy(form)
 {
-	var dv = document.getElementById('waitcursorDiv');
-	if (dv == null) {
-		dv = document.createElement('DIV');
-		dv.setAttribute('name','waitcursorDiv');
-		dv.setAttribute('id','waitcursorDiv');
-		dv.setAttribute('className','transparent');
-		document.body.appendChild(dv);
-	}
-	//var elem = doc.getElementById('waitcursorDiv');
-	//elem.style.display = "block";
-	dv.style.display = "block";
+	form.style.cursor = "wait";
 }
 
 function resetWaitCursor()
@@ -633,7 +624,7 @@ function saveEntity()
 	var controlsForm = document.getElementById('controlsForm');
 	if(controlsForm!=null)
 	{
-	    setWaitCursorforAllObjectHierarchy();
+	    setWaitCursorforAllObjectHierarchy(controlsForm);
 		controlsForm.action= contextParam + "/SaveEntityAction.do";
 		controlsForm.submit();
 	}
@@ -717,6 +708,7 @@ function addDynamicData(recordIdentifier)
             document.getElementById('isEdit').value = "true";
         }
         dataEntryForm.action= contextParam + "/ApplyDataEntryFormAction.do";
+        setWaitCursorforAllObjectHierarchy(dataEntryForm);
     }
 }
 
@@ -1060,7 +1052,7 @@ function saveGroup()
 	}
 	if(groupForm!=null)
 	{
-		setWaitCursorforAllObjectHierarchy();
+		setWaitCursorforAllObjectHierarchy(groupForm);
 		groupForm.action = contextParam + "/ApplyGroupDefinitionAction.do";
 		groupForm.submit();
 	}
@@ -1888,6 +1880,7 @@ function showChildContainerInsertDataPage(containerId,ths)
     {
         dataEntryForm.action= contextParam + "/ApplyDataEntryFormAction.do";
     }
+    setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
 }
 
@@ -1903,13 +1896,16 @@ function showParentContainerInsertDataPage()
     //document.getElementById('mode').value = "edit";
     document.getElementById('dataEntryOperation').value = "insertParentData";
     var dataEntryForm = document.getElementById('dataEntryForm');
+    setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
 }
 
 function setInsertDataOperation()
 {
     document.getElementById('dataEntryOperation').value = "";
-	document.dataEntryForm.submit();
+    var dataEntryForm = document.getElementById('dataEntryForm');
+    setWaitCursorforAllObjectHierarchy(dataEntryForm);
+    dataEntryForm.submit();
 }
 
 function changeValueForCheckBox(checkbox)
@@ -1932,6 +1928,7 @@ function cancelInsertData()
     document.getElementById('dataEntryOperation').value = document.getElementById('operation_mode').value;
     document.getElementById('mode').value = "cancel";
     var dataEntryForm = document.getElementById('dataEntryForm');
+    setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
 }
 
@@ -1939,6 +1936,7 @@ function setDeleteDataOperation()
 {
     document.getElementById('mode').value = "delete";
     var dataEntryForm = document.getElementById('dataEntryForm');
+    setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
 }
 

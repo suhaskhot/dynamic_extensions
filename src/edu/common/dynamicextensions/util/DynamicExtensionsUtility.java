@@ -1101,7 +1101,7 @@ public class DynamicExtensionsUtility
 		StringBuffer sqlDateFormat = new StringBuffer(locator.getDatePattern());
 		if (dateFormat != null && dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-			sqlDateFormat.append(" ").append(locator.getTimePattern());
+			sqlDateFormat.append(' ').append(locator.getTimePattern());
 		}
 		return sqlDateFormat.toString();
 	}
@@ -1518,13 +1518,13 @@ public class DynamicExtensionsUtility
 		{
 			Collection<AttributeInterface> parentPrmAttrColl = parentEntity
 					.getPrimaryKeyAttributeCollection();
-			if (isPrimaryKeyAttributeCollectionEmpty(parentPrmAttrColl))
+			/*if (isPrimaryKeyAttributeCollectionEmpty(parentPrmAttrColl))
 			{
 				throw new DynamicExtensionsSystemException("Parent entity "
 						+ parentEntity.getName()
 						+ " does not contain any primary key child entity is "
 						+ childEntity.getName());
-			}
+			}*/
 			for (AttributeInterface attribute : parentPrmAttrColl)
 			{
 				primaryCnstrKeyProp = factory.createConstraintKeyProperties();

@@ -1516,16 +1516,16 @@ public class DynamicExtensionsUtility
 		}
 		else
 		{
-			Collection<AttributeInterface> parentPrmAttrColl = parentEntity
+			/*Collection<AttributeInterface> parentPrmAttrColl = parentEntity
 					.getPrimaryKeyAttributeCollection();
-			/*if (isPrimaryKeyAttributeCollectionEmpty(parentPrmAttrColl))
+			if (isPrimaryKeyAttributeCollectionEmpty(parentPrmAttrColl))
 			{
 				throw new DynamicExtensionsSystemException("Parent entity "
 						+ parentEntity.getName()
 						+ " does not contain any primary key child entity is "
 						+ childEntity.getName());
 			}*/
-			for (AttributeInterface attribute : parentPrmAttrColl)
+			for (AttributeInterface attribute : parentEntity.getPrimaryKeyAttributeCollection())
 			{
 				primaryCnstrKeyProp = factory.createConstraintKeyProperties();
 				primaryCnstrKeyProp.setSrcPrimaryKeyAttribute(attribute);

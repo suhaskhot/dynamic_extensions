@@ -536,15 +536,12 @@ public class DynamicExtensionUtility
 		List<EntityGroupInterface> entityGroups = new ArrayList<EntityGroupInterface>();
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Collection<EntityGroupInterface> allEntityGroups = new HashSet<EntityGroupInterface>();
-		Object object = null;
 		try
 		{
-			allEntityGroups = bizLogic.retrieve(EntityGroupInterface.class.getName(), "isSystemGenerated", new Boolean(true));
+			allEntityGroups = bizLogic.retrieve(EntityGroupInterface.class.getName(), "isSystemGenerated", Boolean.TRUE);
 		}
 		catch (BizLogicException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			throw new RemoteException(e.getMessage(),e);
 			
 		}

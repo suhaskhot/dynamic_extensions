@@ -232,7 +232,7 @@ enum DataType {
                 UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
                 for (Enumeration e : arr) {
                     ShortValueInterface value = domainObjectFactory.createShortValue();
-                    value.setValue(new Short(e.getPermissibleValue()));
+                    value.setValue(Short.valueOf(e.getPermissibleValue()));
                     DynamicExtensionUtility.setSemanticMetadata(value, e.getSemanticMetadata());
                     userDefinedDE.addPermissibleValue(value);
                 }

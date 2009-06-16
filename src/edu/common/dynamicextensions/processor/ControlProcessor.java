@@ -277,11 +277,11 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
 		//Set isCollection=true in the attribute
 		AbstractAttributeInterface controlAttribute = controlUIBeanInterface.getAbstractAttribute();
-		if ((controlAttribute != null) && (controlAttribute instanceof AttributeInterface))
+/*		if ((controlAttribute != null) && (controlAttribute instanceof AttributeInterface))
 		{
 			//((AttributeInterface) controlAttribute).setIsCollection(new Boolean(true));
 		}
-		if (listBoxIntf instanceof SelectControl)
+*/		if (listBoxIntf instanceof SelectControl)
 		{
 			initializeSelectControl((SelectControl) listBoxIntf, controlUIBeanInterface,
 					entityGroup);

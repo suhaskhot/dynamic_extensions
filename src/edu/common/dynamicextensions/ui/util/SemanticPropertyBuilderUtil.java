@@ -102,7 +102,7 @@ public class SemanticPropertyBuilderUtil
 				conceptCode.append(semanticPropertyInterface.getConceptCode());
 				if (iterator.hasNext())
 				{
-					conceptCode.append(",");
+					conceptCode.append(',');
 				}
 			}
 		}

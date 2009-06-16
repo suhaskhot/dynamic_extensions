@@ -357,9 +357,9 @@ public class CategoryGenerationUtil
 	public static String getAssociationRoleName(String entityName)
 	{
 		String associationRoleName = "";
-		if (entityName != null && entityName.indexOf("(") != -1 && entityName.indexOf(")") != -1)
+		if (entityName != null && entityName.indexOf('(') != -1 && entityName.indexOf('(') != -1)
 		{
-			associationRoleName = entityName.substring(entityName.indexOf("(") + 1,entityName.indexOf(")"));
+			associationRoleName = entityName.substring(entityName.indexOf('(') + 1,entityName.indexOf('('));
 		}
 		return associationRoleName;
 	}
@@ -370,9 +370,9 @@ public class CategoryGenerationUtil
 	public static String getFullAssociationRoleName(String entityName)
 	{
 		String associationRoleName = "";
-		if (entityName != null && entityName.indexOf("(") != -1 && entityName.indexOf(")") != -1)
+		if (entityName != null && entityName.indexOf('(') != -1 && entityName.indexOf('(') != -1)
 		{
-			associationRoleName = entityName.substring(entityName.indexOf("("),entityName.indexOf(")") + 1);
+			associationRoleName = entityName.substring(entityName.indexOf('('),entityName.indexOf('(') + 1);
 		}
 		return associationRoleName;
 	}

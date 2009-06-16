@@ -110,7 +110,7 @@ public abstract class AbstractMetadataManager
 
 		// Get the instance of the default biz logic.
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
-		String DEAppName=DynamicExtensionDAO.getInstance().getAppName();
+		String DEAppName = DynamicExtensionDAO.getInstance().getAppName();
 		defaultBizLogic.setAppName(DEAppName);
 		List objects = new ArrayList();
 
@@ -177,7 +177,8 @@ public abstract class AbstractMetadataManager
 		try
 		{
 			// After moving to MYSQL 5.2, the type checking is strict so changing the identifier to Long.
-			List objects = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, Long.valueOf(identifier));
+			List objects = bizLogic.retrieve(objectName, DEConstants.OBJ_IDENTIFIER, Long
+					.valueOf(identifier));
 
 			if (objects == null || objects.isEmpty())
 			{
@@ -214,7 +215,7 @@ public abstract class AbstractMetadataManager
 			throws DynamicExtensionsSystemException
 	{
 		String message = "";
-		if(dao!=null)
+		if (dao != null)
 		{
 			try
 			{
@@ -222,16 +223,16 @@ public abstract class AbstractMetadataManager
 			}
 			catch (DAOException excep)
 			{
-				throw new DynamicExtensionsSystemException(
-						"Not able to rollback the transaction.", excep);
+				throw new DynamicExtensionsSystemException("Not able to rollback the transaction.",
+						excep);
 			}
 		}
 		if (revQryStack != null && !revQryStack.isEmpty())
 		{
-			JDBCDAO jdbcDao=null;
+			JDBCDAO jdbcDao = null;
 			try
 			{
-				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 				while (!revQryStack.empty())
 				{
 					String query = (String) revQryStack.pop();
@@ -244,7 +245,7 @@ public abstract class AbstractMetadataManager
 						throw new DynamicExtensionsSystemException(
 								"Exception occured while executing rollback queries.", e,
 								DYEXTN_S_002);
-					}					
+					}
 				}
 				jdbcDao.commit();
 			}
@@ -260,18 +261,18 @@ public abstract class AbstractMetadataManager
 			finally
 			{
 				try
-				{					
+				{
 					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
 				}
 				catch (DAOException e1)
 				{
 					Logger.out.error(e1.getMessage());
-					throw new DynamicExtensionsSystemException("fail to close connection");
+					throw new DynamicExtensionsSystemException("fail to close connection", e1);
 				}
 
 				logDebug("rollbackQueries", DynamicExtensionsUtility.getStackTrace(exception));
-				DynamicExtensionsSystemException xception = new DynamicExtensionsSystemException(message,
-						exception);
+				DynamicExtensionsSystemException xception = new DynamicExtensionsSystemException(
+						message, exception);
 
 				xception.setErrorCode(DYEXTN_S_000);
 				throw xception;
@@ -293,11 +294,11 @@ public abstract class AbstractMetadataManager
 			throws DynamicExtensionsSystemException
 	{
 		Collection objects = new HashSet();
-		HibernateDAO hibernateDAO=null;
+		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO =DynamicExtensionsUtility.getHibernateDAO(); 
-			objects=hibernateDAO.executeNamedQuery(queryName, substParams);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			objects = hibernateDAO.executeNamedQuery(queryName, substParams);
 		}
 		catch (DAOException e)
 		{
@@ -334,8 +335,8 @@ public abstract class AbstractMetadataManager
 	{
 		for (int counter = 0; counter < substParams.size(); counter++)
 		{
-			HQLPlaceHolderObject plcHolderObj = (HQLPlaceHolderObject) substParams
-					.get(Integer.toBinaryString(counter));
+			HQLPlaceHolderObject plcHolderObj = (HQLPlaceHolderObject) substParams.get(Integer
+					.toBinaryString(counter));
 			String objectType = plcHolderObj.getType();
 			if ("string".equals(objectType))
 			{
@@ -372,7 +373,7 @@ public abstract class AbstractMetadataManager
 		Collection entities;
 		try
 		{
-			entities=hibernateDAO.executeNamedQuery(queryName, substParams);
+			entities = hibernateDAO.executeNamedQuery(queryName, substParams);
 		}
 		catch (DAOException e)
 		{
@@ -396,10 +397,10 @@ public abstract class AbstractMetadataManager
 		List<String> revQueries = new LinkedList<String>();
 		List<String> queries = new ArrayList<String>();
 		Stack<String> rlbkQryStack = new Stack<String>();
-		HibernateDAO hibernateDAO=null;
+		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO =DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
 
 			preProcess(abstrMetadata, revQueries, queries);
 
@@ -448,10 +449,10 @@ public abstract class AbstractMetadataManager
 			DynamicExtensionsApplicationException
 	{
 		Stack<String> rlbkQryStack = new Stack<String>();
-		HibernateDAO hibernateDAO =null;
+		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO =DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
 			saveDynamicExtensionObject(abstrMetadata, hibernateDAO, rlbkQryStack);
 
 			hibernateDAO.commit();
@@ -491,7 +492,7 @@ public abstract class AbstractMetadataManager
 		{
 			if (abstrMetadata.getId() == null)
 			{
-				hibernateDAO.insert(abstrMetadata,false);
+				hibernateDAO.insert(abstrMetadata, false);
 			}
 			else
 			{
@@ -502,7 +503,7 @@ public abstract class AbstractMetadataManager
 		{
 			rollbackQueries(rlbkQryStack, null, e, hibernateDAO);
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_003);
-		}		
+		}
 	}
 
 	/**
@@ -583,7 +584,7 @@ public abstract class AbstractMetadataManager
 
 		List<EntityInterface> savedEntities = DynamicExtensionsUtility
 				.getSavedEntities(entityGroup);
-		
+
 		HibernateDAO hibernateDAO = null;
 		try
 		{
@@ -592,20 +593,22 @@ public abstract class AbstractMetadataManager
 					.getDAO();
 			hibernateDAO.openSession(null);
 			for (EntityInterface savedEntity : savedEntities)
-			{	
-				Entity dbaseCopy = (Entity)hibernateDAO.retrieveById(Entity.class.getCanonicalName(), savedEntity.getId());
+			{
+				Entity dbaseCopy = (Entity) hibernateDAO.retrieveById(Entity.class
+						.getCanonicalName(), savedEntity.getId());
 
 				List<String> updateQueries = getQueryBuilderInstance().getUpdateEntityQueryList(
-					(Entity) savedEntity, dbaseCopy, revQueries, hibernateDAO);
+						(Entity) savedEntity, dbaseCopy, revQueries, hibernateDAO);
 				if (updateQueries != null && !updateQueries.isEmpty())
 				{
 					queries.addAll(updateQueries);
 				}
 			}
-		}		
-		catch(DAOException exception)
+		}
+		catch (DAOException exception)
 		{
-			throw new DynamicExtensionsSystemException("Not able to retrieve the object.",exception);
+			throw new DynamicExtensionsSystemException("Not able to retrieve the object.",
+					exception);
 		}
 		finally
 		{
@@ -617,7 +620,8 @@ public abstract class AbstractMetadataManager
 				}
 				catch (DAOException e)
 				{
-					throw new DynamicExtensionsSystemException("Exception encountered while closing session.");
+					throw new DynamicExtensionsSystemException(
+							"Exception encountered while closing session.", e);
 				}
 			}
 		}
@@ -637,16 +641,17 @@ public abstract class AbstractMetadataManager
 		List<List> results;
 		try
 		{
-			jdbcDao= DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			TablePropertiesInterface tblProperties = entity.getTableProperties();
 			String tableName = tblProperties.getName();
 			String[] selectColName = {IDENTIFIER};
 			String[] whereColName = {Constants.ACTIVITY_STATUS_COLUMN};
 			String[] whereColCndtn = {EQUAL};
 			Object[] whereColValue = {Status.ACTIVITY_STATUS_ACTIVE.toString()};
-			QueryWhereClause queryWhereClause= new QueryWhereClause(tableName);
-			queryWhereClause.getWhereCondition(whereColName, whereColCndtn, whereColValue, Constants.AND_JOIN_CONDITION);
-			results = (List)jdbcDao.retrieve(tableName, selectColName, queryWhereClause);
+			QueryWhereClause queryWhereClause = new QueryWhereClause(tableName);
+			queryWhereClause.getWhereCondition(whereColName, whereColCndtn, whereColValue,
+					Constants.AND_JOIN_CONDITION);
+			results = (List) jdbcDao.retrieve(tableName, selectColName, queryWhereClause);
 			/*results = jdbcDao.retrieve(tableName, selectColName, whereColName, whereColCndtn,
 					whereColValue, null);*/
 			records = getRecordList(results);

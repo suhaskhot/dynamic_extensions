@@ -85,7 +85,7 @@ public class CategoryCreator
 		catch (Exception ex)
 		{
 			Logger.out.info("Exception:",ex);
-			throw new RuntimeException(ex.getCause().getLocalizedMessage());
+			throw new RuntimeException(ex.getCause().getLocalizedMessage(), ex);
 		}
 	}
 

@@ -127,7 +127,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			htmlString.append(" disabled='").append(ProcessorConstants.TRUE).append("' ");
 		}
-		htmlString.append(">");
+		htmlString.append('>');
 
 		if (valueList == null || valueList.isEmpty())
 		{

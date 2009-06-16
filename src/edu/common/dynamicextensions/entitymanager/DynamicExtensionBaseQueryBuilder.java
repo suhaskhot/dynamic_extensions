@@ -3586,7 +3586,7 @@ public class DynamicExtensionBaseQueryBuilder
 		catch (DAOException e)
 		{
 			Logger.out.debug(e.getMessage());
-			throw new DynamicExtensionsSystemException("Can not rollback query");
+			throw new DynamicExtensionsSystemException("Can not rollback query",e);
 		}
 
 		throw new DynamicExtensionsSystemException("Can not execute query");

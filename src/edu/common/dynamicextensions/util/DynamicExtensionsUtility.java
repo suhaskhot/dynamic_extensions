@@ -2195,7 +2195,7 @@ public class DynamicExtensionsUtility
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception encountered while populating constraint properties for entity.");
+					"Exception encountered while populating constraint properties for entity.",e);
 		}
 		finally
 		{
@@ -2206,7 +2206,7 @@ public class DynamicExtensionsUtility
 			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(
-						"Exception encountered while closing session.");
+						"Exception encountered while closing session.",e);
 			}
 		}
 	}

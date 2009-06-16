@@ -582,23 +582,23 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				bean = listValues.get(i);
 				if (bean != null)
 				{
-					responseXML.append("<");
+					responseXML.append('<');
 					responseXML.append(xmlParentNode);
 					responseXML.append("><");
 					responseXML.append(xmlIdNode);
-					responseXML.append(">");
+					responseXML.append('>');
 					responseXML.append(bean.getValue());
 					responseXML.append("</");
 					responseXML.append(xmlIdNode);
 					responseXML.append("><");
 					responseXML.append(xmlNameNode);
-					responseXML.append(">");
+					responseXML.append('>');
 					responseXML.append(bean.getName());
 					responseXML.append("</");
 					responseXML.append(xmlNameNode);
 					responseXML.append("></");
 					responseXML.append(xmlParentNode);
-					responseXML.append(">");
+					responseXML.append('>');
 				}
 			}
 			responseXML.append("</node>");

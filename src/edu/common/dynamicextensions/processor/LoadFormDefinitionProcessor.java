@@ -186,7 +186,7 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			{
 				xmlNode.append(" select='1'");
 			}
-			xmlNode.append(">");
+			xmlNode.append('>');
 		}
 		return xmlNode.toString();
 	}

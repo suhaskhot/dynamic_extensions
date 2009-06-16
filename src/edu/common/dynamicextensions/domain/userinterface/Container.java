@@ -335,7 +335,6 @@ public class Container extends DynamicExtensionBaseDomainObject
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
 		Collections.sort(controlsList);
-		//Collections.reverse(controlsList);
 
 		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
 
@@ -354,6 +353,80 @@ public class Container extends DynamicExtensionBaseDomainObject
 		}
 		Collections.reverse(controlsList);
 		return controlsList;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<ControlInterface> getAllControlsUnderSameDisplayLabel()
+	{
+		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+				.getControlCollection());
+		for (ControlInterface controlInterface : getControlCollection())
+		{
+			if (controlInterface instanceof AbstractContainmentControl)
+			{
+				if (!((AbstractContainmentControl) controlInterface).getContainer().getAddCaption())
+				{
+					controlsList.remove(controlInterface);
+					updateValueMap(controlInterface);
+					controlsList.addAll(((AbstractContainmentControl) controlInterface)
+							.getContainer().getControlCollection());
+				}
+			}
+		}
+
+		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+
+		ContainerInterface baseContainer = this.baseContainer;
+		while (baseContainer != null)
+		{
+			baseControlsList = new ArrayList(baseContainer.getControlCollection());
+			Collections.reverse(baseControlsList);
+
+			controlsList.addAll(baseControlsList);
+
+			baseContainer.setIncontextContainer(this);
+			baseContainer = baseContainer.getBaseContainer();
+
+		}
+		Collections.sort(controlsList);
+		Collections.reverse(controlsList);
+		return controlsList;
+	}
+
+	/**
+	 * @param controlInterface
+	 */
+	private void updateValueMap(ControlInterface controlInterface)
+	{
+		Object value = containerValueMap.get(controlInterface.getBaseAbstractAttribute());
+		Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = null;
+		if (value != null && value instanceof List)
+		{
+			if (((List) value).size() > 0)
+			{
+				displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value)
+						.get(0);
+				((AbstractContainmentControl) controlInterface).isCardinalityOneToMany();
+			}
+
+		}
+		else
+		{
+			displayContainerValueMap = (Map<BaseAbstractAttributeInterface, Object>) value;
+		}
+		if (displayContainerValueMap != null)
+		{
+			for (BaseAbstractAttributeInterface abstractAttributeInterface : displayContainerValueMap
+					.keySet())
+			{
+				containerValueMap.put(abstractAttributeInterface, displayContainerValueMap
+						.get(abstractAttributeInterface));
+			}
+			containerValueMap.remove(controlInterface.getBaseAbstractAttribute());
+		}
+
 	}
 
 	/**
@@ -408,7 +481,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 			addCaption(stringBuffer);
 		}
 
-		List<ControlInterface> controlsList = getAllControls();
+		List<ControlInterface> controlsList = getAllControlsUnderSameDisplayLabel();
 		int lastRow = 0;
 		int i = 0;
 

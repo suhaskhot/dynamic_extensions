@@ -164,8 +164,7 @@ public class CategoryGenerator
 
 					if (categoryFileParser.hasDisplayLable())
 					{
-						categoryEntityName = createForm(entityGroup, containerCollection,
-								entityNameAssociationMap, category, categoryEntityNameInstanceMap);
+						categoryEntityName = processDisplayLabel();
 
 						firstTimeinDisplayLabel = true;
 						previousEntityName = null;
@@ -239,26 +238,6 @@ public class CategoryGenerator
 								containerCollection, getCategoryEntityName(categoryEntityName,
 										categoryFileParser.getEntityName()));
 
-						/*
-						 * //Set this flag when attribute is just after display
-						 * label,and set previous entity name ,so that we can
-						 * verify whether all attributes are of same entity or
-						 * other entities also. if (firstTimeinDisplayLabel) {
-						 * firstTimeinDisplayLabel = false; previousEntityName =
-						 * ((CategoryEntityInterface) container
-						 * .getAbstractEntity()).getName(); } if
-						 * ((previousEntityName != null &&
-						 * !previousEntityName.equals
-						 * (container.getAbstractEntity() .getName()) &&
-						 * !firstTimeinDisplayLabel)) { List listofEntities =
-						 * sequenceMap.get(container.getAbstractEntity()
-						 * .getName()); if (listofEntities == null) {
-						 * listofEntities = new ArrayList<String>(); }
-						 * listofEntities
-						 * .add(container.getAbstractEntity().getName());
-						 * sequenceMap.put(previousEntityName, listofEntities);
-						 * }
-						 */
 						AttributeInterface attribute = entityInterface
 								.getAttributeByName(attributeName);
 
@@ -327,7 +306,7 @@ public class CategoryGenerator
 						if (categoryFileParser.isSingleLineDisplayStarted())
 						{
 							getCategoryValidator().validateControlInSingleLine(controlType,
-									lastControl);
+									controlXPosition, container);
 						}
 						lastControl = categoryHelper.addOrUpdateControl(entityInterface,
 								attributeName, container, ControlEnum.get(controlType),
@@ -398,11 +377,10 @@ public class CategoryGenerator
 
 				CategoryGenerationUtil.setRootContainer(category, container, containerCollection,
 						entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
-				
-				categoryValidator.isRootEntityUsedTwice(category
-						.getRootCategoryElement(), category
+
+				categoryValidator.isRootEntityUsedTwice(category.getRootCategoryElement(), category
 						.getRootCategoryElement().getEntity());
-				
+
 				if (hasRelatedAttributes)
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
@@ -737,7 +715,7 @@ public class CategoryGenerator
 		for (String categoryEntName : categoryEntityNameList)
 		{
 			String catEntityName = DynamicExtensionsUtility.getCategoryEntityName(categoryEntName);
-			if (entityName.equals(catEntityName.substring(0, catEntityName.indexOf("["))))
+			if (entityName.equals(catEntityName.substring(0, catEntityName.indexOf('['))))
 			{
 				categoryEntityName = categoryEntName;
 				break;
@@ -783,102 +761,44 @@ public class CategoryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private List<String> createForm(EntityGroupInterface entityGroup,
-			List<ContainerInterface> containerCollection,
-			Map<String, List<AssociationInterface>> associationNamesMap,
-			CategoryInterface category, Map<String, String> categoryEntityNameInstanceMap)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	private List<String> processDisplayLabel() throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
-		String displayLable = categoryFileParser.getDisplyLable();
-		Boolean showCaption = categoryFileParser.isShowCaption();
 
+		Boolean showCaption = categoryFileParser.isShowCaption();
+		ContainerInterface mainContainer = null;
+		String displayLable = categoryFileParser.getDisplyLable();
 		List<String> categoryEntityName = new ArrayList<String>();
-		String entityName = null;
-		String[] categoryEntitiesInPath;
+		String categoryEntName = null;
 
 		try
 		{
 			categoryFileParser.readNext();
 			String[] categoryPaths = categoryFileParser.getCategoryPaths();
-
+			categoryValidator.validateContainersUnderSameDisplayLabel(categoryPaths, showCaption);
+			ContainerInterface temp = null;
 			for (String categoryPath : categoryPaths)
 			{
-				String categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath);
-				categoryEntitiesInPath = categoryPath.split("->");
-				String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
-				entityName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
-
-				// Check if instance information is wrong, i.e. entity mentioned
-				// in
-				// the instance information exists in the entity group.
-				for (int i = 0; i < categoryEntitiesInPath.length; i++)
+				categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath);
+				temp = createForm(displayLable, categoryPath, categoryEntityName, categoryEntName,
+						categoryPaths, showCaption);
+				if (mainContainer == null)
 				{
-					String entName = CategoryGenerationUtil
-							.getEntityNameExcludingAssociationRoleName(categoryEntitiesInPath[i]
-									.substring(0, categoryEntitiesInPath[i].indexOf("[")));
+					mainContainer = temp;
+				}
+				else
+				{
+					List<AssociationInterface> associationNameList = entityNameAssociationMap
+							.get(CategoryGenerationUtil
+									.getEntityNameForAssociationMap(categoryEntityNameInstanceMap
+											.get(categoryEntName)));
 
-					if (i + 1 <= categoryEntitiesInPath.length - 1)
-					{
-						try
-						{
-							String prevInstance = categoryEntitiesInPath[i].substring(
-									categoryEntitiesInPath[i].indexOf("[") + 1,
-									categoryEntitiesInPath[i].indexOf("]"));
-							String nextInstance = categoryEntitiesInPath[i + 1].substring(
-									categoryEntitiesInPath[i + 1].indexOf("[") + 1,
-									categoryEntitiesInPath[i + 1].indexOf("]"));
-
-							Integer prevInstanceNo = Integer.valueOf(prevInstance);
-							Integer nextInstanceNo = Integer.valueOf(nextInstance);
-
-							if (prevInstanceNo.compareTo(nextInstanceNo) > 0)
-							{
-								handleInstanceException(categoryEntitiesInPath[i],
-										categoryEntitiesInPath[i + 1]);
-							}
-						}
-						catch (NumberFormatException eNumberFormatException)
-						{
-							handleInstanceException(categoryEntitiesInPath[i],
-									categoryEntitiesInPath[i + 1]);
-						}
-						catch (StringIndexOutOfBoundsException eStringIndexOutOfBoundsException)
-						{
-							handleInstanceException(categoryEntitiesInPath[i],
-									categoryEntitiesInPath[i + 1]);
-						}
-					}
-					if (entityGroup.getEntityByName(entName) == null)
-					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties
-								.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-								+ categoryFileParser.getLineNumber()
-								+ " "
-								+ ApplicationProperties.getValue(CategoryConstants.WRONG_INST_INFO)
-								+ entName);
-					}
+					new CategoryHelper().associateCategoryContainers(category, entityGroup,
+							mainContainer, temp, associationNameList, 1,
+							categoryEntityNameInstanceMap.get(temp.getAbstractEntity().getName()));
 				}
 
-				if (!categoryEntityName.contains(categoryEntName))
-				{
-					ContainerInterface container = null;
-
-					container = SearchExistingCategoryEntityAndContainer(categoryEntName,
-							containerCollection);
-					if (container == null)
-					{
-						container = createCategoryEntityAndContainer(entityGroup
-								.getEntityByName(entityName), categoryEntName, displayLable,
-								showCaption, containerCollection, category);
-					}
-
-					categoryEntityNameInstanceMap.put(container.getAbstractEntity().getName(),
-							getCategoryPath(categoryPaths, newCategoryEntityName));
-
-					categoryEntityName.add(categoryEntName);
-					showCaption = false;
-				}
+				showCaption = false;
 			}
 		}
 		catch (IOException exception)
@@ -891,6 +811,90 @@ public class CategoryGenerator
 		}
 
 		return categoryEntityName;
+	}
+
+	private ContainerInterface createForm(String displayLable, String categoryPath,
+			List<String> categoryEntityNameList, String categoryEntityName, String[] categoryPaths,
+			boolean showCaption) throws DynamicExtensionsSystemException
+	{
+		String entityName = null;
+		String[] categoryEntitiesInPath;
+
+		categoryEntitiesInPath = categoryPath.split("->");
+		String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
+		entityName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
+
+		// Check if instance information is wrong, i.e. entity mentioned
+		// in
+		// the instance information exists in the entity group.
+		for (int i = 0; i < categoryEntitiesInPath.length; i++)
+		{
+			String entName = CategoryGenerationUtil
+					.getEntityNameExcludingAssociationRoleName(categoryEntitiesInPath[i].substring(
+							0, categoryEntitiesInPath[i].indexOf('[')));
+
+			if (i + 1 <= categoryEntitiesInPath.length - 1)
+			{
+				try
+				{
+					String prevInstance = categoryEntitiesInPath[i].substring(
+							categoryEntitiesInPath[i].indexOf('[') + 1, categoryEntitiesInPath[i]
+									.indexOf(']'));
+					String nextInstance = categoryEntitiesInPath[i + 1].substring(
+							categoryEntitiesInPath[i + 1].indexOf('[') + 1,
+							categoryEntitiesInPath[i + 1].indexOf(']'));
+
+					Integer prevInstanceNo = Integer.valueOf(prevInstance);
+					Integer nextInstanceNo = Integer.valueOf(nextInstance);
+
+					if (prevInstanceNo.compareTo(nextInstanceNo) > 0)
+					{
+						handleInstanceException(categoryEntitiesInPath[i],
+								categoryEntitiesInPath[i + 1]);
+					}
+				}
+				catch (NumberFormatException eNumberFormatException)
+				{
+					handleInstanceException(categoryEntitiesInPath[i],
+							categoryEntitiesInPath[i + 1]);
+				}
+				catch (StringIndexOutOfBoundsException eStringIndexOutOfBoundsException)
+				{
+					handleInstanceException(categoryEntitiesInPath[i],
+							categoryEntitiesInPath[i + 1]);
+				}
+			}
+			if (entityGroup.getEntityByName(entName) == null)
+			{
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+						+ categoryFileParser.getLineNumber()
+						+ " "
+						+ ApplicationProperties.getValue(CategoryConstants.WRONG_INST_INFO)
+						+ entName);
+			}
+		}
+		ContainerInterface container = null;
+		if (!categoryEntityNameList.contains(categoryEntityName))
+		{
+
+			container = SearchExistingCategoryEntityAndContainer(categoryEntityName,
+					containerCollection);
+			if (container == null)
+			{
+				container = createCategoryEntityAndContainer(entityGroup
+						.getEntityByName(entityName), categoryEntityName, displayLable,
+						showCaption, containerCollection, category);
+			}
+
+			categoryEntityNameInstanceMap.put(container.getAbstractEntity().getName(),
+					getCategoryPath(categoryPaths, newCategoryEntityName));
+
+			categoryEntityNameList.add(categoryEntityName);
+
+		}
+		return container;
 	}
 
 	/**

@@ -343,7 +343,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
 			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
-		//Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
 
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
@@ -416,6 +415,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getBaseAbstractAttribute();
 		List<Map<BaseAbstractAttributeInterface, Object>> associationValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap
 				.get(abstractAttribute);
+		if(control instanceof AbstractContainmentControlInterface 
+				&& !((AbstractContainmentControlInterface)control).getContainer().getAddCaption())
+		{
+			processOneToMany = true;
+		}
 
 		if (associationValueMapList == null)
 		{
@@ -510,6 +514,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				attributeValueMap.put(abstractAttribute, valueList);
 			}
 		}
+		
 	}
 
 	/**

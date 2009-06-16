@@ -560,45 +560,45 @@ public class CategoryValidator
 
 	/**
 	 * @param controlType
-	 * @param lastControl
+	 * @param controlXPosition
+	 * @param container 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void validateControlInSingleLine(String controlType, ControlInterface lastControl)
+	public void validateControlInSingleLine(String controlType, int controlXPosition, ContainerInterface container)
 			throws DynamicExtensionsSystemException
 	{
 		ControlEnum controlEnum = ControlEnum.get(controlType);
 		boolean isValidControlType = true;
+		String extraMessage = "";
 		if (isValidControlType(controlType)
 				&& (controlEnum.equals(ControlEnum.LIST_BOX_CONTROL)
 						|| controlEnum.equals(ControlEnum.COMBO_BOX_CONTROL) || controlEnum
 						.equals(ControlEnum.TEXT_FIELD_CONTROL)))
 		{
-			if (lastControl != null)
-			{
 				List<ControlInterface> controlsWithSameSequenceNumber = getAllControlWithSameSequenceNumber(
-						lastControl.getParentContainer(), lastControl.getSequenceNumber());
+						container, controlXPosition);
 				if (controlsWithSameSequenceNumber != null
-						&& controlsWithSameSequenceNumber.size() > 0)
+						&& controlsWithSameSequenceNumber.size() > 1)
 				{
 					if (!controlEnum.equals(getAllowedControlType(controlsWithSameSequenceNumber)))
 					{
 						isValidControlType = false;
+						extraMessage = "ALLOWED CONTROL TYPE IN THIS LINE IS "+getAllowedControlType(controlsWithSameSequenceNumber);
 					}
 				}
-			}
 
 		}
 		else
 		{
 			isValidControlType = false;
+			extraMessage = "ALLOWED CONTROLS IN THE SINGLE LINE DISPLAY ARE listBox,comboBox,textFiled";
 		}
 
 		if (!isValidControlType)
 		{
 			throw new DynamicExtensionsSystemException(getErrorMessageStart()
 					+ ApplicationProperties
-							.getValue("dyExtn.category.validation.singleLineDisaply")
-					+ categoryFileParser.getLineNumber());
+							.getValue("dyExtn.category.validation.singleLineDisaply")+"\n"+ extraMessage);
 		}
 
 	}
@@ -666,6 +666,23 @@ public class CategoryValidator
 			isValid = false;
 		}
 		return isValid;
+
+	}
+
+	/**
+	 * @param categoryPaths
+	 * @param showCaption
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public void validateContainersUnderSameDisplayLabel(String[] categoryPaths, Boolean showCaption) throws DynamicExtensionsSystemException
+	{
+
+		if (categoryPaths.length > 1 && !showCaption)
+		{
+			throw new DynamicExtensionsSystemException(getErrorMessageStart()
+					+ ApplicationProperties
+							.getValue("dyExtn.category.validation.containersUnderSameDisplayLabel"));
+		}
 
 	}
 

@@ -141,7 +141,12 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	 */
 	public boolean isShowCaption()
 	{
-		return Boolean.valueOf(readLine()[1].split("=")[1].trim());
+		boolean showCaption = true;
+		if(readLine().length > 1)
+		{
+			showCaption = Boolean.valueOf(readLine()[1].split("=")[1].trim());
+		}
+		return showCaption;
 	}
 
 	public String[] getCategoryPaths()

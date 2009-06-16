@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Constants;
@@ -40,8 +41,8 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 
 	static
 	{
-		System.setProperty("app.propertiesFile",System.getProperty("user.dir")+"/build.xml");
-		LoggerConfig.configureLogger(System.getProperty("user.dir")+"/src/");
+		System.setProperty("app.propertiesFile", System.getProperty("user.dir") + "/build.xml");
+		LoggerConfig.configureLogger(System.getProperty("user.dir") + "/src/");
 		try
 		{
 			ErrorKey.init("~");
@@ -61,6 +62,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	protected final static String INT_TYPE = "int";
 
 	JDBCDAO dao;
+
 	/**
 	 *
 	 */
@@ -111,7 +113,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		JDBCDAO jdbcDao = getJDBCDAO();
 		try
 		{
-			resultSet= jdbcDao.getQueryResultSet(query);
+			resultSet = jdbcDao.getQueryResultSet(query);
 			resultSet.next();
 			if (STRING_TYPE.equals(returnType))
 			{
@@ -129,12 +131,12 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 			fail();
 		}
 		finally
-		{			
+		{
 			try
 			{
 				closeJDBCDAO(jdbcDao);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				throw new RuntimeException(e.getCause());
 			}
@@ -203,10 +205,10 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		ResultSetMetaData metadata = null;
 		int count = 0;
 		JDBCDAO jdbcDao = getJDBCDAO();
-		PreparedStatement statement  = null;
+		PreparedStatement statement = null;
 		try
 		{
-			statement  = jdbcDao.getPreparedStatement(query);
+			statement = jdbcDao.getPreparedStatement(query);
 			metadata = statement.executeQuery().getMetaData();
 			count = metadata.getColumnCount();
 		}
@@ -246,7 +248,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			statement  = jdbcDao.getPreparedStatement(query);
+			statement = jdbcDao.getPreparedStatement(query);
 			metadata = statement.executeQuery().getMetaData();
 			type = metadata.getColumnType(columnNumber);
 		}
@@ -283,9 +285,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 			jdbcDao.closeSession();
 		}
 		catch (DAOException e)
-		{			
+		{
 			throw new RuntimeException(e.getCause());
-		}		
+		}
 	}
 
 	/**
@@ -300,7 +302,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	private ResultSetMetaData executeQueryForMetadata(JDBCDAO jdbcDao, String query,
 			ResultSetMetaData metadata) throws DAOException, SQLException
 	{
-		PreparedStatement statement  = jdbcDao.getPreparedStatement(query);
+		PreparedStatement statement = jdbcDao.getPreparedStatement(query);
 		metadata = statement.executeQuery().getMetaData();
 		return metadata;
 	}
@@ -311,13 +313,13 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 */
 	private JDBCDAO getJDBCDAO()
 	{
-		JDBCDAO jdbcDao=null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			String appName=DynamicExtensionDAO.getInstance().getAppName();
+			String appName = DynamicExtensionDAO.getInstance().getAppName();
 			jdbcDao = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
 			jdbcDao.openSession(null);
-		}	
+		}
 		catch (DAOException e)
 		{
 			e.printStackTrace();
@@ -359,7 +361,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 */
 	protected boolean isTablePresent(String tableName)
 	{
-		String query = "select * from " + tableName;		
+		String query = "select * from " + tableName;
 		JDBCDAO jdbcDao = getJDBCDAO();
 		java.sql.PreparedStatement statement = null;
 		try
@@ -413,4 +415,27 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		return role;
 	}
 
+	/**
+	 * @param categoryFilePath
+	 */
+	protected void createCaegory(String categoryFilePath)
+	{
+		String[] args2 = {categoryFilePath};
+		CategoryCreator categoryCreator = new CategoryCreator();
+		categoryCreator.main(args2);
+
+	}
+
+	/**
+	 * @param xmi
+	 * @param mainContainerList
+	 * @param packageName
+	 */
+	protected void importModel(String xmi, String mainContainerList, String packageName)
+	{
+		String[] args1 = {xmi, packageName, mainContainerList};
+		XMIImporter xmImporter = new XMIImporter();
+		xmImporter.main(args1);
+
+	}
 }

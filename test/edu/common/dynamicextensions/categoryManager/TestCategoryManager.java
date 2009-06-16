@@ -204,8 +204,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 	public void testImportInvalidPVForCategory()
 	{
-		ApplicationProperties
-				.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
+		ApplicationProperties.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
 
 		try
 		{
@@ -1354,7 +1353,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			String[] args2 = {"./csv/Category_PathAnnoModel.csv"};
 			CategoryCreator categoryCreator = new CategoryCreator();
 			categoryCreator.main(args2);
-			
+
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
 			category = (CategoryInterface) categoryManager.getObjectByName(
 					Category.class.getName(),
@@ -1362,20 +1361,30 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 			assertNotNull(category.getId());
 			assertNotNull(category.getRootCategoryElement());
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category.getRootCategoryElement().getName()), "RadicalProstatectomyPathologyAnnotation[1]");
-			
-			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = category.getRootCategoryElement().getParentCategoryEntity();
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category
+					.getRootCategoryElement().getName()),
+					"RadicalProstatectomyPathologyAnnotation[1]");
+
+			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = category
+					.getRootCategoryElement().getParentCategoryEntity();
 			assertNotNull(prostatePathologyAnnotationCategoryEntity);
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(prostatePathologyAnnotationCategoryEntity.getName()), "ProstatePathologyAnnotation[1]");
-			
-			CategoryEntityInterface baseSolidTissuePathologyAnnotation = prostatePathologyAnnotationCategoryEntity.getParentCategoryEntity();
+			assertEquals(DynamicExtensionsUtility
+					.getCategoryEntityName(prostatePathologyAnnotationCategoryEntity.getName()),
+					"ProstatePathologyAnnotation[1]");
+
+			CategoryEntityInterface baseSolidTissuePathologyAnnotation = prostatePathologyAnnotationCategoryEntity
+					.getParentCategoryEntity();
 			assertNotNull(baseSolidTissuePathologyAnnotation);
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(baseSolidTissuePathologyAnnotation.getName()), "BaseSolidTissuePathologyAnnotation[1]");
-			
-			CategoryEntityInterface basePathologyAnnotation = baseSolidTissuePathologyAnnotation.getParentCategoryEntity();
+			assertEquals(DynamicExtensionsUtility
+					.getCategoryEntityName(baseSolidTissuePathologyAnnotation.getName()),
+					"BaseSolidTissuePathologyAnnotation[1]");
+
+			CategoryEntityInterface basePathologyAnnotation = baseSolidTissuePathologyAnnotation
+					.getParentCategoryEntity();
 			assertNotNull(basePathologyAnnotation);
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(basePathologyAnnotation.getName()), "BasePathologyAnnotation[1]");
-			
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(basePathologyAnnotation
+					.getName()), "BasePathologyAnnotation[1]");
+
 			assertNull(basePathologyAnnotation.getParentCategoryEntity());
 		}
 		catch (Exception e)
@@ -1395,34 +1404,46 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			String[] args1 = {"./xmi/scg.xmi", "edu.wustl.catissuecore.domain.PathAnnotation_SCG", "./csv/SCG.csv"};
+			String[] args1 = {"./xmi/scg.xmi", "edu.wustl.catissuecore.domain.PathAnnotation_SCG",
+					"./csv/SCG.csv"};
 			XMIImporter xmImporter = new XMIImporter();
 			//xmImporter.main(args1);
 
 			String[] args2 = {"./csv/Category_NeedleBiopsy.csv"};
 			CategoryCreator categoryCreator = new CategoryCreator();
 			categoryCreator.main(args2);
-			
+
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
-			category = (CategoryInterface) categoryManager.getObjectByName(Category.class.getName(), "NeedleBiopsy_TestCaseCategory");
-			
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "NeedleBiopsy_TestCaseCategory");
+
 			assertNotNull(category.getId());
 			assertNotNull(category.getRootCategoryElement());
 			assertEquals(category.getName(), "NeedleBiopsy_TestCaseCategory");
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category.getRootCategoryElement().getName()), "NeedleBiopsyProstatePathologyAnnotation[1]");
-			
-			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = category.getRootCategoryElement().getParentCategoryEntity();
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(category
+					.getRootCategoryElement().getName()),
+					"NeedleBiopsyProstatePathologyAnnotation[1]");
+
+			CategoryEntityInterface prostatePathologyAnnotationCategoryEntity = category
+					.getRootCategoryElement().getParentCategoryEntity();
 			assertNotNull(prostatePathologyAnnotationCategoryEntity);
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(prostatePathologyAnnotationCategoryEntity.getName()), "ProstatePathologyAnnotation[1]");
-			
-			CategoryEntityInterface baseSolidTissuePathologyAnnotation = prostatePathologyAnnotationCategoryEntity.getParentCategoryEntity();
+			assertEquals(DynamicExtensionsUtility
+					.getCategoryEntityName(prostatePathologyAnnotationCategoryEntity.getName()),
+					"ProstatePathologyAnnotation[1]");
+
+			CategoryEntityInterface baseSolidTissuePathologyAnnotation = prostatePathologyAnnotationCategoryEntity
+					.getParentCategoryEntity();
 			assertNotNull(baseSolidTissuePathologyAnnotation);
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(baseSolidTissuePathologyAnnotation.getName()), "BaseSolidTissuePathologyAnnotation[1]");
-			
-			CategoryEntityInterface basePathologyAnnotation = baseSolidTissuePathologyAnnotation.getParentCategoryEntity();
+			assertEquals(DynamicExtensionsUtility
+					.getCategoryEntityName(baseSolidTissuePathologyAnnotation.getName()),
+					"BaseSolidTissuePathologyAnnotation[1]");
+
+			CategoryEntityInterface basePathologyAnnotation = baseSolidTissuePathologyAnnotation
+					.getParentCategoryEntity();
 			assertNotNull(basePathologyAnnotation);
-			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(basePathologyAnnotation.getName()), "BasePathologyAnnotation[1]");
-			
+			assertEquals(DynamicExtensionsUtility.getCategoryEntityName(basePathologyAnnotation
+					.getName()), "BasePathologyAnnotation[1]");
+
 			assertNull(basePathologyAnnotation.getParentCategoryEntity());
 		}
 		catch (Exception e)
@@ -1431,6 +1452,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+
 	/**
 	 * Create category where attributes from a particular class are not chosen,
 	 * i.e. not selecting attributes from GleasonScore entity.
@@ -1441,16 +1463,18 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			String[] args = {"./xmi/cider.xmi", "edu.wustl.cider.domain", "./csv/cider.csv","CIDER"};
+			String[] args = {"./xmi/cider.xmi", "edu.wustl.cider.domain", "./csv/cider.csv",
+					"CIDER"};
 			XMIImporter.main(args);
-			
-			String[] args2 = {"./csv/Lab_category.csv","true"};
+
+			String[] args2 = {"./csv/Lab_category.csv", "true"};
 			CategoryCreator categoryCreator = new CategoryCreator();
 			categoryCreator.main(args2);
-			
+
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
-			category = (CategoryInterface) categoryManager.getObjectByName(Category.class.getName(), "CIDER Test Category");
-			
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "CIDER Test Category");
+
 			assertNotNull(category.getId());
 			assertNotNull(category.getRootCategoryElement());
 			assertEquals(category.getName(), "CIDER Test Category");
@@ -1462,10 +1486,11 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-		/**
-		 * Create entity group from pathology annotation model.
-		 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.
-		 */
+
+	/**
+	 * Create entity group from pathology annotation model.
+	 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.
+	 */
 	public void testSelectivePermissibleValuesForCategory()
 	{
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
@@ -2960,6 +2985,140 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			TextFieldInterface textField = createTextFieldControl(attribute, ++sequenceNumber);
 			textField.setParentContainer((Container) container);
 			container.addControl(textField);
+		}
+	}
+
+	/**
+	 * use case: Display of controls in a single line for the attributes of the same class 
+	 */
+	public void testSingleLineDisplay1()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplaySameClassl.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplaySameClass1");
+
+			assertNotNull(category.getId());
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * use case: Single line display controls validations 
+	 * Two controls on the sinlge line should of the same type
+	 */
+	public void testSingleLineDisplay2()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplaySameClass2.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplaySameClass2");
+
+			fail();
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+	}
+
+	/**
+	 * use case: Single line display controls validations 
+	 * Two controls on the sinlge line should of the same type
+	 * Allowed control type are displayed in the error message
+	 */
+	public void testSingleLineDisplay3()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplaySameClass3.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplaySameClass3");
+			fail();
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Use case: Single line display for the attibutes of the differnt class 
+	 */
+	public void testSingleLineDisplayDiffrentClass1()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			//importModel("./xmi/scg.xmi","./csv/SCG.csv","edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplayDifferentClassl.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplayDifferentClass1");
+			assertNotNull(category.getId());
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Negative Use case: Single line display for the attibutes of the differnt class
+	 * Error message is diplayed if a subcategory used has multiple entities under same diplay label and 
+	 * show=false
+	 */
+	public void testSingleLineDisplayDiffrentClass2()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplayDifferentClass2.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplayDifferentClass2");
+			fail();
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 

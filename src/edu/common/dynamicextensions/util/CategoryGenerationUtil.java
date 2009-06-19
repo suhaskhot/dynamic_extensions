@@ -85,7 +85,7 @@ public class CategoryGenerationUtil
 			Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		ContainerInterface rootContainer=rootContainerObject;
+		ContainerInterface rootContainer = rootContainerObject;
 		//		ContainerInterface rootContainer = null;
 		//		for (ContainerInterface containerInterface : containerCollection)
 		//		{
@@ -272,7 +272,8 @@ public class CategoryGenerationUtil
 			String srcEntityName = entNamesIter.next();
 			String associationRoleName = getAssociationRoleName(srcEntityName);
 
-			EntityInterface sourceEntity = entityGroup.getEntityByName(getEntityNameExcludingAssociationRoleName(srcEntityName));
+			EntityInterface sourceEntity = entityGroup
+					.getEntityByName(getEntityNameExcludingAssociationRoleName(srcEntityName));
 			CategoryValidator.checkForNullRefernce(sourceEntity,
 					"ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
 							+ srcEntityName + " DOES NOT EXIST");
@@ -280,15 +281,16 @@ public class CategoryGenerationUtil
 			while (entNamesIter.hasNext())
 			{
 				String targetEntityName = entNamesIter.next();
-				
-				EntityInterface targetEntity = entityGroup.getEntityByName(getEntityNameExcludingAssociationRoleName(targetEntityName));
-				addAssociation(sourceEntity,targetEntity,associationRoleName,associations);
+
+				EntityInterface targetEntity = entityGroup
+						.getEntityByName(getEntityNameExcludingAssociationRoleName(targetEntityName));
+				addAssociation(sourceEntity, targetEntity, associationRoleName, associations);
 
 				// Add all parent entity associations also to the list.
 				EntityInterface parentEntity = sourceEntity.getParentEntity();
 				while (parentEntity != null)
 				{
-					addAssociation(parentEntity,targetEntity,associationRoleName,associations);
+					addAssociation(parentEntity, targetEntity, associationRoleName, associations);
 
 					parentEntity = parentEntity.getParentEntity();
 				}
@@ -309,26 +311,25 @@ public class CategoryGenerationUtil
 
 		return entityPaths;
 	}
+
 	/**
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private static void addAssociation(EntityInterface sourceEntity,EntityInterface targetEntity,String associationRoleName,List<AssociationInterface> associations)
+	private static void addAssociation(EntityInterface sourceEntity, EntityInterface targetEntity,
+			String associationRoleName, List<AssociationInterface> associations)
 	{
 		for (AssociationInterface association : sourceEntity.getAssociationCollection())
 		{
 			if (association.getTargetEntity().equals(targetEntity))
 			{
-				if (associationRoleName != null
-						&& associationRoleName.length() > 0
-						&& associationRoleName.equals(association
-								.getTargetRole().getName()))
+				if (associationRoleName != null && associationRoleName.length() > 0
+						&& associationRoleName.equals(association.getTargetRole().getName()))
 				{
 					associations.add(association);
 					break;
 				}
-				else if (associationRoleName != null
-						&& associationRoleName.length() == 0)
+				else if (associationRoleName != null && associationRoleName.length() == 0)
 				{
 					associations.add(association);
 					break;
@@ -336,6 +337,7 @@ public class CategoryGenerationUtil
 			}
 		}
 	}
+
 	/**
 	 * 
 	 * @return
@@ -350,6 +352,7 @@ public class CategoryGenerationUtil
 		}
 		return newEntityName;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -359,10 +362,12 @@ public class CategoryGenerationUtil
 		String associationRoleName = "";
 		if (entityName != null && entityName.indexOf('(') != -1 && entityName.indexOf('(') != -1)
 		{
-			associationRoleName = entityName.substring(entityName.indexOf('(') + 1,entityName.indexOf('('));
+			associationRoleName = entityName.substring(entityName.indexOf('(') + 1, entityName
+					.indexOf('('));
 		}
 		return associationRoleName;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -372,10 +377,12 @@ public class CategoryGenerationUtil
 		String associationRoleName = "";
 		if (entityName != null && entityName.indexOf('(') != -1 && entityName.indexOf('(') != -1)
 		{
-			associationRoleName = entityName.substring(entityName.indexOf('('),entityName.indexOf('(') + 1);
+			associationRoleName = entityName.substring(entityName.indexOf('('), entityName
+					.indexOf('(') + 1);
 		}
 		return associationRoleName;
 	}
+
 	/**
 	 * This method gets the relative path.
 	 * @param entityNameList ordered entities names in the path
@@ -464,7 +471,8 @@ public class CategoryGenerationUtil
 	 */
 	public static String getEntityName(String categoryNameInCSV)
 	{
-		return getEntityNameExcludingAssociationRoleName(categoryNameInCSV.substring(0, categoryNameInCSV.indexOf('[')));
+		return getEntityNameExcludingAssociationRoleName(categoryNameInCSV.substring(0,
+				categoryNameInCSV.indexOf('[')));
 	}
 
 	/**
@@ -498,6 +506,10 @@ public class CategoryGenerationUtil
 		for (String instancePath : categoryEntityPathArray)
 		{
 			entityNameForAssociationMap.append(instancePath);
+		}
+		if (categoryEntityPathArray.length == 1)
+		{
+			entityNameForAssociationMap.append(categoryEntityPathArray[0]);
 		}
 		return entityNameForAssociationMap.toString();
 	}

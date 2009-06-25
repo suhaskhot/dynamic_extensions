@@ -88,7 +88,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		 * combo box to default value.
 		 */
 		String textComponent = "combo" + htmlComponentName;
-		String htmlString = "<script>Ext.onReady(function(){ "
+		String htmlString = "<script defer='defer'>Ext.onReady(function(){ "
 				+ "var myUrl= 'DEComboDataAction.do?controlId= "
 				+ identifier
 				+ "~containerIdentifier="
@@ -102,13 +102,18 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "hiddenName: '"
 				+ textComponent
 				+ "',displayField:'excerpt',valueField: 'id',"
-				+ "typeAhead: 'false',width:200,pageSize:15,forceSelection: 'true',queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500" + isDisabled
-				+ ",emptyText:'" + defaultValue + "',valueNotFoundText:'',"
-				+ "selectOnFocus:'true',applyTo: '" + htmlComponentName + "'});";
+				+ "typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true"
+				+ isDisabled
+				+ ",emptyText:'"
+				+ defaultValue
+				+ "',valueNotFoundText:'',"
+				+ "selectOnFocus:'true',applyTo: '"
+				+ htmlComponentName
+				+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});";
 
 		htmlString = htmlString
-				+ "ds.load({params:{start:0, limit:999,query:''}}); ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
+				+ "ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
 
 		htmlString = htmlString
 				+ "});</script>"
@@ -138,15 +143,15 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "hiddenName: '"
 				+ textComponent
 				+ "',displayField:'excerpt',valueField: 'id',"
-				+ "typeAhead: 'false',width:200,pageSize:15,forceSelection: 'true',queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500"
+				+ "typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',"
+				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true"
 				+ isDisabled
 				+ ",emptyText:'"
 				+ defaultValue
 				+ "',valueNotFoundText:'',"
 				+ "selectOnFocus:'true',applyTo: '"
 				+ htmlComponentName
-				+ "'});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
+				+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
 				+ "});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div>"
 				+ "<input type='text' onmouseover=\"showToolTip('" + htmlComponentName
 				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName

@@ -650,7 +650,7 @@ public class DynamicExtensionBaseQueryBuilder
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public Map<Association, List<?>> getAssociationGetRecordQueryList(EntityInterface entity,
-			Long recordId) throws DynamicExtensionsSystemException,
+			Long recordId, JDBCDAO... dao) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		Collection<AssociationInterface> associations = entity.getAssociationCollection();
@@ -688,7 +688,16 @@ public class DynamicExtensionBaseQueryBuilder
 				query
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + sourceKey + EQUAL
 								+ recordId);
-				assocValues.put(association, getAssociationRecordValues(query.toString()));
+
+				if (dao != null && dao.length > 0)
+				{
+					assocValues.put(association, getAssociationRecordValues(query.toString(),
+							dao[0]));
+				}
+				else
+				{
+					assocValues.put(association, getAssociationRecordValues(query.toString()));
+				}
 			}
 			else if (srcMaxCard == Cardinality.MANY && tgtMaxCard == Cardinality.ONE)
 			{
@@ -717,7 +726,16 @@ public class DynamicExtensionBaseQueryBuilder
 						.append(WHITESPACE + WHERE_KEYWORD + WHITESPACE + targetKey + EQUAL
 								+ recordId);
 
-				List<Long> recordIds = getAssociationRecordValues(query.toString());
+				List<Long> recordIds = null;
+
+				if (dao != null && dao.length > 0)
+				{
+					recordIds = getAssociationRecordValues(query.toString(), dao[0]);
+				}
+				else
+				{
+					recordIds = getAssociationRecordValues(query.toString());
+				}
 
 				if (association.getSourceRole().getAssociationsType().equals(
 						AssociationType.CONTAINTMENT)
@@ -754,7 +772,15 @@ public class DynamicExtensionBaseQueryBuilder
 			JDBCDAO jdbcDao = null;
 			try
 			{
-				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				if (dao != null && dao.length > 0)
+				{
+					jdbcDao = dao[0];
+				}
+				else
+				{
+					jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				}
+
 				resultSet = jdbcDao.getQueryResultSet(mnyToOneAssQry.toString());
 
 				resultSet.next();
@@ -779,7 +805,15 @@ public class DynamicExtensionBaseQueryBuilder
 				try
 				{
 					jdbcDao.closeStatement(resultSet);
-					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+
+					if (dao != null && dao.length > 0)
+					{
+						Logger.out.info("Dao passed by calling method....");
+					}
+					else
+					{
+						DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+					}
 				}
 				catch (DAOException e)
 				{
@@ -3141,6 +3175,52 @@ public class DynamicExtensionBaseQueryBuilder
 	}
 
 	/**
+	 * This method executes the query that selects record identifiers of the target entity 
+	 * that are associated to the source entity for a given association.
+	 * @param query
+	 * @return List of record identifiers of the target entity .
+	 * @throws DynamicExtensionsSystemException
+	 */
+	protected List<Long> getAssociationRecordValues(String query, JDBCDAO jdbcDAO)
+			throws DynamicExtensionsSystemException
+	{
+		List<Long> assoRecords = new ArrayList<Long>();
+		ResultSet resultSet = null;
+		JDBCDAO jdbcDao = jdbcDAO;
+		try
+		{
+			resultSet = jdbcDao.getQueryResultSet(query);
+
+			while (resultSet.next())
+			{
+				Long recordId = resultSet.getLong(1);
+				assoRecords.add(recordId);
+			}
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Exception in query execution", e);
+		}
+		catch (SQLException e)
+		{
+			throw new DynamicExtensionsSystemException("Exception in query execution", e);
+		}
+		finally
+		{
+			try
+			{
+				jdbcDao.closeStatement(resultSet);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("can not close result set", e);
+			}
+		}
+
+		return assoRecords;
+	}
+
+	/**
 	 * This method make sure the cardinality constraints are properly followed.
 	 * e.g for one to one association, it checks if target entity's record id is 
 	 * not associated to any other record.
@@ -3586,7 +3666,7 @@ public class DynamicExtensionBaseQueryBuilder
 		catch (DAOException e)
 		{
 			Logger.out.debug(e.getMessage());
-			throw new DynamicExtensionsSystemException("Can not rollback query",e);
+			throw new DynamicExtensionsSystemException("Can not rollback query", e);
 		}
 
 		throw new DynamicExtensionsSystemException("Can not execute query");

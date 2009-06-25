@@ -1605,7 +1605,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 		Map<AbstractAttributeInterface, Object> entityRecords = new HashMap<AbstractAttributeInterface, Object>();
 		entityRecords.putAll(EntityManager.getInstance().getEntityRecordById(catEntity.getEntity(),
-				recordId));
+				recordId, jdbcDAO));
 
 		// If root category entity has parent entity, then get data from parent entity table
 		// with same record id.
@@ -1613,7 +1613,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		while (parentCatEnt != null)
 		{
 			Map<AbstractAttributeInterface, Object> innerValues = EntityManager.getInstance()
-					.getEntityRecordById(parentCatEnt.getEntity(), recordId);
+					.getEntityRecordById(parentCatEnt.getEntity(), recordId, jdbcDAO);
 			if (innerValues != null)
 			{
 				entityRecords.putAll(innerValues);

@@ -167,7 +167,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			postProcess(queries, revQueries, rlbkQryStack);
 
 			hibernateDAO.commit();
-				
+
 		}
 		catch (DAOException e)
 		{
@@ -1269,7 +1269,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 *             String                    Other attribute type.
 	 */
 	public Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity,
-			Long recordId) throws DynamicExtensionsSystemException,
+			Long recordId, JDBCDAO... dao) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
 		Map<AbstractAttributeInterface, Object> recordValues = new HashMap<AbstractAttributeInterface, Object>();
@@ -1304,7 +1304,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 
 		// Get association values.
-		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId));
+		recordValues.putAll(queryBuilder.getAssociationGetRecordQueryList(entity, recordId, dao));
 
 		try
 		{
@@ -1327,7 +1327,8 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 						.append(WHITESPACE).append(WHERE_KEYWORD).append(WHITESPACE).append(
 								IDENTIFIER).append(EQUAL).append(recordId);
 
-				recordValues.putAll(getAttributeValues(selColNames, query.toString(), colNames));
+				recordValues
+						.putAll(getAttributeValues(selColNames, query.toString(), colNames, dao));
 			}
 		}
 		catch (DAOException e)
@@ -1390,7 +1391,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @throws DAOException 
 	 */
 	private Map<AbstractAttributeInterface, Object> getAttributeValues(List<String> selColNames,
-			String query, Map<String, AttributeInterface> columnNames)
+			String query, Map<String, AttributeInterface> columnNames, JDBCDAO... dao)
 			throws DynamicExtensionsSystemException, DAOException
 	{
 		Map<AbstractAttributeInterface, Object> records = new HashMap<AbstractAttributeInterface, Object>();
@@ -1399,7 +1400,15 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		JDBCDAO jdbcDao = null;
 		try
 		{
-			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			if (dao != null && dao.length > 0)
+			{
+				jdbcDao = dao[0];
+			}
+			else
+			{
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			}
+
 			resultSet = jdbcDao.getQueryResultSet(query);
 
 			if (resultSet.next())
@@ -1427,8 +1436,23 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		finally
 		{
-			jdbcDao.closeStatement(resultSet);
-			DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+			try
+			{
+				jdbcDao.closeStatement(resultSet);
+
+				if (dao != null && dao.length > 0)
+				{
+					Logger.out.info("Dao passed by calling method....");
+				}
+				else
+				{
+					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+				}
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException(e.getMessage(), e);
+			}
 		}
 
 		return records;

@@ -156,18 +156,18 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		logger.info("Initializing cache, this may take few minutes...");
 		clearCache();
 		Collection<EntityGroupInterface> entityGroups = null;
-		List<ContainerInterface> containerList = null;
+		List<CategoryInterface> categoryList = null;
 		try
 		{
 			entityGroups = getSystemGeneratedEntityGroups();
-			containerList = DynamicExtensionUtility.getAllContainers();
+			categoryList = DynamicExtensionUtility.getAllCategories();
 		}
 		catch (RemoteException e)
 		{
 			logger.error("Error while collecting caB2B entity groups. Error: " + e.getMessage());
 		}
 		
-		createCache(containerList, entityGroups);
+		createCache(categoryList, entityGroups);
 
 		logger.info("Initializing cache DONE");
 	}
@@ -191,34 +191,57 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 
 	/**
 	 * Initializes the data structures by processing container & entity group one by one at a time.
-	 * @param containerList list of containers to be cached.
+	 * @param categoryList list of containers to be cached.
 	 * @param entityGroups list of system generated entity groups to be cached.
 	 */
-	private void createCache(List<ContainerInterface> containerList,
+	private void createCache(List<CategoryInterface> categoryList,
 			Collection<EntityGroupInterface> entityGroups)
 	{
-		for (ContainerInterface container : containerList)
-		{
-			addContainerToCache(container);
-		}
 		for (EntityGroupInterface entityGroup : entityGroups)
 		{
 			cab2bEntityGroups.add(entityGroup);
 			for (EntityInterface entity : entityGroup.getEntityCollection())
 			{
-				createEntityCache(entity);
+				addEntityToCache(entity);
 			}
+		}
+		for (CategoryInterface category : categoryList)
+		{
+			deCategories.add(category);
+			createCategoryEntityCach(category.getRootCategoryElement());
 		}
 
 		
 	}
 	
 	/**
+	 * It will add the categoryEntity & there containers to the cache.
+	 * It will then recursively call the same method for the child category Entities.
+	 * @param categoryEntity
+	 */
+	private void createCategoryEntityCach(CategoryEntityInterface categoryEntity)
+	{
+		for(Object container : categoryEntity.getContainerCollection())
+		{
+			ContainerInterface containerInterface = (ContainerInterface)container;
+			addContainerToCache(containerInterface);
+		}
+		for (CategoryAssociationInterface categoryAssociation : categoryEntity
+				.getCategoryAssociationCollection())
+		{
+			CategoryEntityInterface targetCategoryEntity = categoryAssociation
+					.getTargetCategoryEntity();
+				createCategoryEntityCach(targetCategoryEntity);
+
+		}
+	}
+
+	/**
 	 * It will add the given container to the cache & also update the cache
 	 * for its controls and AbstractEntity
 	 * @param container
 	 */
-	public void addContainerToCache(ContainerInterface container)
+	private void addContainerToCache(ContainerInterface container)
 	{
 		idVscontainers.put(container.getId(), container);
 		createControlCache(container.getControlCollection());
@@ -248,16 +271,11 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		if (abstractEntity instanceof CategoryEntityInterface)
 		{
 			CategoryEntityInterface categoryEntity = (CategoryEntityInterface) abstractEntity;
-			if (categoryEntity.getCategory() != null)
-			{
-				deCategories.add(categoryEntity.getCategory());
-			}
 			addCategoryEntityToCache(categoryEntity);
 		}
 		else
 		{
 			EntityInterface entity = (EntityInterface) abstractEntity;
-			cab2bEntityGroups.add(entity.getEntityGroup());
 			createEntityCache(entity);
 
 		}
@@ -551,7 +569,6 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	 */
 	public void addEntityToCache(EntityInterface entity)
 	{
-		logger.info("adding Entity to cache");
 		if(entity.getContainerCollection()==null || entity.getContainerCollection().isEmpty())
 		{
 			createEntityCache(entity);
@@ -564,7 +581,6 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 				addContainerToCache(containerInterface);
 			}
 		}
-		logger.info("added entity to cache successfully");
 	}
 
 	/**

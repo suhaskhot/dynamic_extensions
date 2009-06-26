@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
@@ -538,7 +539,7 @@ public class DynamicExtensionUtility
 		Collection<EntityGroupInterface> allEntityGroups = new HashSet<EntityGroupInterface>();
 		try
 		{
-			allEntityGroups = bizLogic.retrieve(EntityGroupInterface.class.getName(), "isSystemGenerated", Boolean.TRUE);
+			allEntityGroups = bizLogic.retrieve(EntityGroupInterface.class.getName());
 		}
 		catch (BizLogicException e)
 		{
@@ -555,14 +556,14 @@ public class DynamicExtensionUtility
 		return entityGroups;
 	}
 
-	public static List<ContainerInterface> getAllContainers() throws RemoteException
+	public static List<CategoryInterface> getAllCategories() throws RemoteException
 	{
-		Logger.out.info("EntityCache in before GetAll containers ");
+		Logger.out.info("EntityCache in before GetAll Categories ");
 		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
-		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
+		List<CategoryInterface> categoryList = new ArrayList<CategoryInterface>();
 		try
 		{
-			containerList = bizLogic.retrieve(ContainerInterface.class.getName());
+			categoryList = bizLogic.retrieve(CategoryInterface.class.getName());
 		}
 		catch (BizLogicException e)
 		{
@@ -570,8 +571,8 @@ public class DynamicExtensionUtility
 					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
 
 		}
-		Logger.out.info("EntityCache in after getAllContainers ");
-		return containerList;
+		Logger.out.info("EntityCache in after getAllCategories ");
+		return categoryList;
 	}
 	/**
 	 * This method checks if the given entity group is a metadata entity group or not.
@@ -591,7 +592,7 @@ public class DynamicExtensionUtility
 				break;
 			}
 		}
-		return (hasMetadataTag && isSuccessfullyLoaded(tags) && entityGroup.getIsSystemGenerated());
+		return (hasMetadataTag && isSuccessfullyLoaded(tags));
 	}
 
 	private static boolean isSuccessfullyLoaded(Collection<TaggedValueInterface> taggedValues)

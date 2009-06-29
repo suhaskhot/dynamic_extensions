@@ -92,7 +92,8 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	 * Map with KEY as a permissible value (PV) and VALUE as its Entity. This is
 	 * needed because there is no back pointer from PV to Entity
 	 */
-	protected Map<PermissibleValueInterface, EntityInterface> permissibleValueVsEntity = new HashMap<PermissibleValueInterface, EntityInterface>();
+	protected Map<PermissibleValueInterface, EntityInterface> permissibleValueVsEntity = 
+			new HashMap<PermissibleValueInterface, EntityInterface>();
 
 	/**
 	 * Set of all the DyanamicExtensions categories loaded in the database. 
@@ -102,12 +103,13 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	/**
 	 *  Map with KEY as dynamic extension Containers identifier and Value as Container object.
 	 */
-	protected Map<Long,ContainerInterface> idVscontainers = new HashMap<Long,ContainerInterface>();
+	protected Map<Long, ContainerInterface> idVscontainers = new HashMap<Long, ContainerInterface>();
 
 	/**
 	 * Map with KEY as dynamic extension CategoryAttribute's identifier and Value as CategoryAttribute object
 	 */
-	protected Map<Long, CategoryAttributeInterface> idVsCategoryAttribute = new HashMap<Long, CategoryAttributeInterface>();
+	protected Map<Long, CategoryAttributeInterface> idVsCategoryAttribute = 
+			new HashMap<Long, CategoryAttributeInterface>();
 
 	/**
 	 * Map with KEY as dynamic extension CategoryEntity's's identifier and Value as CategoryEntity object
@@ -117,7 +119,8 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	/**
 	 * Map with KEY as dynamic extension CategoryAssociations's identifier and Value as CategoryAssociations object
 	 */
-	protected Map<Long, CategoryAssociationInterface> idVsCaegoryAssociation = new HashMap<Long, CategoryAssociationInterface>();
+	protected Map<Long, CategoryAssociationInterface> idVsCaegoryAssociation = 
+			new HashMap<Long, CategoryAssociationInterface>();
 
 	/**
 	 * Map with KEY as dynamic extension Controls's identifier and Value as Control object
@@ -125,7 +128,8 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	protected Map<Long, ControlInterface> idVsControl = new HashMap<Long, ControlInterface>();
 
 	/**
-	 * This method gives the singleton cache object. If cache is not present then it throws {@link UnsupportedOperationException}
+	 * This method gives the singleton cache object. If cache is not present then it 
+	 * throws {@link UnsupportedOperationException}
 	 * @return The singleton cache object.
 	 */
 	public static AbstractEntityCache getCache()
@@ -166,7 +170,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		{
 			logger.error("Error while collecting caB2B entity groups. Error: " + e.getMessage());
 		}
-		
+
 		createCache(categoryList, entityGroups);
 
 		logger.info("Initializing cache DONE");
@@ -211,9 +215,8 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 			createCategoryEntityCach(category.getRootCategoryElement());
 		}
 
-		
 	}
-	
+
 	/**
 	 * It will add the categoryEntity & there containers to the cache.
 	 * It will then recursively call the same method for the child category Entities.
@@ -221,9 +224,9 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	 */
 	private void createCategoryEntityCach(CategoryEntityInterface categoryEntity)
 	{
-		for(Object container : categoryEntity.getContainerCollection())
+		for (Object container : categoryEntity.getContainerCollection())
 		{
-			ContainerInterface containerInterface = (ContainerInterface)container;
+			ContainerInterface containerInterface = (ContainerInterface) container;
 			addContainerToCache(containerInterface);
 		}
 		for (CategoryAssociationInterface categoryAssociation : categoryEntity
@@ -231,7 +234,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		{
 			CategoryEntityInterface targetCategoryEntity = categoryAssociation
 					.getTargetCategoryEntity();
-				createCategoryEntityCach(targetCategoryEntity);
+			createCategoryEntityCach(targetCategoryEntity);
 
 		}
 	}
@@ -247,7 +250,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		createControlCache(container.getControlCollection());
 		addAbstractEntityToCache(container.getAbstractEntity());
 	}
-	
+
 	/**
 	 * Adds all controls into cache.
 	 * @param controlCollection collection of control objects which are  to be cached.
@@ -259,7 +262,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 			idVsControl.put(control.getId(), control);
 		}
 	}
-	
+
 	/**
 	 * Adds abstract Entity (which can be 'CategoryEnity' or 'Entity') into cache.
 	 * @param abstractEntity which should be cached.
@@ -363,8 +366,9 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		}
 	}
 
-	/**
-	 * @see edu.wustl.cab2b.common.entityCache.IEntityCache#getEntityOnEntityParameters(java.util.Collection)
+	
+	/* (non-Javadoc)
+	 * @see edu.wustl.cab2b.common.cache.IEntityCache#getEntityOnEntityParameters(java.util.Collection)
 	 */
 	public MatchedClass getEntityOnEntityParameters(
 			Collection<EntityInterface> patternEntityCollection)
@@ -449,25 +453,33 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 
 	}
 
+	
+	/**
+	 * It will return the EntityGroup With the given id if it present in cache, else will throw the 
+	 * exception.
+	 * @param identifier
+	 * @return
+	 */
 	public EntityGroupInterface getEntityGroupById(Long identifier)
 	{
-		EntityGroupInterface entityGroup=null;
-		for(EntityGroupInterface group :cab2bEntityGroups)
+		EntityGroupInterface entityGroup = null;
+		for (EntityGroupInterface group : cab2bEntityGroups)
 		{
-			if(group.getId().equals(identifier))
+			if (group.getId().equals(identifier))
 			{
-				entityGroup=group;
+				entityGroup = group;
 				break;
 			}
 		}
-		if(entityGroup==null)
+		if (entityGroup == null)
 		{
 			throw new RuntimeException("Entity Group with given id is not present in cache : "
 					+ identifier);
 		}
 		return entityGroup;
-			
+
 	}
+
 	/**
 	 * Returns the Entity for given Identifier
 	 * 
@@ -549,7 +561,6 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		return association;
 	}
 
-	
 	/**
 	 * It will add the Given Entity in the cache .
 	 * @param entity
@@ -561,7 +572,7 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		createAssociationCache(entity);
 		createPermissibleValueCache(entity);
 	}
-	
+
 	/**
 	 * It will add the given Entity to the cache & will also update the corresponding 
 	 * controls containers & attributes.
@@ -569,15 +580,15 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 	 */
 	public void addEntityToCache(EntityInterface entity)
 	{
-		if(entity.getContainerCollection()==null || entity.getContainerCollection().isEmpty())
+		if (entity.getContainerCollection() == null || entity.getContainerCollection().isEmpty())
 		{
 			createEntityCache(entity);
 		}
 		else
 		{
-			for(Object container : entity.getContainerCollection())
+			for (Object container : entity.getContainerCollection())
 			{
-				ContainerInterface containerInterface = (ContainerInterface)container;
+				ContainerInterface containerInterface = (ContainerInterface) container;
 				addContainerToCache(containerInterface);
 			}
 		}

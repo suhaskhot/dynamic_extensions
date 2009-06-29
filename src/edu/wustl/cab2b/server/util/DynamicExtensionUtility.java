@@ -556,6 +556,11 @@ public class DynamicExtensionUtility
 		return entityGroups;
 	}
 
+	/**
+	 * It will retrieve all the categories present in the dataBase.
+	 * @return List Of the categories present in the DB.
+	 * @throws RemoteException
+	 */
 	public static List<CategoryInterface> getAllCategories() throws RemoteException
 	{
 		Logger.out.info("EntityCache in before GetAll Categories ");

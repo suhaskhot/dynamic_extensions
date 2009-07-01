@@ -1844,6 +1844,39 @@ function groupSelected(groupList)
     }
 }
 
+function evaluateFormulaForAttribute(controlName)
+{
+    if(controlName != null)
+    {
+        var request = newXMLHTTPReq();
+		var handlerFunction = function() 
+		{
+	         if(request.readyState  == 4)
+	         {
+	              if(request.status  == 200)
+	              {
+	            	  setCalculatedValue(controlName,request.responseText);
+	              }
+	         }
+		};
+		// no brackets after the function name and no parameters are passed
+		// because we are
+		// assigning a reference to the function and not actually calling it
+		request.onreadystatechange = handlerFunction;
+		request.open("POST", "ApplyDataEntryFormAction.do", true);
+		request.setRequestHeader("Content-Type",
+				"application/x-www-form-urlencoded");
+		request.send("&dataEntryOperation=evaluateFormula&selectedControlId="
+				+ controlName);
+    }
+}
+
+function setCalculatedValue(controlName,calculatedValue)
+{
+	alert("setCalculatedValue");
+	document.getElementById(controlName).value = calculatedValue;
+}
+
 function groupSelectedResponse(groupXML)
 {
     if(groupXML!=null)
@@ -1899,7 +1932,13 @@ function showParentContainerInsertDataPage()
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
 }
-
+function calculateAttributes()
+{
+    document.getElementById('dataEntryOperation').value = "calculateAttributes";
+    var dataEntryForm = document.getElementById('dataEntryForm');
+    setWaitCursorforAllObjectHierarchy(dataEntryForm);
+    dataEntryForm.submit();
+}
 function setInsertDataOperation()
 {
     document.getElementById('dataEntryOperation').value = "";

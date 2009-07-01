@@ -3032,12 +3032,76 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
 			category = (CategoryInterface) categoryManager.getObjectByName(
 					Category.class.getName(), "singleLineDisplaySameClass2");
-
-			fail();
+			assertNotNull(category.getId());
 
 		}
 		catch (Exception e)
 		{
+			fail();
+			e.printStackTrace();
+
+		}
+	}
+
+	/**
+	 * use case: Single line display controls validations
+	 * Below category has follwing combinations of controls in single line
+	 * 1. combo/text
+	 * 2. text/text
+	 * 3. combo/combo
+	 * Two controls on the sinlge line should of the same type
+	 */
+	public void testSingleLineDisplayValidControlTypes1()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplaySameClass4.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplaySameClass4");
+			assertNotNull(category.getId());
+
+		}
+		catch (Exception e)
+		{
+			fail();
+			e.printStackTrace();
+
+		}
+	}
+
+	/**
+	 * use case: Single line display controls validations
+	 * Below category has follwing combinations of controls in single line
+	 * 1. list/combo
+	 * 2. list/list
+	 * 3. list/text
+	 * Two controls on the sinlge line should of the same type
+	 */
+	public void testSingleLineDisplayValidControlTypes2()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+
+			createCaegory("./csv/singleLineDsiplaySameClass5.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "singleLineDisplaySameClass5");
+			assertNotNull(category.getId());
+
+		}
+		catch (Exception e)
+		{
+			fail();
 			e.printStackTrace();
 
 		}
@@ -3078,7 +3142,8 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			//importModel("./xmi/scg.xmi","./csv/SCG.csv","edu.wustl.catissuecore.domain.PathAnnotation_SCG");
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
 
 			createCaegory("./csv/singleLineDsiplayDifferentClassl.csv");
 

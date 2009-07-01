@@ -355,29 +355,27 @@ public class CategoryValidator
 	 * @param catEntNames
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void isRootEntityUsedTwice(CategoryEntityInterface rootCategoryEntity,EntityInterface rootEntityInterface)
-			throws DynamicExtensionsSystemException 
+	public void isRootEntityUsedTwice(CategoryEntityInterface rootCategoryEntity,
+			EntityInterface rootEntityInterface) throws DynamicExtensionsSystemException
 	{
 		if (rootCategoryEntity != null)
 		{
 			for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
 					.getCategoryAssociationCollection())
 			{
-				if (categoryAssociationInterface.getTargetCategoryEntity()
-						.getEntity().equals(rootEntityInterface))
+				if (categoryAssociationInterface.getTargetCategoryEntity().getEntity().equals(
+						rootEntityInterface))
 				{
 					String errorMessage = getErrorMessageStart()
-							+ ApplicationProperties
-									.getValue(CategoryConstants.ROOT_ENT_TWICE)
-							+ categoryAssociationInterface
-									.getTargetCategoryEntity().getEntity()
+							+ ApplicationProperties.getValue(CategoryConstants.ROOT_ENT_TWICE)
+							+ categoryAssociationInterface.getTargetCategoryEntity().getEntity()
 									.getName();
 					throw new DynamicExtensionsSystemException(errorMessage);
-				} 
-				else 
+				}
+				else
 				{
-					isRootEntityUsedTwice(categoryAssociationInterface
-							.getTargetCategoryEntity(),rootEntityInterface);
+					isRootEntityUsedTwice(categoryAssociationInterface.getTargetCategoryEntity(),
+							rootEntityInterface);
 				}
 			}
 		}
@@ -564,41 +562,19 @@ public class CategoryValidator
 	 * @param container 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void validateControlInSingleLine(String controlType, int controlXPosition, ContainerInterface container)
-			throws DynamicExtensionsSystemException
+	public void validateControlInSingleLine(String controlType, int controlXPosition,
+			ContainerInterface container) throws DynamicExtensionsSystemException
 	{
 		ControlEnum controlEnum = ControlEnum.get(controlType);
-		boolean isValidControlType = true;
-		String extraMessage = "";
-		if (isValidControlType(controlType)
-				&& (controlEnum.equals(ControlEnum.LIST_BOX_CONTROL)
+		if (!isValidControlType(controlType)
+				|| !(controlEnum.equals(ControlEnum.LIST_BOX_CONTROL)
 						|| controlEnum.equals(ControlEnum.COMBO_BOX_CONTROL) || controlEnum
 						.equals(ControlEnum.TEXT_FIELD_CONTROL)))
 		{
-				List<ControlInterface> controlsWithSameSequenceNumber = getAllControlWithSameSequenceNumber(
-						container, controlXPosition);
-				if (controlsWithSameSequenceNumber != null
-						&& controlsWithSameSequenceNumber.size() > 1)
-				{
-					if (!controlEnum.equals(getAllowedControlType(controlsWithSameSequenceNumber)))
-					{
-						isValidControlType = false;
-						extraMessage = "ALLOWED CONTROL TYPE IN THIS LINE IS "+getAllowedControlType(controlsWithSameSequenceNumber);
-					}
-				}
-
-		}
-		else
-		{
-			isValidControlType = false;
-			extraMessage = "ALLOWED CONTROLS IN THE SINGLE LINE DISPLAY ARE listBox,comboBox,textFiled";
-		}
-
-		if (!isValidControlType)
-		{
 			throw new DynamicExtensionsSystemException(getErrorMessageStart()
 					+ ApplicationProperties
-							.getValue("dyExtn.category.validation.singleLineDisaply")+"\n"+ extraMessage);
+							.getValue("dyExtn.category.validation.singleLineDisaply"));
+
 		}
 
 	}
@@ -674,7 +650,8 @@ public class CategoryValidator
 	 * @param showCaption
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void validateContainersUnderSameDisplayLabel(String[] categoryPaths, Boolean showCaption) throws DynamicExtensionsSystemException
+	public void validateContainersUnderSameDisplayLabel(String[] categoryPaths, Boolean showCaption)
+			throws DynamicExtensionsSystemException
 	{
 
 		if (categoryPaths.length > 1 && !showCaption)

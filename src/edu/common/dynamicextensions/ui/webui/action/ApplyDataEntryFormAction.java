@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +35,9 @@ import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
@@ -46,7 +49,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterfac
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ApplyDataEntryFormProcessor;
 import edu.common.dynamicextensions.processor.DeleteRecordProcessor;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
@@ -55,13 +57,14 @@ import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.FormulaCalculator;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 
 /**
- * It populates the Attribute values entered in the dynamically generated controls. *
+ * It populates the Attribute values entered in the dynamically generated controls.
  * @author chetan_patil
  */
 public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
@@ -117,10 +120,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 				else if (actionForward == null && errorList != null && errorList.isEmpty())
 				{
-					String recordIdentifier = storeParentContainer(valueMapStack, containerStack,
-							request, dataEntryForm.getRecordIdentifier());
-					isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
-							WebUIManagerConstants.SUCCESS, dataEntryForm.getContainerId());
+						String recordIdentifier = storeParentContainer(valueMapStack, containerStack,
+								request, dataEntryForm.getRecordIdentifier());
+						isCallbackURL = redirectCallbackURL(request, response, recordIdentifier,
+								WebUIManagerConstants.SUCCESS, dataEntryForm.getContainerId());
 				}
 			}
 			catch (Exception exception)
@@ -144,7 +147,47 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		}
 		return actionForward;
 	}
-
+	/**
+	 * @throws ParseException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException 
+	 * 
+	 */
+	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	{
+		for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : valueMap.entrySet())
+		{
+			BaseAbstractAttributeInterface attribute = entry.getKey();
+			if (attribute instanceof CategoryAttributeInterface)
+			{
+				CategoryAttributeInterface categoryAttributeInterface = (CategoryAttributeInterface) attribute;
+				Boolean isCalculatedAttribute = categoryAttributeInterface.getIsCalculatedAttribute();
+				if (isCalculatedAttribute != null && isCalculatedAttribute)
+				{
+					FormulaCalculator formulaCalculator = new FormulaCalculator();
+					CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
+					Object formulaResultValue = formulaCalculator
+							.evaluateFormula(
+									valueMap,
+									categoryAttributeInterface,
+									categoryEntityInterface.getCategory());
+					if (formulaResultValue != null)
+					{
+						entry.setValue(formulaResultValue.toString());
+					}
+				}
+			}
+			else if (attribute instanceof CategoryAssociationInterface)
+			{
+					List <Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry.getValue();
+					for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
+					{
+						populateAttributeValueMapForCalculatedAttributes(map,containerInterface);
+					}
+			}
+		}
+	}
 	/**
 	 *
 	 * @param recordIdentfier
@@ -278,6 +321,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					actionForward = mapping.findForward("loadParentContainer");
 				}
 			}
+			else if ("calculateAttributes".equals(dataEntryOperation))
+			{
+				dataEntryForm.setDataEntryOperation("calculateAttributes");
+				actionForward = mapping.findForward(DEConstants.SUCCESS);
+			}
 		}
 		return actionForward;
 	}
@@ -303,11 +351,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws FileNotFoundException if improper value is entered for FileUpload control.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws IOException
+	 * @throws ParseException 
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void populateAndValidateValues(Stack<ContainerInterface> containerStack,
 			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack,
 			HttpServletRequest request, DataEntryForm dataEntryForm) throws FileNotFoundException,
-			DynamicExtensionsValidationException, DynamicExtensionsSystemException, IOException
+			DynamicExtensionsSystemException, IOException, DynamicExtensionsApplicationException, ParseException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
 		List processedContainersList = new ArrayList<ContainerInterface>();
@@ -320,7 +370,8 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm
 				.getErrorList(), containerInterface);
-
+		populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
+		
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);
 

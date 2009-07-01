@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -32,6 +33,7 @@ import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.FormulaCalculator;
 import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
@@ -381,6 +383,8 @@ public class CategoryGenerator
 				categoryValidator.isRootEntityUsedTwice(category.getRootCategoryElement(), category
 						.getRootCategoryElement().getEntity());
 
+				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category.getRootCategoryElement(),categoryFileParser.getLineNumber());
+				
 				if (hasRelatedAttributes)
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
@@ -960,15 +964,19 @@ public class CategoryGenerator
 	/**
 	 * @param control
 	 * @throws ParseException
+	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void setDefaultValue(ControlInterface control) throws ParseException,
-			DynamicExtensionsSystemException
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		if (categoryFileParser.getDefaultValue() == null)
+		String defaultValue = categoryFileParser.getDefaultValue();
+		if (defaultValue == null)
 		{
 			// Validation-If category attribute is of type Read-only its default
 			// value must be specified
-			if (control.getIsReadOnly() != null && control.getIsReadOnly())
+			if ((control.getIsReadOnly() != null && control.getIsReadOnly())
+					|| (control.getIsCalculated() != null && control
+							.getIsCalculated()))
 			{
 				String attributeName = ((CategoryAttributeInterface) control
 						.getAttibuteMetadataInterface()).getAbstractAttribute().getName();
@@ -984,15 +992,30 @@ public class CategoryGenerator
 
 		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control
 				.getAttibuteMetadataInterface();
-		if (!categoryFileParser.getDefaultValue().equals(categoryAttribute.getDefaultValue()))
+		if (!defaultValue.equals(categoryAttribute.getDefaultValue()))
 		{
 			AttributeInterface attributeInterface = categoryAttribute.getAbstractAttribute()
 					.getEntity().getAttributeByName(
 							categoryAttribute.getAbstractAttribute().getName());
-			categoryAttribute.setDefaultValue(attributeInterface.getAttributeTypeInformation()
-					.getPermissibleValueForString(
-							DynamicExtensionsUtility.getEscapedStringValue(categoryFileParser
-									.getDefaultValue())));
+			if (control.getIsCalculated() != null && control.getIsCalculated())
+			{
+				FormulaParser formulaParser = new FormulaParser();
+				if (formulaParser.validateExpression(
+						defaultValue)) 
+				{
+					categoryAttribute.setIsCalculatedAttribute(control
+							.getIsCalculated());
+					categoryAttribute.setFormula(DomainObjectFactory
+							.getInstance().createFormula(
+									defaultValue));
+				}
+			}
+			else
+			{
+				categoryAttribute.setDefaultValue(attributeInterface.getAttributeTypeInformation()
+						.getPermissibleValueForString(
+								DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
+			}
 		}
 	}
 

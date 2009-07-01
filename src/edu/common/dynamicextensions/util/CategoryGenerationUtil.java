@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +11,8 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -19,8 +22,10 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * 
@@ -547,5 +552,43 @@ public class CategoryGenerationUtil
 			entityInterface = associationInterface.getTargetEntity();
 		}
 		return entityInterface;
+	}
+	/**
+	 * @throws ParseException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException 
+	 * 
+	 */
+	public static void setDefaultValueForCalculatedAttributes(CategoryEntityInterface rootCategoryEntity,Long lineNumber) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	{
+		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
+				.getCategoryAssociationCollection())
+		{
+			for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
+					.getTargetCategoryEntity().getAllCategoryAttributes())
+			{
+				Boolean isCalculatedAttribute = categoryAttributeInterface
+						.getIsCalculatedAttribute();
+				if (isCalculatedAttribute != null && isCalculatedAttribute) 
+				{
+					FormulaCalculator formulaCalculator = new FormulaCalculator();
+					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
+							categoryAttributeInterface, rootCategoryEntity
+									.getCategory());
+					if (message != null && message.length() > 0)
+					{
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+								+ lineNumber
+								+ " "
+								+ message);
+					}
+				}
+			}
+			setDefaultValueForCalculatedAttributes(categoryAssociationInterface
+					.getTargetCategoryEntity(),lineNumber);
+		}
 	}
 }

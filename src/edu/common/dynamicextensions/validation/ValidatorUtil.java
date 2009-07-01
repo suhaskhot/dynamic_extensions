@@ -204,7 +204,7 @@ public class ValidatorUtil
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsValidationException
 	 */
-	private static List<String> validateAttributes(
+	public static List<String> validateAttributes(
 			Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode,
 			String controlCaption) throws DynamicExtensionsSystemException,
 			DynamicExtensionsValidationException

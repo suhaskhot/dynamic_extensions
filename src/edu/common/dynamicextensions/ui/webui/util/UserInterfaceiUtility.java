@@ -75,7 +75,7 @@ public class UserInterfaceiUtility
 		stringBuffer.append("_rowCount' value='");
 		stringBuffer.append(rowCount);
 		stringBuffer
-				.append("'/> </td></tr><tr width='100%'><td class='formFieldContainer_withoutBorder' colspan='3' align='center'><table cellpadding='3' cellspacing='0' align='center' width='100%'>");
+				.append("'/> </td></tr><tr width='100%'><td class='formFieldContainer_withoutBorder' colspan='100' align='center'><table cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		if (subContainer.getAddCaption())
 		{
@@ -120,27 +120,33 @@ public class UserInterfaceiUtility
 
 		for (ControlInterface control : controls)
 		{
-			boolean isControlRequired = isControlRequired(control);
+			boolean isControlRequired = false;
+			if(control.getBaseAbstractAttribute() != null)
+			{	
+				isControlRequired =  isControlRequired(control);
+				stringBuffer.append("<th>");
+				if (isControlRequired)
+				{
 
-			stringBuffer.append("<th>");
-			if (isControlRequired)
-			{
+					stringBuffer.append("<span class='font_red'>");
+					stringBuffer.append(subContainer.getRequiredFieldIndicatior());
+					stringBuffer.append("</span>&nbsp;&nbsp;<span class='font_bl_nor'>");
+					stringBuffer.append(DynamicExtensionsUtility
+							.getFormattedStringForCapitalization(control.getCaption()));
+					stringBuffer.append("</span>");
+				}
+				else
+				{
+					stringBuffer.append("&nbsp;&nbsp;<span class='font_bl_nor'>");
+					stringBuffer.append(DynamicExtensionsUtility
+							.getFormattedStringForCapitalization(control.getCaption()));
+					stringBuffer.append("</span>");
+				}
+				stringBuffer.append("</th>");
+			
+			}
 
-				stringBuffer.append("<span class='font_red'>");
-				stringBuffer.append(subContainer.getRequiredFieldIndicatior());
-				stringBuffer.append("</span>&nbsp;&nbsp;<span class='font_bl_nor'>");
-				stringBuffer.append(DynamicExtensionsUtility
-						.getFormattedStringForCapitalization(control.getCaption()));
-				stringBuffer.append("</span>");
-			}
-			else
-			{
-				stringBuffer.append("&nbsp;&nbsp;<span class='font_bl_nor'>");
-				stringBuffer.append(DynamicExtensionsUtility
-						.getFormattedStringForCapitalization(control.getCaption()));
-				stringBuffer.append("</span>");
-			}
-			stringBuffer.append("</th>");
+			
 		}
 
 		stringBuffer.append("</tr>");

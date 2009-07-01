@@ -88,6 +88,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if ((containerStack != null && !containerStack.isEmpty())
 				&& (valueMapStack != null || !valueMapStack.isEmpty()))
 		{
+			removeExtraAttribtes(containerStack.peek(), valueMapStack);
 			try
 			{
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
@@ -148,6 +149,30 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		return actionForward;
 	}
 	/**
+	 * @param container
+	 * @param valueMapStack
+	 */
+	private void removeExtraAttribtes(ContainerInterface container, Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
+	{
+		Collection<ControlInterface> controls = container.getAllControls();
+		Collection<BaseAbstractAttributeInterface> attributeCollection = new HashSet<BaseAbstractAttributeInterface>();
+		for(ControlInterface control : controls)
+		{
+			attributeCollection.add(control.getBaseAbstractAttribute());
+		}
+		Map<BaseAbstractAttributeInterface, Object> valueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+		valueMap.putAll(valueMapStack.peek());
+		for(BaseAbstractAttributeInterface attribute : valueMap.keySet())
+		{
+			if(!attributeCollection.contains(attribute))
+			{
+				valueMapStack.peek().remove(attribute);
+			}
+		}
+	}
+
+	/**
+
 	 * @throws ParseException 
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
@@ -482,7 +507,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			AbstractContainmentControlInterface associationControlInterface = (AbstractContainmentControlInterface) control;
 			ContainerInterface targetContainer = ((AbstractContainmentControlInterface) control)
 					.getContainer();
-			if (associationControlInterface.isCardinalityOneToMany())
+			if (associationControlInterface.isCardinalityOneToMany() && associationControlInterface.getContainer().getAddCaption())
 			{
 				associationValueMapList = collectOneToManyContainmentValues(request, dataEntryForm,
 						targetContainer.getId().toString(), control, associationValueMapList);

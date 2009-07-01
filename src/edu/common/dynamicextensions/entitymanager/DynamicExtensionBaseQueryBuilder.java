@@ -70,6 +70,7 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
 
+
 /**
  * This class provides the methods that builds the queries that are required for
  * creation and updating of the tables of the entities.These queries are as per SQL-99 standard.

@@ -203,4 +203,14 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param position
 	 */
 	void setYPosition(Integer position);
+	/**
+	 * 
+	 * @return
+	 */
+	Boolean getIsCalculated();
+	/**
+	 * 
+	 * @param isCalculated
+	 */
+	public void setIsCalculated(Boolean isCalculated);
 }

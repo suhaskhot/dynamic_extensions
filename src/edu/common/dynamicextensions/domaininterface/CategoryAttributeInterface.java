@@ -94,5 +94,61 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 *
 	 */
 	void setIsRelatedAttribute(Boolean isRelatedAttribute);
+	
+	/**
+	 *
+	 */
+	Boolean getIsCalculatedAttribute();
 
+	/**
+	 *
+	 */
+	void setIsCalculatedAttribute(Boolean isCalculatedAttribute);
+	/**
+	 * 
+	 * @param formulaInterface
+	 */
+	void setFormula(FormulaInterface formulaInterface);
+	/**
+	 * This method return the formula.
+	 * @return
+	 */
+	FormulaInterface getFormula();
+	/**
+	 * 
+	 * @return
+	 */
+	Collection<CategoryAttributeInterface> getCalculatedCategoryAttributeCollection();
+	/**
+	 * 
+	 * @param calculatedCategoryAttributeCollection
+	 */
+	void setCalculatedCategoryAttributeCollection(
+			Collection<CategoryAttributeInterface> calculatedCategoryAttributeCollection);
+	/**
+	 * 
+	 * @return
+	 */
+	public Collection<CategoryAttributeInterface> getCalculatedDependentCategoryAttributes();
+	/**
+	 * 
+	 * @param calculatedDependentCategoryAttributes
+	 */
+	public void setCalculatedDependentCategoryAttributes(
+			Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes);
+	/**
+	 *
+	 */
+	public void addCalculatedDependentCategoryAttribute(
+			CategoryAttributeInterface categoryAttributeInterface);
+	/**
+	 *
+	 */
+	public void addCalculatedCategoryAttribute(
+			CategoryAttributeInterface categoryAttributeInterface);
+	/**
+	 * 
+	 * @return
+	 */
+	public PermissibleValueInterface getDefaultValuePermissibleValue();
 }

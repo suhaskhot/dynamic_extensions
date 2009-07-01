@@ -58,7 +58,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * Decides whether the control should be disabled or not
 	 */
 	protected Boolean isReadOnly = false;
-
+	
+	/**
+	 * Decides whether the control should be autocalculated
+	 */
+	protected Boolean isCalculated = false;
 	/**
 	 * Name of the control.
 	 */
@@ -138,6 +142,22 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	public String getCaption()
 	{
 		return caption;
+	}
+	/**
+	 * @hibernate.property name="isCalculated" type="boolean" column="IS_CALCULATED"
+	 * @return Returns the isHidden.
+	 */
+	public Boolean getIsCalculated() 
+	{
+		return isCalculated;
+	}
+	/**
+	 * 
+	 * @param isCalculated
+	 */
+	public void setIsCalculated(Boolean isCalculated) 
+	{
+		this.isCalculated = isCalculated;
 	}
 
 	/**

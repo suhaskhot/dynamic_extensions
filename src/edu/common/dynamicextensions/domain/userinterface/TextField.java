@@ -121,6 +121,7 @@ public class TextField extends Control implements TextFieldInterface
 			{
 				htmlString += " disabled='" + ProcessorConstants.TRUE + "' ";
 			}
+
 			int maxChars = 0;
 			AttributeMetadataInterface attibute = this.getAttibuteMetadataInterface();
 			if (attibute != null)
@@ -136,7 +137,13 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			htmlString += "/>";
-
+			if (this.isCalculated != null && this.isCalculated)
+			{
+				htmlString += "<img src=\"de/images/b_calculate.gif\" alt=\"Calculate\" width=\"62\" height=\"21\" hspace=\"3\" align=\"absmiddle\" onClick=\"calculateAttributes();\" >";
+				htmlString += "<map alt=\"Calculate\">";
+				htmlString += "<area href=\"javascript:calculateAttributes()\" shape=\"default\">";
+				htmlString += "</map>";
+			}
 			//String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 			String measurementUnit = this.getAttibuteMetadataInterface().getMeasurementUnit();
 			if (measurementUnit != null)

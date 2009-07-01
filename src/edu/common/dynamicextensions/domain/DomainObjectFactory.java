@@ -49,6 +49,7 @@ import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FloatValueInterface;
+import edu.common.dynamicextensions.domaininterface.FormulaInterface;
 import edu.common.dynamicextensions.domaininterface.IdGeneratorInterface;
 import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
@@ -905,5 +906,14 @@ public class DomainObjectFactory
 	public Label createLabelControl()
 	{
 		return new Label();
+	}
+	/**
+	 * @return
+	 */
+	public FormulaInterface createFormula(String expression)
+	{
+		Formula formula = new Formula();
+		formula.setExpression(expression);
+		return formula;
 	}
 }

@@ -12,8 +12,10 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
+import edu.common.dynamicextensions.domaininterface.FormulaInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -72,6 +74,23 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 *
 	 */
 	protected Boolean isRelatedAttribute;
+	/**
+	 *
+	 */
+	protected Boolean isCalculatedAttribute;
+	/**
+	 * Collection of formulae.
+	 */
+	protected Collection<FormulaInterface> formulaCollection = new HashSet<FormulaInterface>();
+	/**
+	 * Collection of calculated CategoryAttribute Collection.
+	 */
+	protected Collection<CategoryAttributeInterface> calculatedCategoryAttributeCollection = new HashSet<CategoryAttributeInterface>();
+	/**
+	 * Collection of category attributes where in this category attribute is used in formula.
+	 */
+	protected Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes = new HashSet<CategoryAttributeInterface>();
+
 
 	/**
 	 * This method returns the Collection of Column Properties of the Attribute.
@@ -266,7 +285,106 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.defaultPermissibleValuesCollection = defaultPermissibleValuesCollection;
 	}
+	/**
+	 * 
+	 * @return
+	 */
+	public PermissibleValueInterface getDefaultValuePermissibleValue()
+	{
+		PermissibleValueInterface permissibleValueInterface = null;
+		if (defaultPermissibleValuesCollection != null
+				&& !defaultPermissibleValuesCollection.isEmpty())
+		{
+			Iterator<PermissibleValueInterface> dataElementIter = defaultPermissibleValuesCollection
+					.iterator();
+			permissibleValueInterface = dataElementIter.next();
+		}
+		return permissibleValueInterface;
+	}
+	/**
+	 * @hibernate.set name="formulaCollection" table="DYEXTN_FORMULA"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CATEGORY_ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.Formula"
+	 * @return Returns the controlCollection.
+	 */
+	private Collection<FormulaInterface> getFormulaCollection()
+	{
+		return formulaCollection;
+	}
 
+	/**
+	 * @param setFormulaCollection The controlCollection to set.
+	 */
+	private void setFormulaCollection(Collection<FormulaInterface> formulaCollection)
+	{
+		this.formulaCollection = formulaCollection;
+	}
+	/**
+	 * @hibernate.set name="calculatedCategoryAttributeCollection" table="DYEXTN_CATEGORY_ATTRIBUTE"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CAL_CATEGORY_ATTR_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAttribute"
+	 * @return Returns the calculatedCategoryAttributeCollection.
+	 */
+	public Collection<CategoryAttributeInterface> getCalculatedCategoryAttributeCollection()
+	{
+		return calculatedCategoryAttributeCollection;
+	}
+	/**
+	 * 
+	 * @param calculatedCategoryAttributeCollection
+	 */
+	public void setCalculatedCategoryAttributeCollection(
+			Collection<CategoryAttributeInterface> calculatedCategoryAttributeCollection)
+	{
+		this.calculatedCategoryAttributeCollection = calculatedCategoryAttributeCollection;
+	}
+	/**
+	 *
+	 */
+	public void addCalculatedCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
+	{
+		if (this.calculatedCategoryAttributeCollection == null)
+		{
+			this.calculatedCategoryAttributeCollection = new HashSet<CategoryAttributeInterface>();
+		}
+		this.calculatedCategoryAttributeCollection.add(categoryAttributeInterface);
+	}
+	/**
+	 * @hibernate.set name="calculatedCategoryAttributeCollection" table="DYEXTN_CATEGORY_ATTRIBUTE"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CAL_DEPENDENT_CATEGORY_ATTR_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAttribute"
+	 * @return Returns the calculatedDependentCategoryAttributes.
+	 */
+	public Collection<CategoryAttributeInterface> getCalculatedDependentCategoryAttributes()
+	{
+		return calculatedDependentCategoryAttributes;
+	}
+	/**
+	 * 
+	 * @param calculatedDependentCategoryAttributes
+	 */
+	public void setCalculatedDependentCategoryAttributes(
+			Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes)
+	{
+		this.calculatedDependentCategoryAttributes = calculatedDependentCategoryAttributes;
+	}
+	/**
+	 *
+	 */
+	public void addCalculatedDependentCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
+	{
+		if (this.calculatedDependentCategoryAttributes == null)
+		{
+			this.calculatedDependentCategoryAttributes = new HashSet<CategoryAttributeInterface>();
+		}
+		this.calculatedDependentCategoryAttributes.add(categoryAttributeInterface);
+	}
 	/**
 	 * This method return the default value for the category attribute if set otherwise
 	 * return the default value for the original attribute
@@ -331,7 +449,42 @@ public class CategoryAttribute extends BaseAbstractAttribute
 
 		this.defaultPermissibleValuesCollection.add(permissibleValue);
 	}
+	/**
+	 * 
+	 * @param formulaInterface
+	 */
+	public void setFormula(FormulaInterface formulaInterface)
+	{
+		if (formulaCollection == null)
+		{
+			formulaCollection = new HashSet<FormulaInterface>();
+		}
+		if (formulaCollection != null
+				&& !formulaCollection.isEmpty())
+		{
+			Iterator<FormulaInterface> iterator = formulaCollection
+					.iterator();
+			formulaCollection.remove(iterator.next());
+		}
 
+		this.formulaCollection.add(formulaInterface);
+	}
+	/**
+	 * This method return the formula.
+	 * @return
+	 */
+	public FormulaInterface getFormula()
+	{
+		FormulaInterface formula = null;
+		if (formulaCollection != null
+				&& !formulaCollection.isEmpty())
+		{
+			Iterator<FormulaInterface> iterator = formulaCollection
+					.iterator();
+			formula = iterator.next();
+		}
+		return formula;
+	}
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMaxSize()
 	 */
@@ -392,7 +545,24 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.isRelatedAttribute = isRelatedAttribute;
 	}
-
+	/**
+	* @hibernate.property name="isCalculatedAttribute" type="boolean" column="IS_CAL_ATTRIBUTE"
+	*/
+	public Boolean getIsCalculatedAttribute() 
+	{
+		return isCalculatedAttribute;
+	}
+	/**
+	 * 
+	 * @param isCalculatedAttribute
+	 */
+	public void setIsCalculatedAttribute(Boolean isCalculatedAttribute) 
+	{
+		this.isCalculatedAttribute = isCalculatedAttribute;
+	}
+	/**
+	 * 
+	 */
 	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException
 	{
 		return ((AttributeMetadataInterface) this.getAbstractAttribute()).isValuePresent(value);

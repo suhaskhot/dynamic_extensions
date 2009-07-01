@@ -3088,7 +3088,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+		importModel("./xmi/scg.xmi", "./csv/SCG.csv",
 					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
 
 			createCaegory("./csv/singleLineDsiplaySameClass5.csv");

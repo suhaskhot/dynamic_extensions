@@ -590,6 +590,69 @@
               />
         </set>
 
+        <set
+            name="formulaCollection"
+            table="DYEXTN_FORMULA"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="CATEGORY_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.Formula"
+              />
+        </set>
+
+        <set
+            name="calculatedCategoryAttributeCollection"
+            table="DYEXTN_CATEGORY_ATTRIBUTE"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="CAL_CATEGORY_ATTR_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.CategoryAttribute"
+              />
+        </set>
+
+        <set
+            name="calculatedDependentCategoryAttributes"
+            table="DYEXTN_CATEGORY_ATTRIBUTE"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="CAL_DEPENDENT_CATEGORY_ATTR_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.CategoryAttribute"
+              />
+        </set>
+
         <property
             name="isVisible"
             type="boolean"
@@ -604,6 +667,14 @@
             update="true"
             insert="true"
             column="IS_RELATTRIBUTE"
+        />
+
+        <property
+            name="isCalculatedAttribute"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_CAL_ATTRIBUTE"
         />
 
         </joined-subclass>

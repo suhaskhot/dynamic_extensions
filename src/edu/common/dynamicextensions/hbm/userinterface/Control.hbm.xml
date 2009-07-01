@@ -42,6 +42,14 @@
         />
 
         <property
+            name="isCalculated"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_CALCULATED"
+        />
+
+        <property
             name="cssClass"
             type="string"
             update="true"

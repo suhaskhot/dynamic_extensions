@@ -998,15 +998,35 @@ public class CategoryGenerator
 							categoryAttribute.getAbstractAttribute().getName());
 			if (control.getIsCalculated() != null && control.getIsCalculated())
 			{
+				boolean isValidFormula = false;
 				FormulaParser formulaParser = new FormulaParser();
-				if (formulaParser.validateExpression(
-						defaultValue)) 
+				try
+				{
+					isValidFormula = formulaParser
+							.validateExpression(defaultValue);
+				}
+				catch (DynamicExtensionsSystemException ex)
+				{
+					throw new DynamicExtensionsApplicationException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber()
+							+ defaultValue + " formula defined is not valid.",ex);
+				}
+				if (isValidFormula)
 				{
 					categoryAttribute.setIsCalculatedAttribute(control
 							.getIsCalculated());
-					categoryAttribute.setFormula(DomainObjectFactory
+					if (categoryAttribute.getFormula() == null)
+					{
+						categoryAttribute.setFormula(DomainObjectFactory
 							.getInstance().createFormula(
 									defaultValue));
+					}
+					else
+					{
+						categoryAttribute.getFormula().setExpression(defaultValue);
+					}
 				}
 			}
 			else
@@ -1017,7 +1037,6 @@ public class CategoryGenerator
 			}
 		}
 	}
-
 	/**
 	 * This method populate the main form list for the given entity group
 	 * 

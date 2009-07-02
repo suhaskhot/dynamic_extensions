@@ -151,4 +151,12 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * @return
 	 */
 	public PermissibleValueInterface getDefaultValuePermissibleValue();
+	/**
+	 * This method removes all Calculated Category Attributes.
+	 */
+	public void removeAllCalculatedDependentCategoryAttributes();
+	/**
+	 * This method removes all Calculated Category Attributes.
+	 */
+	public void removeAllCalculatedCategoryAttributes();
 }

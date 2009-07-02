@@ -8,6 +8,7 @@ import org.nfunk.jep.JEP;
 import org.nfunk.jep.SymbolTable;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 
 /**
@@ -53,12 +54,12 @@ public class FormulaParser
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public boolean parseExpression(String formulaExpression) throws DynamicExtensionsApplicationException
+	public boolean parseExpression(String formulaExpression) throws DynamicExtensionsSystemException
 	{
 		parser.parseExpression(formulaExpression); // Parse the expression
 		if (parser.hasError()) 
 		{
-			throw new DynamicExtensionsApplicationException(parser.getErrorInfo());
+			throw new DynamicExtensionsSystemException(parser.getErrorInfo());
 		}
 		return true;
 	}
@@ -87,7 +88,7 @@ public class FormulaParser
 	 * @return
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public boolean validateExpression(String formulaExpression) throws DynamicExtensionsApplicationException
+	public boolean validateExpression(String formulaExpression) throws DynamicExtensionsSystemException
 	{
 		boolean isValid = false;
 		isValid = parseExpression(formulaExpression);

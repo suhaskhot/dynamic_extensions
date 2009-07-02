@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
 
@@ -572,6 +573,8 @@ public class CategoryGenerationUtil
 						.getIsCalculatedAttribute();
 				if (isCalculatedAttribute != null && isCalculatedAttribute) 
 				{
+					setDefaultValue(categoryAttributeInterface,rootCategoryEntity
+							.getCategory());
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
 							categoryAttributeInterface, rootCategoryEntity
@@ -589,6 +592,73 @@ public class CategoryGenerationUtil
 			}
 			setDefaultValueForCalculatedAttributes(categoryAssociationInterface
 					.getTargetCategoryEntity(),lineNumber);
+		}
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static void getCategoryAttribute(String entityName,String attributeName,CategoryEntityInterface rootCategoryEntity,List <CategoryAttributeInterface> attributes)
+	{
+		if (rootCategoryEntity != null)
+		{
+			for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
+					.getCategoryAssociationCollection())
+			{
+				if (categoryAssociationInterface.getTargetCategoryEntity()
+						.getEntity().getName().equals(entityName))
+				{
+					for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface.getTargetCategoryEntity().getCategoryAttributeCollection())
+					{
+						if (categoryAttributeInterface.getAbstractAttribute().getName().equals(attributeName))
+						{
+							attributes.add(categoryAttributeInterface);
+							return;
+						}
+					}
+				}
+				else
+				{
+					getCategoryAttribute(entityName,attributeName,categoryAssociationInterface.getTargetCategoryEntity(),attributes);
+				}
+			}
+		}
+	}
+	/**
+	 * setDefaultValueforCalculatedAttributes.
+	 * @param defaultValue
+	 * @param control
+	 * @param categoryAttribute
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static void setDefaultValue(CategoryAttributeInterface categoryAttribute,CategoryInterface categoryInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		FormulaParser formulaParser = new FormulaParser();
+		if (formulaParser.validateExpression(
+				categoryAttribute.getFormula().getExpression()))
+		{
+			categoryAttribute.removeAllCalculatedCategoryAttributes();
+			List<String> symbols = formulaParser.getSymobols();
+			List <CategoryAttributeInterface> attributes = new ArrayList<CategoryAttributeInterface>();
+			for (String symbol : symbols)
+			{
+				String [] names = symbol.split("_");
+				attributes.clear();
+				CategoryGenerationUtil.getCategoryAttribute(names[0], names[1],
+						categoryInterface.getRootCategoryElement(), attributes);
+				if (attributes.isEmpty())
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ " "
+							+ names[0]+ "_" + names[1] + " attibute is not defined for the formula "+  categoryAttribute.getFormula().getExpression());
+				}
+				else
+				{
+					categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
+				}
+			}
 		}
 	}
 }

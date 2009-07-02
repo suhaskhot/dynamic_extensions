@@ -354,6 +354,13 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		this.calculatedCategoryAttributeCollection.add(categoryAttributeInterface);
 	}
 	/**
+	 * This method removes all Calculated Category Attributes.
+	 */
+	public void removeAllCalculatedCategoryAttributes()
+	{
+		calculatedCategoryAttributeCollection.clear();
+	}
+	/**
 	 * @hibernate.set name="calculatedCategoryAttributeCollection" table="DYEXTN_CATEGORY_ATTRIBUTE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CAL_DEPENDENT_CATEGORY_ATTR_ID"
@@ -373,6 +380,13 @@ public class CategoryAttribute extends BaseAbstractAttribute
 			Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes)
 	{
 		this.calculatedDependentCategoryAttributes = calculatedDependentCategoryAttributes;
+	}
+	/**
+	 * This method removes all Calculated Category Attributes.
+	 */
+	public void removeAllCalculatedDependentCategoryAttributes()
+	{
+		calculatedCategoryAttributeCollection.clear();
 	}
 	/**
 	 *

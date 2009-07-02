@@ -64,22 +64,16 @@ public class FormulaCalculator
 		Object value = null;
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap <BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
+		List <Object> values = new ArrayList <Object>();
 		FormulaParser formulaParser = getFormulaParser();
 		formulaParser.parseExpression(categoryAttributeInterface.getFormula().getExpression());
-		List<String> symbols = formulaParser.getSymobols();
-		for (String symbol : symbols)
+		for (CategoryAttributeInterface calculatedAttribute : categoryAttributeInterface.getCalculatedCategoryAttributeCollection())
 		{
-			String [] names = symbol.split("_");
-			List <Object> values = new ArrayList <Object>();
-			List <CategoryAttributeInterface> attributes = new ArrayList<CategoryAttributeInterface>();
-			getCategoryAttribute(names[0],names[1],category.getRootCategoryElement(),attributes);
-			if (!attributes.isEmpty())
-			{
-				evaluateFormulaForCalulatedAttribute(attributeValueMap,attributes.get(0),values);
-			}
+			values.clear();
+			evaluateFormulaForCalulatedAttribute(attributeValueMap,calculatedAttribute,values);
 			if (!values.isEmpty())
 			{
-				attributeValueMapForValidation.put(attributes.get(0), values.get(0));
+				attributeValueMapForValidation.put(calculatedAttribute, values.get(0));
 			}
 			else
 			{
@@ -112,36 +106,7 @@ public class FormulaCalculator
 		}
 		return value;
 	}
-	/**
-	 * 
-	 * @return
-	 */
-	private void getCategoryAttribute(String entityName,String attributeName,CategoryEntityInterface rootCategoryEntity,List <CategoryAttributeInterface> attributes)
-	{
-		if (rootCategoryEntity != null)
-		{
-			for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
-					.getCategoryAssociationCollection())
-			{
-				if (categoryAssociationInterface.getTargetCategoryEntity()
-						.getEntity().getName().equals(entityName))
-				{
-					for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface.getTargetCategoryEntity().getCategoryAttributeCollection())
-					{
-						if (categoryAttributeInterface.getAbstractAttribute().getName().equals(attributeName))
-						{
-							attributes.add(categoryAttributeInterface);
-							return;
-						}
-					}
-				}
-				else
-				{
-					getCategoryAttribute(entityName,attributeName,categoryAssociationInterface.getTargetCategoryEntity(),attributes);
-				}
-			}
-		}
-	}
+
 	/**
 	 * 
 	 * @param attributeValueMap
@@ -192,22 +157,15 @@ public class FormulaCalculator
 		boolean allCalculatedAttributesPresent = true;
 		FormulaParser formulaParser = getFormulaParser();
 		formulaParser.parseExpression(categoryAttribute.getFormula().getExpression());
-		List<String> symbols = formulaParser.getSymobols();
-		for (String symbol : symbols)
+		for (CategoryAttributeInterface calculatedAttribute : categoryAttribute.getCalculatedCategoryAttributeCollection())
 		{
-			String [] names = symbol.split("_");
-			List <CategoryAttributeInterface> attributes = new ArrayList<CategoryAttributeInterface>();
-			getCategoryAttribute(names[0],names[1],category.getRootCategoryElement(),attributes);
-			if (!attributes.isEmpty())
+			if (calculatedAttribute.getDefaultValuePermissibleValue() == null)
 			{
-				if (attributes.get(0).getDefaultValuePermissibleValue() == null)
-				{
-					allCalculatedAttributesPresent = false;
-				}
-				else
-				{
-					attributeValueMap.put(attributes.get(0), attributes.get(0).getDefaultValue());
-				}
+				allCalculatedAttributesPresent = false;
+			}
+			else
+			{
+				attributeValueMap.put(calculatedAttribute, calculatedAttribute.getDefaultValue());
 			}
 		}
 		List<String> errorList = new ArrayList<String>();

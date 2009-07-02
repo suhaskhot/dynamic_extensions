@@ -1,0 +1,14 @@
+Form_Definition
+BMI Calculation
+BMI
+Annotations~Annotations,PhysicalExam~Annotations:PhysicalExam
+
+Display_Label:BMI Data,show=true
+instance:Annotations[1]->PhysicalExam[1]
+PhysicalExam:height,textField, Enter Height (cm),defaultValue=169
+PhysicalExam:weight,textField, Enter Weight (Kg),defaultValue=95
+PhysicalExam:bmi,textField,Calculated BMI,options~IsCalculated=true,defaultValue=((PhysicalExam_weight)/((PhysicalExam_height)*(PhysicalExam_height)))
+
+Display_Label:BMI Calculation,show=true
+instance:Annotations[1]
+subcategory:BMI Data:multiline

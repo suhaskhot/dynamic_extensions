@@ -16,6 +16,9 @@
 	<c:set var="definedEntitiesTreeXML" value="${formDefinitionForm.definedEntitiesTreeXML}"/>
 	<jsp:useBean id="definedEntitiesTreeXML" type="java.lang.String"/>
 
+	<c:set var="isDataEntered" value="${formDefinitionForm.dataEntered}"/>
+	<jsp:useBean id="isDataEntered" type="java.lang.Boolean"/>
+
 	<head>
 		<title>Dynamic Extensions</title>
 		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/de/css/styleSheet.css"/>
@@ -191,7 +194,7 @@
 															<bean:message key="eav.form.inheritform"/>
 														</td>
 														<td>
-															<html:select styleId="parentForm" styleClass="formFieldSmallSized" property="parentForm" >
+															<html:select styleId="parentForm" styleClass="formFieldSmallSized" property="parentForm" disabled="<%=isDataEntered%>">
 																<html:options collection="formList" labelProperty="name" property="value" />
 															</html:select>
 														</td>
@@ -297,6 +300,7 @@
 				</tr>
 			</table>
 
+			<html:hidden styleId='selectedParentForm' property="selectedParentForm" value=""/>
 			<html:hidden styleId='operation' property="operation" value=""/>
 			<html:hidden styleId='operationMode' property="operationMode"/>
 			<html:hidden styleId='entityIdentifier' property="entityIdentifier" value=""/>

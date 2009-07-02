@@ -3,13 +3,17 @@ package edu.common.dynamicextensions.xmi.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterface;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -192,5 +196,87 @@ public class XMIImportValidator
 		}
 
 		return true;
+	}
+	
+	/**
+	 * @param entityNameVsAttributeNames Map of entityName and corresponding attribute set
+	 * @param umlAssociationName Name of UML association
+	 * @param entityName Name of source entity
+	 * @param parentIdVsChildrenIds Map of parentId and its corresponding childIds
+	 * @param umlClassIdVsEntity Map of uml class and entity
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void validateAssociations(Map<String, Set<String>> entityNameVsAttributeNames,
+			String umlAssociationName, String entityName,
+			Map<String, List<String>> parentIdVsChildrenIds,
+			Map<String, EntityInterface> umlClassIdVsEntity)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		Set<String> attributeCollection = new HashSet<String>();
+		attributeCollection = entityNameVsAttributeNames.get(entityName);
+		validateAssociationName(attributeCollection, umlAssociationName, entityName);
+		validateAssociationNameInParent(entityNameVsAttributeNames, umlAssociationName, entityName,
+				parentIdVsChildrenIds, umlClassIdVsEntity);
+	}
+
+	/**
+	 * @param entityNameVsAttributeNames Map of entityName and corresponding attribute set
+	 * @param umlAssociationName Name of UML association
+	 * @param childEntityName Name of child entity
+	 * @param parentIdVsChildrenIds Map of parentId and its corresponding childIds
+	 * @param umlClassIdVsEntity Map of uml class and entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static void validateAssociationNameInParent(
+			Map<String, Set<String>> entityNameVsAttributeNames, String umlAssociationName,
+			String childEntityName, Map<String, List<String>> parentIdVsChildrenIds,
+			Map<String, EntityInterface> umlClassIdVsEntity)
+			throws DynamicExtensionsSystemException
+	{
+		Set<String> attributeCollection = new HashSet<String>();
+		for (Entry<String, List<String>> entry : parentIdVsChildrenIds.entrySet())
+		{
+			for (String childId : entry.getValue())
+			{
+				String childName = umlClassIdVsEntity.get(childId).getName();
+				if (childName.equalsIgnoreCase(childEntityName))
+				{
+					String parentName = umlClassIdVsEntity.get(entry.getKey()).getName();
+					if (parentName != null && parentName.trim().length() > 0)
+					{
+						attributeCollection = entityNameVsAttributeNames.get(parentName);
+						validateAssociationName(attributeCollection, umlAssociationName, parentName);
+						validateAssociationNameInParent(entityNameVsAttributeNames,
+								umlAssociationName, parentName, parentIdVsChildrenIds,
+								umlClassIdVsEntity);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param attributeCollection collection of attributes of base class
+	 * @param umlAssociationName  Name of UML association
+	 * @param entityName Name of entity
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private static void validateAssociationName(Set<String> attributeCollection,
+			String umlAssociationName, String entityName) throws DynamicExtensionsSystemException
+	{
+		if (attributeCollection != null && !attributeCollection.isEmpty()
+				&& umlAssociationName != null && umlAssociationName.trim().length() > 0)
+		{
+			for (String attributeName : attributeCollection)
+			{
+				if (umlAssociationName.equalsIgnoreCase(attributeName))
+				{
+					throw new DynamicExtensionsSystemException(
+							"Association name and attribute name cannot be same. please verify xmi file. Entity name:-"
+									+ entityName + " Attribute name:-" + attributeName);
+				}
+			}
+		}
 	}
 }

@@ -492,7 +492,7 @@ public abstract class AbstractMetadataManager
 		{
 			if (abstrMetadata.getId() == null)
 			{
-				hibernateDAO.insert(abstrMetadata, false);
+				hibernateDAO.insert(abstrMetadata);
 			}
 			else
 			{

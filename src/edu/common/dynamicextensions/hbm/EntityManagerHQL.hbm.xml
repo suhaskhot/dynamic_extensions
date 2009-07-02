@@ -312,7 +312,9 @@
 	</query>
 	<query name="getEntityGroupNameByEntityName">
    		select entity.entityGroup.name 
-   			   from Entity entity where entity.name = ?
+   			   from Entity entity where entity.name = ? AND entity.id = (select container.abstractEntity.id
+                      		from edu.common.dynamicextensions.domain.userinterface.Container container
+	                             where container.id = ?)
    </query>
    	<query name="getPathAssociationRelationIdCollection">
 		select pathAssociation.id

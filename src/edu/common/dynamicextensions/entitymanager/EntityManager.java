@@ -157,7 +157,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			preProcess(entity, revQueries, queries);
 			if (entity.getId() == null)
 			{
-				hibernateDAO.insert(entity, false);
+				hibernateDAO.insert(entity);
 			}
 			else
 			{
@@ -205,7 +205,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
 			if (entity.getId() == null)
 			{
-				hibernateDAO.insert(entity, false);
+				hibernateDAO.insert(entity);
 			}
 			else
 			{
@@ -3515,13 +3515,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	 * @return entityGroupName of a particular entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String getEntityGroupNameByEntityName(String entityName)
+	public String getEntityGroupNameByEntityName(String entityName, Long containerId)
 			throws DynamicExtensionsSystemException
 	{
 		String entityGroupName = null;
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
 		substParams.put("0", new NamedQueryParam(DBTypes.STRING, entityName));
+		substParams.put("1", new NamedQueryParam(DBTypes.LONG, containerId));
 
 		// The following method takes the name of the query and
 		// the actual values for the place holders as the parameters.

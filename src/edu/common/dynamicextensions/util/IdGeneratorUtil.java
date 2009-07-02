@@ -67,7 +67,7 @@ public class IdGeneratorUtil
 
 				idGeneratorObject.setNextAvailableId(Long.valueOf(2));
 				idGeneratorObject.setId(Long.valueOf(1));
-				hibernateDAO.insert(idGeneratorObject,false);				
+				hibernateDAO.insert(idGeneratorObject);				
 				hibernateDAO.commit();
 				return nextAvailableId;
 			}

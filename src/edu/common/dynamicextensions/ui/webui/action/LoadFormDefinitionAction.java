@@ -22,6 +22,7 @@ import org.apache.struts.action.ActionMapping;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
@@ -35,6 +36,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.FormDefinitionForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
+import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 
@@ -148,6 +150,13 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 					populateAssociationInformation(parentContainer, container, formDefinitionForm);
 				}
 			}
+			boolean isDataEntered=false;
+			if ((operationMode != null) && (operationMode.equals(DEConstants.EDIT_FORM)) && container.getId()!=null)
+			{
+				AbstractEntityInterface abstractEntityInterface =entityGroup.getEntityByName(container.getAbstractEntity().getName());
+				isDataEntered=CategoryHelper.isDataEntered(abstractEntityInterface);
+			}
+			formDefinitionForm.setDataEntered(isDataEntered);
 		}
 		else
 		{

@@ -114,6 +114,11 @@ public class FormDefinitionForm extends AbstractActionForm
 	protected String isAbstract;
 
 	/**
+	 * This property is true is data has been entered in form else false. 
+	 */
+	protected boolean dataEntered;
+
+	/**
 	 * 
 	 * @return
 	 */
@@ -313,6 +318,7 @@ public class FormDefinitionForm extends AbstractActionForm
 	{
 		ActionErrors errors = new ActionErrors();
 		Validator validator = new Validator();
+		setParentForm(request.getParameter("selectedParentForm"));
 		if ((operationMode != null) && (operationMode.equals(DEConstants.ADD_SUB_FORM_OPR)))
 		{
 			if ((!ProcessorConstants.CREATE_FROM_EXISTING.equals(createAs))
@@ -586,4 +592,21 @@ public class FormDefinitionForm extends AbstractActionForm
 		// TODO Auto-generated method stub
 		
 	}
+	
+	/**
+	 * @return the dataEntered
+	 */
+	public boolean isDataEntered()
+	{
+		return dataEntered;
+	}
+
+	/**
+	 * @param dataEntered the dataEntered to set
+	 */
+	public void setDataEntered(boolean dataEntered)
+	{
+		this.dataEntered = dataEntered;
+	}
+
 }

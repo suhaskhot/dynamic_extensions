@@ -30,6 +30,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.util.StatementData;
 
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
@@ -128,12 +129,12 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param query query to be executed
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
+	public StatementData executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
 	{
 		Logger.out.info(query);
 		try
 		{
-			jdbcDao.executeUpdate(query);
+			return jdbcDao.executeUpdate(query);
 		}
 		catch (DAOException e)
 		{
@@ -149,9 +150,11 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	public void executeDMLQueryList(JDBCDAO jdbcDao, List<String> queries)
 			throws DynamicExtensionsSystemException
 	{
+		int result = -1;
 		for (String query : queries)
 		{
-			executeDML(jdbcDao, query);
+			StatementData stmtData = executeDML(jdbcDao, query);
+			result = stmtData.getRowCount();
 		}
 		
 	}

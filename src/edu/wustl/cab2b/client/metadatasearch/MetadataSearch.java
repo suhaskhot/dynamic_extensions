@@ -1,8 +1,15 @@
 
 package edu.wustl.cab2b.client.metadatasearch;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
@@ -13,8 +20,10 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
+import edu.wustl.cab2b.common.beans.MatchedClassEntry.MatchCause;
 import edu.wustl.cab2b.common.cache.IEntityCache;
 import edu.wustl.cab2b.common.exception.CheckedException;
+import edu.wustl.cab2b.common.util.AlphabeticalComparator;
 import edu.wustl.cab2b.common.util.Constants;
 
 /**
@@ -72,6 +81,7 @@ public class MetadataSearch
 				throw new CheckedException("Search target does not exist : " + searchTarget);
 		}
 		matchedClass.setEntityCollection(matchedClass.getSortedEntityCollection());
+		MatchedClass resultantMatchedClassSorted = sortResults(matchedClass);
 		return matchedClass;
 	}
 
@@ -410,5 +420,131 @@ public class MetadataSearch
 			permissibleValueCollection.add(value);
 		}
 		return permissibleValueCollection;
+	}
+
+	/**
+	 * This method sorts the result in alphabetical order as follows:
+	 * 1. Equals
+	 * 2. Starts With
+	 * 3. Contains
+	 * @param resultantMatchedClass
+	 * @return MatchedClass Sorted Matched Class
+	 */
+	private MatchedClass sortResults(MatchedClass resultantMatchedClass) {
+		List<MatchedClassEntry> entityMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> entityDescMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> entitySemPropMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> attributeMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> attrDescMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> attrSemPropMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> pvMatches = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> pvSemPropMatches = new ArrayList<MatchedClassEntry>();
+
+		Map<MatchCause,List<MatchedClassEntry>> causeVsListMap = new HashMap<MatchCause, List<MatchedClassEntry>>();
+		causeVsListMap.put(MatchCause.EntityName, entityMatches);
+		causeVsListMap.put(MatchCause.EntityDescription, entityDescMatches);
+		causeVsListMap.put(MatchCause.EntitySemanticProperty, entitySemPropMatches);
+		causeVsListMap.put(MatchCause.AttributeName, attributeMatches);
+		causeVsListMap.put(MatchCause.AttributeDescription, attrDescMatches);
+		causeVsListMap.put(MatchCause.AttributeSemanticProperty, attrSemPropMatches);
+		causeVsListMap.put(MatchCause.PermissibleValueName, pvMatches);
+		causeVsListMap.put(MatchCause.PermissibleSemanticProperty, pvSemPropMatches);
+
+		List<MatchedClassEntry> matchedClassEntries = resultantMatchedClass.getMatchedClassEntries();
+		for (MatchedClassEntry matchedClassEntry : matchedClassEntries) {
+			for (MatchCause cause : MatchCause.values()) {
+				boolean isAddedToList = populateLists(matchedClassEntry, cause, causeVsListMap.get(cause));
+				if(isAddedToList)
+				{
+					break;
+				}
+			}
+		}
+		List<MatchedClassEntry> allEntries = sortIndividualLists(causeVsListMap);
+		return createResultMatchedClass(allEntries);
+	}
+	/**
+	 * 
+	 * @param allEntries
+	 * @return
+	 */
+	private MatchedClass createResultMatchedClass(List<MatchedClassEntry> allEntries) {
+		MatchedClass sortedMatchedClass = new MatchedClass();
+		sortedMatchedClass.setMatchedClassEntries(allEntries);
+		Set<EntityInterface> entities = new LinkedHashSet<EntityInterface>();
+		for(MatchedClassEntry entry : allEntries) {
+			entities.add(entry.getMatchedEntity());
+		}
+		sortedMatchedClass.setEntityCollection(entities);
+		return sortedMatchedClass;
+	}
+	/**
+	 * 
+	 * @param entityMatches
+	 * @param causeVsListMap
+	 * @return
+	 */
+	private List<MatchedClassEntry> sortIndividualLists(
+			Map<MatchCause, List<MatchedClassEntry>> causeVsListMap) {
+		List<MatchedClassEntry> entityMatchesPosition0 = new ArrayList<MatchedClassEntry>();
+		List<MatchedClassEntry> entityMatchesRest = new ArrayList<MatchedClassEntry>();
+
+		AlphabeticalComparator comparator= new AlphabeticalComparator();
+		List<MatchedClassEntry> allEntries = new  ArrayList<MatchedClassEntry>();
+		
+		divideEntityMatchesList(entityMatchesRest,entityMatchesPosition0,causeVsListMap.get(MatchCause.EntityName));
+		Collections.sort(entityMatchesPosition0,comparator);
+		allEntries.addAll(entityMatchesPosition0);
+		Collections.sort(entityMatchesRest,comparator);
+		allEntries.addAll(entityMatchesRest);
+		
+		for (MatchCause cause : MatchCause.values()) {
+			if(!cause.equals(MatchCause.EntityName))
+			{
+				List<MatchedClassEntry> list = causeVsListMap.get(cause);
+				Collections.sort(list,comparator);
+				allEntries.addAll(list);
+			}
+		}
+		return allEntries;
+	}
+	/**
+	 * Individual lists are populated depending upon their MatchCause and position.
+	 * @param entry
+	 * @param cause
+	 * @param list
+	 * @return
+	 */
+	private boolean populateLists(MatchedClassEntry entry, MatchCause cause, List<MatchedClassEntry> list)
+	{
+		Integer positionOf = entry.positionOf(cause);
+		if(positionOf != null)
+		{
+			list.add(entry);
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * List of Entity names is divided intom two lists.
+	 * One containing only entities which StartsWith the searchText 
+	 * Other containing rest of the entities, other than index 0
+	 * @param entityMatchesRest
+	 * @param entityMatchesPosition0
+	 * @param entityMatches
+	 */
+	private void divideEntityMatchesList(List<MatchedClassEntry> entityMatchesRest,
+			List<MatchedClassEntry> entityMatchesPosition0, List<MatchedClassEntry> entityMatches) {
+		for (MatchedClassEntry matchedClassEntry : entityMatches) {
+			Integer positionOf = matchedClassEntry.positionOf(MatchCause.EntityName);
+			if(positionOf == 0)
+			{
+				entityMatchesPosition0.add(matchedClassEntry);
+			}
+			else
+			{
+				entityMatchesRest.add(matchedClassEntry);
+			}
+		}
 	}
 }

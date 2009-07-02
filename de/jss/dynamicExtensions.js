@@ -22,6 +22,7 @@ function showBuildFormJSP()
 {
     document.getElementById('operation').value='buildForm';
     var formDefinitionForm = document.getElementById('formDefinitionForm');
+    formDefinitionForm.selectedParentForm.value=formDefinitionForm.parentForm.value;
     formDefinitionForm.submit();
 }
 
@@ -144,7 +145,7 @@ function closeWindow()
 
 function showNextActionConfirmDialog()
 {
-    var  url= contextParam + "/pages/confirmNextActionDialog.jsp";
+    var  url= contextParam + "/de/pages/confirmNextActionDialog.jsp";
 	//for bug 5933
 	if(navigator.userAgent.indexOf("Firefox")!= -1 )
 	{

@@ -759,7 +759,7 @@ public interface EntityManagerInterface
 	 * @return entityGroupName of a particular entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String getEntityGroupNameByEntityName(String entityName)
+	String getEntityGroupNameByEntityName(String entityName, Long containerId)
 			throws DynamicExtensionsSystemException;
 
 	/**

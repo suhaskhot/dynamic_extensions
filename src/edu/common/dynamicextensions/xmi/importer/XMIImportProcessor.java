@@ -165,6 +165,8 @@ public class XMIImportProcessor
 
 	private Map<AssociationInterface, String> multiselectMigartionScripts = new HashMap<AssociationInterface, String>();
 
+	private Map<String, Set<String>> entityNameVsAttributeNames = new HashMap<String, Set<String>>();
+
 	/**
 	 * @return
 	 */
@@ -278,7 +280,7 @@ public class XMIImportProcessor
 			}
 			else
 			{//Edit
-				addAttributes(umlClass, entity);
+				populateAttributes(umlClass, entity);
 			}
 
 			populateEntityProperties(entity, umlClass, entityVsMapTagValues);
@@ -323,7 +325,7 @@ public class XMIImportProcessor
 		XMIImporterUtil.populateEntityForConstraintProperties(entityGroup, xmiConfigurationObject);
 
 		// Add associations.
-		addAssociation(umlAssociationColl);
+		addAssociation(umlAssociationColl, parentIdVsChildrenIds);
 
 		//TODO Uncomment check about processinheritance method call 
 		if (!umlGeneralisationColl.isEmpty())
@@ -385,7 +387,7 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void addAssociation(List<UmlAssociation> umlAssociationColl)
+	private void addAssociation(List<UmlAssociation> umlAssociationColl, Map<String, List<String>> parentIdVsChildrenIds)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		HibernateDAO hibernateDao = null;
@@ -400,7 +402,7 @@ public class XMIImportProcessor
 			{
 				for (UmlAssociation umlAssociation : umlAssociationColl)
 				{
-					addAssociation(umlAssociation, hibernateDao);
+					addAssociation(umlAssociation, hibernateDao, parentIdVsChildrenIds);
 				}
 			}
 		}
@@ -951,7 +953,7 @@ public class XMIImportProcessor
 		entity.setName(name);
 		entity.setDescription(entityGroup.getName() + "--" + umlClass.getName());
 		entity.setAbstract(umlClass.isAbstract());
-		addAttributes(umlClass, entity);
+		populateAttributes(umlClass, entity);
 
 		//		setSemanticMetadata(entity, umlClass.getSemanticMetadata());
 		return entity;
@@ -1037,10 +1039,11 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public void addAttributes(UmlClass klass, EntityInterface entity)
+	public Collection<String> addAttributes(UmlClass klass, EntityInterface entity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		Collection atts = new ArrayList();
+		Collection<String> attributeNames = new HashSet<String>();
 		for (Iterator i = klass.getFeature().iterator(); i.hasNext();)
 		{
 			Object object = i.next();
@@ -1049,6 +1052,7 @@ public class XMIImportProcessor
 				atts.add(object);
 				Attribute att = (Attribute) object;
 				createAttribute(att, entity);
+				attributeNames.add(att.getName());
 			}
 		}
 		if (xmiConfigurationObject.isAddInheritedAttribute())
@@ -1068,6 +1072,7 @@ public class XMIImportProcessor
 						{
 							attsMap.put(att.getName(), att);
 							attribute = createAttribute(att, entity);
+							attributeNames.add(attribute.getName());
 							if (attribute != null)
 							{
 								DynamicExtensionsUtility.addInheritedTaggedValue(attribute);
@@ -1077,9 +1082,8 @@ public class XMIImportProcessor
 				}
 				superClass = XMIUtilities.getSuperClass(superClass);
 			}
-
 		}
-
+		return attributeNames;
 	}
 
 	/**
@@ -1445,7 +1449,7 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void addAssociation(UmlAssociation umlAssociation, HibernateDAO hibernateDao)
+	private void addAssociation(UmlAssociation umlAssociation, HibernateDAO hibernateDao, Map<String, List<String>> parentIdVsChildrenIds)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();
@@ -1540,6 +1544,10 @@ public class XMIImportProcessor
 		AssociationInterface association = null;
 		Collection<AssociationInterface> existingAssociationColl = srcEntity
 				.getAssociationCollection();
+
+		XMIImportValidator.validateAssociations(entityNameVsAttributeNames, umlAssociation
+				.getName(), srcEntity.getName(), parentIdVsChildrenIds, umlClassIdVsEntity);
+
 		if (existingAssociationColl != null && !existingAssociationColl.isEmpty())
 		{//EDIT Case
 			association = isAssociationPresent(umlAssociation.getName(), existingAssociationColl,
@@ -3814,4 +3822,18 @@ public class XMIImportProcessor
 		return tagNameVsTagValue;
 	}
 
+	/**
+	 * this method populate attribute for the entity
+	 * @param umlClass UML class
+	 * @param entity entity object
+	 * @throws DynamicExtensionsSystemException fails to add attribute
+	 * @throws DynamicExtensionsApplicationException fails to add attribute
+	 */
+	private void populateAttributes(UmlClass umlClass, EntityInterface entity)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		Set<String> attributeColl = (Set<String>) addAttributes(umlClass, entity);
+		entityNameVsAttributeNames.put(entity.getName(), attributeColl);
+	}
+	
 }

@@ -903,12 +903,12 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @return true if the data is entered for the category
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private boolean isDataEntered(CategoryEntityInterface categoryEntity)
+	public static boolean isDataEntered(AbstractEntityInterface abstractEntity)
 			throws DynamicExtensionsSystemException
 	{
 
 		boolean isDataEntered = false;
-		String rootTableName = categoryEntity.getTableProperties().getName();
+		String rootTableName = abstractEntity.getTableProperties().getName();
 		if (EntityManagerUtil.getNoOfRecordInTable(rootTableName) > 0)
 		{
 			isDataEntered = true;

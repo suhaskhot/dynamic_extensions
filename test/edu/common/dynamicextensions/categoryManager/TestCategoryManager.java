@@ -1486,7 +1486,38 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+	/**
+	 * Create category where attributes from a particular class are not chosen,
+	 * i.e. not selecting attributes from GleasonScore entity.
+	 * Refer to pathology annotation model.
+	 */
+	public void testBMIASCalculatedAttribute()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			String[] args = {"./xmi/BMI.xmi", "BMI", "./csv/BMIMainContainer.csv"};
+			XMIImporter.main(args);
 
+			String[] args2 = {"./csv/BMI.csv"};
+			CategoryCreator categoryCreator = new CategoryCreator();
+			categoryCreator.main(args2);
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "BMI Calculation");
+
+			assertNotNull(category.getId());
+			assertNotNull(category.getRootCategoryElement());
+			assertEquals(category.getName(), "BMI Calculation");
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 	/**
 	 * Create entity group from pathology annotation model.
 	 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.

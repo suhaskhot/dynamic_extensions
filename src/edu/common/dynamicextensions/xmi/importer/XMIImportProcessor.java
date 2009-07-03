@@ -954,6 +954,7 @@ public class XMIImportProcessor
 		entity.setDescription(entityGroup.getName() + "--" + umlClass.getName());
 		entity.setAbstract(umlClass.isAbstract());
 		populateAttributes(umlClass, entity);
+		populateAttributes(umlClass, entity);
 
 		//		setSemanticMetadata(entity, umlClass.getSemanticMetadata());
 		return entity;
@@ -1034,8 +1035,8 @@ public class XMIImportProcessor
 	 * This method will add the attributes to the entity for the given Umlclass from XMI.
 	 * boolean includeInherited - Specifies whether inherited attributes should be included or not.
 	 * @param klass
-	 * @param includeInherited
 	 * @param entity in which to add the attributes
+	 * @return collection of attributes names
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
@@ -1449,7 +1450,8 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void addAssociation(UmlAssociation umlAssociation, HibernateDAO hibernateDao, Map<String, List<String>> parentIdVsChildrenIds)
+	private void addAssociation(UmlAssociation umlAssociation, HibernateDAO hibernateDao,
+			Map<String, List<String>> parentIdVsChildrenIds)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<AssociationEnd> associationEnds = umlAssociation.getConnection();
@@ -1971,7 +1973,7 @@ public class XMIImportProcessor
 	/**
 	 * This method creates a container object.
 	 * @param entityInterface
-	 * @return
+	 * @throws Exception fails to create container
 	 */
 	protected void createContainer(EntityInterface entityInterface) throws Exception
 	{
@@ -2782,8 +2784,9 @@ public class XMIImportProcessor
 	}
 
 	/**
-	 * @param parentIdVsChildrenIds
 	 * This method add the parent container to the child container for Generalization.
+	 * @param parentIdVsChildrenIds
+	 * @throws Exception
 	 */
 	protected void postProcessInheritence(Map<String, List<String>> parentIdVsChildrenIds)
 			throws Exception
@@ -2824,6 +2827,7 @@ public class XMIImportProcessor
 
 	/**
 	 * This method adds the target container to the containment association control
+	 * @throws Exception
 	 */
 	protected void addControlsForAssociation() throws Exception
 	{
@@ -3348,6 +3352,7 @@ public class XMIImportProcessor
 	}
 
 	/**
+	 * This method removes inherited attributes.
 	 * @param entity
 	 * @param duplicateAttributeCollection
 	 */
@@ -3451,10 +3456,11 @@ public class XMIImportProcessor
 	}
 
 	/**
-	* @param entityName
-	* @param skipEntityNames
-	* @return
-	*/
+	 * @param entityName
+	 * @param skipEntityNames
+	 * @param defaultPackagePrefix
+	 * @return
+	 */
 	protected boolean isSkipEntity(String entityName, List<String> skipEntityNames,
 			String defaultPackagePrefix)
 	{

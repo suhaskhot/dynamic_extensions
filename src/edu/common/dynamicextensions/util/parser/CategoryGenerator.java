@@ -301,6 +301,8 @@ public class CategoryGenerator
 									.checkRangeAgainstAttributeValueRange(attribute, rules);
 							CategoryValidator.checkRequiredRule(attribute, rules);
 						}
+						CategoryValidator.checkIfFutureDateRuleSpecified(attribute, rules);
+						CategoryValidator.validateCSVFutureDateValue(attribute, rules, categoryFileParser.getDefaultValue());
 
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);

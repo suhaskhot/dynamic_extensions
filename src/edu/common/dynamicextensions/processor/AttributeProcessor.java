@@ -71,6 +71,7 @@ import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.common.dynamicextensions.xmi.importer.XMIImportValidator;
 import edu.common.dynamicextensions.xmi.model.ControlsModel;
 import edu.wustl.common.beans.NameValueBean;
@@ -615,12 +616,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 		}
 
-		if (allValidationRules.contains(ProcessorConstants.DATE)
-				&& allValidationRules.contains(ProcessorConstants.DATE_RANGE))
-		{
-			allValidationRules.remove(ProcessorConstants.DATE);
-		}
-
 		Collection<RuleInterface> attributeRuleCollection = abstractAttributeInterface
 				.getRuleCollection();
 		if (attributeRuleCollection != null && !(attributeRuleCollection.isEmpty()))
@@ -646,7 +641,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeRuleCollection.removeAll(obsoleteRules);
 			attributeRuleCollection.addAll(newRules);
 		}
-
+		ValidatorUtil.checkForConflictingRules(allValidationRules, abstractAttributeInterface.getName());
 		if (allValidationRules != null && !allValidationRules.isEmpty())
 		{
 			for (String validationRule : allValidationRules)

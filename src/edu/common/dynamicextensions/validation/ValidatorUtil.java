@@ -21,7 +21,9 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.util.global.ApplicationProperties;
 
@@ -41,11 +43,11 @@ public class ValidatorUtil
 	 * @throws DynamicExtensionsValidationException
 	 */
 	public static List<String> validateEntity(
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, List<String> listOfError,
-			ContainerInterface containerInterface) throws DynamicExtensionsSystemException,
-			DynamicExtensionsValidationException
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
+			List<String> listOfError, ContainerInterface containerInterface)
+			throws DynamicExtensionsSystemException, DynamicExtensionsValidationException
 	{
-		List<String> errorList=listOfError;
+		List<String> errorList = listOfError;
 		if (errorList == null)
 		{
 			errorList = new ArrayList<String>();
@@ -63,7 +65,8 @@ public class ValidatorUtil
 							(AttributeMetadataInterface) abstractAttribute, containerInterface);
 					if (control != null)
 					{
-						errorList.addAll(validateAttributes(attributeValueNode, control.getCaption()));
+						errorList.addAll(validateAttributes(attributeValueNode, control
+								.getCaption()));
 					}
 				}
 				else if (abstractAttribute instanceof AssociationMetadataInterface)
@@ -111,7 +114,7 @@ public class ValidatorUtil
 					return control;
 				}
 			}
-			else if(controlInterface.getBaseAbstractAttribute() != null)
+			else if (controlInterface.getBaseAbstractAttribute() != null)
 			{
 				if (controlInterface.getBaseAbstractAttribute().equals(attributeMetadataInterface))
 				{
@@ -283,6 +286,7 @@ public class ValidatorUtil
 			Collection<RuleInterface> implicitRuleCollection = ((CategoryAttributeInterface) attribute)
 					.getAbstractAttribute().getRuleCollection();
 			attributeRuleCollection.addAll(implicitRuleCollection);
+			removeConflictingRules(attributeRuleCollection);
 		}
 		return attributeRuleCollection;
 	}
@@ -343,4 +347,87 @@ public class ValidatorUtil
 		return parameterMap;
 	}
 
+	/**
+	 * Report invalid user inputs to the user.
+	 * @param placeHolderOne
+	 * @param placeHolderTwo
+	 * @param errorKey
+	 * @throws DynamicExtensionsValidationException
+	 */
+	public static void reportInvalidInput(String placeHolderOne, String placeHolderTwo,
+			String errorKey) throws DynamicExtensionsValidationException
+	{
+		List<String> placeHolders = new ArrayList<String>();
+		placeHolders.add(placeHolderOne);
+		placeHolders.add(placeHolderTwo);
+		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey,
+				placeHolders);
+	}
+
+	/**
+	 * This method check for conflicting rule
+	 * @param allValidationRules rule collection
+	 * @param attributeName attribute name 
+	 * @throws DynamicExtensionsSystemException if conflicting rule are present in rule collection
+	 */
+	public static void checkForConflictingRules(Collection<String> allValidationRules,
+			String attributeName) throws DynamicExtensionsSystemException
+	{
+		if (allValidationRules.contains(ProcessorConstants.DATE)
+				&& (allValidationRules.contains(ProcessorConstants.DATE_RANGE) || allValidationRules
+						.contains(ProcessorConstants.ALLOW_FUTURE_DATE)))
+		{
+			allValidationRules.remove(ProcessorConstants.DATE);
+		}
+
+		if ((allValidationRules.contains(ProcessorConstants.DATE_RANGE) || allValidationRules
+				.contains(ProcessorConstants.RANGE))
+				&& allValidationRules.contains(ProcessorConstants.ALLOW_FUTURE_DATE))
+		{
+			throw new DynamicExtensionsSystemException(
+					"CONFLICTING RULES PRESENT. DATERANGE AND ALLOWFUTUREDATE RULES CANNOT BE APPLIED FOR A ATTRIBUTE, "
+							+ attributeName);
+		}
+
+	}
+
+	/**
+	 * This method removes conflicting rules from the collection
+	 * @param rules rule collection
+	 */
+	public static void removeConflictingRules(Collection<RuleInterface> rules)
+	{
+		if (isConflictingRulePresent(rules))
+		{
+			for (RuleInterface rule : rules)
+			{
+				if (DEConstants.DATE.equalsIgnoreCase(rule.getName()) && rule.getIsImplicitRule())
+				{
+					rules.remove(rule);
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method check for presence of conflicting rule 
+	 * @param rules rule collection
+	 * @return true or false depending on presence of conflicting rule
+	 */
+	private static boolean isConflictingRulePresent(Collection<RuleInterface> rules)
+	{
+		boolean isConflictingRulePresent = false;
+		for (RuleInterface attributeRule : rules)
+		{
+			if (!(attributeRule.getIsImplicitRule())
+					&& (DEConstants.ALLOW_FUTURE_DATE.equalsIgnoreCase(attributeRule.getName())
+							|| DEConstants.RANGE.equalsIgnoreCase(attributeRule.getName()) || DEConstants.DATE_RANGE
+							.equalsIgnoreCase(attributeRule.getName())))
+			{
+				isConflictingRulePresent = true;
+			}
+		}
+		return isConflictingRulePresent;
+	}
 }

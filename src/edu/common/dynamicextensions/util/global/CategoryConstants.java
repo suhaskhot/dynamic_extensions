@@ -63,5 +63,13 @@ public class CategoryConstants
 	public final static String SINGLE_LINE_DISPLAY_END = "SingleLineDisplay:end";
 	
 	public static final String TRUE = "true";
+	
+	public static final String DATE = "date";
+	
+	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
+	
+	public final static String NO_OVERRIDE_FUTURE_DATE_RULE = "cannotOverrideFutureDateRule";
+	
+	public final static String CONFLICTING_RULES_PRESENT = "conflictingRulesPresent";
 
 }

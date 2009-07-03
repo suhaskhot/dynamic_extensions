@@ -74,7 +74,7 @@
 			<common-validation-rule name="date" isImplicit="true" />
 			<common-validation-rule name="required" isImplicit="false" />
 			<common-validation-rule name="dateRange" isImplicit="false" />
-
+			<common-validation-rule name="allowfuturedate" isImplicit="false" />
 		</validations>
 		<datatypes>
 			

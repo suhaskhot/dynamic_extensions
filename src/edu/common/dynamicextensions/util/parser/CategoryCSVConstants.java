@@ -67,6 +67,16 @@ public interface CategoryCSVConstants
 	String REQUIRED = "required";
 
 	/**
+	 * Defines for turning off future date validation.
+	 */
+	String ALLOW_FUTURE_DATE = "allowfuturedate";
+	
+	/**
+	 * Defines for date rule validation.
+	 */
+	String DATE = "date";
+
+	/**
 	 * This keyword used to define the label for the form
 	 */
 	String DISPLAY_LABLE = "Display_Label";

@@ -3,9 +3,7 @@ package edu.common.dynamicextensions.validation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -116,33 +114,16 @@ public class DateValidator implements ValidatorRuleInterface
 
 			if (valid && isFromDateRangeValidator.length == 0 && tempDate.after(new Date()))
 			{
-					reportInvalidInput(controlCaption, "today's date.",
+				ValidatorUtil.reportInvalidInput(controlCaption, "today's date.",
 							"dynExtn.validation.Date.Max");
 			}
 
 			if (!valid)
 			{
-				reportInvalidInput(controlCaption, dateFormat, "dynExtn.validation.Date");
+				ValidatorUtil.reportInvalidInput(controlCaption, dateFormat, "dynExtn.validation.Date");
 			}
 		}
 
 		return valid;
-	}
-
-	/**
-	 * Report invalid user inputs to the user.
-	 * @param placeHolderOne
-	 * @param placeHolderTwo
-	 * @param errorKey
-	 * @throws DynamicExtensionsValidationException
-	 */
-	private void reportInvalidInput(String placeHolderOne, String placeHolderTwo, String errorKey)
-			throws DynamicExtensionsValidationException
-	{
-		List<String> placeHolders = new ArrayList<String>();
-		placeHolders.add(placeHolderOne);
-		placeHolders.add(placeHolderTwo);
-		throw new DynamicExtensionsValidationException("Validation failed", null, errorKey,
-				placeHolders);
 	}
 }

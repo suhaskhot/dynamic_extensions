@@ -22,6 +22,10 @@
     <error-key name="eav.validation.date" />
   </validation-rule>
   
+  <validation-rule display-label="eav.rule.allowfuturedate" rule-name="allowfuturedate" rule-class="edu.common.dynamicextensions.validation.FutureDateValidator">
+    <error-key name="eav.validation.allowfuturedate" />
+  </validation-rule>
+  
   <validation-rule display-label="eav.rule.unique" rule-name="unique" rule-class="edu.common.dynamicextensions.validation.UniqueValidator">
     <error-key name="eav.validation.unique" />
   </validation-rule>

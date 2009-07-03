@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
+import edu.common.dynamicextensions.validation.FutureDateValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -167,6 +168,12 @@ public class CategoryValidator
 			if (rules.containsKey(CategoryCSVConstants.DATE_RANGE))
 			{
 				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.DATE_RANGE);
+				if (attribute == null)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
+				}
 			}
 			else if (rules.containsKey(CategoryCSVConstants.RANGE.toLowerCase(locale)))
 			{
@@ -306,6 +313,79 @@ public class CategoryValidator
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
 						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(), e);
+			}
+		}
+	}
+
+	/**
+	 * This method check for allowing future date rule.
+	 * @param attribute attribute to be validated for allowing future date
+	 * @param rules rule collection for that attribute
+	 * @throws DynamicExtensionsSystemException  fails to create category
+	 * @throws ParseException
+	 */
+	public static void checkIfFutureDateRuleSpecified(AttributeInterface attribute,
+			Map<String, Object> rules) throws DynamicExtensionsSystemException, ParseException
+	{
+		if (attribute == null)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
+		}
+		if (attribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+		{
+			for (RuleInterface rule : attribute.getRuleCollection())
+			{
+				if (rule.getName().equalsIgnoreCase(CategoryCSVConstants.ALLOW_FUTURE_DATE)
+						&& ((rules == null || rules.isEmpty()) || (!rules
+								.containsKey(CategoryCSVConstants.ALLOW_FUTURE_DATE))))
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.NO_OVERRIDE_FUTURE_DATE_RULE)
+							+ attribute.getName());
+				}
+			}
+		}
+	}
+
+	/**
+	 * this method validates for future date(default value given while creating category) given for an attribute
+	 * @param attribute attribute
+	 * @param rules rule collection
+	 * @throws DynamicExtensionsSystemException fails to create category
+	 * @throws ParseException
+	 */
+	public static void validateCSVFutureDateValue(AttributeInterface attribute, Map<String, Object> rules,
+			String value) throws DynamicExtensionsSystemException, ParseException
+	{
+		if (attribute == null)
+		{
+			throw new DynamicExtensionsSystemException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
+		}
+		if (attribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+		{
+			if (rules != null && rules.containsKey(CategoryConstants.ALLOW_FUTURE_DATE)
+					&& value != null && !(value.trim().equals("")))
+			{
+				FutureDateValidator futureDateValidation = new FutureDateValidator();
+				String defaultDateValue = value.replaceAll("/", "-");
+				try
+				{
+					futureDateValidation.validate((AttributeMetadataInterface) attribute,
+							defaultDateValue, null, attribute.getName());
+				}
+				catch (DynamicExtensionsValidationException e)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(e.getErrorCode())
+							+ attribute.getName(), e);
+				}
 			}
 		}
 	}

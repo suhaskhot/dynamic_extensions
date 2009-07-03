@@ -152,6 +152,8 @@ public class ProcessorConstants
 
 	public static String DATE = "date";
 	public static String DATE_RANGE = "dateRange";
+	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
+	public static final String RANGE = "range";
 
 	// Disabled keyword.
 	public static final String DISABLED = " disabled ";

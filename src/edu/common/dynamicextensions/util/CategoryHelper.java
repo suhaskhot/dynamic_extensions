@@ -63,6 +63,7 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -238,7 +239,7 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		addImplicitRules(rules, attribute.getRuleCollection());
 		addExplicitRules(rules, rulesMap);
-
+		ValidatorUtil.removeConflictingRules(rules);
 		categoryAttribute.setRuleCollection(rules);
 	}
 
@@ -307,6 +308,12 @@ public class CategoryHelper implements CategoryHelperInterface
 
 					rule.getRuleParameterCollection().add(minValue);
 					rule.getRuleParameterCollection().add(maxValue);
+				}
+				else if (ruleName.equalsIgnoreCase(CategoryCSVConstants.ALLOW_FUTURE_DATE))
+				{
+					rule = factory.createRule();
+					rule.setName(ruleName);
+					rule.setIsImplicitRule(false);
 				}
 
 				if (rule != null)

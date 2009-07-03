@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.domain.databaseproperties.TableProperties;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -2908,7 +2909,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			EntityInterface savedEntity = entityManager.persistEntity(entity);
 
 			Map dataValue = new HashMap();
-			dataValue.put("date", "11-16-1982");
+			dataValue.put("date", "11-15-1982");
 
 			Map<String, String> rulesMap = new HashMap<String, String>();
 			rulesMap.put("min", "11-12-1982");
@@ -2929,6 +2930,179 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 			System.out.println("Could not insert data....");
 			System.out
 					.println("Validation failed. Input date should be lesser than or equal to 11-15-1982");
+			assertEquals("Validation failed", e.getMessage());
+			assertEquals(recordId, null);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Create a date only attribute, create and set allowfuturedate rule to this attribute.
+	 * And try to insert a future date, valueData should get inserted.
+	 */
+	public void testDataForFutureDateRule()
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_future_date");
+
+		//Step 1
+		Entity entity = (Entity) createAndPopulateEntity();
+		entity.setName("Appointments");
+
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+
+		Long recordId = null;
+		try
+		{
+			Attribute dateOnly = (Attribute) factory.createDateAttribute();
+			((DateAttributeTypeInformation) dateOnly.getAttributeTypeInformation())
+					.setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+			dateOnly.setName("dateOnly");
+
+			Attribute dateTime = (Attribute) factory.createDateAttribute();
+			((DateAttributeTypeInformation) dateTime.getAttributeTypeInformation())
+					.setFormat(ProcessorConstants.DATE_TIME_FORMAT);
+			dateTime.setName("dateTime");
+
+			Attribute yearOnlyDate = (Attribute) factory.createDateAttribute();
+			((DateAttributeTypeInformation) yearOnlyDate.getAttributeTypeInformation())
+					.setFormat(ProcessorConstants.YEAR_ONLY_FORMAT);
+			yearOnlyDate.setName("yearOnlyDate");
+
+			Attribute monthYearDate = (Attribute) factory.createDateAttribute();
+			((DateAttributeTypeInformation) monthYearDate.getAttributeTypeInformation())
+					.setFormat(ProcessorConstants.MONTH_YEAR_FORMAT);
+			monthYearDate.setName("monthYearDate");
+
+			RuleInterface allowfuturedate = factory.createRule();
+			allowfuturedate.setName("allowfuturedate");
+			allowfuturedate.setIsImplicitRule(false);
+			dateOnly.getRuleCollection().add(allowfuturedate);
+			dateTime.getRuleCollection().add(allowfuturedate);
+			yearOnlyDate.getRuleCollection().add(allowfuturedate);
+			monthYearDate.getRuleCollection().add(allowfuturedate);
+			
+			entity.addAbstractAttribute(dateOnly);
+			entity.addAbstractAttribute(dateTime);
+			entity.addAbstractAttribute(yearOnlyDate);
+			entity.addAbstractAttribute(monthYearDate);
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+
+			//Step 2
+			EntityInterface savedEntity = entityManager.persistEntity(entity);
+
+			for (RuleInterface rule : dateOnly.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+						.getValidatorRule(rule.getName());
+				validatorRule.validate((AttributeMetadataInterface) dateOnly, "08-16-2020", null, "Date");
+			}
+			for (RuleInterface rule : dateTime.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+						.getValidatorRule(rule.getName());
+				validatorRule.validate((AttributeMetadataInterface) dateTime, "11-12-2020 10:11", null, "Date");
+			}
+			for (RuleInterface rule : yearOnlyDate.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+						.getValidatorRule(rule.getName());
+				validatorRule.validate((AttributeMetadataInterface) yearOnlyDate, "2020", null, "Date");
+			}
+			for (RuleInterface rule : monthYearDate.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+						.getValidatorRule(rule.getName());
+				validatorRule.validate((AttributeMetadataInterface) monthYearDate, "09-2020", null, "Date");
+			}
+
+			Map dataValue = new HashMap();
+			dataValue.put(dateOnly, "11-16-2018");
+			dataValue.put(dateTime, "11-12-2018 10:11");
+			dataValue.put(yearOnlyDate, "2018");
+			dataValue.put(monthYearDate, "09-2018");
+
+			recordId = entityManager.insertData(savedEntity, dataValue);
+
+			dataValue = entityManager.getRecordById(entity, recordId);
+
+			assertEquals("11-12-2018 10:11", dataValue.get(dateTime));
+			assertEquals("11-16-2018", dataValue.get(dateOnly));
+			assertEquals("2018", dataValue.get(yearOnlyDate));
+			assertEquals("09-2018", dataValue.get(monthYearDate));
+		}
+		catch (DynamicExtensionsValidationException e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Create a date only attribute, create and set allowfuturedate rule to this attribute.
+	 * And try to insert a date less than or equal to today's date,
+	 * validation error must be thrown
+	 */
+	public void testInvalidDateForFutureDateRule()
+	{
+		DomainObjectFactory factory = DomainObjectFactory.getInstance();
+		EntityGroupInterface entityGroup = factory.createEntityGroup();
+		entityGroup.setName("test_future_date");
+
+		//Step 1
+		Entity entity = (Entity) createAndPopulateEntity();
+		entity.setName("ExpiryDate");
+
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+
+		Long recordId = null;
+		try
+		{
+			Attribute date = (Attribute) factory.createDateAttribute();
+			date.setName("FutureDate");
+			((DateAttributeTypeInformation) date.getAttributeTypeInformation())
+					.setFormat(ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+
+			RuleInterface allowfuturedate = factory.createRule();
+			allowfuturedate.setName("allowfuturedate");
+			allowfuturedate.setIsImplicitRule(false);
+			date.getRuleCollection().add(allowfuturedate);
+
+			entity.addAbstractAttribute(date);
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+
+			//Step 2 save entity
+			EntityInterface savedEntity = entityManager.persistEntity(entity);
+
+			Map dataValue = new HashMap();
+			dataValue.put(date, "11-16-2000");
+
+			for (RuleInterface rule : date.getRuleCollection())
+			{
+				ValidatorRuleInterface validatorRule = ControlConfigurationsFactory.getInstance()
+						.getValidatorRule(rule.getName());
+				validatorRule.validate(date, "11-16-2000", null, "Date");
+			}
+
+			recordId = entityManager.insertData(savedEntity, dataValue);
+		}
+		catch (DynamicExtensionsValidationException e)
+		{
+			System.out.println("Could not insert data....");
+			System.out
+					.println("Validation failed. Input date should be greater than today's date when future date rule is used.");
 			assertEquals("Validation failed", e.getMessage());
 			assertEquals(recordId, null);
 		}

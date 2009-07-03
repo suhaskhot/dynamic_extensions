@@ -33,6 +33,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssoci
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
@@ -47,6 +48,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.common.dynamicextensions.util.parser.CategoryGenerator;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.exception.BizLogicException;
@@ -1486,6 +1488,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+
 	/**
 	 * Create category where attributes from a particular class are not chosen,
 	 * i.e. not selecting attributes from GleasonScore entity.
@@ -1518,6 +1521,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+
 	/**
 	 * Create entity group from pathology annotation model.
 	 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.
@@ -3119,7 +3123,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-		importModel("./xmi/scg.xmi", "./csv/SCG.csv",
+			importModel("./xmi/scg.xmi", "./csv/SCG.csv",
 					"edu.wustl.catissuecore.domain.PathAnnotation_SCG");
 
 			createCaegory("./csv/singleLineDsiplaySameClass5.csv");
@@ -3218,4 +3222,110 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		}
 	}
 
+	/**
+	 * Create category with one of the attribute specified with allowfuturedate rule.
+	 * Check whether this rule is present for the created category attribute
+	 */
+	public void testFutureDateRule()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
+
+			createCaegory("./csv/categoryFutureDate.csv");
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "futuredate_cat");
+			
+			assertNotNull(category.getId());
+			CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
+
+			CategoryAttributeInterface categoryAttribute = rootCategoryEntity
+					.getAttributeByName("visitDate Category Attribute");
+			Collection<RuleInterface> ruleCollection = categoryAttribute.getRuleCollection();
+			if (ruleCollection.isEmpty())
+			{
+				fail();
+			}
+			boolean isFutureDateRulePresent = false;
+			for (RuleInterface rule : ruleCollection)
+			{
+				if ("allowfuturedate".equalsIgnoreCase(rule.getName()))
+				{
+					isFutureDateRulePresent = true;
+				}
+
+			}
+			assertTrue(isFutureDateRulePresent);
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Negative usecase :-Create category having date type attribute specified with "allowfuturedate" and "daterange" rules.
+	 * Error message must thrown for these conflicting rules
+	 */
+	public void testForConflictingDateRule()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
+
+			CategoryGenerator catGen = new CategoryGenerator("./csv/categoryFutureDate1.csv");
+			try
+			{
+				category = catGen.getCategoryList().get(0);
+			}
+			catch (Exception e)
+			{
+				Logger.out.info("Could not create category due to conficting rules....");
+			}
+
+			assertNull(category);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Negative usecase :-Create category having date type attribute having allowfuturedate at model level.
+	 * Error message must thrown for these conflicting rules
+	 */
+	public void testForOverridingDateRule()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
+
+			CategoryGenerator catGen = new CategoryGenerator("./csv/categoryFutureDate3.csv");
+			try
+			{
+				category = catGen.getCategoryList().get(0);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				Logger.out.info("Could not create category due to overriding allowfuturedate rule....");
+			}
+
+			assertNull(category);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 }

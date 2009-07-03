@@ -112,6 +112,10 @@ public class DEConstants
 	public static final String NAME = "name.column.name";
 	public static final String APPLICATION_RESOURCES = "ApplicationResources";
 	public static final int TWO = 2;
+	public static String DATE = "date";
+	public static String DATE_RANGE = "dateRange";
+	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
+	public static final String RANGE = "range";
 
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -570,7 +571,7 @@ public class CategoryGenerationUtil
 					.getTargetCategoryEntity().getAllCategoryAttributes())
 			{
 				Boolean isCalculatedAttribute = categoryAttributeInterface
-						.getIsCalculatedAttribute();
+						.getIsCalculated();
 				if (isCalculatedAttribute != null && isCalculatedAttribute) 
 				{
 					setDefaultValue(categoryAttributeInterface,rootCategoryEntity
@@ -598,15 +599,23 @@ public class CategoryGenerationUtil
 	 * 
 	 * @return
 	 */
-	public static void getCategoryAttribute(String entityName,String attributeName,CategoryEntityInterface rootCategoryEntity,List <CategoryAttributeInterface> attributes)
+	public static void getCategoryAttribute(String entityName,Long instanceNumber,String attributeName,CategoryEntityInterface rootCategoryEntity,List <CategoryAttributeInterface> attributes)
 	{
 		if (rootCategoryEntity != null)
 		{
 			for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
 					.getCategoryAssociationCollection())
 			{
-				if (categoryAssociationInterface.getTargetCategoryEntity()
-						.getEntity().getName().equals(entityName))
+				CategoryEntityInterface categoryEntityInterface = categoryAssociationInterface
+						.getTargetCategoryEntity();
+				List<PathAssociationRelationInterface> pathAssociationCollection = categoryEntityInterface
+						.getPath().getSortedPathAssociationRelationCollection();
+				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
+						.get(pathAssociationCollection.size() - 1);
+				if (categoryEntityInterface.getEntity().getName().equals(
+						entityName)
+						&& pathAssociationRelationInterface
+								.getTargetInstanceId().equals(instanceNumber))
 				{
 					for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface.getTargetCategoryEntity().getCategoryAttributeCollection())
 					{
@@ -619,7 +628,7 @@ public class CategoryGenerationUtil
 				}
 				else
 				{
-					getCategoryAttribute(entityName,attributeName,categoryAssociationInterface.getTargetCategoryEntity(),attributes);
+					getCategoryAttribute(entityName,instanceNumber,attributeName,categoryAssociationInterface.getTargetCategoryEntity(),attributes);
 				}
 			}
 		}
@@ -644,19 +653,40 @@ public class CategoryGenerationUtil
 			for (String symbol : symbols)
 			{
 				String [] names = symbol.split("_");
-				attributes.clear();
-				CategoryGenerationUtil.getCategoryAttribute(names[0], names[1],
-						categoryInterface.getRootCategoryElement(), attributes);
-				if (attributes.isEmpty())
+				if (names.length == 3)
+				{
+					attributes.clear();
+					try
+					{
+						Long.parseLong(names[1]);
+					}
+					catch (NumberFormatException e) 
+					{
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ " "
+								+ names + " attibute is not defined correctly in the formula "+  categoryAttribute.getFormula().getExpression());
+					}
+					CategoryGenerationUtil.getCategoryAttribute(names[0], Long.valueOf(names[1]), names[2],
+							categoryInterface.getRootCategoryElement(), attributes);
+					if (attributes.isEmpty())
+					{
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ " "
+								+ names[0]+ "_" + names[1] + "_" + names[2] + " attibute is not defined for the formula "+  categoryAttribute.getFormula().getExpression());
+					}
+					else
+					{
+						categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
+					}
+				}
+				else
 				{
 					throw new DynamicExtensionsSystemException(ApplicationProperties
 							.getValue(CategoryConstants.CREATE_CAT_FAILS)
 							+ " "
-							+ names[0]+ "_" + names[1] + " attibute is not defined for the formula "+  categoryAttribute.getFormula().getExpression());
-				}
-				else
-				{
-					categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
+							+ names + " attibute is not defined correctly in the formula "+  categoryAttribute.getFormula().getExpression());
 				}
 			}
 		}

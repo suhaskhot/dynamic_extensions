@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
@@ -92,11 +93,19 @@ public class FormulaCalculator
 			for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : entries)
 			{
 				CategoryAttributeInterface attribute = (CategoryAttributeInterface) entry.getKey();
+				List<PathAssociationRelationInterface> pathAssociationCollection = attribute.getCategoryEntity()
+				.getPath().getSortedPathAssociationRelationCollection();
+				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
+						.get(pathAssociationCollection.size() - 1);
 				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
 				PermissibleValueInterface permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
 				formulaParser.setVariableValue(attribute.getCategoryEntity()
 						.getEntity().getName()
-						+ "_" + attributeInterface.getName(),
+						+ "_"
+						+ pathAssociationRelationInterface
+								.getTargetInstanceId().toString()
+						+ "_"
+						+ attributeInterface.getName(),
 						permissibleValueInterface.getValueAsObject());
 			}
 
@@ -186,9 +195,18 @@ public class FormulaCalculator
 				CategoryAttributeInterface attribute = (CategoryAttributeInterface) entry.getKey();
 				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
 				PermissibleValueInterface permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
+				List<PathAssociationRelationInterface> pathAssociationCollection = attribute.getCategoryEntity()
+				.getPath().getSortedPathAssociationRelationCollection();
+				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
+						.get(pathAssociationCollection.size() - 1);
+
 				formulaParser.setVariableValue(attribute.getCategoryEntity()
 						.getEntity().getName()
-						+ "_" + attribute.getAbstractAttribute().getName(),
+						+ "_"
+						+ pathAssociationRelationInterface
+								.getTargetInstanceId().toString()
+						+ "_"
+						+ attribute.getAbstractAttribute().getName(),
 						permissibleValueInterface.getValueAsObject());
 			}
 			value = formulaParser.evaluateExpression();

@@ -382,13 +382,14 @@ public class CategoryGenerator
 				categoryValidator.isRootEntityUsedTwice(category.getRootCategoryElement(), category
 						.getRootCategoryElement().getEntity());
 
-				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category.getRootCategoryElement(),categoryFileParser.getLineNumber());
-				
+			
 				if (hasRelatedAttributes)
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
 							containerCollection);
 				}
+				
+				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category.getRootCategoryElement(),categoryFileParser.getLineNumber());
 
 				// Commented this code since the method is error prone
 				// TODO change this logic to reset the sequnces.
@@ -631,18 +632,67 @@ public class CategoryGenerator
 
 			CategoryAttributeInterface categoryAttribute = categoryHelper.getCategoryAttribute(
 					entity, attributeName, categoryEntity);
+			Map<String, String> controlOptions = categoryFileParser.getControlOptions();
 
+			categoryHelper.setOptions(categoryAttribute, controlOptions, categoryFileParser
+					.getLineNumber());
+			
 			String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
-			categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName)
+			
+			if (categoryAttribute.getIsCalculated() != null && categoryAttribute.getIsCalculated())
+			{
+				setFormula(categoryAttribute,defaultValue);
+			}
+			else
+			{
+				categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName)
 					.getAttributeTypeInformation().getPermissibleValueForString(
 							DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
+			}
 			categoryAttribute.setIsVisible(false);
 			categoryAttribute.setIsRelatedAttribute(true);
 			category.addRelatedAttributeCategoryEntity(categoryEntity);
 
 		}
 	}
-
+	/**
+	 * 
+	 * @param categoryAttribute
+	 * @param defaultValue
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void setFormula(CategoryAttributeInterface categoryAttribute,String defaultValue) throws DynamicExtensionsApplicationException
+	{
+		boolean isValidFormula = false;
+		FormulaParser formulaParser = new FormulaParser();
+		try
+		{
+			isValidFormula = formulaParser
+					.validateExpression(defaultValue);
+		}
+		catch (DynamicExtensionsSystemException ex)
+		{
+			throw new DynamicExtensionsApplicationException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+					+ categoryFileParser.getLineNumber()
+					+ defaultValue + " formula defined is not valid.",ex);
+		}
+		if (isValidFormula)
+		{
+			categoryAttribute.setIsCalculated(true);
+			if (categoryAttribute.getFormula() == null)
+			{
+				categoryAttribute.setFormula(DomainObjectFactory
+					.getInstance().createFormula(
+							defaultValue));
+			}
+			else
+			{
+				categoryAttribute.getFormula().setExpression(defaultValue);
+			}
+		}
+	}
 	/**
 	 * @param parentEntity
 	 * @param childEntity
@@ -998,36 +1048,7 @@ public class CategoryGenerator
 							categoryAttribute.getAbstractAttribute().getName());
 			if (control.getIsCalculated() != null && control.getIsCalculated())
 			{
-				boolean isValidFormula = false;
-				FormulaParser formulaParser = new FormulaParser();
-				try
-				{
-					isValidFormula = formulaParser
-							.validateExpression(defaultValue);
-				}
-				catch (DynamicExtensionsSystemException ex)
-				{
-					throw new DynamicExtensionsApplicationException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber()
-							+ defaultValue + " formula defined is not valid.",ex);
-				}
-				if (isValidFormula)
-				{
-					categoryAttribute.setIsCalculatedAttribute(control
-							.getIsCalculated());
-					if (categoryAttribute.getFormula() == null)
-					{
-						categoryAttribute.setFormula(DomainObjectFactory
-							.getInstance().createFormula(
-									defaultValue));
-					}
-					else
-					{
-						categoryAttribute.getFormula().setExpression(defaultValue);
-					}
-				}
+				setFormula(categoryAttribute,defaultValue);
 			}
 			else
 			{

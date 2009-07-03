@@ -670,7 +670,7 @@
         />
 
         <property
-            name="isCalculatedAttribute"
+            name="isCalculated"
             type="boolean"
             update="true"
             insert="true"

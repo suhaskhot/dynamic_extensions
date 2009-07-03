@@ -98,12 +98,12 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	/**
 	 *
 	 */
-	Boolean getIsCalculatedAttribute();
+	Boolean getIsCalculated();
 
 	/**
 	 *
 	 */
-	void setIsCalculatedAttribute(Boolean isCalculatedAttribute);
+	void setIsCalculated(Boolean isCalculated);
 	/**
 	 * 
 	 * @param formulaInterface

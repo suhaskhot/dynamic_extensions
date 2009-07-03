@@ -20,7 +20,7 @@
             unsaved-value="null"
         >
             <generator class="native">
-                <param name="sequence">DYEXTN_FRM_CONTROL_SEQ</param>
+                <param name="sequence">DYEXTN_FORMULA_SEQ</param>
             </generator>
         </id>
 

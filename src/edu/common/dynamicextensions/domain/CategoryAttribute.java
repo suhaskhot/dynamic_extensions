@@ -77,7 +77,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	/**
 	 *
 	 */
-	protected Boolean isCalculatedAttribute;
+	protected Boolean isCalculated;
 	/**
 	 * Collection of formulae.
 	 */
@@ -560,19 +560,19 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		this.isRelatedAttribute = isRelatedAttribute;
 	}
 	/**
-	* @hibernate.property name="isCalculatedAttribute" type="boolean" column="IS_CAL_ATTRIBUTE"
+	* @hibernate.property name="isCalculated" type="boolean" column="IS_CAL_ATTRIBUTE"
 	*/
-	public Boolean getIsCalculatedAttribute() 
+	public Boolean getIsCalculated()
 	{
-		return isCalculatedAttribute;
+		return isCalculated;
 	}
 	/**
 	 * 
 	 * @param isCalculatedAttribute
 	 */
-	public void setIsCalculatedAttribute(Boolean isCalculatedAttribute) 
+	public void setIsCalculated(Boolean isCalculatedAttribute) 
 	{
-		this.isCalculatedAttribute = isCalculatedAttribute;
+		this.isCalculated = isCalculatedAttribute;
 	}
 	/**
 	 * 

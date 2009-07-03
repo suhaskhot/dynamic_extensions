@@ -187,7 +187,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			if (attribute instanceof CategoryAttributeInterface)
 			{
 				CategoryAttributeInterface categoryAttributeInterface = (CategoryAttributeInterface) attribute;
-				Boolean isCalculatedAttribute = categoryAttributeInterface.getIsCalculatedAttribute();
+				Boolean isCalculatedAttribute = categoryAttributeInterface.getIsCalculated();
 				if (isCalculatedAttribute != null && isCalculatedAttribute)
 				{
 					FormulaCalculator formulaCalculator = new FormulaCalculator();

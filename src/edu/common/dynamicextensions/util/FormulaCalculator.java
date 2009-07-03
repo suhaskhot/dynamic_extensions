@@ -11,9 +11,7 @@ import java.util.Map.Entry;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -104,7 +102,10 @@ public class FormulaCalculator
 
 			value = formulaParser.evaluateExpression();
 		}
-		return value;
+		PermissibleValueInterface permissibleValueInterface = ((AttributeMetadataInterface) categoryAttributeInterface)
+				.getAttributeTypeInformation().getPermissibleValueForString(
+						value.toString());
+		return permissibleValueInterface.getValueAsObject();
 	}
 
 	/**

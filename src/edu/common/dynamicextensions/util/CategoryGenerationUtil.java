@@ -579,7 +579,7 @@ public class CategoryGenerationUtil
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
 							categoryAttributeInterface, rootCategoryEntity
-									.getCategory());
+									.getCategory(),null,false);
 					if (message != null && message.length() > 0)
 					{
 						throw new DynamicExtensionsSystemException(ApplicationProperties

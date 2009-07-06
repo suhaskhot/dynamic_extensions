@@ -30,6 +30,7 @@ import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.FileExtension;
 import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
@@ -211,6 +212,35 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						populateAttributeValueMapForCalculatedAttributes(map,containerInterface);
 					}
 			}
+		}
+	}
+	/**
+	 * @throws ParseException 
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException 
+	 * 
+	 */
+	private void setDefaultValueForCalculatedAttributes(CategoryEntityInterface rootCategoryEntity) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	{
+		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
+				.getCategoryAssociationCollection())
+		{
+			for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
+					.getTargetCategoryEntity().getAllCategoryAttributes())
+			{
+				Boolean isCalculatedAttribute = categoryAttributeInterface
+						.getIsCalculated();
+				if (isCalculatedAttribute != null && isCalculatedAttribute) 
+				{
+					FormulaCalculator formulaCalculator = new FormulaCalculator();
+					formulaCalculator.setDefaultValueForCalculatedAttributes(
+							categoryAttributeInterface, rootCategoryEntity
+									.getCategory());
+				}
+			}
+			setDefaultValueForCalculatedAttributes(categoryAssociationInterface
+					.getTargetCategoryEntity());
 		}
 	}
 	/**
@@ -397,6 +427,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getErrorList(), containerInterface);
 		populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
 		
+		AbstractEntityInterface abstractEntityInterface = containerInterface.getAbstractEntity();
+		if (abstractEntityInterface instanceof CategoryEntityInterface)
+		{
+			setDefaultValueForCalculatedAttributes((CategoryEntityInterface) abstractEntityInterface);
+		}
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);
 

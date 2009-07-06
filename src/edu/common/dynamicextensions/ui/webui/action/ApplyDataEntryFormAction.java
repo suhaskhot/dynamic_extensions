@@ -425,11 +425,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 		List<String> errorList = ValidatorUtil.validateEntity(valueMap, dataEntryForm
 				.getErrorList(), containerInterface);
-		populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
-		
+
 		AbstractEntityInterface abstractEntityInterface = containerInterface.getAbstractEntity();
 		if (abstractEntityInterface instanceof CategoryEntityInterface)
 		{
+			populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
 			setDefaultValueForCalculatedAttributes((CategoryEntityInterface) abstractEntityInterface);
 		}
 		//Remove duplicate error messages by converting an error message list to hashset.

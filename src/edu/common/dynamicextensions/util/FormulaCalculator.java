@@ -114,6 +114,7 @@ public class FormulaCalculator
 		PermissibleValueInterface permissibleValueInterface = ((AttributeMetadataInterface) categoryAttributeInterface)
 				.getAttributeTypeInformation().getPermissibleValueForString(
 						value.toString());
+		categoryAttributeInterface.setDefaultValue(permissibleValueInterface);
 		return permissibleValueInterface.getValueAsObject();
 	}
 

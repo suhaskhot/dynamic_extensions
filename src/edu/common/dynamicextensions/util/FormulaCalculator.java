@@ -159,23 +159,40 @@ public class FormulaCalculator
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public String setDefaultValueForCalculatedAttributes(CategoryAttributeInterface categoryAttribute,CategoryInterface category) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	public String setDefaultValueForCalculatedAttributes(CategoryAttributeInterface categoryAttribute,CategoryInterface category,Map<BaseAbstractAttributeInterface, Object> valueMap,boolean isValueDynamic) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
 	{
 		StringBuffer message = new StringBuffer("");
 		Object value = null;
+		List <Object> values = new ArrayList <Object>();
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMap = new HashMap <BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
 		FormulaParser formulaParser = getFormulaParser();
 		formulaParser.parseExpression(categoryAttribute.getFormula().getExpression());
 		for (CategoryAttributeInterface calculatedAttribute : categoryAttribute.getCalculatedCategoryAttributeCollection())
 		{
-			if (calculatedAttribute.getDefaultValuePermissibleValue() == null)
+			if (!isValueDynamic)
 			{
-				allCalculatedAttributesPresent = false;
+				if (calculatedAttribute.getDefaultValuePermissibleValue() == null)
+				{
+					allCalculatedAttributesPresent = false;
+				}
+				else
+				{
+					attributeValueMap.put(calculatedAttribute, calculatedAttribute.getDefaultValue());
+				}
 			}
 			else
 			{
-				attributeValueMap.put(calculatedAttribute, calculatedAttribute.getDefaultValue());
+				values.clear();
+				evaluateFormulaForCalulatedAttribute(valueMap,calculatedAttribute,values);
+				if (!values.isEmpty())
+				{
+					attributeValueMap.put(calculatedAttribute, values.get(0));
+				}
+				else
+				{
+					allCalculatedAttributesPresent = false;
+				}
 			}
 		}
 		List<String> errorList = new ArrayList<String>();

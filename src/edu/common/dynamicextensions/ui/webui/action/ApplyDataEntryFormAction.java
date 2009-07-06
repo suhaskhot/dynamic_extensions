@@ -221,7 +221,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	private void setDefaultValueForCalculatedAttributes(CategoryEntityInterface rootCategoryEntity) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	private void setDefaultValueForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,CategoryEntityInterface rootCategoryEntity) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
 	{
 		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
 				.getCategoryAssociationCollection())
@@ -236,10 +236,10 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					formulaCalculator.setDefaultValueForCalculatedAttributes(
 							categoryAttributeInterface, rootCategoryEntity
-									.getCategory());
+									.getCategory(),valueMap,true);
 				}
 			}
-			setDefaultValueForCalculatedAttributes(categoryAssociationInterface
+			setDefaultValueForCalculatedAttributes(valueMap,categoryAssociationInterface
 					.getTargetCategoryEntity());
 		}
 	}
@@ -430,7 +430,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if (abstractEntityInterface instanceof CategoryEntityInterface)
 		{
 			populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
-			setDefaultValueForCalculatedAttributes((CategoryEntityInterface) abstractEntityInterface);
+			setDefaultValueForCalculatedAttributes(valueMap,(CategoryEntityInterface) abstractEntityInterface);
 		}
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);

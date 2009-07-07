@@ -42,6 +42,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
@@ -194,13 +195,16 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		{
 			savedCatEntities.add(catEntObjects.get(keySetIter.next()));
 		}
+
+		HibernateDAO hibernateDAO = null;
 		try
 		{
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+
 			for (CategoryEntityInterface categoryEntity : savedCatEntities)
 			{
-				CategoryEntity dbaseCopy = (CategoryEntity) DynamicExtensionsUtility
-						.getCleanObject(CategoryEntity.class.getCanonicalName(), categoryEntity
-								.getId());
+				CategoryEntity dbaseCopy = (CategoryEntity) hibernateDAO.retrieveById(
+						CategoryEntity.class.getCanonicalName(), categoryEntity.getId());
 
 				// Only for category entity for which table is getting created.
 				if (dbaseCopy.isCreateTable())
@@ -219,6 +223,22 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		{
 			throw new DynamicExtensionsSystemException("Not able to retrieve Object.", exception);
 		}
+		finally
+		{
+			if (hibernateDAO != null)
+			{
+				try
+				{
+					DynamicExtensionsUtility.closeHibernateDAO(hibernateDAO);
+				}
+				catch (DAOException e)
+				{
+					throw new DynamicExtensionsSystemException(
+							"Exception encountered while closing session.", e);
+				}
+			}
+		}
+
 		return queries;
 	}
 
@@ -676,17 +696,16 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			getColumnNamesAndValuesForRelatedCategoryAttributes(categoryEntity, columnNames,
 					columnValues, colNamesValues, records, jdbcDao, identifier);
 
-			CategoryAssociationInterface catAssociation = getCategoryAssociationWithRootCategoryEntity(
-					rootCatEntity, categoryEntity);
+			CategoryAssociationInterface catAssociation = getCategoryAssociationWithTreeParentCategoryEntity(
+					categoryEntity.getTreeParentCategoryEntity(), categoryEntity);
 
-			//Commented this code since insertAllParentRelatedCategoryAttributesCollection method already inserts data for the related parent attribute.
-			//			{
-			//				// Pass the category entity, which is parent category entity of  
-			//				// root category entity so we have to insert into parent entity table.
-			//				insertRelatedAttributeRecordsForRootCategoryEntity(categoryEntity, colNamesValues,
-			//						records, jdbcDAO, identifier);
-			//			}
-			if (catAssociation != null)
+			if (catAssociation == null && categoryEntity.equals(rootCatEntity))
+			{
+				// insert records for related category attributes of root category entity.
+				insertRelatedAttributeRecordsForRootCategoryEntity(categoryEntity, colNamesValues,
+						records, jdbcDao, identifier);
+			}
+			else if (catAssociation != null)
 			{
 				insertRelatedAttributeRecordsForCategoryEntity(categoryEntity, catAssociation,
 						columnNames, columnValues, colNamesValues, rootRecordId, records, jdbcDao,
@@ -845,14 +864,20 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	/**
 	 * This method returns a category association between root category entity 
 	 * and category entity passed to this method.
-	 * @param rootCatEntity
+	 * @param treeParentCatEntity
 	 * @param catEntity
 	 * @return category association between root category entity and category entity passed
 	 */
-	private CategoryAssociationInterface getCategoryAssociationWithRootCategoryEntity(
-			CategoryEntityInterface rootCatEntity, CategoryEntityInterface catEntity)
+	private CategoryAssociationInterface getCategoryAssociationWithTreeParentCategoryEntity(
+			CategoryEntityInterface treeParentCatEntity, CategoryEntityInterface catEntity)
 	{
-		Collection<CategoryAssociationInterface> catAssociations = rootCatEntity
+		// for root category entity, its tree parent category entity will be null.
+		if (treeParentCatEntity == null)
+		{
+			return null;
+		}
+
+		Collection<CategoryAssociationInterface> catAssociations = treeParentCatEntity
 				.getCategoryAssociationCollection();
 
 		for (CategoryAssociationInterface catAssociation : catAssociations)

@@ -15,6 +15,7 @@ import java.util.Map;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
+import edu.common.dynamicextensions.domain.userinterface.TextField;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -1021,6 +1022,8 @@ public class CategoryGenerator
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String defaultValue = categoryFileParser.getDefaultValue();
+		String attributeName = ((CategoryAttributeInterface) control
+				.getAttibuteMetadataInterface()).getAbstractAttribute().getName();
 		if (defaultValue == null)
 		{
 			// Validation-If category attribute is of type Read-only its default
@@ -1029,8 +1032,6 @@ public class CategoryGenerator
 					|| (control.getIsCalculated() != null && control
 							.getIsCalculated()))
 			{
-				String attributeName = ((CategoryAttributeInterface) control
-						.getAttibuteMetadataInterface()).getAbstractAttribute().getName();
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
 						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
@@ -1040,7 +1041,7 @@ public class CategoryGenerator
 			}
 			return;
 		}
-
+		
 		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control
 				.getAttibuteMetadataInterface();
 		if (!defaultValue.equals(categoryAttribute.getDefaultValue()))
@@ -1050,7 +1051,19 @@ public class CategoryGenerator
 							categoryAttribute.getAbstractAttribute().getName());
 			if (control.getIsCalculated() != null && control.getIsCalculated())
 			{
-				setFormula(categoryAttribute,defaultValue);
+				if (control instanceof TextField)
+				{
+					setFormula(categoryAttribute,defaultValue);
+				}
+				else
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber()
+							+ " "
+							+ "UI control type should be textField for the attribute " + attributeName);
+				}
 			}
 			else
 			{

@@ -30,9 +30,11 @@
 	<property name="common.dir" value="${base.dir}/SQL/Common"/>
 	<property name="meta.dir" value="${base.dir}/META-INF"/>
 
-	<property name="temp.hdoclet.dir" value="${base.dir}/temp"/>
+	<property name="temp.hdoclet.dir" value="${basedir}/temp"/>
 
 	<property name="junit.report.dir" value="${base.dir}/junit"/>
+	<property name="de_release_dir" value="${basedir}/de_release"/>
+	<property name="is_generate_schema" value="true"/>
 	<tstamp>
 	    <format property="TODAY_IND" pattern="d-MMMM-yyyy" locale="en,IND"/>
 	</tstamp>
@@ -345,8 +347,9 @@
 
 	<!-- Generates schema for DE release.The longblob changes are done for MYSQL using Alter table SQL -->
 	<target name="generate_schema" depends="generate_hbm,build_jar">
-	    	<java classname="edu.common.dynamicextensions.util.GenerateSchema">
-	    		<arg value="true"/>
+	    <echo message="${is_generate_schema}"></echo>	
+		<java classname="edu.common.dynamicextensions.util.GenerateSchema">
+	    		<arg value="${is_generate_schema}"/>
 	            <classpath>
 		            <pathelement location="${build.dir}/cawebeav.jar"/>
 	            	<fileset dir="${lib.dir}">
@@ -661,17 +664,6 @@
 		<ant antfile="cobertura.xml" target="coverage.check"/>
 	</target>
 
-	<target name="de_release" depends="build_app_war,create_dyn_ext_interface_jar,create_dyn_ext_interface_sourcezip,javadoc,generate_schema">
-		<property name="de_release_dir" value="${base.dir}/de_release"/>
-		<delete dir="${de_release_dir}"/>
-		<mkdir dir="${de_release_dir}"/>
-       	<copy file="dynamicExtensions.war" todir="${de_release_dir}" />
-       	<copy file="${interface.dir}/DynamicExtensions.jar" todir="${de_release_dir}" />
-       	<copy file="${interface.src.dir}/DynamicExtensions-src.zip" todir="${de_release_dir}" />
-       	<copy file="${javadoc.dir}/${javadoc.zip}" todir="${de_release_dir}" />
-       	<copy file="${base.dir}/query.sql" todir="${de_release_dir}" />
-	</target>
-
 	<property name="filename" value="" />
 	<property name="package" value="" />
 	<target name="import_xmi" depends="compile" >
@@ -742,4 +734,148 @@
 		</exec>
 	</target>
 	<!-- run build_plus_start ends -->
+	
+	<!-- SVN checkout start-->
+	<target name="do_checkout">
+		<if>
+			<contains substring="Windows" casesensitive="no" string="${os.name}"/>
+			<then>
+				<exec dir="${basedir}/script" executable="cmd" >
+					<arg line="/c do_checkout.bat"/>
+					<arg value="${svn.repository.url}"/>
+					<arg value="${temp.hdoclet.dir}/project"/>
+					<arg value="${svn.user.id}"/>
+				  	<arg value="${svn.user.password}"/>
+				</exec>
+			</then>
+			<elseif>
+				<contains substring="Linux" casesensitive="no" string="${os.name}"/>
+					<then>
+						<exec dir="${basedir}/script" executable="cmd" >
+							<arg line="/c do_checkout.sh"/>
+							<arg value="${svn.repository.url}"/>
+							<arg value="${temp.hdoclet.dir}/project"/>
+							<arg value="${svn.user.id}"/>
+						  	<arg value="${svn.user.password}"/>
+						</exec>
+					</then>
+			</elseif>
+			<else>
+				<if>
+					<contains substring="unix" casesensitive="no" string="${os.name}"/>
+					<then>
+						<exec dir="${basedir}/script" executable="cmd" >
+							<arg line="/c do_checkout.sh"/>
+							<arg value="${svn.repository.url}"/>
+							<arg value="${temp.hdoclet.dir}/project"/>
+							<arg value="${svn.user.id}"/>
+						  	<arg value="${svn.user.password}"/>
+						</exec>
+					</then>
+				</if>
+			</else>
+		</if>
+	</target>
+	<!-- SVN checkout end -->
+
+	<target name="check_os">
+		<if>
+			<contains substring="unix" casesensitive="no" string="${os.name}"/>
+			<then>
+				<copy file="${basedir}/script/create_release.bat" tofile="${basedir}/script/create_release.sh" overwrite="true"/>
+				<copy file="${basedir}/script/do_checkout.bat" tofile="${basedir}/script/do_checkout.sh" overwrite="true"/>
+				<copy file="${basedir}/script/run_junit.bat" tofile="${basedir}/script/run_junit.sh" overwrite="true"/>
+			</then>
+			<elseif>
+				<contains substring="Linux" casesensitive="no" string="${os.name}"/>
+				<then>
+					<copy file="${basedir}/script/create_release.bat" tofile="${basedir}/script/create_release.sh" overwrite="true"/>
+					<copy file="${basedir}/script/do_checkout.bat" tofile="${basedir}/script/do_checkout.sh" overwrite="true"/>
+					<copy file="${basedir}/script/run_junit.bat" tofile="${basedir}/script/run_junit.sh" overwrite="true"/>
+				</then>
+			</elseif>
+		</if>
+	</target>
+
+	<target name="init_release">
+		<delete dir="${de_release_dir}"/>
+		<delete dir="${temp.hdoclet.dir}"/>
+		<mkdir dir="${de_release_dir}"/>
+		<mkdir dir="${temp.hdoclet.dir}"/>
+	</target>
+
+	<!-- DE release target start-->
+	<target name="de_release">
+		<antcall target="init_release"/>
+		<antcall target="check_os"/>
+		<antcall target="do_checkout"/>
+		<antcall target="create_junit_reports_for_release"/>
+		<if>
+			<contains substring="Windows" casesensitive="no" string="${os.name}"/>
+			<then>
+				<exec dir="${basedir}/script" executable="cmd" >
+					<arg line="/c create_release.bat"/>
+				</exec>
+			</then>
+			<elseif>
+				<contains substring="Linux" casesensitive="no" string="${os.name}"/>
+				<then>
+					<exec dir="${basedir}/script" executable="cmd" >
+						<arg line="/c create_release.sh"/>
+					</exec>
+				</then>
+			</elseif>
+			<else>
+				<if>
+					<contains substring="unix" casesensitive="no" string="${os.name}"/>
+					<then>
+						<exec dir="${basedir}/script" executable="cmd" >
+							<arg line="/c create_release.sh"/>
+						</exec>
+					</then>
+				</if>
+			</else>
+		</if>
+		<copy file="${temp.hdoclet.dir}/project/dynamicExtensions.zip" todir="${de_release_dir}" overwrite="true"/>
+		<copy file="${temp.hdoclet.dir}/project/DynamicExtensionsInterface/dynamicExtensions.jar" todir="${de_release_dir}" overwrite="true"/>
+	</target>
+	<!-- DE release target end-->
+
+	<target name="create_junit_reports_for_release" description="copies junit report">
+		<mkdir dir="${de_release_dir}/junit_report"/>
+		<echo message="Running Junit test cases"></echo>
+		<if>
+			<contains substring="Windows" casesensitive="no" string="${os.name}"/>
+			<then>
+				<exec dir="${basedir}/script" executable="cmd" >
+					<arg line="/c run_junit.bat"/>
+				</exec>
+			</then>
+			<elseif>
+				<contains substring="Linux" casesensitive="no" string="${os.name}"/>
+					<then>
+						<exec dir="${basedir}/script" executable="cmd" >
+							<arg line="/c run_junit.sh"/>
+						</exec>
+					</then>
+			</elseif>
+			<else>
+				<if>
+					<contains substring="unix" casesensitive="no" string="${os.name}"/>
+					<then>
+						<exec dir="${basedir}/script" executable="cmd" >
+							<arg line="/c run_junit.sh"/>
+						</exec>
+					</then>
+				</if>
+			</else>
+		</if>
+		<copy todir="${de_release_dir}/junit_report/">
+			<fileset dir="${temp.hdoclet.dir}/project/junit/edu/common/dynamicextensions">
+				<include name="**/**/*.htm*"/> 
+				<include name="**/**/*.css"/> 
+				<include name="**/**/*.txt"/> 
+			</fileset>
+		</copy >
+	</target>
 </project>

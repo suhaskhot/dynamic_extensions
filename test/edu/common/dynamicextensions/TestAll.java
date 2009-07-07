@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.entitymanager.TestEntityManagerForAssociatio
 import edu.common.dynamicextensions.entitymanager.TestEntityManagerForInheritance;
 import edu.common.dynamicextensions.entitymanager.TestEntityManagerWithPrimaryKey;
 import edu.common.dynamicextensions.entitymanager.TestEntityMangerForXMIImportExport;
+import edu.common.dynamicextensions.entitymanager.TestImportPermissibleValues;
 
 /**
  * Test Suite for testing all DE  related classes.
@@ -38,6 +39,7 @@ public class TestAll
 		suite.addTestSuite(TestEntityManagerForAssociations.class);
 		suite.addTestSuite(TestEntityManagerForInheritance.class);
 		suite.addTestSuite(TestEntityMangerForXMIImportExport.class);
+		suite.addTestSuite(TestImportPermissibleValues.class);
 		suite.addTestSuite(TestCategoryManager.class);
 		suite.addTestSuite(TestEntityManagerWithPrimaryKey.class);
 		return suite;

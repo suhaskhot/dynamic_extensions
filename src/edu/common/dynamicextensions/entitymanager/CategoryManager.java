@@ -773,18 +773,6 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			Map<String, List<Long>> records, Long userId, JDBCDAO jdbcDao)
 			throws DynamicExtensionsSystemException, SQLException, DynamicExtensionsApplicationException
 	{
-		String defaultValue = catAttribute.getDefaultValue();
-		if (catAttribute.getIsCalculated() != null && catAttribute.getIsCalculated())
-		{
-			FormulaCalculator formulaCalculator = new FormulaCalculator();
-			Object formulaResultValue = formulaCalculator.evaluateFormula(valueMap,
-					catAttribute, catAttribute.getCategoryEntity().getCategory());
-			if (formulaResultValue != null)
-			{
-				defaultValue = formulaResultValue.toString();
-			}
-		}
-
 		AssociationInterface association = (AssociationInterface) catAttribute
 				.getAbstractAttribute();
 		EntityInterface targetEntity = association.getTargetEntity();

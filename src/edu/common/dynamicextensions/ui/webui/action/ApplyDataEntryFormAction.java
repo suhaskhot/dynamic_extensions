@@ -180,7 +180,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : valueMap.entrySet())
 		{
@@ -212,35 +212,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 						populateAttributeValueMapForCalculatedAttributes(map,containerInterface);
 					}
 			}
-		}
-	}
-	/**
-	 * @throws ParseException 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
-	 */
-	private void setDefaultValueForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,CategoryEntityInterface rootCategoryEntity) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
-	{
-		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
-				.getCategoryAssociationCollection())
-		{
-			for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
-					.getTargetCategoryEntity().getAllCategoryAttributes())
-			{
-				Boolean isCalculatedAttribute = categoryAttributeInterface
-						.getIsCalculated();
-				if (isCalculatedAttribute != null && isCalculatedAttribute) 
-				{
-					FormulaCalculator formulaCalculator = new FormulaCalculator();
-					formulaCalculator.setDefaultValueForCalculatedAttributes(
-							categoryAttributeInterface, rootCategoryEntity
-									.getCategory(),valueMap,true);
-				}
-			}
-			setDefaultValueForCalculatedAttributes(valueMap,categoryAssociationInterface
-					.getTargetCategoryEntity());
 		}
 	}
 	/**
@@ -412,7 +383,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	private void populateAndValidateValues(Stack<ContainerInterface> containerStack,
 			Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack,
 			HttpServletRequest request, DataEntryForm dataEntryForm) throws FileNotFoundException,
-			DynamicExtensionsSystemException, IOException, DynamicExtensionsApplicationException, ParseException
+			DynamicExtensionsSystemException, IOException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
 		List processedContainersList = new ArrayList<ContainerInterface>();
@@ -430,7 +401,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		if (abstractEntityInterface instanceof CategoryEntityInterface)
 		{
 			populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
-			setDefaultValueForCalculatedAttributes(valueMap,(CategoryEntityInterface) abstractEntityInterface);
 		}
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);

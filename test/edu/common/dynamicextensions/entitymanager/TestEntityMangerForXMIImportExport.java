@@ -40,7 +40,7 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 	 * Specify the name of the domain model xmi file to import. This file must be present at the path test/ModelXML under the project root directory
 	 */
 	private String XMIFileName = "./xmi/newsurgery.xmi";
-	private String ClinicalAnnotationXMI = "./xmi/.xmi";
+	private String ClinicalAnnotationXMI = "./xmi/ClinicalAnnotations.xmi";
 
 	/**
 	 *
@@ -63,10 +63,41 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void testXMIImportEditCase()
 	{
 		testXMIImport();
 	}
+	
+	/**
+	 * 
+	 */
+	public void testImportClinicalAnnotationsXMI()
+	{
+		try
+		{
+			String[] args = {ClinicalAnnotationXMI, "edu.wustl.catissuecore.domain.ClinicalAnnotations", "./csv/AnnotationsMainContainer.csv"};
+			XMIImporter.main(args);
+
+			System.out.println("--------------- Importing clinical annotations XMI successful ---------------");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail("Could not import clinical annotations XMI.");
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void testEditClinicalAnnotationsXMI()
+	{
+		testImportClinicalAnnotationsXMI();
+	}
+
 
 	public void testXMIExport()
 	{

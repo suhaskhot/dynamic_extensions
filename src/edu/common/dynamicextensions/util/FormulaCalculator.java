@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -58,7 +58,7 @@ public class FormulaCalculator
 	 */
 	public Object evaluateFormula(
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			CategoryAttributeInterface categoryAttributeInterface,CategoryInterface category) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+			CategoryAttributeInterface categoryAttributeInterface,CategoryInterface category) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Object value = null;
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap <BaseAbstractAttributeInterface, Object>();
@@ -98,7 +98,15 @@ public class FormulaCalculator
 				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
 						.get(pathAssociationCollection.size() - 1);
 				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
-				PermissibleValueInterface permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
+				PermissibleValueInterface permissibleValueInterface = null;
+				try 
+				{
+					permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
+				} 
+				catch (ParseException e)
+				{
+					throw new DynamicExtensionsSystemException("ParseException",e);
+				}
 				formulaParser.setVariableValue(attribute.getCategoryEntity()
 						.getEntity().getName()
 						+ "_"
@@ -111,9 +119,17 @@ public class FormulaCalculator
 
 			value = formulaParser.evaluateExpression();
 		}
-		PermissibleValueInterface permissibleValueInterface = ((AttributeMetadataInterface) categoryAttributeInterface)
-				.getAttributeTypeInformation().getPermissibleValueForString(
-						value.toString());
+		PermissibleValueInterface permissibleValueInterface = null;
+		try 
+		{
+			permissibleValueInterface = ((AttributeMetadataInterface) categoryAttributeInterface)
+					.getAttributeTypeInformation().getPermissibleValueForString(
+							value.toString());
+		} 
+		catch (ParseException e) 
+		{
+			throw new DynamicExtensionsSystemException("ParseException",e);
+		}
 		return permissibleValueInterface.getValueAsObject();
 	}
 
@@ -125,25 +141,30 @@ public class FormulaCalculator
 	 */
 	private void evaluateFormulaForCalulatedAttribute(
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			CategoryAttributeInterface calculatedAttribute,List <Object> values) throws ParseException
+			CategoryAttributeInterface calculatedAttribute,List <Object> values)
 	{
+		if (!values.isEmpty())
+		{
+			return;
+		}
 		Set<Entry<BaseAbstractAttributeInterface, Object>> entries = attributeValueMap.entrySet();
 		for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : entries)
 		{
 			BaseAbstractAttributeInterface attribute = entry.getKey();
-			if (attribute instanceof AttributeMetadataInterface)
+			if (attribute instanceof CategoryAttributeInterface)
 			{
-				if (attribute.equals(calculatedAttribute))
+				CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) attribute;
+				if (categoryAttribute.equals(calculatedAttribute))
 				{
 					String value = (String) entry.getValue();
 					if (value != null && value.length() > 0)
 					{
 						values.add(value);
+						return;
 					}
-					return;
 				}
 			}
-			else if (attribute instanceof AssociationMetadataInterface)
+			else if (attribute instanceof CategoryAssociationInterface)
 			{
 				List <Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry.getValue();
 				for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
@@ -159,40 +180,23 @@ public class FormulaCalculator
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public String setDefaultValueForCalculatedAttributes(CategoryAttributeInterface categoryAttribute,CategoryInterface category,Map<BaseAbstractAttributeInterface, Object> valueMap,boolean isValueDynamic) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	public String setDefaultValueForCalculatedAttributes(CategoryAttributeInterface categoryAttribute,CategoryInterface category) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		StringBuffer message = new StringBuffer("");
 		Object value = null;
-		List <Object> values = new ArrayList <Object>();
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMap = new HashMap <BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
 		FormulaParser formulaParser = getFormulaParser();
 		formulaParser.parseExpression(categoryAttribute.getFormula().getExpression());
 		for (CategoryAttributeInterface calculatedAttribute : categoryAttribute.getCalculatedCategoryAttributeCollection())
 		{
-			if (!isValueDynamic)
+			if (calculatedAttribute.getDefaultValuePermissibleValue() == null)
 			{
-				if (calculatedAttribute.getDefaultValuePermissibleValue() == null)
-				{
-					allCalculatedAttributesPresent = false;
-				}
-				else
-				{
-					attributeValueMap.put(calculatedAttribute, calculatedAttribute.getDefaultValue());
-				}
+				allCalculatedAttributesPresent = false;
 			}
 			else
 			{
-				values.clear();
-				evaluateFormulaForCalulatedAttribute(valueMap,calculatedAttribute,values);
-				if (!values.isEmpty())
-				{
-					attributeValueMap.put(calculatedAttribute, values.get(0));
-				}
-				else
-				{
-					allCalculatedAttributesPresent = false;
-				}
+				attributeValueMap.put(calculatedAttribute, calculatedAttribute.getDefaultValue());
 			}
 		}
 		List<String> errorList = new ArrayList<String>();
@@ -211,7 +215,15 @@ public class FormulaCalculator
 			{
 				CategoryAttributeInterface attribute = (CategoryAttributeInterface) entry.getKey();
 				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
-				PermissibleValueInterface permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
+				PermissibleValueInterface permissibleValueInterface = null;
+				try 
+				{
+					permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
+				} 
+				catch (ParseException e) 
+				{
+					throw new DynamicExtensionsSystemException("ParseException",e);
+				}
 				List<PathAssociationRelationInterface> pathAssociationCollection = attribute.getCategoryEntity()
 				.getPath().getSortedPathAssociationRelationCollection();
 				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
@@ -227,9 +239,17 @@ public class FormulaCalculator
 						permissibleValueInterface.getValueAsObject());
 			}
 			value = formulaParser.evaluateExpression();
-			PermissibleValueInterface defaultValue = ((AttributeMetadataInterface) categoryAttribute)
-					.getAttributeTypeInformation()
-					.getPermissibleValueForString(value.toString());
+			PermissibleValueInterface defaultValue = null;
+			try 
+			{
+				defaultValue = ((AttributeMetadataInterface) categoryAttribute)
+						.getAttributeTypeInformation()
+						.getPermissibleValueForString(value.toString());
+			}
+			catch (ParseException e) 
+			{
+				throw new DynamicExtensionsSystemException("ParseException",e);
+			}
 			categoryAttribute.setDefaultValue(defaultValue);
 		}
 		else if (!errorList.isEmpty())

@@ -562,7 +562,7 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public static void setDefaultValueForCalculatedAttributes(CategoryEntityInterface rootCategoryEntity,Long lineNumber) throws DynamicExtensionsApplicationException, ParseException, DynamicExtensionsSystemException
+	public static void setDefaultValueForCalculatedAttributes(CategoryEntityInterface rootCategoryEntity,Long lineNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
 				.getCategoryAssociationCollection())
@@ -579,7 +579,7 @@ public class CategoryGenerationUtil
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
 							categoryAttributeInterface, rootCategoryEntity
-									.getCategory(),null,false);
+									.getCategory());
 					if (message != null && message.length() > 0)
 					{
 						throw new DynamicExtensionsSystemException(ApplicationProperties

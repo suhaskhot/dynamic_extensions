@@ -58,7 +58,7 @@ public class FormulaCalculator
 	 */
 	public Object evaluateFormula(
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			CategoryAttributeInterface categoryAttributeInterface,CategoryInterface category) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+			CategoryAttributeInterface categoryAttributeInterface,CategoryInterface category,Integer entryNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Object value = null;
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap <BaseAbstractAttributeInterface, Object>();
@@ -69,7 +69,7 @@ public class FormulaCalculator
 		for (CategoryAttributeInterface calculatedAttribute : categoryAttributeInterface.getCalculatedCategoryAttributeCollection())
 		{
 			values.clear();
-			evaluateFormulaForCalulatedAttribute(attributeValueMap,calculatedAttribute,values);
+			evaluateFormulaForCalulatedAttribute(attributeValueMap,calculatedAttribute,values,entryNumber,entryNumber);
 			if (!values.isEmpty())
 			{
 				attributeValueMapForValidation.put(calculatedAttribute, values.get(0));
@@ -141,7 +141,7 @@ public class FormulaCalculator
 	 */
 	private void evaluateFormulaForCalulatedAttribute(
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			CategoryAttributeInterface calculatedAttribute,List <Object> values)
+			CategoryAttributeInterface calculatedAttribute,List <Object> values,Integer entryNumber,Integer mapentryNumber)
 	{
 		if (!values.isEmpty())
 		{
@@ -154,7 +154,7 @@ public class FormulaCalculator
 			if (attribute instanceof CategoryAttributeInterface)
 			{
 				CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) attribute;
-				if (categoryAttribute.equals(calculatedAttribute))
+				if (categoryAttribute.equals(calculatedAttribute) && entryNumber.equals(mapentryNumber))
 				{
 					String value = (String) entry.getValue();
 					if (value != null && value.length() > 0)
@@ -166,10 +166,12 @@ public class FormulaCalculator
 			}
 			else if (attribute instanceof CategoryAssociationInterface)
 			{
+				Integer rowNumber = 0;
 				List <Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry.getValue();
 				for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
 				{
-					evaluateFormulaForCalulatedAttribute(map,calculatedAttribute,values);
+					rowNumber++;
+					evaluateFormulaForCalulatedAttribute(map,calculatedAttribute,values,entryNumber,rowNumber);
 				}
 			}
 		}

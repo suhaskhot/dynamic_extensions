@@ -180,7 +180,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface,Integer rowNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : valueMap.entrySet())
 		{
@@ -197,7 +197,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 							.evaluateFormula(
 									valueMap,
 									categoryAttributeInterface,
-									categoryEntityInterface.getCategory());
+									categoryEntityInterface.getCategory(),rowNumber);
 					if (formulaResultValue != null)
 					{
 						entry.setValue(formulaResultValue.toString());
@@ -207,9 +207,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			else if (attribute instanceof CategoryAssociationInterface)
 			{
 					List <Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry.getValue();
+					Integer entryNumber = 0;
 					for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
 					{
-						populateAttributeValueMapForCalculatedAttributes(map,containerInterface);
+						entryNumber ++;
+						populateAttributeValueMapForCalculatedAttributes(map,containerInterface,entryNumber);
 					}
 			}
 		}
@@ -400,7 +402,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		AbstractEntityInterface abstractEntityInterface = containerInterface.getAbstractEntity();
 		if (abstractEntityInterface instanceof CategoryEntityInterface)
 		{
-			populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface);
+			populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface,0);
 		}
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);

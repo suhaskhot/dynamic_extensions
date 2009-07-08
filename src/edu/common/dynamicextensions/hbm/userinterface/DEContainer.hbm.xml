@@ -104,6 +104,24 @@
             insert="true"
             column="TITLE_CSS"
         />
+        
+        <many-to-one
+            name="baseContainer"
+            class="edu.common.dynamicextensions.domain.userinterface.Container"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="BASE_CONTAINER_ID"
+        />
+
+        <property
+            name="addCaption"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="ADD_CAPTION"
+        />
 
         <!--
             To add non XDoclet property mappings, create a file named

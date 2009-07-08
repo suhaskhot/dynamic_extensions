@@ -839,7 +839,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				FormulaCalculator formulaCalculator = new FormulaCalculator();
 				Object formulaResultValue = formulaCalculator.evaluateFormula(
 						valueMap, catAttribute, catAttribute
-								.getCategoryEntity().getCategory());
+								.getCategoryEntity().getCategory(),1);
 				if (formulaResultValue != null) 
 				{
 					defaultValue = formulaResultValue.toString();

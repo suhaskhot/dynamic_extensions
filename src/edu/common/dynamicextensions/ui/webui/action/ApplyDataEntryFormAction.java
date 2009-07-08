@@ -498,11 +498,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				.getBaseAbstractAttribute();
 		List<Map<BaseAbstractAttributeInterface, Object>> associationValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap
 				.get(abstractAttribute);
-		if(control instanceof AbstractContainmentControlInterface 
-				&& !((AbstractContainmentControlInterface)control).getContainer().getAddCaption())
-		{
-			processOneToMany = true;
-		}
 
 		if (associationValueMapList == null)
 		{

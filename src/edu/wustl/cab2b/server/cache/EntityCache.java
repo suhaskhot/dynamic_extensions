@@ -1,19 +1,16 @@
 
 package edu.wustl.cab2b.server.cache;
 
-import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.cab2b.common.cache.CompareUtil;
 import edu.wustl.cab2b.server.category.CategoryOperations;
-import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
 import edu.wustl.common.querysuite.metadata.category.Category;
 
 /**
@@ -43,15 +40,6 @@ public class EntityCache extends AbstractEntityCache
 			entityCache = new EntityCache();
 		}
 		return (EntityCache) entityCache;
-	}
-
-	/**
-	 * @throws RemoteException 
-	 * @see edu.wustl.cab2b.common.cache.AbstractEntityCache#getSystemGeneratedEntityGroups()
-	 */
-	protected Collection<EntityGroupInterface> getSystemGeneratedEntityGroups() throws RemoteException
-	{
-		return DynamicExtensionUtility.getSystemGeneratedEntityGroups();
 	}
 
 	/**
@@ -129,4 +117,4 @@ public class EntityCache extends AbstractEntityCache
 		return matchedClass;
 	}
 
-	}
+}

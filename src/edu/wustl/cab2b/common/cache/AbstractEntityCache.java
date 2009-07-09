@@ -25,12 +25,15 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
 import edu.wustl.common.querysuite.metadata.category.Category;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.exception.DAOException;
 
 /**
  * This is an abstract class for caching metadata. 
@@ -153,26 +156,44 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 
 	/**
 	 * Refresh the entity cache.
-	 * @throws RemoteException 
 	 */
 	public final void refreshCache()
 	{
 		logger.info("Initializing cache, this may take few minutes...");
 		clearCache();
+
+		HibernateDAO hibernateDAO = null;
 		Collection<EntityGroupInterface> entityGroups = null;
 		List<CategoryInterface> categoryList = null;
 		try
 		{
-			entityGroups = getSystemGeneratedEntityGroups();
-			categoryList = DynamicExtensionUtility.getAllCategories();
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			entityGroups = DynamicExtensionUtility.getSystemGeneratedEntityGroups(hibernateDAO);
+			categoryList = DynamicExtensionUtility.getAllCategories(hibernateDAO);
+			createCache(categoryList, entityGroups);
 		}
-		catch (RemoteException e)
+		catch (DAOException e)
 		{
-			logger.error("Error while collecting caB2B entity groups. Error: " + e.getMessage());
+			logger.error("Error while Creating EntityCache. Error: " + e.getMessage());
+			throw new RuntimeException("Exception encountered while creating EntityCache!!", e);
 		}
-
-		createCache(categoryList, entityGroups);
-
+		finally
+		{
+			if (hibernateDAO != null)
+			{
+				try
+				{
+					DynamicExtensionsUtility.closeHibernateDAO(hibernateDAO);
+				}
+				catch (DAOException e)
+				{
+					logger.error("Exception encountered while closing session In EntityCache."
+							+ e.getMessage());
+					throw new RuntimeException(
+							"Exception encountered while closing session In EntityCache.", e);
+				}
+			}
+		}
 		logger.info("Initializing cache DONE");
 	}
 
@@ -366,7 +387,6 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		}
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see edu.wustl.cab2b.common.cache.IEntityCache#getEntityOnEntityParameters(java.util.Collection)
 	 */
@@ -453,7 +473,6 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 
 	}
 
-	
 	/**
 	 * It will return the EntityGroup With the given id if it present in cache, else will throw the 
 	 * exception.
@@ -738,13 +757,4 @@ public abstract class AbstractEntityCache implements IEntityCache, Serializable
 		return control;
 	}
 
-	/**
-	 * This method returns all the entity groups which are to be cached. 
-	 * These will typically be the metadata entitygroups present is local caB2B database. 
-	 * It should not return entitygroups for data list or experiment
-	 * @return Returns the entity groups
-	 * @throws RemoteException 
-	 */
-	protected abstract Collection<EntityGroupInterface> getSystemGeneratedEntityGroups()
-			throws RemoteException;
 }

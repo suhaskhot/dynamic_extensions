@@ -38,7 +38,6 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -57,6 +56,8 @@ import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.DataType;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.exception.DAOException;
 import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 
 /**
@@ -109,7 +110,7 @@ public class DynamicExtensionUtility
 	 */
 	public static EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroup)
 	{
-		EntityGroupInterface entityGroupObject=null;
+		EntityGroupInterface entityGroupObject = null;
 		try
 		{
 			entityGroupObject = persistEGroup(entityGroup);
@@ -451,8 +452,8 @@ public class DynamicExtensionUtility
 					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
 				}
 				break;
-				
-			default:
+
+			default :
 				Logger.out.info("Data type value not in specified types");
 
 		}
@@ -529,23 +530,17 @@ public class DynamicExtensionUtility
 
 	/**
 	 * Returns Cab2b Entity Groups
+	 * @param hibernateDAO
 	 * @return Cab2b Entity Groups
-	 * @throws RemoteException
+	 * @throws DAOException 
 	 */
-	public static Collection<EntityGroupInterface> getSystemGeneratedEntityGroups() throws RemoteException
+	public static Collection<EntityGroupInterface> getSystemGeneratedEntityGroups(
+			HibernateDAO hibernateDAO) throws DAOException
 	{
 		List<EntityGroupInterface> entityGroups = new ArrayList<EntityGroupInterface>();
-		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		Collection<EntityGroupInterface> allEntityGroups = new HashSet<EntityGroupInterface>();
-		try
-		{
-			allEntityGroups = bizLogic.retrieve(EntityGroupInterface.class.getName());
-		}
-		catch (BizLogicException e)
-		{
-			throw new RemoteException(e.getMessage(),e);
-			
-		}
+		allEntityGroups = hibernateDAO.retrieve(EntityGroupInterface.class.getName());
+
 		for (EntityGroupInterface entityGroup : allEntityGroups)
 		{
 			if (isEntityGroupMetadata(entityGroup))
@@ -558,27 +553,20 @@ public class DynamicExtensionUtility
 
 	/**
 	 * It will retrieve all the categories present in the dataBase.
+	 * @param hibernateDAO
 	 * @return List Of the categories present in the DB.
-	 * @throws RemoteException
+	 * @throws DAOException 
 	 */
-	public static List<CategoryInterface> getAllCategories() throws RemoteException
+	public static List<CategoryInterface> getAllCategories(HibernateDAO hibernateDAO)
+			throws DAOException
 	{
 		Logger.out.info("EntityCache in before GetAll Categories ");
-		AbstractBizLogic bizLogic = BizLogicFactory.getDefaultBizLogic();
 		List<CategoryInterface> categoryList = new ArrayList<CategoryInterface>();
-		try
-		{
-			categoryList = bizLogic.retrieve(CategoryInterface.class.getName());
-		}
-		catch (BizLogicException e)
-		{
-			throw new RemoteException(
-					"Exception occured while creating instance of DynamicExtensionsCacheManager", e);
-
-		}
+		categoryList = hibernateDAO.retrieve(CategoryInterface.class.getName());
 		Logger.out.info("EntityCache in after getAllCategories ");
 		return categoryList;
 	}
+
 	/**
 	 * This method checks if the given entity group is a metadata entity group or not.
 	 * @param entityGroup

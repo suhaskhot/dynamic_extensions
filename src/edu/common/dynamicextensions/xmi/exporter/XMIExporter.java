@@ -2043,8 +2043,7 @@ public class XMIExporter implements XMIExportInterface
 							createTaggedValue(XMIConstants.TAGGED_VALUE_TYPE, entityAttribute
 									.getDataType()));
 			umlAttribute.getTaggedValue().add(
-					createTaggedValue(XMIConstants.TAGGED_VALUE_DESCRIPTION, entityAttribute
-							.getDescription()));
+					createTaggedValue(XMIConstants.TAGGED_VALUE_DESCRIPTION, entityAttribute.getName()));
 
 			if (entityAttribute.getIsPrimaryKey())
 			{

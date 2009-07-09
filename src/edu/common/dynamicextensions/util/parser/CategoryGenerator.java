@@ -14,11 +14,13 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.TextField;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
@@ -675,11 +677,17 @@ public class CategoryGenerator
 		}
 		catch (DynamicExtensionsSystemException ex)
 		{
-			throw new DynamicExtensionsApplicationException(ApplicationProperties
-					.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-					+ categoryFileParser.getLineNumber()
-					+ defaultValue + " formula defined is not valid.",ex);
+			throw new DynamicExtensionsApplicationException(
+					ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber()
+							+ categoryAttribute.getAbstractAttribute()
+									.getName()
+							+ ApplicationProperties
+									.getValue("incorrectFormulaCalculatedAttribute")
+							+ defaultValue, ex);
 		}
 		if (isValidFormula)
 		{
@@ -1053,16 +1061,33 @@ public class CategoryGenerator
 			{
 				if (control instanceof TextField)
 				{
-					setFormula(categoryAttribute,defaultValue);
+					if (((AttributeMetadataInterface)categoryAttribute).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation)
+					{
+						setFormula(categoryAttribute,defaultValue);
+					}
+					else
+					{
+						throw new DynamicExtensionsSystemException(
+								ApplicationProperties
+										.getValue(CategoryConstants.CREATE_CAT_FAILS)
+										+ " "
+										+ ApplicationProperties
+												.getValue("incorrectDataTypeCalculatedAttribute")
+										+ attributeName);
+					}
 				}
 				else
 				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber()
-							+ " "
-							+ "UI control type should be textField for the attribute " + attributeName);
+					throw new DynamicExtensionsSystemException(
+							ApplicationProperties
+									.getValue(CategoryConstants.CREATE_CAT_FAILS)
+									+ ApplicationProperties
+											.getValue(CategoryConstants.LINE_NUMBER)
+									+ categoryFileParser.getLineNumber()
+									+ " "
+									+ ApplicationProperties
+											.getValue("incorrectControlTypeCalculatedAttribute")
+									+ attributeName);
 				}
 			}
 			else

@@ -10,8 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -662,31 +664,62 @@ public class CategoryGenerationUtil
 					}
 					catch (NumberFormatException e) 
 					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties
-								.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ " "
-								+ names + " attibute is not defined correctly in the formula "+  categoryAttribute.getFormula().getExpression());
+						throw new DynamicExtensionsSystemException(
+								ApplicationProperties
+										.getValue(CategoryConstants.CREATE_CAT_FAILS)
+										+ " "
+										+ names
+										+ ApplicationProperties
+												.getValue("incorrectFormulaSyntaxCalculatedAttribute")
+										+ categoryAttribute.getFormula()
+												.getExpression());
+						
 					}
 					CategoryGenerationUtil.getCategoryAttribute(names[0], Long.valueOf(names[1]), names[2],
 							categoryInterface.getRootCategoryElement(), attributes);
 					if (attributes.isEmpty())
 					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties
-								.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ " "
-								+ names[0]+ "_" + names[1] + "_" + names[2] + " attibute is not defined for the formula "+  categoryAttribute.getFormula().getExpression());
+						throw new DynamicExtensionsSystemException(
+								ApplicationProperties
+										.getValue(CategoryConstants.CREATE_CAT_FAILS)
+										+ " "
+										+ names
+										+ ApplicationProperties
+												.getValue("incorrectFormulaSyntaxCalculatedAttribute")
+										+ categoryAttribute.getFormula()
+												.getExpression());
 					}
 					else
 					{
-						categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
+						if (((AttributeMetadataInterface) attributes.get(0)).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation)
+						{
+							categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
+						}
+						else
+						{
+							throw new DynamicExtensionsSystemException(
+									ApplicationProperties
+											.getValue(CategoryConstants.CREATE_CAT_FAILS)
+											+ " "
+											+ names
+											+ ApplicationProperties
+													.getValue("incorrectDataTypeForCalculatedAttribute")
+											+ categoryAttribute.getFormula()
+													.getExpression());
+						}
 					}
 				}
 				else
 				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ " "
-							+ names + " attibute is not defined correctly in the formula "+  categoryAttribute.getFormula().getExpression());
+					throw new DynamicExtensionsSystemException(
+							ApplicationProperties
+									.getValue(CategoryConstants.CREATE_CAT_FAILS)
+									+ " "
+									+ names
+									+ ApplicationProperties
+											.getValue("incorrectFormulaSyntaxCalculatedAttribute")
+									+ categoryAttribute.getFormula()
+											.getExpression());
 				}
 			}
 		}

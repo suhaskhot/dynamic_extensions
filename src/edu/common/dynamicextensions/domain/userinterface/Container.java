@@ -474,14 +474,14 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public String generateControlsHTML() throws DynamicExtensionsSystemException
 	{
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer stringBuffer = new StringBuffer(); 
 
 		if (addCaption)
 		{
 			addCaption(stringBuffer);
 		}
 
-		List<ControlInterface> controlsList = getAllControlsUnderSameDisplayLabel();
+		List<ControlInterface> controlsList = getAllControls(); //UnderSameDisplayLabel();
 		int lastRow = 0;
 		int i = 0;
 

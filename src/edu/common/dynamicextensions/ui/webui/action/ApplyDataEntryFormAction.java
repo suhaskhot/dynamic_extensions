@@ -81,15 +81,15 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		ActionForward actionForward = null;
 		boolean isCallbackURL = false;
 		List<String> errorList = null;
-
+ 
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
 				.getObjectFromCache(request, DEConstants.CONTAINER_STACK);
 		Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack = (Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
 				.getObjectFromCache(request, DEConstants.VALUE_MAP_STACK);
 		if ((containerStack != null && !containerStack.isEmpty())
 				&& (valueMapStack != null || !valueMapStack.isEmpty()))
-		{
-			removeExtraAttribtes(containerStack.peek(), valueMapStack);
+		{   
+			//removeExtraAttribtes(containerStack.peek(), valueMapStack);
 			try
 			{
 				DataEntryForm dataEntryForm = (DataEntryForm) form;
@@ -509,7 +509,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			AbstractContainmentControlInterface associationControlInterface = (AbstractContainmentControlInterface) control;
 			ContainerInterface targetContainer = ((AbstractContainmentControlInterface) control)
 					.getContainer();
-			if (associationControlInterface.isCardinalityOneToMany() && associationControlInterface.getContainer().getAddCaption())
+			if (associationControlInterface.isCardinalityOneToMany())
 			{
 				associationValueMapList = collectOneToManyContainmentValues(request, dataEntryForm,
 						targetContainer.getId().toString(), control, associationValueMapList);

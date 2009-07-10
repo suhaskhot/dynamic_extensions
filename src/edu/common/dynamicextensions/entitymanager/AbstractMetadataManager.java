@@ -132,6 +132,41 @@ public abstract class AbstractMetadataManager
 	}
 
 	/**
+	 * This method takes the class name, object name and returns the object.
+	 * @param className class name
+	 * @param objectName objectName
+	 * @return DynamicExtensionBaseDomainObjectInterface
+	 */
+	public DynamicExtensionBaseDomainObjectInterface getObjectByName(String className,
+			String objectName, HibernateDAO hibernateDao) throws DynamicExtensionsSystemException
+	{
+		DynamicExtensionBaseDomainObjectInterface dyExtBsDmnObj = null;
+
+		if (objectName == null || objectName.equals(""))
+		{
+			return dyExtBsDmnObj;
+		}
+
+		List objects = new ArrayList();
+
+		try
+		{
+			objects = hibernateDao.retrieve(className, "name", objectName);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+
+		if (objects != null && !objects.isEmpty())
+		{
+			dyExtBsDmnObj = (DynamicExtensionBaseDomainObjectInterface) objects.get(0);
+		}
+
+		return dyExtBsDmnObj;
+	}
+
+	/**
 	 * Returns all instances in the whole system for a given type of the object
 	 * @param objectName
 	 * @return
@@ -370,16 +405,18 @@ public abstract class AbstractMetadataManager
 	protected Collection executeHQL(HibernateDAO hibernateDAO, String queryName,
 			Map<String, NamedQueryParam> substParams) throws DynamicExtensionsSystemException
 	{
-		Collection entities;
+		Collection deObjects;
+
 		try
 		{
-			entities = hibernateDAO.executeNamedQuery(queryName, substParams);
+			deObjects = hibernateDAO.executeNamedQuery(queryName, substParams);
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e, DYEXTN_S_001);
 		}
-		return entities;
+
+		return deObjects;
 	}
 
 	/**
@@ -625,6 +662,7 @@ public abstract class AbstractMetadataManager
 				}
 			}
 		}
+
 		return queries;
 	}
 

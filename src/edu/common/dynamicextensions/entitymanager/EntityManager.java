@@ -335,6 +335,34 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	}
 
 	/**
+	 * Returns a collection of association objects given the source entity id and
+	 * target entity id.
+	 * @param srcEntityId
+	 * @param tgtEntityId
+	 * @param hibernatedao
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<AssociationInterface> getAssociations(Long srcEntityId, Long tgtEntityId,
+			HibernateDAO hibernatedao) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		// Create a map of substitution parameters.
+		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+		substParams.put("0", new NamedQueryParam(DBTypes.LONG, srcEntityId));
+		substParams.put("1", new NamedQueryParam(DBTypes.LONG, tgtEntityId));
+
+		// Following method is called to execute the stored HQL, the name of which is given as 
+		// the first parameter. The second parameter is the map which contains the actual values 
+		// that are replaced for the place holders.
+		Collection<AssociationInterface> associations = executeHQL(hibernatedao, "getAssociations",
+				substParams);
+
+		return associations;
+	}
+
+	/**
 	 * Returns a collection of association identifiers given the source entity id and
 	 * target entity id.
 	 * @param srcEntityId source entity Id
@@ -371,6 +399,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	{
 		EntityInterface entity = (EntityInterface) getObjectByName(Entity.class.getName(),
 				entityName);
+
+		return entity;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByName(java.lang.String, edu.wustl.dao.HibernateDAO)
+	 */
+	public EntityInterface getEntityByName(String entityName, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		EntityInterface entity = (EntityInterface) getObjectByName(Entity.class.getName(),
+				entityName, hibernateDAO);
 
 		return entity;
 	}

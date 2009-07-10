@@ -362,7 +362,10 @@ public class XMIImportProcessor
 		}
 		processDataModel(umlPackage, packageName, xmiConfigurationObject.getSkipEntityNames(),
 				xmiConfigurationObject.getDefaultPackagePrefix());
-		//Persist container in DB
+
+		// Persist container in DB.
+		Logger.out.info("Now creating DE tables....");
+		Logger.out.info(" ");
 		processPersistence(containerNames, xmiConfigurationObject.isEntityGroupSystemGenerated(),
 				xmiConfigurationObject.isCreateTable(), xmiConfigurationObject.isDefaultPackage(),
 				xmiConfigurationObject.getDefaultPackagePrefix());
@@ -387,7 +390,8 @@ public class XMIImportProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void addAssociation(List<UmlAssociation> umlAssociationColl, Map<String, List<String>> parentIdVsChildrenIds)
+	private void addAssociation(List<UmlAssociation> umlAssociationColl,
+			Map<String, List<String>> parentIdVsChildrenIds)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		HibernateDAO hibernateDao = null;
@@ -409,7 +413,7 @@ public class XMIImportProcessor
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception encountered while populating constraint properties for entity.",e);
+					"Exception encountered while populating constraint properties for entity.", e);
 		}
 		finally
 		{
@@ -420,7 +424,7 @@ public class XMIImportProcessor
 			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(
-						"Exception encountered while closing session.",e);
+						"Exception encountered while closing session.", e);
 			}
 		}
 
@@ -625,10 +629,12 @@ public class XMIImportProcessor
 		entityGroupColl = defaultBizLogic.retrieve(EntityGroup.class.getName(),
 				edu.common.dynamicextensions.ui.util.Constants.NAME, entityGroupName);
 		Logger.out.info(" ");
+		Logger.out.info(" ");
 		Logger.out.info("#################################");
 		Logger.out.info("##   EntityGroup present = " + (entityGroupColl.size() > 0 ? "Y" : "N")
 				+ "   ##");
 		Logger.out.info("#################################");
+		Logger.out.info(" ");
 		Logger.out.info(" ");
 
 		return entityGroupColl;
@@ -715,6 +721,7 @@ public class XMIImportProcessor
 			Collection ownedElementColl = model.getOwnedElement();
 			Logger.out.info(" ");
 			Logger.out.info("MODEL OWNED ELEMENT COLLECTION SIZE = " + ownedElementColl.size());
+			Logger.out.info(" ");
 			Logger.out.info(" ");
 			Iterator iter = ownedElementColl.iterator();
 
@@ -1006,7 +1013,7 @@ public class XMIImportProcessor
 						entity.addAttribute(attribute);
 					}
 				}
-				originalAttribute=attribute;
+				originalAttribute = attribute;
 			}
 			else
 			{//Attribute has been edited
@@ -2960,8 +2967,8 @@ public class XMIImportProcessor
 					.getAttributeTypeInformation();
 			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) attributeTypeInformation
 					.getDataElement();
-			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.SYSTEM_IDENTIFIER)
-					&& xmiConfigurationObject.isAddIdAttribute()))
+			if (!(attributeInterface.getName().equalsIgnoreCase(Constants.SYSTEM_IDENTIFIER) && xmiConfigurationObject
+					.isAddIdAttribute()))
 			{
 				Map<String, String> taggedValueMap = attrVsMapTagValues.get(attributeInterface);
 				if (userDefinedDEInterface != null
@@ -3841,5 +3848,5 @@ public class XMIImportProcessor
 		Set<String> attributeColl = (Set<String>) addAttributes(umlClass, entity);
 		entityNameVsAttributeNames.put(entity.getName(), attributeColl);
 	}
-	
+
 }

@@ -68,6 +68,20 @@ public interface EntityManagerInterface
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
+	 * Returns a collection of association objects given the source entity id and
+	 * target entity id.
+	 * @param srcEntityId
+	 * @param tgtEntityId
+	 * @param hibernatedao
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public Collection<AssociationInterface> getAssociations(Long srcEntityId, Long tgtEntityId,
+			HibernateDAO hibernatedao) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
+
+	/**
 	 * Returns a collection of association ids given the source entity id and
 	 * target entity id.
 	 * @param sourceEntityId
@@ -88,6 +102,16 @@ public interface EntityManagerInterface
 	 */
 	EntityInterface getEntityByName(String entityName) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
+
+	/**
+	 * @param entityName
+	 * @param hibernateDAO
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	EntityInterface getEntityByName(String entityName, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * Returns an association object given the entity name and source role name.

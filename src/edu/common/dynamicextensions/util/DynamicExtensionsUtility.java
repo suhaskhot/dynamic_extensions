@@ -1419,35 +1419,6 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method sets the source entity key or target entity key as null depending upon
-	 * whether the association is one-to-one, one-to-many or many-to-one.
-	 * @param association
-	 * @return ConstraintPropertiesInterface
-	 */
-	public static ConstraintPropertiesInterface getConstraintProperties(
-			AssociationInterface association)
-	{
-		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
-
-		if (association.getSourceRole().getMaximumCardinality() == Cardinality.MANY
-				&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
-		{
-			constraintProperties.getTgtEntityConstraintKeyProperties()
-					.getTgtForiegnKeyColumnProperties().setName(null);
-		}
-		else if (association.getSourceRole().getMaximumCardinality() == Cardinality.ONE
-				&& association.getTargetRole().getMaximumCardinality() == Cardinality.MANY
-				|| association.getSourceRole().getMaximumCardinality() == Cardinality.ONE
-				&& association.getTargetRole().getMaximumCardinality() == Cardinality.ONE)
-		{
-			constraintProperties.getSrcEntityConstraintKeyProperties()
-					.getTgtForiegnKeyColumnProperties().setName(null);
-		}
-
-		return constraintProperties;
-	}
-
-	/**
 	 * This method populates the constraint properties for the childEntity 
 	 * @param childEntity whose constraint properties is to be updated
 	 * @param isAddColumnForInheritance 

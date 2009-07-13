@@ -226,7 +226,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				populateAssociation(userSelectedControlName, associationInterface,
 						attributeUIBeanInformationIntf, entityGroup);
 				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-						.getConstraintProperties(associationInterface);
+						.getConstraintPropertiesForAssociation(associationInterface);
 				associationInterface.setConstraintProperties(constraintProperties);
 			}
 			//populate information specific to attribute type
@@ -2255,7 +2255,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					populateAssociation(userSelectedControlName, associationInterface,
 							attributeUIBeanInformation, entityGroup);
 					ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-							.getConstraintProperties(associationInterface);
+							.getConstraintPropertiesForAssociation(associationInterface);
 					associationInterface.setConstraintProperties(constraintProperties);
 				}
 			}

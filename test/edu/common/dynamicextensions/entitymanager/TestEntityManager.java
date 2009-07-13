@@ -4425,7 +4425,7 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 				association.setTargetRole(getRole(AssociationType.CONTAINTMENT, subForm.getName(),
 						Cardinality.ONE, Cardinality.MANY));
 				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-						.getConstraintProperties(association);
+						.getConstraintPropertiesForAssociation(association);
 				association.setConstraintProperties(constraintProperties);
 				mainForm.addAssociation(association);
 				DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
@@ -4484,12 +4484,10 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 						Cardinality.ONE, Cardinality.ONE));
 				association.setTargetRole(getRole(AssociationType.CONTAINTMENT, subForm.getName(),
 						Cardinality.ONE, Cardinality.MANY));
-				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-						.getConstraintProperties(association);
-				association.setConstraintProperties(constraintProperties);
-
 				mainForm.addAssociation(association);
-				DynamicExtensionsUtility.getConstraintPropertiesForAssociation(association);
+				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
+						.getConstraintPropertiesForAssociation(association);
+				association.setConstraintProperties(constraintProperties);
 
 				entityManager.persistEntity(mainForm);
 

@@ -215,7 +215,7 @@ public class ApplyFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 				targetCardinality));
 		sourceEntity.addAssociation(association);
 		ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-				.getConstraintProperties(association);
+				.getConstraintPropertiesForAssociation(association);
 		association.setConstraintProperties(constraintProperties);
 
 		return association;

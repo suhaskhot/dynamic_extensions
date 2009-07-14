@@ -1,7 +1,10 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.text.ParseException;
+
 import edu.common.dynamicextensions.domaininterface.NumericTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author Rahul Ner
@@ -96,4 +99,13 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	{
 		this.digits = digits;
 	}
+	
+	/**
+	 *
+	 * @param value
+	 * @return
+	 * @throws ParseException
+	 */
+	public abstract PermissibleValueInterface getPermissibleValue(Double value)
+			throws ParseException;
 }

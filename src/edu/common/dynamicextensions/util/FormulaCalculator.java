@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
@@ -67,6 +68,7 @@ public class FormulaCalculator
 	{
 		Date dateValue = null;
 		Object value = null;
+		Double formulaValue = null;
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap <BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
 		List <Object> values = new ArrayList <Object>();
@@ -150,27 +152,31 @@ public class FormulaCalculator
 				}
 			}
 
-			value = formulaParser.evaluateExpression();
+			formulaValue = formulaParser.evaluateExpression();
 		}
+
 		if (((AttributeMetadataInterface) categoryAttributeInterface)
 				.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 		{
-			dateValue.setDate(Integer.valueOf(value.toString()));
-			value = new SimpleDateFormat(
-					ControlsUtility
-							.getDateFormat(((AttributeMetadataInterface) categoryAttributeInterface)
-									.getAttributeTypeInformation()),
-					CommonServiceLocator.getInstance().getDefaultLocale())
-					.format(dateValue);
+			if (formulaValue != null && dateValue != null)
+			{
+				dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
+				value = new SimpleDateFormat(
+						ControlsUtility
+								.getDateFormat(((AttributeMetadataInterface) categoryAttributeInterface)
+										.getAttributeTypeInformation()),
+						CommonServiceLocator.getInstance().getDefaultLocale())
+						.format(dateValue);
+			}
 		}
 		else
 		{
 			PermissibleValueInterface permissibleValueInterface = null;
 			try 
 			{
-				permissibleValueInterface = ((AttributeMetadataInterface) categoryAttributeInterface)
-						.getAttributeTypeInformation().getPermissibleValueForString(
-								value.toString());
+				permissibleValueInterface = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttributeInterface)
+						.getAttributeTypeInformation())
+						.getPermissibleValue(formulaValue);
 			} 
 			catch (ParseException e) 
 			{

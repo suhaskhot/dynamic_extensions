@@ -36,5 +36,11 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 
 		return floatValue;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValue(Double value)
+	{
+		return getPermissibleValueForString(Float.valueOf(value.floatValue()).toString());
+	}
 }

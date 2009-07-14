@@ -36,5 +36,12 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 
 		return integerValue;
 	}
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValue(Double value)
+	{
+		return getPermissibleValueForString(Integer.valueOf(value.intValue()).toString());
+	}
 
 }

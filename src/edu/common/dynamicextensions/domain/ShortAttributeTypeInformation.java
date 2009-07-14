@@ -37,5 +37,11 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 
 		return shortValue;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValue(Double value)
+	{
+		return getPermissibleValueForString(Short.valueOf(value.shortValue()).toString());
+	}
 }

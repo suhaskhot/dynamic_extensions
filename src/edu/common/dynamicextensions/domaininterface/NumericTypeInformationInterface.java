@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+import java.text.ParseException;
+
 /**
  * This is a primitive attribute of type integer.Using this information a column of type integer is prepared.
  * @author geetika_bangard
@@ -45,4 +47,11 @@ public interface NumericTypeInformationInterface extends AttributeTypeInformatio
 	 * @param digits the length of the number in digits.
 	 */
 	void setDigits(Integer digits);
+	/**
+	 *
+	 * @param value
+	 * @return
+	 * @throws ParseException
+	 */
+	PermissibleValueInterface getPermissibleValue(Double value) throws ParseException;
 }

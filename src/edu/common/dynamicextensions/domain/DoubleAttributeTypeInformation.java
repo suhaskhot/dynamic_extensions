@@ -42,5 +42,11 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 
 		return doubleValue;
 	}
-
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getPermissibleValue(Double value)
+	{
+		return getPermissibleValueForString(value.toString());
+	}
 }

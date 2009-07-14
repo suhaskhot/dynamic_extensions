@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -691,7 +692,8 @@ public class CategoryGenerationUtil
 					}
 					else
 					{
-						if (((AttributeMetadataInterface) attributes.get(0)).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation)
+						if (((AttributeMetadataInterface) attributes.get(0)).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation
+								|| ((AttributeMetadataInterface) attributes.get(0)).getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 						{
 							categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
 						}

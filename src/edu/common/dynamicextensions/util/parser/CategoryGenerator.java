@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
+import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
@@ -1061,7 +1062,10 @@ public class CategoryGenerator
 			{
 				if (control instanceof TextField)
 				{
-					if (((AttributeMetadataInterface)categoryAttribute).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation)
+					if (((AttributeMetadataInterface) categoryAttribute)
+							.getAttributeTypeInformation() instanceof NumericAttributeTypeInformation
+							|| ((AttributeMetadataInterface) categoryAttribute)
+									.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 					{
 						setFormula(categoryAttribute,defaultValue);
 					}

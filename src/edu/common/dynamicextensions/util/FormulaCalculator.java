@@ -153,34 +153,37 @@ public class FormulaCalculator
 			}
 
 			formulaValue = formulaParser.evaluateExpression();
-			if (((AttributeMetadataInterface) categoryAttributeInterface)
-					.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+			if (formulaValue != null)
 			{
-				if (formulaValue != null && dateValue != null)
+				if (((AttributeMetadataInterface) categoryAttributeInterface)
+						.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
-					value = new SimpleDateFormat(
-							ControlsUtility
-									.getDateFormat(((AttributeMetadataInterface) categoryAttributeInterface)
-											.getAttributeTypeInformation()),
-							CommonServiceLocator.getInstance().getDefaultLocale())
-							.format(dateValue);
+					if (dateValue != null)
+					{
+						dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
+						value = new SimpleDateFormat(
+								ControlsUtility
+										.getDateFormat(((AttributeMetadataInterface) categoryAttributeInterface)
+												.getAttributeTypeInformation()),
+								CommonServiceLocator.getInstance().getDefaultLocale())
+								.format(dateValue);
+					}
 				}
-			}
-			else
-			{
-				PermissibleValueInterface permissibleValueInterface = null;
-				try 
+				else
 				{
-					permissibleValueInterface = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttributeInterface)
-							.getAttributeTypeInformation())
-							.getPermissibleValue(formulaValue);
-				} 
-				catch (ParseException e) 
-				{
-					throw new DynamicExtensionsSystemException("ParseException",e);
+					PermissibleValueInterface permissibleValueInterface = null;
+					try 
+					{
+						permissibleValueInterface = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttributeInterface)
+								.getAttributeTypeInformation())
+								.getPermissibleValue(formulaValue);
+					} 
+					catch (ParseException e) 
+					{
+						throw new DynamicExtensionsSystemException("ParseException",e);
+					}
+					value = permissibleValueInterface.getValueAsObject();
 				}
-				value = permissibleValueInterface.getValueAsObject();
 			}
 		}
 		return value;

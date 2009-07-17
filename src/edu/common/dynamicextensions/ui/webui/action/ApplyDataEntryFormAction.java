@@ -211,7 +211,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
 					{
 						entryNumber ++;
-						populateAttributeValueMapForCalculatedAttributes(map,containerInterface,entryNumber);
+						populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface,entryNumber);
 					}
 			}
 		}

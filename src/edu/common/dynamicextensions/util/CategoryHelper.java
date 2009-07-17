@@ -22,6 +22,7 @@ import edu.common.dynamicextensions.domain.PermissibleValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domain.userinterface.ComboBox;
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.Label;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -130,12 +131,12 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY",e);
+			throw new DynamicExtensionsSystemException("ERROR WHILE SAVING A CATEGORY", e);
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
 
-			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY",e);
+			throw new DynamicExtensionsApplicationException("ERROR WHILE SAVING A CATEGORY", e);
 		}
 	}
 
@@ -1625,4 +1626,55 @@ public class CategoryHelper implements CategoryHelperInterface
 		return controlInterface;
 	}
 
+	/**
+	 * @param category
+	 * @param entityGroup
+	 * @param sourceContainer
+	 * @param targetContainer
+	 * @param associationList
+	 * @param noOfEntries
+	 * @param instance
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	public void addChildContainers(CategoryInterface category, EntityGroupInterface entityGroup,
+			ContainerInterface sourceContainer, ContainerInterface targetContainer,
+			List<AssociationInterface> associationList, int noOfEntries, String instance)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+
+		if (!sourceContainer.getChildContainerCollection().contains(targetContainer))
+		{
+			CategoryEntityInterface sourceCategoryEntity = (CategoryEntityInterface) sourceContainer
+					.getAbstractEntity();
+			CategoryEntityInterface targetCategoryEntity = (CategoryEntityInterface) targetContainer
+					.getAbstractEntity();
+
+			CategoryAssociationInterface categoryAssociation = associateCategoryEntities(
+					sourceCategoryEntity, targetCategoryEntity, sourceCategoryEntity.getName()
+							+ " to " + targetCategoryEntity.getName() + " category association", 1,
+					entityGroup, associationList, instance);
+
+			sourceContainer.getChildContainerCollection().add(targetContainer);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.CategoryHelperInterface#removeAllSeprators(edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface)
+	 */
+	public void removeAllSeprators(ContainerInterface temp)
+	{
+		Collection<ControlInterface> collection = temp.getAllControls();
+		Iterator<ControlInterface> iterator = collection.iterator();
+		while (iterator.hasNext())
+		{
+			ControlInterface controlInterface = iterator.next();
+			if (controlInterface instanceof Label)
+			{
+				controlInterface.setParentContainer(null);
+				temp.getControlCollection().remove(controlInterface);
+			}
+		}
+
+	}
 }

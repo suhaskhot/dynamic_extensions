@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -510,6 +512,25 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	public void setCreateTable(Boolean isTableCreated)
 	{
 		this.isCreateTable = isTableCreated;
+	}
+
+	/**
+	 * @param targetEntity
+	 * @return
+	 */
+	public AssociationMetadataInterface getAssociation(AbstractEntityInterface targetEntity)
+	{
+		CategoryAssociationInterface association = null;
+		for (CategoryAssociationInterface associationInterface : this.
+				getCategoryAssociationCollection())
+		{
+			if (associationInterface.getTargetCategoryEntity().getName().equals(
+					targetEntity.getName()))
+			{
+				association = associationInterface;
+			}
+		}
+		return association;
 	}
 
 }

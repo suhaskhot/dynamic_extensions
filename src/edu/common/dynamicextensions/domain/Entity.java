@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -867,4 +869,22 @@ public class Entity extends AbstractEntity implements EntityInterface
 		DynamicExtensionsUtility.getConstraintKeyPropertiesForInheritance(this,
 				isAddColumnForInheritance);
 	}
+
+	/**
+	 * @param targetEntity
+	 * @return
+	 */
+	public AssociationMetadataInterface getAssociation(AbstractEntityInterface targetEntity)
+	{
+		AssociationInterface association = null;
+		for (AssociationInterface associationInterface : this.getAssociationCollection())
+		{
+			if (associationInterface.getTargetEntity().getName().equals(targetEntity.getName()))
+			{
+				association = associationInterface;
+			}
+		}
+		return association;
+	}
+
 }

@@ -61,4 +61,9 @@ public interface AbstractEntityInterface extends AbstractMetadataInterface
 	 */
 	void setConsraintProperties(ConstraintPropertiesInterface constraintProperties);
 
+	/**
+	 * @param targetEntity
+	 * @return
+	 */
+	public AssociationMetadataInterface getAssociation(AbstractEntityInterface targetEntity);
 }

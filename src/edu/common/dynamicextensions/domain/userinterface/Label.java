@@ -22,7 +22,7 @@ public class Label extends Control implements LabelInterface
 	 */
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		return "<b>" + caption + "</b>";
+		return "<div style='float:left'><b>" + caption + "</b></div>";
 	}
 
 	/* (non-Javadoc)

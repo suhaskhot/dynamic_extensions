@@ -349,8 +349,11 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 
 		if (this.showLabel != null && this.showLabel)
 		{
+			stringBuffer.append("<div style='float:left'>");
 			stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
 					.getCaption()));
+			stringBuffer.append("</div>");
+			
 		}
 
 		if (this.yPosition != null && this.yPosition <= 1)
@@ -359,9 +362,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		}
 		else if (this.showLabel != null && this.showLabel)
 		{
-			stringBuffer.append("&nbsp;");
+			stringBuffer.append("<div style='float:left'>&nbsp;</div>");
+		
 		}
+		stringBuffer.append("<div style='float:left'>");
 		stringBuffer.append(htmlString);
+		stringBuffer.append("</div>");
+		
 
 		return stringBuffer.toString();
 	}

@@ -724,23 +724,4 @@ public class CategoryValidator
 		return isValid;
 
 	}
-
-	/**
-	 * @param categoryPaths
-	 * @param showCaption
-	 * @throws DynamicExtensionsSystemException
-	 */
-	public void validateContainersUnderSameDisplayLabel(String[] categoryPaths, Boolean showCaption)
-			throws DynamicExtensionsSystemException
-	{
-
-		if (categoryPaths.length > 1 && !showCaption)
-		{
-			throw new DynamicExtensionsSystemException(getErrorMessageStart()
-					+ ApplicationProperties
-							.getValue("dyExtn.category.validation.containersUnderSameDisplayLabel"));
-		}
-
-	}
-
 }

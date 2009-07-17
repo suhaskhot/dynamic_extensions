@@ -108,6 +108,26 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 	private Boolean addCaption = true;
 
+	private Collection<ContainerInterface> childContainerCollection = new HashSet<ContainerInterface>();
+
+	/**
+	 * @hibernate.set name="childContainerCollection" table="DYEXTN_CONTAINER"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="PARENT_CONTAINER_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.userinterface.Container"
+	 * @return the childCategories
+	 */
+	public Collection<ContainerInterface> getChildContainerCollection()
+	{
+		return childContainerCollection;
+	}
+
+	public void setChildContainerCollection(Collection<ContainerInterface> childContainerCollection)
+	{
+		this.childContainerCollection = childContainerCollection;
+	}
+
 	/**
 	 * @return
 	 */
@@ -362,18 +382,9 @@ public class Container extends DynamicExtensionBaseDomainObject
 	{
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
 				.getControlCollection());
-		for (ControlInterface controlInterface : getControlCollection())
+		for (ContainerInterface containerInterface : childContainerCollection)
 		{
-			if (controlInterface instanceof AbstractContainmentControl)
-			{
-				if (!((AbstractContainmentControl) controlInterface).getContainer().getAddCaption())
-				{
-					controlsList.remove(controlInterface);
-					updateValueMap(controlInterface);
-					controlsList.addAll(((AbstractContainmentControl) controlInterface)
-							.getContainer().getControlCollection());
-				}
-			}
+			controlsList.addAll(containerInterface.getAllControls());
 		}
 
 		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
@@ -474,35 +485,37 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public String generateControlsHTML() throws DynamicExtensionsSystemException
 	{
-		StringBuffer stringBuffer = new StringBuffer(); 
+		StringBuffer stringBuffer = new StringBuffer();
 
 		if (addCaption)
 		{
 			addCaption(stringBuffer);
 		}
 
-		List<ControlInterface> controlsList = getAllControls(); //UnderSameDisplayLabel();
+		List<ControlInterface> controlsList = getAllControlsUnderSameDisplayLabel(); //UnderSameDisplayLabel();
 		int lastRow = 0;
 		int i = 0;
 
 		for (ControlInterface control : controlsList)
 		{
-
 			Object value = containerValueMap.get(control.getBaseAbstractAttribute());
 			control.setValue(value);
 			if (lastRow == control.getSequenceNumber())
 			{
-				stringBuffer.append("&nbsp;");
+				stringBuffer.append("<div style='float:left'>&nbsp;");
+				stringBuffer.append("</div>");
 			}
 			else
 			{
 				if (i != 0)
 				{
-					stringBuffer.append("</td></tr><tr><td height='3'></td></tr>");
+					stringBuffer.append("</td></tr><tr><td height='7'></td></tr>");
 				}
 				stringBuffer.append("<tr valign='center'>");
 			}
+
 			stringBuffer.append(control.generateHTML());
+
 			i++;
 			lastRow = control.getSequenceNumber();
 

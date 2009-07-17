@@ -15,7 +15,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection
  * @author sujay_narkar
  *
  */
-public interface AssociationInterface extends AbstractAttributeInterface
+public interface AssociationInterface extends AbstractAttributeInterface,AssociationMetadataInterface
 {
 
 	/**

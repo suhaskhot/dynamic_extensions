@@ -645,7 +645,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					.getContainerByIdentifier(formId);
 			if (container != null)
 			{
-				Collection<ControlInterface> controlCollection = container.getAllControls();
+				Collection<ControlInterface> controlCollection = container.getAllControlsUnderSameDisplayLabel();
 				if (controlCollection != null)
 				{
 					NameValueBean controlName = null;

@@ -8,7 +8,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
  * @author sujay_narkar
  *
  */
-public interface CategoryAssociationInterface extends BaseAbstractAttributeInterface
+public interface CategoryAssociationInterface extends BaseAbstractAttributeInterface,AssociationMetadataInterface
 {
 
 	/**

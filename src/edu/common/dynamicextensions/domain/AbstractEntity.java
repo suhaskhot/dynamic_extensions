@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
+import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -183,5 +184,10 @@ public abstract class AbstractEntity extends AbstractMetadata implements Abstrac
 	{
 		containerCollection.add(containerInterface);
 	}
+	
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AbstractEntityInterface#getAssociation(edu.common.dynamicextensions.domaininterface.AbstractEntityInterface)
+	 */
+	public abstract AssociationMetadataInterface getAssociation(AbstractEntityInterface targetEntity);
 
 }

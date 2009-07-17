@@ -230,5 +230,14 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @return
 	 */
 	ControlInterface getControlByPosition(Integer xPosition, Integer yPosition);
-
+	
+	/**
+	 * @return
+	 */
+	public List<ControlInterface> getAllControlsUnderSameDisplayLabel();
+	
+	/**
+	 * @return
+	 */
+	public Collection<ContainerInterface> getChildContainerCollection() ;
 }

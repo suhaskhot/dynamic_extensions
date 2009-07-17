@@ -54,6 +54,8 @@ public class CategoryGenerator
 
 	private CategoryValidator categoryValidator;
 
+	private CategoryHelperInterface categoryHelper;
+
 	private List<String> mainFormList = new ArrayList<String>();
 
 	private CategoryInterface category;
@@ -82,6 +84,7 @@ public class CategoryGenerator
 	{
 		categoryFileParser = new CategoryCSVFileParser(filePath);
 		categoryValidator = new CategoryValidator((CategoryCSVFileParser) categoryFileParser);
+		categoryHelper = new CategoryHelper();
 	}
 
 	/**
@@ -306,7 +309,8 @@ public class CategoryGenerator
 							CategoryValidator.checkRequiredRule(attribute, rules);
 						}
 						CategoryValidator.checkIfFutureDateRuleSpecified(attribute, rules);
-						CategoryValidator.validateCSVFutureDateValue(attribute, rules, categoryFileParser.getDefaultValue());
+						CategoryValidator.validateCSVFutureDateValue(attribute, rules,
+								categoryFileParser.getDefaultValue());
 
 						String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
@@ -388,14 +392,14 @@ public class CategoryGenerator
 				categoryValidator.isRootEntityUsedTwice(category.getRootCategoryElement(), category
 						.getRootCategoryElement().getEntity());
 
-			
 				if (hasRelatedAttributes)
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
 							containerCollection);
 				}
-				
-				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category.getRootCategoryElement(),categoryFileParser.getLineNumber());
+
+				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category
+						.getRootCategoryElement(), categoryFileParser.getLineNumber());
 
 				// Commented this code since the method is error prone
 				// TODO change this logic to reset the sequnces.
@@ -642,18 +646,18 @@ public class CategoryGenerator
 
 			categoryHelper.setOptions(categoryAttribute, controlOptions, categoryFileParser
 					.getLineNumber());
-			
+
 			String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
-			
+
 			if (categoryAttribute.getIsCalculated() != null && categoryAttribute.getIsCalculated())
 			{
-				setFormula(categoryAttribute,defaultValue);
+				setFormula(categoryAttribute, defaultValue);
 			}
 			else
 			{
 				categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName)
-					.getAttributeTypeInformation().getPermissibleValueForString(
-							DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
+						.getAttributeTypeInformation().getPermissibleValueForString(
+								DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
 			}
 			categoryAttribute.setIsVisible(false);
 			categoryAttribute.setIsRelatedAttribute(true);
@@ -661,43 +665,39 @@ public class CategoryGenerator
 
 		}
 	}
+
 	/**
 	 * 
 	 * @param categoryAttribute
 	 * @param defaultValue
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void setFormula(CategoryAttributeInterface categoryAttribute,String defaultValue) throws DynamicExtensionsApplicationException
+	private void setFormula(CategoryAttributeInterface categoryAttribute, String defaultValue)
+			throws DynamicExtensionsApplicationException
 	{
 		boolean isValidFormula = false;
 		FormulaParser formulaParser = new FormulaParser();
 		try
 		{
-			isValidFormula = formulaParser
-					.validateExpression(defaultValue);
+			isValidFormula = formulaParser.validateExpression(defaultValue);
 		}
 		catch (DynamicExtensionsSystemException ex)
 		{
-			throw new DynamicExtensionsApplicationException(
-					ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties
-									.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber()
-							+ categoryAttribute.getAbstractAttribute()
-									.getName()
-							+ ApplicationProperties
-									.getValue("incorrectFormulaCalculatedAttribute")
-							+ defaultValue, ex);
+			throw new DynamicExtensionsApplicationException(ApplicationProperties
+					.getValue(CategoryConstants.CREATE_CAT_FAILS)
+					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+					+ categoryFileParser.getLineNumber()
+					+ categoryAttribute.getAbstractAttribute().getName()
+					+ ApplicationProperties.getValue("incorrectFormulaCalculatedAttribute")
+					+ defaultValue, ex);
 		}
 		if (isValidFormula)
 		{
 			categoryAttribute.setIsCalculated(true);
 			if (categoryAttribute.getFormula() == null)
 			{
-				categoryAttribute.setFormula(DomainObjectFactory
-					.getInstance().createFormula(
-							defaultValue));
+				categoryAttribute.setFormula(DomainObjectFactory.getInstance().createFormula(
+						defaultValue));
 			}
 			else
 			{
@@ -705,6 +705,7 @@ public class CategoryGenerator
 			}
 		}
 	}
+
 	/**
 	 * @param parentEntity
 	 * @param childEntity
@@ -840,13 +841,14 @@ public class CategoryGenerator
 		{
 			categoryFileParser.readNext();
 			String[] categoryPaths = categoryFileParser.getCategoryPaths();
-			categoryValidator.validateContainersUnderSameDisplayLabel(categoryPaths, showCaption);
+			//categoryValidator.validateContainersUnderSameDisplayLabel(categoryPaths, showCaption);
 			ContainerInterface temp = null;
 			for (String categoryPath : categoryPaths)
 			{
 				categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath);
 				temp = createForm(displayLable, categoryPath, categoryEntityName, categoryEntName,
 						categoryPaths, showCaption);
+				categoryHelper.removeAllSeprators(temp);
 				if (mainContainer == null)
 				{
 					mainContainer = temp;
@@ -858,9 +860,9 @@ public class CategoryGenerator
 									.getEntityNameForAssociationMap(categoryEntityNameInstanceMap
 											.get(categoryEntName)));
 
-					new CategoryHelper().associateCategoryContainers(category, entityGroup,
-							mainContainer, temp, associationNameList, 1,
-							categoryEntityNameInstanceMap.get(temp.getAbstractEntity().getName()));
+					new CategoryHelper().addChildContainers(category, entityGroup, mainContainer,
+							temp, associationNameList, 1, categoryEntityNameInstanceMap.get(temp
+									.getAbstractEntity().getName()));
 				}
 
 				showCaption = false;
@@ -1031,15 +1033,14 @@ public class CategoryGenerator
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String defaultValue = categoryFileParser.getDefaultValue();
-		String attributeName = ((CategoryAttributeInterface) control
-				.getAttibuteMetadataInterface()).getAbstractAttribute().getName();
+		String attributeName = ((CategoryAttributeInterface) control.getAttibuteMetadataInterface())
+				.getAbstractAttribute().getName();
 		if (defaultValue == null)
 		{
 			// Validation-If category attribute is of type Read-only its default
 			// value must be specified
 			if ((control.getIsReadOnly() != null && control.getIsReadOnly())
-					|| (control.getIsCalculated() != null && control
-							.getIsCalculated()))
+					|| (control.getIsCalculated() != null && control.getIsCalculated()))
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -1050,7 +1051,7 @@ public class CategoryGenerator
 			}
 			return;
 		}
-		
+
 		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control
 				.getAttibuteMetadataInterface();
 		if (!defaultValue.equals(categoryAttribute.getDefaultValue()))
@@ -1067,31 +1068,28 @@ public class CategoryGenerator
 							|| ((AttributeMetadataInterface) categoryAttribute)
 									.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 					{
-						setFormula(categoryAttribute,defaultValue);
+						setFormula(categoryAttribute, defaultValue);
 					}
 					else
 					{
-						throw new DynamicExtensionsSystemException(
-								ApplicationProperties
-										.getValue(CategoryConstants.CREATE_CAT_FAILS)
-										+ " "
-										+ ApplicationProperties
-												.getValue("incorrectDataTypeCalculatedAttribute")
-										+ attributeName);
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ " "
+								+ ApplicationProperties
+										.getValue("incorrectDataTypeCalculatedAttribute")
+								+ attributeName);
 					}
 				}
 				else
 				{
-					throw new DynamicExtensionsSystemException(
-							ApplicationProperties
-									.getValue(CategoryConstants.CREATE_CAT_FAILS)
-									+ ApplicationProperties
-											.getValue(CategoryConstants.LINE_NUMBER)
-									+ categoryFileParser.getLineNumber()
-									+ " "
-									+ ApplicationProperties
-											.getValue("incorrectControlTypeCalculatedAttribute")
-									+ attributeName);
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber()
+							+ " "
+							+ ApplicationProperties
+									.getValue("incorrectControlTypeCalculatedAttribute")
+							+ attributeName);
 				}
 			}
 			else
@@ -1102,6 +1100,7 @@ public class CategoryGenerator
 			}
 		}
 	}
+
 	/**
 	 * This method populate the main form list for the given entity group
 	 * 

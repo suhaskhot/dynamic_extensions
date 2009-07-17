@@ -62,7 +62,26 @@
                   class="edu.common.dynamicextensions.domain.userinterface.Control"
               />
         </set>
+ 		<set
+            name="childContainerCollection"
+            table="DYEXTN_CONTAINER"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
 
+              <key
+                  column="PARENT_CONTAINER_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.userinterface.Container"
+              />
+        </set>
         <many-to-one
             name="abstractEntity"
             class="edu.common.dynamicextensions.domain.AbstractEntity"

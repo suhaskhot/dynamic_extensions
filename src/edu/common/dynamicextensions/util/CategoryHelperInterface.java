@@ -274,4 +274,9 @@ public interface CategoryHelperInterface
 	ControlInterface addOrUpdateLabelControl(EntityInterface entity, ContainerInterface container,
 			String controlCaption, long lineNumber, int xPosition, int yPosition);
 
+	/**
+	 * @param temp
+	 */
+	void removeAllSeprators(ContainerInterface temp);
+
 }

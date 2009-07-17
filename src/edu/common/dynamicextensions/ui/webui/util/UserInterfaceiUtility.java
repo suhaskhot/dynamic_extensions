@@ -57,7 +57,7 @@ public class UserInterfaceiUtility
 		}
 
 		List<ControlInterface> controls = new ArrayList<ControlInterface>(subContainer
-				.getAllControls());
+				.getAllControlsUnderSameDisplayLabel());
 
 		// Do not sort the controls list; it jumbles up the attributes order.
 		//Collections.sort(controlsList);
@@ -121,8 +121,8 @@ public class UserInterfaceiUtility
 		for (ControlInterface control : controls)
 		{
 			boolean isControlRequired = false;
-			if(control.getBaseAbstractAttribute() != null)
-			{	
+			/*if(control.getBaseAbstractAttribute() != null)
+			{*/	
 				isControlRequired =  isControlRequired(control);
 				stringBuffer.append("<th>");
 				if (isControlRequired)
@@ -144,7 +144,7 @@ public class UserInterfaceiUtility
 				}
 				stringBuffer.append("</th>");
 			
-			}
+			//}
 
 			
 		}
@@ -196,7 +196,7 @@ public class UserInterfaceiUtility
 	 */
 	public static boolean isControlRequired(ControlInterface controlInterface)
 	{
-		if (controlInterface.getBaseAbstractAttribute() instanceof AssociationMetadataInterface)
+		if (controlInterface.getBaseAbstractAttribute() instanceof AssociationMetadataInterface || controlInterface.getBaseAbstractAttribute() == null)
 		{
 			return false;
 		}
@@ -277,7 +277,7 @@ public class UserInterfaceiUtility
 		Map<BaseAbstractAttributeInterface, Object> containerValueMap = container
 				.getContainerValueMap();
 		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(container
-				.getAllControls());
+				.getAllControlsUnderSameDisplayLabel());
 
 		// Do not sort the controls list; it jumbles up the attribute order
 		//Collections.sort(controlsList);
@@ -342,7 +342,7 @@ public class UserInterfaceiUtility
 	public static AbstractContainmentControlInterface getAssociationControl(
 			ContainerInterface containerInterface, String childContainerId)
 	{
-		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControlsUnderSameDisplayLabel();
 		for (ControlInterface control : controlCollection)
 		{
 			if (control instanceof AbstractContainmentControlInterface)

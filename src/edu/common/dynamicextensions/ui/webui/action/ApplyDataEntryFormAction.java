@@ -57,7 +57,6 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.FormulaCalculator;
 import edu.common.dynamicextensions.util.global.DEConstants;
@@ -156,7 +155,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private void removeExtraAttribtes(ContainerInterface container, Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
-		Collection<ControlInterface> controls = container.getAllControlsUnderSameDisplayLabel();
+		Collection<ControlInterface> controls = container.getAllControls();
 		Collection<BaseAbstractAttributeInterface> attributeCollection = new HashSet<BaseAbstractAttributeInterface>();
 		for(ControlInterface control : controls)
 		{
@@ -174,14 +173,13 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-
 	 * @throws ParseException 
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException 
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface,Integer rowNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public void populateAttributeValueMapForCalculatedAttributes(Map<BaseAbstractAttributeInterface, Object> fullValueMap,Map<BaseAbstractAttributeInterface, Object> valueMap,ContainerInterface containerInterface,Integer rowNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : valueMap.entrySet())
 		{
@@ -196,7 +194,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
 					Object formulaResultValue = formulaCalculator
 							.evaluateFormula(
-									valueMap,
+									fullValueMap,
 									categoryAttributeInterface,
 									categoryEntityInterface.getCategory(),rowNumber);
 					if (formulaResultValue != null)
@@ -212,7 +210,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
 					{
 						entryNumber ++;
-						populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface,entryNumber);
+						populateAttributeValueMapForCalculatedAttributes(fullValueMap,map,containerInterface,entryNumber);
 					}
 			}
 		}
@@ -403,7 +401,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 		AbstractEntityInterface abstractEntityInterface = containerInterface.getAbstractEntity();
 		if (abstractEntityInterface instanceof CategoryEntityInterface)
 		{
-			populateAttributeValueMapForCalculatedAttributes(valueMap,containerInterface,0);
+			populateAttributeValueMapForCalculatedAttributes(valueMap,valueMap,containerInterface,0);
 		}
 		//Remove duplicate error messages by converting an error message list to hashset.
 		HashSet<String> hashSet = new HashSet<String>(errorList);
@@ -428,7 +426,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
 
-		Collection<ControlInterface> controlCollection = containerInterface.getAllControlsUnderSameDisplayLabel();
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
 			if (control != null && control.getBaseAbstractAttribute() != null)
@@ -756,7 +754,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				.firstElement();
 		ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
 				.firstElement();
-		DataValueMapUtility.updateDataValueMapForDataEntry(rootValueMap,rootContainerInterface);
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
 				.getInstance();
 

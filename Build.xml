@@ -481,7 +481,7 @@
 	<target name="javadoc" description="Generate the documentation">
         <delete dir="${javadoc.dir}" />
 		<mkdir dir="${javadoc.dir}" />
-		<javadoc access="private" packagenames="edu.common.*" destdir="${javadoc.dir}" author="true" version="true" windowtitle="Dynamic Extensions API" maxmemory="512m" classpathref="app.classpath" breakiterator="yes">
+		<javadoc access="private" packagenames="edu.common.*" useexternalfile="true" destdir="${javadoc.dir}" author="true" version="true" windowtitle="Dynamic Extensions API" maxmemory="512m" classpathref="app.classpath" breakiterator="yes">
 			 <fileset dir="${src.dir}" defaultexcludes="yes">
 			 	<include name="**/domain/**/*.java"/>
 				<include name="**/domaininterface/**/*.java"/>

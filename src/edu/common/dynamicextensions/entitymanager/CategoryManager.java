@@ -832,7 +832,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				colNamesValues.append(", ");
 			}
 			String defaultValue = catAttribute.getDefaultValue();
-
+			//Setting the default value to empty string since null value not updated in db for numeric and string values.
+			if (defaultValue == null)
+			{
+				defaultValue = "";
+			}
 			if (catAttribute.getIsCalculated() != null
 					&& catAttribute.getIsCalculated()) 
 			{

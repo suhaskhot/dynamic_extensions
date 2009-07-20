@@ -129,7 +129,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ defaultValue
 				+ "' "
 				+ " size='20'/>"
-				+ "<div style='float:left' name='comboScript' style='display:none'>"
+				+ "<div name='comboScript' style='display:none'>"
 				+ "Ext.onReady(function(){ "
 				+ "var myUrl='DEComboDataAction.do?controlId= "
 				+ identifier
@@ -152,7 +152,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "selectOnFocus:'true',applyTo: '"
 				+ htmlComponentName
 				+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
-				+ "});" + "</div>" + "<div style='float:left' name=\"comboHtml\" style='display:none'>" + "<div style='float:left'>"
+				+ "});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div style='float:left'>"
 				+ "<input type='text' onmouseover=\"showToolTip('" + htmlComponentName
 				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
 				+ "' value ='" + defaultValue + "' size='20' class='font_bl_nor' />" + "</div>"

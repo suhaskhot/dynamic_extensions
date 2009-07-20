@@ -877,11 +877,12 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public AssociationMetadataInterface getAssociation(AbstractEntityInterface targetEntity)
 	{
 		AssociationInterface association = null;
-		for (AssociationInterface associationInterface : this.getAssociationCollection())
+		for (AssociationInterface associationInterface : getAssociationCollection())
 		{
 			if (associationInterface.getTargetEntity().getName().equals(targetEntity.getName()))
 			{
 				association = associationInterface;
+				break;
 			}
 		}
 		return association;

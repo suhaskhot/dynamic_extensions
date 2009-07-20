@@ -1532,6 +1532,38 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	 * i.e. not selecting attributes from GleasonScore entity.
 	 * Refer to pathology annotation model.
 	 */
+	public void testBMIASRACalculatedAttribute()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			String[] args = {"./xmi/BMI.xmi", "BMI", "./csv/BMIMainContainer.csv"};
+			XMIImporter.main(args);
+
+			String[] args2 = {"./csv/BMIRelatedAttribute.csv"};
+			CategoryCreator categoryCreator = new CategoryCreator();
+			categoryCreator.main(args2);
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "BMI RA Calculation");
+
+			assertNotNull(category.getId());
+			assertNotNull(category.getRootCategoryElement());
+			assertEquals(category.getName(), "BMI RA Calculation");
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+	/**
+	 * Create category where attributes from a particular class are not chosen,
+	 * i.e. not selecting attributes from GleasonScore entity.
+	 * Refer to pathology annotation model.
+	 */
 	public void testCalculatedAttributeForDates()
 	{
 		CategoryInterface category = null;

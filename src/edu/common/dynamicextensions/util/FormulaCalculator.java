@@ -119,7 +119,8 @@ public class FormulaCalculator
 				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
 				if (attributeInterface.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					Integer defaultValue = getDate(dateValue, entry.getValue().toString(), attributeInterface);
+					dateValue = getDate(entry.getValue().toString(), attributeInterface);
+					Integer defaultValue = dateValue.getDate();
 					formulaParser.setVariableValue(attribute.getCategoryEntity()
 							.getEntity().getName()
 							+ "_"
@@ -192,9 +193,9 @@ public class FormulaCalculator
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private Integer getDate(Date dateValue,String value,AttributeMetadataInterface attributeInterface) throws DynamicExtensionsSystemException
+	private Date getDate(String value,AttributeMetadataInterface attributeInterface) throws DynamicExtensionsSystemException
 	{
-		Integer defaultValue = null;
+		Date dateValue = null;
 		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
 				.getDateFormat(attributeInterface.getAttributeTypeInformation()),locale);
@@ -207,13 +208,13 @@ public class FormulaCalculator
 		{
 			throw new DynamicExtensionsSystemException("ParseException",e);
 		}
-		defaultValue = dateValue.getDate();
+		
 		if (dateValue.getHours() >= ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF)
 		{
 			dateValue.setHours(dateValue.getHours() - ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF);
-			defaultValue++;
+			dateValue.setDate(dateValue.getDate()+ 1);
 		}
-		return defaultValue;
+		return dateValue;
 	}
 	/**
 	 * 
@@ -354,7 +355,8 @@ public class FormulaCalculator
 						.get(pathAssociationCollection.size() - 1);
 				if (attributeInterface.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					Integer defaultValue = getDate(dateValue, entry.getValue().toString(), attributeInterface);;
+					dateValue = getDate(entry.getValue().toString(), attributeInterface);
+					Integer defaultValue = dateValue.getDate();
 					formulaParser.setVariableValue(attribute.getCategoryEntity()
 							.getEntity().getName()
 							+ "_"

@@ -521,13 +521,13 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	public AssociationMetadataInterface getAssociation(AbstractEntityInterface targetEntity)
 	{
 		CategoryAssociationInterface association = null;
-		for (CategoryAssociationInterface associationInterface : this.
-				getCategoryAssociationCollection())
+		for (CategoryAssociationInterface associationInterface : getCategoryAssociationCollection())
 		{
 			if (associationInterface.getTargetCategoryEntity().getName().equals(
 					targetEntity.getName()))
 			{
 				association = associationInterface;
+				break;
 			}
 		}
 		return association;

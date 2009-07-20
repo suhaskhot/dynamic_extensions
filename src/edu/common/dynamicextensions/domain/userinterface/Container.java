@@ -429,8 +429,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		}
 		if (displayContainerValueMap != null)
 		{
-			for (BaseAbstractAttributeInterface abstractAttributeInterface : displayContainerValueMap
-					.keySet())
+			for (BaseAbstractAttributeInterface abstractAttributeInterface : displayContainerValueMap.keySet())
 			{
 				containerValueMap.put(abstractAttributeInterface, displayContainerValueMap
 						.get(abstractAttributeInterface));

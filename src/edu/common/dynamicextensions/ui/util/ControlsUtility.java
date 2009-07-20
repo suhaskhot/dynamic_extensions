@@ -292,28 +292,6 @@ public class ControlsUtility
 		return dateFormat;
 	}
 	/**
-	 * This method returns the prescribed date format for the given DateAttributeTypeInformation
-	 * @param attribute the DateAttributeTypeInformation
-	 * @return the date format String
-	 */
-	public static String getDateFormatForCalculatedAttributes(AttributeTypeInformationInterface dateAttribute)
-	{
-		String dateFormat = null;
-		if (dateAttribute instanceof DateTypeInformationInterface)
-		{
-			dateFormat = ((DateTypeInformationInterface) dateAttribute).getFormat();
-		}
-		if (dateFormat == null)
-		{
-			dateFormat = ProcessorConstants.DATE_ONLY_FORMAT;
-		}
-		else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
-		{
-			dateFormat = ProcessorConstants.DATE_TIME_FORMAT_TWELVE_HOUR;
-		}
-		return dateFormat;
-	}
-	/**
 	 *
 	 * @param nameValueList
 	 */

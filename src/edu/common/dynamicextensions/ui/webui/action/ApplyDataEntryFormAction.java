@@ -57,7 +57,6 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.FormulaCalculator;
 import edu.common.dynamicextensions.util.global.DEConstants;
@@ -156,7 +155,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private void removeExtraAttribtes(ContainerInterface container, Stack<Map<BaseAbstractAttributeInterface, Object>> valueMapStack)
 	{
-		Collection<ControlInterface> controls = container.getAllControlsUnderSameDisplayLabel();
+		Collection<ControlInterface> controls = container.getAllControls();
 		Collection<BaseAbstractAttributeInterface> attributeCollection = new HashSet<BaseAbstractAttributeInterface>();
 		for(ControlInterface control : controls)
 		{
@@ -193,14 +192,14 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				{
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) containerInterface.getAbstractEntity();
-					Object formulaResultValue = formulaCalculator
+					String formulaResultValue = formulaCalculator
 							.evaluateFormula(
 									fullValueMap,
 									categoryAttributeInterface,
 									categoryEntityInterface.getCategory(),rowNumber);
 					if (formulaResultValue != null)
 					{
-						entry.setValue(formulaResultValue.toString());
+						entry.setValue(formulaResultValue);
 					}
 				}
 			}
@@ -427,7 +426,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
 
-		Collection<ControlInterface> controlCollection = containerInterface.getAllControlsUnderSameDisplayLabel();
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
 		for (ControlInterface control : controlCollection)
 		{
 			if (control != null && control.getBaseAbstractAttribute() != null)
@@ -755,7 +754,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				.firstElement();
 		ContainerInterface rootContainerInterface = (ContainerInterface) containerStack
 				.firstElement();
-		DataValueMapUtility.updateDataValueMapForDataEntry(rootValueMap,rootContainerInterface);
 		ApplyDataEntryFormProcessor applyDataEntryFormProcessor = ApplyDataEntryFormProcessor
 				.getInstance();
 

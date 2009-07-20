@@ -48,7 +48,7 @@ public class ProcessorConstants
 	// Date Formats.
 	public static final String DATE_ONLY_FORMAT = CommonServiceLocator.getInstance().getDatePattern();
 	public static final String DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
-	public static final String DATE_TIME_FORMAT_TWELVE_HOUR = "MM-dd-yyyy hh:mm";
+	public static final int DATE_TIME_FORMAT_ROUND_OFF = 12;
 	public static final String MONTH_YEAR_FORMAT = "MM-yyyy";
 	public static final String YEAR_ONLY_FORMAT = "yyyy";
 	public static final String SQL_DATE_ONLY_FORMAT = "MM-dd-yyyy";

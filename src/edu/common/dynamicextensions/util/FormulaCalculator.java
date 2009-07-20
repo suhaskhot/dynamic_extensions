@@ -18,11 +18,11 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
@@ -64,12 +64,12 @@ public class FormulaCalculator
 	 * @throws ParseException 
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public Object evaluateFormula(
+	public String evaluateFormula(
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
 			CategoryAttributeInterface categoryAttributeInterface,CategoryInterface category,Integer entryNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Date dateValue = null;
-		Object value = null;
+		String value = "";
 		Double formulaValue = null;
 		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap <BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
@@ -119,21 +119,7 @@ public class FormulaCalculator
 				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
 				if (attributeInterface.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					Integer defaultValue = null;
-					try 
-					{
-						Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-						SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
-								.getDateFormatForCalculatedAttributes(attributeInterface.getAttributeTypeInformation()),locale);
-						simpleDateFormat.setLenient(true);
-						dateValue = simpleDateFormat.parse(entry.getValue().toString());
-						defaultValue = dateValue.getDate();
-					} 
-					catch (ParseException e) 
-					{
-						throw new DynamicExtensionsSystemException("ParseException",e);
-					}
-					
+					Integer defaultValue = getDate(dateValue, entry.getValue().toString(), attributeInterface);
 					formulaParser.setVariableValue(attribute.getCategoryEntity()
 							.getEntity().getName()
 							+ "_"
@@ -154,14 +140,17 @@ public class FormulaCalculator
 					{
 						throw new DynamicExtensionsSystemException("ParseException",e);
 					}
-					formulaParser.setVariableValue(attribute.getCategoryEntity()
-							.getEntity().getName()
-							+ "_"
-							+ pathAssociationRelationInterface
-									.getTargetInstanceId().toString()
-							+ "_"
-							+ attributeInterface.getName(),
-							permissibleValueInterface.getValueAsObject());
+					if (permissibleValueInterface != null)
+					{
+						formulaParser.setVariableValue(attribute.getCategoryEntity()
+								.getEntity().getName()
+								+ "_"
+								+ pathAssociationRelationInterface
+										.getTargetInstanceId().toString()
+								+ "_"
+								+ attributeInterface.getName(),
+								permissibleValueInterface.getValueAsObject());
+					}
 				}
 			}
 
@@ -171,16 +160,7 @@ public class FormulaCalculator
 				if (((AttributeMetadataInterface) categoryAttributeInterface)
 						.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					if (dateValue != null)
-					{
-						dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
-						Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-						SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
-								.getDateFormatForCalculatedAttributes(((AttributeMetadataInterface) categoryAttributeInterface)
-										.getAttributeTypeInformation()),locale);
-						simpleDateFormat.setLenient(true);
-						value = simpleDateFormat.format(dateValue);
-					}
+					value = setDate(dateValue, formulaValue, (AttributeMetadataInterface) categoryAttributeInterface);
 				}
 				else
 				{
@@ -195,13 +175,68 @@ public class FormulaCalculator
 					{
 						throw new DynamicExtensionsSystemException("ParseException",e);
 					}
-					value = permissibleValueInterface.getValueAsObject();
+					if (permissibleValueInterface != null)
+					{
+						value = permissibleValueInterface.getValueAsObject().toString();
+					}
 				}
 			}
 		}
 		return value;
 	}
-
+	/**
+	 * 
+	 * @param dateValue
+	 * @param value
+	 * @param attributeInterface
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private Integer getDate(Date dateValue,String value,AttributeMetadataInterface attributeInterface) throws DynamicExtensionsSystemException
+	{
+		Integer defaultValue = null;
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
+				.getDateFormat(attributeInterface.getAttributeTypeInformation()),locale);
+		simpleDateFormat.setLenient(true);
+		try 
+		{
+			dateValue = simpleDateFormat.parse(value);
+		} 
+		catch (ParseException e) 
+		{
+			throw new DynamicExtensionsSystemException("ParseException",e);
+		}
+		defaultValue = dateValue.getDate();
+		if (dateValue.getHours() >= ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF)
+		{
+			dateValue.setHours(dateValue.getHours() - ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF);
+			defaultValue++;
+		}
+		return defaultValue;
+	}
+	/**
+	 * 
+	 * @param dateValue
+	 * @param formulaValue
+	 * @param attributeInterface
+	 * @return
+	 */
+	private String setDate(Date dateValue,Double formulaValue,AttributeMetadataInterface attributeInterface)
+	{
+		String value ="";
+		if (dateValue != null && formulaValue != null)
+		{
+			dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
+			Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
+					.getDateFormat(attributeInterface
+							.getAttributeTypeInformation()),locale);
+			simpleDateFormat.setLenient(true);
+			value = simpleDateFormat.format(dateValue);
+		}
+		return value;
+	}
 	/**
 	 * 
 	 * @param attributeValueMap
@@ -280,7 +315,7 @@ public class FormulaCalculator
 							.getDefaultLocale();
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 							ControlsUtility
-									.getDateFormatForCalculatedAttributes(((AttributeMetadataInterface) calculatedAttribute)
+									.getDateFormat(((AttributeMetadataInterface) calculatedAttribute)
 											.getAttributeTypeInformation()),
 							locale);
 					simpleDateFormat.setLenient(true);
@@ -319,20 +354,7 @@ public class FormulaCalculator
 						.get(pathAssociationCollection.size() - 1);
 				if (attributeInterface.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					Integer defaultValue = null;
-					try 
-					{
-						Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-						SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
-								.getDateFormatForCalculatedAttributes(attributeInterface.getAttributeTypeInformation()),locale);
-						simpleDateFormat.setLenient(true);
-						dateValue = simpleDateFormat.parse(entry.getValue().toString());
-						defaultValue = dateValue.getDate();
-					} 
-					catch (ParseException e) 
-					{
-						throw new DynamicExtensionsSystemException("ParseException",e);
-					}
+					Integer defaultValue = getDate(dateValue, entry.getValue().toString(), attributeInterface);;
 					formulaParser.setVariableValue(attribute.getCategoryEntity()
 							.getEntity().getName()
 							+ "_"
@@ -373,13 +395,7 @@ public class FormulaCalculator
 				{
 					if (dateValue != null)
 					{
-						dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
-						Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-						SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
-								.getDateFormatForCalculatedAttributes(((AttributeMetadataInterface) categoryAttribute)
-										.getAttributeTypeInformation()),locale);
-						simpleDateFormat.setLenient(true);
-						String value = simpleDateFormat.format(dateValue);
+						String value = setDate(dateValue, formulaValue, (AttributeMetadataInterface) categoryAttribute);
 						try 
 						{
 							defaultValue = ((AttributeMetadataInterface) categoryAttribute)

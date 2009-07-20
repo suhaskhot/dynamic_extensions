@@ -841,12 +841,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					&& catAttribute.getIsCalculated()) 
 			{
 				FormulaCalculator formulaCalculator = new FormulaCalculator();
-				Object formulaResultValue = formulaCalculator.evaluateFormula(
+				String formulaResultValue = formulaCalculator.evaluateFormula(
 						valueMap, catAttribute, catAttribute
 								.getCategoryEntity().getCategory(),1);
 				if (formulaResultValue != null) 
 				{
-					defaultValue = formulaResultValue.toString();
+					defaultValue = formulaResultValue;
 				}
 			}
 

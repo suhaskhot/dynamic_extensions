@@ -565,7 +565,7 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public static void setDefaultValueForCalculatedAttributes(CategoryEntityInterface rootCategoryEntity,Long lineNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public static void setDefaultValueForCalculatedAttributes(CategoryInterface category,CategoryEntityInterface rootCategoryEntity,Long lineNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
 				.getCategoryAssociationCollection())
@@ -577,8 +577,7 @@ public class CategoryGenerationUtil
 						.getIsCalculated();
 				if (isCalculatedAttribute != null && isCalculatedAttribute) 
 				{
-					setDefaultValue(categoryAttributeInterface,rootCategoryEntity
-							.getCategory());
+					setDefaultValue(categoryAttributeInterface,category);
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
 							categoryAttributeInterface, rootCategoryEntity
@@ -594,7 +593,7 @@ public class CategoryGenerationUtil
 					}
 				}
 			}
-			setDefaultValueForCalculatedAttributes(categoryAssociationInterface
+			setDefaultValueForCalculatedAttributes(category,categoryAssociationInterface
 					.getTargetCategoryEntity(),lineNumber);
 		}
 	}

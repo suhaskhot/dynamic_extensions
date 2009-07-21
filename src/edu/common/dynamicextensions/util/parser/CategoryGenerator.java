@@ -398,7 +398,7 @@ public class CategoryGenerator
 							containerCollection);
 				}
 
-				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category
+				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category,category
 						.getRootCategoryElement(), categoryFileParser.getLineNumber());
 
 				// Commented this code since the method is error prone

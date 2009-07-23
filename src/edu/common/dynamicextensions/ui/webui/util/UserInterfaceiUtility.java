@@ -325,7 +325,7 @@ public class UserInterfaceiUtility
 			}
 
 			stringBuffer.append("<td valign='middle' NOWRAP='true'>");
-			stringBuffer.append(controlHTML);
+			stringBuffer.append(controlHTML.replaceAll("style='float:left'", ""));
 			stringBuffer.append("</td>");
 		}
 		stringBuffer.append("</tr>");

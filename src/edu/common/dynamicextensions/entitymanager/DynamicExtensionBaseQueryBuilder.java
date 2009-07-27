@@ -618,7 +618,7 @@ public class DynamicExtensionBaseQueryBuilder
 				&& EntityManagerUtil.isParentChanged(catEntity, dbaseCopy))
 		{
 			String frnCnstrRlbkQry = "";
-			if (dbaseCopy.getParentCategoryEntity() != null)
+			if (dbaseCopy.getParentCategoryEntity() != null && dbaseCopy.getParentCategoryEntity().isCreateTable())
 			{
 				frnCnstrRlbkQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy, dbaseCopy
 						.getParentCategoryEntity());
@@ -626,10 +626,10 @@ public class DynamicExtensionBaseQueryBuilder
 						.getParentCategoryEntity()));
 				attrRlbkQries.add(frnCnstrRlbkQry);
 			}
-			if (catEntity.getParentCategoryEntity() != null)
+			if (catEntity.getParentCategoryEntity() != null && catEntity.getParentCategoryEntity().isCreateTable())
 			{
-				String frnCnstrntAdQry = getForeignKeyConstraintQueryForInheritance(dbaseCopy,
-						dbaseCopy.getParentCategoryEntity());
+				String frnCnstrntAdQry = getForeignKeyConstraintQueryForInheritance(catEntity,
+						catEntity.getParentCategoryEntity());
 				queries.add(frnCnstrntAdQry);
 				attrRlbkQries.add(getForeignKeyRemoveConstraintQueryForInheritance(catEntity,
 						catEntity.getParentCategoryEntity()));

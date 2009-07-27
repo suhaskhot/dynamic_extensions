@@ -132,5 +132,7 @@ public interface CategoryEntityInterface extends AbstractEntityInterface
 	CategoryEntityInterface getTreeParentCategoryEntity();
 
 	void setTreeParentCategoryEntity(CategoryEntityInterface treeParentCategoryEntity);
+	
+	Boolean isCreateTable();
 
 }

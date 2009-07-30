@@ -1927,12 +1927,33 @@ function showEditRecordPage(target)
 
 function showParentContainerInsertDataPage()
 {
+	getValues();
     //document.getElementById('mode').value = "edit";
     document.getElementById('dataEntryOperation').value = "insertParentData";
     var dataEntryForm = document.getElementById('dataEntryForm');
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
 }
+
+function getValues()
+{
+	var frm = document.forms[0];
+	for (f = 0; f < document.forms[0].elements.length; ++f ) 
+	{ 
+		var fld = frm.elements[f];
+		
+		// select all values in list box before form is submitted. 
+		if (fld.id.startsWith('protocolCoordId_Control_'))
+		{ 
+			var lbOptions = document.getElementById(fld.id);
+			for (i = lbOptions.options.length-1; i >= 0; i--)
+			{
+				lbOptions.options[i].selected=true;
+			}
+		}
+	} 
+}
+
 function calculateAttributes()
 {
     document.getElementById('dataEntryOperation').value = "calculateAttributes";
@@ -1942,6 +1963,7 @@ function calculateAttributes()
 }
 function setInsertDataOperation()
 {
+	getValues();
     document.getElementById('dataEntryOperation').value = "";
     var dataEntryForm = document.getElementById('dataEntryForm');
     setWaitCursorforAllObjectHierarchy(dataEntryForm);

@@ -496,43 +496,43 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	{
 		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control
 				.getBaseAbstractAttribute();
-		List<Map<BaseAbstractAttributeInterface, Object>> associationValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap
+		List<Map<BaseAbstractAttributeInterface, Object>> associationValueMaps = (List<Map<BaseAbstractAttributeInterface, Object>>) attributeValueMap
 				.get(abstractAttribute);
 
-		if (associationValueMapList == null)
+		if (associationValueMaps == null)
 		{
-			associationValueMapList = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+			associationValueMaps = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		}
 
 		if (control instanceof AbstractContainmentControlInterface && processOneToMany)
 		{
-			AbstractContainmentControlInterface associationControlInterface = (AbstractContainmentControlInterface) control;
+			AbstractContainmentControlInterface associationControl = (AbstractContainmentControlInterface) control;
 			ContainerInterface targetContainer = ((AbstractContainmentControlInterface) control)
 					.getContainer();
-			if (associationControlInterface.isCardinalityOneToMany())
+			if (associationControl.isCardinalityOneToMany())
 			{
-				associationValueMapList = collectOneToManyContainmentValues(request, dataEntryForm,
-						targetContainer.getId().toString(), control, associationValueMapList);
+				associationValueMaps = collectOneToManyContainmentValues(request, dataEntryForm,
+						targetContainer.getId().toString(), control, associationValueMaps);
 			}
 			else
 			{
 				Map<BaseAbstractAttributeInterface, Object> oneToOneValueMap = null;
 
-				if (!associationValueMapList.isEmpty() && associationValueMapList.get(0) != null)
+				if (!associationValueMaps.isEmpty() && associationValueMaps.get(0) != null)
 				{
-					oneToOneValueMap = associationValueMapList.get(0);
+					oneToOneValueMap = associationValueMaps.get(0);
 				}
 				else
 				{
 					oneToOneValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
-					associationValueMapList.add(oneToOneValueMap);
+					associationValueMaps.add(oneToOneValueMap);
 				}
 
 				generateAttributeValueMap(targetContainer, request, dataEntryForm, "",
 						oneToOneValueMap, false);
 			}
 
-			attributeValueMap.put(abstractAttribute, associationValueMapList);
+			attributeValueMap.put(abstractAttribute, associationValueMaps);
 		}
 		else if (control instanceof SelectInterface)
 		{
@@ -541,20 +541,20 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			if (control instanceof ListBoxInterface)
 			{
 				String[] selectedValues = (String[]) request.getParameterValues(controlName);
-				ListBoxInterface listBoxInterface = (ListBoxInterface) control;
-				association = listBoxInterface.getBaseAbstractAttributeAssociation();
+				ListBoxInterface listBox = (ListBoxInterface) control;
+				association = listBox.getBaseAbstractAttributeAssociation();
 				if (association != null)
 				{
 					if (association.getIsCollection())
 					{
 						if (selectedValues != null)
 						{
-							Collection<AbstractAttributeInterface> attributeCollection = association
+							Collection<AbstractAttributeInterface> attributes = association
 									.getTargetEntity().getAllAbstractAttributes();
-							Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
-									.filterSystemAttributes(attributeCollection);
+							Collection<AbstractAttributeInterface> filteredAttributes = EntityManagerUtil
+									.filterSystemAttributes(attributes);
 							List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-									filteredAttributeCollection);
+									filteredAttributes);
 							for (String id : selectedValues)
 							{
 								Map dataMap = new HashMap();
@@ -592,7 +592,6 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				attributeValueMap.put(abstractAttribute, valueList);
 			}
 		}
-		
 	}
 
 	/**

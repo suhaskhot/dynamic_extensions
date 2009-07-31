@@ -158,5 +158,16 @@
 			<type>java.lang.String</type>
 		</attribute>
 	</tag>
+	
+	<tag>
+	     <name>multiSelectUsingCombo</name>
+	     <tag-class>edu.common.dynamicextensions.ui.webui.taglib.MultiselectUsingComboAndListTag</tag-class>
+	     <attribute>
+				<name>addNewUserActionName</name>
+				<required>false</required>
+				<rtexprvalue>true</rtexprvalue>
+				<type>java.lang.String</type>
+	     </attribute>
+	</tag>
 
 </taglib>

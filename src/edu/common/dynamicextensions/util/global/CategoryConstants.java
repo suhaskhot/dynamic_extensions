@@ -39,6 +39,10 @@ public class CategoryConstants
 	public final static String NULL_CONTROL = "nullControl";
 
 	public final static String INVALID_MULTI_SELECT = "invalidMultiselect";
+	
+	public final static String NO_MULTI_SELECT_WITH_ACD = "noMultiSelectWithACD";
+	
+	public final static String NO_NOOFROWS_WITH_ACD = "noNoOfRowsWithACD";
 
 	public final static String INVALID_CONTROL_FOR_MULTI_SELECT = "invalidControlForMultiselect";
 

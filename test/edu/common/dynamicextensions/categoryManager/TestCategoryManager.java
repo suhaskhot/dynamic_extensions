@@ -3377,7 +3377,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 	/**
 	 * Negative Use case: Single line display for the attibutes of the differnt class
-	 * Error message is diplayed if a subcategory used has multiple entities under same diplay label and 
+	 * subcategory used has multiple entities under same diplay label and 
 	 * show=false
 	 */
 	public void testSingleLineDisplayDiffrentClass2()
@@ -3393,12 +3393,13 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
 			category = (CategoryInterface) categoryManager.getObjectByName(
 					Category.class.getName(), "singleLineDisplayDifferentClass2");
-			fail();
 
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			fail();
+
 		}
 	}
 	

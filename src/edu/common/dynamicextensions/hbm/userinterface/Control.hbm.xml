@@ -360,6 +360,14 @@
             column="MULTISELECT"
         />
 
+        <property
+            name="isUsingAutoCompleteDropdown"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="USE_AUTOCOMPLETE"
+        />
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.ComboBox"

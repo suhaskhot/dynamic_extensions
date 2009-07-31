@@ -23,6 +23,16 @@ public interface ListBoxInterface extends SelectInterface
 	 * @param isMultiSelect the Boolean value indicating whether the ListBox has a multiselect property or not.
 	 */
 	void setIsMultiSelect(Boolean isMultiSelect);
+	
+	/**
+	 * @return
+	 */
+	public Boolean getIsUsingAutoCompleteDropdown();
+	
+	/**
+	 * @param isUsingAutoCompleteDropdown
+	 */
+	public void setIsUsingAutoCompleteDropdown(Boolean isUsingAutoCompleteDropdown);
 
 	/**
 	 * This method returns the Number of rows to be displayed on the UI for ListBox.

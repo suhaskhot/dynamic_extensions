@@ -59,4 +59,5 @@ public class Constants
 	public static final String PREFERRED_NAME = "Preferred_Name";
 	
 	public static final String ASSO_TGT_ENT_CONSTR_KEY_PROP = "ASSOCIATION_TARGET_ENTITY_CONSTRAINT_KEY_PROPERTIES";
+	public static final String SELECTED_VALUES = "selectedCoordinators";
 }

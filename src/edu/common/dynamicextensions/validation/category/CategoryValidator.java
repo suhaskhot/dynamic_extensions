@@ -358,8 +358,9 @@ public class CategoryValidator
 	 * @throws DynamicExtensionsSystemException fails to create category
 	 * @throws ParseException
 	 */
-	public static void validateCSVFutureDateValue(AttributeInterface attribute, Map<String, Object> rules,
-			String value) throws DynamicExtensionsSystemException, ParseException
+	public static void validateCSVFutureDateValue(AttributeInterface attribute,
+			Map<String, Object> rules, String value) throws DynamicExtensionsSystemException,
+			ParseException
 	{
 		if (attribute == null)
 		{
@@ -502,6 +503,30 @@ public class CategoryValidator
 		if (control instanceof ListBoxInterface)
 		{
 			Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
+			Boolean IsUsingAutoCompleteDropdown = ((ListBoxInterface) control)
+					.getIsUsingAutoCompleteDropdown();
+
+			if (IsUsingAutoCompleteDropdown != null && IsUsingAutoCompleteDropdown)
+			{
+				if (isMultiSelect == null || !isMultiSelect)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.NO_MULTI_SELECT_WITH_ACD)
+							+ attributeName);
+				}
+
+				Integer noOfRows = ((ListBoxInterface) control).getNoOfRows();
+				if (noOfRows != null && noOfRows > 4)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.NO_NOOFROWS_WITH_ACD)
+							+ attributeName);
+				}
+			}
 
 			if (isMultiSelect != null && isMultiSelect && abstractAttribute != null)
 			{
@@ -654,9 +679,7 @@ public class CategoryValidator
 			throw new DynamicExtensionsSystemException(getErrorMessageStart()
 					+ ApplicationProperties
 							.getValue("dyExtn.category.validation.singleLineDisaply"));
-
 		}
-
 	}
 
 	/**
@@ -684,6 +707,7 @@ public class CategoryValidator
 				}
 			}
 		}
+
 		return controlEnum;
 	}
 
@@ -707,6 +731,7 @@ public class CategoryValidator
 				}
 			}
 		}
+
 		return controlsWithSameSequenceNumber;
 	}
 
@@ -717,11 +742,13 @@ public class CategoryValidator
 	public static boolean isValidControlType(String controlType)
 	{
 		boolean isValid = true;
+
 		if (controlType == null)
 		{
 			isValid = false;
 		}
-		return isValid;
 
+		return isValid;
 	}
+
 }

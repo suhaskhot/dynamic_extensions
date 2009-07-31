@@ -53,5 +53,5 @@ public interface NumericTypeInformationInterface extends AttributeTypeInformatio
 	 * @return
 	 * @throws ParseException
 	 */
-	PermissibleValueInterface getPermissibleValue(Double value) throws ParseException;
+	String getFormattedValue(Double value) throws ParseException;
 }

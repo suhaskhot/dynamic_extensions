@@ -39,9 +39,9 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValue(Double value)
+	public String getFormattedValue(Double value)
 	{
-		return getPermissibleValueForString(Integer.valueOf(value.intValue()).toString());
+		return Integer.valueOf(value.intValue()).toString();
 	}
 
 }

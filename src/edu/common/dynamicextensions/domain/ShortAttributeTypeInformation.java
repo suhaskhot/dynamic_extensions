@@ -40,8 +40,8 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValue(Double value)
+	public String getFormattedValue(Double value)
 	{
-		return getPermissibleValueForString(Short.valueOf(value.shortValue()).toString());
+		return Short.valueOf(value.shortValue()).toString();
 	}
 }

@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -45,8 +48,18 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValue(Double value)
+	public String getFormattedValue(Double value)
 	{
-		return getPermissibleValueForString(value.toString());
+		String formattedValue = "";
+		if (value != null)
+		{
+			DecimalFormat formatDecimal = (DecimalFormat) NumberFormat
+					.getNumberInstance();
+			formatDecimal.setParseBigDecimal(true);
+			formatDecimal.setMaximumFractionDigits(this.decimalPlaces
+					.intValue());
+			formattedValue = formatDecimal.format(value);
+		}
+		return formattedValue;
 	}
 }

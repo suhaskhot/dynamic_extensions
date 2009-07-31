@@ -15,6 +15,7 @@ import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -165,20 +166,15 @@ public class FormulaCalculator
 				}
 				else
 				{
-					PermissibleValueInterface permissibleValueInterface = null;
 					try 
 					{
-						permissibleValueInterface = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttributeInterface)
+						value = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttributeInterface)
 								.getAttributeTypeInformation())
-								.getPermissibleValue(formulaValue);
+								.getFormattedValue(formulaValue);
 					} 
 					catch (ParseException e) 
 					{
 						throw new DynamicExtensionsSystemException("ParseException",e);
-					}
-					if (permissibleValueInterface != null)
-					{
-						value = permissibleValueInterface.getValueAsObject().toString();
 					}
 				}
 			}
@@ -414,9 +410,11 @@ public class FormulaCalculator
 				{
 					try 
 					{
-						defaultValue = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttribute)
-								.getAttributeTypeInformation())
-								.getPermissibleValue(formulaValue);
+						NumericAttributeTypeInformation numericAttributeTypeInformation = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttribute)
+								.getAttributeTypeInformation());
+						defaultValue = numericAttributeTypeInformation
+								.getPermissibleValueForString(numericAttributeTypeInformation
+										.getFormattedValue(formulaValue));
 					}
 					catch (ParseException e) 
 					{

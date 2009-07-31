@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.domain;
 import java.text.ParseException;
 
 import edu.common.dynamicextensions.domaininterface.NumericTypeInformationInterface;
-import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author Rahul Ner
@@ -106,6 +105,6 @@ public abstract class NumericAttributeTypeInformation extends AttributeTypeInfor
 	 * @return
 	 * @throws ParseException
 	 */
-	public abstract PermissibleValueInterface getPermissibleValue(Double value)
+	public abstract String getFormattedValue(Double value)
 			throws ParseException;
 }

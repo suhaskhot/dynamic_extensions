@@ -39,8 +39,8 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 	/**
 	 * 
 	 */
-	public PermissibleValueInterface getPermissibleValue(Double value)
+	public String getFormattedValue(Double value)
 	{
-		return getPermissibleValueForString(Long.valueOf(value.longValue()).toString());
+		return Long.valueOf(value.longValue()).toString();
 	}
 }

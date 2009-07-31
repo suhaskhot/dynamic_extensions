@@ -38,6 +38,11 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	private Boolean isMultiSelect = null;
 
 	/**
+	 * 
+	 */
+	private Boolean IsUsingAutoCompleteDropdown = null;
+
+	/**
 	 * Number of rows to be displayed on the UI for ListBox.
 	 */
 	private Integer noOfRows = null;
@@ -86,30 +91,47 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	}
 
 	/**
+	 * @hibernate.property name="IsUsingAutoCompleteDropdown" type="boolean" column="USE_AUTOCOMPLETE"
+	 * @return
+	 */
+	public Boolean getIsUsingAutoCompleteDropdown()
+	{
+		return IsUsingAutoCompleteDropdown;
+	}
+
+	/**
+	 * @param isUsingAutoCompleteDropdown
+	 */
+	public void setIsUsingAutoCompleteDropdown(Boolean isUsingAutoCompleteDropdown)
+	{
+		IsUsingAutoCompleteDropdown = isUsingAutoCompleteDropdown;
+	}
+
+	/**
 	 * This method generates the HTML code to display the ListBox Control on the form.
 	 * @return HTML code for ListBox Control.
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		List<NameValueBean> nameValueBeanList = null;
-		List<String> valueList = new ArrayList<String>();
+		List<NameValueBean> nameValueBeans = null;
+		List<String> values = new ArrayList<String>();
 		AssociationInterface association = getBaseAbstractAttributeAssociation();
 		if (association != null)
 		{
-			getValueList(association, valueList);
+			getValueList(association, values);
 		}
 		else
 		{
 			if (!(value instanceof List) && value != null)
 			{
-				List<String> tempList = new ArrayList<String>();
-				tempList.add((String) value);
-				valueList = tempList;
+				List<String> temp = new ArrayList<String>();
+				temp.add((String) value);
+				values = temp;
 			}
 			else
 			{
-				valueList = (List<String>) this.value;
+				values = (List<String>) this.value;
 			}
 		}
 
@@ -119,9 +141,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			strMultiSelect = "MULTIPLE ";
 		}
 		StringBuffer htmlString = new StringBuffer("<SELECT ");
-		htmlString.append(strMultiSelect).append(" size=").append(this.noOfRows)
-			.append(" class='font_bl_s' name='").append(getHTMLComponentName()).append("' id='")
-			.append(name).append("' ");
+		htmlString.append(strMultiSelect).append(" size=").append(this.noOfRows).append(
+				" class='font_bl_s' name='").append(getHTMLComponentName()).append("' id='")
+				.append(name).append("' ");
 
 		if (this.isReadOnly != null && this.isReadOnly)
 		{
@@ -129,63 +151,160 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 		htmlString.append('>');
 
-		if (valueList == null || valueList.isEmpty())
+		if (values == null || values.isEmpty())
 		{
 			String defaultValue = null;
-			valueList = new ArrayList<String>();
+			values = new ArrayList<String>();
 
-			AttributeMetadataInterface attributeMetadataInterface = this
-					.getAttibuteMetadataInterface();
-			if (attributeMetadataInterface != null)
+			AttributeMetadataInterface attributeMetadata = this.getAttibuteMetadataInterface();
+			if (attributeMetadata != null)
 			{
-				if (attributeMetadataInterface instanceof CategoryAttributeInterface)
+				if (attributeMetadata instanceof CategoryAttributeInterface)
 				{
-					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadataInterface)
+					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadata)
 							.getAbstractAttribute();
 					if (abstractAttribute instanceof AttributeInterface)
 					{
-						defaultValue = attributeMetadataInterface.getDefaultValue();
+						defaultValue = attributeMetadata.getDefaultValue();
 					}
 				}
 				else
 				{
-					defaultValue = attributeMetadataInterface.getDefaultValue();
+					defaultValue = attributeMetadata.getDefaultValue();
 				}
 
 				if (defaultValue != null && defaultValue.trim().length() != 0)
 				{
-					valueList.add(defaultValue);
+					values.add(defaultValue);
 				}
 			}
 		}
 
 		if (listOfValues == null)
 		{
-			nameValueBeanList = ControlsUtility.populateListOfValues(this);
+			nameValueBeans = ControlsUtility.populateListOfValues(this);
 		}
 
-		if (nameValueBeanList != null && !nameValueBeanList.isEmpty())
+		if (nameValueBeans != null && !nameValueBeans.isEmpty())
 		{
-			for (NameValueBean nameValueBean : nameValueBeanList)
+			for (NameValueBean nameValueBean : nameValueBeans)
 			{
-				if (valueList != null && !valueList.isEmpty()
-						&& valueList.contains(nameValueBean.getValue()))
+				if (values != null && !values.isEmpty()
+						&& values.contains(nameValueBean.getValue()))
 				{
-					htmlString.append("<OPTION VALUE='").append(nameValueBean.getValue()).append("' SELECTED>")
-							.append(nameValueBean.getName());
+					htmlString.append("<OPTION VALUE='").append(nameValueBean.getValue()).append(
+							"' SELECTED>").append(nameValueBean.getName());
 				}
 				else
 				{
-					htmlString.append("<OPTION VALUE='").append(nameValueBean.getValue()).append("'>")
-						.append(nameValueBean.getName());
+					htmlString.append("<OPTION VALUE='").append(nameValueBean.getValue()).append(
+							"'>").append(nameValueBean.getName());
 				}
 			}
 		}
 		htmlString.append("</SELECT>");
 
+		// generate this type of html if multiselect is to be implemented
+		// using an auto complete drop down and list box together.
+		if (IsUsingAutoCompleteDropdown != null && IsUsingAutoCompleteDropdown)
+		{
+			String identifier = "";
+			if (this.getId() != null)
+			{
+				identifier = this.getId().toString();
+			}
+
+			String parentContainerId = "";
+			if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
+			{
+				parentContainerId = this.getParentContainer().getId().toString();
+			}
+
+			String coordId = "coord_" + getHTMLComponentName();
+			String protocolCoordId = "protocolCoordId_" + getHTMLComponentName();
+
+			StringBuffer multSelWithAutoCmpltHTML = new StringBuffer();
+			multSelWithAutoCmpltHTML
+					.append("<script defer='defer'>Ext.onReady(function(){var myUrl= 'DEComboDataAction.do?controlId= "
+							+ identifier
+							+ "~containerIdentifier="
+							+ parentContainerId
+							+ "';var ds = new Ext.data.Store({proxy: new Ext.data.HttpProxy({url: myUrl}),reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, [{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});var combo = new Ext.form.ComboBox({store: ds,hiddenName: 'CB_coord_"
+							+ getHTMLComponentName()
+							+ "',displayField:'excerpt',valueField: 'id',typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true,emptyText:'--Select--',valueNotFoundText:'',selectOnFocus:'true',applyTo: '"
+							+ coordId
+							+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});});</script>\n");
+
+			multSelWithAutoCmpltHTML.append("<br><table border=\"0\" width=\"100%\">\n");
+			multSelWithAutoCmpltHTML.append("\t<tr>\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t<td width=\"35%\" class=\"black_ar_new\" valign=\"TOP\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t<input type='text' id='" + coordId + "' name='"
+					+ coordId + "' value =' ' size='20'/>\n");
+			multSelWithAutoCmpltHTML.append("\t\t</td>\n\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t<td class=\"black_ar_new\" width=\"20%\" align=\"center\" valign=\"TOP\">\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t\t<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t<tr>\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t\t\t\t<td height=\"22\" align=\"center\" valign=\"TOP\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"addLink\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"moveOptions('"
+					+ coordId + "','" + protocolCoordId + "', 'add')\">\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_add_inact.gif\" alt=\"Add\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t</a>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t</div>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t</td>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t</tr>\n\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t<tr>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t<td height=\"22\" align=\"center\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"removeLink\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"moveOptions('"
+					+ protocolCoordId + "','" + coordId + "', 'edit')\">\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_remove_inact.gif\" alt=\"Remove\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t</a>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t</div>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t</td>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t\t</tr>\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t</table>\n");
+			multSelWithAutoCmpltHTML.append("\t\t</td>\n\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t<td width=\"50%\" align=\"center\" class=\"black_ar_new\">\n");
+			multSelWithAutoCmpltHTML.append("\t\t\t<SELECT id=\"" + protocolCoordId + "\" name=\""
+					+ getHTMLComponentName()
+					+ "\" size=\"4\" multiple=\"true\" style=\"width:170\">");
+
+			if (nameValueBeans != null && !nameValueBeans.isEmpty())
+			{
+				for (NameValueBean nameValueBean : nameValueBeans)
+				{
+					if (values != null && !values.isEmpty()
+							&& values.contains(nameValueBean.getValue()))
+					{
+						multSelWithAutoCmpltHTML.append("<OPTION VALUE='").append(
+								nameValueBean.getValue()).append("' SELECTED>").append(
+								nameValueBean.getName());
+					}
+				}
+			}
+
+			multSelWithAutoCmpltHTML.append("</SELECT>\n");
+			multSelWithAutoCmpltHTML.append("\t\t</td>\n");
+			multSelWithAutoCmpltHTML.append("\t</tr>\n");
+			multSelWithAutoCmpltHTML.append("</table>");
+
+			htmlString = multSelWithAutoCmpltHTML;
+		}
+
 		return htmlString.toString();
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
+	 */
 	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
 	{
 		List<String> selectedOptions = new ArrayList<String>();
@@ -199,9 +318,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			if (!(value instanceof List) && value != null)
 			{
-				List<String> tempList = new ArrayList<String>();
-				tempList.add((String) value);
-				selectedOptions = tempList;
+				List<String> temp = new ArrayList<String>();
+				temp.add((String) value);
+				selectedOptions = temp;
 			}
 			else
 			{
@@ -209,21 +328,21 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			}
 		}
 
-		//List<String> selectedOptions = (List<String>) this.value;
-		StringBuffer htmlString = new StringBuffer("&nbsp;");
+		StringBuffer generatedHtml = new StringBuffer("&nbsp;");
 		if (value != null)
 		{
-			htmlString = new StringBuffer();
-			htmlString.append("<span class = 'font_bl_s'>");
+			generatedHtml = new StringBuffer();
+			generatedHtml.append("<span class = 'font_bl_s'>");
 			for (String string : selectedOptions)
 			{
-				htmlString.append(string);
-				htmlString.append("<br>");
+				generatedHtml.append(string);
+				generatedHtml.append("<br>");
 			}
 
-			htmlString.append("</span>");
+			generatedHtml.append("</span>");
 		}
-		return htmlString.toString();
+
+		return generatedHtml.toString();
 	}
 
 	/**
@@ -235,12 +354,12 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	{
 		if (association.getIsCollection())
 		{
-			Collection<AbstractAttributeInterface> attributeCollection = association
-					.getTargetEntity().getAllAbstractAttributes();
-			Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
-					.filterSystemAttributes(attributeCollection);
+			Collection<AbstractAttributeInterface> attributes = association.getTargetEntity()
+					.getAllAbstractAttributes();
+			Collection<AbstractAttributeInterface> filteredAttributes = EntityManagerUtil
+					.filterSystemAttributes(attributes);
 			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-					filteredAttributeCollection);
+					filteredAttributes);
 			List<Map> values = (List<Map>) this.value;
 			if (values != null)
 			{
@@ -255,9 +374,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		{
 			if (!(value instanceof List) && value != null)
 			{
-				List<String> tempList = new ArrayList<String>();
-				tempList.add((String) value);
-				valueList = tempList;
+				List<String> temp = new ArrayList<String>();
+				temp.add((String) value);
+				valueList = temp;
 			}
 			else
 			{
@@ -285,14 +404,14 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 		else if (baseAbstractAttribute instanceof CategoryAttributeInterface)
 		{
-			CategoryAttributeInterface categoryAttributeInterface = (CategoryAttributeInterface) baseAbstractAttribute;
-			AbstractAttributeInterface abstractAttributeInterface = categoryAttributeInterface
-					.getAbstractAttribute();
-			if (abstractAttributeInterface instanceof AssociationInterface)
+			CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) baseAbstractAttribute;
+			AbstractAttributeInterface abstractAttribute = categoryAttribute.getAbstractAttribute();
+			if (abstractAttribute instanceof AssociationInterface)
 			{
-				association = (AssociationInterface) abstractAttributeInterface;
+				association = (AssociationInterface) abstractAttribute;
 			}
 		}
+
 		return association;
 	}
 }

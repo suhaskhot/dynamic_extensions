@@ -53,12 +53,22 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 		String formattedValue = "";
 		if (value != null)
 		{
-			DecimalFormat formatDecimal = (DecimalFormat) NumberFormat
-					.getNumberInstance();
-			formatDecimal.setParseBigDecimal(true);
-			formatDecimal.setMaximumFractionDigits(this.decimalPlaces
-					.intValue());
-			formattedValue = formatDecimal.format(value);
+			if (this.decimalPlaces.intValue() > 0)
+			{
+					DecimalFormat formatDecimal = (DecimalFormat) NumberFormat
+							.getNumberInstance();
+					formatDecimal.setParseBigDecimal(true);
+					formatDecimal.setMaximumFractionDigits(this.decimalPlaces
+							.intValue());
+					formattedValue = formatDecimal.format(value);
+			}
+			else
+			{
+				PermissibleValueInterface permissibleValueInterface = getPermissibleValueForString(value
+						.toString());
+				formattedValue = permissibleValueInterface.getValueAsObject()
+						.toString();
+			} 
 		}
 		return formattedValue;
 	}

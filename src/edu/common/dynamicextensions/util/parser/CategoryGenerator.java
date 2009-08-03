@@ -582,7 +582,7 @@ public class CategoryGenerator
 		{
 			String[] categoryPaths = categoryFileParser.getCategoryPaths();
 			String categoryEntityName = CategoryGenerationUtil
-					.getCategoryEntityName(categoryPaths[0]);
+					.getCategoryEntityName(categoryPaths[0],entityNameAssociationMap);
 
 			String entityName = CategoryGenerationUtil
 					.getEntityNameFromCategoryEntityInstancePath(categoryPaths[0]);
@@ -845,7 +845,7 @@ public class CategoryGenerator
 			ContainerInterface temp = null;
 			for (String categoryPath : categoryPaths)
 			{
-				categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath);
+				categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath,entityNameAssociationMap);
 				temp = createForm(displayLable, categoryPath, categoryEntityName, categoryEntName,
 						categoryPaths, showCaption);
 				categoryHelper.removeAllSeprators(temp);

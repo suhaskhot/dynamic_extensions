@@ -278,5 +278,12 @@ public interface CategoryHelperInterface
 	 * @param temp
 	 */
 	void removeAllSeprators(ContainerInterface temp);
+	
+	/**
+	 * Separates the instance information form the string of the format entityName[instance]
+	 * @param categoryEntityName
+	 * @return
+	 */
+	public abstract Long getInsatnce(String categoryEntityName);
 
 }

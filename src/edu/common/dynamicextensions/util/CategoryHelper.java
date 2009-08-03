@@ -628,13 +628,22 @@ public class CategoryHelper implements CategoryHelperInterface
 							"ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT " + instance);
 
 				}
-				associationRelation.setSourceInstanceId(Long.parseLong(sourceEntity.substring(
-						sourceEntity.indexOf('[') + 1, sourceEntity.indexOf(']'))));
-				associationRelation.setTargetInstanceId(Long.parseLong(targetEntity.substring(
-						targetEntity.indexOf('[') + 1, targetEntity.indexOf(']'))));
+				associationRelation.setSourceInstanceId(getInsatnce(sourceEntity));
+				associationRelation.setTargetInstanceId(getInsatnce(targetEntity));
 				counter++;
 			}
 		}
+	}
+
+	/**
+	 * Separates the instance information form the string of the format entityName[instance]
+	 * @param categoryEntityName
+	 * @return
+	 */
+	public Long getInsatnce(String categoryEntityName)
+	{
+		return Long.parseLong(categoryEntityName.substring(
+				categoryEntityName.indexOf('[') + 1, categoryEntityName.indexOf(']')));	
 	}
 
 	/* (non-Javadoc)

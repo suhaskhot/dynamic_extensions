@@ -40,6 +40,8 @@ import edu.wustl.common.util.global.ApplicationProperties;
 public class CategoryGenerationUtil
 {
 
+	public static CategoryHelperInterface categoryHelper = new CategoryHelper();
+
 	/**
 	 * This method returns the entity from the entity group.
 	 * @param entityName
@@ -558,6 +560,7 @@ public class CategoryGenerationUtil
 		}
 		return entityInterface;
 	}
+
 	/**
 	 * @throws ParseException 
 	 * @throws DynamicExtensionsApplicationException 
@@ -565,7 +568,9 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsSystemException 
 	 * 
 	 */
-	public static void setDefaultValueForCalculatedAttributes(CategoryInterface category,CategoryEntityInterface rootCategoryEntity,Long lineNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public static void setDefaultValueForCalculatedAttributes(CategoryInterface category,
+			CategoryEntityInterface rootCategoryEntity, Long lineNumber)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
 				.getCategoryAssociationCollection())
@@ -573,35 +578,34 @@ public class CategoryGenerationUtil
 			for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
 					.getTargetCategoryEntity().getAllCategoryAttributes())
 			{
-				Boolean isCalculatedAttribute = categoryAttributeInterface
-						.getIsCalculated();
-				if (isCalculatedAttribute != null && isCalculatedAttribute) 
+				Boolean isCalculatedAttribute = categoryAttributeInterface.getIsCalculated();
+				if (isCalculatedAttribute != null && isCalculatedAttribute)
 				{
-					setDefaultValue(categoryAttributeInterface,category);
+					setDefaultValue(categoryAttributeInterface, category);
 					FormulaCalculator formulaCalculator = new FormulaCalculator();
 					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
-							categoryAttributeInterface, rootCategoryEntity
-									.getCategory());
+							categoryAttributeInterface, rootCategoryEntity.getCategory());
 					if (message != null && message.length() > 0)
 					{
 						throw new DynamicExtensionsSystemException(ApplicationProperties
 								.getValue(CategoryConstants.CREATE_CAT_FAILS)
 								+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-								+ lineNumber
-								+ " "
-								+ message);
+								+ lineNumber + " " + message);
 					}
 				}
 			}
-			setDefaultValueForCalculatedAttributes(category,categoryAssociationInterface
-					.getTargetCategoryEntity(),lineNumber);
+			setDefaultValueForCalculatedAttributes(category, categoryAssociationInterface
+					.getTargetCategoryEntity(), lineNumber);
 		}
 	}
+
 	/**
 	 * 
 	 * @return
 	 */
-	public static void getCategoryAttribute(String entityName,Long instanceNumber,String attributeName,CategoryEntityInterface rootCategoryEntity,List <CategoryAttributeInterface> attributes)
+	public static void getCategoryAttribute(String entityName, Long instanceNumber,
+			String attributeName, CategoryEntityInterface rootCategoryEntity,
+			List<CategoryAttributeInterface> attributes)
 	{
 		if (rootCategoryEntity != null)
 		{
@@ -614,14 +618,15 @@ public class CategoryGenerationUtil
 						.getPath().getSortedPathAssociationRelationCollection();
 				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
 						.get(pathAssociationCollection.size() - 1);
-				if (categoryEntityInterface.getEntity().getName().equals(
-						entityName)
-						&& pathAssociationRelationInterface
-								.getTargetInstanceId().equals(instanceNumber))
+				if (categoryEntityInterface.getEntity().getName().equals(entityName)
+						&& pathAssociationRelationInterface.getTargetInstanceId().equals(
+								instanceNumber))
 				{
-					for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface.getTargetCategoryEntity().getCategoryAttributeCollection())
+					for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
+							.getTargetCategoryEntity().getCategoryAttributeCollection())
 					{
-						if (categoryAttributeInterface.getAbstractAttribute().getName().equals(attributeName))
+						if (categoryAttributeInterface.getAbstractAttribute().getName().equals(
+								attributeName))
 						{
 							attributes.add(categoryAttributeInterface);
 							return;
@@ -630,11 +635,13 @@ public class CategoryGenerationUtil
 				}
 				else
 				{
-					getCategoryAttribute(entityName,instanceNumber,attributeName,categoryAssociationInterface.getTargetCategoryEntity(),attributes);
+					getCategoryAttribute(entityName, instanceNumber, attributeName,
+							categoryAssociationInterface.getTargetCategoryEntity(), attributes);
 				}
 			}
 		}
 	}
+
 	/**
 	 * setDefaultValueforCalculatedAttributes.
 	 * @param defaultValue
@@ -643,18 +650,19 @@ public class CategoryGenerationUtil
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void setDefaultValue(CategoryAttributeInterface categoryAttribute,CategoryInterface categoryInterface) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	private static void setDefaultValue(CategoryAttributeInterface categoryAttribute,
+			CategoryInterface categoryInterface) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
 	{
 		FormulaParser formulaParser = new FormulaParser();
-		if (formulaParser.validateExpression(
-				categoryAttribute.getFormula().getExpression()))
+		if (formulaParser.validateExpression(categoryAttribute.getFormula().getExpression()))
 		{
 			categoryAttribute.removeAllCalculatedCategoryAttributes();
 			List<String> symbols = formulaParser.getSymobols();
-			List <CategoryAttributeInterface> attributes = new ArrayList<CategoryAttributeInterface>();
+			List<CategoryAttributeInterface> attributes = new ArrayList<CategoryAttributeInterface>();
 			for (String symbol : symbols)
 			{
-				String [] names = symbol.split("_");
+				String[] names = symbol.split("_");
 				if (names.length == 3)
 				{
 					attributes.clear();
@@ -662,67 +670,135 @@ public class CategoryGenerationUtil
 					{
 						Long.parseLong(names[1]);
 					}
-					catch (NumberFormatException e) 
+					catch (NumberFormatException e)
 					{
-						throw new DynamicExtensionsSystemException(
-								ApplicationProperties
-										.getValue(CategoryConstants.CREATE_CAT_FAILS)
-										+ " "
-										+ names
-										+ ApplicationProperties
-												.getValue("incorrectFormulaSyntaxCalculatedAttribute")
-										+ categoryAttribute.getFormula()
-												.getExpression());
-						
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ " "
+								+ names
+								+ ApplicationProperties
+										.getValue("incorrectFormulaSyntaxCalculatedAttribute")
+								+ categoryAttribute.getFormula().getExpression());
+
 					}
-					CategoryGenerationUtil.getCategoryAttribute(names[0], Long.valueOf(names[1]), names[2],
-							categoryInterface.getRootCategoryElement(), attributes);
+					CategoryGenerationUtil.getCategoryAttribute(names[0], Long.valueOf(names[1]),
+							names[2], categoryInterface.getRootCategoryElement(), attributes);
 					if (attributes.isEmpty())
 					{
-						throw new DynamicExtensionsSystemException(
-								ApplicationProperties
-										.getValue(CategoryConstants.CREATE_CAT_FAILS)
-										+ " "
-										+ names
-										+ ApplicationProperties
-												.getValue("incorrectFormulaSyntaxCalculatedAttribute")
-										+ categoryAttribute.getFormula()
-												.getExpression());
+						throw new DynamicExtensionsSystemException(ApplicationProperties
+								.getValue(CategoryConstants.CREATE_CAT_FAILS)
+								+ " "
+								+ names
+								+ ApplicationProperties
+										.getValue("incorrectFormulaSyntaxCalculatedAttribute")
+								+ categoryAttribute.getFormula().getExpression());
 					}
 					else
 					{
-						if (((AttributeMetadataInterface) attributes.get(0)).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation
-								|| ((AttributeMetadataInterface) attributes.get(0)).getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+						if (((AttributeMetadataInterface) attributes.get(0))
+								.getAttributeTypeInformation() instanceof NumericAttributeTypeInformation
+								|| ((AttributeMetadataInterface) attributes.get(0))
+										.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 						{
 							categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
 						}
 						else
 						{
-							throw new DynamicExtensionsSystemException(
-									ApplicationProperties
-											.getValue(CategoryConstants.CREATE_CAT_FAILS)
-											+ " "
-											+ names
-											+ ApplicationProperties
-													.getValue("incorrectDataTypeForCalculatedAttribute")
-											+ categoryAttribute.getFormula()
-													.getExpression());
+							throw new DynamicExtensionsSystemException(ApplicationProperties
+									.getValue(CategoryConstants.CREATE_CAT_FAILS)
+									+ " "
+									+ names
+									+ ApplicationProperties
+											.getValue("incorrectDataTypeForCalculatedAttribute")
+									+ categoryAttribute.getFormula().getExpression());
 						}
 					}
 				}
 				else
 				{
-					throw new DynamicExtensionsSystemException(
-							ApplicationProperties
-									.getValue(CategoryConstants.CREATE_CAT_FAILS)
-									+ " "
-									+ names
-									+ ApplicationProperties
-											.getValue("incorrectFormulaSyntaxCalculatedAttribute")
-									+ categoryAttribute.getFormula()
-											.getExpression());
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ " "
+							+ names
+							+ ApplicationProperties
+									.getValue("incorrectFormulaSyntaxCalculatedAttribute")
+							+ categoryAttribute.getFormula().getExpression());
 				}
 			}
 		}
 	}
+
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * This method will generate category entity names according to the path. 
+	 * @param categoryNameInCSV
+	 * @return
+	 * @throws DynamicExtensionsSystemException 
+	 */
+	public static String getCategoryEntityName(String categoryEntityInstancePath,
+			Map<String, List<AssociationInterface>> entityNameAssociationMap)
+			throws DynamicExtensionsSystemException
+	{
+		StringBuffer categoryEntityName = new StringBuffer();
+		String entityNameForEntityAssociationMap = CategoryGenerationUtil
+				.getEntityNameForAssociationMap(categoryEntityInstancePath);
+
+		//e.g Annotations[1]->PhysicalExam[2]
+		String[] pathWithInstance = categoryEntityInstancePath.split("->");
+
+		int counter = 0;
+		if (entityNameAssociationMap.get(entityNameForEntityAssociationMap) != null)
+		{
+			for (AssociationInterface association : entityNameAssociationMap
+					.get(entityNameForEntityAssociationMap))
+			{
+				String sourceEntityName = pathWithInstance[counter];
+				String targetEntityName = pathWithInstance[counter + 1];
+				if (sourceEntityName.indexOf('[') == -1 || sourceEntityName.indexOf(']') == -1)
+				{
+					throw new DynamicExtensionsSystemException(
+							"ERROR: INSTANCE INFORMATION IS NOT IN THE CORRECT FORMAT "
+									+ association);
+
+				}
+				if (counter == 0)
+				{
+					categoryEntityName.append(association.getEntity().getName());
+					categoryEntityName.append(formatInstance(categoryHelper
+							.getInsatnce(sourceEntityName)));
+				}
+
+				categoryEntityName.append(association.getTargetEntity().getName());
+				categoryEntityName.append(formatInstance(categoryHelper
+						.getInsatnce(targetEntityName)));
+
+				counter++;
+			}
+		}
+		if (categoryEntityName.length() == 0)
+		{
+			categoryEntityName.append(pathWithInstance[0]);
+			categoryEntityName.append(pathWithInstance[0]);
+		}
+		return categoryEntityName.toString();
+	}
+
+	/**
+	 * @param insatnce
+	 * @return
+	 */
+	private static Object formatInstance(Long insatnce)
+	{
+		StringBuffer categoryEntityName = new StringBuffer();
+		categoryEntityName.append('[');
+		categoryEntityName.append(insatnce);
+		categoryEntityName.append(']');
+		return categoryEntityName;
+	}
+
+	/**
+	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * @param categoryNameInCSV
+	 * @return
+	 */
 }

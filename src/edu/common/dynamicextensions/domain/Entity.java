@@ -22,6 +22,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
+import edu.wustl.common.util.Utility;
 
 /**
  * An entity is something that has a distinct, separate existence, though it need not be a material
@@ -885,7 +886,17 @@ public class Entity extends AbstractEntity implements EntityInterface
 				break;
 			}
 		}
+
 		return association;
+	}
+
+	/**
+	 * For Entity, use camel case parser from common package.
+	 */
+	@Override
+	public String getCapitalizedName(String name)
+	{
+		return Utility.getDisplayLabel(name.trim());
 	}
 
 }

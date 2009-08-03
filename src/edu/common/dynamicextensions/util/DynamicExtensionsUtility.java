@@ -53,7 +53,9 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
@@ -115,9 +117,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ControlInterface controlInterface = null;
-		if(controlIdentifier!=null && !"".equals(controlIdentifier ))
+		if (controlIdentifier != null && !"".equals(controlIdentifier))
 		{
-			controlInterface = EntityCache.getInstance().getControlById(Long.valueOf(controlIdentifier));
+			controlInterface = EntityCache.getInstance().getControlById(
+					Long.valueOf(controlIdentifier));
 		}
 		return controlInterface;
 	}
@@ -133,9 +136,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
-		if(entityGroupIdentifier!=null && !"".equals(entityGroupIdentifier))
+		if (entityGroupIdentifier != null && !"".equals(entityGroupIdentifier))
 		{
-			entityGroupInterface = EntityCache.getInstance().getEntityGroupById(Long.valueOf(entityGroupIdentifier));
+			entityGroupInterface = EntityCache.getInstance().getEntityGroupById(
+					Long.valueOf(entityGroupIdentifier));
 		}
 		return entityGroupInterface;
 	}
@@ -151,9 +155,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
-		if(containerIdentifier!=null && !"".equals(containerIdentifier ))
+		if (containerIdentifier != null && !"".equals(containerIdentifier))
 		{
-			containerInterface =EntityCache.getInstance().getContainerById(Long.valueOf(containerIdentifier));
+			containerInterface = EntityCache.getInstance().getContainerById(
+					Long.valueOf(containerIdentifier));
 		}
 		return containerInterface;
 	}
@@ -169,9 +174,10 @@ public class DynamicExtensionsUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = null;
-		if(attributeIdentifier!=null && !"".equals(attributeIdentifier))
+		if (attributeIdentifier != null && !"".equals(attributeIdentifier))
 		{
-			attributeInterface = EntityCache.getInstance().getAttributeById(Long.valueOf(attributeIdentifier));
+			attributeInterface = EntityCache.getInstance().getAttributeById(
+					Long.valueOf(attributeIdentifier));
 		}
 		return attributeInterface;
 	}
@@ -211,7 +217,6 @@ public class DynamicExtensionsUtility
 		}
 	}
 
-
 	/**
 	 * This method clears data value for all controls within container
 	 * @param baseContainerObject Container Object
@@ -239,7 +244,7 @@ public class DynamicExtensionsUtility
 				}
 				objControl.setValue(null);
 			}
-			
+
 			baseContainer = baseContainer.getBaseContainer();
 		}
 
@@ -1286,11 +1291,6 @@ public class DynamicExtensionsUtility
 		return entityGroup;
 	}
 
-	
-
-	
-
-	
 	/**
 	 * Method to check if data type is numeric i.e long,integer,short,float,double
 	 * @param dataType
@@ -1801,16 +1801,6 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * getFormattedStringForCapitalization.
-	 * @param entityName
-	 * @return
-	 */
-	public static String getFormattedStringForCapitalization(String entityName)
-	{
-		return Utility.getDisplayLabel(entityName.trim());
-	}
-
-	/**
 	 *
 	 * @param containerInterface
 	 * @param inContextContainerInterface
@@ -2166,7 +2156,7 @@ public class DynamicExtensionsUtility
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(
-					"Exception encountered while populating constraint properties for entity.",e);
+					"Exception encountered while populating constraint properties for entity.", e);
 		}
 		finally
 		{
@@ -2177,7 +2167,7 @@ public class DynamicExtensionsUtility
 			catch (DAOException e)
 			{
 				throw new DynamicExtensionsSystemException(
-						"Exception encountered while closing session.",e);
+						"Exception encountered while closing session.", e);
 			}
 		}
 	}

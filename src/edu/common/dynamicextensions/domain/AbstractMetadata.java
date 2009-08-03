@@ -308,4 +308,15 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	{
 		this.publicId = publicId;
 	}
+
+	/**
+	 * This method returns a capitalized version of the name passed to it.
+	 * @param name
+	 * @return
+	 */
+	public String getCapitalizedName(String name)
+	{
+		return name;
+	}
+
 }

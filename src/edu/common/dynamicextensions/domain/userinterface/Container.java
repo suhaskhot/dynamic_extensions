@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
@@ -286,6 +285,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		{
 			controlCollection = new HashSet<ControlInterface>();
 		}
+
 		controlCollection.add(controlInterface);
 		controlInterface.setParentContainer(this);
 	}
@@ -306,33 +306,34 @@ public class Container extends DynamicExtensionBaseDomainObject
 	public ControlInterface getControlInterfaceBySequenceNumber(String sequenceNumber)
 	{
 		boolean found = false;
-		ControlInterface controlInterface = null;
-		Collection<ControlInterface> controlsCollection = this.getControlCollection();
-		if (controlsCollection != null)
+		ControlInterface control = null;
+		Collection<ControlInterface> controls = this.getControlCollection();
+		if (controls != null)
 		{
-			Iterator<ControlInterface> controlsIterator = controlsCollection.iterator();
-			while (controlsIterator.hasNext())
+			Iterator<ControlInterface> controlsIter = controls.iterator();
+			while (controlsIter.hasNext())
 			{
-				controlInterface = controlsIterator.next();
-				if (controlInterface.getSequenceNumber().equals(Integer.valueOf(sequenceNumber)))
+				control = controlsIter.next();
+				if (control.getSequenceNumber().equals(Integer.valueOf(sequenceNumber)))
 				{
 					found = true;
 					break;
 				}
 			}
 		}
-		return found ? controlInterface : null;
+
+		return found ? control : null;
 	}
 
 	/**
 	 *
 	 */
-	public void removeControl(ControlInterface controlInterface)
+	public void removeControl(ControlInterface control)
 	{
-		if ((controlInterface != null) && (controlCollection != null)
-				&& (controlCollection.contains(controlInterface)))
+		if ((control != null) && (controlCollection != null)
+				&& (controlCollection.contains(control)))
 		{
-			controlCollection.remove(controlInterface);
+			controlCollection.remove(control);
 		}
 	}
 
@@ -352,27 +353,28 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public List<ControlInterface> getAllControls()
 	{
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+		List<ControlInterface> controls = new ArrayList<ControlInterface>(this
 				.getControlCollection());
-		Collections.sort(controlsList);
+		Collections.sort(controls);
 
-		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+		List<ControlInterface> baseControls = new ArrayList<ControlInterface>();
 
 		ContainerInterface baseContainer = this.baseContainer;
 		while (baseContainer != null)
 		{
-			baseControlsList = new ArrayList(baseContainer.getControlCollection());
-			Collections.sort(baseControlsList);
-			Collections.reverse(baseControlsList);
+			baseControls = new ArrayList(baseContainer.getControlCollection());
+			Collections.sort(baseControls);
+			Collections.reverse(baseControls);
 
-			controlsList.addAll(baseControlsList);
+			controls.addAll(baseControls);
 
 			baseContainer.setIncontextContainer(this);
 			baseContainer = baseContainer.getBaseContainer();
-
 		}
-		Collections.reverse(controlsList);
-		return controlsList;
+
+		Collections.reverse(controls);
+
+		return controls;
 	}
 
 	/**
@@ -380,38 +382,41 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public List<ControlInterface> getAllControlsUnderSameDisplayLabel()
 	{
-		List<ControlInterface> controlsList = new ArrayList<ControlInterface>(this
+		List<ControlInterface> controls = new ArrayList<ControlInterface>(this
 				.getControlCollection());
-		for (ContainerInterface containerInterface : childContainerCollection)
+
+		for (ContainerInterface container : childContainerCollection)
 		{
-			controlsList.addAll(containerInterface.getAllControls());
+			controls.addAll(container.getAllControls());
 		}
 
-		List<ControlInterface> baseControlsList = new ArrayList<ControlInterface>();
+		List<ControlInterface> baseControls = new ArrayList<ControlInterface>();
 
 		ContainerInterface baseContainer = this.baseContainer;
 		while (baseContainer != null)
 		{
-			baseControlsList = new ArrayList(baseContainer.getControlCollection());
-			Collections.reverse(baseControlsList);
+			baseControls = new ArrayList(baseContainer.getControlCollection());
+			Collections.reverse(baseControls);
 
-			controlsList.addAll(baseControlsList);
+			controls.addAll(baseControls);
 
 			baseContainer.setIncontextContainer(this);
 			baseContainer = baseContainer.getBaseContainer();
-
 		}
-		Collections.sort(controlsList);
-		Collections.reverse(controlsList);
-		return controlsList;
+
+		Collections.sort(controls);
+		Collections.reverse(controls);
+
+		return controls;
 	}
 
 	/**
-	 * @param controlInterface
+	 * @param control
 	 */
-	private void updateValueMap(ControlInterface controlInterface)
+	private void updateValueMap(ControlInterface control)
 	{
-		Object value = containerValueMap.get(controlInterface.getBaseAbstractAttribute());
+		Object value = containerValueMap.get(control.getBaseAbstractAttribute());
+
 		Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = null;
 		if (value != null && value instanceof List)
 		{
@@ -419,9 +424,8 @@ public class Container extends DynamicExtensionBaseDomainObject
 			{
 				displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value)
 						.get(0);
-				((AbstractContainmentControl) controlInterface).isCardinalityOneToMany();
+				((AbstractContainmentControl) control).isCardinalityOneToMany();
 			}
-
 		}
 		else
 		{
@@ -429,14 +433,15 @@ public class Container extends DynamicExtensionBaseDomainObject
 		}
 		if (displayContainerValueMap != null)
 		{
-			for (BaseAbstractAttributeInterface abstractAttributeInterface : displayContainerValueMap.keySet())
+			for (BaseAbstractAttributeInterface abstractAttributeInterface : displayContainerValueMap
+					.keySet())
 			{
 				containerValueMap.put(abstractAttributeInterface, displayContainerValueMap
 						.get(abstractAttributeInterface));
 			}
-			containerValueMap.remove(controlInterface.getBaseAbstractAttribute());
-		}
 
+			containerValueMap.remove(control.getBaseAbstractAttribute());
+		}
 	}
 
 	/**
@@ -445,19 +450,19 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public String generateContainerHTML() throws DynamicExtensionsSystemException
 	{
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer containerHTML = new StringBuffer();
 
-		stringBuffer
+		containerHTML
 				.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		if (this.getMode() != null
 				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
 		{
-			stringBuffer.append("<tr><td class='formMessage' colspan='3'><span class='font_red'>");
-			stringBuffer.append(this.getRequiredFieldIndicatior());
-			stringBuffer.append("&nbsp;</span><span class='font_gr_s'>");
-			stringBuffer.append(this.getRequiredFieldWarningMessage());
-			stringBuffer.append("</span></td></tr>");
+			containerHTML.append("<tr><td class='formMessage' colspan='3'><span class='font_red'>");
+			containerHTML.append(this.getRequiredFieldIndicatior());
+			containerHTML.append("&nbsp;</span><span class='font_gr_s'>");
+			containerHTML.append(this.getRequiredFieldWarningMessage());
+			containerHTML.append("</span></td></tr>");
 		}
 		else
 		{
@@ -466,16 +471,18 @@ public class Container extends DynamicExtensionBaseDomainObject
 			//Container hierarchy can be n level
 			//So, mode of the n containers in the hierarchy need to be same.
 
-			ContainerInterface tempContainerInterface = this.baseContainer;
-			while (tempContainerInterface != null)
+			ContainerInterface tempContainer = this.baseContainer;
+			while (tempContainer != null)
 			{
-				tempContainerInterface.setMode(this.mode);
-				tempContainerInterface = tempContainerInterface.getBaseContainer();
+				tempContainer.setMode(this.mode);
+				tempContainer = tempContainer.getBaseContainer();
 			}
 		}
-		stringBuffer.append(generateControlsHTML());
-		stringBuffer.append("</table>");
-		return stringBuffer.toString();
+
+		containerHTML.append(generateControlsHTML());
+		containerHTML.append("</table>");
+
+		return containerHTML.toString();
 	}
 
 	/**
@@ -484,52 +491,57 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 */
 	public String generateControlsHTML() throws DynamicExtensionsSystemException
 	{
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer controlHTML = new StringBuffer();
 
 		if (addCaption)
 		{
-			addCaption(stringBuffer);
+			addCaption(controlHTML);
 		}
 
-		List<ControlInterface> controlsList = getAllControlsUnderSameDisplayLabel(); //UnderSameDisplayLabel();
+		List<ControlInterface> controls = getAllControlsUnderSameDisplayLabel(); //UnderSameDisplayLabel();
 		int lastRow = 0;
 		int i = 0;
 
-		for (ControlInterface control : controlsList)
+		for (ControlInterface control : controls)
 		{
 			Object value = containerValueMap.get(control.getBaseAbstractAttribute());
 			control.setValue(value);
+
 			if (lastRow == control.getSequenceNumber())
 			{
-				stringBuffer.append("<div style='float:left'>&nbsp;");
-				stringBuffer.append("</div>");
+				controlHTML.append("<div style='float:left'>&nbsp;");
+				controlHTML.append("</div>");
 			}
 			else
 			{
 				if (i != 0)
 				{
-					stringBuffer.append("</td></tr><tr><td height='7'></td></tr>");
+					controlHTML.append("</td></tr><tr><td height='7'></td></tr>");
 				}
-				stringBuffer.append("<tr valign='center'>");
+
+				controlHTML.append("<tr valign='center'>");
 			}
 
-			stringBuffer.append(control.generateHTML());
+			controlHTML.append(control.generateHTML());
 
 			i++;
 			lastRow = control.getSequenceNumber();
-
 		}
-		stringBuffer.append("</td></tr>");
+
+		controlHTML.append("</td></tr>");
 		this.showAssociationControlsAsLink = false;
-		return stringBuffer.toString();
+
+		return controlHTML.toString();
 	}
 
-	private void addCaption(StringBuffer stringBuffer)
+	/**
+	 * @param captionHTML
+	 */
+	private void addCaption(StringBuffer captionHTML)
 	{
-		stringBuffer.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
-		stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
-				.getCaption()));
-		stringBuffer.append("<tr><td height='5'></td></tr>");
+		captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
+		captionHTML.append(((AbstractEntity)this.getAbstractEntity()).getCapitalizedName(this.getCaption()));
+		captionHTML.append("<tr><td height='5'></td></tr>");
 	}
 
 	/**
@@ -538,10 +550,10 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String generateControlsHTMLAsGrid(
-			List<Map<BaseAbstractAttributeInterface, Object>> valueMapList)
+			List<Map<BaseAbstractAttributeInterface, Object>> valueMaps)
 			throws DynamicExtensionsSystemException
 	{
-		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMapList);
+		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMaps);
 	}
 
 	/**
@@ -581,42 +593,44 @@ public class Container extends DynamicExtensionBaseDomainObject
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
 	 */
-	public String generateLink(ContainerInterface containerInterface)
+	public String generateLink(ContainerInterface container)
 			throws DynamicExtensionsSystemException
 	{
-		String detailsString = "";
-		boolean isDataPresent = UserInterfaceiUtility.isDataPresent(containerInterface
+		String details = "";
+		boolean isDataPresent = UserInterfaceiUtility.isDataPresent(container
 				.getContainerValueMap());
 		if (isDataPresent)
 		{
 			if (mode.equals(WebUIManagerConstants.EDIT_MODE))
 			{
-				detailsString = ApplicationProperties.getValue("eav.att.EditDetails");
+				details = ApplicationProperties.getValue("eav.att.EditDetails");
 			}
 			else if (mode.equals(WebUIManagerConstants.VIEW_MODE))
 			{
-				detailsString = ApplicationProperties.getValue("eav.att.ViewDetails");
+				details = ApplicationProperties.getValue("eav.att.ViewDetails");
 			}
 		}
 		else
 		{
 			if (mode.equals(WebUIManagerConstants.EDIT_MODE))
 			{
-				detailsString = ApplicationProperties.getValue("eav.att.EnterDetails");
+				details = ApplicationProperties.getValue("eav.att.EnterDetails");
 			}
 			else if (mode.equals(WebUIManagerConstants.VIEW_MODE))
 			{
-				detailsString = ApplicationProperties.getValue("eav.att.NoDataToView");
+				details = ApplicationProperties.getValue("eav.att.NoDataToView");
 			}
 		}
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer
+
+		StringBuffer linkHTML = new StringBuffer();
+		linkHTML
 				.append("<img src='de/images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'><a href='#' style='cursor:hand' class='set1' onclick='showChildContainerInsertDataPage(");
-		stringBuffer.append(containerInterface.getId());
-		stringBuffer.append(",this)'>");
-		stringBuffer.append(detailsString);
-		stringBuffer.append("</a><tr><td></td></tr>");
-		return stringBuffer.toString();
+		linkHTML.append(container.getId());
+		linkHTML.append(",this)'>");
+		linkHTML.append(details);
+		linkHTML.append("</a><tr><td></td></tr>");
+
+		return linkHTML.toString();
 	}
 
 	/**
@@ -676,18 +690,18 @@ public class Container extends DynamicExtensionBaseDomainObject
 	public ControlInterface getControlByPosition(Integer xPosition, Integer yPosition)
 	{
 		ControlInterface control = null;
-		for (ControlInterface controlInterface : controlCollection)
+
+		for (ControlInterface cntrl : controlCollection)
 		{
-			if (controlInterface.getSequenceNumber() != null
-					&& controlInterface.getSequenceNumber().equals(xPosition))
+			if (cntrl.getSequenceNumber() != null && cntrl.getSequenceNumber().equals(xPosition))
 			{
-				if (controlInterface.getSequenceNumber() != null
-						&& controlInterface.getYPosition().equals(yPosition))
+				if (cntrl.getSequenceNumber() != null && cntrl.getYPosition().equals(yPosition))
 				{
-					control = controlInterface;
+					control = cntrl;
 				}
 			}
 		}
+
 		return control;
 	}
 

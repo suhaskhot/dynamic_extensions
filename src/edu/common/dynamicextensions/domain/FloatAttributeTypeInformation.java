@@ -60,10 +60,7 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 			}
 			else
 			{
-				PermissibleValueInterface permissibleValueInterface = getPermissibleValueForString(Float
-						.valueOf(value.floatValue()).toString());
-				formattedValue = permissibleValueInterface.getValueAsObject()
-						.toString();
+				formattedValue = Float.valueOf(value.floatValue()).toString();
 			}
 		}
 		return formattedValue;

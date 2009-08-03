@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
+import edu.wustl.common.util.Utility;
 
 /**
  * This Class represents the general Attribute of the Entities
@@ -109,6 +110,15 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute
 			//TODO //entityInterface.addAbstractAttribute(this);
 		}
 
+	}
+
+	/**
+	 * For attribute or association, use camel case parser from common package.
+	 */
+	@Override
+	public String getCapitalizedName(String name)
+	{
+		return Utility.getDisplayLabel(name.trim());
 	}
 
 }

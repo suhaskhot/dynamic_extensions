@@ -15,7 +15,6 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * @version 1.0
@@ -58,7 +57,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * Decides whether the control should be disabled or not
 	 */
 	protected Boolean isReadOnly = false;
-	
+
 	/**
 	 * Decides whether the control should be autocalculated
 	 */
@@ -143,19 +142,21 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	{
 		return caption;
 	}
+
 	/**
 	 * @hibernate.property name="isCalculated" type="boolean" column="IS_CALCULATED"
 	 * @return Returns the isHidden.
 	 */
-	public Boolean getIsCalculated() 
+	public Boolean getIsCalculated()
 	{
 		return isCalculated;
 	}
+
 	/**
 	 * 
 	 * @param isCalculated
 	 */
-	public void setIsCalculated(Boolean isCalculated) 
+	public void setIsCalculated(Boolean isCalculated)
 	{
 		this.isCalculated = isCalculated;
 	}
@@ -289,13 +290,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		}
 
 		this.isSubControl = false;
+
 		return htmlString;
 	}
 
 	protected String getControlHTML(String htmlString)
 	{
 		boolean isControlRequired = UserInterfaceiUtility.isControlRequired(this);
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer controlHTML = new StringBuffer();
 
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
@@ -303,74 +305,72 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		if ((this.heading != null)
 				|| (this.getFormNotes() != null && this.getFormNotes().size() != 0))
 		{
-			stringBuffer.append("<tr><td width='100%' colspan='3' align='left'>");
+			controlHTML.append("<tr><td width='100%' colspan='3' align='left'>");
 
 			if (this.heading != null && this.heading.length() != 0)
 			{
-				stringBuffer.append("<div style='width:100%' class='td_color_6e81a6'>"
+				controlHTML.append("<div style='width:100%' class='td_color_6e81a6'>"
 						+ this.getHeading() + "</div>");
 			}
 
 			if (this.getFormNotes() != null && this.getFormNotes().size() != 0)
 			{
-				stringBuffer.append("<div style='width:100%'>&nbsp</div>");
+				controlHTML.append("<div style='width:100%'>&nbsp</div>");
 
 				for (FormControlNotesInterface fcNote : this.getFormNotes())
 				{
-					stringBuffer.append("<div style='width:100%' class='notes'>" + fcNote.getNote()
+					controlHTML.append("<div style='width:100%' class='notes'>" + fcNote.getNote()
 							+ "</div>");
 				}
 			}
 
-			stringBuffer.append("</td></tr>");
+			controlHTML.append("</td></tr>");
 		}
 		if (this.yPosition != null && this.yPosition <= 1)
 		{
 
-			stringBuffer.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
+			controlHTML.append("<td class='formRequiredNotice_withoutBorder' width='2%'>");
 
 			if (isControlRequired)
 			{
-				stringBuffer.append("<span class='font_red'>");
-				stringBuffer.append(this.getParentContainer().getRequiredFieldIndicatior());
-				stringBuffer.append("&nbsp; </span> </td> ");
+				controlHTML.append("<span class='font_red'>");
+				controlHTML.append(this.getParentContainer().getRequiredFieldIndicatior());
+				controlHTML.append("&nbsp; </span> </td> ");
 			}
 			else
 			{
-				stringBuffer.append("&nbsp; </td> ");
+				controlHTML.append("&nbsp; </td> ");
 			}
-//			if (this instanceof ComboBox)
-//			{
-//				stringBuffer.append("<br/>");
-//			}
+			//			if (this instanceof ComboBox)
+			//			{
+			//				stringBuffer.append("<br/>");
+			//			}
 
-			stringBuffer.append("<td class='formRequiredLabel_withoutBorder'>");
+			controlHTML.append("<td class='formRequiredLabel_withoutBorder'>");
 		}
 
 		if (this.showLabel != null && this.showLabel)
 		{
-			stringBuffer.append("<div style='float:left'>");
-			stringBuffer.append(DynamicExtensionsUtility.getFormattedStringForCapitalization(this
-					.getCaption()));
-			stringBuffer.append("</div>");
-			
+			controlHTML.append("<div style='float:left'>");
+			controlHTML.append(((BaseAbstractAttribute) this.getBaseAbstractAttribute())
+					.getCapitalizedName(this.getCaption()));
+			controlHTML.append("</div>");
 		}
 
 		if (this.yPosition != null && this.yPosition <= 1)
 		{
-			stringBuffer.append("</td><td class='formField_withoutBorder' valign='top'>");
+			controlHTML.append("</td><td class='formField_withoutBorder' valign='top'>");
 		}
 		else if (this.showLabel != null && this.showLabel)
 		{
-			stringBuffer.append("<div style='float:left'>&nbsp;</div>");
-		
-		}
-		stringBuffer.append("<div style='float:left'>");
-		stringBuffer.append(htmlString);
-		stringBuffer.append("</div>");
-		
+			controlHTML.append("<div style='float:left'>&nbsp;</div>");
 
-		return stringBuffer.toString();
+		}
+		controlHTML.append("<div style='float:left'>");
+		controlHTML.append(htmlString);
+		controlHTML.append("</div>");
+
+		return controlHTML.toString();
 	}
 
 	/**
@@ -418,6 +418,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 				htmlComponentName.append("_" + this.getYPosition());
 			}
 		}
+
 		return htmlComponentName.toString();
 	}
 
@@ -451,6 +452,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		{
 			return control.yPosition.compareTo(this.yPosition);
 		}
+
 		return otherSequenceNumber.compareTo(thisSequenceNumber);
 	}
 
@@ -494,7 +496,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	/**
 	 * @hibernate.many-to-one  cascade="save-update" column="BASE_ABST_ATR_ID" class="edu.common.dynamicextensions.domain.BaseAbstractAttribute" constrained="true"
 	 */
-
 	public BaseAbstractAttributeInterface getBaseAbstractAttribute()
 	{
 		return baseAbstractAttribute;
@@ -504,7 +505,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 *
 	 * @param baseAbstractAttribute
 	 */
-
 	public void setBaseAbstractAttribute(BaseAbstractAttributeInterface baseAbstractAttribute)
 	{
 		this.baseAbstractAttribute = (BaseAbstractAttribute) baseAbstractAttribute;
@@ -512,13 +512,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 
 	public AttributeMetadataInterface getAttibuteMetadataInterface()
 	{
-		AttributeMetadataInterface attributeMetadataInterface = null;
+		AttributeMetadataInterface attributeMetadata = null;
+
 		if (baseAbstractAttribute instanceof AttributeMetadataInterface)
 		{
-			attributeMetadataInterface = (AttributeMetadataInterface) baseAbstractAttribute;
+			attributeMetadata = (AttributeMetadataInterface) baseAbstractAttribute;
 		}
-		return attributeMetadataInterface;
 
+		return attributeMetadata;
 	}
 
 	/**

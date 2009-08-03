@@ -893,7 +893,6 @@ public class Entity extends AbstractEntity implements EntityInterface
 	/**
 	 * For Entity, use camel case parser from common package.
 	 */
-	@Override
 	public String getCapitalizedName(String name)
 	{
 		return Utility.getDisplayLabel(name.trim());

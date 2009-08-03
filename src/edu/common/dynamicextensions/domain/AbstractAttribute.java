@@ -115,7 +115,6 @@ public abstract class AbstractAttribute extends BaseAbstractAttribute
 	/**
 	 * For attribute or association, use camel case parser from common package.
 	 */
-	@Override
 	public String getCapitalizedName(String name)
 	{
 		return Utility.getDisplayLabel(name.trim());

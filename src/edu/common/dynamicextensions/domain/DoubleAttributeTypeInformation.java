@@ -64,10 +64,7 @@ public class DoubleAttributeTypeInformation extends NumericAttributeTypeInformat
 			}
 			else
 			{
-				PermissibleValueInterface permissibleValueInterface = getPermissibleValueForString(value
-						.toString());
-				formattedValue = permissibleValueInterface.getValueAsObject()
-						.toString();
+				formattedValue = value.toString();
 			} 
 		}
 		return formattedValue;

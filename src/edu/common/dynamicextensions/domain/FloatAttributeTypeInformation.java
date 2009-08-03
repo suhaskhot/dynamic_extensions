@@ -47,14 +47,24 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 		String formattedValue = "";
 		if (value != null)
 		{
-			DecimalFormat formatDecimal = (DecimalFormat) NumberFormat
-					.getNumberInstance();
-			formatDecimal.setParseBigDecimal(true);
-			formatDecimal.setGroupingUsed(false);
-			formatDecimal.setMaximumFractionDigits(this.decimalPlaces
-					.intValue());
-			formattedValue = formatDecimal.format(Float.valueOf(value
-					.floatValue()));
+			if (this.decimalPlaces.intValue() > 0)
+			{
+				DecimalFormat formatDecimal = (DecimalFormat) NumberFormat
+						.getNumberInstance();
+				formatDecimal.setParseBigDecimal(true);
+				formatDecimal.setGroupingUsed(false);
+				formatDecimal.setMaximumFractionDigits(this.decimalPlaces
+						.intValue());
+				formattedValue = formatDecimal.format(Float.valueOf(value
+						.floatValue()));
+			}
+			else
+			{
+				PermissibleValueInterface permissibleValueInterface = getPermissibleValueForString(Float
+						.valueOf(value.floatValue()).toString());
+				formattedValue = permissibleValueInterface.getValueAsObject()
+						.toString();
+			}
 		}
 		return formattedValue;
 	}

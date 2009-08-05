@@ -1527,6 +1527,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+
 	/**
 	 * Create category where attributes from a particular class are not chosen,
 	 * i.e. not selecting attributes from GleasonScore entity.
@@ -1559,6 +1560,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+
 	/**
 	 * Create category where attributes from a particular class are not chosen,
 	 * i.e. not selecting attributes from GleasonScore entity.
@@ -1591,7 +1593,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Create category where attributes from a particular class are not chosen,
 	 * i.e. not selecting attributes from GleasonScore entity.
@@ -1624,6 +1626,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+
 	/**
 	 * Create entity group from pathology annotation model.
 	 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.
@@ -2259,55 +2262,62 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-	
+
 	/**
 	 * Test data entry for a category entity with related attributes.
 	 */
 	public void testDataEntryForCategoryEntityWithRelatedAttributes()
 	{
 		String filePath = "./csv/catMedicalHistoryRadiologicalDiagnosis.csv";
-		
+
 		try
 		{
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			CategoryGenerator categoryGenerator = new CategoryGenerator(filePath);
-						
+
 			CategoryInterface category = categoryGenerator.getCategoryList().get(0);
-			
+
 			// Save the category.
 			category = categoryManager.persistCategory(category);
-			
+
 			// populate the values map.
 			Map<BaseAbstractAttributeInterface, Object> attributeValues = populateMap(category);
-									
+
 			JDBCDAO dao = DynamicExtensionsUtility.getJDBCDAO();
-			
+
 			// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[2]'
-			CategoryEntityInterface catEnt2 = category.getCategoryEntityByName("Annotations[1]LabAnnotation[2]");
-			
+			CategoryEntityInterface catEnt2 = category
+					.getCategoryEntityByName("Annotations[1]LabAnnotation[2]");
+
 			// insert values for the category.
 			categoryManager.insertData(category, attributeValues);
-			
-			String result = dao.executeQuery("select MAX(identifier) from " + catEnt2.getEntity().getTableProperties().getName()).get(0).toString();
+
+			String result = dao.executeQuery(
+					"select MAX(identifier) from "
+							+ catEnt2.getEntity().getTableProperties().getName()).get(0).toString();
 			int maxId = Integer.parseInt(result.substring(1, result.length() - 1));
-			
+
 			// verify that the records for related category attribute 'labTestName' have been inserted.
-			CategoryAttributeInterface catAttrLabTestName = catEnt2.getAttributeByName("labTestName Category Attribute");
-			AttributeInterface attrLabTestName = (AttributeInterface) catAttrLabTestName.getAbstractAttribute();
-			
+			CategoryAttributeInterface catAttrLabTestName = catEnt2
+					.getAttributeByName("labTestName Category Attribute");
+			AttributeInterface attrLabTestName = (AttributeInterface) catAttrLabTestName
+					.getAbstractAttribute();
+
 			// get the column name for lab test name attribute.
 			String colNameForAttrLabTestName = attrLabTestName.getColumnProperties().getName();
 			// get the table name for LabAnnotation entity.
 			String tblNameForlabAnnotation = catEnt2.getEntity().getTableProperties().getName();
-			
+
 			// verify that for all records inserted, the value for attribute 'labTestName' is 'Bone Density'
 			for (int j = maxId; j > 0; j--)
 			{
-				String boneDensity = dao.executeQuery("select " + colNameForAttrLabTestName + " from "+tblNameForlabAnnotation+" where identifier = " + maxId).get(0).toString();
+				String boneDensity = dao.executeQuery(
+						"select " + colNameForAttrLabTestName + " from " + tblNameForlabAnnotation
+								+ " where identifier = " + maxId).get(0).toString();
 				boneDensity = boneDensity.substring(1, boneDensity.length() - 1);
 				assertEquals("Bone Density", boneDensity);
 			}
-			
+
 			DynamicExtensionsUtility.closeJDBCDAO(dao);
 		}
 		catch (DynamicExtensionsSystemException e)
@@ -2336,7 +2346,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
-
 
 	/**
 	 * Make a entity group from following entities:
@@ -3402,7 +3411,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 
 		}
 	}
-	
+
 	/**
 	 * Populate the map with values for data entry.
 	 * @param category
@@ -3412,97 +3421,110 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 	{
 		// category association : Annotations[1] to PastMedicalHistory[1]
 		String catAssociationMain = "Annotations[1]Annotations[1] to Annotations[1]PastMedicalHistory[1] category association";
-		
+
 		// category association : PastMedicalHistory[1] to LabAnnotation[1] category association
 		String catAssociation1 = "Annotations[1]PastMedicalHistory[1] to Annotations[1]LabAnnotation[1] category association";
-		
+
 		// category association : PastMedicalHistory[1] to LabAnnotation[2] category association
 		String catAssociation2 = "Annotations[1]PastMedicalHistory[1] to Annotations[1]LabAnnotation[2] category association";
-		
+
 		// category association : PastMedicalHistory[1] to LabAnnotation[3] category association
 		String catAssociation3 = "Annotations[1]PastMedicalHistory[1] to Annotations[1]LabAnnotation[3] category association";
-		
+
 		// category association : PastMedicalHistory[1] to LabAnnotation[3] category association
 		String catAssociation4 = "Annotations[1]PastMedicalHistory[1] to Annotations[1]HealthExaminationAnnotation[1] category association";
-		
+
 		// category entity Annotations[1]Annotations[1]
 		String categoryEntAnnotation = "Annotations[1]Annotations[1]";
-				
+
 		// category entity Annotations[1]PastMedicalHistory[1]
 		String categoryEntMain = "Annotations[1]PastMedicalHistory[1]";
-		
+
 		// category entity Annotations[1]LabAnnotation[1]
 		String categoryEnt1 = "Annotations[1]LabAnnotation[1]";
-		
+
 		// category entity Annotations[1]LabAnnotation[2]
 		String categoryEnt2 = "Annotations[1]LabAnnotation[2]";
-		
+
 		// category entity Annotations[1]LabAnnotation[3]
 		String categoryEnt3 = "Annotations[1]LabAnnotation[3]";
-		
+
 		// category entity Annotations[1]HealthExaminationAnnotation[1]
 		String categoryEnt4 = "Annotations[1]HealthExaminationAnnotation[1]";
-		
+
 		Map<BaseAbstractAttributeInterface, Object> attributeValues = new HashMap<BaseAbstractAttributeInterface, Object>();
-		List<Map<BaseAbstractAttributeInterface, Object>> mainValueMaps = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
-		
+		List<Map<BaseAbstractAttributeInterface, Object>> mainValueMaps = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
+
 		// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[1]'
-		CategoryEntityInterface catEntAnnotation = category.getCategoryEntityByName(categoryEntAnnotation);
-		
+		CategoryEntityInterface catEntAnnotation = category
+				.getCategoryEntityByName(categoryEntAnnotation);
+
 		// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[1]'
 		CategoryEntityInterface catEntMain = category.getCategoryEntityByName(categoryEntMain);
-		CategoryAssociationInterface catAssoMain = catEntAnnotation.getAssociationByName(catAssociationMain);
-		CategoryAttributeInterface catAttr1 = catEntMain.getAttributeByName("comment Category Attribute");
-		CategoryAttributeInterface catAttr2 = catEntMain.getAttributeByName("dateApproximate Category Attribute");
-		CategoryAttributeInterface catAttr3 = catEntMain.getAttributeByName("dateOfDiagnosis Category Attribute");
-		CategoryAttributeInterface catAttr4 = catEntMain.getAttributeByName("laterality Category Attribute");
-		CategoryAttributeInterface catAttr5 = catEntMain.getAttributeByName("otherDiagnosis Category Attribute");
-		CategoryAttributeInterface catAttr6 = catEntMain.getAttributeByName("diagnosis Category Attribute");
-		
+		CategoryAssociationInterface catAssoMain = catEntAnnotation
+				.getAssociationByName(catAssociationMain);
+		CategoryAttributeInterface catAttr1 = catEntMain
+				.getAttributeByName("comment Category Attribute");
+		CategoryAttributeInterface catAttr2 = catEntMain
+				.getAttributeByName("dateApproximate Category Attribute");
+		CategoryAttributeInterface catAttr3 = catEntMain
+				.getAttributeByName("dateOfDiagnosis Category Attribute");
+		CategoryAttributeInterface catAttr4 = catEntMain
+				.getAttributeByName("laterality Category Attribute");
+		CategoryAttributeInterface catAttr5 = catEntMain
+				.getAttributeByName("otherDiagnosis Category Attribute");
+		CategoryAttributeInterface catAttr6 = catEntMain
+				.getAttributeByName("diagnosis Category Attribute");
+
 		// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[1]'
 		CategoryEntityInterface catEnt1 = category.getCategoryEntityByName(categoryEnt1);
 		CategoryAssociationInterface catAsso1 = catEntMain.getAssociationByName(catAssociation1);
-		CategoryAttributeInterface catAttr7 = catEnt1.getAttributeByName("quantitativeResult Category Attribute");
-		
+		CategoryAttributeInterface catAttr7 = catEnt1
+				.getAttributeByName("quantitativeResult Category Attribute");
+
 		// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[2]'
 		CategoryEntityInterface catEnt2 = category.getCategoryEntityByName(categoryEnt2);
 		CategoryAssociationInterface catAsso2 = catEntMain.getAssociationByName(catAssociation2);
-		CategoryAttributeInterface catAttr8 = catEnt2.getAttributeByName("quantitativeResult Category Attribute");
-		
+		CategoryAttributeInterface catAttr8 = catEnt2
+				.getAttributeByName("quantitativeResult Category Attribute");
+
 		// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[2]'
 		CategoryEntityInterface catEnt3 = category.getCategoryEntityByName(categoryEnt3);
 		CategoryAssociationInterface catAsso3 = catEntMain.getAssociationByName(catAssociation3);
-		CategoryAttributeInterface catAttr9 = catEnt3.getAttributeByName("quantitativeResult Category Attribute");
-		
+		CategoryAttributeInterface catAttr9 = catEnt3
+				.getAttributeByName("quantitativeResult Category Attribute");
+
 		// retrieve category entity of the category entity 'Annotations[1]LabAnnotation[2]'
 		CategoryEntityInterface catEnt4 = category.getCategoryEntityByName(categoryEnt4);
 		CategoryAssociationInterface catAsso4 = catEntMain.getAssociationByName(catAssociation4);
-		CategoryAttributeInterface catAttr10 = catEnt4.getAttributeByName("nameOfProcedure Category Attribute");
-		CategoryAttributeInterface catAttr11 = catEnt4.getAttributeByName("otherProcedure Category Attribute");
-		
+		CategoryAttributeInterface catAttr10 = catEnt4
+				.getAttributeByName("nameOfProcedure Category Attribute");
+		CategoryAttributeInterface catAttr11 = catEnt4
+				.getAttributeByName("otherProcedure Category Attribute");
+
 		Map<BaseAbstractAttributeInterface, Object> valueMap1 = new HashMap<BaseAbstractAttributeInterface, Object>();
 		valueMap1.put(catAttr7, "22");
-		List<Map<BaseAbstractAttributeInterface, Object>> list1 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+		List<Map<BaseAbstractAttributeInterface, Object>> list1 = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		list1.add(valueMap1);
-		
+
 		Map<BaseAbstractAttributeInterface, Object> valueMap2 = new HashMap<BaseAbstractAttributeInterface, Object>();
 		valueMap2.put(catAttr8, "11");
-		List<Map<BaseAbstractAttributeInterface, Object>> list2 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+		List<Map<BaseAbstractAttributeInterface, Object>> list2 = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		list2.add(valueMap2);
-		
+
 		Map<BaseAbstractAttributeInterface, Object> valueMap3 = new HashMap<BaseAbstractAttributeInterface, Object>();
 		valueMap3.put(catAttr9, "33");
-		List<Map<BaseAbstractAttributeInterface, Object>> list3 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+		List<Map<BaseAbstractAttributeInterface, Object>> list3 = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		list3.add(valueMap3);
-		
+
 		Map<BaseAbstractAttributeInterface, Object> valueMap4 = new HashMap<BaseAbstractAttributeInterface, Object>();
 		valueMap4.put(catAttr10, "nameOfProcedureTC");
 		valueMap4.put(catAttr11, "otherProcedureTC");
-		List<Map<BaseAbstractAttributeInterface, Object>> list4 = new ArrayList<Map<BaseAbstractAttributeInterface,Object>>();
+		List<Map<BaseAbstractAttributeInterface, Object>> list4 = new ArrayList<Map<BaseAbstractAttributeInterface, Object>>();
 		list4.add(valueMap4);
-		
+
 		Map<BaseAbstractAttributeInterface, Object> valueMapMain = new HashMap<BaseAbstractAttributeInterface, Object>();
-		
+
 		// put all category attributes of the category entity 'PastMedicalHistory[1]' in data value map
 		valueMapMain.put(catAttr1, "CommentTC");
 		valueMapMain.put(catAttr2, "1");
@@ -3510,17 +3532,17 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		valueMapMain.put(catAttr4, "LeftTC");
 		valueMapMain.put(catAttr5, "123");
 		valueMapMain.put(catAttr6, "HydronephrosisTC");
-		
+
 		valueMapMain.put(catAsso1, list1);
 		valueMapMain.put(catAsso2, list2);
 		valueMapMain.put(catAsso3, list3);
 		valueMapMain.put(catAsso4, list4);
-			
+
 		mainValueMaps.add(valueMapMain);
-		
+
 		// put all values in the main map
 		attributeValues.put(catAssoMain, mainValueMaps);
-		
+
 		return attributeValues;
 	}
 
@@ -3540,7 +3562,7 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
 			category = (CategoryInterface) categoryManager.getObjectByName(
 					Category.class.getName(), "futuredate_cat");
-			
+
 			assertNotNull(category.getId());
 			CategoryEntityInterface rootCategoryEntity = category.getRootCategoryElement();
 
@@ -3566,7 +3588,6 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			fail();
 		}
 	}
 
@@ -3579,12 +3600,13 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
-
-			CategoryGenerator catGen = new CategoryGenerator("./csv/categoryFutureDate1.csv");
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
 			try
 			{
-				category = catGen.getCategoryList().get(0);
+				importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
+				createCaegory("./csv/categoryFutureDate1.csv");
+				category = (CategoryInterface) categoryManager.getObjectByName(Category.class
+						.getName(), "Test category - future_date");
 			}
 			catch (Exception e)
 			{
@@ -3609,17 +3631,18 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 		CategoryInterface category = null;
 		try
 		{
-			importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
-
-			CategoryGenerator catGen = new CategoryGenerator("./csv/categoryFutureDate3.csv");
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
 			try
 			{
-				category = catGen.getCategoryList().get(0);
+				importModel("./xmi/test_date.xmi", "./csv/test_date.csv", "TestAnnotations");
+				createCaegory("./csv/categoryFutureDate3.csv");
+				category = (CategoryInterface) categoryManager.getObjectByName(Category.class
+						.getName(), "Category_Lab Information");
 			}
-			catch (Exception e)
+			catch (Exception e1)
 			{
-				e.printStackTrace();
-				Logger.out.info("Could not create category due to overriding allowfuturedate rule....");
+				Logger.out
+						.info("Could not create category due to overriding allowfuturedate rule....");
 			}
 
 			assertNull(category);

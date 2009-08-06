@@ -82,7 +82,7 @@ public class MetadataSearch
 		}
 		matchedClass.setEntityCollection(matchedClass.getSortedEntityCollection());
 		MatchedClass resultantMatchedClassSorted = sortResults(matchedClass);
-		return matchedClass;
+		return resultantMatchedClassSorted;
 	}
 
 	/**

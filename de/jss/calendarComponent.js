@@ -164,7 +164,7 @@ function hideMonthAndYearCal(id) {
         var calendrier = document.getElementById(divId);
         calendrier.style.visibility="hidden";
     }
-    
+     document.getElementById(id).style.color="black";
 }
 
 function hideYearOnlyCal(id) {     
@@ -196,7 +196,7 @@ function hideYearOnlyCal(id) {
         var calendrier = document.getElementById(divId);
         calendrier.style.visibility="hidden";
     }
-    
+     document.getElementById(id).style.color="black";
 }
 
 
@@ -707,6 +707,7 @@ function hideCalendar(id) {
         var calendrier = document.getElementById(divId);
         calendrier.style.visibility="hidden";
     }
+    document.getElementById(id).style.color="black";
     
 }
 

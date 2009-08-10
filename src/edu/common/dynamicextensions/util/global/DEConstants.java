@@ -116,6 +116,11 @@ public class DEConstants
 	public static String DATE_RANGE = "dateRange";
 	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
 	public static final String RANGE = "range";
+	public static final String DATE_MONTH_YEAR_CAL = "MM-DD-YYYY";
+	public static final String DATE_TIME_CAL = "MM-DD-YYYY HH:MM";
+	public static final String YEAR_ONLY_CAL = "YYYY";
+	public static final String MONTH_YEAR_CAL = "MM-YYYY";
+
 
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);

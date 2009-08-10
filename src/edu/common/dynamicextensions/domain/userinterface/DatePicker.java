@@ -34,6 +34,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	 */
 	private static final long serialVersionUID = 1L;
 	private String dateValueType = null;
+	private String dateFormatString = "Date format : ";
 
 	/**
 	 * This method generates the HTML code for DatePicker control on the HTML
@@ -110,11 +111,14 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
-					+ "' value='"
-					+ defaultValue
+					+ "' title='Calendar [MM-DD-YYYY]' value='"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "MM-DD-YYYY")
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
+					+ " onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY');\""
+					+ " style=\"color:"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -127,7 +131,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ ", 'MM-dd-yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
 					+ "', event, 1900, 2020);\" href=\"javascript://\">"
-					+ "&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY]</span></A>"
+					+ "&nbsp;<IMG alt=\"" + dateFormatString + " [MM-DD-YYYY]\" src=\"de/images/calendar.gif\" border=0 /></A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";
@@ -142,11 +146,14 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
-					+ "' value='"
-					+ defaultValue
+					+ "' title='Calendar [MM-DD-YYYY HH:MM]' value='"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "MM-DD-YYYY HH:MM")
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
+					+ "  onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY HH:MM');\""
+					+ " style=\"color:"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -159,7 +166,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ ", 'MM-dd-yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
 					+ "', event, 1900, 2020);\" href=\"javascript://\">"
-					+ "&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-DD-YYYY HH:MM]</span></A>"
+					+ "&nbsp;<IMG alt=\"" + dateFormatString + " [MM-DD-YYYY HH:MM]\" src=\"de/images/calendar.gif\" border=0 />&nbsp;</A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">"
@@ -176,11 +183,14 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
-					+ "' value='"
-					+ defaultValue
+					+ "' title='Calender [MM-YYYY]' value='"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "MM-YYYY")
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
+					+ " onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-YYYY');\""
+					+ " style=\"color:"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -192,7 +202,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ 0
 					+ ", 'MM-yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
-					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[MM-YYYY]</span></A>"
+					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"" + dateFormatString + "[MM-YYYY]\" src=\"de/images/calendar.gif\" border=0 />&nbsp;</A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">"
@@ -207,11 +217,14 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
-					+ "' value='"
-					+ defaultValue
+					+ "' title='[YYYY]' value='"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "YYYY")
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
+					+ " onfocus=\"javascript:clearDate('"+htmlComponentName+"','YYYY');\""
+					+ " style=\"color:"
+					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
 					+ "<A onclick=\"showCalendar('"
 					+ htmlComponentName
@@ -223,7 +236,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ 0
 					+ ", 'yyyy', 'dataEntryForm', '"
 					+ htmlComponentName
-					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"This is a Calendar\" src=\"de/images/calendar.gif\" border=0 />&nbsp;<span class='font_gr_s'>[YYYY]</span></A>"
+					+ "', event, 1900, 2020);\" href=\"javascript://\">&nbsp;<IMG alt=\"" + dateFormatString + " [YYYY]\" src=\"de/images/calendar.gif\" border=0 />&nbsp;</A>"
 					+ "<DIV id=slcalcod"
 					+ htmlComponentName
 					+ " style=\"Z-INDEX: 10; LEFT: 100px; VISIBILITY: hidden; POSITION: absolute; TOP: 100px\">";

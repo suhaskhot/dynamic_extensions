@@ -2307,5 +2307,17 @@ function setGivenTip(tooltipValue)
 		obj.title = ""+tooltipValue;
 	}
 }
-
 //==================tool tip code ends===============================
+
+function clearDate(id, pattern)
+{
+	var id = document.getElementById(id);
+	if((pattern == 'MM-DD-YYYY' && id.value == 'MM-DD-YYYY') 
+			|| (pattern == 'MM-DD-YYYY HH:MM' && id.value == 'MM-DD-YYYY HH:MM') 
+			|| (pattern == 'MM-YYYY' && id.value == 'MM-YYYY') 
+			|| (pattern == 'YYYY' && id.value == 'YYYY'))
+	{
+		id.value="";
+		id.style.color="black";
+	}
+}

@@ -165,7 +165,6 @@
 											%>
                                           </tr>
 
-										<tr><td>&nbsp;</td></tr>
 										<tr>
 											<td valign="top">
 												<dynamicExtensions:dynamicUIGenerator containerInterface="<%=containerInterface%>" />
@@ -177,7 +176,6 @@
 							<tr class="td_bg_bottom">
 								<td valign="top" colspan="7">
 									<table cellpadding="0" cellspacing="5" border="0" align='center'>
-										<tr height="5"></tr>
 										<tr>
 											<td align='center'>						
 												<c:choose>

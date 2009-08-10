@@ -712,6 +712,12 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 			{
 				value = "1";
 			}
+			if (value != null && ((value.equalsIgnoreCase(DEConstants.DATE_MONTH_YEAR_CAL)) 
+					|| (value.equalsIgnoreCase(DEConstants.DATE_TIME_CAL)) 
+					|| (value.equalsIgnoreCase(DEConstants.MONTH_YEAR_CAL)) || (value.equalsIgnoreCase(DEConstants.YEAR_ONLY_CAL))))
+			{
+				value = "";
+			}
 			if (control instanceof CheckBoxInterface)
 			{
 				if (DynamicExtensionsUtility.isCheckBoxChecked(value))

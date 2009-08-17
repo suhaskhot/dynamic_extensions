@@ -209,7 +209,7 @@
 							       	where association.entity.id = ?
 						)						
 			)  
-			and catEntity.containerCollection.id=container.id
+			and catEntity.containerCollection.id=container.id order by catColl.name asc
 	</query>
 
 	<query name="getDynamicTableName">

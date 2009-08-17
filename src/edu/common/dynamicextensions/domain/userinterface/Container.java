@@ -447,7 +447,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateContainerHTML() throws DynamicExtensionsSystemException
+	public String generateContainerHTML(String caption) throws DynamicExtensionsSystemException
 	{
 		StringBuffer containerHTML = new StringBuffer();
 
@@ -478,7 +478,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 			}
 		}
 
-		containerHTML.append(generateControlsHTML());
+		containerHTML.append(generateControlsHTML(caption));
 		containerHTML.append("</table>");
 
 		return containerHTML.toString();
@@ -488,13 +488,13 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateControlsHTML() throws DynamicExtensionsSystemException
+	public String generateControlsHTML(String caption) throws DynamicExtensionsSystemException
 	{
 		StringBuffer controlHTML = new StringBuffer();
 
 		if (addCaption)
 		{
-			addCaption(controlHTML);
+			addCaption(controlHTML, caption);
 		}
 
 		List<ControlInterface> controls = getAllControlsUnderSameDisplayLabel(); //UnderSameDisplayLabel();
@@ -508,8 +508,8 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 			if (lastRow == control.getSequenceNumber())
 			{
-				controlHTML.append("<div style='float:left'>&nbsp;");
-				controlHTML.append("</div>");
+				controlHTML.append("<div style='float:left'>&nbsp;</div>");
+				//controlHTML.append("</div>");
 			}
 			else
 			{
@@ -536,10 +536,18 @@ public class Container extends DynamicExtensionBaseDomainObject
 	/**
 	 * @param captionHTML
 	 */
-	private void addCaption(StringBuffer captionHTML)
+	private void addCaption(StringBuffer captionHTML, String caption)
 	{
-		captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
-		captionHTML.append(((AbstractEntity)this.getAbstractEntity()).getCapitalizedName(this.getCaption()));
+		if(caption == null)
+		{
+			captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
+			captionHTML.append(((AbstractEntity)this.getAbstractEntity()).getCapitalizedName(this.getCaption()));
+		}
+		else
+		{
+			captionHTML.append("<tr><td class='td_color_6e81a6_big' colspan='100' align='left'>");
+			captionHTML.append(caption);
+		}
 		captionHTML.append("<tr><td height='5'></td></tr>");
 	}
 

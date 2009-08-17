@@ -58,7 +58,7 @@ public abstract class AbstractContainmentControl extends Control
 				containerInterface.setContainerValueMap(displayContainerValueMap);
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
-			subContainerHTML = containerInterface.generateControlsHTML();
+			subContainerHTML = containerInterface.generateControlsHTML(null);
 		}
 		return subContainerHTML;
 	}
@@ -86,7 +86,7 @@ public abstract class AbstractContainmentControl extends Control
 			this.getContainer().setShowAssociationControlsAsLink(true);
 			String oldMode = this.getContainer().getMode();
 			this.getContainer().setMode(WebUIManagerConstants.VIEW_MODE);
-			subContainerHTML = this.getContainer().generateControlsHTML();
+			subContainerHTML = this.getContainer().generateControlsHTML(null);
 			this.getContainer().setMode(oldMode);
 		}
 		return subContainerHTML;

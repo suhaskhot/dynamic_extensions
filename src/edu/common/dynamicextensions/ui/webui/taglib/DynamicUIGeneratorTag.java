@@ -79,7 +79,8 @@ public class DynamicUIGeneratorTag extends TagSupport
 		}
 		try
 		{
-			String generatedHTML = this.containerInterface.generateContainerHTML();
+			String caption = (String) pageContext.getSession().getAttribute("OverrideCaption");
+			String generatedHTML = this.containerInterface.generateContainerHTML(caption);
 			JspWriter out = pageContext.getOut();
 			out.println(generatedHTML);
 		}

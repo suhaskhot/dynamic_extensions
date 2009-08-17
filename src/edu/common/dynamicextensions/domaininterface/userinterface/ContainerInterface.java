@@ -139,16 +139,18 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	void setMode(String mode);
 
 	/**
+	 * @param caption
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateContainerHTML() throws DynamicExtensionsSystemException;
+	String generateContainerHTML(String caption) throws DynamicExtensionsSystemException;
 
 	/**
+	 * @param caption
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTML() throws DynamicExtensionsSystemException;
+	String generateControlsHTML(String caption) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return

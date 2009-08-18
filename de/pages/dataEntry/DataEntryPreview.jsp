@@ -98,11 +98,8 @@
 									<table cellpadding="4" cellspacing="5" border="0" align='center'>
 										<tr height="5"></tr>
 										<tr>
-											<td align='right'>						
-												<img src="<%=request.getContextPath()%>/de/images/b_back.gif" alt="Back" width="62" height="21" hspace="3" align="absmiddle" onClick="showParentContainerInsertDataPage()">
-													<map alt="Back">
-														<area href="javascript:showParentContainerInsertDataPage()" shape="default">
-													</map>
+											<td align='right'>
+												<input type="image" src="<%=request.getContextPath()%>/de/images/b_back.gif" width="62" height="21" align="middle" onClick="showParentContainerInsertDataPage()"/>												
 											</td>
 										</tr>
 									</table>

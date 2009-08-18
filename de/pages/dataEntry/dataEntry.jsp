@@ -68,9 +68,30 @@
 <html>
 	<head>
 		<title><bean:message key="table.heading" /></title>
+		<script>
+		function setFocusToFirstControl()
+		{
+			var elements=document.dataEntryForm.elements;
+			for(var i = 0; i < elements.length; i++)
+			{
+				if (elements[i].type != "hidden" && elements[i].disabled != true) 
+		        { 
+					try
+					{
+						elements[i].focus();
+						break;
+					}
+					catch(E)
+					{
+						continue;
+					}
+				}
+			}
+		}
+		</script>
 	</head>
 
-	<body onload="loadPreviewForm('<%=request.getContextPath()%>')" onclick="window.parent.parent.detectApplicationUsageActivity()" onkeydown="window.parent.parent.detectApplicationUsageActivity()">
+	<body onload="loadPreviewForm('<%=request.getContextPath()%>');setFocusToFirstControl()" onclick="window.parent.parent.detectApplicationUsageActivity()" onkeydown="window.parent.parent.detectApplicationUsageActivity()">
 		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" method="post">
 		<div id="dataEntryFormDiv" style="position:absolute;overflow:auto;height:100%;width:100%;z-index:1000;">
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
@@ -176,30 +197,29 @@
 							<tr class="td_bg_bottom">
 								<td valign="top" colspan="7">
 									<table cellpadding="0" cellspacing="5" border="0" align='center'>
-										<tr>
-											<td align='center'>						
+										<tr height="5"><td colspan="2"></tr>
+										<tr align='center'>															
 												<c:choose>
 													<c:when test='${showFormPreview=="true"}'>
+														<td align='center'>
 														<html:submit styleClass="actionButton" onclick="showParentContainerInsertDataPage()">
 															<bean:message key="buttons.back" />
 														</html:submit>
+														</td>
 													</c:when>
 													<c:otherwise>
 														<html:hidden styleId='isEdit' property="isEdit" value=""/>
 														
 														<c:if test='${(isTopLevelEntity=="false")}'>
-														     <img src="<%=request.getContextPath()%>/de/images/b_submit.gif" alt="Submit" width="62" height="21" hspace="3" align="absmiddle" onClick="showParentContainerInsertDataPage()" >
-															<map alt="Submit">
-														<area href="javascript:showParentContainerInsertDataPage()" shape="default">
-															</map>
+															<td align='center'>
+																<input type="image" src="<%=request.getContextPath()%>/de/images/b_submit.gif" width="62" height="21" align="middle" onClick="return showParentContainerInsertDataPage()"/>
+															</td>
 														</c:if>
 																												
 														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
-															<img src="<%=request.getContextPath()%>/de/images/b_submit.gif" alt="Submit" width="62" height="21" hspace="3" align="absmiddle" onClick="setInsertDataOperation()">
-															<map alt="Submit">
-																<area href="javascript:setInsertDataOperation()" shape="default">
-															</map>
-
+															<td align='center'>
+																<input type="image" src="<%=request.getContextPath()%>/de/images/b_submit.gif" width="62" height="21" align="middle" onClick="return setInsertDataOperation()"/>
+															</td>
 														<!-- BUG 7662 FIXED. Each Cancel should take you one level up in the containment hierarchy and finally the Cancel on Main Class should take you to the Add Records page.-->
 														</c:if>
 															<input type="hidden" id="operation_mode" value="insertChildData"/>
@@ -210,16 +230,12 @@
 														</c:if>
 								
 														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
-															<img src="<%=request.getContextPath()%>/de/images/b_cancel.gif" alt="Cancel" width="62" height="21" hspace="3" align="absmiddle" onclick="cancelInsertData()">
-															<map alt="Cancel">
-																<area href="javascript:cancelInsertData()" shape="default">
-															</map>
+															<td align='center'>
+																<input type="button" style="border: 0px; background-image: url(<%=request.getContextPath()%>/de/images/b_cancel.gif); height: 21px; width: 62px;" align="middle" onClick="cancelInsertData()"/>
+															</td>															
 														</c:if>
-														
-
 													</c:otherwise>
 												</c:choose>	
-											</td>
 										</tr>
 									</table>
 								</td>

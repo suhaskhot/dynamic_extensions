@@ -1932,7 +1932,6 @@ function showParentContainerInsertDataPage()
     document.getElementById('dataEntryOperation').value = "insertParentData";
     var dataEntryForm = document.getElementById('dataEntryForm');
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
-    dataEntryForm.submit();
 }
 
 function getValues()
@@ -1967,7 +1966,6 @@ function setInsertDataOperation()
     document.getElementById('dataEntryOperation').value = "";
     var dataEntryForm = document.getElementById('dataEntryForm');
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
-    dataEntryForm.submit();
 }
 
 function changeValueForCheckBox(checkbox)

@@ -165,20 +165,19 @@ public class UserInterfaceiUtility
 		if (subContainer.getMode().equals("edit"))
 		{
 			htmlForGrid
-					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'><img src='de/images/b_delete.gif' alt='Delete' width='59' height='20' hspace='3' align='absmiddle' onclick=\"removeCheckedRow('");
-			htmlForGrid.append(subContainer.getId());
-			htmlForGrid.append("')\"><map alt='Delete'><area href='javascript:removeCheckedRow('");
-			htmlForGrid.append(subContainer.getId());
-			htmlForGrid
-					.append("')' shape='default'></map></td><td align='right'><img src='de/images/b_add_more.gif' alt='Add More' width='76' height='20' hspace='3' vspace='2' align='absmiddle' onclick=\"addRow('");
+					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'>");
+					htmlForGrid.append("<input type='button' style='border: 0px; background-image: url(de/images/b_delete.gif); height: 20px; width: 59px;' align='middle' onClick=\"removeCheckedRow('"
+					+ subContainer.getId() + "')\"/>");
+
+			htmlForGrid.append("</td><td align='right'>");
+			htmlForGrid.append("<input type='button' style='border: 0px; background-image: url(de/images/b_add_more.gif); height: 20px; width: 76px;' align='middle' onClick=\"addRow('"
+					+ subContainer.getId() + "')\"/>");
+			
 			//stringBuffer.append("<button type='button' class='actionButton' id='removeRow' onclick=\"removeCheckedRow('" + subContainer.getId()
 			//		+ "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("buttons.delete"));
 			//stringBuffer.append("</button>");
-			htmlForGrid.append(subContainer.getId());
-			htmlForGrid.append("')\"><map alt='Add More'><area href='javascript:\"addRow('");
-			htmlForGrid.append(subContainer.getId());
-			htmlForGrid.append("')' shape='default'></map></td></tr></table>");
+			htmlForGrid.append("</td></tr></table>");
 			//stringBuffer.append("<button type='button' class='actionButton' id='addMore' onclick=\"addRow('" + subContainer.getId() + "')\">");
 			//stringBuffer.append(ApplicationProperties.getValue("eav.button.AddRow"));
 			//stringBuffer.append("</button>");

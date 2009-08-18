@@ -462,6 +462,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 			containerHTML.append("&nbsp;</span><span class='font_gr_s'>");
 			containerHTML.append(this.getRequiredFieldWarningMessage());
 			containerHTML.append("</span></td></tr>");
+			containerHTML.append("<tr><td height='5'/></tr>");
 		}
 		else
 		{

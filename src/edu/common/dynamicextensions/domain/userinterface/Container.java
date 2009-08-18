@@ -493,10 +493,10 @@ public class Container extends DynamicExtensionBaseDomainObject
 	{
 		StringBuffer controlHTML = new StringBuffer();
 
-		if (addCaption)
-		{
+//		if (addCaption)
+//		{
 			addCaption(controlHTML, caption);
-		}
+		//}
 
 		List<ControlInterface> controls = getAllControlsUnderSameDisplayLabel(); //UnderSameDisplayLabel();
 		int lastRow = 0;

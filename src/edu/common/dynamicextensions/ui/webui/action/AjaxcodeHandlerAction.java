@@ -58,6 +58,13 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 {
 
 	/**
+	 * 
+	 */
+	private static final String tableEndString = "</td></tr></table>";
+	
+	private static final String breadCrumbImage = " <img alt=\"\" src=\"images/uIEnhancementImages/breadcrumb_arrow.png\"> ";
+
+	/**
 	 * @param mapping ActionMapping mapping
 	 * @param form ActionForm form
 	 * @param  request HttpServletRequest request
@@ -72,13 +79,14 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		String returnXML = null;
 		try
 		{
+
 			String operation = request.getParameter("ajaxOperation");
 			if (operation != null)
 			{
 				if (operation.trim().equals("selectFormNameFromTree"))
 				{
 					String selectedFormName = request.getParameter("selectedFormName");
-					String rectifySelectName=rectifySelectedName(selectedFormName);
+					String rectifySelectName = rectifySelectedName(selectedFormName);
 					if (rectifySelectName != null)
 					{
 						returnXML = getSelectedFormDetails(request, rectifySelectName);
@@ -119,6 +127,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				{
 					returnXML = changeForm(request);
 				}
+				else if (operation.trim().equals("breadCrumbOperation") && (request.getParameter("breadCrumbOperation") != null
+						&& request.getParameter("breadCrumbOperation").equalsIgnoreCase(
+						"prepareBreadCrumbLink")))
+				{
+					returnXML = breadCrumbOperation(request);
+				}
 
 			}
 			sendResponse(returnXML, response);
@@ -126,12 +140,13 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			String actionForwardString = catchException(e, request);
 			if ((actionForwardString == null) || (actionForwardString.equals("")))
 			{
 				return mapping.getInputForward();
 			}
-			return mapping.findForward(actionForwardString);
+			return null;
 		}
 	}
 
@@ -486,7 +501,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	private void updateCacheRefernces(HttpServletRequest request, String selectedFormName,
 			ContainerInterface containerForSelectedForm)
 	{
-		CacheManager.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME, selectedFormName);
+		CacheManager
+				.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME, selectedFormName);
 		CacheManager.addObjectToCache(request, selectedFormName, containerForSelectedForm);
 	}
 
@@ -508,9 +524,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private String changeGroup(HttpServletRequest request)
-			throws IOException, DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private String changeGroup(HttpServletRequest request) throws IOException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formNames = getFormNamesForGroup(request.getParameter("grpName"));
 		DynamicExtensionsUtility.sortNameValueBeanListByName(formNames);
@@ -614,9 +629,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private String changeForm(HttpServletRequest request)
-			throws IOException, DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+	private String changeForm(HttpServletRequest request) throws IOException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		List<NameValueBean> formAttributes = getAttributesForForm(request.getParameter("frmName"));
 		DynamicExtensionsUtility.sortNameValueBeanListByName(formAttributes);
@@ -645,7 +659,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					.getContainerByIdentifier(formId);
 			if (container != null)
 			{
-				Collection<ControlInterface> controlCollection = container.getAllControlsUnderSameDisplayLabel();
+				Collection<ControlInterface> controlCollection = container
+						.getAllControlsUnderSameDisplayLabel();
 				if (controlCollection != null)
 				{
 					NameValueBean controlName = null;
@@ -678,5 +693,38 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 		}
 
 		return formAttributesList;
+	}
+
+	/**
+	 * @param request
+	 * @param actionForm
+	 * @throws IOException
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	private String breadCrumbOperation(HttpServletRequest request) throws IOException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		String responseXML = null;
+		String breadCrumbURL = (String) request.getSession().getAttribute("breadCrumbURLString");
+		StringBuffer newBreadCrumbURL = new StringBuffer();
+		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
+				.getObjectFromCache(request, DEConstants.CONTAINER_STACK);
+		if (breadCrumbURL.contains(tableEndString))
+		{
+			int position = breadCrumbURL.lastIndexOf(tableEndString);
+			breadCrumbURL = breadCrumbURL.substring(0, (position));
+		}
+		newBreadCrumbURL.append(breadCrumbURL);
+		for (int i = 1; i < containerStack.size(); i++)
+		{
+			
+			newBreadCrumbURL.append(breadCrumbImage);
+			newBreadCrumbURL.append(containerStack.get(i).getCaption());
+		}
+		newBreadCrumbURL.append(tableEndString);
+
+		responseXML = newBreadCrumbURL.toString();
+		return responseXML;
 	}
 }

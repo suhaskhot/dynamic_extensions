@@ -2319,3 +2319,23 @@ function clearDate(id, pattern)
 		id.style.color="black";
 	}
 }
+
+function insertBreadCrumbForSubForm(containerId,applicationName)
+{
+	if(applicationName=="clinportal")
+	{
+		var request = newXMLHTTPReq()
+		var handlerFunction = getReadyStateHandler(request,insertBreadCrumbForSubFormResponse,false);
+		request.onreadystatechange = handlerFunction;
+		request.open("POST","AjaxcodeHandlerAction.do",true);
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send("&ajaxOperation=breadCrumbOperation&breadCrumbOperation=prepareBreadCrumbLink&containerId="+containerId);
+	}
+}
+
+function insertBreadCrumbForSubFormResponse(responseXML)
+{
+	window.parent.document.getElementById('breadCrumbDiv').innerHTML = responseXML;
+	window.parent.document.getElementById ("breadCrumbDiv").style.height="5%";
+	window.parent.document.getElementById ("breadCrumbDiv").style.fontSize="12px";
+}

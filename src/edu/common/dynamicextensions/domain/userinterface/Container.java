@@ -536,18 +536,22 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * @param captionHTML
+	 * @param caption
 	 */
 	private void addCaption(StringBuffer captionHTML, String caption)
 	{
-		if(caption == null)
+		//check if Id in caption matches current id - if yes then it is main form, so replace caption
+		if (caption == null || !caption.endsWith(id.toString()))
 		{
 			captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
-			captionHTML.append(((AbstractEntity)this.getAbstractEntity()).getCapitalizedName(this.getCaption()));
+			captionHTML.append(((AbstractEntity) this.getAbstractEntity()).getCapitalizedName(this
+					.getCaption()));
 		}
 		else
 		{
 			captionHTML.append("<tr><td class='td_color_6e81a6_big' colspan='100' align='left'>");
-			captionHTML.append(caption);
+			captionHTML.append(caption
+					.substring(0, (caption.length() - 1 - id.toString().length())));
 		}
 		captionHTML.append("<tr><td height='5'></td></tr>");
 	}

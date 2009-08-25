@@ -493,10 +493,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	{
 		StringBuffer controlHTML = new StringBuffer();
 
-//		if (addCaption)
-//		{
-			addCaption(controlHTML, caption);
-		//}
+		addCaption(controlHTML, caption);
 
 		List<ControlInterface> controls = getAllControlsUnderSameDisplayLabel(); //UnderSameDisplayLabel();
 		int lastRow = 0;
@@ -536,19 +533,22 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * @param captionHTML
-	 * @param caption
+	 * @param caption in the format -- NewCaption:Main ContainerId
 	 */
 	private void addCaption(StringBuffer captionHTML, String caption)
 	{
 		//check if Id in caption matches current id - if yes then it is main form, so replace caption
 		if (caption == null || !caption.endsWith(id.toString()))
 		{
-			captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
-			captionHTML.append(((AbstractEntity) this.getAbstractEntity()).getCapitalizedName(this
-					.getCaption()));
+			if (addCaption) // for subform
+			{
+				captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
+				captionHTML.append(((AbstractEntity) this.getAbstractEntity())
+						.getCapitalizedName(this.getCaption()));
+			}
 		}
 		else
-		{
+		{ // for Main form
 			captionHTML.append("<tr><td class='td_color_6e81a6_big' colspan='100' align='left'>");
 			captionHTML.append(caption
 					.substring(0, (caption.length() - 1 - id.toString().length())));

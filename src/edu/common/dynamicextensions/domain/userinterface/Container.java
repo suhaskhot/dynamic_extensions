@@ -545,6 +545,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 				captionHTML.append("<tr><td class='td_color_6e81a6' colspan='100' align='left'>");
 				captionHTML.append(((AbstractEntity) this.getAbstractEntity())
 						.getCapitalizedName(this.getCaption()));
+				captionHTML.append("<tr><td height='5'></td></tr>");
 			}
 		}
 		else
@@ -552,8 +553,9 @@ public class Container extends DynamicExtensionBaseDomainObject
 			captionHTML.append("<tr><td class='td_color_6e81a6_big' colspan='100' align='left'>");
 			captionHTML.append(caption
 					.substring(0, (caption.length() - 1 - id.toString().length())));
+			captionHTML.append("<tr><td height='5'></td></tr>");
 		}
-		captionHTML.append("<tr><td height='5'></td></tr>");
+		
 	}
 
 	/**

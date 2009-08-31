@@ -741,8 +741,8 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					+ breadcrumbPosition
 					+ ");\" style=\"color: #0000ff;font-family: arial;font-size: 12px;font-weight: normal;cursor:pointer;\">"
 					+ formName + "</a>";
-			breadCrumbURL = breadCrumbURL + breadCrumbImage;
-			breadCrumbURL = breadCrumbURL + containerStack.get(i).getCaption();
+			breadCrumbURL = breadCrumbURL + DEConstants.HTML_SPACE + DEConstants.HTML_SPACE + breadCrumbImage;
+			breadCrumbURL = breadCrumbURL + DEConstants.HTML_SPACE + DEConstants.HTML_SPACE + containerStack.get(i).getCaption();
 			formName = containerStack.get(i).getCaption();
 			breadcrumbPosition = breadcrumbPosition + 1;
 		}

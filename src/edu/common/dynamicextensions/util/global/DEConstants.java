@@ -120,6 +120,10 @@ public class DEConstants
 	public static final String DATE_TIME_CAL = "MM-DD-YYYY HH:MM";
 	public static final String YEAR_ONLY_CAL = "YYYY";
 	public static final String MONTH_YEAR_CAL = "MM-YYYY";
+	public static final String CANCEl = "cancel";
+	public static final String IS_DIRTY = "isDirty";
+	public static final String BREAD_CRUMB_POSITION = "breadCrumbPosition";
+	public static final String HTML_SPACE = "&nbsp;";
 
 
 	public enum Cardinality {

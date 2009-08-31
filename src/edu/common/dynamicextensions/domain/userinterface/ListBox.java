@@ -142,7 +142,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 		StringBuffer htmlString = new StringBuffer("<SELECT ");
 		htmlString.append(strMultiSelect).append(" size=").append(this.noOfRows).append(
-				" class='font_bl_s' name='").append(getHTMLComponentName()).append("' id='")
+				" class='font_bl_s' name='").append(getHTMLComponentName()).append("' onchange='isDataChanged();' id='")
 				.append(name).append("' ");
 
 		if (this.isReadOnly != null && this.isReadOnly)
@@ -250,7 +250,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t<td height=\"22\" align=\"center\" valign=\"TOP\">\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"addLink\">\n");
-			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"moveOptions('"
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
 					+ coordId + "','" + protocolCoordId + "', 'add')\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_add_inact.gif\" alt=\"Add\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
@@ -261,7 +261,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			multSelWithAutoCmpltHTML.append("\t\t\t\t<tr>\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t<td height=\"22\" align=\"center\">\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"removeLink\">\n");
-			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"moveOptions('"
+			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
 					+ protocolCoordId + "','" + coordId + "', 'edit')\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_remove_inact.gif\" alt=\"Remove\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");

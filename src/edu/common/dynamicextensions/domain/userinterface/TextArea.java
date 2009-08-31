@@ -119,7 +119,7 @@ public class TextArea extends Control implements TextAreaInterface
 
 		if (maxChars > 0)
 		{
-			htmlString += " onblur='textCounter(this," + maxChars + ")'  ";
+			htmlString += " onchange='isDataChanged();' onblur='textCounter(this," + maxChars + ")'  ";
 		}
 
 		htmlString += " wrap='virtual'>";

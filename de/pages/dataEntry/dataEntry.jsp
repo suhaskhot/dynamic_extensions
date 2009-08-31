@@ -257,7 +257,14 @@
 			<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="<%=dataEntryOperation%>"/>
 			<input type="hidden" id="showFormPreview" name="showFormPreview" value="<%=showFormPreview%>"/>
 			<input type="hidden" id="mode" name="mode" value="<%=mode%>"/>
+			<input type="hidden" id="breadCrumbPosition" name="breadCrumbPosition" value=""/>
+			<input type="hidden" id="isDirty" name="isDirty" value="false"/>
 			</div>
+			<c:if test="${requestScope.isDirty == 'true' || requestScope.isDirty == true}">
+				<script>
+					document.getElementById('isDirty').value = true;
+				</script>
+			</c:if>
 		</html:form>
 	</body>
 </html>

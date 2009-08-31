@@ -1475,6 +1475,7 @@ function addRow(containerId)
        		eval(x[i].text);
 	  }
     }
+	document.getElementById('isDirty').value = true;
 }
 
 function removeCheckedRow(containerId)
@@ -1571,6 +1572,7 @@ function removeCheckedRow(containerId)
         document.getElementById(hiddenVar).value = parseInt(numberOfRows) - rowsDeleted;
 
         document.getElementById(containerId + "_table").value = table;
+		document.getElementById('isDirty').value = true;
     }
 
     var request = newXMLHTTPReq();
@@ -2338,4 +2340,9 @@ function insertBreadCrumbForSubFormResponse(responseXML)
 	window.parent.document.getElementById('breadCrumbDiv').innerHTML = responseXML;
 	window.parent.document.getElementById ("breadCrumbDiv").style.height="5%";
 	window.parent.document.getElementById ("breadCrumbDiv").style.fontSize="12px";
+}
+
+function isDataChanged()
+{
+	document.getElementById('isDirty').value = true;
 }

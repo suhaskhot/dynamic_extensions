@@ -61,8 +61,11 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	 * 
 	 */
 	private static final String tableEndString = "</td></tr></table>";
-	
-	private static final String breadCrumbImage = " <img alt=\"\" src=\"images/uIEnhancementImages/breadcrumb_arrow.png\"> ";
+
+	/**
+	 * path of breadCrumb image
+	 */
+	private static final String breadCrumbImage = "<img alt=\"\" src=\"images/uIEnhancementImages/breadcrumb_arrow.png\">";
 
 	/**
 	 * @param mapping ActionMapping mapping
@@ -127,9 +130,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				{
 					returnXML = changeForm(request);
 				}
-				else if (operation.trim().equals("breadCrumbOperation") && (request.getParameter("breadCrumbOperation") != null
-						&& request.getParameter("breadCrumbOperation").equalsIgnoreCase(
-						"prepareBreadCrumbLink")))
+				else if (operation.trim().equals("breadCrumbOperation")
+						&& (request.getParameter("breadCrumbOperation") != null && request
+								.getParameter("breadCrumbOperation").equalsIgnoreCase(
+										"prepareBreadCrumbLink")))
 				{
 					returnXML = breadCrumbOperation(request);
 				}
@@ -706,6 +710,12 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String responseXML = null;
+		long breadcrumbPosition = 1;
+		if (request.getSession().getAttribute(DEConstants.BREAD_CRUMB_POSITION) != null)
+		{
+			breadcrumbPosition = Long.valueOf(request.getSession().getAttribute(
+					DEConstants.BREAD_CRUMB_POSITION).toString()) + 1;
+		}
 		String breadCrumbURL = (String) request.getSession().getAttribute("breadCrumbURLString");
 		StringBuffer newBreadCrumbURL = new StringBuffer();
 		Stack<ContainerInterface> containerStack = (Stack<ContainerInterface>) CacheManager
@@ -716,15 +726,29 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			breadCrumbURL = breadCrumbURL.substring(0, (position));
 		}
 		newBreadCrumbURL.append(breadCrumbURL);
+
+		String formName = breadCrumbURL.substring(breadCrumbURL.lastIndexOf(breadCrumbImage)
+				+ (breadCrumbImage.length()), breadCrumbURL.length());
+		if (formName.contains(DEConstants.HTML_SPACE))
+		{
+			formName = formName.replace(DEConstants.HTML_SPACE, "");
+		}
 		for (int i = 1; i < containerStack.size(); i++)
 		{
-			
-			newBreadCrumbURL.append(breadCrumbImage);
-			newBreadCrumbURL.append(containerStack.get(i).getCaption());
+			breadCrumbURL = breadCrumbURL.substring(0, breadCrumbURL.lastIndexOf(formName));
+			breadCrumbURL = breadCrumbURL
+					+ "<a onclick=\"javascript:checkForModifiedData("
+					+ breadcrumbPosition
+					+ ");\" style=\"color: #0000ff;font-family: arial;font-size: 12px;font-weight: normal;cursor:pointer;\">"
+					+ formName + "</a>";
+			breadCrumbURL = breadCrumbURL + breadCrumbImage;
+			breadCrumbURL = breadCrumbURL + containerStack.get(i).getCaption();
+			formName = containerStack.get(i).getCaption();
+			breadcrumbPosition = breadcrumbPosition + 1;
 		}
-		newBreadCrumbURL.append(tableEndString);
+		breadCrumbURL = breadCrumbURL + tableEndString;
 
-		responseXML = newBreadCrumbURL.toString();
+		responseXML = breadCrumbURL;
 		return responseXML;
 	}
 }

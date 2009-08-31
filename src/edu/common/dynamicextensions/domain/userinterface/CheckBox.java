@@ -49,7 +49,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' " + "id='"
 					+ htmlComponentName + "'" + "checked" + disabled
-					+ " onclick='changeValueForCheckBox(this);'>";
+					+ " onchange='isDataChanged();' onclick='changeValueForCheckBox(this);'>";
 		}
 		else
 		{
@@ -58,7 +58,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + disabled
-					+ "id='" + htmlComponentName + "' onclick='changeValueForCheckBox(this);'>";
+					+ "id='" + htmlComponentName + "' onchange='isDataChanged();' onclick='changeValueForCheckBox(this);'>";
 		}
 
 		return htmlString;

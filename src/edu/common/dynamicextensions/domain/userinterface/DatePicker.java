@@ -116,7 +116,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
-					+ " onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY');\""
+					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY');\""
 					+ " style=\"color:"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
@@ -151,7 +151,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
-					+ "  onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY HH:MM');\""
+					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY HH:MM');\""
 					+ " style=\"color:"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
@@ -188,7 +188,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
-					+ " onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-YYYY');\""
+					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-YYYY');\""
 					+ " style=\"color:"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"
@@ -222,7 +222,7 @@ public class DatePicker extends Control implements DatePickerInterface
 					+ "'"
 					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
-					+ " onfocus=\"javascript:clearDate('"+htmlComponentName+"','YYYY');\""
+					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','YYYY');\""
 					+ " style=\"color:"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? "black;\"" : "#A9A9A9;\"")
 					+ "/>"

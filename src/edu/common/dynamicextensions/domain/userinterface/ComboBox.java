@@ -110,7 +110,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "',valueNotFoundText:'',"
 				+ "selectOnFocus:'true',applyTo: '"
 				+ htmlComponentName
-				+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});";
+				+ "'});combo.on(\"select\", function() {isDataChanged();}), combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});";
 
 		htmlString = htmlString
 				+ "ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
@@ -151,7 +151,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "',valueNotFoundText:'',"
 				+ "selectOnFocus:'true',applyTo: '"
 				+ htmlComponentName
-				+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
+				+ "'});combo.on(\"select\", function() {isDataChanged();}),combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
 				+ "});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div style='float:left'>"
 				+ "<input type='text' onmouseover=\"showToolTip('" + htmlComponentName
 				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName

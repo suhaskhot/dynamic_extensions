@@ -84,7 +84,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 				String optionValue = nameValueBean.getValue();
 				if (optionValue.equals(defaultValue))
 				{
-					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
+					htmlString += "<input type='radio' onchange='isDataChanged();' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
 							+ optionName + "' checked " + disabled + "  >" + "<label for=\""
 							+ htmlComponentName + "\">" + optionName
@@ -92,7 +92,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 				}
 				else
 				{
-					htmlString += "<input type='radio' " + "class='font_bl_nor' " + "name='"
+					htmlString += "<input type='radio' onchange='isDataChanged();' " + "class='font_bl_nor' " + "name='"
 							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
 							+ optionName + "' " + disabled + " >" + "<label for=\""
 							+ htmlComponentName + "\">" + optionName

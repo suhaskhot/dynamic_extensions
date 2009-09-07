@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
@@ -12,8 +11,8 @@ import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 
 
 /**
- * @author rajesh_patil
- * @hibernate.class table="DYEXTN_SKIP_LOGIC_ATTRIBUTE" 
+ * This Class represents the general Attribute of the Entities
+ * @hibernate.joined-subclass table="DYEXTN_SKIP_LOGIC_ATTRIBUTE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class SkipLogicAttribute extends BaseAbstractAttribute
@@ -22,7 +21,7 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
     /**
      * 
      */
-    protected static final long serialVersionUID = 0x499602d2L;
+    protected static final long serialVersionUID = 12345254735L;
     /**
      * 
      */
@@ -39,63 +38,7 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
      * 
      */
     protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
-	/**
-	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="save-update" inverse="false" lazy="false"
-	 * @hibernate.collection-key column="SKIP_LOGIC_ATTRIBUTE_ID"
-	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"
-	 * @return Returns the dataElementCollection.
-	 */
-	private Set<DataElementInterface> getDataElementCollection()
-	{
-		return dataElementCollection;
-	}
 
-	/**
-	 * @param dataElementCollection The dataElementCollection to set.
-	 */
-	private void setDataElementCollection(Set<DataElementInterface> dataElementCollection)
-	{
-		this.dataElementCollection = dataElementCollection;
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public DataElementInterface getDataElement()
-	{
-		DataElementInterface dataElementInterface = null;
-		if (dataElementCollection != null)
-		{
-			Iterator<DataElementInterface> dataElementIterator = dataElementCollection.iterator();
-			if (dataElementIterator.hasNext())
-			{
-				dataElementInterface = (DataElement) dataElementIterator.next();
-			}
-		}
-		return dataElementInterface;
-	}
-	/**
-	 * 
-	 */
-	public void clearDataElementCollection()
-	{
-		dataElementCollection = null;
-	}
-
-	/**
-	 *
-	 * @param dataElementInterface
-	 */
-	public void setDataElement(DataElementInterface dataElementInterface)
-	{
-		if (dataElementCollection == null)
-		{
-			dataElementCollection = new HashSet();
-		}
-		this.dataElementCollection.add(dataElementInterface);
-	}
 	/**
 	 * @return
 	 * @hibernate.many-to-one cascade="save-update" column="SOURCE_SKIP_LOGIC_ID" class="edu.common.dynamicextensions.domain.CategoryAttribute" constrained="true"
@@ -198,6 +141,63 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
 		}
 
 		this.defaultPermissibleValuesCollection.add(permissibleValue);
+	}
+	/**
+	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="save-update" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="SKIP_LOGIC_ATTRIBUTE_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"
+	 * @return Returns the dataElementCollection.
+	 */
+	private Set<DataElementInterface> getDataElementCollection()
+	{
+		return dataElementCollection;
+	}
+
+	/**
+	 * @param dataElementCollection The dataElementCollection to set.
+	 */
+	private void setDataElementCollection(Set<DataElementInterface> dataElementCollection)
+	{
+		this.dataElementCollection = dataElementCollection;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public DataElementInterface getDataElement()
+	{
+		DataElementInterface dataElementInterface = null;
+		if (dataElementCollection != null)
+		{
+			Iterator<DataElementInterface> dataElementIterator = dataElementCollection.iterator();
+			if (dataElementIterator.hasNext())
+			{
+				dataElementInterface = (DataElement) dataElementIterator.next();
+			}
+		}
+		return dataElementInterface;
+	}
+	/**
+	 * 
+	 */
+	public void clearDataElementCollection()
+	{
+		dataElementCollection = null;
+	}
+
+	/**
+	 *
+	 * @param dataElementInterface
+	 */
+	public void setDataElement(DataElementInterface dataElementInterface)
+	{
+		if (dataElementCollection == null)
+		{
+			dataElementCollection = new HashSet();
+		}
+		this.dataElementCollection.add(dataElementInterface);
 	}
     /**
      * 

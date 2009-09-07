@@ -43,8 +43,11 @@ public class Label extends Control implements LabelInterface
 		return null;
 	}
 
-	@Override
-	public void setValueAsStrings(List<String> listOfValues) {
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

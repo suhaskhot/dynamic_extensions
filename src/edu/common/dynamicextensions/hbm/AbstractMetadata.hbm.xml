@@ -717,27 +717,6 @@
             column="IDENTIFIER"
         />
 
-        <set
-            name="dataElementCollection"
-            table="DYEXTN_DATA_ELEMENT"
-            lazy="false"
-            inverse="false"
-            cascade="save-update"
-            sort="unsorted"
-        >
-            <cache 
-                usage="read-write" 
-             />
-
-              <key
-                  column="SKIP_LOGIC_ATTRIBUTE_ID"
-              />
-
-              <one-to-many
-                  class="edu.common.dynamicextensions.domain.DataElement"
-              />
-        </set>
-
         <many-to-one
             name="sourceSkipLogicAttribute"
             class="edu.common.dynamicextensions.domain.CategoryAttribute"
@@ -776,6 +755,27 @@
 
               <one-to-many
                   class="edu.common.dynamicextensions.domain.PermissibleValue"
+              />
+        </set>
+
+        <set
+            name="dataElementCollection"
+            table="DYEXTN_DATA_ELEMENT"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="SKIP_LOGIC_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.DataElement"
               />
         </set>
 

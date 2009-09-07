@@ -64,8 +64,11 @@ public class ContainmentAssociationControl extends AbstractContainmentControl
 		return null;
 	}
 
-	@Override
-	public void setValueAsStrings(List<String> listOfValues) {
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

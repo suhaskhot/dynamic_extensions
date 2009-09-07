@@ -49,8 +49,11 @@ public class CategoryAssociationControl extends AbstractContainmentControl
 	}
 
 
-	@Override
-	public void setValueAsStrings(List<String> listOfValues) {
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

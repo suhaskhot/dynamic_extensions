@@ -442,8 +442,11 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		return values;
 	}
 
-	@Override
-	public void setValueAsStrings(List<String> listOfValues) {
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

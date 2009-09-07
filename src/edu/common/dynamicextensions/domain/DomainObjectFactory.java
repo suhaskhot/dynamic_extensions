@@ -58,6 +58,7 @@ import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
@@ -851,7 +852,11 @@ public class DomainObjectFactory
 		categoryAttribute.setColumnProperties(createColumnProperties());
 		return categoryAttribute;
 	}
-
+	public SkipLogicAttributeInterface createSkipLogicAttribute()
+	{
+		SkipLogicAttribute skipLogicAttribute = new SkipLogicAttribute();
+		return skipLogicAttribute;
+	}
 	/**
 	 * @return IdGeneratorInterface
 	 */

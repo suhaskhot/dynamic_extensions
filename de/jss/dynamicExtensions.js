@@ -1475,7 +1475,7 @@ function addRow(containerId)
        		eval(x[i].text);
 	  }
     }
-	document.getElementById('isDirty').value = true;
+    document.getElementById('isDirty').value = true;
 }
 
 function removeCheckedRow(containerId)
@@ -1525,43 +1525,48 @@ function removeCheckedRow(containerId)
                     var childObjectName = childNode.name;
                     if (childObjectName != null && childObjectName.indexOf('_') != -1)
                     {
-                        var arr = childObjectName.split('_');
-
-                        arr[arr.length - 1] = rowIndex;
-                        var str = "";
-                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
+                    	childNode = childNode.childNodes[0];
+                    	childObjectName = childNode.name;
+                        if (childObjectName != null && childObjectName.indexOf('_') != -1)
                         {
-                            str += arr[arrIndex];
-                            if (arrIndex != arr.length - 1)
-                            {
-                                str += "_";
-                            }
+	                        var arr = childObjectName.split('_');
+	
+	                        arr[arr.length - 1] = rowIndex;
+	                        var str = "";
+	                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
+	                        {
+	                            str += arr[arrIndex];
+	                            if (arrIndex != arr.length - 1)
+	                            {
+	                                str += "_";
+	                            }
+	                        }
+	                        if (childObjectName.indexOf(')') != -1)
+	                        {
+	                            str = str + ")";
+	                        }
+	
+							if (document.getElementById(childObjectName) == null)
+							{
+								var controlValue = childNode.value;
+							}
+							else
+							{
+								var controlValue = document.getElementById(childObjectName).value;
+							}
+	
+							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+							if (document.getElementById(childObjectName) == null)
+							{
+								str = controlValue;
+							}
+							else
+							{
+								document.getElementById(str).value  = controlValue;
+							}
+	
+	                        break;
                         }
-                        if (childObjectName.indexOf(')') != -1)
-                        {
-                            str = str + ")";
-                        }
-
-						if (document.getElementById(childObjectName) == null)
-						{
-							var controlValue = childNode.value;
-						}
-						else
-						{
-							var controlValue = document.getElementById(childObjectName).value;
-						}
-
-						cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
-						if (document.getElementById(childObjectName) == null)
-						{
-							str = controlValue;
-						}
-						else
-						{
-							document.getElementById(str).value  = controlValue;
-						}
-
-                        break;
                     }
                 }
             }
@@ -1572,7 +1577,7 @@ function removeCheckedRow(containerId)
         document.getElementById(hiddenVar).value = parseInt(numberOfRows) - rowsDeleted;
 
         document.getElementById(containerId + "_table").value = table;
-		document.getElementById('isDirty').value = true;
+        document.getElementById('isDirty').value = true;
     }
 
     var request = newXMLHTTPReq();
@@ -1595,57 +1600,65 @@ function setDefaultValues(tableId, obj)
 {
     var children = obj.childNodes;
 
-    var rowIndex = document.getElementById(tableId).rows.length;
-    rowIndex = parseInt(rowIndex) - 1 ;
+	var rowIndex = document.getElementById(tableId).rows.length;
+	rowIndex = parseInt(rowIndex) - 1;
 
-    var i = 0;
-    for (j = 0 ; j < children.length; j++)
-    {
-
-        var childObject = children[j];
-        childObjectName = childObject.name;
-        if (childObjectName != null && childObjectName.indexOf('_')!= -1)
-        {
-            if (childObjectName.indexOf(')')!= -1)
-            {
-                childObjectName = childObjectName.substring(0,childObjectName.indexOf(')'));
-                i++;
-				//In case of control having multiple options, setting str only once
-				if(i==1)
-				{
-					str = childObjectName + "_" + rowIndex;
-				}
-                str = str + ")";
-
-            }
-            else
-            {
-				i++;
-				//In case of control having multiple options, setting str only once
-				if(i==1)
-				{
-					str = childObjectName + "_" + rowIndex;
-				}
-            }
-			obj.innerHTML = replaceAll(obj.innerHTML,childObjectName,str);
-        }
-
-		if("auto_complete_dropdown" == childObject.id )
+	var i = 0;
+	for (j = 0; j < children.length; j++) 
+	{
+		var childObject = children[j];
+		childObjectName = childObject.name;
+		if (childObjectName != null && childObjectName.indexOf('_') != -1) 
 		{
-			var childNodes2 = 	childObject.childNodes;
+			childObject = childObject.childNodes[0];
+			childObjectName = childObject.name;
+			if (childObjectName != null && childObjectName.indexOf('_') != -1) 
+			{
+				if (childObjectName.indexOf(')') != -1) 
+				{
+					childObjectName = childObjectName.substring(0,
+							childObjectName.indexOf(')'));
+					i++;
+					// In case of control having multiple options, setting str
+					// only once
+					if (i == 1) 
+					{
+						str = childObjectName + "_" + rowIndex;
+					}
+					str = str + ")";
+				} 
+				else 
+				{
+					i++;
+					// In case of control having multiple options, setting str
+					// only once
+					if (i == 1) 
+					{
+						str = childObjectName + "_" + rowIndex;
+					}
+				}
+			}
+			obj.innerHTML = replaceAll(obj.innerHTML, childObjectName, str);
 
-			var oldName  = childNodes2[2].childNodes[0].childNodes[0].name;
-			var newName = oldName + "_" +rowIndex;
+		}
+		if ("auto_complete_dropdown" == childObject.id) 
+		{
+			var childNodes2 = childObject.childNodes;
 
-			var newScript = replaceAll(childNodes2[1].innerHTML,oldName,newName);
+			var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
+			var newName = oldName + "_" + rowIndex;
 
-			obj.innerHTML =replaceAll(childNodes2[2].innerHTML,oldName,newName);
+			var newScript = replaceAll(childNodes2[1].innerHTML, oldName,
+					newName);
+
+			obj.innerHTML = replaceAll(childNodes2[2].innerHTML, oldName,
+					newName);
 
 			eval(newScript);
 
 		}
-    }
-    return obj;
+	}
+	return obj;
 }
 
 function replaceAll(inputString, regExpr, newString)
@@ -2319,6 +2332,89 @@ function clearDate(id, pattern)
 	{
 		id.value="";
 		id.style.color="black";
+	}
+}
+function getIframeDocument(iframe)
+{
+	var iframeDocument = null;
+	if (iframe.contentDocument)
+	{
+		iframeDocument = iframe.contentDocument; 
+	}
+	else if (iframe.contentWindow)
+	{
+		iframeDocument = iframe.contentWindow.document;
+	}
+	else if (iframe.document)
+	{
+		iframeDocument = iframe.document;
+	}
+	return iframeDocument;
+}
+function getSkipLogicControl(controlName, controlId, containerId) 
+{
+    document.getElementById('dataEntryOperation').value = "skipLogicAttributes";
+	var str = $("dataEntryForm").serialize();
+	var controlValue = document.getElementById(controlName).value;
+	str =  str + "&containerId=" + containerId + "&controlId=" + controlId
+			+ "&controlValue=" + controlValue;
+	jQuery.ajax( 
+	{
+				type :"POST",
+				url :"ApplyDataEntryFormAction.do",
+				dataType: "html",
+				data :str,
+				success : function(htmlresult) 
+				{
+					var iframe = document.getElementById("skipLogicIframe");
+					if (iframe != null)
+					{
+						var iframeDocument = getIframeDocument(iframe);
+						if (iframeDocument != null)
+						{
+							iframeDocument.body.innerHTML = htmlresult;
+							var skipLogicControlsArray =  iframeDocument.getElementsByName("skipLogicControl");
+							if (skipLogicControlsArray != null)
+							{
+					            var len = skipLogicControlsArray.length;
+					            for(var inputIndex = 0; inputIndex < len; inputIndex++)
+					            {
+					            	var skipLogicControl = skipLogicControlsArray[inputIndex];
+					            	if (skipLogicControl != null)
+					            	{
+					            		var skipLogicControlDiv = skipLogicControl.value;
+					            		var originalDiv = document.getElementById(skipLogicControlDiv);
+					            		var skipLogicDiv = iframeDocument.getElementById(skipLogicControlDiv);
+					            		if (skipLogicDiv!= null && originalDiv != null)
+					            		{
+					            			originalDiv.innerHTML = skipLogicDiv.innerHTML;
+					            		}
+					            	}
+					            }
+								executeComboScripts();
+							}
+						}
+					}
+				}
+	});
+}
+function executeComboScripts()
+{
+	var comboScriptDiv= document.getElementsByName("skipLogicControlScript");
+	if (comboScriptDiv != null)
+	{
+		var divCount = comboScriptDiv.length;
+		for(var i = 0;i<divCount;i++)
+		{
+			if (comboScriptDiv[i].value != null)
+			{
+				var comboScript = document.getElementById(comboScriptDiv[i].value)
+				if (comboScript != null)
+				{
+					eval(comboScript.innerHTML);
+				}
+			}
+		}
 	}
 }
 

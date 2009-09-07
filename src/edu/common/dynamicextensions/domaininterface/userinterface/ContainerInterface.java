@@ -236,10 +236,10 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	/**
 	 * @return
 	 */
-	public List<ControlInterface> getAllControlsUnderSameDisplayLabel();
+	List<ControlInterface> getAllControlsUnderSameDisplayLabel();
 	
 	/**
 	 * @return
 	 */
-	public Collection<ContainerInterface> getChildContainerCollection() ;
+	Collection<ContainerInterface> getChildContainerCollection();
 }

@@ -65,4 +65,25 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	boolean isValuePresent(Object value) throws DynamicExtensionsSystemException;
+	/**
+	 * 
+	 * @return
+	 */
+	PermissibleValueInterface getDefaultValuePermissibleValue();
+	/**
+	 * 
+	 * @param permissibleValue
+	 */
+	void addSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
+	/**
+	 * 
+	 * @return
+	 */
+	Collection<PermissibleValueInterface> getSkipLogicPermissibleValues();
+	/**
+	 * 
+	 * @param permissibleValue
+	 * @return
+	 */
+	PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
 }

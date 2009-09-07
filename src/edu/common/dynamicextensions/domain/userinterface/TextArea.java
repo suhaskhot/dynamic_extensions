@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -71,6 +73,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
+		String htmlString = "";
 		String defaultValue = (String) this.value;
 
 		if (this.value == null)
@@ -79,13 +82,16 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 
 		String htmlComponentName = getHTMLComponentName();
-
-		String htmlString = "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName
+		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
+		htmlString += "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName
 				+ "' " + "id='" + htmlComponentName + "' ";
 
 		//If control is defined as read only through category CSV file,make it Disabled
 
-		if (this.isReadOnly != null && getIsReadOnly())
+		if ((this.isReadOnly != null && getIsReadOnly()) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 		{
 			htmlString += ProcessorConstants.DISABLED;
 		}
@@ -132,6 +138,7 @@ public class TextArea extends Control implements TextAreaInterface
 		{
 			htmlString += defaultValue + "</textarea>";
 		}
+		htmlString += "</div>";
 		return htmlString;
 	}
 
@@ -157,6 +164,20 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 		return htmlString;
 
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		return null;
+	}
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

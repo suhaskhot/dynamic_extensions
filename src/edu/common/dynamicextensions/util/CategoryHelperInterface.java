@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -285,5 +286,33 @@ public interface CategoryHelperInterface
 	 * @return
 	 */
 	public abstract Long getInsatnce(String categoryEntityName);
+	/**
+	 * 
+	 * @param permissibleValueCollection
+	 * @param value
+	 * @return
+	 */
+	PermissibleValueInterface getPermissibleValue(
+			Collection<PermissibleValueInterface> permissibleValueCollection,
+			String value);
+	/**
+	 * 
+	 * @param attributeName
+	 * @param entityName
+	 * @param skipLogicAttributeInterface
+	 * @param lineNo
+	 * @param desiredPermissibleValues
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public List<PermissibleValueInterface> createPermissibleValuesList(
+			String attributeName,
+			String entityName,
+			SkipLogicAttributeInterface skipLogicAttributeInterface,
+			Long lineNo,
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException;
 
 }

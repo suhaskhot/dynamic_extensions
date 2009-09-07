@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -388,5 +389,36 @@ public class Attribute extends AbstractAttribute
 	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException
 	{
 		return new DynamicExtensionBaseQueryBuilder().isValuePresent(this, value);
+	}
+	/**
+	 * 
+	 */
+	public PermissibleValueInterface getDefaultValuePermissibleValue() 
+	{
+		return getAttributeTypeInformation().getDefaultValue();
+	}
+	/**
+	 * 
+	 */
+	public Collection<PermissibleValueInterface> getSkipLogicPermissibleValues()
+	{
+		return null;
+	}
+	/**
+	 * 
+	 */
+	public void addSkipLogicPermissibleValue(
+			PermissibleValueInterface permissibleValue) 
+	{
+		
+	}
+	/**
+	 * 
+	 * @param permissibleValue
+	 * @return
+	 */
+	public PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue)
+	{
+		return null;
 	}
 }

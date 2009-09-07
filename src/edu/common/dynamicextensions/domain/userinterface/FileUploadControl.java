@@ -6,6 +6,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -31,6 +33,10 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
+		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
 		ApplicationProperties.initBundle("ApplicationResources");
 		if (this.value != null)
 		{
@@ -42,6 +48,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 		}
 		htmlString = htmlString + "<input onchange='isDataChanged();' type=\"file\" " + "name=\"value("
 				+ getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName() + "\"/>";
+		htmlString += "</div>";
 		return htmlString;
 	}
 
@@ -75,4 +82,20 @@ public class FileUploadControl extends Control implements FileUploadInterface
 		return htmlString;
 	}
 
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -114,71 +114,47 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
+		StringBuffer htmlString = new StringBuffer("");
 		List<NameValueBean> nameValueBeans = null;
-		List<String> values = new ArrayList<String>();
-		AssociationInterface association = getBaseAbstractAttributeAssociation();
-		if (association != null)
+		List<String> values = getValueAsStrings();
+		String parentContainerId = "";
+		if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
 		{
-			getValueList(association, values);
+			parentContainerId = this.getParentContainer().getId().toString();
 		}
-		else
+		String identifier = "";
+		if (this.getId() != null)
 		{
-			if (!(value instanceof List) && value != null)
-			{
-				List<String> temp = new ArrayList<String>();
-				temp.add((String) value);
-				values = temp;
-			}
-			else
-			{
-				values = (List<String>) this.value;
-			}
+			identifier = this.getId().toString();
 		}
-
+		String htmlComponentName = getHTMLComponentName();
 		String strMultiSelect = "";
 		if ((isMultiSelect != null) && (isMultiSelect.booleanValue()))
 		{
 			strMultiSelect = "MULTIPLE ";
 		}
-		StringBuffer htmlString = new StringBuffer("<SELECT ");
-		htmlString.append(strMultiSelect).append(" size=").append(this.noOfRows).append(
-				" class='font_bl_s' name='").append(getHTMLComponentName()).append("' onchange='isDataChanged();' id='")
-				.append(name).append("' ");
 
-		if (this.isReadOnly != null && this.isReadOnly)
+
+		htmlString.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>");
+
+		htmlString.append("<SELECT ");
+		htmlString.append(strMultiSelect).append(" size=")
+				.append(this.noOfRows).append(" class='font_bl_s' name='")
+				.append(getHTMLComponentName()).append(
+						"' onchange='" + this.isSkipLogic != null
+								&& this.isSkipLogic ? "getSkipLogicControl('"
+								+ htmlComponentName + "','" + identifier
+								+ "','" + parentContainerId + "');" : ""
+								+ "isDataChanged();' id='").append(name)
+				.append("' ");
+		if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 		{
 			htmlString.append(" disabled='").append(ProcessorConstants.TRUE).append("' ");
 		}
 		htmlString.append('>');
-
-		if (values == null || values.isEmpty())
-		{
-			String defaultValue = null;
-			values = new ArrayList<String>();
-
-			AttributeMetadataInterface attributeMetadata = this.getAttibuteMetadataInterface();
-			if (attributeMetadata != null)
-			{
-				if (attributeMetadata instanceof CategoryAttributeInterface)
-				{
-					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadata)
-							.getAbstractAttribute();
-					if (abstractAttribute instanceof AttributeInterface)
-					{
-						defaultValue = attributeMetadata.getDefaultValue();
-					}
-				}
-				else
-				{
-					defaultValue = attributeMetadata.getDefaultValue();
-				}
-
-				if (defaultValue != null && defaultValue.trim().length() != 0)
-				{
-					values.add(defaultValue);
-				}
-			}
-		}
 
 		if (listOfValues == null)
 		{
@@ -208,22 +184,16 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		// using an auto complete drop down and list box together.
 		if (IsUsingAutoCompleteDropdown != null && IsUsingAutoCompleteDropdown)
 		{
-			String identifier = "";
-			if (this.getId() != null)
-			{
-				identifier = this.getId().toString();
-			}
-
-			String parentContainerId = "";
-			if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
-			{
-				parentContainerId = this.getParentContainer().getId().toString();
-			}
-
 			String coordId = "coord_" + getHTMLComponentName();
 			String protocolCoordId = "protocolCoordId_" + getHTMLComponentName();
 
 			StringBuffer multSelWithAutoCmpltHTML = new StringBuffer();
+		
+			multSelWithAutoCmpltHTML.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+						+ getHTMLComponentName() + "_div' /><div id='"
+						+ getHTMLComponentName() + "_div' name='"
+						+ getHTMLComponentName() + "_div'>");
+			
 			multSelWithAutoCmpltHTML
 					.append("<script defer='defer'>Ext.onReady(function(){var myUrl= 'DEComboDataAction.do?controlId= "
 							+ identifier
@@ -298,6 +268,8 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 			htmlString = multSelWithAutoCmpltHTML;
 		}
+
+			htmlString.append("</div>");
 
 		return htmlString.toString();
 	}
@@ -389,6 +361,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 				}
 			}
 		}
+		
 	}
 
 	/**
@@ -413,5 +386,65 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 
 		return association;
+	}
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		List<String> values = new ArrayList<String>();
+		AssociationInterface association = getBaseAbstractAttributeAssociation();
+		if (association != null)
+		{
+			getValueList(association, values);
+		}
+		else
+		{
+			if (!(value instanceof List) && value != null)
+			{
+				List<String> temp = new ArrayList<String>();
+				temp.add((String) value);
+				values = temp;
+			}
+			else
+			{
+				values = (List<String>) this.value;
+			}
+		}
+		if (values == null || values.isEmpty())
+		{
+			String defaultValue = null;
+			values = new ArrayList<String>();
+
+			AttributeMetadataInterface attributeMetadata = this.getAttibuteMetadataInterface();
+			if (attributeMetadata != null)
+			{
+				if (attributeMetadata instanceof CategoryAttributeInterface)
+				{
+					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadata)
+							.getAbstractAttribute();
+					if (abstractAttribute instanceof AttributeInterface)
+					{
+						defaultValue = attributeMetadata.getDefaultValue();
+					}
+				}
+				else
+				{
+					defaultValue = attributeMetadata.getDefaultValue();
+				}
+
+				if (defaultValue != null && defaultValue.trim().length() != 0)
+				{
+					values.add(defaultValue);
+				}
+			}
+		}
+		return values;
+	}
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 }

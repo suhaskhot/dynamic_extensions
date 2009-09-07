@@ -108,7 +108,6 @@ public class Container extends DynamicExtensionBaseDomainObject
 	private Boolean addCaption = true;
 
 	private Collection<ContainerInterface> childContainerCollection = new HashSet<ContainerInterface>();
-
 	/**
 	 * @hibernate.set name="childContainerCollection" table="DYEXTN_CONTAINER"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -478,7 +477,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 				tempContainer = tempContainer.getBaseContainer();
 			}
 		}
-
+		
 		containerHTML.append(generateControlsHTML(caption));
 		containerHTML.append("</table>");
 

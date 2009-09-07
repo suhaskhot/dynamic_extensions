@@ -8,6 +8,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface;
@@ -52,5 +54,19 @@ public class ContainmentAssociationControl extends AbstractContainmentControl
 			isOneToMany = true;
 		}
 		return isOneToMany;
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
@@ -36,38 +37,10 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 */
 	public String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
-		String defaultValue = "";
-		if (this.value == null)
-		{
-			AttributeMetadataInterface attributeMetadataInterface = this
-					.getAttibuteMetadataInterface();
-			if (attributeMetadataInterface != null)
-			{
-				this.value = this.getAttibuteMetadataInterface().getDefaultValue();
-			}
-		}
-		if (this.value != null)
-		{
-			if (this.value instanceof String)
-			{
-				defaultValue = (String) this.value;
-			}
-			else if (this.value instanceof List)
-			{
-				List valueList = (List) this.value;
-				if (!valueList.isEmpty())
-				{
-					defaultValue = valueList.get(0).toString();
-				}
-			}
-		}
-		else
-		{
-			defaultValue = "";
-		}
-
+		String defaultValue = getDefaultControlValue();
 		String isDisabled = "";
-		if ((this.isReadOnly != null && this.isReadOnly))
+		String htmlString = "";
+		if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 		{
 			isDisabled = ",disabled:'" + ProcessorConstants.TRUE + "'";
 		}
@@ -82,13 +55,24 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		{
 			identifier = this.getId().toString();
 		}
+
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName()
+					+ "_div' />"
+					+ "<input type='hidden' name='skipLogicControlScript' id='skipLogicControlScript' value = 'comboScript_"
+					+ parentContainerId
+					+ "' /><div id='"
+					+ getHTMLComponentName()
+					+ "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
+
 		/* Bug Id:9030
 		 * textComponent is the name of the text box.
 		 * if default value is not empty loading the data store first, and then setting the value in 
 		 * combo box to default value.
 		 */
 		String textComponent = "combo" + htmlComponentName;
-		String htmlString = "<script defer='defer'>Ext.onReady(function(){ "
+		htmlString += "<script defer='defer'>Ext.onReady(function(){ "
 				+ "var myUrl= 'DEComboDataAction.do?controlId= "
 				+ identifier
 				+ "~containerIdentifier="
@@ -113,7 +97,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "'});combo.on(\"select\", function() {isDataChanged();}), combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});";
 
 		htmlString = htmlString
-				+ "ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
+				+ (this.isSkipLogic ? "combo.on(\"change\", function() {getSkipLogicControl('"+ htmlComponentName +"','"+ identifier +"','"+ parentContainerId +"')});" :"") +
+						"ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
 
 		htmlString = htmlString
 				+ "});</script>"
@@ -129,7 +114,11 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ defaultValue
 				+ "' "
 				+ " size='20'/>"
-				+ "<div name='comboScript' style='display:none'>"
+				+ "<div id='comboScript_"
+				+ parentContainerId
+				+ "' name='comboScript_"
+				+ parentContainerId
+				+ "' style='display:none'>"
 				+ "Ext.onReady(function(){ "
 				+ "var myUrl='DEComboDataAction.do?controlId= "
 				+ identifier
@@ -151,13 +140,17 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "',valueNotFoundText:'',"
 				+ "selectOnFocus:'true',applyTo: '"
 				+ htmlComponentName
-				+ "'});combo.on(\"select\", function() {isDataChanged();}),combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
+				+ "'});combo.on(\"select\", function() {isDataChanged();}), combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});" +
+				(this.isSkipLogic ? "combo.on(\"change\", function() {getSkipLogicControl('"+ htmlComponentName +"','"+ identifier +"','"+ parentContainerId +"')});" :"") +
+								"ds.on('load',function(){if (this.getAt(0) != null) {if (this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50} else {combo.typeAheadDelay=60000}}});"
 				+ "});" + "</div>" + "<div name=\"comboHtml\" style='display:none'>" + "<div style='float:left'>"
 				+ "<input type='text' onmouseover=\"showToolTip('" + htmlComponentName
 				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
 				+ "' value ='" + defaultValue + "' size='20' class='font_bl_nor' />" + "</div>"
 				+ "</div>" + "</div>";
 
+			htmlString += "</div>";
+		
 		return htmlString;
 	} 
 
@@ -221,6 +214,66 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		}
 
 		return htmlString;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	private String getDefaultControlValue()
+	{
+		String defaultValue = "";
+		if (this.value == null)
+		{
+			AttributeMetadataInterface attributeMetadataInterface = this
+					.getAttibuteMetadataInterface();
+			if (attributeMetadataInterface != null)
+			{
+				this.value = this.getAttibuteMetadataInterface().getDefaultValue();
+			}
+		}
+		if (this.value != null)
+		{
+			if (this.value instanceof String)
+			{
+				defaultValue = (String) this.value;
+			}
+			else if (this.value instanceof List)
+			{
+				List valueList = (List) this.value;
+				if (!valueList.isEmpty())
+				{
+					defaultValue = valueList.get(0).toString();
+				}
+			}
+		}
+		else
+		{
+			defaultValue = "";
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		List<String> values = new ArrayList<String>();
+		values.add(getDefaultControlValue());
+		return values;
+	}
+
+
+
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
+		if (!listOfValues.isEmpty())
+		{
+			setValue(listOfValues.get(0));
+		}
 	}
 
 }

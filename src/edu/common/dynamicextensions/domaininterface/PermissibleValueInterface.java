@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+import java.util.Collection;
+
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 
 /**
@@ -23,7 +25,31 @@ public interface PermissibleValueInterface extends SemanticAnnotatableInterface
 	 * @return the value of the DateValue downcasted to the Object.
 	 */
 	Object getValueAsObject();
-
+	/**
+	 * 
+	 * @return
+	 */
+	Collection<SkipLogicAttributeInterface> getDependentSkipLogicAttributes();
+	/**
+	 * 
+	 * @param dependentSkipLogicAttributes
+	 */
+	void setDependentSkipLogicAttributes(
+			Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes);
+	/**
+	 * This method adds a skip logic attribute.
+	 * @param skipLogicAttributeInterface
+	 */
+	void addDependentSkipLogicAttribute(SkipLogicAttributeInterface skipLogicAttributeInterface);
+	/**
+	 * This method removes a SkipLogic Attribute.
+	 * @param skipLogicAttributeInterface.
+	 */
+	void removeDependentSkipLogicAttribute(SkipLogicAttributeInterface skipLogicAttributeInterface);
+	/**
+	 * This method removes all SkipLogic Attributes.
+	 */
+	void removeAllDependentSkipLogicAttributes();
 	/**
 	 * 
 	 * @param permissibleValue

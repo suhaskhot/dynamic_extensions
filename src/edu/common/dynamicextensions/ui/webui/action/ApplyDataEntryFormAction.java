@@ -387,6 +387,11 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 				dataEntryForm.setDataEntryOperation("calculateAttributes");
 				actionForward = mapping.findForward(DEConstants.SUCCESS);
 			}
+			else if ("skipLogicAttributes".equals(dataEntryOperation))
+			{
+				dataEntryForm.setDataEntryOperation("skipLogicAttributes");
+				actionForward = mapping.findForward(DEConstants.SUCCESS);
+			}
 		}
 		return actionForward;
 	}

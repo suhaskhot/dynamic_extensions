@@ -1,6 +1,9 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -29,13 +32,17 @@ public class CheckBox extends Control implements CheckBoxInterface
 	{
 		String checked = String.valueOf(this.value);
 		String htmlString = "";
+		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
 		if (this.value == null)
 		{
 			checked = this.getAttibuteMetadataInterface().getDefaultValue();
 		}
 		String disabled = "";
 		//		If control is defined as readonly through category CSV file,make it Disabled
-		if (this.isReadOnly != null && getIsReadOnly())
+		if ((this.isReadOnly != null && getIsReadOnly()) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 		{
 			disabled = ProcessorConstants.DISABLED;
 		}
@@ -43,7 +50,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 		String htmlComponentName = getHTMLComponentName();
 		if (checked != null && (checked.equals("true") || checked.equals("1")))
 		{
-			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='"
+			htmlString += "<input type='checkbox' class='" + this.cssClass + "' name='"
 					+ htmlComponentName + "' checkedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
@@ -53,14 +60,14 @@ public class CheckBox extends Control implements CheckBoxInterface
 		}
 		else
 		{
-			htmlString = "<input type='checkbox' class='" + this.cssClass + "' name='"
+			htmlString += "<input type='checkbox' class='" + this.cssClass + "' name='"
 					+ htmlComponentName + "' checkedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(true) + "' uncheckedValue='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "'" + "value='"
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + disabled
 					+ "id='" + htmlComponentName + "' onchange='isDataChanged();' onclick='changeValueForCheckBox(this);'>";
 		}
-
+		htmlString += "</div>";
 		return htmlString;
 	}
 
@@ -86,6 +93,20 @@ public class CheckBox extends Control implements CheckBoxInterface
 	public void setAttribute(AbstractAttributeInterface abstractAttribute)
 	{
 		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		return null;
+	}
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

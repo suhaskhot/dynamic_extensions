@@ -53,6 +53,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryGenerator;
+import edu.common.dynamicextensions.util.parser.ImportPermissibleValues;
 import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.exception.BizLogicException;
@@ -1626,7 +1627,42 @@ public class TestCategoryManager extends DynamicExtensionsBaseTestCase
 			fail();
 		}
 	}
+	/**
+	 * Create category where attributes from a particular class are not chosen,
+	 * i.e. not selecting attributes from GleasonScore entity.
+	 * Refer to pathology annotation model.
+	 */
+	public void testSkipLogicAttributes()
+	{
+		CategoryInterface category = null;
+		try
+		{
+			String[] args = {"./xmi/test.xmi", "annotations", "./csv/Skip_Logic_Main.csv"};
+			XMIImporter.main(args);
 
+			ImportPermissibleValues importPermissibleValues = new ImportPermissibleValues("./csv/TestModel_pv.csv");
+			importPermissibleValues.importValues();
+			
+			String[] args2 = {"./csv/SkipLogic.csv"};
+			CategoryCreator categoryCreator = new CategoryCreator();
+			categoryCreator.main(args2);
+
+			CategoryManager categoryManager = (CategoryManager) CategoryManager.getInstance();
+			
+			category = (CategoryInterface) categoryManager.getObjectByName(
+					Category.class.getName(), "SkipLogic_Test");
+
+			assertNotNull(category.getId());
+			assertNotNull(category.getRootCategoryElement());
+			assertEquals(category.getName(), "SkipLogic_Test");
+
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
 	/**
 	 * Create entity group from pathology annotation model.
 	 * Check if a correct subset of values for tumourTissueSiteCategoryAttribute is displayed.

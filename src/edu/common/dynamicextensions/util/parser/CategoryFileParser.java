@@ -174,6 +174,10 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 */
 	public abstract boolean hasRelatedAttributes();
+	/**
+	 * @return
+	 */
+	public abstract boolean hasSkipLogicAttributes();
 
 	/**
 	 * @return
@@ -189,6 +193,26 @@ public abstract class CategoryFileParser extends FileReader
 	 * @return
 	 */
 	public abstract String getRelatedAttributeName();
+	/**
+	 * @return
+	 */
+	public abstract String getSkipLogicSourceAttributeName();
+	/**
+	 * @return
+	 */
+	public abstract String getSkipLogicSourceAttributeClassName();
+	/**
+	 * @return
+	 */
+	public abstract String getSkipLogicTargetAttributeName();
+	/**
+	 * @return
+	 */
+	public abstract String getSkipLogicTargetAttributeClassName();
+	/**
+	 * @return
+	 */
+	public abstract String getSkipLogicPermissibleValueName();
 
 	/**
 	 * @return

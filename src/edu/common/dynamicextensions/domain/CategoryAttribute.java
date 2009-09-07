@@ -64,6 +64,10 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 *
 	 */
 	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
+	/**
+	 *
+	 */
+	protected Collection<PermissibleValueInterface> skipLogicpermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 
 	/**
 	 *
@@ -78,6 +82,10 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 */
 	protected Boolean isCalculated;
 	/**
+	 *
+	 */
+	protected Boolean isSkipLogic;
+	/**
 	 * Collection of formulae.
 	 */
 	protected Collection<FormulaInterface> formulaCollection = new HashSet<FormulaInterface>();
@@ -89,8 +97,6 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 * Collection of category attributes where in this category attribute is used in formula.
 	 */
 	protected Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes = new HashSet<CategoryAttributeInterface>();
-
-
 	/**
 	 * This method returns the Collection of Column Properties of the Attribute.
 	 * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES" cascade="all" inverse="false" lazy="false"
@@ -297,6 +303,79 @@ public class CategoryAttribute extends BaseAbstractAttribute
 			Iterator<PermissibleValueInterface> dataElementIter = defaultPermissibleValuesCollection
 					.iterator();
 			permissibleValueInterface = dataElementIter.next();
+		}
+		return permissibleValueInterface;
+	}
+	/**
+	 * @hibernate.set name="skipLogicpermissibleValuesCollection" table="DYEXTN_PERMISSIBLE_VALUE"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="SKIP_LOGIC_CAT_ATTR_ID"
+	 * @hibernate.cache usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"
+	 * @return Returns the dataElementCollection.
+	 */
+	private Collection<PermissibleValueInterface> getSkipLogicPermissibleValuesCollection()
+	{
+		return skipLogicpermissibleValuesCollection;
+	}
+
+	/**
+	 * @param defaultPermissibleValuesCollection the defaultPermissibleValuesCollection to set
+	 */
+	private void setSkipLogicPermissibleValuesCollection(
+			Collection<PermissibleValueInterface> skipLogicpermissibleValuesCollection)
+	{
+		this.skipLogicpermissibleValuesCollection = skipLogicpermissibleValuesCollection;
+	}
+	/**
+	 * @param sourceEntity
+	 */
+	public void addSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue)
+	{
+		if (skipLogicpermissibleValuesCollection == null)
+		{
+			skipLogicpermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
+		}
+		this.skipLogicpermissibleValuesCollection.add(permissibleValue);
+	}
+	/**
+	 * @param sourceEntity
+	 */
+	public void removeAllSkipLogicPermissibleValues()
+	{
+		if (skipLogicpermissibleValuesCollection != null)
+		{
+			this.skipLogicpermissibleValuesCollection.clear();
+		}
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public Collection<PermissibleValueInterface> getSkipLogicPermissibleValues()
+	{
+		return skipLogicpermissibleValuesCollection;
+	}
+	
+	/**
+	 * 
+	 * @param permissibleValue
+	 * @return
+	 */
+	public PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue)
+	{
+		PermissibleValueInterface permissibleValueInterface = null;
+		if (skipLogicpermissibleValuesCollection != null
+				&& !skipLogicpermissibleValuesCollection.isEmpty())
+		{
+			for (PermissibleValueInterface skipLogicPermissibleValue : skipLogicpermissibleValuesCollection)
+			{
+				if (skipLogicPermissibleValue.equals(permissibleValue))
+				{
+					permissibleValueInterface = skipLogicPermissibleValue;
+					break;
+				}
+			}
 		}
 		return permissibleValueInterface;
 	}
@@ -573,6 +652,22 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.isCalculated = isCalculatedAttribute;
 	}
+	/**
+	* @hibernate.property name="isSkipLogic" type="boolean" column="IS_SKIP_LOGIC"
+	*/
+	public Boolean getIsSkipLogic() 
+	{
+		return isSkipLogic;
+	}
+	/**
+	 * 
+	 * @param isSkipLogic
+	 */
+	public void setIsSkipLogic(Boolean isSkipLogic) 
+	{
+		this.isSkipLogic = isSkipLogic;
+	}
+
 	/**
 	 * 
 	 */

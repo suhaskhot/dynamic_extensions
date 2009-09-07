@@ -129,34 +129,60 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * 
 	 * @return
 	 */
-	public Collection<CategoryAttributeInterface> getCalculatedDependentCategoryAttributes();
+	Collection<CategoryAttributeInterface> getCalculatedDependentCategoryAttributes();
 	/**
 	 * 
 	 * @param calculatedDependentCategoryAttributes
 	 */
-	public void setCalculatedDependentCategoryAttributes(
+	void setCalculatedDependentCategoryAttributes(
 			Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes);
 	/**
 	 *
 	 */
-	public void addCalculatedDependentCategoryAttribute(
+	void addCalculatedDependentCategoryAttribute(
 			CategoryAttributeInterface categoryAttributeInterface);
 	/**
 	 *
 	 */
-	public void addCalculatedCategoryAttribute(
+	void addCalculatedCategoryAttribute(
 			CategoryAttributeInterface categoryAttributeInterface);
 	/**
 	 * 
 	 * @return
 	 */
-	public PermissibleValueInterface getDefaultValuePermissibleValue();
+	PermissibleValueInterface getDefaultValuePermissibleValue();
 	/**
 	 * This method removes all Calculated Category Attributes.
 	 */
-	public void removeAllCalculatedDependentCategoryAttributes();
+	void removeAllCalculatedDependentCategoryAttributes();
 	/**
 	 * This method removes all Calculated Category Attributes.
 	 */
-	public void removeAllCalculatedCategoryAttributes();
+	void removeAllCalculatedCategoryAttributes();
+	/**
+	 * 
+	 * @param isSkipLogic
+	 */
+	void setIsSkipLogic(Boolean isSkipLogic);
+	/**
+	 * 
+	 * @return
+	 */
+	Boolean getIsSkipLogic();
+	/**
+	 * 
+	 * @param permissibleValue
+	 */
+	void addSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
+	/**
+	 * 
+	 * @return
+	 */
+	Collection<PermissibleValueInterface> getSkipLogicPermissibleValues();
+	/**
+	 * 
+	 * @param permissibleValue
+	 * @return
+	 */
+	PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
 }

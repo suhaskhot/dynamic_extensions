@@ -100,6 +100,10 @@ public interface CategoryCSVConstants
 	 * This keyword used to define the label for the form
 	 */
 	String RELATED_ATTIBUTE = "RelatedAttribute:";
+	/**
+	 * This keyword used to define the label for the form
+	 */
+	String SKIP_LOGIC_ATTIBUTE = "SkipLogicAttribute:";
 
 	String INSTANCE = "instance:";
 

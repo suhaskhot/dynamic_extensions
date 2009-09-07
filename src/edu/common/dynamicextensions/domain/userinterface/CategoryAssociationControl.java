@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 
@@ -34,6 +36,23 @@ public class CategoryAssociationControl extends AbstractContainmentControl
 			isOneToMany = true;
 		}
 		return isOneToMany;
+	}
+
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -5,6 +5,7 @@ package edu.common.dynamicextensions.ui.util;
  * This class defines miscellaneous methods that are commonly used by many Control objects. *
  * @author chetan_patil
  */
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DateValueInterface;
@@ -39,6 +41,7 @@ import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.ShortTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.StringTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
@@ -326,8 +329,15 @@ public class ControlsUtility
 				if (attribute instanceof AttributeMetadataInterface)
 				{
 					attributeMetadataInterface = (AttributeMetadataInterface) attribute;
-
-					nameValueBeanList = getListOfPermissibleValues(attributeMetadataInterface);
+					if (!control.getIsSkipLogicLoadPermValues())
+					{
+						nameValueBeanList = getListOfPermissibleValues(attributeMetadataInterface);
+					}
+					else
+					{
+						List<PermissibleValueInterface> permissibleValueList = getSkipLogicPermissibleValues(control.getSourceSkipControl(),control);
+						nameValueBeanList = getPermissibleValues(permissibleValueList, attributeMetadataInterface);
+					}
 				}
 				else if (attribute instanceof AssociationInterface)
 				{
@@ -343,8 +353,15 @@ public class ControlsUtility
 
 						attributeMetadataInterface = (AttributeMetadataInterface) attributesList
 								.get(0);
-
-						nameValueBeanList = getListOfPermissibleValues(attributeMetadataInterface);
+						if (!control.getIsSkipLogicLoadPermValues())
+						{
+							nameValueBeanList = getListOfPermissibleValues(attributeMetadataInterface);
+						}
+						else
+						{
+							List<PermissibleValueInterface> permissibleValueList = getSkipLogicPermissibleValues(control.getSourceSkipControl(),control);
+							nameValueBeanList = getPermissibleValues(permissibleValueList, attributeMetadataInterface);
+						}
 					}
 					else
 					{
@@ -384,7 +401,196 @@ public class ControlsUtility
 		}
 		return nameValueBeanList;
 	}
+	/**
+	 * 
+	 * @param selectedPermissibleValues
+	 * @return
+	 */
+	public static List<SkipLogicAttributeInterface> getNonReadOnlySkipLogicAttributes(
+			List<PermissibleValueInterface> selectedPermissibleValues,
+			AttributeMetadataInterface attributeMetadataInterface) 
+	{
+		List<SkipLogicAttributeInterface> skipLogicAttributes = new ArrayList<SkipLogicAttributeInterface>();
+		for (PermissibleValueInterface selectedPermissibleValue : selectedPermissibleValues) 
+		{
+			Collection<PermissibleValueInterface> skipLogicPermissibleValues = attributeMetadataInterface
+					.getSkipLogicPermissibleValues();
+			if (skipLogicPermissibleValues != null)
+			{
+				for (PermissibleValueInterface skipLogicValue : skipLogicPermissibleValues) 
+				{
+					if (skipLogicValue.equals(selectedPermissibleValue)) 
+					{
+						skipLogicAttributes.addAll(skipLogicValue
+								.getDependentSkipLogicAttributes());
+					}
+				}
+			}
+		}
+		return skipLogicAttributes;
+	}
+	/**
+	 * 
+	 * @param selectedPermissibleValues
+	 * @return
+	 */
+	public static List<SkipLogicAttributeInterface> getReadOnlySkipLogicAttributes(
+			List<PermissibleValueInterface> selectedPermissibleValues,
+			AttributeMetadataInterface attributeMetadataInterface) 
+	{
+		List<SkipLogicAttributeInterface> skipLogicAttributes = new ArrayList<SkipLogicAttributeInterface>();
+		for (PermissibleValueInterface selectedPermissibleValue : selectedPermissibleValues) 
+		{
+			Collection<PermissibleValueInterface> skipLogicPermissibleValues = attributeMetadataInterface
+					.getSkipLogicPermissibleValues();
+			if (skipLogicPermissibleValues != null)
+			{
+				for (PermissibleValueInterface skipLogicValue : skipLogicPermissibleValues) 
+				{
+					if (!skipLogicValue.equals(selectedPermissibleValue)) 
+					{
+						skipLogicAttributes.addAll(skipLogicValue
+								.getDependentSkipLogicAttributes());
+					}
+				}
+			}
+		}
+		return skipLogicAttributes;
+	}
+	/**
+	 * @throws ParseException
+	 * 
+	 */
+	public static List<PermissibleValueInterface> getSkipLogicPermissibleValues(
+			ControlInterface sourceControl, ControlInterface targetControl)
+			throws ParseException {
+		List<String> values = sourceControl.getValueAsStrings();
+		List<PermissibleValueInterface> skipLogicPermissibleValueList = new ArrayList<PermissibleValueInterface>();
+		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
+		if (values != null) 
+		{
+			for (String controlValue : values) 
+			{
+				PermissibleValueInterface selectedPermissibleValue = null;
+				AttributeMetadataInterface attributeMetadataInterface = ControlsUtility
+						.getAttributeMetadataInterface(sourceControl
+								.getBaseAbstractAttribute());
+				if (attributeMetadataInterface != null) 
+				{
+					if (controlValue != null && controlValue.length() > 0) 
+					{
+						selectedPermissibleValue = attributeMetadataInterface
+								.getAttributeTypeInformation()
+								.getPermissibleValueForString(
+										controlValue.toString());
+					}
+					permissibleValueList.add(selectedPermissibleValue);
+				}
+			}
+			if (sourceControl.getIsSkipLogic()) 
+			{
+				AttributeMetadataInterface targetAttributeMetadataInterface = ControlsUtility
+						.getAttributeMetadataInterface(targetControl
+								.getBaseAbstractAttribute());
+				for (PermissibleValueInterface selectedPermissibleValue : permissibleValueList) 
+				{
+					AttributeMetadataInterface attributeMetadataInterface = ControlsUtility
+							.getAttributeMetadataInterface(sourceControl
+									.getBaseAbstractAttribute());
+					PermissibleValueInterface skipLogicPermissibleValue = attributeMetadataInterface
+							.getSkipLogicPermissibleValue(selectedPermissibleValue);
+					if (skipLogicPermissibleValue != null) 
+					{
+						Collection<SkipLogicAttributeInterface> skipLogicAttributes = skipLogicPermissibleValue
+								.getDependentSkipLogicAttributes();
+						for (SkipLogicAttributeInterface skipLogicAttributeInterface : skipLogicAttributes) 
+						{
+							if (skipLogicAttributeInterface
+									.getTargetSkipLogicAttribute().equals(
+											targetAttributeMetadataInterface)) 
+							{
+								DataElementInterface dataElementInterface = skipLogicAttributeInterface
+										.getDataElement();
+								if (dataElementInterface instanceof UserDefinedDEInterface) 
+								{
+									UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElementInterface;
+									skipLogicPermissibleValueList
+											.addAll(userDefinedDEInterface
+													.getPermissibleValues());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return skipLogicPermissibleValueList;
+	}
+	/**
+	 * 
+	 * @param attribute
+	 * @return
+	 */
+	public static AttributeMetadataInterface getAttributeMetadataInterface(BaseAbstractAttributeInterface attribute)
+	{
+		AttributeMetadataInterface attributeMetadataInterface = null;
+		if (attribute != null)
+		{
+			if (attribute instanceof AttributeMetadataInterface)
+			{
+				if (attribute instanceof CategoryAttributeInterface)
+				{
+					CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) attribute;
+					AbstractAttributeInterface abstractAttribute = categoryAttribute.getAbstractAttribute();
+					if (abstractAttribute instanceof AssociationInterface)
+					{
+						AssociationInterface association = (AssociationInterface) abstractAttribute;
+						if (association.getIsCollection())
+						{
+							Collection<AbstractAttributeInterface> attributeCollection = association
+									.getTargetEntity()
+									.getAllAbstractAttributes();
+							Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
+									.filterSystemAttributes(attributeCollection);
+							List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+									filteredAttributeCollection);
 
+							attributeMetadataInterface = (AttributeMetadataInterface) attributesList
+									.get(0);
+						}
+					}
+					else
+					{
+						attributeMetadataInterface = (AttributeMetadataInterface) attribute;
+					}
+				}
+				else
+				{
+					attributeMetadataInterface = (AttributeMetadataInterface) attribute;
+				}
+
+			}
+			else if (attribute instanceof AssociationInterface)
+			{
+				AssociationInterface association = (AssociationInterface) attribute;
+				if (association.getIsCollection())
+				{
+					Collection<AbstractAttributeInterface> attributeCollection = association
+							.getTargetEntity()
+							.getAllAbstractAttributes();
+					Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
+							.filterSystemAttributes(attributeCollection);
+					List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+							filteredAttributeCollection);
+
+					attributeMetadataInterface = (AttributeMetadataInterface) attributesList
+							.get(0);
+				}
+			}
+		}
+		return attributeMetadataInterface;
+	}
+	
 	/**
 	 * Gets a list of permissible values for attribute or category attribute.
 	 * @param attribute
@@ -396,60 +602,69 @@ public class ControlsUtility
 			AttributeMetadataInterface attribute) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		List<NameValueBean> nameValueBeanList = null;
+		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
 		DataElementInterface dataElement = attribute.getDataElement();
-
 		if (dataElement instanceof UserDefinedDEInterface)
 		{
 			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElement;
-			Collection<PermissibleValueInterface> permissibleValueList = userDefinedDEInterface
-					.getPermissibleValues();
-			if (permissibleValueList != null)
+			permissibleValueList.addAll(userDefinedDEInterface
+					.getPermissibleValues());
+			
+		}
+		return getPermissibleValues(permissibleValueList,attribute);
+	}
+	/**
+	 * 
+	 * @param permissibleValueList
+	 * @return
+	 */
+	private static List<NameValueBean> getPermissibleValues(List<PermissibleValueInterface> permissibleValueList,AttributeMetadataInterface attribute)
+	{
+		List<NameValueBean> nameValueBeanList = null;
+		if (permissibleValueList != null)
+		{
+			nameValueBeanList = new ArrayList<NameValueBean>();
+			NameValueBean nameValueBean = null;
+			for (PermissibleValueInterface permissibleValue : permissibleValueList)
 			{
-				nameValueBeanList = new ArrayList<NameValueBean>();
-				NameValueBean nameValueBean = null;
-				for (PermissibleValueInterface permissibleValue : permissibleValueList)
+				if (permissibleValue instanceof StringValueInterface)
 				{
-					if (permissibleValue instanceof StringValueInterface)
-					{
-						nameValueBean = getPermissibleStringValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof DateValueInterface)
-					{
-						DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
-						nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
-					}
-					else if (permissibleValue instanceof DoubleValueInterface)
-					{
-						nameValueBean = getPermissibleDoubleValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof FloatValueInterface)
-					{
-						nameValueBean = getPermissibleFloatValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof LongValueInterface)
-					{
-						nameValueBean = getPermissibleLongValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof IntegerValueInterface)
-					{
-						nameValueBean = getPermissibleIntegerValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof ShortValueInterface)
-					{
-						nameValueBean = getPermissibleShortValue(permissibleValue);
-					}
-					else if (permissibleValue instanceof BooleanValueInterface)
-					{
-						nameValueBean = getPermissibleBooleanValue(permissibleValue);
-					}
-					nameValueBeanList.add(nameValueBean);
+					nameValueBean = getPermissibleStringValue(permissibleValue);
 				}
+				else if (permissibleValue instanceof DateValueInterface)
+				{
+					DateTypeInformationInterface dateAttribute = (DateTypeInformationInterface) attribute;
+					nameValueBean = getPermissibleDateValue(permissibleValue, dateAttribute);
+				}
+				else if (permissibleValue instanceof DoubleValueInterface)
+				{
+					nameValueBean = getPermissibleDoubleValue(permissibleValue);
+				}
+				else if (permissibleValue instanceof FloatValueInterface)
+				{
+					nameValueBean = getPermissibleFloatValue(permissibleValue);
+				}
+				else if (permissibleValue instanceof LongValueInterface)
+				{
+					nameValueBean = getPermissibleLongValue(permissibleValue);
+				}
+				else if (permissibleValue instanceof IntegerValueInterface)
+				{
+					nameValueBean = getPermissibleIntegerValue(permissibleValue);
+				}
+				else if (permissibleValue instanceof ShortValueInterface)
+				{
+					nameValueBean = getPermissibleShortValue(permissibleValue);
+				}
+				else if (permissibleValue instanceof BooleanValueInterface)
+				{
+					nameValueBean = getPermissibleBooleanValue(permissibleValue);
+				}
+				nameValueBeanList.add(nameValueBean);
 			}
 		}
 		return nameValueBeanList;
 	}
-
 	private static List<NameValueBean> getTargetEntityDisplayAttributeList(
 			Map<Long, List<String>> displayAttributeMap, String separator)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException

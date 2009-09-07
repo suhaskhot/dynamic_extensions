@@ -4,10 +4,12 @@ package edu.common.dynamicextensions.domaininterface.userinterface;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.userinterface.Container;
+import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
 /**
@@ -212,5 +214,77 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * 
 	 * @param isCalculated
 	 */
-	public void setIsCalculated(Boolean isCalculated);
+	void setIsCalculated(Boolean isCalculated);
+	/**
+	 * 
+	 * @return
+	 */
+	Boolean getIsSkipLogic();
+	/**
+	 * 
+	 * @param isSkipLogic
+	 */
+	void setIsSkipLogic(Boolean isSkipLogic);
+	/**
+	 * 
+	 * @return
+	 */
+	Boolean getIsSkipLogicReadOnly();
+	/**
+	 * 
+	 * @param isSkipLogicReadOnly
+	 */
+	void setIsSkipLogicReadOnly(Boolean isSkipLogicReadOnly);
+	/**
+	 * 
+	 * @param selectedPermissibleValues
+	 * @return
+	 */
+	List<ControlInterface> getSkipLogicControls(List<PermissibleValueInterface> selectedPermissibleValues);
+	/**
+	 * 
+	 * @param selectedPermissibleValue
+	 * @return
+	 */
+	void setSkipLogicControls();
+	/**
+	 * 
+	 * @param isSkipLogicTargetControl
+	 */
+	void setIsSkipLogicTargetControl(Boolean isSkipLogicTargetControl);
+	/**
+	 * 
+	 * @return
+	 */
+	 Boolean getIsSkipLogicTargetControl();
+	 /**
+	  * 
+	  * @param listOfValues
+	  */
+	 void setValueAsStrings(List<String> listOfValues);
+	 /**
+	  * 
+	  * @return
+	  */
+	 List<String> getValueAsStrings();
+	 /**
+	  * 
+	  * @return
+	  */
+	 ControlInterface getSourceSkipControl();
+	 /**
+	  * 
+	  * @param sourceSkipControl
+	  */
+	 void setSourceSkipControl(ControlInterface sourceSkipControl);
+	 /**
+	  * 
+	  * @return
+	  */
+	 Boolean getIsSkipLogicLoadPermValues();
+	 /**
+	  * 
+	  * @param isSkipLogicLoadPermValues
+	  */
+	 void setIsSkipLogicLoadPermValues(Boolean isSkipLogicLoadPermValues);
 }

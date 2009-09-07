@@ -25,10 +25,14 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -147,7 +151,7 @@ public class CategoryGenerator
 				ControlInterface lastControl = null;
 				categoryEntityNameInstanceMap = new HashMap<String, String>();
 				boolean hasRelatedAttributes = false;
-
+				boolean hasSkipLogicAttributes = false;
 				String previousEntityName = "";
 				boolean firstTimeinDisplayLabel = false;
 				// HashMap<String, List> sequenceMap = new HashMap<String,
@@ -169,7 +173,11 @@ public class CategoryGenerator
 						hasRelatedAttributes = true;
 						break;
 					}
-
+					if (categoryFileParser.hasSkipLogicAttributes())
+					{
+						hasSkipLogicAttributes = true;
+						break;
+					}
 					if (categoryFileParser.hasDisplayLable())
 					{
 						categoryEntityName = processDisplayLabel();
@@ -397,7 +405,11 @@ public class CategoryGenerator
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
 							containerCollection);
 				}
-
+				if (hasSkipLogicAttributes)
+				{
+					handleSkipLogicAttributes(entityGroup, category, entityNameAssociationMap,
+							containerCollection);
+				}
 				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category,category
 						.getRootCategoryElement(), categoryFileParser.getLineNumber());
 
@@ -665,7 +677,203 @@ public class CategoryGenerator
 
 		}
 	}
+	/**
+	 * @param entityGroup
+	 * @param category
+	 * @param entityNameAssociationMap
+	 * @throws IOException
+	 * @throws ParseException
+	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsApplicationException
+	 */
+	private void handleSkipLogicAttributes(EntityGroupInterface entityGroup,
+			CategoryInterface category,
+			Map<String, List<AssociationInterface>> entityNameAssociationMap,
+			List<ContainerInterface> containerCollection) throws IOException, ParseException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		while (categoryFileParser.readNext())
+		{
+			String[] categoryPaths = categoryFileParser.getCategoryPaths();
+			
+			categoryFileParser.readNext();
+			
+			String sourceAttributeClassName = categoryFileParser
+					.getSkipLogicSourceAttributeClassName();
 
+			String sourceInstancePath = getInstancePath(categoryPaths,
+					sourceAttributeClassName);
+
+			String sourceCategoryEntityName = CategoryGenerationUtil
+					.getCategoryEntityName(sourceInstancePath,
+							entityNameAssociationMap);
+
+			String sourceEntityName = CategoryGenerationUtil
+					.getEntityNameFromCategoryEntityInstancePath(sourceInstancePath);
+
+			EntityInterface sourceEntity = entityGroup
+					.getEntityByName(CategoryGenerationUtil
+							.getEntityNameExcludingAssociationRoleName(sourceEntityName));
+
+			CategoryEntityInterface sourceCategoryEntity = categoryHelper
+					.createOrUpdateCategoryEntity(category, sourceEntity,
+							sourceCategoryEntityName);
+	
+			String targetAttributeClassName = categoryFileParser
+					.getSkipLogicTargetAttributeClassName();
+
+			String targetInstancePath = getInstancePath(categoryPaths,
+					targetAttributeClassName);
+
+			String targetCategoryEntityName = CategoryGenerationUtil
+					.getCategoryEntityName(targetInstancePath,
+							entityNameAssociationMap);
+
+			String targetEntityName = CategoryGenerationUtil
+					.getEntityNameFromCategoryEntityInstancePath(targetInstancePath);
+
+			EntityInterface targetEntity = entityGroup
+					.getEntityByName(CategoryGenerationUtil
+							.getEntityNameExcludingAssociationRoleName(targetEntityName));
+			
+			CategoryEntityInterface targetCategoryEntity = categoryHelper
+			.createOrUpdateCategoryEntity(category, targetEntity,
+					targetCategoryEntityName);
+			
+			String sourceAttributeName = categoryFileParser.getSkipLogicSourceAttributeName();
+			
+			CategoryValidator.checkForNullRefernce(sourceEntity.getAttributeByName(sourceAttributeName),
+					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber() + " "
+							+ ApplicationProperties.getValue(CategoryConstants.ATTR)
+							+ sourceAttributeName + " "
+							+ ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT)
+							+ sourceEntity.getName());
+			boolean isAttributePresent = sourceEntity.isAttributePresent(sourceAttributeName);
+
+			// If this is the parent attribute and currently the parent category
+			// entity is not created
+			// for given category entity, create parent category hierarchy up to
+			// where attribute is found.
+			if (!isAttributePresent)
+			{
+				EntityInterface parentEntity = sourceEntity.getParentEntity();
+				EntityInterface childEntity = sourceEntity;
+				CategoryEntityInterface parentCategoryEntity = sourceCategoryEntity
+						.getParentCategoryEntity();
+
+				sourceCategoryEntity = processInheritance(parentEntity, childEntity,
+						parentCategoryEntity, sourceCategoryEntity, sourceAttributeName, containerCollection);
+				sourceEntity = sourceCategoryEntity.getEntity();
+
+			}
+
+			CategoryAttributeInterface sourceCategoryAttribute = categoryHelper.getCategoryAttribute(
+					sourceEntity, sourceAttributeName, sourceCategoryEntity);
+			ControlInterface sourceControl = DynamicExtensionsUtility
+					.getControlForAbstractAttribute(
+							(AttributeMetadataInterface) sourceCategoryAttribute,
+							DynamicExtensionsUtility
+									.getContainerForAbstractEntity(category
+											.getRootCategoryElement()));
+			sourceControl.setIsSkipLogic(Boolean.valueOf(true));
+			sourceCategoryAttribute.setIsSkipLogic(Boolean.valueOf(true));
+
+			String targetAttributeName = categoryFileParser.getSkipLogicTargetAttributeName();
+			
+			CategoryValidator.checkForNullRefernce(targetEntity.getAttributeByName(targetAttributeName),
+					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber() + " "
+							+ ApplicationProperties.getValue(CategoryConstants.ATTR)
+							+ targetAttributeName + " "
+							+ ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT)
+							+ targetEntity.getName());
+			 isAttributePresent = targetEntity.isAttributePresent(targetAttributeName);
+
+			// If this is the parent attribute and currently the parent category
+			// entity is not created
+			// for given category entity, create parent category hierarchy up to
+			// where attribute is found.
+			if (!isAttributePresent)
+			{
+				EntityInterface parentEntity = targetEntity.getParentEntity();
+				EntityInterface childEntity = targetEntity;
+				CategoryEntityInterface parentCategoryEntity = targetCategoryEntity
+						.getParentCategoryEntity();
+
+				targetCategoryEntity = processInheritance(parentEntity, childEntity,
+						parentCategoryEntity, targetCategoryEntity, targetAttributeName, containerCollection);
+				targetEntity = targetCategoryEntity.getEntity();
+
+			}
+
+			CategoryAttributeInterface targetCategoryAttribute = categoryHelper.getCategoryAttribute(
+					targetEntity, targetAttributeName, targetCategoryEntity);
+			
+		
+			String permissibleValue = categoryFileParser.getSkipLogicPermissibleValueName();
+			
+			DataElementInterface dataElementInterface = ((AttributeMetadataInterface)sourceCategoryAttribute).getDataElement();
+			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElementInterface;
+			
+			PermissibleValueInterface permissibleValueInterface = categoryHelper
+					.getPermissibleValue(userDefinedDEInterface
+							.getPermissibleValueCollection(), permissibleValue);
+			
+			sourceCategoryAttribute.addSkipLogicPermissibleValue(permissibleValueInterface);
+			
+			CategoryValidator.checkForNullRefernce(permissibleValueInterface,
+					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber() + " "
+							+ ApplicationProperties.getValue(CategoryConstants.ATTR)
+							+ sourceAttributeName + " "
+							+ ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT)
+							+ sourceEntity.getName());
+			SkipLogicAttributeInterface skipLogicAttributeInterface = DomainObjectFactory.getInstance().createSkipLogicAttribute();
+			skipLogicAttributeInterface.setSourceSkipLogicAttribute(sourceCategoryAttribute);
+			skipLogicAttributeInterface.setTargetSkipLogicAttribute(targetCategoryAttribute);
+			permissibleValueInterface.addDependentSkipLogicAttribute(skipLogicAttributeInterface);
+			Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser
+					.getPermissibleValues();
+
+			Map<String, String> permissibleValueOptions = categoryFileParser
+					.getPermissibleValueOptions();
+			
+			List<PermissibleValueInterface> permissibleValuesList = categoryHelper
+					.createPermissibleValuesList(targetAttributeName, targetAttributeClassName,
+							skipLogicAttributeInterface, categoryFileParser
+									.getLineNumber(), permissibleValues);
+			
+			skipLogicAttributeInterface.clearDataElementCollection();
+			if (permissibleValues != null)
+			{
+				UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance()
+						.createUserDefinedDE();
+				for (PermissibleValueInterface pv : permissibleValuesList)
+				{
+					userDefinedDE.addPermissibleValue(pv);
+				}
+	
+				//add new permissible values
+				skipLogicAttributeInterface.setDataElement(userDefinedDE);
+	
+				categoryHelper.setOptions(userDefinedDE, permissibleValueOptions, categoryFileParser.getLineNumber());
+			}
+		}
+	}
+	private String getInstancePath(String[] categoryPaths,String className)
+	{
+		String instancePathInformation = "";
+		for (String instancePath :categoryPaths)
+		{
+			if (instancePath.contains(className))
+			{
+				instancePathInformation = instancePath;
+				break;
+			}
+		}
+		return instancePathInformation;
+	}
 	/**
 	 * 
 	 * @param categoryAttribute

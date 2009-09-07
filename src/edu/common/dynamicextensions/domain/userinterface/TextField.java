@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
@@ -83,17 +85,20 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-
+		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
 		if (isUrl != null && isUrl)
 		{
-			htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
+			htmlString += "<a href='javascript:void(0)' onclick=\"window.open('"
 					+ defaultValue
 					+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
 					+ defaultValue + "</a>";
 		}
 		else
 		{
-			htmlString = "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' "
+			htmlString += "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' "
 					+ "id='" + htmlComponentName + "' onchange='isDataChanged();' value='" + defaultValue + "' ";
 
 			int columnSize = columns.intValue() - 2;
@@ -117,9 +122,9 @@ public class TextField extends Control implements TextFieldInterface
 
 			//set isdisabled property
 
-			if (this.isReadOnly != null && this.isReadOnly)
+			if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 			{
-				htmlString += " disabled='" + ProcessorConstants.TRUE + "' ";
+				htmlString += " readonly='" + ProcessorConstants.TRUE + "' ";
 			}
 
 			int maxChars = 0;
@@ -155,6 +160,7 @@ public class TextField extends Control implements TextFieldInterface
 				htmlString += " " + measurementUnit;
 			}
 		}
+		htmlString += "</div>";
 		return htmlString;
 	}
 
@@ -212,31 +218,51 @@ public class TextField extends Control implements TextFieldInterface
 
 	private String getDefaultValue()
 	{
-		String defaultValue = null;
-		if (this.value == null)
-		{
-			defaultValue = "";
-		}
-		else
-		{
-			defaultValue = String.valueOf(this.value);
-		}
-
-		if (isUrl != null && (isUrl.booleanValue()))
-		{
-			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
-		}
-		else
+		String defaultValue = "";
+		if (!this.isSkipLogicReadOnly)
 		{
 			if (this.value == null)
 			{
+				defaultValue = "";
+			}
+			else
+			{
+				defaultValue = String.valueOf(this.value);
+			}
+	
+			if (isUrl != null && (isUrl.booleanValue()))
+			{
 				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
-				if (defaultValue == null || (defaultValue.length() == 0))
+			}
+			else
+			{
+				if (this.value == null)
 				{
-					defaultValue = "";
+					defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+					if (defaultValue == null || (defaultValue.length() == 0))
+					{
+						defaultValue = "";
+					}
 				}
 			}
 		}
 		return defaultValue;
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		return null;
+	}
+
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

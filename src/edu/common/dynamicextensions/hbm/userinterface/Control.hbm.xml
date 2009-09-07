@@ -118,6 +118,14 @@
         />
 
         <property
+            name="isSkipLogic"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="SKIP_LOGIC"
+        />
+
+        <property
             name="heading"
             type="string"
             update="true"

@@ -25,6 +25,8 @@
 <script src="<%=request.getContextPath()%>/de/jss/script.js" type="text/javascript"></script>
 
 <script>var imgsrc="<%=request.getContextPath()%>/de/images/";</script>
+<script src="<%=request.getContextPath()%>/de/jss/jquery-1.3.2.js" type="text/javascript"></script>
+<script src="<%=request.getContextPath()%>/de/jss/form_plugin.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/de/jss/dynamicExtensions.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/de/jss/overlib_mini.js" type="text/javascript"></script>
 <script src="<%=request.getContextPath()%>/de/jss/calender.js" type="text/javascript"></script>
@@ -266,5 +268,6 @@
 				</script>
 			</c:if>
 		</html:form>
+		<iframe style="display:none" src="about:blank" id="skipLogicIframe" name="skipLogicIframe" onload=""></iframe>
 	</body>
 </html>

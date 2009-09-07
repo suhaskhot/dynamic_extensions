@@ -591,6 +591,27 @@
         </set>
 
         <set
+            name="skipLogicPermissibleValuesCollection"
+            table="DYEXTN_PERMISSIBLE_VALUE"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="SKIP_LOGIC_CAT_ATTR_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.PermissibleValue"
+              />
+        </set>
+
+        <set
             name="formulaCollection"
             table="DYEXTN_FORMULA"
             lazy="false"
@@ -676,6 +697,87 @@
             insert="true"
             column="IS_CAL_ATTRIBUTE"
         />
+
+        <property
+            name="isSkipLogic"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_SKIP_LOGIC"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.SkipLogicAttribute"
+            table="DYEXTN_SKIP_LOGIC_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <set
+            name="dataElementCollection"
+            table="DYEXTN_DATA_ELEMENT"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="SKIP_LOGIC_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.DataElement"
+              />
+        </set>
+
+        <many-to-one
+            name="sourceSkipLogicAttribute"
+            class="edu.common.dynamicextensions.domain.CategoryAttribute"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="SOURCE_SKIP_LOGIC_ID"
+        />
+
+        <many-to-one
+            name="targetSkipLogicAttribute"
+            class="edu.common.dynamicextensions.domain.CategoryAttribute"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="TARGET_SKIP_LOGIC_ID"
+        />
+
+        <set
+            name="defaultPermissibleValuesCollection"
+            table="DYEXTN_PERMISSIBLE_VALUE"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache 
+                usage="read-write" 
+             />
+
+              <key
+                  column="SKIP_LOGIC_ATTRIBUTE_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.PermissibleValue"
+              />
+        </set>
 
         </joined-subclass>
         <joined-subclass

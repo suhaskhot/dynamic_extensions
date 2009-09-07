@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -61,7 +62,7 @@ public class ValidatorUtil
 				BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 				if (abstractAttribute instanceof AttributeMetadataInterface)
 				{
-					ControlInterface control = getControlForAbstractAttribute(
+					ControlInterface control = DynamicExtensionsUtility.getControlForAbstractAttribute(
 							(AttributeMetadataInterface) abstractAttribute, containerInterface);
 					if (control != null)
 					{
@@ -90,43 +91,6 @@ public class ValidatorUtil
 
 		return errorList;
 	}
-
-	/**
-	 *
-	 * @param abstractAttribute
-	 * @param containerInterface
-	 * @return
-	 */
-	public static ControlInterface getControlForAbstractAttribute(
-			AttributeMetadataInterface attributeMetadataInterface,
-			ContainerInterface containerInterface)
-	{
-		ControlInterface control = null;
-		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
-		for (ControlInterface controlInterface : controlCollection)
-		{
-			if (controlInterface instanceof AbstractContainmentControlInterface)
-			{
-				control = getControlForAbstractAttribute(attributeMetadataInterface,
-						((AbstractContainmentControlInterface) controlInterface).getContainer());
-				if (control != null)
-				{
-					return control;
-				}
-			}
-			else if (controlInterface.getBaseAbstractAttribute() != null)
-			{
-				if (controlInterface.getBaseAbstractAttribute().equals(attributeMetadataInterface))
-				{
-					control = controlInterface;
-					break;
-				}
-			}
-		}
-		return control;
-
-	}
-
 	/**
 	 *
 	 * @param abstractAttribute
@@ -188,7 +152,7 @@ public class ValidatorUtil
 			BaseAbstractAttributeInterface abstractAttribute = attributeValueNode.getKey();
 			if (abstractAttribute instanceof AttributeMetadataInterface)
 			{
-				ControlInterface control = getControlForAbstractAttribute(
+				ControlInterface control = DynamicExtensionsUtility.getControlForAbstractAttribute(
 						(AttributeMetadataInterface) abstractAttribute, containerInterface);
 				if (control != null && control.getBaseAbstractAttribute() != null)
 				{

@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.List;
+
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.DataGridInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -32,6 +34,20 @@ public class DataGrid extends Control implements DataGridInterface
 	{
 		// TODO Auto-generated method stub
 		return "&nbsp;";
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

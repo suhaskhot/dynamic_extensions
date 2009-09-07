@@ -27,12 +27,14 @@ import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -40,6 +42,7 @@ import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
@@ -1321,7 +1324,7 @@ public class CategoryHelper implements CategoryHelperInterface
 			else
 			{
 				permissibleValues = getSubsetOfPermissibleValues(attributeName, entity.getName(),
-						attribute, lineNo, desiredPermissibleValues);
+						userDefinedDE, lineNo, desiredPermissibleValues,true);
 			}
 		}
 		catch (ParseException parseException)
@@ -1331,7 +1334,46 @@ public class CategoryHelper implements CategoryHelperInterface
 
 		return permissibleValues;
 	}
-
+	/**
+	 * 
+	 * @param attributeName
+	 * @param entityName
+	 * @param skipLogicAttributeInterface
+	 * @param lineNo
+	 * @param desiredPermissibleValues
+	 * @return
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public List<PermissibleValueInterface> createPermissibleValuesList(
+			String attributeName,
+			String entityName,
+			SkipLogicAttributeInterface skipLogicAttributeInterface,
+			Long lineNo,
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException
+	{
+		UserDefinedDEInterface userDefinedDE = null;
+		List<PermissibleValueInterface> permissibleValues = null;
+		AttributeMetadataInterface attributeMetadataInterface = (AttributeMetadataInterface) skipLogicAttributeInterface.getTargetSkipLogicAttribute();
+		if (attributeMetadataInterface != null)
+		{
+			DataElementInterface dataElementInterface = attributeMetadataInterface.getDataElement();
+			if (dataElementInterface instanceof UserDefinedDEInterface)
+			{
+				userDefinedDE = (UserDefinedDEInterface) dataElementInterface;
+			}
+		}
+		if (desiredPermissibleValues != null
+				&& !desiredPermissibleValues.isEmpty() && userDefinedDE != null) 
+		{
+			permissibleValues = getSubsetOfPermissibleValues(attributeName,
+					entityName, userDefinedDE, lineNo,
+					desiredPermissibleValues, false);
+		}
+		return permissibleValues;
+	}
 	/**
 	 *
 	 * @param attributeTypeInformation
@@ -1340,16 +1382,11 @@ public class CategoryHelper implements CategoryHelperInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	private List<PermissibleValueInterface> getSubsetOfPermissibleValues(String attributeName,
-			String entityName, AttributeInterface attributeInterface, Long lineNo,
-			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			String entityName, UserDefinedDEInterface userDefinedDE, Long lineNo,
+			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues,boolean isClonePermissibleValues)
 			throws DynamicExtensionsApplicationException
 	{
 		List<PermissibleValueInterface> permissibleValues = new ArrayList<PermissibleValueInterface>();
-
-		AttributeTypeInformationInterface attributeTypeInformation = attributeInterface
-				.getAttributeTypeInformation();
-		UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attributeTypeInformation
-				.getDataElement();
 
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 
@@ -1460,7 +1497,8 @@ public class CategoryHelper implements CategoryHelperInterface
 							+ attributeName + " OF THE ENTITY " + entityName + " IS DIFFERENT.");
 		}
 
-		return clonePermissibleValueList(permissibleValues);
+		return isClonePermissibleValues ? clonePermissibleValueList(permissibleValues)
+				: permissibleValues;
 	}
 
 	/**
@@ -1512,6 +1550,35 @@ public class CategoryHelper implements CategoryHelperInterface
 		}
 
 		return permissibleValues;
+	}
+	
+	/**
+	 * 
+	 * @param permissibleValueCollection
+	 * @param value
+	 * @return
+	 */
+	public PermissibleValueInterface getPermissibleValue(
+			Collection<PermissibleValueInterface> permissibleValueCollection,
+			String value)
+	{
+		PermissibleValueInterface permissibleValueInterface = null;
+		if (permissibleValueCollection != null && value != null)
+		{
+			for (PermissibleValueInterface permissibleValue : permissibleValueCollection)
+			{
+				Object permissibleValueObject = permissibleValue.getValueAsObject();
+				if (permissibleValueObject != null)
+				{
+					if (value.equals(String.valueOf(permissibleValueObject)))
+					{
+						permissibleValueInterface = permissibleValue;
+						break;
+					}
+				}
+			}
+		}
+		return permissibleValueInterface;
 	}
 
 	/**

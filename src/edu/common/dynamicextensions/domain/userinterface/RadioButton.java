@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -36,7 +37,99 @@ public class RadioButton extends Control implements RadioButtonInterface
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String htmlString = "";
+		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
+		String defaultValue = getDefaultValueForControl();
+		String disabled = "";
+		//If control is defined as readonly through category CSV file,make it Disabled
+		if ((this.isReadOnly != null && getIsReadOnly()) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
+		{
+			disabled = ProcessorConstants.DISABLED;
+		}
+		String parentContainerId = "";
+		if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
+		{
+			parentContainerId = this.getParentContainer().getId().toString();
+		}
+		String identifier = "";
+		if (this.getId() != null)
+		{
+			identifier = this.getId().toString();
+		}
+		nameValueBeanList = ControlsUtility.populateListOfValues(this);
 
+		String htmlComponentName = getHTMLComponentName();
+		if (nameValueBeanList != null)
+		{
+			for (NameValueBean nameValueBean : nameValueBeanList)
+			{
+				String optionName = nameValueBean.getName();
+				String optionValue = nameValueBean.getValue();
+				if (optionValue.equals(defaultValue))
+				{
+					htmlString += "<input type='radio' onchange='"
+							+ (this.isSkipLogic ? "getSkipLogicControl('"
+									+ htmlComponentName + "','" + identifier
+									+ "','" + parentContainerId + "');" : "")
+							+ "isDataChanged();' "
+							+ "class='font_bl_nor' "
+							+ "name='"
+							+ htmlComponentName
+							+ "' "
+							+ "value='"
+							+ optionValue
+							+ "' "
+							+ "id='"
+							+ optionName
+							+ "' checked "
+							+ disabled
+							+ "  "
+							+ ">"
+							+ "<label for=\""
+							+ htmlComponentName
+							+ "\">"
+							+ optionName
+							+ "</label> <img src='de/images/spacer.gif' width='2' height='2'>";
+				}
+				else
+				{
+					htmlString += "<input type='radio' onchange='"
+							+ (this.isSkipLogic ? "getSkipLogicControl('"
+									+ htmlComponentName + "','" + identifier
+									+ "','" + parentContainerId + "');" : "")
+							+ "isDataChanged();' "
+							+ "class='font_bl_nor' "
+							+ "name='"
+							+ htmlComponentName
+							+ "' "
+							+ "value='"
+							+ optionValue
+							+ "' "
+							+ "id='"
+							+ optionName
+							+ "' "
+							+ disabled
+
+							+ " >"
+							+ "<label for=\""
+							+ htmlComponentName
+							+ "\">"
+							+ optionName
+							+ "</label> <img src='de/images/spacer.gif' width='2' height='2'>";
+				}
+			}
+		}
+		htmlString += "</div>";
+		return htmlString;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	private String getDefaultValueForControl()
+	{
 		String defaultValue = (String) this.value;
 		if (defaultValue == null)
 		{
@@ -66,44 +159,8 @@ public class RadioButton extends Control implements RadioButtonInterface
 			defaultValue = Float.toString(floatValue);
 
 		}
-		String disabled = "";
-		//If control is defined as readonly through category CSV file,make it Disabled
-		if (this.isReadOnly != null && getIsReadOnly())
-		{
-			disabled = ProcessorConstants.DISABLED;
-		}
-
-		nameValueBeanList = ControlsUtility.populateListOfValues(this);
-
-		String htmlComponentName = getHTMLComponentName();
-		if (nameValueBeanList != null)
-		{
-			for (NameValueBean nameValueBean : nameValueBeanList)
-			{
-				String optionName = nameValueBean.getName();
-				String optionValue = nameValueBean.getValue();
-				if (optionValue.equals(defaultValue))
-				{
-					htmlString += "<input type='radio' onchange='isDataChanged();' " + "class='font_bl_nor' " + "name='"
-							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "' checked " + disabled + "  >" + "<label for=\""
-							+ htmlComponentName + "\">" + optionName
-							+ "</label> <img src='de/images/spacer.gif' width='2' height='2'>";
-				}
-				else
-				{
-					htmlString += "<input type='radio' onchange='isDataChanged();' " + "class='font_bl_nor' " + "name='"
-							+ htmlComponentName + "' " + "value='" + optionValue + "' " + "id='"
-							+ optionName + "' " + disabled + " >" + "<label for=\""
-							+ htmlComponentName + "\">" + optionName
-							+ "</label> <img src='de/images/spacer.gif' width='2' height='2'>";
-				}
-			}
-		}
-
-		return htmlString;
+		return defaultValue;
 	}
-
 	/**
 	 * This method sets the corresponding Attribute of this control.
 	 * @param abstractAttribute the AbstractAttribute to be set.
@@ -121,6 +178,26 @@ public class RadioButton extends Control implements RadioButtonInterface
 			htmlString = "<span class = '" + cssClass + "'> " + this.value.toString() + "</span>";
 		}
 		return htmlString;
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		List<String> values = new ArrayList<String>();
+		values.add(getDefaultValueForControl());
+		return values;
+	}
+	/**
+	 * 
+	 */
+	public void setValueAsStrings(List<String> listOfValues) 
+	{
+		if (!listOfValues.isEmpty())
+		{
+			setValue(listOfValues.get(0));
+		}
 	}
 
 }

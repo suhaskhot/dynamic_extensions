@@ -639,6 +639,20 @@ public class CategoryCSVFileParser extends CategoryFileParser
 	}
 
 	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#hasSkipLogicAttributes()
+	 */
+	public boolean hasSkipLogicAttributes()
+	{
+		boolean flag = false;
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		if (readLine()[0].trim().toLowerCase(locale).startsWith(
+				CategoryCSVConstants.SKIP_LOGIC_ATTIBUTE.toLowerCase(locale)))
+		{
+			flag = true;
+		}
+		return flag;
+	}
+	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.util.parser.CategoryFileParser#hasInsatanceInformation()
 	 */
 	public boolean hasInsatanceInformation()
@@ -818,6 +832,44 @@ public class CategoryCSVFileParser extends CategoryFileParser
 			}
 		}
 
+	}
+	/**
+	 * 
+	 */
+	public String getSkipLogicSourceAttributeClassName() 
+	{
+		return readLine()[0].split(":")[0].trim();
+	}
+
+	/**
+	 * 
+	 */
+	public String getSkipLogicSourceAttributeName() 
+	{
+		return readLine()[0].split(":")[1].trim();
+	}
+
+	/**
+	 * 
+	 */
+	public String getSkipLogicTargetAttributeClassName() 
+	{
+		return readLine()[1].split("~")[1].split(":")[0].trim();
+	}
+
+	/**
+	 * 
+	 */
+	public String getSkipLogicTargetAttributeName() 
+	{
+		return readLine()[1].split("~")[1].split(":")[1].trim();
+	}
+
+	/**
+	 * 
+	 */
+	public String getSkipLogicPermissibleValueName() {
+		return readLine()[0].split(":")[2].trim();
 	}
 
 }

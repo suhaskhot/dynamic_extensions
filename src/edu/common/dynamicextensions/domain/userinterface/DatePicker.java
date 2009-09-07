@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.CategoryAttribute;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
@@ -103,18 +104,21 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 
 		String htmlComponentName = getHTMLComponentName();
-		String output = null;
-
+		String output = "";
+		output += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' /><div id='"
+					+ getHTMLComponentName() + "_div' name='"
+					+ getHTMLComponentName() + "_div'>";
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
 		{
-			output = "<input class='font_bl_nor' name='"
+			output += "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
 					+ "' title='Calendar [MM-DD-YYYY]' value='"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "MM-DD-YYYY")
 					+ "'"
-					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
+					+ (((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly)) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
 					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY');\""
 					+ " style=\"color:"
@@ -142,14 +146,14 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 		else if (dateFormat.equals(ProcessorConstants.DATE_TIME_FORMAT))
 		{
-			output = "<input class='font_bl_nor' name='"
+			output += "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
 					+ "' title='Calendar [MM-DD-YYYY HH:MM]' value='"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "MM-DD-YYYY HH:MM")
 					+ "'"
-					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
+					+ (((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly)) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
 					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-DD-YYYY HH:MM');\""
 					+ " style=\"color:"
@@ -179,14 +183,14 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 		else if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
-			output = "<input class='font_bl_nor' name='"
+			output += "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
 					+ "' title='Calender [MM-YYYY]' value='"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "MM-YYYY")
 					+ "'"
-					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
+					+ (((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly)) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
 					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','MM-YYYY');\""
 					+ " style=\"color:"
@@ -213,14 +217,14 @@ public class DatePicker extends Control implements DatePickerInterface
 		else if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
 		{
 
-			output = "<input class='font_bl_nor' name='"
+			output += "<input class='font_bl_nor' name='"
 					+ htmlComponentName
 					+ "' id='"
 					+ htmlComponentName
 					+ "' title='[YYYY]' value='"
 					+ ((defaultValue != null && defaultValue.trim().length()>0) ? defaultValue : "YYYY")
 					+ "'"
-					+ ((this.isReadOnly != null && this.isReadOnly) ? " disabled='"
+					+ (((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly)) ? " disabled='"
 							+ ProcessorConstants.TRUE : "")
 					+ " onchange='isDataChanged();' onfocus=\"javascript:clearDate('"+htmlComponentName+"','YYYY');\""
 					+ " style=\"color:"
@@ -243,7 +247,7 @@ public class DatePicker extends Control implements DatePickerInterface
 			output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
 					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>";
 		}
-
+		output += "</div>";
 		return output;
 	}
 
@@ -307,6 +311,20 @@ public class DatePicker extends Control implements DatePickerInterface
 		}
 
 		return htmlString;
+	}
+
+	/**
+	 * 
+	 */
+	public List<String> getValueAsStrings() 
+	{
+		return null;
+	}
+
+	@Override
+	public void setValueAsStrings(List<String> listOfValues) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

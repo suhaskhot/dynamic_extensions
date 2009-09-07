@@ -48,9 +48,11 @@ import edu.common.dynamicextensions.domain.userinterface.ContainmentAssociationC
 import edu.common.dynamicextensions.domain.userinterface.Control;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -323,7 +325,102 @@ public class DynamicExtensionsUtility
 		}
 		return null;
 	}
+	/**
+	 *
+	 * @param abstractAttribute
+	 * @param containerInterface
+	 * @return
+	 */
+	public static ControlInterface getControlForAbstractAttribute(
+			AttributeMetadataInterface attributeMetadataInterface,
+			ContainerInterface containerInterface)
+	{
+		ControlInterface control = null;
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
+		for (ControlInterface controlInterface : controlCollection)
+		{
+			if (controlInterface instanceof AbstractContainmentControlInterface)
+			{
+				control = getControlForAbstractAttribute(attributeMetadataInterface,
+						((AbstractContainmentControlInterface) controlInterface).getContainer());
+				if (control != null)
+				{
+					return control;
+				}
+			}
+			else if (controlInterface.getBaseAbstractAttribute() != null)
+			{
+				if (controlInterface.getBaseAbstractAttribute().getId() != null)
+				{
+					if (controlInterface.getBaseAbstractAttribute().equals(attributeMetadataInterface))
+					{
+						control = controlInterface;
+						break;
+					}
+				}
+				else
+				{
+					if (controlInterface.getBaseAbstractAttribute().getName().equals(attributeMetadataInterface.getName()))
+					{
+						control = controlInterface;
+						break;
+					}
+				}
+			}
+		}
+		return control;
 
+	}
+	/**
+	 * 
+	 * @param controlIdentifier
+	 * @param containerInterface
+	 * @return
+	 */
+	public static ControlInterface getControlByIdentifier(
+			String controlIdentifier,
+			ContainerInterface containerInterface)
+	{
+		ControlInterface control = null;
+		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
+		for (ControlInterface controlInterface : controlCollection)
+		{
+			if (controlInterface instanceof AbstractContainmentControlInterface)
+			{
+				control = getControlByIdentifier(controlIdentifier,
+						((AbstractContainmentControlInterface) controlInterface).getContainer());
+				if (control != null)
+				{
+					return control;
+				}
+			}
+			else if (controlInterface.getId() != null)
+			{
+				if (controlInterface.getId().toString().equals(controlIdentifier))
+				{
+					control = controlInterface;
+					break;
+				}
+			}
+		}
+		return control;
+
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static ContainerInterface getContainerForAbstractEntity(AbstractEntityInterface abstractEntityInterface)
+	{
+		ContainerInterface containerInterface = null;
+		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
+		containerList.addAll(abstractEntityInterface.getContainerCollection());
+		if (!containerList.isEmpty())
+		{
+			containerInterface = containerList.get(0);
+		}
+		return containerInterface;
+	}
 	/**
 	 * @param controlCollection collection of controls
 	 * @param sequenceNumber sequence number

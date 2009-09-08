@@ -136,7 +136,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 		if (getIsSkipLogicTargetControl())
 		{
-		htmlString.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+			htmlString.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>");
@@ -144,13 +144,20 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		htmlString.append("<SELECT ");
 		htmlString.append(strMultiSelect).append(" size=")
 				.append(this.noOfRows).append(" class='font_bl_s' name='")
-				.append(getHTMLComponentName()).append(
-						"' onchange='" + this.isSkipLogic != null
-								&& this.isSkipLogic ? "getSkipLogicControl('"
-								+ htmlComponentName + "','" + identifier
-								+ "','" + parentContainerId + "');" : ""
-								+ "isDataChanged();' id='").append(name)
-				.append("' ");
+				.append(getHTMLComponentName()).append("' onchange='");
+		if (this.isSkipLogic != null
+				&& this.isSkipLogic)
+		{
+			htmlString.append("getSkipLogicControl('");
+			htmlString.append(htmlComponentName);
+			htmlString.append("','");
+			htmlString.append(identifier);
+			htmlString.append("','");
+			htmlString.append(parentContainerId);
+			htmlString.append("');");
+		}
+		htmlString.append("isDataChanged();' id='").append(name).append("' ");
+		
 		if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 		{
 			htmlString.append(" disabled='").append(ProcessorConstants.TRUE).append("' ");

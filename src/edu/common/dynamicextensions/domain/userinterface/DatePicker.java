@@ -105,10 +105,13 @@ public class DatePicker extends Control implements DatePickerInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String output = "";
-		output += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+		if (getIsSkipLogicTargetControl())
+		{
+			output += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
+		}
 		if (dateFormat.equals(ProcessorConstants.DATE_ONLY_FORMAT))
 		{
 			output += "<input class='font_bl_nor' name='"
@@ -247,7 +250,10 @@ public class DatePicker extends Control implements DatePickerInterface
 			output += "<SCRIPT>printYearCalendar('" + htmlComponentName + "',"
 					+ DynamicExtensionsUtility.getCurrentYear() + ");</SCRIPT>" + "</DIV>";
 		}
-		output += "</div>";
+		if (getIsSkipLogicTargetControl())
+		{
+			output += "</div>";
+		}
 		return output;
 	}
 

@@ -55,7 +55,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		{
 			identifier = this.getId().toString();
 		}
-
+		if (getIsSkipLogicTargetControl())
+		{
 			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName()
 					+ "_div' />"
@@ -65,7 +66,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 					+ getHTMLComponentName()
 					+ "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
-
+		}
 		/* Bug Id:9030
 		 * textComponent is the name of the text box.
 		 * if default value is not empty loading the data store first, and then setting the value in 
@@ -148,9 +149,10 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "')\" id='" + htmlComponentName + "' " + " name='" + htmlComponentName
 				+ "' value ='" + defaultValue + "' size='20' class='font_bl_nor' />" + "</div>"
 				+ "</div>" + "</div>";
-
+		if (getIsSkipLogicTargetControl())
+		{
 			htmlString += "</div>";
-		
+		}
 		return htmlString;
 	} 
 

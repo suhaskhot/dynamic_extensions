@@ -33,10 +33,13 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
-		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
+		}
 		ApplicationProperties.initBundle("ApplicationResources");
 		if (this.value != null)
 		{
@@ -48,7 +51,10 @@ public class FileUploadControl extends Control implements FileUploadInterface
 		}
 		htmlString = htmlString + "<input onchange='isDataChanged();' type=\"file\" " + "name=\"value("
 				+ getHTMLComponentName() + ")\" " + "id=\"" + getHTMLComponentName() + "\"/>";
-		htmlString += "</div>";
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "</div>";
+		}
 		return htmlString;
 	}
 

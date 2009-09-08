@@ -32,10 +32,13 @@ public class CheckBox extends Control implements CheckBoxInterface
 	{
 		String checked = String.valueOf(this.value);
 		String htmlString = "";
-		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
+		}
 		if (this.value == null)
 		{
 			checked = this.getAttibuteMetadataInterface().getDefaultValue();
@@ -67,7 +70,10 @@ public class CheckBox extends Control implements CheckBoxInterface
 					+ DynamicExtensionsUtility.getValueForCheckBox(false) + "' " + disabled
 					+ "id='" + htmlComponentName + "' onchange='isDataChanged();' onclick='changeValueForCheckBox(this);'>";
 		}
-		htmlString += "</div>";
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "</div>";
+		}
 		return htmlString;
 	}
 

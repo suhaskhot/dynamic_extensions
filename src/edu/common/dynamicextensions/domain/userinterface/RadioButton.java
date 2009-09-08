@@ -37,10 +37,13 @@ public class RadioButton extends Control implements RadioButtonInterface
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String htmlString = "";
-		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
+		}
 		String defaultValue = getDefaultValueForControl();
 		String disabled = "";
 		//If control is defined as readonly through category CSV file,make it Disabled
@@ -121,7 +124,10 @@ public class RadioButton extends Control implements RadioButtonInterface
 				}
 			}
 		}
-		htmlString += "</div>";
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "</div>";
+		}
 		return htmlString;
 	}
 	/**

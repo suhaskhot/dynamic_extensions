@@ -134,12 +134,13 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			strMultiSelect = "MULTIPLE ";
 		}
 
-
+		if (getIsSkipLogicTargetControl())
+		{
 		htmlString.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>");
-
+		}
 		htmlString.append("<SELECT ");
 		htmlString.append(strMultiSelect).append(" size=")
 				.append(this.noOfRows).append(" class='font_bl_s' name='")
@@ -188,12 +189,13 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			String protocolCoordId = "protocolCoordId_" + getHTMLComponentName();
 
 			StringBuffer multSelWithAutoCmpltHTML = new StringBuffer();
-		
-			multSelWithAutoCmpltHTML.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+			if (getIsSkipLogicTargetControl())
+			{
+				multSelWithAutoCmpltHTML.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 						+ getHTMLComponentName() + "_div' /><div id='"
 						+ getHTMLComponentName() + "_div' name='"
 						+ getHTMLComponentName() + "_div'>");
-			
+			}
 			multSelWithAutoCmpltHTML
 					.append("<script defer='defer'>Ext.onReady(function(){var myUrl= 'DEComboDataAction.do?controlId= "
 							+ identifier
@@ -268,9 +270,10 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 			htmlString = multSelWithAutoCmpltHTML;
 		}
-
+		if (getIsSkipLogicTargetControl())
+		{
 			htmlString.append("</div>");
-
+		}
 		return htmlString.toString();
 	}
 

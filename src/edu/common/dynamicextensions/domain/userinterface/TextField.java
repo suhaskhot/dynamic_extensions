@@ -85,10 +85,13 @@ public class TextField extends Control implements TextFieldInterface
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
+		}
 		if (isUrl != null && isUrl)
 		{
 			htmlString += "<a href='javascript:void(0)' onclick=\"window.open('"
@@ -160,7 +163,10 @@ public class TextField extends Control implements TextFieldInterface
 				htmlString += " " + measurementUnit;
 			}
 		}
-		htmlString += "</div>";
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "</div>";
+		}
 		return htmlString;
 	}
 

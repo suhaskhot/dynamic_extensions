@@ -82,10 +82,13 @@ public class TextArea extends Control implements TextAreaInterface
 		}
 
 		String htmlComponentName = getHTMLComponentName();
-		htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
+		}
 		htmlString += "<textarea " + "class='font_bl_nor' " + "name='" + htmlComponentName
 				+ "' " + "id='" + htmlComponentName + "' ";
 
@@ -138,7 +141,10 @@ public class TextArea extends Control implements TextAreaInterface
 		{
 			htmlString += defaultValue + "</textarea>";
 		}
-		htmlString += "</div>";
+		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "</div>";
+		}
 		return htmlString;
 	}
 

@@ -1525,6 +1525,11 @@ function removeCheckedRow(containerId)
                     var childObjectName = childNode.name;
                     if (childObjectName != null && childObjectName.indexOf('_') != -1)
                     {
+        				if (childObjectName.indexOf('_div') != -1)
+        				{
+        					childNode = childNode.childNodes[0];
+        					childObjectName = childNode.name;
+        				}
                         var arr = childObjectName.split('_');
 
                         arr[arr.length - 1] = rowIndex;

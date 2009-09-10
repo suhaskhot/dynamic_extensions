@@ -61,7 +61,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 					+ getHTMLComponentName()
 					+ "_div' />"
 					+ "<input type='hidden' name='skipLogicControlScript' id='skipLogicControlScript' value = 'comboScript_"
-					+ parentContainerId
+					+ identifier
 					+ "' /><div id='"
 					+ getHTMLComponentName()
 					+ "_div' name='"
@@ -116,9 +116,9 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "' "
 				+ " size='20'/>"
 				+ "<div id='comboScript_"
-				+ parentContainerId
+				+ identifier
 				+ "' name='comboScript_"
-				+ parentContainerId
+				+ identifier
 				+ "' style='display:none'>"
 				+ "Ext.onReady(function(){ "
 				+ "var myUrl='DEComboDataAction.do?controlId= "

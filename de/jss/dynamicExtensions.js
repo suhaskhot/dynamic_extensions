@@ -1525,48 +1525,43 @@ function removeCheckedRow(containerId)
                     var childObjectName = childNode.name;
                     if (childObjectName != null && childObjectName.indexOf('_') != -1)
                     {
-                    	childNode = childNode.childNodes[0];
-                    	childObjectName = childNode.name;
-                        if (childObjectName != null && childObjectName.indexOf('_') != -1)
+                        var arr = childObjectName.split('_');
+
+                        arr[arr.length - 1] = rowIndex;
+                        var str = "";
+                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
                         {
-	                        var arr = childObjectName.split('_');
-	
-	                        arr[arr.length - 1] = rowIndex;
-	                        var str = "";
-	                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
-	                        {
-	                            str += arr[arrIndex];
-	                            if (arrIndex != arr.length - 1)
-	                            {
-	                                str += "_";
-	                            }
-	                        }
-	                        if (childObjectName.indexOf(')') != -1)
-	                        {
-	                            str = str + ")";
-	                        }
-	
-							if (document.getElementById(childObjectName) == null)
-							{
-								var controlValue = childNode.value;
-							}
-							else
-							{
-								var controlValue = document.getElementById(childObjectName).value;
-							}
-	
-							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
-							if (document.getElementById(childObjectName) == null)
-							{
-								str = controlValue;
-							}
-							else
-							{
-								document.getElementById(str).value  = controlValue;
-							}
-	
-	                        break;
+                            str += arr[arrIndex];
+                            if (arrIndex != arr.length - 1)
+                            {
+                                str += "_";
+                            }
                         }
+                        if (childObjectName.indexOf(')') != -1)
+                        {
+                            str = str + ")";
+                        }
+
+						if (document.getElementById(childObjectName) == null)
+						{
+							var controlValue = childNode.value;
+						}
+						else
+						{
+							var controlValue = document.getElementById(childObjectName).value;
+						}
+
+						cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+						if (document.getElementById(childObjectName) == null)
+						{
+							str = controlValue;
+						}
+						else
+						{
+							document.getElementById(str).value  = controlValue;
+						}
+
+                        break;
                     }
                 }
             }
@@ -1577,7 +1572,7 @@ function removeCheckedRow(containerId)
         document.getElementById(hiddenVar).value = parseInt(numberOfRows) - rowsDeleted;
 
         document.getElementById(containerId + "_table").value = table;
-        document.getElementById('isDirty').value = true;
+		document.getElementById('isDirty').value = true;
     }
 
     var request = newXMLHTTPReq();
@@ -1610,10 +1605,6 @@ function setDefaultValues(tableId, obj)
 		childObjectName = childObject.name;
 		if (childObjectName != null && childObjectName.indexOf('_') != -1) 
 		{
-			childObject = childObject.childNodes[0];
-			childObjectName = childObject.name;
-			if (childObjectName != null && childObjectName.indexOf('_') != -1) 
-			{
 				if (childObjectName.indexOf(')') != -1) 
 				{
 					childObjectName = childObjectName.substring(0,
@@ -1626,7 +1617,38 @@ function setDefaultValues(tableId, obj)
 						str = childObjectName + "_" + rowIndex;
 					}
 					str = str + ")";
-				} 
+				}
+				else if (childObjectName.indexOf('_div') != -1)
+				{
+					childObject = childObject.childNodes[0];
+					childObjectName = childObject.name;
+					if (childObjectName != null)
+					{
+						if (childObjectName.indexOf(')') != -1) 
+						{
+							childObjectName = childObjectName.substring(0,
+								childObjectName.indexOf(')'));
+							i++;
+							// In case of control having multiple options, setting str
+							// only once
+							if (i == 1) 
+							{
+								str = childObjectName + "_" + rowIndex;
+							}
+							str = str + ")";
+						}
+						else 
+						{
+							i++;
+							// In case of control having multiple options, setting str
+							// only once
+							if (i == 1) 
+							{
+								str = childObjectName + "_" + rowIndex;
+							}
+						}
+					}
+				}
 				else 
 				{
 					i++;
@@ -1637,9 +1659,7 @@ function setDefaultValues(tableId, obj)
 						str = childObjectName + "_" + rowIndex;
 					}
 				}
-			}
 			obj.innerHTML = replaceAll(obj.innerHTML, childObjectName, str);
-
 		}
 		if ("auto_complete_dropdown" == childObject.id) 
 		{
@@ -1650,12 +1670,9 @@ function setDefaultValues(tableId, obj)
 
 			var newScript = replaceAll(childNodes2[1].innerHTML, oldName,
 					newName);
-
 			obj.innerHTML = replaceAll(childNodes2[2].innerHTML, oldName,
 					newName);
-
 			eval(newScript);
-
 		}
 	}
 	return obj;

@@ -61,7 +61,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 					+ getHTMLComponentName()
 					+ "_div' />"
 					+ "<input type='hidden' name='skipLogicControlScript' id='skipLogicControlScript' value = 'comboScript_"
-					+ identifier
+					+ getHTMLComponentName()
 					+ "' /><div id='"
 					+ getHTMLComponentName()
 					+ "_div' name='"
@@ -73,37 +73,40 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		 * combo box to default value.
 		 */
 		String textComponent = "combo" + htmlComponentName;
-		htmlString += "<script defer='defer'>Ext.onReady(function(){ "
-				+ "var myUrl= 'DEComboDataAction.do?controlId= "
-				+ identifier
-				+ "~containerIdentifier="
-				+ parentContainerId
-				+ "';"
-				+ "var ds = new Ext.data.Store({"
-				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
-				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
-				+ "[{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});"
-				+ "var combo = new Ext.form.ComboBox({store: ds,"
-				+ "hiddenName: '"
-				+ textComponent
-				+ "',displayField:'excerpt',valueField: 'id',"
-				+ "typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',"
-				+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true"
-				+ isDisabled
-				+ ",emptyText:'"
-				+ defaultValue
-				+ "',valueNotFoundText:'',"
-				+ "selectOnFocus:'true',applyTo: '"
-				+ htmlComponentName
-				+ "'});combo.on(\"select\", function() {isDataChanged();}), combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});";
-
-		htmlString = htmlString
-				+ (this.isSkipLogic ? "combo.on(\"change\", function() {getSkipLogicControl('"+ htmlComponentName +"','"+ identifier +"','"+ parentContainerId +"')});" :"") +
-						"ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
-
-		htmlString = htmlString
-				+ "});</script>"
-				+ "<div style='float:left' id='auto_complete_dropdown'>"
+		if (!getIsSkipLogicTargetControl())
+		{
+			htmlString += "<script defer='defer'>Ext.onReady(function(){ "
+					+ "var myUrl= 'DEComboDataAction.do?controlId= "
+					+ identifier
+					+ "~containerIdentifier="
+					+ parentContainerId
+					+ "';"
+					+ "var ds = new Ext.data.Store({"
+					+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
+					+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
+					+ "[{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});"
+					+ "var combo = new Ext.form.ComboBox({store: ds,"
+					+ "hiddenName: '"
+					+ textComponent
+					+ "',displayField:'excerpt',valueField: 'id',"
+					+ "typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',"
+					+ "mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true"
+					+ isDisabled
+					+ ",emptyText:'"
+					+ defaultValue
+					+ "',valueNotFoundText:'',"
+					+ "selectOnFocus:'true',applyTo: '"
+					+ htmlComponentName
+					+ "'});combo.on(\"select\", function() {isDataChanged();}), combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});";
+	
+			htmlString = htmlString
+					+ (this.isSkipLogic ? "combo.on(\"change\", function() {getSkipLogicControl('"+ htmlComponentName +"','"+ identifier +"','"+ parentContainerId +"')});" :"") +
+							"ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});";
+	
+			htmlString = htmlString
+					+ "});</script>";
+		}
+		htmlString += "<div style='float:left' id='auto_complete_dropdown'>"
 				+ "<input type='text' onmouseover=\"showToolTip('"
 				+ htmlComponentName
 				+ "')\" id='"
@@ -116,9 +119,9 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ "' "
 				+ " size='20'/>"
 				+ "<div id='comboScript_"
-				+ identifier
+				+ getHTMLComponentName()
 				+ "' name='comboScript_"
-				+ identifier
+				+ getHTMLComponentName()
 				+ "' style='display:none'>"
 				+ "Ext.onReady(function(){ "
 				+ "var myUrl='DEComboDataAction.do?controlId= "

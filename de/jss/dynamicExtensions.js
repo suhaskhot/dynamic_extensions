@@ -1596,9 +1596,9 @@ function ignoreResponseHandler(str)
 {
 }
 
-function setDefaultValues(tableId, obj)
+function setDefaultValues(tableId, obj) 
 {
-    var children = obj.childNodes;
+	var children = obj.childNodes;
 
 	var rowIndex = document.getElementById(tableId).rows.length;
 	rowIndex = parseInt(rowIndex) - 1;
@@ -1610,60 +1610,80 @@ function setDefaultValues(tableId, obj)
 		childObjectName = childObject.name;
 		if (childObjectName != null && childObjectName.indexOf('_') != -1) 
 		{
-				if (childObjectName.indexOf(')') != -1) 
+			if (childObjectName.indexOf(')') != -1) 
+			{
+				childObjectName = childObjectName.substring(0, childObjectName
+						.indexOf(')'));
+				i++;
+				// In case of control having multiple options, setting str
+				// only once
+				if (i == 1) 
 				{
-					childObjectName = childObjectName.substring(0,
-							childObjectName.indexOf(')'));
-					i++;
-					// In case of control having multiple options, setting str
-					// only once
-					if (i == 1) 
-					{
-						str = childObjectName + "_" + rowIndex;
-					}
-					str = str + ")";
+					str = childObjectName + "_" + rowIndex;
 				}
-				else if (childObjectName.indexOf('_div') != -1)
+				str = str + ")";
+			} 
+			else if (childObjectName.indexOf('_div') != -1) 
+			{
+				if (childObject.hasChildNodes) 
 				{
 					childObject = childObject.childNodes[0];
 					childObjectName = childObject.name;
-					if (childObjectName != null)
+
+					if (childObjectName != null
+							&& childObjectName.indexOf('_') != -1) 
 					{
 						if (childObjectName.indexOf(')') != -1) 
 						{
 							childObjectName = childObjectName.substring(0,
-								childObjectName.indexOf(')'));
+									childObjectName.indexOf(')'));
 							i++;
-							// In case of control having multiple options, setting str
+							// In case of control having multiple options,
+							// setting str
 							// only once
 							if (i == 1) 
 							{
 								str = childObjectName + "_" + rowIndex;
 							}
 							str = str + ")";
-						}
+						} 
 						else 
 						{
 							i++;
-							// In case of control having multiple options, setting str
+							// In case of control having multiple options,
+							// setting str
 							// only once
-							if (i == 1) 
-							{
+							if (i == 1) {
 								str = childObjectName + "_" + rowIndex;
 							}
 						}
+						obj.innerHTML = replaceAll(obj.innerHTML,
+								childObjectName, str);
 					}
-				}
-				else 
-				{
-					i++;
-					// In case of control having multiple options, setting str
-					// only once
-					if (i == 1) 
+					if ("auto_complete_dropdown" == childObject.id) 
 					{
-						str = childObjectName + "_" + rowIndex;
+						var childNodes2 = childObject.childNodes;
+
+						var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
+						var newName = oldName + "_" + rowIndex;
+						var newScript = replaceAll(childNodes2[1].innerHTML,
+								oldName, newName);
+						obj.innerHTML = replaceAll(childNodes2[2].innerHTML,
+								oldName, newName);
+						eval(newScript);
 					}
+					continue;
 				}
+			} 
+			else 
+			{
+				i++;
+				// In case of control having multiple options, setting str
+				// only once
+				if (i == 1) {
+					str = childObjectName + "_" + rowIndex;
+				}
+			}
 			obj.innerHTML = replaceAll(obj.innerHTML, childObjectName, str);
 		}
 		if ("auto_complete_dropdown" == childObject.id) 
@@ -1672,7 +1692,6 @@ function setDefaultValues(tableId, obj)
 
 			var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
 			var newName = oldName + "_" + rowIndex;
-
 			var newScript = replaceAll(childNodes2[1].innerHTML, oldName,
 					newName);
 			obj.innerHTML = replaceAll(childNodes2[2].innerHTML, oldName,

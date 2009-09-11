@@ -974,10 +974,36 @@ public class CategoryGenerator
 			{
 				break;
 			}
+			addContainerInfo(childCategoryEntity);
 		}
 		return childCategoryEntity;
 	}
 
+	/**
+	 * Adds containers to containerCollection
+	 * @param childCategoryEntity
+	 */
+	private void addContainerInfo(CategoryEntityInterface childCategoryEntity)
+	{
+		boolean isContainerPresent = false;
+		if(childCategoryEntity.getContainerCollection()!=null)
+		{
+			ContainerInterface container = (ContainerInterface)childCategoryEntity.getContainerCollection().iterator().next();
+			for (ContainerInterface containerInterface : containerCollection)
+			{
+				if (container.getAbstractEntity().getName().equals(containerInterface.getAbstractEntity().getName()))
+				{
+					isContainerPresent = true;
+					break;
+				}
+			}
+			if(!isContainerPresent)
+			{
+				containerCollection.add(container);
+			}
+		}
+	}
+	
 	/**
 	 * @param categoryEntityNameList
 	 * @param entityName

@@ -1525,48 +1525,55 @@ function removeCheckedRow(containerId)
                     var childObjectName = childNode.name;
                     if (childObjectName != null && childObjectName.indexOf('_') != -1)
                     {
-        				if (childObjectName.indexOf('_div') != -1)
-        				{
-        					childNode = childNode.childNodes[0];
-        					childObjectName = childNode.name;
-        				}
-                        var arr = childObjectName.split('_');
+            			if (childObjectName.indexOf('_div') != -1) 
+            			{
+            				if (childObject.hasChildNodes) 
+            				{
+            					childObject = childObject.childNodes[0];
+            					childObjectName = childObject.name;
+            				}
+            			}
+    					if (childObjectName != null
+    							&& childObjectName.indexOf('_') != -1) 
+    					{
+	                        var arr = childObjectName.split('_');
+	                    	
+	                        arr[arr.length - 1] = rowIndex;
+	                        var str = "";
+	                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
+	                        {
+	                            str += arr[arrIndex];
+	                            if (arrIndex != arr.length - 1)
+	                            {
+	                                str += "_";
+	                            }
+	                        }
+	                        if (childObjectName.indexOf(')') != -1)
+	                        {
+	                            str = str + ")";
+	                        }
+	
+							if (document.getElementById(childObjectName) == null)
+							{
+								var controlValue = childNode.value;
+							}
+							else
+							{
+								var controlValue = document.getElementById(childObjectName).value;
+							}
+	
+							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
+							if (document.getElementById(childObjectName) == null)
+							{
+								str = controlValue;
+							}
+							else
+							{
+								document.getElementById(str).value  = controlValue;
+							}
 
-                        arr[arr.length - 1] = rowIndex;
-                        var str = "";
-                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
-                        {
-                            str += arr[arrIndex];
-                            if (arrIndex != arr.length - 1)
-                            {
-                                str += "_";
-                            }
-                        }
-                        if (childObjectName.indexOf(')') != -1)
-                        {
-                            str = str + ")";
-                        }
-
-						if (document.getElementById(childObjectName) == null)
-						{
-							var controlValue = childNode.value;
-						}
-						else
-						{
-							var controlValue = document.getElementById(childObjectName).value;
-						}
-
-						cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
-						if (document.getElementById(childObjectName) == null)
-						{
-							str = controlValue;
-						}
-						else
-						{
-							document.getElementById(str).value  = controlValue;
-						}
-
-                        break;
+							break;
+    					}
                     }
                 }
             }

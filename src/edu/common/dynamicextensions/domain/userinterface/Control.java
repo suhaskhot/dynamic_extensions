@@ -91,6 +91,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected ControlInterface sourceSkipControl = null;
+	/**
+	 * 
+	 */
+	protected String dataEntryOperation = null;
+
+
 
 	/**
 	 * Name of the control.
@@ -836,5 +842,21 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	public void setIsSkipLogicLoadPermValues(Boolean isSkipLogicLoadPermValues)
 	{
 		this.isSkipLogicLoadPermValues = isSkipLogicLoadPermValues;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public String getDataEntryOperation() 
+	{
+		return dataEntryOperation;
+	}
+	/**
+	 * 
+	 * @param dataEntryOperation
+	 */
+	public void setDataEntryOperation(String dataEntryOperation) 
+	{
+		this.dataEntryOperation = dataEntryOperation;
 	}
 }

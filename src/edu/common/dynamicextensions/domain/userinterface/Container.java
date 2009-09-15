@@ -446,7 +446,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateContainerHTML(String caption) throws DynamicExtensionsSystemException
+	public String generateContainerHTML(String caption,String dataEntryOperation) throws DynamicExtensionsSystemException
 	{
 		StringBuffer containerHTML = new StringBuffer();
 
@@ -478,7 +478,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 			}
 		}
 		
-		containerHTML.append(generateControlsHTML(caption));
+		containerHTML.append(generateControlsHTML(caption,dataEntryOperation));
 		containerHTML.append("</table>");
 
 		return containerHTML.toString();
@@ -488,7 +488,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateControlsHTML(String caption) throws DynamicExtensionsSystemException
+	public String generateControlsHTML(String caption,String dataEntryOperation) throws DynamicExtensionsSystemException
 	{
 		StringBuffer controlHTML = new StringBuffer();
 
@@ -500,6 +500,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 		for (ControlInterface control : controls)
 		{
+			control.setDataEntryOperation(dataEntryOperation);
 			Object value = containerValueMap.get(control.getBaseAbstractAttribute());
 			control.setValue(value);
 
@@ -563,10 +564,10 @@ public class Container extends DynamicExtensionBaseDomainObject
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public String generateControlsHTMLAsGrid(
-			List<Map<BaseAbstractAttributeInterface, Object>> valueMaps)
+			List<Map<BaseAbstractAttributeInterface, Object>> valueMaps,String dataEntryOperation)
 			throws DynamicExtensionsSystemException
 	{
-		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMaps);
+		return UserInterfaceiUtility.generateHTMLforGrid(this, valueMaps,dataEntryOperation);
 	}
 
 	/**

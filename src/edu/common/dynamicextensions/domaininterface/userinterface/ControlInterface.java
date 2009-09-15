@@ -287,4 +287,13 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	  * @param isSkipLogicLoadPermValues
 	  */
 	 void setIsSkipLogicLoadPermValues(Boolean isSkipLogicLoadPermValues);
+	 /**
+	  * 
+	  * @param dataEntryOperation
+	  */
+	 void setDataEntryOperation(String dataEntryOperation);
+	 /**
+	  * 
+	  */
+	 String getDataEntryOperation();
 }

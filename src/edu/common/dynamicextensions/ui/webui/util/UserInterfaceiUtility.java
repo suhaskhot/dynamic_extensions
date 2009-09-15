@@ -47,7 +47,7 @@ public class UserInterfaceiUtility
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static String generateHTMLforGrid(ContainerInterface subContainer,
-			List<Map<BaseAbstractAttributeInterface, Object>> valueMaps)
+			List<Map<BaseAbstractAttributeInterface, Object>> valueMaps,String dataEntryOperation)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer htmlForGrid = new StringBuffer();
@@ -68,7 +68,7 @@ public class UserInterfaceiUtility
 		htmlForGrid.append(subContainer.getId());
 		htmlForGrid.append("_substitutionDiv'><table>");
 		subContainer.setContainerValueMap(new HashMap<BaseAbstractAttributeInterface, Object>()); //empty hashmap to generate hidden row
-		htmlForGrid.append(getContainerHTMLAsARow(subContainer, -1));
+		htmlForGrid.append(getContainerHTMLAsARow(subContainer, -1,dataEntryOperation));
 		htmlForGrid.append("</table></div><input type='hidden' name='");
 
 		htmlForGrid.append(subContainer.getId());
@@ -155,7 +155,7 @@ public class UserInterfaceiUtility
 			for (Map<BaseAbstractAttributeInterface, Object> rowValueMap : valueMaps)
 			{
 				subContainer.setContainerValueMap(rowValueMap);
-				htmlForGrid.append(getContainerHTMLAsARow(subContainer, index));
+				htmlForGrid.append(getContainerHTMLAsARow(subContainer, index,dataEntryOperation));
 				index++;
 			}
 		}
@@ -272,7 +272,7 @@ public class UserInterfaceiUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static String getContainerHTMLAsARow(ContainerInterface container, int rowId)
+	private static String getContainerHTMLAsARow(ContainerInterface container, int rowId,String dataEntryOperation)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer contHtmlAsARow = new StringBuffer();
@@ -308,6 +308,7 @@ public class UserInterfaceiUtility
 		for (ControlInterface control : controls)
 		{
 			String controlHTML = "";
+			control.setDataEntryOperation(dataEntryOperation);
 			control.setIsSubControl(true);
 
 			if (control instanceof AbstractContainmentControlInterface)

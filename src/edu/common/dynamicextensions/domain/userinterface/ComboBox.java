@@ -73,7 +73,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		 * combo box to default value.
 		 */
 		String textComponent = "combo" + htmlComponentName;
-		if (!getIsSkipLogicTargetControl())
+		if (!getIsSkipLogicTargetControl() && !"skipLogicAttributes".equals(getDataEntryOperation()))
 		{
 			htmlString += "<script defer='defer'>Ext.onReady(function(){ "
 					+ "var myUrl= 'DEComboDataAction.do?controlId= "

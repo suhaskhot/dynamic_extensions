@@ -143,20 +143,20 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateContainerHTML(String caption) throws DynamicExtensionsSystemException;
+	String generateContainerHTML(String caption,String dataEntryOperation) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param caption
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTML(String caption) throws DynamicExtensionsSystemException;
+	String generateControlsHTML(String caption,String dataEntryOperation) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap)
+	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap,String dataEntryOperation)
 			throws DynamicExtensionsSystemException;
 
 	/**

@@ -45,7 +45,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	 * @throws DynamicExtensionsSystemException
 	 *             if couldn't generate the HTML name for the Control.
 	 */
-	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = ((AttributeMetadataInterface) this
 				.getBaseAbstractAttribute()).getAttributeTypeInformation();
@@ -308,7 +308,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	/**
 	 * Generate HTML for viewing data
 	 */
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
 		if (value != null)

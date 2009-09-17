@@ -112,7 +112,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 * @return HTML code for ListBox Control.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateEditModeHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		StringBuffer htmlString = new StringBuffer("");
 		List<NameValueBean> nameValueBeans = null;
@@ -166,7 +166,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 		if (listOfValues == null)
 		{
-			nameValueBeans = ControlsUtility.populateListOfValues(this);
+			nameValueBeans = ControlsUtility.populateListOfValues(this,rowId);
 		}
 
 		if (nameValueBeans != null && !nameValueBeans.isEmpty())
@@ -287,7 +287,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		List<String> selectedOptions = new ArrayList<String>();
 

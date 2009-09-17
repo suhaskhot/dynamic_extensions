@@ -33,7 +33,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 * @return HTML code for RadioButton
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateEditModeHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		List<NameValueBean> nameValueBeanList = null;
 		String htmlString = "";
@@ -61,7 +61,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 		{
 			identifier = this.getId().toString();
 		}
-		nameValueBeanList = ControlsUtility.populateListOfValues(this);
+		nameValueBeanList = ControlsUtility.populateListOfValues(this,rowId);
 
 		String htmlComponentName = getHTMLComponentName();
 		if (nameValueBeanList != null)
@@ -176,7 +176,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 		// TODO Auto-generated constructor stub
 	}
 
-	public String generateViewModeHTML() throws DynamicExtensionsSystemException
+	public String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String htmlString = "&nbsp;";
 		if (value != null)

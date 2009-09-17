@@ -3,8 +3,10 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -35,7 +37,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 * @return HTML code for ComboBox
 	 * @throws DynamicExtensionsSystemException if HTMLComponentName() fails.
 	 */
-	public String generateEditModeHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String defaultValue = getDefaultControlValue();
 		String isDisabled = "";
@@ -80,6 +82,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 					+ identifier
 					+ "~containerIdentifier="
 					+ parentContainerId
+					+ "&rowId="
+					+ rowId
 					+ "';"
 					+ "var ds = new Ext.data.Store({"
 					+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
@@ -128,6 +132,8 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ identifier
 				+ "~containerIdentifier="
 				+ parentContainerId
+				+ "&rowId="
+				+ rowId
 				+ "';var ds = new Ext.data.Store({"
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"
 				+ "reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, "
@@ -179,7 +185,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		listOfValues = choiceList;
 	}
 
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String htmlString = "&nbsp;";
 
@@ -203,7 +209,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		List<NameValueBean> nameValueBeanList = null;
 		if (listOfValues == null)
 		{
-			nameValueBeanList = ControlsUtility.populateListOfValues(this);
+			nameValueBeanList = ControlsUtility.populateListOfValues(this,rowId);
 		}
 
 		if (nameValueBeanList != null && !nameValueBeanList.isEmpty())
@@ -265,6 +271,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	{
 		List<String> values = new ArrayList<String>();
 		values.add(getDefaultControlValue());
+		Map<BaseAbstractAttributeInterface, Object> valueMap = this.getParentContainer().getContainerValueMap();
 		return values;
 	}
 

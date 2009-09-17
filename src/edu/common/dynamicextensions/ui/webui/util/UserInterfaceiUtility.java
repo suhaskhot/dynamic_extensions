@@ -322,7 +322,7 @@ public class UserInterfaceiUtility
 					Object value = containerValues.get(control.getBaseAbstractAttribute());
 					control.setValue(value);
 				}
-				controlHTML = control.generateHTML();
+				controlHTML = control.generateHTML(rowId);
 				if (rowId != -1)
 				{
 					String oldName = control.getHTMLComponentName();

@@ -22,7 +22,7 @@ public class Label extends Control implements LabelInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateEditModeHTML()
 	 */
-	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		return "<div style='float:left'><b>" + caption + "</b></div>";
 	}
@@ -30,7 +30,7 @@ public class Label extends Control implements LabelInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		return "<b>" + caption + "</b>";
 	}

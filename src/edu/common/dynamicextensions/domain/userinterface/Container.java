@@ -519,7 +519,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 				controlHTML.append("<tr valign='center'>");
 			}
 
-			controlHTML.append(control.generateHTML());
+			controlHTML.append(control.generateHTML(Integer.valueOf(-1)));
 
 			i++;
 			lastRow = control.getSequenceNumber();

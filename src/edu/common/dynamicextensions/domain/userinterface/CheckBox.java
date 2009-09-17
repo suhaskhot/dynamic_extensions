@@ -28,7 +28,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateEditModeHTML()
 	 */
-	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String checked = String.valueOf(this.value);
 		String htmlString = "";
@@ -80,7 +80,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String htmlString = "&nbsp;";
 		if (value != null)

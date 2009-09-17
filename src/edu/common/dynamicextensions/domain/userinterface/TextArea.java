@@ -71,7 +71,7 @@ public class TextArea extends Control implements TextAreaInterface
 	 * @return HTML code for TextArea
 	 * @throws DynamicExtensionsSystemException 
 	 */
-	public String generateEditModeHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
 		String defaultValue = (String) this.value;
@@ -160,7 +160,7 @@ public class TextArea extends Control implements TextAreaInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 
 		String htmlString = "&nbsp;";

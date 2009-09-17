@@ -4,9 +4,10 @@ package edu.common.dynamicextensions.domain.userinterface;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
@@ -91,6 +92,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	protected ControlInterface sourceSkipControl = null;
+	/**
+	 * 
+	 */
+	protected Map<Integer,List<String>> sourceSkipControlValues = new HashMap <Integer,List<String>>();
 	/**
 	 * 
 	 */
@@ -293,20 +298,20 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException  exception
 	 */
-	public final String generateHTML() throws DynamicExtensionsSystemException
+	public final String generateHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
-		setSkipLogicControls();
+		setSkipLogicControls(rowId);
 		String htmlString = "";
 
 		String innerHTML = "";
 		if (getParentContainer().getMode() != null
 				&& getParentContainer().getMode().equalsIgnoreCase(WebUIManagerConstants.VIEW_MODE))
 		{
-			innerHTML = generateViewModeHTML();
+			innerHTML = generateViewModeHTML(rowId);
 		}
 		else
 		{
-			innerHTML = generateEditModeHTML();
+			innerHTML = generateEditModeHTML(rowId);
 		}
 
 		if (this.isSubControl)
@@ -411,13 +416,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * @return String html
 	 * @throws DynamicExtensionsSystemException exception
 	 */
-	protected abstract String generateViewModeHTML() throws DynamicExtensionsSystemException;
+	protected abstract String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return String html
 	 * @throws DynamicExtensionsSystemException exception
 	 */
-	protected abstract String generateEditModeHTML() throws DynamicExtensionsSystemException;
+	protected abstract String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
@@ -681,7 +686,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	/**
 	 * 
 	 */
-	public void setSkipLogicControls()
+	public void setSkipLogicControls(Integer rowId)
 	{   
 		try 
 		{
@@ -707,7 +712,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 							permissibleValueList.add(selectedPermissibleValue);
 						}
 				}
-				getSkipLogicControls(permissibleValueList);
+				getSkipLogicControls(permissibleValueList,rowId,values);
 			}
 
 		} 
@@ -721,7 +726,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * 
 	 */
 	public List<ControlInterface> getSkipLogicControls(
-			List<PermissibleValueInterface> selectedPermissibleValues) 
+			List<PermissibleValueInterface> selectedPermissibleValues,Integer rowId,List<String> values) 
 	{
 		List<ControlInterface> skipLogicControls = new ArrayList<ControlInterface>();
 		if (isSkipLogic) 
@@ -790,6 +795,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 				targetControl.setSourceSkipControl(sourceControl);
 				targetControl
 						.setIsSkipLogicTargetControl(Boolean.valueOf(true));
+				targetControl.addSourceSkipControlValue(rowId, values);
 				skipLogicControls.add(targetControl);
 			}
 		}
@@ -803,6 +809,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	{
 		return isSkipLogicTargetControl;
 	}
+
 	/**
 	 * 
 	 * @param isSkipLogicTargetControl
@@ -858,5 +865,37 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	public void setDataEntryOperation(String dataEntryOperation) 
 	{
 		this.dataEntryOperation = dataEntryOperation;
+	}
+	/**
+	 * 
+	 */
+	private Map <Integer,List<String>> getSourceSkipControlValues() 
+	{
+		return sourceSkipControlValues;
+	}
+	/**
+	 * 
+	 * @param sourceSkipControlValues
+	 */
+	private void setSourceSkipControlValues(Map<Integer,List<String>> sourceSkipControlValues) 
+	{
+		this.sourceSkipControlValues = sourceSkipControlValues;
+	}
+	/**
+	 * 
+	 * @param rowId
+	 * @param values
+	 */
+	public void addSourceSkipControlValue(Integer rowId,List<String> values)
+	{
+		this.sourceSkipControlValues.put(rowId, values);
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> getSourceSkipControlValue(Integer rowId)
+	{
+		return this.sourceSkipControlValues.get(rowId);
 	}
 }

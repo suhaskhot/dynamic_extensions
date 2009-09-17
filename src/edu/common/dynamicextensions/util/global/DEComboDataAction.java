@@ -39,7 +39,11 @@ public class DEComboDataAction extends BaseDynamicExtensionsAction
 		String start = request.getParameter("start");
 		String controlId = request.getParameter("controlId").split("~")[0].trim();
 		String containerId = request.getParameter("controlId").split("~")[1].split("=")[1].trim();
-
+		String rowId = request.getParameter("rowId");
+		if (rowId == null)
+		{
+			rowId = "-1";
+		}
 		Integer limitFetch = Integer.parseInt(limit);
 		Integer startFetch = Integer.parseInt(start);
 
@@ -53,7 +57,7 @@ public class DEComboDataAction extends BaseDynamicExtensionsAction
 		{
 			if (Long.parseLong(controlId) == control.getId())
 			{
-				nameValueBeans = ControlsUtility.populateListOfValues(control);
+				nameValueBeans = ControlsUtility.populateListOfValues(control,Integer.valueOf(rowId));
 			}
 		}
 

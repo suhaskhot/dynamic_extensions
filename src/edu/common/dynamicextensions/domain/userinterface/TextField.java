@@ -79,7 +79,7 @@ public class TextField extends Control implements TextFieldInterface
 	 * @return HTML code for TextField
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateEditModeHTML() throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String defaultValue = getDefaultValue();
 
@@ -201,7 +201,7 @@ public class TextField extends Control implements TextFieldInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String defaultValue = getDefaultValue();
 		String htmlString = "&nbsp;";

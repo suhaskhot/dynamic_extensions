@@ -317,7 +317,7 @@ public class ControlsUtility
 	 * This method populates the List of Values of the ListBox in the NameValueBean Collection.
 	 * @return List of pair of Name and its corresponding Value.
 	 */
-	public static List<NameValueBean> populateListOfValues(ControlInterface control)
+	public static List<NameValueBean> populateListOfValues(ControlInterface control,Integer rowId)
 	{
 		AttributeMetadataInterface attributeMetadataInterface = null;
 		List<NameValueBean> nameValueBeanList = null;
@@ -335,7 +335,7 @@ public class ControlsUtility
 					}
 					else
 					{
-						List<PermissibleValueInterface> permissibleValueList = getSkipLogicPermissibleValues(control.getSourceSkipControl(),control);
+						List<PermissibleValueInterface> permissibleValueList = getSkipLogicPermissibleValues(control.getSourceSkipControl(),control,rowId);
 						nameValueBeanList = getPermissibleValues(permissibleValueList, attributeMetadataInterface);
 					}
 				}
@@ -359,7 +359,7 @@ public class ControlsUtility
 						}
 						else
 						{
-							List<PermissibleValueInterface> permissibleValueList = getSkipLogicPermissibleValues(control.getSourceSkipControl(),control);
+							List<PermissibleValueInterface> permissibleValueList = getSkipLogicPermissibleValues(control.getSourceSkipControl(),control,rowId);
 							nameValueBeanList = getPermissibleValues(permissibleValueList, attributeMetadataInterface);
 						}
 					}
@@ -462,9 +462,10 @@ public class ControlsUtility
 	 * 
 	 */
 	public static List<PermissibleValueInterface> getSkipLogicPermissibleValues(
-			ControlInterface sourceControl, ControlInterface targetControl)
-			throws ParseException {
-		List<String> values = sourceControl.getValueAsStrings();
+			ControlInterface sourceControl, ControlInterface targetControl,Integer rowId)
+			throws ParseException 
+	{
+		List<String> values = targetControl.getSourceSkipControlValue(rowId);
 		List<PermissibleValueInterface> skipLogicPermissibleValueList = new ArrayList<PermissibleValueInterface>();
 		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
 		if (values != null) 

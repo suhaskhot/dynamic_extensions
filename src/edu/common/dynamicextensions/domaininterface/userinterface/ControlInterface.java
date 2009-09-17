@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domaininterface.userinterface;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domain.userinterface.Control;
@@ -112,7 +113,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @return return the HTML string for this type of a object
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateHTML() throws DynamicExtensionsSystemException;
+	String generateHTML(Integer rowId) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
@@ -240,13 +241,15 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	 * @param selectedPermissibleValues
 	 * @return
 	 */
-	List<ControlInterface> getSkipLogicControls(List<PermissibleValueInterface> selectedPermissibleValues);
+	List<ControlInterface> getSkipLogicControls(
+			List<PermissibleValueInterface> selectedPermissibleValues,
+			Integer rowId, List<String> values);
 	/**
 	 * 
 	 * @param selectedPermissibleValue
 	 * @return
 	 */
-	void setSkipLogicControls();
+	void setSkipLogicControls(Integer rowId);
 	/**
 	 * 
 	 * @param isSkipLogicTargetControl
@@ -296,4 +299,16 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	  * 
 	  */
 	 String getDataEntryOperation();
+	 /**
+	  * 
+	  * @param rowId
+	  * @param values
+	  */
+	 void addSourceSkipControlValue(Integer rowId,List<String> values);
+	 /**
+	  * 
+	  * @param rowId
+	  * @return
+	  */
+	 List<String> getSourceSkipControlValue(Integer rowId);
 }

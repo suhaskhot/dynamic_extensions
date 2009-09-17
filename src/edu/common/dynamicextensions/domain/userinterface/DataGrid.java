@@ -24,13 +24,13 @@ public class DataGrid extends Control implements DataGridInterface
 		// TODO Auto-generated method stub
 	}
 
-	protected String generateViewModeHTML() throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		// TODO Auto-generated method stub
 		return "";
 	}
 
-	protected String generateEditModeHTML() throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		// TODO Auto-generated method stub
 		return "&nbsp;";

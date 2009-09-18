@@ -465,6 +465,10 @@ public class ControlsUtility
 			ControlInterface sourceControl, ControlInterface targetControl,Integer rowId)
 			throws ParseException 
 	{
+		if (!sourceControl.getParentContainer().equals(targetControl.getParentContainer()))
+		{
+			rowId = Integer.valueOf(-1);
+		}
 		List<String> values = targetControl.getSourceSkipControlValue(rowId);
 		List<PermissibleValueInterface> skipLogicPermissibleValueList = new ArrayList<PermissibleValueInterface>();
 		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();

@@ -78,11 +78,11 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		if (!getIsSkipLogicTargetControl() && !"skipLogicAttributes".equals(getDataEntryOperation()))
 		{
 			htmlString += "<script defer='defer'>Ext.onReady(function(){ "
-					+ "var myUrl= 'DEComboDataAction.do?controlId= "
+					+ "var myUrl= 'DEComboDataAction.do?controlId="
 					+ identifier
 					+ "~containerIdentifier="
 					+ parentContainerId
-					+ "&rowId="
+					+ "~rowId="
 					+ rowId
 					+ "';"
 					+ "var ds = new Ext.data.Store({"
@@ -128,11 +128,11 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 				+ getHTMLComponentName()
 				+ "' style='display:none'>"
 				+ "Ext.onReady(function(){ "
-				+ "var myUrl='DEComboDataAction.do?controlId= "
+				+ "var myUrl='DEComboDataAction.do?controlId="
 				+ identifier
 				+ "~containerIdentifier="
 				+ parentContainerId
-				+ "&rowId="
+				+ "~rowId="
 				+ rowId
 				+ "';var ds = new Ext.data.Store({"
 				+ "proxy: new Ext.data.HttpProxy({url: myUrl}),"

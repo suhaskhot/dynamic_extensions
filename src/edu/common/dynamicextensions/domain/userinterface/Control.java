@@ -793,6 +793,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 							.valueOf(true));
 				}
 				targetControl.setSourceSkipControl(sourceControl);
+				if (!sourceControl.getParentContainer().equals(targetControl.getParentContainer()))
+				{
+					rowId = Integer.valueOf(-1);
+				}
 				targetControl
 						.setIsSkipLogicTargetControl(Boolean.valueOf(true));
 				targetControl.addSourceSkipControlValue(rowId, values);

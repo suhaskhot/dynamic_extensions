@@ -39,7 +39,7 @@ public class DEComboDataAction extends BaseDynamicExtensionsAction
 		String start = request.getParameter("start");
 		String controlId = request.getParameter("controlId").split("~")[0].trim();
 		String containerId = request.getParameter("controlId").split("~")[1].split("=")[1].trim();
-		String rowId = request.getParameter("rowId");
+		String rowId = request.getParameter("controlId").split("~")[2].split("=")[1].trim();
 		if (rowId == null)
 		{
 			rowId = "-1";

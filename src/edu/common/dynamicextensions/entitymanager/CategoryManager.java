@@ -359,8 +359,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				parntCatEntity = (CategoryEntity) parntCatEntity.getParentCategoryEntity();
 			}
 
-			parentRecId = insertDataForSingleCategoryEntity(categoryEntity, valueMap,dataValue, jdbcDao,
-					parentRecId, identifier);
+			parentRecId = insertDataForSingleCategoryEntity(categoryEntity, valueMap, dataValue,
+					jdbcDao, parentRecId, identifier);
 			parntCatRecId = getRootCategoryRecordId(categoryEntity, parentRecId, jdbcDao);
 		}
 
@@ -408,7 +408,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws SQLException
 	 */
 	private Long insertDataForSingleCategoryEntity(CategoryEntityInterface catEntity,
-			Map<BaseAbstractAttributeInterface, Object> dataValue,Map<BaseAbstractAttributeInterface, Object> fullDataValue, JDBCDAO jdbcDao,
+			Map<BaseAbstractAttributeInterface, Object> dataValue,
+			Map<BaseAbstractAttributeInterface, Object> fullDataValue, JDBCDAO jdbcDao,
 			Long parentRecId, Long... userId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException, SQLException
 	{
@@ -517,8 +518,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Long rootCERecId = getRootCategoryEntityRecordId(category.getRootCategoryElement(),
 				(Long) fullKeyMap.get(rootCatEntName), jdbcDao);
 
-		insertRecordsForRelatedAttributes(fullDataValue,rootCERecId, category.getRootCategoryElement(), records,
-				jdbcDao, identifier);
+		insertRecordsForRelatedAttributes(fullDataValue, rootCERecId, category
+				.getRootCategoryElement(), records, jdbcDao, identifier);
 
 		if (parentRecId != null)
 		{
@@ -544,8 +545,10 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void insertAllParentRelatedCategoryAttributesCollection(
-			Map<BaseAbstractAttributeInterface, Object> valueMap,CategoryEntityInterface rootCatEntity, Map<String, List<Long>> records,
-			JDBCDAO jdbcDao, Long userId) throws SQLException, DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			Map<BaseAbstractAttributeInterface, Object> valueMap,
+			CategoryEntityInterface rootCatEntity, Map<String, List<Long>> records,
+			JDBCDAO jdbcDao, Long userId) throws SQLException, DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
 	{
 		// Get all attributes including parent's attributes.
 		Collection<CategoryAttributeInterface> catAttributes = rootCatEntity
@@ -567,8 +570,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						.getAttributeByName(catAttribute.getAbstractAttribute().getName());
 
 				// Fetch column names and column values for related category attributes.
-				populateColumnNamesAndValues(valueMap,attribute, catAttribute, columnNames, columnValues,
-						columnNamesValues);
+				populateColumnNamesAndValues(valueMap, attribute, catAttribute, columnNames,
+						columnValues, columnNamesValues);
 
 				String entTableName = attribute.getEntity().getTableProperties().getName();
 				List<Long> recordIds = records.get(DynamicExtensionsUtility
@@ -676,9 +679,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void insertRecordsForRelatedAttributes(Map<BaseAbstractAttributeInterface, Object> valueMap,Long rootRecordId,
+	private void insertRecordsForRelatedAttributes(
+			Map<BaseAbstractAttributeInterface, Object> valueMap, Long rootRecordId,
 			CategoryEntityInterface rootCatEntity, Map<String, List<Long>> records,
-			JDBCDAO jdbcDao, Long identifier) throws SQLException, DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			JDBCDAO jdbcDao, Long identifier) throws SQLException,
+			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryInterface category = rootCatEntity.getCategory();
 
@@ -687,8 +692,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 				.getRelatedAttributeCategoryEntityCollection();
 
 		// Call this method for root category entity's parent's related attributes.
-		insertAllParentRelatedCategoryAttributesCollection(valueMap,rootCatEntity, records, jdbcDao,
-				identifier);
+		insertAllParentRelatedCategoryAttributesCollection(valueMap, rootCatEntity, records,
+				jdbcDao, identifier);
 
 		for (CategoryEntityInterface categoryEntity : catEntWithRA)
 		{
@@ -697,8 +702,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			StringBuffer colNamesValues = new StringBuffer();
 
 			// Fetch column names and column values for related category attributes.
-			getColumnNamesAndValuesForRelatedCategoryAttributes(valueMap,categoryEntity, columnNames,
-					columnValues, colNamesValues, records, jdbcDao, identifier);
+			getColumnNamesAndValuesForRelatedCategoryAttributes(valueMap, categoryEntity,
+					columnNames, columnValues, colNamesValues, records, jdbcDao, identifier);
 
 			CategoryAssociationInterface catAssociation = getCategoryAssociationWithTreeParentCategoryEntity(
 					categoryEntity.getTreeParentCategoryEntity(), categoryEntity);
@@ -729,9 +734,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void getColumnNamesAndValuesForRelatedCategoryAttributes(
-			Map<BaseAbstractAttributeInterface, Object> valueMap,CategoryEntityInterface catEntity, StringBuffer columnNames, StringBuffer columnValues,
+			Map<BaseAbstractAttributeInterface, Object> valueMap,
+			CategoryEntityInterface catEntity, StringBuffer columnNames, StringBuffer columnValues,
 			StringBuffer colNamesValues, Map<String, List<Long>> records, JDBCDAO jdbcDao,
-			Long userId) throws DynamicExtensionsSystemException, SQLException, DynamicExtensionsApplicationException
+			Long userId) throws DynamicExtensionsSystemException, SQLException,
+			DynamicExtensionsApplicationException
 	{
 		Collection<CategoryAttributeInterface> catAttributes = new HashSet<CategoryAttributeInterface>();
 		catAttributes = catEntity.getCategoryAttributeCollection();
@@ -745,12 +752,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 
 				if (catAttribute.getAbstractAttribute() instanceof AssociationInterface)
 				{
-					populateAndInsertRecordForRelatedMultiSelectCategoryAttribute(valueMap,catAttribute,
-							attribute, records, userId, jdbcDao);
+					populateAndInsertRecordForRelatedMultiSelectCategoryAttribute(valueMap,
+							catAttribute, attribute, records, userId, jdbcDao);
 				}
 				else
 				{
-					populateColumnNamesAndValues(valueMap,attribute, catAttribute, columnNames,
+					populateColumnNamesAndValues(valueMap, attribute, catAttribute, columnNames,
 							columnValues, colNamesValues);
 				}
 			}
@@ -769,9 +776,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws DynamicExtensionsApplicationException 
 	 */
 	private void populateAndInsertRecordForRelatedMultiSelectCategoryAttribute(
-			Map<BaseAbstractAttributeInterface, Object> valueMap,CategoryAttributeInterface catAttribute, AttributeInterface attribute,
+			Map<BaseAbstractAttributeInterface, Object> valueMap,
+			CategoryAttributeInterface catAttribute, AttributeInterface attribute,
 			Map<String, List<Long>> records, Long userId, JDBCDAO jdbcDao)
-			throws DynamicExtensionsSystemException, SQLException, DynamicExtensionsApplicationException
+			throws DynamicExtensionsSystemException, SQLException,
+			DynamicExtensionsApplicationException
 	{
 		AssociationInterface association = (AssociationInterface) catAttribute
 				.getAbstractAttribute();
@@ -812,9 +821,9 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @throws ParseException 
 	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void populateColumnNamesAndValues(Map<BaseAbstractAttributeInterface, Object> valueMap,AttributeInterface attribute,
-			CategoryAttributeInterface catAttribute, StringBuffer columnNames,
-			StringBuffer columnValues, StringBuffer colNamesValues)
+	private void populateColumnNamesAndValues(Map<BaseAbstractAttributeInterface, Object> valueMap,
+			AttributeInterface attribute, CategoryAttributeInterface catAttribute,
+			StringBuffer columnNames, StringBuffer columnValues, StringBuffer colNamesValues)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		String columnName = attribute.getColumnProperties().getName();
@@ -837,14 +846,12 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			{
 				defaultValue = "";
 			}
-			if (catAttribute.getIsCalculated() != null
-					&& catAttribute.getIsCalculated()) 
+			if (catAttribute.getIsCalculated() != null && catAttribute.getIsCalculated())
 			{
 				FormulaCalculator formulaCalculator = new FormulaCalculator();
-				String formulaResultValue = formulaCalculator.evaluateFormula(
-						valueMap, catAttribute, catAttribute
-								.getCategoryEntity().getCategory(),1);
-				if (formulaResultValue != null) 
+				String formulaResultValue = formulaCalculator.evaluateFormula(valueMap,
+						catAttribute, catAttribute.getCategoryEntity().getCategory(), 1);
+				if (formulaResultValue != null)
 				{
 					defaultValue = formulaResultValue;
 				}
@@ -1172,8 +1179,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 						category.getRootCategoryElement(), (Long) fullKeyMap.get(catEntityName),
 						jdbcDao);
 
-				insertRecordsForRelatedAttributes(dataValue,rootCatEntId, category.getRootCategoryElement(),
-						recordsMap, jdbcDao, identifier);
+				insertRecordsForRelatedAttributes(dataValue, rootCatEntId, category
+						.getRootCategoryElement(), recordsMap, jdbcDao, identifier);
 				jdbcDao.commit();
 			}
 		}
@@ -1430,6 +1437,27 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 					{
 						sourceEntityId = (Long) fullKeyMap.get(association.getEntity().getName()
 								+ "[" + par.getSourceInstanceId() + "]");
+
+						if (sourceEntityId == null)
+						{
+							EntityInterface sourceEntity = catAssociation.getCategoryEntity()
+									.getEntity();
+							while (sourceEntity.getParentEntity() != null)
+							{
+								EntityInterface parentEntity = sourceEntity.getParentEntity();
+								if (parentEntity.getId() == association.getEntity().getId())
+								{
+									sourceEntityId = (Long) fullKeyMap.get(catAssociation
+											.getCategoryEntity().getEntity().getName()
+											+ "[" + par.getSourceInstanceId() + "]");
+									break;
+								}
+								else
+								{
+									sourceEntity = parentEntity;
+								}
+							}
+						}
 					}
 				}
 

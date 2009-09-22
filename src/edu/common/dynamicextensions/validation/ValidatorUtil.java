@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.common.dynamicextensions.domain.UserDefinedDE;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -68,6 +71,27 @@ public class ValidatorUtil
 					{
 						errorList.addAll(validateAttributes(attributeValueNode, control
 								.getCaption()));
+						if(control instanceof ComboBoxInterface)
+						{
+							boolean isValuePresent = false;
+							for(PermissibleValueInterface permissibleValue :  ((UserDefinedDE)((AttributeMetadataInterface)abstractAttribute).getAttributeTypeInformation().getDataElement()).getPermissibleValueCollection())
+							{
+//								System.out.println(permissibleValue.getValueAsObject().toString());
+								if(permissibleValue.getValueAsObject().toString().equals(attributeValueNode.getValue()))
+								{
+									isValuePresent = true;
+									break;
+								}
+							}
+							if("".equals(attributeValueNode.getValue().toString()))
+							{
+								isValuePresent = true;
+							}
+							if(!isValuePresent)
+							{							
+								errorList.add("Please Enter valid permissible value for attribute "+ control.getCaption());
+							}
+						}
 					}
 				}
 				else if (abstractAttribute instanceof AssociationMetadataInterface)

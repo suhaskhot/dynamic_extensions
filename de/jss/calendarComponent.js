@@ -792,3 +792,204 @@ function showElement(elmID)
                   obj.style.visibility = "";
     }   
 }
+
+function processAjaxCalScript(id, day, month, year, imgPath)
+{
+	var content = processAjaxCalanderScript(id,"Sun","Mon","Tue","Wed","Thu","Fri","Sat",1,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec", day, month, year, 'false', imgPath);
+	return content;
+}
+
+function printTimeCalendarForAjax(id,day, month, year, time_hh, time_mm, imgPath)
+{   
+	var content = processAjaxCalanderScript(id,"Sun","Mon","Tue","Wed","Thu","Fri","Sat",1,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec", day, month, year, 'true',imgPath, 10, 12);
+	return content;
+}
+
+function printMonthYearCalendarForAjax(id, month, year, imgPath)
+{       
+	var content = processMonthAndYearCalForAjax(id,"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",year, imgPath);
+	return content;
+}
+
+function printYearCalendarForAjax(id, year, imgPath)
+{   
+	var content = processYearOnlyCalForAjax(id, year,imgPath);
+	return content;
+}
+
+/**
+ * Static code included one time in the page.
+ *
+ * a {text-decoration: none; color: #000000;}");
+ * TD.CALENDRIER {background-color: #C2C2C2; font-weight: bold; text-align: center; font-size: 10px; }");
+ *
+ * bgColor => #000000, #C9252C, 
+ */
+function processAjaxCalanderScript(id,day1, day2, day3, day4, day5, day6, day7, first, month1, month2, month3, month4, month5, month6, month7, month8, month9, month10, month11, month12, day, month, year, displayTime,imgsrc, time_hh, time_mm) 
+{ 
+	var calDiv;
+	//var imgsrc ="./../de/images/";
+    calDiv ='<div id="caltitre" style="z-index:10;height:20">'; 
+    calDiv = calDiv +'<table cellpadding="0" cellspacing="0" border="0" width="267" height:20" bgcolor="#BDDBF3">';
+    calDiv = calDiv +'<tr><td colspan="15"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td></tr>';
+    calDiv = calDiv +'<tr>';
+    calDiv = calDiv +'    <td class="CALENDARBORDER" width="1"></td>';
+    calDiv = calDiv +'    <td class="CALENDARTITLE"  colspan="3" align="right"><img src="' + imgsrc + 'previous2.gif" onclick="cal_previous_year('+ '\''+id +'\''+ ',' + day + ');"></td>';
+    calDiv = calDiv +'    <td class="CALENDARTITLE" colspan="1" align="left" width="40"><img src="' + imgsrc + 'previous.gif" onclick="cal_before('+ '\''+id +'\''+ ',' + day + ');"></td>';
+    calDiv = calDiv +'    <td colspan=6 align="right" class="CALENDARTITLE" nowrap>';
+    
+    // month
+   calDiv = calDiv +'<select id="calmois'+id+'" name="calmois'+id+'" onchange="cal_chg('+ '\''+id +'\''+ ',' + day + ');"><option value=0>...</option>';
+    
+    // use the good day for week start.
+    // store the day the week start for later.
+    calweekstart = 1;   
+    // compute an array of the days, starting from Sunday.
+    caldays = new Array(7);
+    caldays[0] = "Sun";
+    caldays[1] = "Mon";
+    caldays[2] = "Tue";
+    caldays[3] = "Wed";
+    caldays[4] = "Thu";
+    caldays[5] = "Fri";
+    caldays[6] = "Sat";
+    // compute an array of the days, starting at the good day.
+    computedcaldays = new Array(7);
+    for (i=0; i<7; i++) {       
+        computedcaldays[(i+1-calweekstart+7)%7] = caldays[i];
+    }
+    for(i=1;i<=12;i++) {
+        var str='<option value=' + i + '>';
+        monthIndex = i-1;
+        switch (monthIndex) {
+            case 0: str += "Jan"; break;
+            case 1: str += "Feb"; break;
+            case 2: str += "Mar"; break;
+            case 3: str += "Apr"; break;
+            case 4: str += "May"; break;
+            case 5: str += "Jun"; break;
+            case 6: str += "Jul"; break;
+            case 7: str += "Aug"; break;
+            case 8: str += "Sep"; break;
+            case 9: str += "Oct"; break;
+            case 10: str += "Nov"; break;
+            case 11: str += "Dec"; break;
+        }
+        calDiv = calDiv +str;
+    }   
+
+    calDiv = calDiv +'</select>';
+
+    // year
+    calDiv = calDiv +'<select id="calyear'+id+'" name="calyear'+id+'" onchange="cal_chg('+ '\''+id +'\''+ ',' + day + ');">';    
+    calDiv = calDiv +"</select>";
+    
+    calDiv = calDiv +'    </td>';
+    //KK
+    calDiv = calDiv +'    <td class="CALENDARTITLE" align="right"><img src="' + imgsrc + 'next.gif" onclick="cal_after('+ '\''+id +'\''+ ',' + day + ');"></td>';    
+    calDiv = calDiv +'    <td class="CALENDARTITLE" align="left"><img src="' + imgsrc + 'next2.gif" onclick="cal_after_year('+ '\''+id +'\''+ ',' + day + ');"></td>';
+
+    calDiv = calDiv +'    <td class="CALENDARTITLE" align="right"><img src="' + imgsrc + 'close.gif" onclick="hideCalendar('+"'"+id+"'"+')"></td>';
+    calDiv = calDiv +'    <td class="CALENDARBORDER" width=1><img src="' + imgsrc + 'calBackground.gif" width="1" height="1"></td>';
+    calDiv = calDiv +'</tr>';
+    
+    // to display time
+    if(shouldUseTime == 'false')
+	{
+		shouldUseTime = displayTime;
+	}
+    if(displayTime=='true')
+    {
+        calDiv = calDiv +'<tr>';
+        calDiv = calDiv +'    <td colspan="5" class="CALENDARBORDER" align="right">Time &nbsp; </td>';
+        calDiv = calDiv +'<td colspan="5" class="CALENDARBORDER" align="left"><select id="timeHrs'+id+'" name="time_hh'+id+'" size="1">';
+        var str="";
+        for (i = 0; i <= 23; i++)
+        {
+            str += '<option value=' + i + '>' + i + '</option>';
+        }   
+        calDiv = calDiv +str;
+        calDiv = calDiv +'    </select>';
+        calDiv = calDiv +'    &nbsp;:&nbsp; <select id="timeMin'+id+'" name="time_mm'+id+'" size="1">';
+        str="";
+        for (i = 0; i <= 59; i++)
+        {
+            str += '<option value=' + i + '>' + i + '</option>';
+        }   
+        calDiv = calDiv +str;
+        calDiv = calDiv +'    </select></td>';
+
+        calDiv = calDiv +'    <td colspan=5 class="CALENDARBORDER" align="left">[HH : MM]</td>';
+        calDiv = calDiv +'</tr>';
+    }
+
+
+    calDiv = calDiv +'<tr><td colspan=15 class="CALENDARBORDER"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td></tr>';
+    calDiv = calDiv +'<tr>';
+    calDiv = calDiv +'    <td class="CALENDARBORDER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="38" align="center">' + computedcaldays[0] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="50"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="10">'+"  " + computedcaldays[1] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="10">' + computedcaldays[2] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="38">' + computedcaldays[3] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="38">' + computedcaldays[4] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="38">' + computedcaldays[5] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'    <td class="CALENDRIER" width="38">' + computedcaldays[6] + '</td>';
+    calDiv = calDiv +'    <td class="CALENDARBORDER" width="1"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td>';
+    calDiv = calDiv +'</tr>';
+        
+    calDiv = calDiv +'<tr><td colspan=15 class="CALENDARBORDER"><img src="' + imgsrc + 'calBackground.gif" width=1 height=1></td></tr>';
+//  calDiv = calDiv +'</form>);
+    calDiv = calDiv +'</table>';
+    calDiv = calDiv +'</div>';
+//  calDiv = calDiv +'<div id="caljour" style="position:absolute; left:0px; top:45px; width:253; height:130; z-index:10;"></div>');
+    calDiv = calDiv +'<div id="caljour'+id+'" style="z-index:10;"></div>';     
+	return calDiv
+}
+
+function processMonthAndYearCalForAjax(id,month1, month2, month3, month4, month5, month6, month7, month8, month9, month10, month11, month12, year,imgsrc) 
+{       
+	var calDivForMonthYear;
+	//var imgsrc ="./../de/images/";
+	calDivForMonthYear = '<table cellpadding="0" cellspacing="0" border="0" width="150" height="20" bgcolor="#BDDBF3">';
+    calDivForMonthYear = calDivForMonthYear + '<tr>';
+    calDivForMonthYear = calDivForMonthYear + '    <td class="CALENDARBORDER" width="5"></td>';
+    calDivForMonthYear = calDivForMonthYear + '    <td align="center" width="*" class="CALENDARTITLE">';
+    calDivForMonthYear = calDivForMonthYear + '<select id="calmois'+id+'" name="calmois'+id+'"><OPTION selected>Jan</OPTION><OPTION>Feb</OPTION><OPTION>Mar</OPTION><OPTION>Apr</OPTION><OPTION>May</OPTION><OPTION>Jun</OPTION><OPTION>Jul</OPTION><OPTION>Aug</OPTION><OPTION>Sep</OPTION><OPTION>Oct</OPTION><OPTION>Nov</OPTION><OPTION>Dec</OPTION>';
+    calDivForMonthYear = calDivForMonthYear + '</select>';
+    calDivForMonthYear = calDivForMonthYear + '</td>';
+    calDivForMonthYear = calDivForMonthYear + '    <td align="center" width="10" class="CALENDARTITLE" nowrap>';
+    calDivForMonthYear = calDivForMonthYear + '<select id="calyear'+id+'" name="calyear'+id+'" onload="showYears(id)" onChange="hideMonthAndYearCal('+"'"+id+"'"+')"><OPTION selected>1900</OPTION>';
+    calDivForMonthYear = calDivForMonthYear + '</select>';
+    calDivForMonthYear = calDivForMonthYear + '</td>';
+    calDivForMonthYear = calDivForMonthYear + '    <td class="CALENDARBORDER" width="5"></td>';
+    calDivForMonthYear = calDivForMonthYear + '    <td class="CALENDARTITLE" width="10" align="right"><img src="' + imgsrc + 'close.gif" onclick="hideMonthAndYearCal('+"'"+id+"'"+')"></td>';
+    calDivForMonthYear = calDivForMonthYear + '</tr>';
+    calDivForMonthYear = calDivForMonthYear + '</table>';
+	return calDiv;
+}
+
+function processYearOnlyCalForAjax(id, year,imgsrc) 
+{       
+	var calDivYearOnly;
+	//var imgsrc ="./../de/images/";
+	calDivYearOnly = '<table cellpadding="0" cellspacing="0" border="0" width="100" height="20" bgcolor="#BDDBF3">';
+	calDivYearOnly = calDivYearOnly + '<tr>';
+	calDivYearOnly = calDivYearOnly + '    <td class="CALENDARBORDER" width="2"></td>';
+	calDivYearOnly = calDivYearOnly + '    <td align="center" width="*" class="CALENDARTITLE">';
+    calDivYearOnly = calDivYearOnly + '</td>';
+    calDivYearOnly = calDivYearOnly + '    <td align="center" width="*" class="CALENDARTITLE" nowrap>';
+    calDivYearOnly = calDivYearOnly + '<select id="calyear'+id+'" name="calyear'+id+'" onload="showYears(id)" nChange="hideYearOnlyCal('+"'"+id+"'"+')"><OPTION selected>1900</OPTION>';
+    calDivYearOnly = calDivYearOnly + '</select>';
+    calDivYearOnly = calDivYearOnly + '</td>';
+    calDivYearOnly = calDivYearOnly + '    <td class="CALENDARBORDER" width="2"></td>';
+    calDivYearOnly = calDivYearOnly + '    <td class="CALENDARTITLE" width="10" align="right"><img src="' + imgsrc + 'close.gif" onclick="hideYearOnlyCal('+"'"+id+"'"+')"></td>';
+    calDivYearOnly = calDivYearOnly + '</tr>';
+    calDivYearOnly = calDivYearOnly + '</table>';
+	return calDiv;
+}

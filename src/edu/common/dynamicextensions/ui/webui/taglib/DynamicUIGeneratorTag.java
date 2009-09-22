@@ -81,6 +81,7 @@ public class DynamicUIGeneratorTag extends TagSupport
 		{
 			String generatedHTML = "<div id='skipLogicDiv'>";
 			String caption = (String) pageContext.getSession().getAttribute("OverrideCaption");
+			this.containerInterface.setShowRequiredFieldWarningMessage(Boolean.valueOf(pageContext.getSession().getAttribute("mandatory_Message").toString()));
 			String dataEntryOperation = pageContext.getRequest().getParameter("dataEntryOperation");
 			generatedHTML += this.containerInterface.generateContainerHTML(caption,dataEntryOperation);
 			generatedHTML += "</div>";

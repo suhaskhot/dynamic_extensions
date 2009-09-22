@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import edu.common.dynamicextensions.domain.AbstractEntity;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
@@ -108,6 +110,21 @@ public class Container extends DynamicExtensionBaseDomainObject
 	private Boolean addCaption = true;
 
 	private Collection<ContainerInterface> childContainerCollection = new HashSet<ContainerInterface>();
+	
+	/**
+	 * Is Ajax Request
+	 */
+	private boolean isAjaxRequest = false;
+
+	/**
+	 * HTTP request Object
+	 */
+	private HttpServletRequest request;
+
+	/**
+	 * Show required field warning message
+	 */
+	private Boolean showRequiredFieldWarningMessage = true;
 	/**
 	 * @hibernate.set name="childContainerCollection" table="DYEXTN_CONTAINER"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -454,7 +471,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 				.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		if (this.getMode() != null
-				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE))
+				&& this.getMode().equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE) && (isShowRequiredFieldWarningMessage()))
 		{
 			containerHTML.append("<tr><td class='formMessage' colspan='3'><span class='font_red'>");
 			containerHTML.append(this.getRequiredFieldIndicatior());
@@ -719,4 +736,49 @@ public class Container extends DynamicExtensionBaseDomainObject
 		return control;
 	}
 
+	public boolean isAjaxRequest()
+	{
+		return isAjaxRequest;
+	}
+
+	public void setAjaxRequest(boolean isAjaxRequest)
+	{
+		this.isAjaxRequest = isAjaxRequest;
+	}
+
+	
+	/**
+	 * @return the request
+	 */
+	public HttpServletRequest getRequest()
+	{
+		return request;
+	}
+
+	
+	/**
+	 * @param request the request to set
+	 */
+	public void setRequest(HttpServletRequest request)
+	{
+		this.request = request;
+	}
+	
+	/**
+	 * @return the showRequiredFieldWarningMessage
+	 */
+	public Boolean isShowRequiredFieldWarningMessage()
+	{
+		return showRequiredFieldWarningMessage;
+	}
+
+	
+	/**
+	 * @param showRequiredFieldWarningMessage the showRequiredFieldWarningMessage to set
+	 */
+	public void setShowRequiredFieldWarningMessage(Boolean showRequiredFieldWarningMessage)
+	{
+		this.showRequiredFieldWarningMessage = showRequiredFieldWarningMessage;
+	}
+	
 }

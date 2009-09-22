@@ -10,8 +10,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +29,7 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
@@ -45,11 +49,12 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
 
 /**
- * @author preeti_munot
+ * @author preeti_munot,suhas_khot
  *
  * To change the template for this generated type comment go to
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
@@ -80,6 +85,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 			throws DynamicExtensionsApplicationException
 	{
 		String returnXML = null;
+		String containerId = request.getParameter("containerId");
 		try
 		{
 
@@ -114,7 +120,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 				else if (operation.trim().equals("deleteRowsForContainment"))
 				{
 					String deletedRowIds = request.getParameter("deletedRowIds");
-					String containerId = request.getParameter("containerId");
+					containerId = request.getParameter("containerId");
 					returnXML = deleteRowsForContainment(request, deletedRowIds, containerId);
 				}
 				else if (operation.trim().equals("updateControlsSequence"))
@@ -136,6 +142,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 										"prepareBreadCrumbLink")))
 				{
 					returnXML = breadCrumbOperation(request);
+				}
+				else if (operation.trim().equals("pasteData"))
+				{
+					returnXML = pasteData(containerId, request);
 				}
 
 			}
@@ -700,7 +710,7 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	}
 
 	/**
-	 * @param request
+	 * @param request object
 	 * @param actionForm
 	 * @throws IOException
 	 * @throws DynamicExtensionsApplicationException
@@ -741,8 +751,10 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 					+ breadcrumbPosition
 					+ ");\" style=\"color: #0000ff;font-family: arial;font-size: 12px;font-weight: normal;cursor:pointer;\">"
 					+ formName + "</a>";
-			breadCrumbURL = breadCrumbURL + DEConstants.HTML_SPACE + DEConstants.HTML_SPACE + breadCrumbImage;
-			breadCrumbURL = breadCrumbURL + DEConstants.HTML_SPACE + DEConstants.HTML_SPACE + containerStack.get(i).getCaption();
+			breadCrumbURL = breadCrumbURL + DEConstants.HTML_SPACE + DEConstants.HTML_SPACE
+					+ breadCrumbImage;
+			breadCrumbURL = breadCrumbURL + DEConstants.HTML_SPACE + DEConstants.HTML_SPACE
+					+ containerStack.get(i).getCaption();
 			formName = containerStack.get(i).getCaption();
 			breadcrumbPosition = breadcrumbPosition + 1;
 		}
@@ -750,5 +762,81 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 
 		responseXML = breadCrumbURL;
 		return responseXML;
+	}
+
+	/**
+	 * @param containerId container identifier
+	 * @param request request object
+	 * @return HTML output for clipBoard data
+	 */
+	private String pasteData(String containerId, HttpServletRequest request)
+	{
+		StringBuffer returnString = new StringBuffer();
+		String clipboardData = request.getParameter(DEConstants.CLIP_BOARD_DATA);
+		clipboardData = clipboardData.replace("\r", "");
+		int rwoIndex = Integer.parseInt(request.getParameter(DEConstants.INDEX));
+		String[] records = clipboardData.split(DEConstants.COMMA);
+		String[] cols = null;
+		Set<String> errorList = new HashSet<String>();
+		try
+		{
+			ContainerInterface containerInterface = DynamicExtensionsUtility
+					.getContainerByIdentifier(request.getParameter(DEConstants.CONTAINER_ID));
+			setContainerParameters(containerInterface, request);
+			List<ControlInterface> list = containerInterface.getAllControlsUnderSameDisplayLabel();
+
+			for (int index = 0; index < records.length; index++)
+			{
+				cols = records[index].split("\t");
+				Map<BaseAbstractAttributeInterface, Object> rowValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+				for (int i = 0; i < cols.length; i++)
+				{
+					if (!(list.get(i).getBaseAbstractAttribute() instanceof AssociationMetadataInterface))
+					{
+						rowValueMap.put(list.get(i).getBaseAbstractAttribute(), cols[i]);
+					}
+
+				}
+				errorList.addAll(ValidatorUtil.validateEntity(rowValueMap, new ArrayList<String>(),
+						containerInterface));
+				containerInterface.setContainerValueMap(rowValueMap);
+				returnString.append(UserInterfaceiUtility.getContainerHTMLAsARow(
+						containerInterface, rwoIndex, null));
+				rwoIndex++;
+			}
+			resetContainerParameters(containerInterface);
+		}
+		catch (Exception e)
+		{
+			Logger.out.error(e.getMessage());
+		}
+		returnString.append("~ErrorList");
+		if (errorList.size() > 0)
+		{
+			returnString.append(errorList);
+		}
+		return returnString.toString();
+	}
+
+	/**
+	 * setting container parameters
+	 * @param containerInterface container whose parameter to be set
+	 * @param request object to be set for container
+	 */
+	private void setContainerParameters(ContainerInterface containerInterface,
+			HttpServletRequest request)
+	{
+		containerInterface.setAjaxRequest(true);
+		containerInterface.setRequest(request);
+	}
+
+	/**
+	 * resetting container parameter
+	 * @param containerInterface container whose parameter to be set
+	 */
+	private void resetContainerParameters(ContainerInterface containerInterface)
+	{
+		containerInterface.setAjaxRequest(false);
+		containerInterface.setRequest(null);
 	}
 }

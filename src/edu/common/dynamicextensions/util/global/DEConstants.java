@@ -124,8 +124,21 @@ public class DEConstants
 	public static final String IS_DIRTY = "isDirty";
 	public static final String BREAD_CRUMB_POSITION = "breadCrumbPosition";
 	public static final String HTML_SPACE = "&nbsp;";
+	public static final String PRINTCALANDER = "printCalendar";
+	public static final String PROCESS_AJAX_CAL_SCRIPT = "processAjaxCalScript";
+	public static final String PRINT_TIME_CAL_FOR_AJAX = "printTimeCalendarForAjax";
+	public static final String PRINT_MON_YEAR_CAL_FOR_AJAX = "printMonthYearCalendarForAjax";
+	public static final String PRINT_YEAR_CAL_FOR_AJAX = "printYearCalendarForAjax";
+	public static final String CLIP_BOARD_DATA = "clipboradData";
+	public static final String HTML_SCRIPT_TAG = "</SCRIPT>";
+	public static final String SINGLE_QUOTE = "'";
+	public static final String OPEN_ROUND_BRACE = "(";
+	public static final String CLOSED_ROUND_BRACE = ")";
+	public static final String INDEX ="index";
+	public static final String COMMA = ",";
+	public static final String CONTAINER_ID = "containerId";
 
-
+	
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);
 

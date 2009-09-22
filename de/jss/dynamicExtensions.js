@@ -1453,7 +1453,7 @@ function addRow(containerId)
         newCell.className = cells[i].className;
 
         newCell.innerHTML = cells[i].innerHTML;
-        newCell = setDefaultValues(tableId, newCell);
+        newCell = setDefaultValues(tableId, newCell, containerId);
     }
 
     var hiddenVar = "";
@@ -1467,7 +1467,7 @@ function addRow(containerId)
 	var x = document.getElementsByTagName("script");
 	var RegularExpression  =  new RegExp("\^print");
 	var RegularExpressionForCombo  =  new RegExp("Ext.form.ComboBox");
-
+	
     for(var i=0;i<x.length;i++)
     {
 	  if(x[i].text!='' && x[i].text.search(RegularExpression) == -1 && x[i].text.search(RegularExpressionForCombo) == -1)
@@ -1603,7 +1603,7 @@ function ignoreResponseHandler(str)
 {
 }
 
-function setDefaultValues(tableId, obj) 
+function setDefaultValues(tableId, obj, containerId) 
 {
 	var children = obj.childNodes;
 
@@ -1667,7 +1667,7 @@ function setDefaultValues(tableId, obj)
 						obj.innerHTML = replaceAll(obj.innerHTML,
 								childObjectName, str);
 					}
-					if ("auto_complete_dropdown" == childObject.id) 
+					if ("auto_complete_dropdown_"+containerId == childObject.id) 
 					{
 						var childNodes2 = childObject.childNodes;
 
@@ -1693,17 +1693,20 @@ function setDefaultValues(tableId, obj)
 			}
 			obj.innerHTML = replaceAll(obj.innerHTML, childObjectName, str);
 		}
-		if ("auto_complete_dropdown" == childObject.id) 
+		if ("auto_complete_dropdown_"+containerId == childObject.id) 
 		{
 			var childNodes2 = childObject.childNodes;
-
-			var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
-			var newName = oldName + "_" + rowIndex;
-			var newScript = replaceAll(childNodes2[1].innerHTML, oldName,
-					newName);
-			obj.innerHTML = replaceAll(childNodes2[2].innerHTML, oldName,
-					newName);
-			eval(newScript);
+			if(!window.component && document.all)
+			{
+				childNodes2 = document.getElementById("auto_complete_dropdown_"+containerId).childNodes;
+			}
+						var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
+						var newName = oldName + "_" + rowIndex;
+						var newScript = replaceAll(childNodes2[1].innerHTML,
+								oldName, newName);
+						obj.innerHTML = replaceAll(childNodes2[2].innerHTML,
+								oldName, newName);
+						eval(newScript);
 		}
 	}
 	return obj;
@@ -2489,4 +2492,211 @@ function insertBreadCrumbForSubFormResponse(responseXML)
 function isDataChanged()
 {
 	document.getElementById('isDirty').value = true;
+}
+
+//==================copy paste=======================================
+
+var chkTable,noOfRecordsCopied,cardinality;
+var batch = 10;
+var slice,start,end;
+var startTime= new Date(), endTime;
+var rowIndex=0;
+var rowCount = 0;
+var conatinerId;
+
+
+function intVariables()
+{
+chkTable ="";
+noOfRecordsCopied = 0;
+cardinality="";
+batch = 1000;
+slice=start=end=0;
+startTime= new Date();
+endTime="";
+rowIndex=0;
+rowCount = 0;
+conatinerId=0;
+
+}
+
+function pasteDataPart(clipboardData,index)
+{
+	var request = newXMLHTTPReq();
+    var handlerFunction = getReadyStateHandler(request,paster,false);
+
+    //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+    request.onreadystatechange = handlerFunction;
+    request.open("POST","AjaxcodeHandlerAction.do",true);
+    request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    request.send("&ajaxOperation=pasteData&containerId="+conatinerId+"&cardinality="+cardinality+"&index="+index+"&clipboradData="+clipboardData);
+	
+}
+function pasteData(conatinerId_temp,cardinality_temp)
+{
+	intVariables();
+	if(window.clipboardData!=null && window.clipboardData!='undefined')
+	{
+		chkTable = window.clipboardData.getData("Text");
+	}
+	else if(window.Components)
+	{
+		netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+		var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);   
+		if (!clip) return false;   
+		netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+		var trans = Components.classes["@mozilla.org/widget/transferable;1"].createInstance(Components.interfaces.nsITransferable);   
+		if (!trans) return false;   
+		trans.addDataFlavor("text/unicode");  
+		clip.getData(trans, clip.kGlobalClipboard);   
+		var str       = new Object();   
+		var strLength = new Object();   
+		trans.getTransferData("text/unicode", str, strLength);  
+		if (str) str       = str.value.QueryInterface(Components.interfaces.nsISupportsString);   
+		if (str) pastetext = str.data.substring(0, strLength.value / 2);  
+		chkTable = str.data;
+	}
+	else
+	{
+		alert("Your browser doesn't support clipboard access");
+	}
+	
+	if(chkTable == null)
+	{
+		return;
+	}
+	noOfRecordsCopied=chkTable.split("\n").length - 1;
+	cardinality = cardinality_temp;
+	conatinerId = conatinerId_temp;
+	start=rowIndex*batch;
+	end = start + batch;
+
+	if( end >noOfRecordsCopied)
+	{
+		end = noOfRecordsCopied;
+	}
+	slice= chkTable.split("\n").slice(start,end);	
+
+	if(cardinality == "many")
+	{
+		rowCount = document.getElementById(conatinerId+"_table").rows.length -1 ;			
+	}else
+	{
+		slice= chkTable.split("\n").slice(start,start+1);	
+	}
+	pasteDataPart(slice,rowCount+start+1)
+}
+
+function paster(response)
+{
+	var reponseList  = response.split("~ErrorList");
+	var generatedHTML  = reponseList[0];
+	var errorString = reponseList[1];
+	//PRINT ERRORS IF ANY 
+	var errorHTML = "<table width=\"100%\" height=\"30\"  border=\"0\" cellpadding=\"4\" cellspacing=\"4\" class=\"td_color_FFFFCC\">";
+	var errors = reponseList[1].split(',');
+
+	for(var i = 0 ;i<errors.length;i++)
+	{
+		if(errors[i].length>0)
+		{
+			errorHTML +=  "<tr><th align=\"center\" class=\"font_bl_nor\"><img src=\"de/images/ic_error.gif\" alt=\"Error\" width=\"28\" height=\"25\" hspace=\"3\" align=\"absmiddle\">"
+			+errors[i]+"<br />"
+		}
+
+	}
+	errorHTML += "</table>";
+
+	document.getElementById("error_div").innerHTML =  errorHTML;
+	//ERROR PRINTING FINISHED
+	//GET EXTING HTML AND REMOVE THE TABLE
+	var existingTableHTML = document.getElementById(conatinerId+"_table").innerHTML;
+	var existingTable = document.getElementById(conatinerId+"_table");
+
+	if(!window.Components && document.all)
+	{
+		removeElement(conatinerId+"_table");
+		//var newRow = existingTable.insertRow(-1);
+		var reg = /<SCRIPT defer>/ig
+		existingTableHTML=	existingTableHTML.replace(reg,"<SCRIPT>");
+		var replaceDiv = document.getElementById("wrapper_div_"+conatinerId);
+		replaceDiv.innerHTML = "<table id='"+conatinerId+"_table'>"+existingTableHTML+generatedHTML+"</table>";
+	}
+	else
+	{
+		var tbody = document.createElement('tbody');
+		existingTable.appendChild(tbody);
+		tbody.innerHTML = generatedHTML;
+	}
+
+
+	var rowCount_t = document.getElementById(conatinerId+"_rowCount").value * 1;
+	document.getElementById(conatinerId+"_rowCount").value = rowCount_t+noOfRecordsCopied;
+	executeCombos();
+
+}
+
+function executeComboScripts()
+{
+	var temp = document.getElementsByName("auto_complete_dropdown_"+conatinerId);
+	for(var i = rowCount+1;i<temp.length;i++)
+	{
+		eval(temp[i].childNodes[1].innerHTML);
+	}
+}
+
+function executeCombos()
+{
+	var temp = document.getElementsByName("auto_complete_dropdown_"+conatinerId);
+	var newRowCount =  document.getElementById(conatinerId+"_table").rows.length -1;
+	var newRowsAdded = newRowCount -rowCount;
+	if(window.Components)
+	{
+		var length = temp.length;
+		while(newRowsAdded!=0)
+		{
+			eval(temp[length-1].childNodes[1].innerHTML);
+			length = length -1;
+			newRowsAdded = newRowsAdded -1;
+		}
+	}
+	else
+	{
+		for(var i =rowCount+1;i<temp.length;i++)
+		{
+			eval(temp[i].childNodes[1].innerHTML);
+		}
+		
+		for(var i = 0;i<=rowCount;i++)
+		{
+			
+			temp[i].childNodes[0].innerHTML=temp[i].childNodes[0].innerHTML.replace(/(<IMG).*/ig, "");
+			eval(temp[i].childNodes[1].innerHTML);
+		}
+	}
+	
+}
+
+function removeElement(id)
+{
+	var c = document.getElementById(id);
+	var p = c.parentElement;
+	if(c.parentElement==null || c.parentElement=='undefined')
+	{
+		p = c.parentNode;
+	}
+	
+	p.removeChild(c);
+	
+}
+
+function updateOffsets()
+{
+	start=rowIndex*batch;
+	end = start + batch;
+	if( end >noOfRecordsCopied)
+	{
+		end = noOfRecordsCopied;
+	}
+	rowIndex++;
 }

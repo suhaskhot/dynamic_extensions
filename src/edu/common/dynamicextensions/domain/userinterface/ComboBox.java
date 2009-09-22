@@ -73,7 +73,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 		 * combo box to default value.
 		 */
 		String textComponent = "combo" + htmlComponentName;
-		if (!getIsSkipLogicTargetControl() && !"skipLogicAttributes".equals(getDataEntryOperation()))
+		if((!this.getParentContainer().isAjaxRequest()) && (!getIsSkipLogicTargetControl() && !"skipLogicAttributes".equals(getDataEntryOperation())))
 		{
 			htmlString += "<script defer='defer'>Ext.onReady(function(){ "
 					+ "var myUrl= 'DEComboDataAction.do?controlId="
@@ -108,7 +108,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 			htmlString = htmlString
 					+ "});</script>";
 		}
-		htmlString += "<div style='float:left' id='auto_complete_dropdown'>"
+		htmlString += "<div style='float:left' id='auto_complete_dropdown_"+this.getParentContainer().getId()+"' name='auto_complete_dropdown_"+this.getParentContainer().getId()+"'>"
 				+ "<input type='text' onmouseover=\"showToolTip('"
 				+ htmlComponentName
 				+ "')\" id='"

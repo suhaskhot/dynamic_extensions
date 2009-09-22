@@ -66,6 +66,20 @@
 <c:if test="${param.application == 'clinportal'}">
 	<c:set var="application_name" value="${param.application}" scope="session"/>
 </c:if>
+
+<c:if test="${param.showInDiv == 'false'}">
+	<c:set var="showInDiv" value="${param.showInDiv}" scope="session"/>
+</c:if>
+<c:if test="${showInDiv == 'null' || showInDiv == null || param.showInDiv == 'true'}">
+	<c:set var="showInDiv" value="true" scope="session"/>
+</c:if>
+
+<c:if test="${param.mandatoryMessage == 'false'}">
+	<c:set var="mandatory_Message" value="${param.mandatoryMessage}" scope="session"/>
+</c:if>
+<c:if test="${mandatory_Message == 'null' || mandatory_Message == null || param.mandatoryMessage == 'true'}">
+	<c:set var="mandatory_Message" value="true" scope="session"/>
+</c:if>
 <script language="JavaScript" >
 		resetTimeoutCounter();
 </script>
@@ -98,8 +112,14 @@
 
 	<body onload="executeComboScripts();loadPreviewForm('<%=request.getContextPath()%>');setFocusToFirstControl();insertBreadCrumbForSubForm(<%=containerInterface.getId()%>,'<%=request.getSession().getAttribute("application_name")%>')" onclick="window.parent.parent.detectApplicationUsageActivity()" onkeydown="window.parent.parent.detectApplicationUsageActivity()">
 		<html:form styleId="dataEntryForm" action="/ApplyDataEntryFormAction" enctype="multipart/form-data" method="post">
-		<div id="dataEntryFormDiv" style="position:absolute;overflow:auto;height:100%;width:100%;z-index:1000;">
+		<c:if test='${showInDiv == "false"}'>
+			<div id="dataEntryFormDiv" style="position:absolute;overflow:auto;height:100%;width:100%;">
+			<div id="overDiv" style="position:absolute; visibility:hidden;"></div>
+		</c:if>
+		<c:if test='${showInDiv == "null" || showInDiv == "true"}'>
+			<div id="dataEntryFormDiv" style="position:absolute;overflow:auto;height:100%;width:100%;z-index:1000;">
 			<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+		</c:if>
 		
 			<c:choose>
 				<c:when test='${showFormPreview == "true"}'>
@@ -141,6 +161,7 @@
 							</c:if>	
 							<tr valign="top">
 								<td colspan="7">
+									<div id ='error_div'>&nbsp;</div>
 									<table  align='center' width='100%'>
 										<tr>
 											<%
@@ -215,13 +236,13 @@
 													<c:otherwise>
 														<html:hidden styleId='isEdit' property="isEdit" value=""/>
 														
-														<c:if test='${(isTopLevelEntity=="false")}'>
+														<c:if test='${(isTopLevelEntity=="false") && ((showInDiv=="null") || (showInDiv=="true"))}'>
 															<td align='center'>
 																<input type="image" src="<%=request.getContextPath()%>/de/images/b_submit.gif" width="62" height="21" align="middle" onClick="return showParentContainerInsertDataPage()"/>
 															</td>
 														</c:if>
 																												
-														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true")}'>
+														<c:if test='${(mode=="edit") && (isTopLevelEntity=="true") && ((showInDiv=="null") || (showInDiv=="true"))}'>
 															<td align='center'>
 																<input type="image" src="<%=request.getContextPath()%>/de/images/b_submit.gif" width="62" height="21" align="middle" onClick="return setInsertDataOperation()"/>
 															</td>
@@ -234,7 +255,7 @@
 															</script>
 														</c:if>
 								
-														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))}'>
+														<c:if test='${!((mode=="view") && (isTopLevelEntity=="false"))  && ((showInDiv=="null") || (showInDiv=="true"))}'>
 															<td align='center'>
 																<input type="button" style="border: 0px; background-image: url(<%=request.getContextPath()%>/de/images/b_cancel.gif); height: 21px; width: 62px;" align="middle" onClick="cancelInsertData()"/>
 															</td>															

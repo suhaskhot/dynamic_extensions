@@ -88,8 +88,12 @@ public class UserInterfaceiUtility
 			htmlForGrid.append("</td></tr>");
 		}
 
+		htmlForGrid.append("<tr>" + "<td width='5%'><input type='button' id='paste_"+subContainer.getId()+"' value='Paste' " +
+				"onclick='pasteData(\""+subContainer.getId()+"\",\"many\")'/>"+
+				"</td><td class='formField_withoutBorder' width='95%'>&nbsp;</td></tr>");
+		
+		
 		htmlForGrid.append("<tr width='100%'><td colspan='3' width='100%'>");
-
 		// For category attribute controls, if heading and/or notes are specified, then
 		// render the UI that displays heading followed by notes for particular
 		// category attribute controls.
@@ -161,6 +165,8 @@ public class UserInterfaceiUtility
 		}
 
 		htmlForGrid.append("</table>");
+		htmlForGrid.append("<div id='wrapper_div_");
+		htmlForGrid.append(subContainer.getId()+"' > &nbsp;</div>");
 
 		if (subContainer.getMode().equals("edit"))
 		{
@@ -272,7 +278,7 @@ public class UserInterfaceiUtility
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static String getContainerHTMLAsARow(ContainerInterface container, int rowId,String dataEntryOperation)
+	public static String getContainerHTMLAsARow(ContainerInterface container, int rowId,String dataEntryOperation)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer contHtmlAsARow = new StringBuffer();
@@ -290,7 +296,7 @@ public class UserInterfaceiUtility
 		{
 			rowClass = "td_color_f0f2f6";
 		}
-		contHtmlAsARow.append("<tr width='100%'class='");
+		contHtmlAsARow.append("<tr width='100%' class='");
 		contHtmlAsARow.append(rowClass);
 		contHtmlAsARow.append("'><td width='1%'>");
 

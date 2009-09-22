@@ -6,6 +6,7 @@ package edu.common.dynamicextensions.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,6 +32,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
@@ -2347,5 +2352,50 @@ public class DynamicExtensionsUtility
 		}
 
 		return constraintProperties;
+	}
+	/**
+	 * @param filePath
+	 * @param jsFunctionName
+	 * @param jsFunctParameters
+	 * @return
+	 */
+	public static String executeJavaScriptFunc(String filePath, String jsFunctionName, Object[] jsFunctParameters)
+	{
+		String output = null;
+		FileReader reader =null;
+		try
+		{
+			ScriptEngineManager manager = new ScriptEngineManager();
+			if(manager!=null)
+			{
+				ScriptEngine engine = manager.getEngineByName("javascript");
+				reader = new FileReader(filePath);
+				if(reader!=null && engine!=null)
+				{
+					engine.eval(reader);
+					Invocable invokeEngine = (Invocable) engine;
+				    output = invokeEngine.invokeFunction(jsFunctionName, jsFunctParameters).toString();    
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			Logger.out.error(e.getMessage());
+		}
+		 finally
+		 {
+			 try
+			{
+				 if(reader!=null)
+				 {
+					 reader.close();
+				 }
+			}
+			catch (IOException e)
+			{
+				Logger.out.error(e.getMessage());
+			}
+		 }
+		 return output;
 	}
 }

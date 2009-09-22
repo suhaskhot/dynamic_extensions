@@ -79,6 +79,7 @@ public class DateValidator implements ValidatorRuleInterface
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
 			String dateFormat = dateAttributeTypeInformation.getFormat();
 			String value = (String) valueObject;
+			value = value.replaceAll("/", "-");
 			Date tempDate = null;
 
 			try

@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
@@ -242,4 +244,35 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	 * @return
 	 */
 	Collection<ContainerInterface> getChildContainerCollection();
+	
+	/**
+	 * @return
+	 */
+	public boolean isAjaxRequest();
+	
+	/**
+	 * @param isAjaxRequest
+	 */
+	public void setAjaxRequest(boolean isAjaxRequest);
+	
+	/**
+	 * @param request the request to set
+	 */
+	public void setRequest(HttpServletRequest request);
+	
+	/**
+	 * @return the request
+	 */
+	public HttpServletRequest getRequest();
+
+
+	/**
+	 * @return true if required field warning has to be shown
+	 */
+	public Boolean isShowRequiredFieldWarningMessage();
+	
+	/**
+	 * @param showRequiredFieldWarningMessage the showRequiredFieldWarningMessage to set
+	 */
+	public void setShowRequiredFieldWarningMessage(Boolean showRequiredFieldWarningMessage);
 }

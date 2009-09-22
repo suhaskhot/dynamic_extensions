@@ -51,10 +51,10 @@ public class DatePicker extends Control implements DatePickerInterface
 				.getBaseAbstractAttribute()).getAttributeTypeInformation();
 		String dateFormat = ControlsUtility.getDateFormat(attributeTypeInformation);
 
-		String defaultValue = (String) this.value;
+		String defaultValue = getDefaultValueForControl(rowId);
 		if (value == null)
 		{
-			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			
 			if (defaultValue != null && this.getAttibuteMetadataInterface() != null
 					&& this.getAttibuteMetadataInterface() instanceof CategoryAttribute)
 			{
@@ -322,7 +322,7 @@ public class DatePicker extends Control implements DatePickerInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		return null;
 	}
@@ -335,5 +335,27 @@ public class DatePicker extends Control implements DatePickerInterface
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+	 * 
+	 * @return
+	 */
+	private String getDefaultValueForControl(Integer rowId)
+	{
+		String defaultValue = (String) this.value;
+		if (!getIsSkipLogicTargetControl())
+		{
+			if (this.value == null)
+			{
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			}
+		}
+		else
+		{
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = getSkipLogicDefaultValue(rowId);
+			}
+		}
+		return defaultValue;
+	}
 }

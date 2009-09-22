@@ -39,7 +39,7 @@ public class DataGrid extends Control implements DataGridInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() {
+	public List<String> getValueAsStrings(Integer rowId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

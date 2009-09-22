@@ -3,10 +3,8 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
-import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -39,7 +37,7 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 */
 	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
-		String defaultValue = getDefaultControlValue();
+		String defaultValue = getDefaultValueForControl(rowId);
 		String isDisabled = "";
 		String htmlString = "";
 		if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
@@ -230,36 +228,66 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	 * 
 	 * @return
 	 */
-	private String getDefaultControlValue()
+	private String getDefaultValueForControl(Integer rowId)
 	{
 		String defaultValue = "";
-		if (this.value == null)
+		if (!getIsSkipLogicTargetControl())
 		{
-			AttributeMetadataInterface attributeMetadataInterface = this
-					.getAttibuteMetadataInterface();
-			if (attributeMetadataInterface != null)
+			if (this.value == null)
 			{
-				this.value = this.getAttibuteMetadataInterface().getDefaultValue();
-			}
-		}
-		if (this.value != null)
-		{
-			if (this.value instanceof String)
-			{
-				defaultValue = (String) this.value;
-			}
-			else if (this.value instanceof List)
-			{
-				List valueList = (List) this.value;
-				if (!valueList.isEmpty())
+				AttributeMetadataInterface attributeMetadataInterface = this
+						.getAttibuteMetadataInterface();
+				if (attributeMetadataInterface != null)
 				{
-					defaultValue = valueList.get(0).toString();
+					this.value = this.getAttibuteMetadataInterface().getDefaultValue();
 				}
+			}
+			if (this.value != null)
+			{
+				if (this.value instanceof String)
+				{
+					defaultValue = (String) this.value;
+				}
+				else if (this.value instanceof List)
+				{
+					List valueList = (List) this.value;
+					if (!valueList.isEmpty())
+					{
+						defaultValue = valueList.get(0).toString();
+					}
+				}
+			}
+			else
+			{
+				defaultValue = "";
 			}
 		}
 		else
 		{
-			defaultValue = "";
+			String controlvalue = null;
+			if (this.value != null)
+			{
+				if (this.value instanceof String)
+				{
+					controlvalue = (String) this.value;
+				}
+				else if (this.value instanceof List)
+				{
+					List valueList = (List) this.value;
+					if (!valueList.isEmpty())
+					{
+						controlvalue = valueList.get(0).toString();
+					}
+				}
+			}
+			if (controlvalue == null || controlvalue.length() == 0)
+			{
+				defaultValue = getSkipLogicDefaultValue(rowId);
+			}
+			else
+			{
+				defaultValue = controlvalue;
+			}
 		}
 		return defaultValue;
 	}
@@ -267,11 +295,10 @@ public class ComboBox extends SelectControl implements ComboBoxInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		List<String> values = new ArrayList<String>();
-		values.add(getDefaultControlValue());
-		Map<BaseAbstractAttributeInterface, Object> valueMap = this.getParentContainer().getContainerValueMap();
+		values.add(getDefaultValueForControl(rowId));
 		return values;
 	}
 

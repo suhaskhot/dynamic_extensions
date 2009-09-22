@@ -30,7 +30,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	 */
 	protected String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
-		String checked = String.valueOf(this.value);
+		String checked = getDefaultValueForControl(rowId);
 		String htmlString = "";
 		if (getIsSkipLogicTargetControl())
 		{
@@ -38,10 +38,6 @@ public class CheckBox extends Control implements CheckBoxInterface
 					+ getHTMLComponentName() + "_div' /><div id='"
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
-		}
-		if (this.value == null)
-		{
-			checked = this.getAttibuteMetadataInterface().getDefaultValue();
 		}
 		String disabled = "";
 		//		If control is defined as readonly through category CSV file,make it Disabled
@@ -104,7 +100,7 @@ public class CheckBox extends Control implements CheckBoxInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		return null;
 	}
@@ -117,5 +113,27 @@ public class CheckBox extends Control implements CheckBoxInterface
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+	 * 
+	 * @return
+	 */
+	private String getDefaultValueForControl(Integer rowId)
+	{
+		String defaultValue = String.valueOf(this.value);
+		if (!getIsSkipLogicTargetControl())
+		{
+			if (this.value == null)
+			{
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			}
+		}
+		else
+		{
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = getSkipLogicDefaultValue(rowId);
+			}
+		}
+		return defaultValue;
+	}
 }

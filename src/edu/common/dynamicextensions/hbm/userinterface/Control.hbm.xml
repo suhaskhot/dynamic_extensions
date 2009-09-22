@@ -163,6 +163,14 @@
             column="yPosition"
         />
 
+        <property
+            name="isSkipLogicTargetControl"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="SKIP_LOGIC_TARGET_CONTROL"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-Control.xml

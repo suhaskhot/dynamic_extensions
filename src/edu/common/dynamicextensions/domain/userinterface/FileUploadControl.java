@@ -91,7 +91,7 @@ public class FileUploadControl extends Control implements FileUploadInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		return null;
 	}

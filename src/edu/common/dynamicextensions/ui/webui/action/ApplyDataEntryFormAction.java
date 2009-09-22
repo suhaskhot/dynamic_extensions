@@ -46,6 +46,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -490,24 +491,24 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 							if (categoryAttribute.getAbstractAttribute() instanceof AssociationMetadataInterface)
 							{
 								collectAssociationValues(request, dataEntryForm, controlName,
-										control, attributeValueMap, processOneToMany);
+										control, attributeValueMap, processOneToMany,rowId);
 							}
 							else
 							{
 								collectAttributeValues(request, dataEntryForm, controlName,
-										control, attributeValueMap);
+										control, attributeValueMap,rowId);
 							}
 						}
 						else
 						{
 							collectAttributeValues(request, dataEntryForm, controlName, control,
-									attributeValueMap);
+									attributeValueMap,rowId);
 						}
 					}
 					else if (abstractAttribute instanceof AssociationMetadataInterface)
 					{
 						collectAssociationValues(request, dataEntryForm, controlName, control,
-								attributeValueMap, processOneToMany);
+								attributeValueMap, processOneToMany,rowId);
 					}
 				}
 			}
@@ -529,7 +530,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private void collectAssociationValues(HttpServletRequest request, DataEntryForm dataEntryForm,
 			String controlName, ControlInterface control,
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany)
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Boolean processOneToMany,String rowId)
 			throws DynamicExtensionsSystemException, FileNotFoundException, IOException
 	{
 		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control
@@ -624,10 +625,18 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 					valueList.add(Long.valueOf(selectedValue.trim()));
 				}
 			}
-
 			if (!valueList.isEmpty())
 			{
 				attributeValueMap.put(abstractAttribute, valueList);
+			}
+			String[] selectedValues = (String[]) request.getParameterValues(controlName);
+			if (rowId != null && !rowId.equals(""))
+			{
+				control.setSkipLogicControls(Integer.valueOf(rowId),selectedValues);
+			}
+			else
+			{
+				control.setSkipLogicControls(Integer.valueOf(-1),selectedValues);
 			}
 		}
 	}
@@ -690,7 +699,7 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 	 */
 	private void collectAttributeValues(HttpServletRequest request, DataEntryForm dataEntryForm,
 			String controlName, ControlInterface control,
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,String rowId)
 			throws FileNotFoundException, IOException, DynamicExtensionsSystemException
 	{
 		BaseAbstractAttributeInterface abstractAttribute = (BaseAbstractAttributeInterface) control
@@ -773,6 +782,18 @@ public class ApplyDataEntryFormAction extends BaseDynamicExtensionsAction
 
 			attributeValue = value;
 			attributeValueMap.put(abstractAttribute, attributeValue);
+			if (control instanceof SelectInterface && control instanceof RadioButtonInterface)
+			{
+				String[] selectedValues = (String[]) request.getParameterValues(controlName);
+				if (rowId != null && !rowId.equals(""))
+				{
+					control.setSkipLogicControls(Integer.valueOf(rowId),selectedValues);
+				}
+				else
+				{
+					control.setSkipLogicControls(Integer.valueOf(-1),selectedValues);
+				}
+			}
 		}
 	}
 

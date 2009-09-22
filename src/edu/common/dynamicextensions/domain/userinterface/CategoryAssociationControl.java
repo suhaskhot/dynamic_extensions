@@ -42,7 +42,7 @@ public class CategoryAssociationControl extends AbstractContainmentControl
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		// TODO Auto-generated method stub
 		return null;

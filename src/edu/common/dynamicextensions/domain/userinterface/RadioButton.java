@@ -44,7 +44,7 @@ public class RadioButton extends Control implements RadioButtonInterface
 					+ getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
 		}
-		String defaultValue = getDefaultValueForControl();
+		String defaultValue = getDefaultValueForControl(rowId);
 		String disabled = "";
 		//If control is defined as readonly through category CSV file,make it Disabled
 		if ((this.isReadOnly != null && getIsReadOnly()) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
@@ -134,36 +134,52 @@ public class RadioButton extends Control implements RadioButtonInterface
 	 * 
 	 * @return
 	 */
-	private String getDefaultValueForControl()
+	private String getDefaultValueForControl(Integer rowId)
 	{
 		String defaultValue = (String) this.value;
-		if (defaultValue == null)
+		if (!getIsSkipLogicTargetControl())
 		{
-			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
-			if (defaultValue == null || defaultValue.length() == 0)
+			if (defaultValue == null)
 			{
-				defaultValue = "";
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+				if (defaultValue == null || defaultValue.length() == 0)
+				{
+					defaultValue = "";
+				}
 			}
 		}
-		if (defaultValue.length() > 0
-				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof DoubleTypeInformationInterface)
+		else
 		{
-			double doubleValue = Double.parseDouble(defaultValue);
-			defaultValue = Double.toString(doubleValue);
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = getSkipLogicDefaultValue(rowId);
+			}
 		}
-		else if (defaultValue.length() > 0
-				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof LongTypeInformationInterface)
+		if (defaultValue != null)
 		{
-			long longValue = Long.parseLong(defaultValue);
-			defaultValue = Long.toString(longValue);
-
-		}
-		else if (defaultValue.length() > 0
-				&& this.getAttibuteMetadataInterface().getAttributeTypeInformation() instanceof FloatTypeInformationInterface)
-		{
-			float floatValue = Float.parseFloat(defaultValue);
-			defaultValue = Float.toString(floatValue);
-
+			if (defaultValue.length() > 0
+					&& this.getAttibuteMetadataInterface()
+							.getAttributeTypeInformation() instanceof DoubleTypeInformationInterface)
+			{
+				double doubleValue = Double.parseDouble(defaultValue);
+				defaultValue = Double.toString(doubleValue);
+			}
+			else if (defaultValue.length() > 0
+					&& this.getAttibuteMetadataInterface()
+							.getAttributeTypeInformation() instanceof LongTypeInformationInterface)
+			{
+				long longValue = Long.parseLong(defaultValue);
+				defaultValue = Long.toString(longValue);
+	
+			}
+			else if (defaultValue.length() > 0
+					&& this.getAttibuteMetadataInterface()
+							.getAttributeTypeInformation() instanceof FloatTypeInformationInterface)
+			{
+				float floatValue = Float.parseFloat(defaultValue);
+				defaultValue = Float.toString(floatValue);
+	
+			}
 		}
 		return defaultValue;
 	}
@@ -189,10 +205,10 @@ public class RadioButton extends Control implements RadioButtonInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		List<String> values = new ArrayList<String>();
-		values.add(getDefaultValueForControl());
+		values.add(getDefaultValueForControl(rowId));
 		return values;
 	}
 	/**

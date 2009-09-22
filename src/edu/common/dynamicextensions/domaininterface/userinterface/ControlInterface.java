@@ -252,6 +252,12 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	void setSkipLogicControls(Integer rowId);
 	/**
 	 * 
+	 * @param rowId
+	 * @param valueArray
+	 */
+	void setSkipLogicControls(Integer rowId,String[] valueArray);
+	/**
+	 * 
 	 * @param isSkipLogicTargetControl
 	 */
 	void setIsSkipLogicTargetControl(Boolean isSkipLogicTargetControl);
@@ -269,7 +275,7 @@ public interface ControlInterface extends DynamicExtensionBaseDomainObjectInterf
 	  * 
 	  * @return
 	  */
-	 List<String> getValueAsStrings();
+	 List<String> getValueAsStrings(Integer rowId);
 	 /**
 	  * 
 	  * @return

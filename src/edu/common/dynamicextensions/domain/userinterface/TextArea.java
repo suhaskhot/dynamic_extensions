@@ -74,12 +74,7 @@ public class TextArea extends Control implements TextAreaInterface
 	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
 		String htmlString = "";
-		String defaultValue = (String) this.value;
-
-		if (this.value == null)
-		{
-			defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
-		}
+		String defaultValue = getDefaultValueForControl(rowId);
 
 		String htmlComponentName = getHTMLComponentName();
 		if (getIsSkipLogicTargetControl())
@@ -175,7 +170,7 @@ public class TextArea extends Control implements TextAreaInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		return null;
 	}
@@ -188,5 +183,27 @@ public class TextArea extends Control implements TextAreaInterface
 		// TODO Auto-generated method stub
 		
 	}
-
+	/**
+	 * 
+	 * @return
+	 */
+	private String getDefaultValueForControl(Integer rowId)
+	{
+		String defaultValue = (String) this.value;
+		if (!getIsSkipLogicTargetControl())
+		{
+			if (this.value == null)
+			{
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
+			}
+		}
+		else
+		{
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = getSkipLogicDefaultValue(rowId);
+			}
+		}
+		return defaultValue;
+	}
 }

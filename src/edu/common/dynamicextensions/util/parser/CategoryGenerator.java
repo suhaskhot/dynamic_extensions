@@ -150,8 +150,6 @@ public class CategoryGenerator
 				List<String> categoryEntityName = null;
 				ControlInterface lastControl = null;
 				categoryEntityNameInstanceMap = new HashMap<String, String>();
-				boolean hasRelatedAttributes = false;
-				boolean hasSkipLogicAttributes = false;
 				String previousEntityName = "";
 				boolean firstTimeinDisplayLabel = false;
 				// HashMap<String, List> sequenceMap = new HashMap<String,
@@ -168,14 +166,9 @@ public class CategoryGenerator
 						break;
 					}
 
-					if (categoryFileParser.hasRelatedAttributes())
+					if (categoryFileParser.hasRelatedAttributes()
+							|| categoryFileParser.hasSkipLogicAttributes())
 					{
-						hasRelatedAttributes = true;
-						break;
-					}
-					if (categoryFileParser.hasSkipLogicAttributes())
-					{
-						hasSkipLogicAttributes = true;
 						break;
 					}
 					if (categoryFileParser.hasDisplayLable())
@@ -400,12 +393,21 @@ public class CategoryGenerator
 				categoryValidator.isRootEntityUsedTwice(category.getRootCategoryElement(), category
 						.getRootCategoryElement().getEntity());
 
-				if (hasRelatedAttributes)
+				if (categoryFileParser.hasRelatedAttributes())
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
 							containerCollection);
 				}
-				if (hasSkipLogicAttributes)
+				else if (!categoryFileParser.hasRelatedAttributes() && categoryFileParser.hasSkipLogicAttributes())
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber()
+							+ " "
+							+ ApplicationProperties.getValue("relatedAttributeNotDefined"));
+				}
+				if (categoryFileParser.hasSkipLogicAttributes())
 				{
 					handleSkipLogicAttributes(entityGroup, category, entityNameAssociationMap,
 							containerCollection);
@@ -590,7 +592,7 @@ public class CategoryGenerator
 			List<ContainerInterface> containerCollection) throws IOException, ParseException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		while (categoryFileParser.readNext())
+		while (categoryFileParser.readNext() && !categoryFileParser.hasSkipLogicAttributes())
 		{
 			String[] categoryPaths = categoryFileParser.getCategoryPaths();
 			String categoryEntityName = CategoryGenerationUtil
@@ -692,7 +694,7 @@ public class CategoryGenerator
 			List<ContainerInterface> containerCollection) throws IOException, ParseException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		while (categoryFileParser.readNext())
+		while (categoryFileParser.readNext() && !categoryFileParser.hasRelatedAttributes())
 		{
 			String[] categoryPaths = categoryFileParser.getCategoryPaths();
 			
@@ -810,7 +812,13 @@ public class CategoryGenerator
 			CategoryAttributeInterface targetCategoryAttribute = categoryHelper.getCategoryAttribute(
 					targetEntity, targetAttributeName, targetCategoryEntity);
 			
-		
+			ControlInterface targetControl = DynamicExtensionsUtility
+			.getControlForAbstractAttribute(
+					(AttributeMetadataInterface) targetCategoryAttribute,
+					DynamicExtensionsUtility
+							.getContainerForAbstractEntity(category
+									.getRootCategoryElement()));
+			targetControl.setIsSkipLogicTargetControl(Boolean.valueOf(true));
 			String permissibleValue = categoryFileParser.getSkipLogicPermissibleValueName();
 			
 			DataElementInterface dataElementInterface = ((AttributeMetadataInterface)sourceCategoryAttribute).getDataElement();
@@ -832,6 +840,31 @@ public class CategoryGenerator
 			SkipLogicAttributeInterface skipLogicAttributeInterface = DomainObjectFactory.getInstance().createSkipLogicAttribute();
 			skipLogicAttributeInterface.setSourceSkipLogicAttribute(sourceCategoryAttribute);
 			skipLogicAttributeInterface.setTargetSkipLogicAttribute(targetCategoryAttribute);
+			
+			String defaultValue = categoryFileParser.getDefaultValue();
+			if (defaultValue == null)
+			{
+				// Validation-If category attribute is of type Read-only its default
+				// value must be specified
+				if ((targetControl.getIsReadOnly() != null && targetControl.getIsReadOnly())
+						|| (targetControl.getIsCalculated() != null && targetControl.getIsCalculated()))
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ categoryFileParser.getLineNumber()
+							+ " "
+							+ ApplicationProperties.getValue("mandatoryDValueForRO") + targetAttributeName);
+				}
+				return;
+			}
+			skipLogicAttributeInterface
+					.setDefaultValue(((AttributeMetadataInterface) targetCategoryAttribute)
+							.getAttributeTypeInformation()
+							.getPermissibleValueForString(
+									DynamicExtensionsUtility
+											.getEscapedStringValue(defaultValue)));
+			
 			permissibleValueInterface.addDependentSkipLogicAttribute(skipLogicAttributeInterface);
 			Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser
 					.getPermissibleValues();

@@ -435,7 +435,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	 * 
 	 * @return
 	 */
-	public abstract List<String> getValueAsStrings();
+	public abstract List<String> getValueAsStrings(Integer rowId);
 	/**
 	 * 
 	 * @return
@@ -686,11 +686,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	/**
 	 * 
 	 */
-	public void setSkipLogicControls(Integer rowId)
-	{   
+	private void setSkipLogicControlValues(Integer rowId,List<String> values)
+	{ 
 		try 
 		{
-			List<String> values = getValueAsStrings();
+			if (values == null)
+			{
+				values = getValueAsStrings(rowId);
+			}
 			List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
 			if (values != null)
 			{
@@ -721,6 +724,25 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	/**
+	 * 
+	 */
+	public void setSkipLogicControls(Integer rowId)
+	{   
+		setSkipLogicControlValues(rowId,null);
+	}
+	/**
+	 * 
+	 */
+	public void setSkipLogicControls(Integer rowId,String[] valueArray)
+	{
+		List<String> values = new ArrayList <String>();
+		for (String controlValue : valueArray)
+		{
+			values.add(controlValue);
+		}
+		setSkipLogicControlValues(rowId,values);
 	}
 	/**
 	 * 
@@ -807,6 +829,57 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 	}
 	/**
 	 * 
+	 * @param rowId
+	 * @return
+	 */
+	protected String getSkipLogicDefaultValue(Integer rowId)
+	{
+		String defaultValue = "";
+		List<String> values = this.getSourceSkipControlValue(rowId);
+		List<PermissibleValueInterface> permissibleValueList = new ArrayList<PermissibleValueInterface>();
+		if (values != null)
+		{
+			for (String controlValue : values)
+			{
+				PermissibleValueInterface selectedPermissibleValue = null;
+				AttributeMetadataInterface sourceAttributeMetadataInterface = ControlsUtility
+						.getAttributeMetadataInterface(this.sourceSkipControl
+								.getBaseAbstractAttribute());
+					if (sourceAttributeMetadataInterface != null)
+					{
+						if (controlValue != null && controlValue.length() > 0)
+						{
+							try 
+							{
+								selectedPermissibleValue = sourceAttributeMetadataInterface
+									.getAttributeTypeInformation()
+									.getPermissibleValueForString(
+											controlValue.toString());
+							} 
+							catch (ParseException e) 
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						permissibleValueList.add(selectedPermissibleValue);
+					}
+			}
+			SkipLogicAttributeInterface skipLogicAttributeInterface = ControlsUtility.getSkipLogicAttributeForAttribute(
+					permissibleValueList,
+					(AttributeMetadataInterface) this.sourceSkipControl
+							.getBaseAbstractAttribute(),
+					(AttributeMetadataInterface) this
+							.getBaseAbstractAttribute());
+			if (!this.getIsSkipLogicReadOnly() && skipLogicAttributeInterface.getDefaultValue() != null)
+			{
+				defaultValue = skipLogicAttributeInterface.getDefaultValue();
+			}
+		}
+		return defaultValue;
+	}
+	/**
+	 * @hibernate.property name="isSkipLogicTargetControl" type="boolean" column="SKIP_LOGIC_TARGET_CONTROL"
 	 * @return
 	 */
 	public Boolean getIsSkipLogicTargetControl() 

@@ -116,7 +116,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	{
 		StringBuffer htmlString = new StringBuffer("");
 		List<NameValueBean> nameValueBeans = null;
-		List<String> values = getValueAsStrings();
+		List<String> values = getValueAsStrings(rowId);
 		String parentContainerId = "";
 		if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
 		{
@@ -400,7 +400,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		List<String> values = new ArrayList<String>();
 		AssociationInterface association = getBaseAbstractAttributeAssociation();
@@ -421,32 +421,42 @@ public class ListBox extends SelectControl implements ListBoxInterface
 				values = (List<String>) this.value;
 			}
 		}
-		if (values == null || values.isEmpty())
+		if (!getIsSkipLogicTargetControl())
 		{
-			String defaultValue = null;
-			values = new ArrayList<String>();
-
-			AttributeMetadataInterface attributeMetadata = this.getAttibuteMetadataInterface();
-			if (attributeMetadata != null)
+			if (values == null || values.isEmpty())
 			{
-				if (attributeMetadata instanceof CategoryAttributeInterface)
+				String defaultValue = null;
+				values = new ArrayList<String>();
+	
+				AttributeMetadataInterface attributeMetadata = this.getAttibuteMetadataInterface();
+				if (attributeMetadata != null)
 				{
-					AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadata)
-							.getAbstractAttribute();
-					if (abstractAttribute instanceof AttributeInterface)
+					if (attributeMetadata instanceof CategoryAttributeInterface)
+					{
+						AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadata)
+								.getAbstractAttribute();
+						if (abstractAttribute instanceof AttributeInterface)
+						{
+							defaultValue = attributeMetadata.getDefaultValue();
+						}
+					}
+					else
 					{
 						defaultValue = attributeMetadata.getDefaultValue();
 					}
+	
+					if (defaultValue != null && defaultValue.trim().length() != 0)
+					{
+						values.add(defaultValue);
+					}
 				}
-				else
-				{
-					defaultValue = attributeMetadata.getDefaultValue();
-				}
-
-				if (defaultValue != null && defaultValue.trim().length() != 0)
-				{
-					values.add(defaultValue);
-				}
+			}
+		}
+		else
+		{
+			if (values == null || values.isEmpty())
+			{
+				values.add(getSkipLogicDefaultValue(rowId));
 			}
 		}
 		return values;

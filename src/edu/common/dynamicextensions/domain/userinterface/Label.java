@@ -38,7 +38,7 @@ public class Label extends Control implements LabelInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() {
+	public List<String> getValueAsStrings(Integer rowId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

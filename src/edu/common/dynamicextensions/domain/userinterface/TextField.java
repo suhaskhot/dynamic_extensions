@@ -81,7 +81,7 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
-		String defaultValue = getDefaultValue();
+		String defaultValue = getDefaultValueForControl(rowId);
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
@@ -203,7 +203,7 @@ public class TextField extends Control implements TextFieldInterface
 	 */
 	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
 	{
-		String defaultValue = getDefaultValue();
+		String defaultValue = getDefaultValueForControl(rowId);
 		String htmlString = "&nbsp;";
 		if (defaultValue != null)
 		{
@@ -222,34 +222,42 @@ public class TextField extends Control implements TextFieldInterface
 		return htmlString;
 	}
 
-	private String getDefaultValue()
+	private String getDefaultValueForControl(Integer rowId)
 	{
-		String defaultValue = "";
-		if (!this.isSkipLogicReadOnly)
+		String defaultValue = (String) this.value;
+		if (!getIsSkipLogicTargetControl())
 		{
-			if (this.value == null)
+			if (this.value == null) 
 			{
 				defaultValue = "";
-			}
-			else
+			} 
+			else 
 			{
-				defaultValue = String.valueOf(this.value);
+				defaultValue = (String) this.value;
 			}
-	
-			if (isUrl != null && (isUrl.booleanValue()))
+			if (isUrl != null && (isUrl.booleanValue())) 
 			{
-				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
-			}
-			else
+				defaultValue = this.getAttibuteMetadataInterface()
+						.getDefaultValue();
+			} 
+			else 
 			{
-				if (this.value == null)
+				if (this.value == null) 
 				{
-					defaultValue = this.getAttibuteMetadataInterface().getDefaultValue();
-					if (defaultValue == null || (defaultValue.length() == 0))
+					defaultValue = this.getAttibuteMetadataInterface()
+							.getDefaultValue();
+					if (defaultValue == null || (defaultValue.length() == 0)) 
 					{
 						defaultValue = "";
 					}
 				}
+			}
+		}
+		else
+		{
+			if (defaultValue == null || defaultValue.length() == 0)
+			{
+				defaultValue = getSkipLogicDefaultValue(rowId);
 			}
 		}
 		return defaultValue;
@@ -258,7 +266,7 @@ public class TextField extends Control implements TextFieldInterface
 	/**
 	 * 
 	 */
-	public List<String> getValueAsStrings() 
+	public List<String> getValueAsStrings(Integer rowId) 
 	{
 		return null;
 	}

@@ -434,6 +434,55 @@ public class ControlsUtility
 	 * @param selectedPermissibleValues
 	 * @return
 	 */
+	public static SkipLogicAttributeInterface getSkipLogicAttributeForAttribute(
+			List<PermissibleValueInterface> selectedPermissibleValues,
+			AttributeMetadataInterface sourceAttributeMetadataInterface,
+			AttributeMetadataInterface targetAttributeMetadataInterface) 
+	{
+		SkipLogicAttributeInterface skipLogicAttributeInterface = null;
+		for (PermissibleValueInterface selectedPermissibleValue : selectedPermissibleValues) 
+		{
+			Collection<PermissibleValueInterface> skipLogicPermissibleValues = sourceAttributeMetadataInterface
+					.getSkipLogicPermissibleValues();
+			if (skipLogicPermissibleValues != null) 
+			{
+				for (PermissibleValueInterface skipLogicValue : skipLogicPermissibleValues) 
+				{
+					for (SkipLogicAttributeInterface skipLogicAttribute : skipLogicValue
+							.getDependentSkipLogicAttributes()) 
+					{
+						if (skipLogicValue.equals(selectedPermissibleValue)
+								&& skipLogicAttribute
+										.getSourceSkipLogicAttribute()
+										.equals(
+												sourceAttributeMetadataInterface)
+								&& skipLogicAttribute
+										.getTargetSkipLogicAttribute()
+										.equals(
+												targetAttributeMetadataInterface)) 
+						{
+							skipLogicAttributeInterface = skipLogicAttribute;
+							break;
+						}
+					}
+					if (skipLogicAttributeInterface != null)
+					{
+						break;
+					}
+				}
+			}
+			if (skipLogicAttributeInterface != null)
+			{
+				break;
+			}
+		}
+		return skipLogicAttributeInterface;
+	}
+	/**
+	 * 
+	 * @param selectedPermissibleValues
+	 * @return
+	 */
 	public static List<SkipLogicAttributeInterface> getReadOnlySkipLogicAttributes(
 			List<PermissibleValueInterface> selectedPermissibleValues,
 			AttributeMetadataInterface attributeMetadataInterface) 

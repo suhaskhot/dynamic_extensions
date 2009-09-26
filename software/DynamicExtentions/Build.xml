@@ -4,37 +4,41 @@
 <project name="DynamicExtensions" default="compile">
 
 	<!--define require dir and Properties -->
-	<property file="DynamicExtensions.properties"/>
-	<property file="db.properties"/>
+	<property file="src/conf/DynamicExtensions.properties"/>
+	<property file="src/conf/db.properties"/>
 
 
 	<property name="base.dir" value="."/>
-    <property name="src.dir" value="src"/>
+    <property name="src.dir" value="src/java"/>
 	<property name="test.dir" value="test"/>
-    <property name="target.dir" value="WEB-INF/classes"/>
-    <property name="lib.dir" value="${base.dir}/WEB-INF/lib"/>
+    <property name="target.dir" value="binaries/classes"/>
+    <property name="lib.dir" value="${base.dir}/lib/server"/>
     <property name="build.dir" value="${base.dir}/build"/>
-    <property name="applet.dir" value="${base.dir}/Applet"/>
-	<property name="interface.dir" value="${base.dir}/DynamicExtensionsInterface"/>
-	<property name="interface.src.dir" value="${base.dir}/DynamicExtensionsInterfaceSource"/>
-	<property name="javadoc.dir" value="${base.dir}/JavaDoc"/>
+    <property name="applet.dir" value="${base.dir}/src/web/Applet"/>
+	<property name="interface.dir" value="${base.dir}/binaries/DynamicExtensionsInterface"/>
+	<property name="interface.src.dir" value="${base.dir}/binaries/DynamicExtensionsInterfaceSource"/>
+	<property name="javadoc.dir" value="../../tools/JavaDoc"/>
 	<property name="javadoc.zip" value="DynamicExtensionsJavaDoc.zip"/>
 
 
 	<property name="hbm.dir" value="${src.dir}/edu/common/dynamicextensions/hbm"/>
-	<property name="extra_lib.dir" value="${base.dir}/extra_lib"/>
+	<property name="extra_lib.dir" value="${base.dir}/lib/extra"/>
 	<property name="generateforce" value="true"/>
 
-	<property name="mysql.dir" value="${base.dir}/SQL/MySql"/>
-	<property name="oracle.dir" value="${base.dir}/SQL/Oracle"/>
-	<property name="common.dir" value="${base.dir}/SQL/Common"/>
-	<property name="meta.dir" value="${base.dir}/META-INF"/>
+	<property name="mysql.dir" value="${base.dir}/db/db-install/MySql"/>
+	<property name="mysql.dir" value="${base.dir}/db/db-upgrade/MySql"/>
+	<property name="oracle.dir" value="${base.dir}/db/db-install/Oracle"/>
+	<property name="oracle.dir" value="${base.dir}/db/db-upgrade/Oracle"/>
+	<property name="db2.dir" value="${base.dir}/db/db-install/db2"/>
+	<property name="db2.dir" value="${base.dir}/db/db-upgrade/db2"/>
+	<property name="meta.dir" value="${base.dir}/binaries/META-INF"/>
 
 	<property name="temp.hdoclet.dir" value="${basedir}/temp"/>
 
-	<property name="junit.report.dir" value="${base.dir}/junit"/>
-	<property name="de_release_dir" value="${basedir}/de_release"/>
-	<property name="is_generate_schema" value="true"/>
+	<property name="junit.report.dir" value="${base.dir}/reports/junit"/>
+	<property name="de_release_dir" value="${basedir}/binaries/de_release"/>
+	<property name="is_generate_schema" value="false"/>
+	<property name="temp.dir" value="../dynamicExtentions/tmp"/>
 	<tstamp>
 	    <format property="TODAY_IND" pattern="d-MMMM-yyyy" locale="en,IND"/>
 	</tstamp>
@@ -45,7 +49,7 @@
 		</filterchain>  
 	</loadfile>
 	<path id="app.classpath">
-		<pathelement location="${base.dir}/lib/postgresql-8.1-405.jdbc3.jar"/>
+		<pathelement location="${base.dir}/lib/server/postgresql-8.1-405.jdbc3.jar"/>
 		<fileset dir="${lib.dir}">
 			<include name="*.jar"/>
 		</fileset>
@@ -107,6 +111,7 @@
         </javac>
        	<copy file="${target.dir}/TestHibernate.cfg.xml" tofile="${target.dir}/DynamicExtensionsHibernate.cfg.xml" overwrite="true"/>
     </target>
+
 
 	<!-- Create the Applet JAR Begins-->
     <target name="applet_jar" depends="compile" >
@@ -280,18 +285,18 @@
 
 	<!-- Creates the Dynamic Extensions zip of the application -->
 	<target name="create_dynamic_extensions_zip" depends="create_dyn_ext_web_jar,version_info" >
-		<delete  file="dynamicextensions.zip"/>
-		<zip destfile="dynamicextensions.zip" >
+		<delete  file="binaries/dynamicextensions.zip"/>
+		<zip destfile="binaries/dynamicextensions.zip" >
 			<fileset dir="${base.dir}">
-				<include name="de/css/**/*"/>
-				<include name="de/images/**/*"/>
-				<include name="de/jss/**/*"/>
-				<include name="de/pages/**/*"/>
-				<include name="de/dhtml_comp/**/*"/>
+				<include name="src/web/stylesheets/**/*"/>
+				<include name="src/web/images/**/*"/>
+				<include name="src/web/javascripts/**/*"/>
+				<include name="src/web/pages/**/*"/>
+				<include name="src/web/dhtml/**/*"/>
 				<include name="runtime/**/*"/>
-				<include name="WEB-INF/dynamicextensions-struts-config.xml"/>
-				<include name="WEB-INF/dynamicExtensions.tld"/>
-				<include name="DynamicExtensionsInterface/DynamicExtensions.jar" />
+				<include name="src/conf/dynamicextensions-struts-config.xml"/>
+				<include name="src/web/taglibs/dynamicExtensions.tld"/>
+				<include name="binaries/DynamicExtensionsInterface/DynamicExtensions.jar" />
 				<include name="META-INF/MANIFEST.MF" />
 			</fileset>
 	   </zip>
@@ -299,23 +304,27 @@
 	<!-- Creates the Dynamic Extensions zip of the application -->
 
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
-	<target name="build_app_war" depends="compile">
+	<target name="build__war" depends="compile">
 		<delete file="dynamicExtensions.war"/>
-		<war destfile="dynamicExtensions.war" webxml="WEB-INF/web.xml">
+		<war destfile="dynamicExtensions.war" webxml="src/conf/web.xml">
 			<fileset dir="${base.dir}">
-				<include name="de/css/**/*"/>
-				<include name="de/images/**/*"/>
-				<include name="de/jss/**/*"/>
-				<include name="de/pages/**/*"/>
-				<include name="de/dhtml_comp/**/*"/>
-				<include name="runtime/**/*"/>
-				<include name="WEB-INF/**/*"/>
-				<include name="error.jsp"/>
+<include name="src/web/stylesheets/**/*"/>
+				<include name="src/web/images/**/*"/>
+				<include name="src/web/javascripts/**/*"/>
+				<include name="src/web/pages/**/*"/>
+				<include name="src/web/dhtml/**/*"/>
+				<include name="src/web/runtime/**/*"/>
+				<include name="src/web/taglibs/**/*"/>
+				<include name="lib/server/**/*"/>
 				<exclude name="**/dom4j.jar"/>
 				<exclude name="**/jboss-common-jdbc-wrapper.jar"/>
 				<exclude name="**/jboss.jar"/>
 				<include name="**/log4j.jar"/>
-				<include name="ApplicationVersionInfo.txt"/>
+				<include name="binaries/classes/**/*"/>
+				<include name="src/conf/error.jsp"/>
+				<include name="src/conf/web.xml"/>
+				<include name="src/conf/dynamicextensions-struts-config.xml"/>
+				<include name="src/resources/ApplicationVersionInfo.txt"/>
 			</fileset>
 			<manifest>
 				<section name="${DynamicExtensions.jar.details}">
@@ -326,8 +335,88 @@
 	    	    </section>
 	   		</manifest>
  		</war>
+		<copy file="dynamicExtensions.war" todir="${dist.dir}/build" overwrite="true"/>
 	</target>
-
+	<!-- Creates the WAR (Web Application Archive) file of the application -->
+		<target name="build_app_war" depends="compile,init_build_war">
+			<delete file="../DynamicExtentions/build/dynamicExtensions.war"/>
+			<war destfile="dynamicExtensions.war" webxml="src/conf/web.xml">
+				<fileset dir="${temp.dir}">
+					<include name="**/*"/>
+				</fileset>
+				<manifest>
+					<section name="${DynamicExtensions.jar.details}">
+		    	        <attribute name="Version" value="${DynamicExtensions.jar.version}"/>
+						<attribute name="Built-By" value="${DynamicExtensions.jar.creator}" />
+						<attribute name="Build-on" value="${TODAY_IND}" />
+						<attribute name="SVN-URL" value="${dist.revision}" />
+		    	    </section>
+		   		</manifest>
+	 		</war>
+			<copy file="dynamicExtensions.war" todir="${dist.dir}" overwrite="true"/>
+			<copy file="dynamicExtensions.war" todir="build" overwrite="true"/>
+			<delete file="dynamicExtensions.war" />
+			<delete dir="${temp.dir}" />
+		</target>
+	
+	<target name="init_build_war">
+		<delete dir="${temp.dir}" />
+		<mkdir dir="${temp.dir}" />
+		<mkdir dir="${temp.dir}/WEB-INF/classes" />
+		<mkdir dir="${temp.dir}/de" />
+		<mkdir dir="${temp.dir}/WEB-INF/lib" />
+		<mkdir dir="${temp.dir}/de/css" />
+		<mkdir dir="${temp.dir}/de/jss" />
+		<mkdir dir="${temp.dir}/de/dhtml_comp" />
+		<copy todir="${temp.dir}/WEB-INF/classes">
+			<fileset dir="binaries/classes" >
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/WEB-INF/lib">
+			<fileset dir="lib/server" >
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/WEB-INF">
+			<fileset dir="src/web/taglibs" >
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/">
+			<fileset dir="src/web" >
+				<include name="runtime/**/*"/>
+				<exclude name="taglibs/**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/de">
+			<fileset dir="src/web" >
+				<include name="images/**/*"/>
+				<include name="pages/**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/de/css">
+			<fileset dir="src/web/stylesheets" >
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/de/jss">
+			<fileset dir="src/web/javascripts" >
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${temp.dir}/de/dhtml_comp">
+					<fileset dir="src/web/dhtml" >
+						<include name="**/*"/>
+					</fileset>
+				</copy>
+		<copy todir="${temp.dir}/WEB-INF" file="src/conf/dynamicextensions-struts-config.xml">
+		</copy>
+		<copy todir="${temp.dir}" file="src/conf/error.jsp">
+		</copy>
+		<copy todir="${temp.dir}" file="src/resources/ApplicationVersionInfo.txt">
+		</copy>
+	</target>
 	<!--Deploys the application war file at JBOSS server by coping it to deploy directory of application server-->
 	<target name="deploy" depends="build_app_war">
 		<delete file="${jboss.home.dir}/server/default/deploy/dynamicExtensions.war"/>
@@ -335,7 +424,9 @@
 		<sleep seconds="2"/>
 	</target>
 
-	<target name="build_jar" depends="compile" >
+
+
+<target name="build_jar" depends="compile" >
 	        <delete>
 	            <fileset dir="${build.dir}" includes="**/*"/>
 	        </delete>
@@ -344,12 +435,14 @@
 	            <fileset dir="${target.dir}" includes="**/*"/>
 	        </jar>
 	    </target>
+	
 
 	<!-- Generates schema for DE release.The longblob changes are done for MYSQL using Alter table SQL -->
-	<target name="generate_schema" depends="generate_hbm,build_jar">
+	<target name="generate_schema" depends="generate_hbm,build_jar,build_app_war">
 	    <echo message="${is_generate_schema}"></echo>	
 		<java classname="edu.common.dynamicextensions.util.GenerateSchema">
 	    		<arg value="${is_generate_schema}"/>
+				<arg value="D:/BDA/DynamicExtentions/software/DynamicExtentions/src/conf/db.properties"/>
 	            <classpath>
 		            <pathelement location="${build.dir}/cawebeav.jar"/>
 	            	<fileset dir="${lib.dir}">
@@ -371,7 +464,7 @@
 									<include name="*.jar"/>
 								</fileset>
 						</classpath>
-						<transaction  src="${base.dir}/SQL/DynamicExtensions_MYSQL.SQL"/>
+						<transaction  src="${base.dir}/db/db-install/MySql/dynamicextension.sql"/>
 					</sql>
 				</then>
 			</if>
@@ -393,7 +486,7 @@
 				 <then>
 				 	<replaceregexp byline="true" flags="g">
 				 		<fileset dir="${base.dir}">
-				 			<include name="dynamicextension.sql"/>
+				 			<include name="${base.dir}/db/db-install/MySql/dynamicextension.sql"/>
 				 		</fileset>
 				 		<regexp pattern="blob"/>
 				 		<substitution expression="longblob"/>
@@ -501,11 +594,15 @@
 			</javadoc>
 			<jar basedir="${javadoc.dir}" destfile="${javadoc.dir}/${javadoc.zip}" />
 	</target>
-
+      <target name="dist" depends="generate_schema" description="Creates the distribution unit">
+		
+	</target>
+	
+	
 	<target name="create_installable_zip" depends="build_app_war">
-		<property name="zip.dir" value="${base.dir}/caTISSUE_Core_Installable"/>
+		<property name="zip.dir" value="${base.dir}/binaries/caTISSUE_Core_Installable"/>
 		<delete file="${base.dir}/caTissue_Core_Installable.zip"/>
-		<delete dir="${base.dir}/caTissue_Core_Installable"/>
+		<delete dir="${base.dir}/binaries/caTissue_Core_Installable"/>
 		<mkdir dir="${zip.dir}"/>
 		<copy file="caelmir.war" todir="${zip.dir}" overwrite="true"/>
 		<!--<copy file="catissuecorecsm.war" todir="${zip.dir}" overwrite="true"/>-->
@@ -518,9 +615,9 @@
 		</copy>
 
 		<copy todir="${zip.dir}/lib" overwrite="true">
-			<fileset file="${base.dir}/extra_lib/ant-contrib.jar"/>
-			<fileset file="${base.dir}/WEB-INF/lib/mysql-connector-java-3.0.16-ga-bin.jar"/>
-			<fileset file="${base.dir}/WEB-INF/lib/oracleDriver.jar"/>
+			<fileset file="${base.dir}/lib/extra/ant-contrib.jar"/>
+			<fileset file="${base.dir}/lib/server/mysql-connector-java-3.0.16-ga-bin.jar"/>
+			<fileset file="${base.dir}/lib/server/oracleDriver.jar"/>
 		</copy>
 
 		<copy todir="${zip.dir}/configuration" overwrite="true">
@@ -531,9 +628,9 @@
 		</copy>
 
 		<copy todir="${zip.dir}/SQL" overwrite="true">
-			<fileset dir="${base.dir}/SQL"/>
+			<fileset dir="${base.dir}/db"/>
 		</copy>
-		<delete dir="${zip.dir}/SQL/DBUpgrade"/>
+		<delete dir="${zip.dir}/db/db-upgrade"/>
 
 		<copy file="MySql_DB_Creation.sql" todir="${zip.dir}" overwrite="true"/>
 		<copy file="Oracle_DB_Creation.sql" todir="${zip.dir}" overwrite="true"/>
@@ -542,21 +639,23 @@
 		<copy file="Sample-properties-service.xml" todir="${zip.dir}" overwrite="true"/>
 
 		<copy todir="${zip.dir}/images" overwrite="true">
-			<fileset file="${base.dir}/images/InstitutionLogo.gif"/>
+			<fileset file="${base.dir}/src/web/images/InstitutionLogo.gif"/>
 		</copy>
 
 	<!--	<copy todir="${zip.dir}/caTISSUECore caCORE Client" overwrite="true">
-			<fileset dir="${base.dir}/caTISSUECore caCORE Client"/>
+			<fileset dir="${base.dir}/binaries/caTISSUECore caCORE Client"/>
 		</copy>-->
 
-		<zip destfile="${base.dir}/caTissue_Core_Installable.zip" basedir="${zip.dir}"></zip>
+		<zip destfile="${base.dir}/binaries/caTissue_Core_Installable.zip" basedir="${zip.dir}"></zip>
 		<delete dir="${zip.dir}"/>
 	</target>
+	
+	
 
 	<!-- Create dynamic extensions jar Begins-->
 	<target name="create_dyn_ext_communication_jar" depends="compile" >
-		<delete file="DynamicExtensionsCommunication.jar"/>
-	    	<jar taskname="buildJar" jarfile="DynamicExtensionsCommunication.jar">
+		<delete file="binaries/DynamicExtensionsCommunication.jar"/>
+	    	<jar taskname="buildJar" jarfile="binaries/DynamicExtensionsCommunication.jar">
 		    	<fileset dir="${target.dir}" >
 		    		<include name="**/WebUIManager.class"/>
 			    	<include name="**/WebUIManagerConstants.class"/>
@@ -603,10 +702,10 @@
 	 	<mkdir dir="${junit.report.dir}"/>
 
       	<junit printsummary="yes" haltonerror="no" haltonfailure="no"
-      		fork="no" maxmemory="1024m">
+      		fork="yes" maxmemory="512m">
 
       		<sysproperty key="net.sourceforge.cobertura.datafile"
-      				file="./cobertura/coverage.ser" />
+      				file="../tools/cobertura/cobertura/coverage.ser" />
 
 
       		<!--formatter type="plain" usefile="false"/-->
@@ -619,7 +718,7 @@
 
 			<classpath>
 			<!--	<pathelement location="${junit.classes.dir}"/> -->
-				<pathelement location="./cobertura/instrumented/"/>
+				<pathelement location="../tools/cobertura/cobertura/instrumented/"/>
 				<pathelement location="${target.dir}"/>
 				 <fileset dir="${lib.dir}">
 	                  <include name="*.jar"/>
@@ -645,10 +744,10 @@
 
 	  <!-- Cobertura -->
 	  <path id="cobertura.classpath">
-	    <fileset dir="./cobertura">
+	    <fileset dir="../../tools/cobertura">
 	      <include name="cobertura.jar"/>
 	    </fileset>
-	    <fileset dir="./cobertura/lib">
+	    <fileset dir="../../tools/cobertura/lib">
 	      <include name="**/*.jar"/>
 	    </fileset>
 	  </path>
@@ -658,10 +757,10 @@
 
 	<target name="generate_codecoverage_report" >
 		<ant target="compile_test_cases"/>
-		<ant antfile="cobertura.xml" target="instrument"/>
+		<ant antfile="src/conf/cobertura.xml" target="instrument"/>
 		<ant target="run_junit"/>
-		<ant antfile="cobertura.xml" target="coverage.report"/>
-		<ant antfile="cobertura.xml" target="coverage.check"/>
+		<ant antfile="src/conf/cobertura.xml" target="coverage.report"/>
+		<ant antfile="src/conf/cobertura.xml" target="coverage.check"/>
 	</target>
 
 	<property name="filename" value="" />
@@ -707,6 +806,7 @@
 		</manifest>
 	</target>
 	<!-- DE version information ends -->
+	
 	<!-- run build_plus_start starts -->
 	<target name="run_build_plus">
 		<input message="Have you updated thresholds in tools.properties in build_plus (y/n):  " addproperty="y" defaultvalue="n" validargs="y,n"/>   
@@ -727,7 +827,7 @@
 				</if>
 			</else>
 		</if>
-		<copy file="${base.dir}/conf/tools.properties" todir="${build_plus.dir.path}/javabe/usersettings/" overwrite="true">
+		<copy file="${base.dir}/src/conf/tools.properties" todir="${build_plus.dir.path}/javabe/usersettings/" overwrite="true">
 		</copy>
 		<exec dir="${build_plus.dir.path}/javabe/batch/" executable="cmd">
 		  <arg line="/c build.bat"/>

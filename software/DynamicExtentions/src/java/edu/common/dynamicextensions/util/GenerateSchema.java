@@ -44,7 +44,7 @@ public class GenerateSchema
 			}
 		}
 		
-		File file = new File("db.properties");
+		File file = new File("../DynamicExtentions/src/conf/db.properties");
 		BufferedInputStream stram = new BufferedInputStream(new FileInputStream(file));  
 		Properties properties = new Properties();
 		properties.load(stram);
@@ -54,7 +54,7 @@ public class GenerateSchema
 			
 		Configuration cfg = new Configuration();
 		cfg.setProperties(properties);
-		cfg.addDirectory(new File("./src"));
+		cfg.addDirectory(new File("../DynamicExtentions/src"));
 		new SchemaExport(cfg).setOutputFile("query.sql").setDelimiter(";").create(isToPrintOnConsole, isToExecuteOnDB);
 //		if(isToExecuteOnDB)
 //			new GenerateUser();

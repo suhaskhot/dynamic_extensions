@@ -25,17 +25,32 @@ public interface AbstractContainmentControlInterface extends ControlInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException;
+	String generateEditModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException;
+	String generateViewModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @see edu.common.dynamicextensions.domaininterface.userinterface.ContainmentAssociationControlInterface#generateLinkHTML()
 	 */
 	String generateLinkHTML() throws DynamicExtensionsSystemException;
 
+	/**
+	 * Checks if is paste button is enabled or not.
+	 *
+	 * @return true, if is paste enable
+	 */
+	boolean getIsPasteEnable();
+
+	/**
+	 * Sets the value for paste button to be enabled or not.
+	 *
+	 * @param isPasteEnable the new paste enable
+	 */
+	void setIsPasteEnable(boolean isPasteEnable);
 }

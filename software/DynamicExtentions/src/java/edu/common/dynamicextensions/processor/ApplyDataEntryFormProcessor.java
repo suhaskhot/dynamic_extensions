@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.processor;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,10 @@ import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.entitymanager.FileQueryBean;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.wustl.common.beans.SessionDataBean;
 
 /**
  * This Class populates the DataEntryForm and saves the same into the Database.
@@ -43,7 +46,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeValueMap
 	 * @return
 	 */
@@ -74,14 +77,31 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 
 	/**
 	 * This method will pass the values entered into the controls to EntityManager to insert them in Database.
-	 * @param containerInterface The container of who's value of Control are to be populated. 
+	 * @param containerInterface The container of who's value of Control are to be populated.
 	 * @param attributeValueMap The Map of Attribute and their corresponding values from controls.
 	 * @throws DynamicExtensionsApplicationException on Application exception
 	 * @throws DynamicExtensionsSystemException on System exception
-	 * @return recordIdentifier Record identifier of the last saved record. 
+	 * @return recordIdentifier Record identifier of the last saved record.
+	 * @deprecated Use {@link #insertDataEntryForm(ContainerInterface,Map<BaseAbstractAttributeInterface, Object>,SessionDataBean)} instead
 	 */
 	public String insertDataEntryForm(ContainerInterface container,
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		return insertDataEntryForm(container, attributeValueMap, null);
+	}
+
+	/**
+	 * This method will pass the values entered into the controls to EntityManager to insert them in Database.
+	 * @param attributeValueMap The Map of Attribute and their corresponding values from controls.
+	 * @param sessionDataBean
+	 * @param containerInterface The container of who's value of Control are to be populated.
+	 * @throws DynamicExtensionsApplicationException on Application exception
+	 * @throws DynamicExtensionsSystemException on System exception
+	 * @return recordIdentifier Record identifier of the last saved record.
+	 */
+	public String insertDataEntryForm(ContainerInterface container,
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, SessionDataBean sessionDataBean)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
 		Long recordIdentifier = null;
@@ -92,7 +112,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 					.getAbstractEntity()).getCategory();
 			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 			Long categoryRecordId = categoryManager.insertData(categoryInterface,
-					attributeValueMap, userId);
+					attributeValueMap, sessionDataBean, userId);
 			recordIdentifier = categoryManager.getEntityRecordIdByRootCategoryEntityRecordId(
 					categoryRecordId, categoryInterface.getRootCategoryElement()
 							.getTableProperties().getName());
@@ -102,7 +122,7 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Map map = attributeValueMap;
 			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container
-					.getAbstractEntity(), map, userId);
+					.getAbstractEntity(), map, null, new ArrayList<FileQueryBean>(), sessionDataBean, userId);
 		}
 
 		return recordIdentifier.toString();
@@ -116,13 +136,35 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 	 * @return
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
-	 * @throws SQLException 
+	 * @throws SQLException
+	 * @deprecated Use {@link #editDataEntryForm(ContainerInterface,Map<BaseAbstractAttributeInterface, Object>,Long,SessionDataBean)} instead
 	 */
 	public Boolean editDataEntryForm(ContainerInterface container,
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
 			SQLException
 	{
+		return editDataEntryForm(container, attributeValueMap, recordIdentifier, null);
+	}
+
+	/**
+	 * This method will pass the changed (modified) values entered into the controls to EntityManager to update them in Database.
+	 *
+	 * @param container the container
+	 * @param attributeValueMap the attribute value map
+	 * @param recordIdentifier the record identifier
+	 * @param sessionDataBean the session data bean
+	 * @return true, if edits the data entry form
+	 * @throws DynamicExtensionsApplicationException the dynamic extensions application exception
+	 * @throws DynamicExtensionsSystemException the dynamic extensions system exception
+	 * @throws SQLException the SQL exception
+	 */
+	public Boolean editDataEntryForm(ContainerInterface container,
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap, Long recordIdentifier,
+			SessionDataBean sessionDataBean) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException, SQLException
+	{
+		boolean isEdited;
 		//Quick fix:
 		if (container.getAbstractEntity() instanceof EntityInterface)
 		{
@@ -130,7 +172,8 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			EntityInterface entity = (Entity) container.getAbstractEntity();
 			//Correct this:
 			Map map = attributeValueMap;
-			return entityManager.editData(entity, map, recordIdentifier, userId);
+			isEdited = entityManager.editData(entity, map, recordIdentifier, null,
+					new ArrayList<FileQueryBean>(), sessionDataBean, userId);
 		}
 		else
 		{
@@ -140,11 +183,11 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			Long categoryRecordId = categoryManager.getRootCategoryEntityRecordIdByEntityRecordId(
 					recordIdentifier, categoryInterface.getRootCategoryElement()
 							.getTableProperties().getName());
-			return CategoryManager.getInstance().editData(
+			isEdited = CategoryManager.getInstance().editData(
 					(CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap,
-					categoryRecordId, userId);
+					categoryRecordId, sessionDataBean, userId);
 		}
-
+		return isEdited;
 	}
 
 	public Long getUserId()

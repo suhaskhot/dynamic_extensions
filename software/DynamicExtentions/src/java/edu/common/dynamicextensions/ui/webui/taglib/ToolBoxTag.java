@@ -27,7 +27,7 @@ public class ToolBoxTag extends TagSupport
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -404,10 +404,14 @@ public class ToolBoxTag extends TagSupport
 			return EVAL_PAGE;
 		}
 		Logger.out.debug(" Entering Selectors List Tag : doEndTag method");
-		StringBuffer htmlString = new StringBuffer();
-		htmlString.append("\n<div id=\"" + identifier + "\"  class=\"formField\"  style=\"height: ");
+		StringBuffer htmlString = new StringBuffer(300);
+		htmlString
+				.append("\n<div id=\"" + identifier + "\"  class=\"formField\"  style=\"height: ");
 		htmlString.append(height);
-		htmlString.append("; width:" + width + ";  overflow-y: auto; \">\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
+		htmlString
+				.append("; width:"
+						+ width
+						+ ";  overflow-y: auto; \">\n<table class=\"toolBoxTable\" cellspacing=\"7\" cellpadding=\"2\" border=\"0\">");
 		Iterator toolsListIterator = toolsList.iterator();
 		String toolName = null, toolCaption = null;
 		NameValueBean tool = null;
@@ -431,16 +435,18 @@ public class ToolBoxTag extends TagSupport
 					if (selectedUserOption != null && toolName.equals(selectedUserOption))
 					{
 						classname = "toolLabelTextSelected";
-						htmlString.append("\n<label class='" + classname + "' value=\"" + toolCaption
-								+ "\" id='" + toolName + "' border=\"1\" />");
+						htmlString.append("\n<label class='" + classname + "' value=\""
+								+ toolCaption + "\" id='" + toolName + "' border=\"1\" />");
 					}
 					else
 					{
 						classname = "toolLabelText";
-						htmlString.append("\n<label class='" + classname + "' value=\"" + toolCaption
-								+ "\" id='" + toolName
-								+ "' border=\"1\" onclick=\"tagHandlerFunction('" + toolName
-								+ "');" + onClick + "('" + toolName + "','" + identifier + "')\"/>");
+						htmlString
+								.append("\n<label class='" + classname + "' value=\"" + toolCaption
+										+ "\" id='" + toolName
+										+ "' border=\"1\" onclick=\"tagHandlerFunction('"
+										+ toolName + "');" + onClick + "('" + toolName + "','"
+										+ identifier + "')\"/>");
 					}
 					if (imagePath != null)
 					{
@@ -455,7 +461,8 @@ public class ToolBoxTag extends TagSupport
 				}
 			}
 		}
-		htmlString.append("</tr>\n</table> \n</div> <input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"");
+		htmlString
+				.append("</tr>\n</table> \n</div> <input type=\"hidden\" name=\"userSelectedTool\" id=\"userSelectedTool\" value=\"");
 		htmlString.append(selectedUserOption);
 		htmlString.append("\"/>");
 		try
@@ -480,7 +487,7 @@ public class ToolBoxTag extends TagSupport
 	}
 
 	/**
-	 * 
+	 *
 	 * @param resourceBundle : Resource bundle name
 	 * @param captionKey : key for the caption in the resource bundle
 	 * @return Value for caption key in the resource bundle
@@ -504,13 +511,13 @@ public class ToolBoxTag extends TagSupport
 	public void release()
 	{
 		super.release();
-		this.toolsList = null;
-		this.identifier = null;
-		this.onClick = null;
+		toolsList = null;
+		identifier = null;
+		onClick = null;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param identifier Object
 	 * @return boolean
 	 */

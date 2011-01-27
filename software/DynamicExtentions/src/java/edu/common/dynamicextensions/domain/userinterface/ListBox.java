@@ -3,19 +3,22 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
+import edu.common.dynamicextensions.category.beans.UIProperty;
+import edu.common.dynamicextensions.category.enums.ListBoxEnum;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -38,7 +41,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	private Boolean isMultiSelect = null;
 
 	/**
-	 * 
+	 *
 	 */
 	private Boolean IsUsingAutoCompleteDropdown = null;
 
@@ -50,7 +53,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	/**
 	 * The list of values to be displayed in the ListBox
 	 */
-	private List listOfValues = null;
+	private static final List listOfValues = null;
 
 	/**
 	 * This method returns the Number of rows to be displayed on the UI for ListBox.
@@ -59,7 +62,7 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 */
 	public Integer getNoOfRows()
 	{
-		return this.noOfRows;
+		return noOfRows;
 	}
 
 	/**
@@ -112,22 +115,44 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	 * @return HTML code for ListBox Control.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	@Override
+	public String generateEditModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException
 	{
-		StringBuffer htmlString = new StringBuffer("");
+		StringBuffer htmlString = new StringBuffer(193);
 		List<NameValueBean> nameValueBeans = null;
-		List<String> values = getValueAsStrings(rowId);
+		List<String> values = getValueAsStrings();
 		String parentContainerId = "";
-		if (this.getParentContainer() != null && this.getParentContainer().getId() != null)
+		if (getParentContainer() != null && getParentContainer().getId() != null)
 		{
-			parentContainerId = this.getParentContainer().getId().toString();
+			parentContainerId = getParentContainer().getId().toString();
 		}
 		String identifier = "";
-		if (this.getId() != null)
+		if (getId() != null)
 		{
-			identifier = this.getId().toString();
+			identifier = getId().toString();
 		}
-		String htmlComponentName = getHTMLComponentName();
+
+		//String htmlComponentName = getHTMLComponentName();
+		StringBuffer sourceHtmlComponentValues = null;
+		if (getSourceSkipControl() == null)
+		{
+			sourceHtmlComponentValues = new StringBuffer("~");
+		}
+		else
+		{
+			sourceHtmlComponentValues = new StringBuffer();
+			List<String> sourceControlValues = getSourceSkipControl().getValueAsStrings();
+			if (sourceControlValues != null)
+			{
+				for (String value : sourceControlValues)
+				{
+					sourceHtmlComponentValues.append(value);
+					sourceHtmlComponentValues.append('~');
+				}
+			}
+		}
+
 		String strMultiSelect = "";
 		if ((isMultiSelect != null) && (isMultiSelect.booleanValue()))
 		{
@@ -136,53 +161,55 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 		if (getIsSkipLogicTargetControl())
 		{
-			htmlString.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
-					+ getHTMLComponentName() + "_div' /><div id='"
-					+ getHTMLComponentName() + "_div' name='"
+			htmlString.append("<div id='" + getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>");
 		}
 		htmlString.append("<SELECT ");
-		htmlString.append(strMultiSelect).append(" size=")
-				.append(this.noOfRows).append(" class='font_bl_s' name='")
-				.append(getHTMLComponentName()).append("' onchange='");
-		if (this.isSkipLogic != null
-				&& this.isSkipLogic)
+		htmlString.append(strMultiSelect).append(" size=").append(noOfRows).append(
+				" class='font_bl_s' name='").append(getHTMLComponentName()).append("' onchange=\"");
+
+		htmlString.append(getOnchangeServerCall());
+
+		if ((isReadOnly != null && isReadOnly)
+				|| (isSkipLogicReadOnly != null && isSkipLogicReadOnly))
 		{
-			htmlString.append("getSkipLogicControl('");
-			htmlString.append(htmlComponentName);
-			htmlString.append("','");
-			htmlString.append(identifier);
-			htmlString.append("','");
-			htmlString.append(parentContainerId);
-			htmlString.append("');");
+			htmlString.append(" \" disabled='").append(ProcessorConstants.TRUE).append("' ");
 		}
-		htmlString.append("isDataChanged();' id='").append(name).append("' ");
-		
-		if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
-		{
-			htmlString.append(" disabled='").append(ProcessorConstants.TRUE).append("' ");
-		}
-		htmlString.append('>');
+		htmlString.append("\">");
 
 		if (listOfValues == null)
 		{
-			nameValueBeans = ControlsUtility.populateListOfValues(this,rowId);
+			List<String> sourceControlValues = null;
+			if (getSourceSkipControl() != null)
+			{
+				sourceControlValues = getSourceSkipControl().getValueAsStrings();
+			}
+			nameValueBeans = ControlsUtility.populateListOfValues(this, sourceControlValues,
+					(Date) container.getContextParameter(Constants.ENCOUNTER_DATE));
 		}
 
 		if (nameValueBeans != null && !nameValueBeans.isEmpty())
 		{
 			for (NameValueBean nameValueBean : nameValueBeans)
 			{
-				if (values != null && !values.isEmpty()
-						&& values.contains(nameValueBean.getValue()))
+				if (values != null
+						&& !values.isEmpty()
+						&& (values.contains(nameValueBean.getValue()) || values
+								.contains(DynamicExtensionsUtility
+										.getUnEscapedStringValue(nameValueBean.getValue()))))
 				{
-					htmlString.append("<OPTION VALUE='").append(nameValueBean.getValue()).append(
-							"' SELECTED>").append(nameValueBean.getName());
+					htmlString.append("<OPTION title='").append(nameValueBean.getValue()).append(
+							"' value='").append(nameValueBean.getValue()).append("' selected>")
+							.append(
+									DynamicExtensionsUtility.getUnEscapedStringValue(nameValueBean
+											.getName()));
 				}
 				else
 				{
-					htmlString.append("<OPTION VALUE='").append(nameValueBean.getValue()).append(
-							"'>").append(nameValueBean.getName());
+					htmlString.append("<OPTION value='").append(nameValueBean.getValue()).append(
+							"'>").append(
+							DynamicExtensionsUtility.getUnEscapedStringValue(nameValueBean
+									.getName()));
 				}
 			}
 		}
@@ -195,24 +222,33 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			String coordId = "coord_" + getHTMLComponentName();
 			String protocolCoordId = "protocolCoordId_" + getHTMLComponentName();
 
-			StringBuffer multSelWithAutoCmpltHTML = new StringBuffer();
+			StringBuffer multSelWithAutoCmpltHTML = new StringBuffer(42);
 			if (getIsSkipLogicTargetControl())
 			{
-				multSelWithAutoCmpltHTML.append("<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
-						+ getHTMLComponentName() + "_div' /><div id='"
-						+ getHTMLComponentName() + "_div' name='"
-						+ getHTMLComponentName() + "_div'>");
+				multSelWithAutoCmpltHTML.append("<div id='" + getHTMLComponentName()
+						+ "_div' name='" + getHTMLComponentName() + "_div'>");
 			}
+
+			String categoryEntityName = getParentContainer().getAbstractEntity().getName();
+			String attributeName = getBaseAbstractAttribute().getName();
 			multSelWithAutoCmpltHTML
-					.append("<script defer='defer'>Ext.onReady(function(){var myUrl= 'DEComboDataAction.do?controlId= "
+					.append("<script defer='defer'>Ext.onReady(function(){var myUrl= \"DEComboDataAction.do?controlId="
 							+ identifier
 							+ "~containerIdentifier="
 							+ parentContainerId
-							+ "';var ds = new Ext.data.Store({proxy: new Ext.data.HttpProxy({url: myUrl}),reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, [{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});var combo = new Ext.form.ComboBox({store: ds,hiddenName: 'CB_coord_"
+							+ "~sourceControlValues="
+							+ sourceHtmlComponentValues.toString()
+							+ "~categoryEntityName="
+							+ categoryEntityName
+							+ "~attributeName="
+							+ attributeName
+							+ "\";var ds = new Ext.data.Store({proxy: new Ext.data.HttpProxy({url: myUrl}),reader: new Ext.data.JsonReader({root: 'row',totalProperty: 'totalCount',id: 'id'}, [{name: 'id', mapping: 'id'},{name: 'excerpt', mapping: 'field'}])});var combo = new Ext.form.ComboBox({store: ds,hiddenName: 'CB_coord_"
 							+ getHTMLComponentName()
-							+ "',displayField:'excerpt',valueField: 'id',typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',mode: 'remote',triggerAction: 'all',minChars : 3,queryDelay:500,lazyInit:true,emptyText:'--Select--',valueNotFoundText:'',selectOnFocus:'true',applyTo: '"
+							+ "',displayField:'excerpt',valueField: 'id',typeAhead: 'false',pageSize:15,forceSelection: 'true',queryParam : 'query',mode: 'remote',triggerAction: 'all',minChars : "
+							+ minQueryChar
+							+ ",queryDelay:500,lazyInit:true,emptyText:'--Select--',valueNotFoundText:'',selectOnFocus:'true',applyTo: '"
 							+ coordId
-							+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"210\");combo.innerList.setStyle(\"width\", \"210\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});});</script>\n");
+							+ "'});combo.on(\"expand\", function() {if(Ext.isIE || Ext.isIE7){combo.list.setStyle(\"width\", \"240\");combo.innerList.setStyle(\"width\", \"240\");}else{combo.list.setStyle(\"width\", \"auto\");combo.innerList.setStyle(\"width\", \"auto\");}}, {single: true});ds.on('load',function(){if (this.getAt(0) != null && this.getAt(0).get('excerpt').toLowerCase().startsWith(combo.getRawValue().toLowerCase())) {combo.typeAheadDelay=50;} else {combo.typeAheadDelay=60000}});});</script>\n");
 
 			multSelWithAutoCmpltHTML.append("<br><table border=\"0\" width=\"100%\">\n");
 			multSelWithAutoCmpltHTML.append("\t<tr>\n");
@@ -229,8 +265,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t<td height=\"22\" align=\"center\" valign=\"TOP\">\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"addLink\">\n");
-			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
-					+ coordId + "','" + protocolCoordId + "', 'add')\">\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
+							+ coordId + "','" + protocolCoordId + "', 'add')\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_add_inact.gif\" alt=\"Add\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t</a>\n");
@@ -240,8 +277,9 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			multSelWithAutoCmpltHTML.append("\t\t\t\t<tr>\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t<td height=\"22\" align=\"center\">\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"removeLink\">\n");
-			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
-					+ protocolCoordId + "','" + coordId + "', 'edit')\">\n");
+			multSelWithAutoCmpltHTML
+					.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
+							+ protocolCoordId + "','" + coordId + "', 'edit')\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_remove_inact.gif\" alt=\"Remove\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t</a>\n");
@@ -263,23 +301,22 @@ public class ListBox extends SelectControl implements ListBoxInterface
 					if (values != null && !values.isEmpty()
 							&& values.contains(nameValueBean.getValue()))
 					{
-						multSelWithAutoCmpltHTML.append("<OPTION VALUE='").append(
-								nameValueBean.getValue()).append("' SELECTED>").append(
+						multSelWithAutoCmpltHTML.append("<OPTION title='").append(
+								nameValueBean.getValue()).append("' value='").append(
+								nameValueBean.getValue()).append("' selected>").append(
 								nameValueBean.getName());
 					}
 				}
 			}
 
-			multSelWithAutoCmpltHTML.append("</SELECT>\n");
-			multSelWithAutoCmpltHTML.append("\t\t</td>\n");
-			multSelWithAutoCmpltHTML.append("\t</tr>\n");
-			multSelWithAutoCmpltHTML.append("</table>");
-
+			multSelWithAutoCmpltHTML.append("</SELECT>\n \t\t</td>\n \t</tr>\n </table>");
 			htmlString = multSelWithAutoCmpltHTML;
 		}
 		if (getIsSkipLogicTargetControl())
 		{
-			htmlString.append("</div>");
+			htmlString.append(
+					"<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '")
+					.append(getHTMLComponentName()).append("_div' /></div>");
 		}
 		return htmlString.toString();
 	}
@@ -287,27 +324,29 @@ public class ListBox extends SelectControl implements ListBoxInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	@Override
+	protected String generateViewModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException
 	{
 		List<String> selectedOptions = new ArrayList<String>();
 
 		AssociationInterface association = getBaseAbstractAttributeAssociation();
-		if (association != null)
+		if (association == null)
 		{
-			getValueList(association, selectedOptions);
-		}
-		else
-		{
-			if (!(value instanceof List) && value != null)
+			if ((value instanceof List) || value == null)
+			{
+				selectedOptions = (List<String>) value;
+			}
+			else
 			{
 				List<String> temp = new ArrayList<String>();
 				temp.add((String) value);
 				selectedOptions = temp;
 			}
-			else
-			{
-				selectedOptions = (List<String>) this.value;
-			}
+		}
+		else
+		{
+			getValueList(association, selectedOptions);
 		}
 
 		StringBuffer generatedHtml = new StringBuffer("&nbsp;");
@@ -325,53 +364,6 @@ public class ListBox extends SelectControl implements ListBoxInterface
 		}
 
 		return generatedHtml.toString();
-	}
-
-	/**
-	 * getValueList
-	 * @param association
-	 * @param valueList
-	 */
-	private void getValueList(AssociationInterface association, List<String> valueList)
-	{
-		if (association.getIsCollection())
-		{
-			Collection<AbstractAttributeInterface> attributes = association.getTargetEntity()
-					.getAllAbstractAttributes();
-			Collection<AbstractAttributeInterface> filteredAttributes = EntityManagerUtil
-					.filterSystemAttributes(attributes);
-			List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-					filteredAttributes);
-			List<Map> values = (List<Map>) this.value;
-			if (values != null)
-			{
-				for (Map valueMap : values)
-				{
-					String value = (String) valueMap.get(attributesList.get(0));
-					valueList.add(value);
-				}
-			}
-		}
-		else
-		{
-			if (!(value instanceof List) && value != null)
-			{
-				List<String> temp = new ArrayList<String>();
-				temp.add((String) value);
-				valueList = temp;
-			}
-			else
-			{
-				if (this.value != null)
-				{
-					for (Long obj : (List<Long>) this.value)
-					{
-						valueList.add(obj.toString());
-					}
-				}
-			}
-		}
-		
 	}
 
 	/**
@@ -397,77 +389,136 @@ public class ListBox extends SelectControl implements ListBoxInterface
 
 		return association;
 	}
+
 	/**
-	 * 
+	 *
 	 */
-	public List<String> getValueAsStrings(Integer rowId) 
+	@Override
+	public List<String> getValueAsStrings()
 	{
 		List<String> values = new ArrayList<String>();
 		AssociationInterface association = getBaseAbstractAttributeAssociation();
-		if (association != null)
+		Date encounterDate = (Date) getParentContainer().getContextParameter(
+				Constants.ENCOUNTER_DATE);
+		if (association == null)
 		{
-			getValueList(association, values);
-		}
-		else
-		{
-			if (!(value instanceof List) && value != null)
+			if ((value instanceof List) || value == null)
+			{
+				values = (List<String>) value;
+			}
+			else
 			{
 				List<String> temp = new ArrayList<String>();
 				temp.add((String) value);
 				values = temp;
 			}
-			else
+		}
+		else
+		{
+			getValueList(association, values);
+		}
+		if (getIsSkipLogicDefaultValue())
+		{
+			if (values != null && values.isEmpty())
 			{
-				values = (List<String>) this.value;
+				values.add(getSkipLogicDefaultValue());
 			}
 		}
-		if (!getIsSkipLogicTargetControl())
+		else
 		{
 			if (values == null || values.isEmpty())
 			{
-				String defaultValue = null;
 				values = new ArrayList<String>();
-	
-				AttributeMetadataInterface attributeMetadata = this.getAttibuteMetadataInterface();
+
+				AttributeMetadataInterface attributeMetadata = getAttibuteMetadataInterface();
 				if (attributeMetadata != null)
 				{
-					if (attributeMetadata instanceof CategoryAttributeInterface)
-					{
-						AbstractAttributeInterface abstractAttribute = ((CategoryAttributeInterface) attributeMetadata)
-								.getAbstractAttribute();
-						if (abstractAttribute instanceof AttributeInterface)
-						{
-							defaultValue = attributeMetadata.getDefaultValue();
-						}
-					}
-					else
-					{
-						defaultValue = attributeMetadata.getDefaultValue();
-					}
-	
-					if (defaultValue != null && defaultValue.trim().length() != 0)
+
+					String defaultValue = attributeMetadata.getDefaultValue(encounterDate);
+					if (defaultValue != null && !"".equals(defaultValue.trim()))
 					{
 						values.add(defaultValue);
 					}
 				}
 			}
 		}
-		else
+		List<NameValueBean> nameValueBeans = ControlsUtility.getListOfPermissibleValues(
+				getAttibuteMetadataInterface(), encounterDate);
+		boolean isInavlidVaue = true;
+		for(String value:values)
 		{
-			if (values == null || values.isEmpty())
+			for (NameValueBean bean : nameValueBeans)
 			{
-				values.add(getSkipLogicDefaultValue(rowId));
+				if (bean.getValue().equals(value))
+				{
+					isInavlidVaue = false;
+					break;
+				}
+			}
+			if(isInavlidVaue)
+			{
+				StringBuilder errorMessage=new StringBuilder();
+				errorMessage.append('\'');
+				errorMessage.append(value);
+				errorMessage.append("' is not a valid value for '");
+				errorMessage.append(this.getName());
+				errorMessage.append("' anymore. Please select a new value.");
+				errorList.add(errorMessage.toString());
 			}
 		}
+
 		return values;
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public void setValueAsStrings(List<String> listOfValues) 
+	@Override
+	public void setValueAsStrings(List<String> listOfValues)
 	{
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	/**
+	 *
+	 */
+	@Override
+	public boolean getIsEnumeratedControl()
+	{
+		return true;
+	}
+
+	/**
+	 * Returns collection of key-value pairs.
+	 */
+	@Override
+    public Collection<UIProperty> getControlTypeValues()
+	{
+		Collection<UIProperty> uiProperties = super.getControlTypeValues();
+		ListBoxEnum[] uiPropertyValues = ListBoxEnum.values();
+		for (ListBoxEnum propertyType : uiPropertyValues)
+		{
+			String controlProperty = propertyType.getControlProperty(this, null);
+			if (controlProperty != null)
+			{
+				uiProperties.add(new UIProperty(propertyType.getValue(), controlProperty));
+			}
+		}
+		return uiProperties;
+	}
+
+	/**
+	 * Set collection of key-value pairs for a control.
+	 */
+	@Override
+    public void setControlTypeValues(Collection<UIProperty> uiProperties)
+	{
+		super.setControlTypeValues(uiProperties);
+		for (UIProperty uiProperty : uiProperties)
+		{
+			ListBoxEnum propertyType = ListBoxEnum.getValue(uiProperty.getKey());
+			propertyType.setControlProperty(this, uiProperty.getValue(), null);
+		}
 	}
 }

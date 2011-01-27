@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
@@ -27,11 +26,8 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.Utility;
-import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.JDBCDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
-import edu.wustl.dao.daofactory.IDAOFactory;
 import edu.wustl.dao.exception.DAOException;
 
 /**
@@ -94,134 +90,129 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public Object getFormattedValue(AbstractAttribute attribute, Object value)
 	{
 
 		String formattedvalue = null;
-		AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute)
-				.getAttributeTypeInformation();
-		if (attribute == null)
+
+		if (attribute != null)
 		{
-			formattedvalue = null;
-		}
 
-		else if (attributeInformation instanceof StringAttributeTypeInformation)
-		{
-			// quick fix.
-			if (value instanceof List)
+			AttributeTypeInformationInterface attributeInformation = ((Attribute) attribute)
+					.getAttributeTypeInformation();
+
+			if (attributeInformation instanceof StringAttributeTypeInformation)
 			{
-				if (((List) value).size() > 0)
+				// quick fix.
+				if (value instanceof List)
 				{
-					formattedvalue = "'"
-							+ DynamicExtensionsUtility
-									.getEscapedStringValue((String) ((List) value).get(0)) + "'";
-				}
-			}
-			else
-			{
-				formattedvalue = "'"
-						+ DynamicExtensionsUtility.getEscapedStringValue((String) value) + "'";
-			}
-		}
-		else if (attributeInformation instanceof DateAttributeTypeInformation)
-		{
-			String dateFormat = ((DateAttributeTypeInformation) attributeInformation).getFormat();
-			if (dateFormat == null)
-			{
-				dateFormat = CommonServiceLocator.getInstance().getDatePattern();
-			}
-
-			String str = null;
-			if (value instanceof Date)
-			{
-				str = Utility.parseDateToString(((Date) value), dateFormat);
-			}
-			else
-			{
-				str = (String) value;
-			}
-
-			if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT) && str.length() != 0)
-			{
-				str = DynamicExtensionsUtility.formatMonthAndYearDate(str,false);
-			}
-
-			if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && str.length() != 0)
-			{
-				
-				str = DynamicExtensionsUtility.formatYearDate(str,false);
-
-			}
-			// if user not enter any value for date field its getting saved as 00-00-0000 ,which is throwing exception
-			//So to avoid it store null value in database
-			if (str.trim().length() == 0)
-			{
-				formattedvalue = null;
-
-			}
-			else
-			{
-				String appName=DynamicExtensionDAO.getInstance().getAppName();
-				IDAOFactory factory = DAOConfigFactory.getInstance().getDAOFactory(appName);
-				JDBCDAO jdbcDAO;
-				try
-				{
-					jdbcDAO = (JDBCDAO) factory.getJDBCDAO();
-					formattedvalue = jdbcDAO.getStrTodateFunction() + "('" + str.trim() + "','"
-					+ DynamicExtensionsUtility.getSQLDateFormat(dateFormat) + "')";
-				}
-				catch (DAOException e)
-				{
-					Logger.out.error(e.getMessage());
-				}
-			}
-		}
-		else
-		{
-			// quick fix.
-			if (value instanceof List)
-			{
-				if (((List) value).size() > 0)
-				{
-					formattedvalue = ((List) value).get(0).toString();
-				}
-			}
-			else
-			{
-				formattedvalue = value.toString();
-			}
-
-			//In case of DB2 ,if the column datatype double ,float ,integer then its not possible to pass '' as  in insert-update query
-			//so instead pass null as value.
-			if (attributeInformation instanceof BooleanAttributeTypeInformation)
-			{
-				if ("false".equals(formattedvalue))
-				{
-					formattedvalue = "0";
+					if (((List) value).size() > 0)
+					{
+						formattedvalue = DynamicExtensionsUtility
+								.getEscapedStringValue((String) ((List) value).get(0));
+					}
 				}
 				else
 				{
-					formattedvalue = "1";
+					formattedvalue = DynamicExtensionsUtility.getEscapedStringValue((String) value);
 				}
 			}
-			else if (formattedvalue != null && formattedvalue.trim().length() == 0)
+			else if (attributeInformation instanceof DateAttributeTypeInformation)
 			{
-				formattedvalue = null;
+				String dateFormat = ((DateAttributeTypeInformation) attributeInformation)
+						.getFormat();
+				String datePattern = DynamicExtensionsUtility.getDateFormat(dateFormat);
+				String str = null;
+				if (value instanceof Date)
+				{
+					str = Utility.parseDateToString(((Date) value), datePattern);
+				}
+				else
+				{
+					str = (String) value;
+				}
+
+				if (datePattern.equals(ProcessorConstants.MONTH_YEAR_FORMAT) && str.length() != 0)
+				{
+					str = DynamicExtensionsUtility.formatMonthAndYearDate(str, false);
+				}
+
+				if (datePattern.equals(ProcessorConstants.YEAR_ONLY_FORMAT) && str.length() != 0)
+				{
+
+					str = DynamicExtensionsUtility.formatYearDate(str, false);
+
+				}
+				// if user not enter any value for date field its getting saved as 00-00-0000 ,which is throwing exception
+				//So to avoid it store null value in database
+				if ("".equals(str.trim()))
+				{
+					formattedvalue = null;
+
+				}
+				else
+				{
+					JDBCDAO jdbcDAO;
+					try
+					{
+						jdbcDAO = DynamicExtensionsUtility.getJDBCDAO();
+						formattedvalue = jdbcDAO.getStrTodateFunction() + "('" + str.trim() + "','"
+								+ DynamicExtensionsUtility.getSQLDateFormat(datePattern) + "')";
+					}
+					catch (DynamicExtensionsSystemException e)
+					{
+						Logger.out.error(e.getMessage());
+					}
+				}
+			}
+			else
+			{
+				// quick fix.
+				if (value instanceof List)
+				{
+					if (((List) value).size() > 0)
+					{
+						formattedvalue = ((List) value).get(0).toString();
+					}
+				}
+				else
+				{
+					formattedvalue = value.toString();
+				}
+
+				//In case of DB2 ,if the column datatype double ,float ,integer then its not possible to pass '' as  in insert-update query
+				//so instead pass null as value.
+				if (attributeInformation instanceof BooleanAttributeTypeInformation)
+				{
+					if ("false".equals(formattedvalue))
+					{
+						formattedvalue = "0";
+					}
+					else
+					{
+						formattedvalue = "1";
+					}
+				}
+				else if (formattedvalue != null && "".equals(formattedvalue.trim()))
+				{
+					formattedvalue = null;
+
+				}
 
 			}
-
+			Logger.out.debug("getFormattedValue The formatted value for attribute "
+					+ attribute.getName() + "is " + formattedvalue);
 		}
-		Logger.out.debug("getFormattedValue The formatted value for attribute "
-				+ attribute.getName() + "is " + formattedvalue);
+
 		return formattedvalue;
 	}
 
 	/**
 	 *This method create the query for altering the column of given attribute to add not null constraint on it
 	 *@param attribute on which the constraint is to be applied
-	 *@return query 
+	 *@return query
 	 */
 	protected String addNotNullConstraintQuery(AttributeInterface attribute)
 			throws DynamicExtensionsSystemException
@@ -238,7 +229,7 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	/**
 	 *This method create the query for altering the column of given attribute to add null constraint on it
 	 *@param attribute on which the constraint is to be applied
-	 *@return query 
+	 *@return query
 	 */
 	protected String dropNotNullConstraintQuery(AttributeInterface attribute)
 			throws DynamicExtensionsSystemException
@@ -263,7 +254,22 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	{
 		boolean dataPresent = false;
 		StringBuffer queryBuffer = new StringBuffer();
-		if (!isAttributeColumnToBeExcluded(savedAttribute))
+		if (isAttributeColumnToBeExcluded(savedAttribute))
+		{
+			Collection<Integer> recordCollection = EntityManager.getInstance()
+					.getAttributeRecordsCount(savedAttribute.getEntity().getId(),
+							savedAttribute.getId());
+			if (recordCollection != null && !recordCollection.isEmpty())
+			{
+				Integer count = recordCollection.iterator().next();
+				if (count > 0)
+				{
+					dataPresent = true;
+				}
+			}
+
+		}
+		else
 		{
 			queryBuffer.append(SELECT_KEYWORD).append(WHITESPACE).append("COUNT").append(
 					OPENING_BRACKET).append(ASTERIX).append(CLOSING_BRACKET).append(WHITESPACE)
@@ -276,8 +282,8 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 			JDBCDAO jdbcDao = null;
 			try
 			{
-				jdbcDao=DynamicExtensionsUtility.getJDBCDAO();
-				resultSet=jdbcDao.getQueryResultSet(queryBuffer.toString());
+				jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+				resultSet = jdbcDao.getResultSet(queryBuffer.toString(), null, null);
 				resultSet.next();
 				Long count = resultSet.getLong(1);
 				if (count > 0)
@@ -300,27 +306,13 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 				try
 				{
 					jdbcDao.closeStatement(resultSet);
-					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+					DynamicExtensionsUtility.closeDAO(jdbcDao);
 				}
 				catch (DAOException e)
 				{
 					throw new DynamicExtensionsSystemException(e.getMessage(), e);
 				}
-				
-			}
-		}
-		else
-		{
-			Collection<Integer> recordCollection = EntityManager.getInstance()
-					.getAttributeRecordsCount(savedAttribute.getEntity().getId(),
-							savedAttribute.getId());
-			if (recordCollection != null && !recordCollection.isEmpty())
-			{
-				Integer count = (Integer) recordCollection.iterator().next();
-				if (count > 0)
-				{
-					dataPresent = true;
-				}
+
 			}
 		}
 		return dataPresent;
@@ -341,14 +333,15 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	{
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
-		String mdfyAttrRlbkQry = "";
+		StringBuffer mdfyAttrRlbkQry = new StringBuffer();
 
-		String mdfAttrQry = getQueryPartForAttribute(attribute, type, false);
-		mdfAttrQry = ALTER_TABLE + tableName + ADD_KEYWORD + mdfAttrQry;
+		StringBuffer mdfAttrQry = new StringBuffer();
+		mdfAttrQry.append(ALTER_TABLE).append(tableName).append(ADD_KEYWORD);
+		mdfAttrQry.append(getQueryPartForAttribute(attribute, type, false));
 
-		mdfyAttrRlbkQry = getQueryPartForAttribute(savedAttribute, type, false);
-		mdfyAttrRlbkQry = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + MODIFY_KEYWORD
-				+ WHITESPACE + mdfyAttrRlbkQry;
+		mdfyAttrRlbkQry.append(ALTER_TABLE).append(WHITESPACE).append(tableName).append(WHITESPACE);
+		mdfyAttrRlbkQry.append(MODIFY_KEYWORD).append(WHITESPACE);
+		mdfyAttrRlbkQry.append(getQueryPartForAttribute(savedAttribute, type, false));
 
 		String nullQueryKeyword = "";
 		String nullQueryRollbackKeyword = "";
@@ -371,16 +364,16 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 		{
 
-			mdfAttrQry = mdfAttrQry + extraColumnQueryStringForFileAttributeInEditCase(attribute);
-			mdfyAttrRlbkQry = mdfyAttrRlbkQry
-					+ dropExtraColumnQueryStringForFileAttributeInEditCase(savedAttribute);
+			mdfAttrQry.append(extraColumnQueryStringForFileAttributeInEditCase(attribute));
+			mdfyAttrRlbkQry
+					.append(dropExtraColumnQueryStringForFileAttributeInEditCase(savedAttribute));
 
 		}
-		mdfAttrQry = mdfAttrQry + nullQueryKeyword;
-		mdfyAttrRlbkQry = mdfyAttrRlbkQry + nullQueryRollbackKeyword;
-		mdfyAttRbkQryLst.add(mdfyAttrRlbkQry);
+		mdfAttrQry.append(nullQueryKeyword);
+		mdfyAttrRlbkQry.append(nullQueryRollbackKeyword);
+		mdfyAttRbkQryLst.add(mdfyAttrRlbkQry.toString());
 
-		mdfyAttrQryLst.add(mdfAttrQry);
+		mdfyAttrQryLst.add(mdfAttrQry.toString());
 
 		return mdfyAttrQryLst;
 	}
@@ -436,27 +429,30 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 		String tableName = attribute.getEntity().getTableProperties().getName();
 		String type = "";
 
-		String newAttributeQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE + ADD_KEYWORD
-				+ WHITESPACE + getQueryPartForAttribute(attribute, type, true);
+		StringBuffer newAttributeQuery = new StringBuffer();
+		newAttributeQuery.append(ALTER_TABLE).append(WHITESPACE).append(tableName);
+		newAttributeQuery.append(WHITESPACE).append(ADD_KEYWORD).append(WHITESPACE);
+		newAttributeQuery.append(getQueryPartForAttribute(attribute, type, true));
 
-		String newAttributeRollbackQuery = ALTER_TABLE + WHITESPACE + tableName + WHITESPACE
-				+ DROP_KEYWORD + WHITESPACE + COLUMN_KEYWORD + WHITESPACE + columnName;
+		StringBuffer newAttributeRollbackQuery = new StringBuffer();
+		newAttributeRollbackQuery.append(ALTER_TABLE).append(WHITESPACE).append(tableName);
+		newAttributeRollbackQuery.append(WHITESPACE).append(DROP_KEYWORD).append(WHITESPACE);
+		newAttributeRollbackQuery.append(COLUMN_KEYWORD).append(WHITESPACE).append(columnName);
 		if (attribute.getAttributeTypeInformation() instanceof FileAttributeTypeInformation)
 		{
 
-			newAttributeQuery += extraColumnQueryStringForFileAttributeInEditCase(attribute);
-			newAttributeRollbackQuery += dropExtraColumnQueryStringForFileAttributeInEditCase(attribute);
+			newAttributeQuery.append(extraColumnQueryStringForFileAttributeInEditCase(attribute));
+			newAttributeRollbackQuery
+					.append(dropExtraColumnQueryStringForFileAttributeInEditCase(attribute));
 
 		}
-		
-		attributeRollbackQueryList.add(newAttributeRollbackQuery);
-		return newAttributeQuery;
+
+		attributeRollbackQueryList.add(newAttributeRollbackQuery.toString());
+		return newAttributeQuery.toString();
 	}
 
-	
-	
 	/**
-	 * Converts Blob data type to Object data type for db2 database 
+	 * Converts Blob data type to Object data type for db2 database
 	 * @param valueObj
 	 * @return
 	 * @throws DynamicExtensionsSystemException
@@ -486,6 +482,3 @@ public class DynamicExtensionDb2QueryBuilder extends DynamicExtensionBaseQueryBu
 	}
 
 }
-	
-
-

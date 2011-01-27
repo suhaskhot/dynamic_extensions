@@ -1,12 +1,7 @@
 
 package edu.wustl.cab2b.common.util;
 
-import static edu.wustl.cab2b.common.util.Constants.ATTRIBUTE;
-import static edu.wustl.cab2b.common.util.Constants.ATTRIBUTE_WITH_DESCRIPTION;
-import static edu.wustl.cab2b.common.util.Constants.CLASS;
-import static edu.wustl.cab2b.common.util.Constants.CLASS_WITH_DESCRIPTION;
 import static edu.wustl.cab2b.common.util.Constants.CONNECTOR;
-import static edu.wustl.cab2b.common.util.Constants.PERMISSIBLEVALUE;
 import static edu.wustl.cab2b.common.util.Constants.TYPE_CATEGORY;
 
 import java.io.File;
@@ -22,21 +17,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.globus.wsrf.encoding.ObjectDeserializer;
 import org.hibernate.HibernateException;
-import org.w3c.dom.Document;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -45,7 +34,6 @@ import edu.common.dynamicextensions.domain.FloatAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.IntegerAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ObjectAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -63,16 +51,12 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.errorcodes.ErrorCodeConstants;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
-import edu.wustl.cab2b.common.queryengine.result.IQueryResult;
-import edu.wustl.cab2b.common.queryengine.result.IRecord;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.DataType;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
-import gov.nih.nci.cagrid.syncgts.bean.SyncDescription;
-import gov.nih.nci.cagrid.syncgts.core.SyncGTS;
 
 /**
  * Utility Class contain general methods used through out the application.
@@ -83,7 +67,7 @@ import gov.nih.nci.cagrid.syncgts.core.SyncGTS;
 public class Utility implements EntityManagerExceptionConstantsInterface
 {
 
-	private static final Logger logger = edu.wustl.common.util.logger.Logger
+	private static final Logger LOGGER = edu.wustl.common.util.logger.Logger
 			.getLogger(Utility.class);
 
 	/**
@@ -109,8 +93,9 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * Generates unique string identifier for given association. It is generated
 	 * by concatenating
 	 * 
-	 * sourceEntityName +{@link Constants#CONNECTOR} + sourceRoleName +{@link Constants#CONNECTOR} +
-	 * targetRoleName +{@link Constants#CONNECTOR} + TargetEntityName
+	 * sourceEntityName +{@link Constants#CONNECTOR} + sourceRoleName +
+	 * {@link Constants#CONNECTOR} + targetRoleName +{@link Constants#CONNECTOR}
+	 * + TargetEntityName
 	 * 
 	 * @param association
 	 *            Association
@@ -124,13 +109,19 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	}
 
 	/**
-	 * @param string1 String
-	 * @param string2 String
-	 * @param string3 String
-	 * @param string4 String
-	 * @return Concatenated string made after connecting s1, s2, s3, s4 by {@link Constants#CONNECTOR}
+	 * @param string1
+	 *            String
+	 * @param string2
+	 *            String
+	 * @param string3
+	 *            String
+	 * @param string4
+	 *            String
+	 * @return Concatenated string made after connecting s1, s2, s3, s4 by
+	 *         {@link Constants#CONNECTOR}
 	 */
-	public static String concatStrings(String string1, String string2, String string3, String string4)
+	public static String concatStrings(String string1, String string2, String string3,
+			String string4)
 	{
 		StringBuffer buff = new StringBuffer();
 		buff.append(string1);
@@ -267,10 +258,6 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		{
 			return DataType.Double;
 		}
-		else if (type instanceof ShortAttributeTypeInformation)
-		{
-			return DataType.Integer;//TODO define short in data type
-		}
 		else if (type instanceof ObjectAttributeTypeInformation)
 		{
 			return DataType.String;
@@ -335,7 +322,8 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 		EntityGroupInterface entityGroup = getEntityGroup(entity);
 
-		// As per Bug# 4577 <class name> (app_name v<version name>) e.g. Participant (caTissue Core v1.1)
+		// As per Bug# 4577 <class name> (app_name v<version name>) e.g.
+		// Participant (caTissue Core v1.1)
 		String projectName = entityGroup.getLongName();
 		if ("caFE Server 1.1".equals(projectName))
 		{
@@ -408,14 +396,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			{
 				index = text.indexOf(' ', lastIndex);
 			}
-			if (index != -1)
-			{
-				len = index - strLen;
-				currentString = text.substring(lastIndex, (lastIndex + len));
-				stringBuff.append(currentString);
-				stringBuff.append("<P>");
-			}
-			else
+			if (index == -1)
 			{
 				if (currentStart == 0)
 				{
@@ -423,6 +404,13 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 				}
 				stringBuff.append(text.substring(currentStart));
 				return stringBuff.toString();
+			}
+			else
+			{
+				len = index - strLen;
+				currentString = text.substring(lastIndex, (lastIndex + len));
+				stringBuff.append(currentString);
+				stringBuff.append("<P>");
 			}
 
 			currentStart = currentStart + offset + len;
@@ -435,7 +423,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		return stringBuff.toString();
 	}
 
-	static String getHtmlRepresentation(IPath path)
+	private static String getHtmlRepresentation(IPath path)
 	{
 		StringBuffer text = new StringBuffer(40);
 		text.append("<HTML><B>Path</B>:");
@@ -504,27 +492,6 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	}
 
 	/**
-	 * @param queryResult
-	 *            Query result to process.
-	 * @return List of attributes from query result
-	 */
-	public static List<AttributeInterface> getAttributeList(IQueryResult<IRecord> queryResult)
-	{
-		Map<String, List<IRecord>> allRecords = queryResult.getRecords();
-		List<AttributeInterface> attributeList = new ArrayList<AttributeInterface>();
-		for (List<IRecord> recordList : allRecords.values())
-		{
-			if (!recordList.isEmpty())
-			{
-				IRecord record = recordList.get(0);
-				attributeList = getAttributeList(record.getAttributes());
-				break;
-			}
-		}
-		return attributeList;
-	}
-
-	/**
 	 * This method converts stack trace to the string representation
 	 * 
 	 * @param aThrowable
@@ -560,7 +527,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			}
 			catch (MalformedURLException e)
 			{
-				logger.error("File not found in cab2b_home, will use default file ", e);
+				LOGGER.error("File not found in cab2b_home, will use default file ", e);
 			}
 		}
 		// is there a better way of getting a non-null class loader ?
@@ -573,17 +540,17 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * @param values
 	 * @return
 	 * @throws HibernateException
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static Collection<?> executeHQL(String queryName, List<Object> values)
 			throws HibernateException, DynamicExtensionsSystemException
 	{
-		Collection objects = new HashSet();
-		HibernateDAO hibernateDAO=null;
+		Collection objects = null;
+		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO =DynamicExtensionsUtility.getHibernateDAO();
-			objects=hibernateDAO.executeNamedQuery(queryName, null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			objects = hibernateDAO.executeNamedQuery(queryName, null);
 		}
 		catch (DAOException e)
 		{
@@ -592,16 +559,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 		finally
 		{
-			try
-			{
-				DynamicExtensionsUtility.closeHibernateDAO(hibernateDAO);
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException(
-						"Exception occured while closing the session", e, DYEXTN_S_001);
-			}
-
+			DynamicExtensionsUtility.closeDAO(hibernateDAO);
 		}
 
 		return objects;
@@ -611,9 +569,10 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * @param queryName
 	 * @return
 	 * @throws HibernateException
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
-	public static Collection<?> executeHQL(String queryName) throws HibernateException, DynamicExtensionsSystemException
+	public static Collection<?> executeHQL(String queryName) throws HibernateException,
+			DynamicExtensionsSystemException
 	{
 		return executeHQL(queryName, null);
 	}
@@ -629,7 +588,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 */
 	public static String replaceAllWords(String originalString, String find, String replacement)
 	{
-		String original=originalString;
+		String original = originalString;
 		if (original == null || find == null || replacement == null)
 		{
 			return null;
@@ -646,9 +605,11 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	}
 
 	/**
-	 * Loads properties from a file present in classpath to java objects.
-	 * If any exception occurs, it is callers responsibility to handle it. 
-	 * @param propertyfile Name of property file. It MUST be present in classpath
+	 * Loads properties from a file present in classpath to java objects. If any
+	 * exception occurs, it is callers responsibility to handle it.
+	 * 
+	 * @param propertyfile
+	 *            Name of property file. It MUST be present in classpath
 	 * @return Properties loaded from given file.
 	 */
 	public static Properties getPropertiesFromFile(String propertyfile)
@@ -660,7 +621,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			InputStream inputStream = url.openStream();
 			if (inputStream == null)
 			{
-				logger.error("Unable fo find property file : " + propertyfile
+				LOGGER.error("Unable fo find property file : " + propertyfile
 						+ "\n please put this file in classpath");
 			}
 
@@ -669,7 +630,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		}
 		catch (IOException e)
 		{
-			logger.error("Unable to load properties from : " + propertyfile);
+			LOGGER.error("Unable to load properties from : " + propertyfile);
 		}
 
 		return properties;
@@ -716,6 +677,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 	/**
 	 * Utility method to get a formated string
+	 * 
 	 * @param splitStrings
 	 * @return
 	 */
@@ -741,7 +703,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * Utility method to count upper case characters in the String
 	 */
 
-	static int countUpperCaseLetters(String str)
+	private static int countUpperCaseLetters(String str)
 	{
 		/*
 		 * This is the count of Capital letters in a string excluding first
@@ -778,7 +740,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	/**
 	 * Utility method to capitalize first character in the String
 	 */
-	static String capitalizeFirstCharacter(String str)
+	protected static String capitalizeFirstCharacter(String str)
 	{
 		char[] chars = str.toCharArray();
 		char firstChar = chars[0];
@@ -792,7 +754,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * @param countOfUpperCaseLetter
 	 * @return
 	 */
-	static String[] splitCamelCaseString(String str, int countOfUpperCaseLetter)
+	public static String[] splitCamelCaseString(String str, int countOfUpperCaseLetter)
 	{
 		String[] splitStrings = new String[countOfUpperCaseLetter + 1];
 		char[] chars = str.toCharArray();
@@ -806,7 +768,15 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			char character = chars[i];
 			char nextCharacter;
 			char previousCharacter;
-			if (splitStrCount != countOfUpperCaseLetter)
+			if (splitStrCount == countOfUpperCaseLetter)
+			{
+				firstIndex = lastIndex;
+				lastIndex = str.length();
+				String split = str.substring(firstIndex, lastIndex);
+				splitStrings[splitStrCount] = split;
+				break;
+			}
+			else
 			{
 				if (Character.isUpperCase(character))
 				{
@@ -847,14 +817,6 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 					}
 				}
 			}
-			else
-			{
-				firstIndex = lastIndex;
-				lastIndex = str.length();
-				String split = str.substring(firstIndex, lastIndex);
-				splitStrings[splitStrCount] = split;
-				break;
-			}
 		}
 
 		return splitStrings;
@@ -862,6 +824,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 	/**
 	 * This method returns the current system date and time in default format
+	 * 
 	 * @return
 	 */
 	public static String getFormattedSystemDate()
@@ -871,6 +834,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 
 	/**
 	 * This method returns the date with default format.
+	 * 
 	 * @param date
 	 * @return
 	 */
@@ -880,8 +844,9 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	}
 
 	/**
-	 * This method get the formatted date given the raw date and the string format.
-	 * If not format is not specified then the default format will be dd/MM/yyyy HH:mm. For example, 01/01/1000 01:01
+	 * This method get the formatted date given the raw date and the string
+	 * format. If not format is not specified then the default format will be
+	 * dd/MM/yyyy HH:mm. For example, 01/01/1000 01:01
 	 * 
 	 * @param date
 	 * @param dateFormatAsString
@@ -889,38 +854,21 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 */
 	public static String getFormattedDate(Date date, String dateFormatAsString)
 	{
-		String dateFormat=dateFormatAsString;
+		String dateFormat = dateFormatAsString;
 		if (null == dateFormat || dateFormat.length() == 0)
 		{
 			dateFormat = "dd/MM/yyyy HH:mm";
 		}
-		Locale locale= CommonServiceLocator.getInstance().getDefaultLocale();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat,locale);
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, locale);
 		return simpleDateFormat.format(date);
 	}
 
 	/**
-	 * This method returns the model name constructed from it long name and the version.
-	 * @param longName
-	 * @param version
-	 * @return
-	 */
-	public static String createModelName(String longName, String version)
-	{
-		StringBuffer projectName = new StringBuffer(longName);
-
-		if (version != null && version.length() != 0)
-		{
-			projectName.append("_v");
-			projectName.append(version);
-		}
-
-		return projectName.toString();
-	}
-
-	/**
-	 * @param query caB2B query to check
-	 * @return TRUE : if given query is being fired on at-least one service containing https 
+	 * @param query
+	 *            caB2B query to check
+	 * @return TRUE : if given query is being fired on at-least one service
+	 *         containing https
 	 */
 	public static boolean hasAnySecureService(ICab2bQuery query)
 	{
@@ -936,124 +884,4 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		return anySecureService;
 	}
 
-	/**
-	 * This method generates the globus certificate in user.home folder
-	 * @param gridType
-	 */
-	public static void generateGlobusCertificate(String gridType)
-	{
-		URL signingPolicy = null;
-		URL certificate = null;
-		signingPolicy = Utility.class.getClassLoader().getResource(
-				CommonPropertyLoader.getSigningPolicy(gridType));
-		certificate = Utility.class.getClassLoader().getResource(
-				CommonPropertyLoader.getCertificate(gridType));
-
-		if (signingPolicy != null || certificate != null)
-		{
-			copyCACertificates(signingPolicy);
-			copyCACertificates(certificate);
-		}
-		else
-		{
-			logger.error("Could not find CA certificates");
-			throw new RuntimeException("Could not find CA certificates", ErrorCodeConstants.CDS_016);
-		}
-
-		logger.debug("Getting sync-descriptor.xml file for " + gridType);
-		try
-		{
-			logger.debug("Synchronizing with GTS service");
-			URL syncDescFile = Utility.class.getClassLoader().getResource(
-					CommonPropertyLoader.getSyncDesFile(gridType));
-
-			Document doc = XMLUtils.newDocument(syncDescFile.openStream());
-			Object obj = ObjectDeserializer.toObject(doc.getDocumentElement(),
-					SyncDescription.class);
-			SyncDescription description = (SyncDescription) obj;
-			SyncGTS.getInstance().syncOnce(description);
-			logger
-					.debug("Successfully synchronized with GTS service. Globus certificates generated.");
-		}
-		catch (Exception e)
-		{
-			logger.error(e.getMessage(), e);
-			throw new RuntimeException("Error occurred while generating globus certificates",e,
-					ErrorCodeConstants.CDS_004);
-		}
-	}
-
-	private static void copyCACertificates(URL inFileURL)
-	{
-		int index = inFileURL.getPath().lastIndexOf('/');
-		if (index > -1)
-		{
-			String fileName = inFileURL.getPath().substring(index + 1).trim();
-			File destination = new File(gov.nih.nci.cagrid.common.Utils
-					.getTrustedCerificatesDirectory()
-					+ File.separator + fileName);
-
-			try
-			{
-				FileUtils.copyURLToFile(inFileURL, destination);
-			}
-			catch (IOException e)
-			{
-				logger.error(e.getMessage(), e);
-				throw new RuntimeException("Unable to copy CA certificates to [user.home]/.globus",e,
-						ErrorCodeConstants.CDS_003);
-			}
-		}
-	}
-
-	/**
-	 * Prepares the array of search targets from the check box values selected by user.
-	 * @param searchClass TRUE if class search is selected 
-	 * @param searchAttribute TRUE if attribute search is selected 
-	 * @param searchPv TRUE if permissible value search is selected 
-	 * @param includeDesc TRUE if description is to be searched 
-	 * @return Integer array of selections made by user.
-	 */
-	public static int[] prepareSearchTarget(boolean searchClass, boolean searchAttribute,
-			boolean searchPv, boolean includeDesc)
-	{
-		List<Integer> target = new ArrayList<Integer>();
-		if (searchClass && includeDesc)
-		{
-			target.add(CLASS_WITH_DESCRIPTION);
-		}
-		else if (searchClass)
-		{
-			target.add(CLASS);
-		}
-
-		if (searchAttribute && includeDesc)
-		{
-			target.add(ATTRIBUTE_WITH_DESCRIPTION);
-		}
-		else if (searchAttribute)
-		{
-			target.add(ATTRIBUTE);
-		}
-
-		if (searchPv)
-		{
-			target.add(PERMISSIBLEVALUE);
-		}
-		return toIntArray(target);
-	}
-
-	/**
-	 * @param list List of integers
-	 * @return array of integers
-	 */
-	public static int[] toIntArray(List<Integer> list)
-	{
-		int[] array = new int[list.size()];
-		for (int i = 0; i < list.size(); i++)
-		{
-			array[i] = list.get(i);
-		}
-		return array;
-	}
 }

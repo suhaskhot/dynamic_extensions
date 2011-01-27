@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.util;
 
 import java.text.ParseException;
@@ -13,15 +14,13 @@ import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.CalculatedAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -29,59 +28,57 @@ import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.wustl.common.util.global.CommonServiceLocator;
 
-
-
 /**
- * 
+ *
  * @author rajesh_patil
  *
  */
-public class FormulaCalculator 
+public class FormulaCalculator
 {
+
+	/** The Constant PARSE_EXCEPTION. */
+	private static final String PARSE_EXCEPTION = "ParseException";
 	/**
-	 * 
+	 *
 	 */
 	private FormulaParser formulaParser = null;
 
 	/**
-	 * 
+	 *
 	 */
 	public FormulaCalculator()
 	{
-		this.formulaParser = new FormulaParser();
+		formulaParser = new FormulaParser();
 	}
+
 	/**
-	 * 
-	 */
-	public FormulaCalculator(FormulaParser formulaParser)
-	{
-		this.formulaParser = formulaParser;
-	}
-	/**
-	 * 
+	 *
 	 * @param attributeValueMap
 	 * @return
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws ParseException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws ParseException
+	 * @throws DynamicExtensionsSystemException
 	 */
-	public String evaluateFormula(
-			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			CategoryAttributeInterface categoryAttributeInterface,CategoryInterface category,Integer entryNumber) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public String evaluateFormula(Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
+			CategoryAttributeInterface categoryAttributeInterface, CategoryInterface category,
+			Integer entryNumber) throws DynamicExtensionsSystemException
 	{
 		Date dateValue = null;
 		String value = "";
 		Double formulaValue = null;
-		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap <BaseAbstractAttributeInterface, Object>();
+		Map<BaseAbstractAttributeInterface, Object> attributeValueMapForValidation = new HashMap<BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
 		boolean isSameCatrgoryEntityAttribute = false;
-		List <Object> values = new ArrayList <Object>();
+		List<String> values = new ArrayList<String>();
 		FormulaParser formulaParser = getFormulaParser();
-		formulaParser.parseExpression(categoryAttributeInterface.getFormula().getExpression());
-		for (CategoryAttributeInterface calculatedAttribute : categoryAttributeInterface.getCalculatedCategoryAttributeCollection())
+		for (CalculatedAttributeInterface calculatedAttributeInterface : categoryAttributeInterface
+				.getCalculatedCategoryAttributeCollection())
 		{
+			CategoryAttributeInterface calculatedAttribute = calculatedAttributeInterface
+					.getSourceForCalculatedAttribute();
+			Map<String, String> calculatedKeyValueMap = new HashMap<String, String>();
 			values.clear();
-			if (calculatedAttribute.getCategoryEntity().equals(categoryAttributeInterface.getCategoryEntity()))
+			if (calculatedAttribute.getCategoryEntity().equals(
+					categoryAttributeInterface.getCategoryEntity()))
 			{
 				isSameCatrgoryEntityAttribute = true;
 			}
@@ -89,160 +86,298 @@ public class FormulaCalculator
 			{
 				isSameCatrgoryEntityAttribute = false;
 			}
-			evaluateFormulaForCalulatedAttribute(attributeValueMap,calculatedAttribute,isSameCatrgoryEntityAttribute,values,entryNumber,entryNumber);
-			if (!values.isEmpty())
+			if (!isSameCatrgoryEntityAttribute
+					&& (calculatedAttribute.getCategoryEntity().getNumberOfEntries() == -1))
 			{
-				attributeValueMapForValidation.put(calculatedAttribute, values.get(0));
+				evaluateFormulaForMultilineCalulatedAttribute(attributeValueMap,
+						calculatedAttribute, calculatedKeyValueMap, 1);
+				if (calculatedKeyValueMap.isEmpty())
+				{
+					allCalculatedAttributesPresent = false;
+				}
+				else
+				{
+					attributeValueMapForValidation.put(calculatedAttribute, calculatedKeyValueMap);
+				}
 			}
 			else
 			{
-				allCalculatedAttributesPresent = false;
+				evaluateFormulaForCalulatedAttribute(attributeValueMap, calculatedAttribute,
+						isSameCatrgoryEntityAttribute, values, entryNumber, entryNumber);
+				if (values.isEmpty())
+				{
+					allCalculatedAttributesPresent = false;
+				}
+				else
+				{
+					attributeValueMapForValidation.put(calculatedAttribute, values.get(0));
+				}
 			}
 		}
+
 		List<String> errorList = new ArrayList<String>();
 		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeSet = attributeValueMapForValidation
 				.entrySet();
-		for (Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode : attributeSet) 
+		String formula = categoryAttributeInterface.getFormula().getExpression();
+		for (Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 		{
-			errorList.addAll(ValidatorUtil.validateAttributes(
-					attributeValueNode, attributeValueNode.getKey().getName()));
+			CategoryAttributeInterface calculatedAttribute = (CategoryAttributeInterface) attributeValueNode
+					.getKey();
+			if (!(!(calculatedAttribute.getCategoryEntity().equals(categoryAttributeInterface
+					.getCategoryEntity())) && (calculatedAttribute.getCategoryEntity()
+					.getNumberOfEntries() == -1)))
+			{
+				errorList.addAll(ValidatorUtil.validateAttributes(calculatedAttribute,
+						attributeValueNode.getValue(), attributeValueNode.getKey().getName()));
+			}
+			else
+			{
+				Long targetInstanceId = CategoryGenerationUtil
+						.getInstanceIdOfCategoryEntity(calculatedAttribute.getCategoryEntity());
+				String attributeName = calculatedAttribute.getCategoryEntity().getEntity()
+						.getName()
+						+ "_"
+						+ targetInstanceId.toString()
+						+ "_"
+						+ calculatedAttribute.getAbstractAttribute().getName();
+				StringBuffer newAttribute = new StringBuffer();
+				Map<String, String> entryValueMap = (Map<String, String>) attributeValueNode
+						.getValue();
+				int count = 0;
+				for (Map.Entry<String, String> mapEntry : entryValueMap.entrySet())
+				{
+					count++;
+					int size = entryValueMap.entrySet().size();
+					newAttribute.append(mapEntry.getKey());
+					if (count < size)
+					{
+						newAttribute.append(',');
+					}
+				}
+				formula = formula.replaceAll(attributeName, newAttribute.toString());
+			}
 		}
-		if (allCalculatedAttributesPresent && errorList.isEmpty())
+		formulaParser.parseExpression(formula);
+		if (allCalculatedAttributesPresent)
 		{
-			Set<Entry<BaseAbstractAttributeInterface, Object>> entries = attributeValueMapForValidation.entrySet();
+			Set<Entry<BaseAbstractAttributeInterface, Object>> entries = attributeValueMapForValidation
+					.entrySet();
 			for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : entries)
 			{
 				CategoryAttributeInterface attribute = (CategoryAttributeInterface) entry.getKey();
-				List<PathAssociationRelationInterface> pathAssociationCollection = attribute.getCategoryEntity()
-				.getPath().getSortedPathAssociationRelationCollection();
-				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
-						.get(pathAssociationCollection.size() - 1);
-				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
+				Long targetInstanceId = CategoryGenerationUtil
+						.getInstanceIdOfCategoryEntity(attribute.getCategoryEntity());
+				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute
+						.getAbstractAttribute();
 				if (attributeInterface.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
 					dateValue = getDate(entry.getValue().toString(), attributeInterface);
 					Integer defaultValue = dateValue.getDate();
-					formulaParser.setVariableValue(attribute.getCategoryEntity()
-							.getEntity().getName()
+					formulaParser.setVariableValue(attribute.getCategoryEntity().getEntity()
+							.getName()
 							+ "_"
-							+ pathAssociationRelationInterface
-									.getTargetInstanceId().toString()
+							+ targetInstanceId.toString()
 							+ "_"
-							+ attributeInterface.getName(),
-							defaultValue);
+							+ attributeInterface.getName(), defaultValue);
 				}
 				else
 				{
-					PermissibleValueInterface permissibleValueInterface = null;
-					try 
+					if (!(!(attribute.getCategoryEntity().equals(categoryAttributeInterface
+							.getCategoryEntity())) && (attribute.getCategoryEntity()
+							.getNumberOfEntries() == -1)))
 					{
-						permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
-					} 
-					catch (ParseException e)
-					{
-						throw new DynamicExtensionsSystemException("ParseException",e);
+						try
+						{
+							PermissibleValueInterface permissibleValueInterface = attributeInterface
+									.getAttributeTypeInformation().getPermissibleValueForString(
+											entry.getValue().toString());
+							if (permissibleValueInterface != null)
+							{
+								formulaParser.setVariableValue(attribute.getCategoryEntity()
+										.getEntity().getName()
+										+ "_"
+										+ targetInstanceId.toString()
+										+ "_"
+										+ attributeInterface.getName(), permissibleValueInterface
+										.getValueAsObject());
+							}
+						}
+						catch (Exception e)
+						{
+							return "";
+						}
 					}
-					if (permissibleValueInterface != null)
+					else
 					{
-						formulaParser.setVariableValue(attribute.getCategoryEntity()
-								.getEntity().getName()
-								+ "_"
-								+ pathAssociationRelationInterface
-										.getTargetInstanceId().toString()
-								+ "_"
-								+ attributeInterface.getName(),
-								permissibleValueInterface.getValueAsObject());
+						Map<String, String> entryValueMap = (Map<String, String>) entry.getValue();
+
+						for (Map.Entry<String, String> mapEntry : entryValueMap.entrySet())
+						{
+							PermissibleValueInterface permissibleValueInterface = null;
+							try
+							{
+								permissibleValueInterface = attributeInterface
+										.getAttributeTypeInformation()
+										.getPermissibleValueForString(mapEntry.getValue());
+							}
+							catch (Exception e)
+							{
+								return "";
+							}
+							if (permissibleValueInterface != null)
+							{
+								formulaParser.setVariableValue(mapEntry.getKey(),
+										permissibleValueInterface.getValueAsObject());
+							}
+						}
 					}
 				}
 			}
-
 			formulaValue = formulaParser.evaluateExpression();
 			if (formulaValue != null)
 			{
 				if (((AttributeMetadataInterface) categoryAttributeInterface)
 						.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					value = setDate(dateValue, formulaValue, (AttributeMetadataInterface) categoryAttributeInterface);
+					value = setDate(dateValue, formulaValue,
+							(AttributeMetadataInterface) categoryAttributeInterface);
 				}
 				else
 				{
-					try 
+					try
 					{
 						value = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttributeInterface)
-								.getAttributeTypeInformation())
-								.getFormattedValue(formulaValue);
-					} 
-					catch (ParseException e) 
+								.getAttributeTypeInformation()).getFormattedValue(formulaValue);
+					}
+					catch (Exception e)
 					{
-						throw new DynamicExtensionsSystemException("ParseException",e);
+						return "";
 					}
 				}
 			}
 		}
 		return value;
 	}
+
 	/**
-	 * 
+	 *
+	 * @param attributeValueMap
+	 * @return
+	 * @throws ParseException
+	 */
+	private void evaluateFormulaForMultilineCalulatedAttribute(
+			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
+			CategoryAttributeInterface calculatedAttribute,
+			Map<String, String> calculatedKeyValueMap, int rowCount)
+	{
+		Set<Entry<BaseAbstractAttributeInterface, Object>> entries = attributeValueMap.entrySet();
+		for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : entries)
+		{
+			BaseAbstractAttributeInterface attribute = entry.getKey();
+			if (attribute instanceof CategoryAttributeInterface)
+			{
+				CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) attribute;
+				if (categoryAttribute.equals(calculatedAttribute))
+				{
+					String value = (String) entry.getValue();
+					if ((value != null) && (value.length() > 0))
+					{
+						Long targetInstanceId = CategoryGenerationUtil
+								.getInstanceIdOfCategoryEntity(categoryAttribute
+										.getCategoryEntity());
+						calculatedKeyValueMap.put(categoryAttribute.getCategoryEntity().getEntity()
+								.getName()
+								+ "_"
+								+ targetInstanceId.toString()
+								+ "_"
+								+ categoryAttribute.getAbstractAttribute().getName()
+								+ "_"
+								+ rowCount, value);
+
+					}
+				}
+			}
+			else if (attribute instanceof CategoryAssociationInterface)
+			{
+				int count = 0;
+				List<Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry
+						.getValue();
+				for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
+				{
+					count++;
+					evaluateFormulaForMultilineCalulatedAttribute(map, calculatedAttribute,
+							calculatedKeyValueMap, count);
+				}
+			}
+		}
+	}
+
+	/**
+	 *
 	 * @param dateValue
 	 * @param value
 	 * @param attributeInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private Date getDate(String value,AttributeMetadataInterface attributeInterface) throws DynamicExtensionsSystemException
+	private Date getDate(String value, AttributeMetadataInterface attributeInterface)
+			throws DynamicExtensionsSystemException
 	{
-		Date dateValue = null;
 		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
-				.getDateFormat(attributeInterface.getAttributeTypeInformation()),locale);
+				.getDateFormat(attributeInterface.getAttributeTypeInformation()), locale);
 		simpleDateFormat.setLenient(true);
-		try 
+		try
 		{
-			dateValue = simpleDateFormat.parse(value);
-		} 
-		catch (ParseException e) 
-		{
-			throw new DynamicExtensionsSystemException("ParseException",e);
+			Date dateValue = simpleDateFormat.parse(value);
+			if (dateValue.getHours() >= ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF)
+			{
+				dateValue.setHours(dateValue.getHours()
+						- ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF);
+				dateValue.setDate(dateValue.getDate() + 1);
+			}
+			return dateValue;
 		}
-		
-		if (dateValue.getHours() >= ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF)
+		catch (ParseException e)
 		{
-			dateValue.setHours(dateValue.getHours() - ProcessorConstants.DATE_TIME_FORMAT_ROUND_OFF);
-			dateValue.setDate(dateValue.getDate()+ 1);
+			throw new DynamicExtensionsSystemException(PARSE_EXCEPTION, e);
 		}
-		return dateValue;
+
 	}
+
 	/**
-	 * 
+	 *
 	 * @param dateValue
 	 * @param formulaValue
 	 * @param attributeInterface
 	 * @return
 	 */
-	private String setDate(Date dateValue,Double formulaValue,AttributeMetadataInterface attributeInterface)
+	private String setDate(Date dateValue, Double formulaValue,
+			AttributeMetadataInterface attributeInterface)
 	{
-		String value ="";
-		if (dateValue != null && formulaValue != null)
+		String value = "";
+		if ((dateValue != null) && (formulaValue != null))
 		{
 			dateValue.setDate(Integer.valueOf(formulaValue.intValue()));
 			Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
-					.getDateFormat(attributeInterface
-							.getAttributeTypeInformation()),locale);
+					.getDateFormat(attributeInterface.getAttributeTypeInformation()), locale);
 			simpleDateFormat.setLenient(true);
 			value = simpleDateFormat.format(dateValue);
 		}
 		return value;
 	}
+
 	/**
-	 * 
+	 *
 	 * @param attributeValueMap
 	 * @return
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	private void evaluateFormulaForCalulatedAttribute(
 			Map<BaseAbstractAttributeInterface, Object> attributeValueMap,
-			CategoryAttributeInterface calculatedAttribute,boolean isSameCategoryEntityAttribute,List <Object> values,Integer entryNumber,Integer mapentryNumber)
+			CategoryAttributeInterface calculatedAttribute, boolean isSameCategoryEntityAttribute,
+			List<String> values, Integer entryNumber, Integer mapentryNumber)
 	{
 		if (!values.isEmpty())
 		{
@@ -258,47 +393,53 @@ public class FormulaCalculator
 				if ((!isSameCategoryEntityAttribute && categoryAttribute
 						.equals(calculatedAttribute))
 						|| (isSameCategoryEntityAttribute
-								&& categoryAttribute
-										.equals(calculatedAttribute) && entryNumber
+								&& categoryAttribute.equals(calculatedAttribute) && entryNumber
 								.equals(mapentryNumber)))
 				{
 					String value = (String) entry.getValue();
-					if (value != null && value.length() > 0) 
+					if ((value != null) && (value.length() > 0))
 					{
 						values.add(value);
 						return;
 					}
-				} 
+				}
 			}
 			else if (attribute instanceof CategoryAssociationInterface)
 			{
 				Integer rowNumber = 0;
-				List <Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry.getValue();
+				List<Map<BaseAbstractAttributeInterface, Object>> attributeValueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) entry
+						.getValue();
 				for (Map<BaseAbstractAttributeInterface, Object> map : attributeValueMapList)
 				{
 					rowNumber++;
-					evaluateFormulaForCalulatedAttribute(map,calculatedAttribute,isSameCategoryEntityAttribute,values,entryNumber,rowNumber);
+					evaluateFormulaForCalulatedAttribute(map, calculatedAttribute,
+							isSameCategoryEntityAttribute, values, entryNumber, rowNumber);
 				}
 			}
 		}
 	}
+
 	/**
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws ParseException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * @throws ParseException
+	 * @throws DynamicExtensionsSystemException
+	 *
 	 */
-	public String setDefaultValueForCalculatedAttributes(CategoryAttributeInterface categoryAttribute,CategoryInterface category) throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	public String setDefaultValueForCalculatedAttributes(
+			CategoryAttributeInterface categoryAttribute, CategoryInterface category)
+			throws DynamicExtensionsSystemException
 	{
 		StringBuffer message = new StringBuffer("");
 		Double formulaValue = null;
 		Date dateValue = null;
-		Map<BaseAbstractAttributeInterface, Object> attributeValueMap = new HashMap <BaseAbstractAttributeInterface, Object>();
+		Map<BaseAbstractAttributeInterface, Object> attributeValueMap = new HashMap<BaseAbstractAttributeInterface, Object>();
 		boolean allCalculatedAttributesPresent = true;
 		FormulaParser formulaParser = getFormulaParser();
 		formulaParser.parseExpression(categoryAttribute.getFormula().getExpression());
-		for (CategoryAttributeInterface calculatedAttribute : categoryAttribute.getCalculatedCategoryAttributeCollection())
+		for (CalculatedAttributeInterface calculatedAttributeInterface : categoryAttribute
+				.getCalculatedCategoryAttributeCollection())
 		{
+			CategoryAttributeInterface calculatedAttribute = calculatedAttributeInterface
+					.getSourceForCalculatedAttribute();
 			if (calculatedAttribute.getDefaultValuePermissibleValue() == null)
 			{
 				allCalculatedAttributesPresent = false;
@@ -306,119 +447,113 @@ public class FormulaCalculator
 			else
 			{
 				String value = "";
-				if (((AttributeMetadataInterface)calculatedAttribute).getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+				if (((AttributeMetadataInterface) calculatedAttribute)
+						.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					Locale locale = CommonServiceLocator.getInstance()
-							.getDefaultLocale();
-					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-							ControlsUtility
-									.getDateFormat(((AttributeMetadataInterface) calculatedAttribute)
-											.getAttributeTypeInformation()),
-							locale);
+					Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ControlsUtility
+							.getDateFormat(((AttributeMetadataInterface) calculatedAttribute)
+									.getAttributeTypeInformation()), locale);
 					simpleDateFormat.setLenient(true);
-					value = simpleDateFormat
-							.format((Date) calculatedAttribute
-									.getDefaultValuePermissibleValue()
-									.getValueAsObject());
+					value = simpleDateFormat.format((Date) calculatedAttribute
+							.getDefaultValuePermissibleValue().getValueAsObject());
 				}
 				else
 				{
-					value = calculatedAttribute.getDefaultValue();
+					value = calculatedAttribute.getDefaultValue(null);
 				}
-				attributeValueMap.put(calculatedAttribute,value);
+				attributeValueMap.put(calculatedAttribute, value);
 			}
 		}
 		List<String> errorList = new ArrayList<String>();
 		Set<Map.Entry<BaseAbstractAttributeInterface, Object>> attributeSet = attributeValueMap
 				.entrySet();
-		for (Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode : attributeSet) 
+		for (Map.Entry<BaseAbstractAttributeInterface, Object> attributeValueNode : attributeSet)
 		{
-			errorList.addAll(ValidatorUtil.validateAttributes(
-					attributeValueNode, attributeValueNode.getKey().getName()));
+			errorList.addAll(ValidatorUtil.validateAttributes(attributeValueNode.getKey(),
+					attributeValueNode.getValue(), attributeValueNode.getKey().getName()));
 		}
 
 		if (allCalculatedAttributesPresent && errorList.isEmpty())
 		{
-			Set<Entry<BaseAbstractAttributeInterface, Object>> entries = attributeValueMap.entrySet();
+			Set<Entry<BaseAbstractAttributeInterface, Object>> entries = attributeValueMap
+					.entrySet();
 			for (Map.Entry<BaseAbstractAttributeInterface, Object> entry : entries)
 			{
 				CategoryAttributeInterface attribute = (CategoryAttributeInterface) entry.getKey();
-				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute.getAbstractAttribute();
+				AttributeMetadataInterface attributeInterface = (AttributeMetadataInterface) attribute
+						.getAbstractAttribute();
+				Long targetInstanceId = CategoryGenerationUtil
+						.getInstanceIdOfCategoryEntity(attribute.getCategoryEntity());
 
-				List<PathAssociationRelationInterface> pathAssociationCollection = attribute.getCategoryEntity()
-				.getPath().getSortedPathAssociationRelationCollection();
-				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
-						.get(pathAssociationCollection.size() - 1);
 				if (attributeInterface.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
 					dateValue = getDate(entry.getValue().toString(), attributeInterface);
 					Integer defaultValue = dateValue.getDate();
-					formulaParser.setVariableValue(attribute.getCategoryEntity()
-							.getEntity().getName()
+					formulaParser.setVariableValue(attribute.getCategoryEntity().getEntity()
+							.getName()
 							+ "_"
-							+ pathAssociationRelationInterface
-									.getTargetInstanceId().toString()
+							+ targetInstanceId.toString()
 							+ "_"
-							+ attributeInterface.getName(),
-							defaultValue);
+							+ attributeInterface.getName(), defaultValue);
 				}
 				else
 				{
-					PermissibleValueInterface permissibleValueInterface = null;
-					try 
+					try
 					{
-						permissibleValueInterface = attributeInterface.getAttributeTypeInformation().getPermissibleValueForString(entry.getValue().toString());
-					} 
-					catch (ParseException e) 
-					{
-						throw new DynamicExtensionsSystemException("ParseException",e);
+						PermissibleValueInterface permissibleValueInterface = attributeInterface
+								.getAttributeTypeInformation().getPermissibleValueForString(
+										entry.getValue().toString());
+						formulaParser.setVariableValue(attribute.getCategoryEntity().getEntity()
+								.getName()
+								+ "_"
+								+ targetInstanceId.toString()
+								+ "_"
+								+ attribute.getAbstractAttribute().getName(),
+								permissibleValueInterface.getValueAsObject());
 					}
-				
-					formulaParser.setVariableValue(attribute.getCategoryEntity()
-							.getEntity().getName()
-							+ "_"
-							+ pathAssociationRelationInterface
-									.getTargetInstanceId().toString()
-							+ "_"
-							+ attribute.getAbstractAttribute().getName(),
-							permissibleValueInterface.getValueAsObject());
+					catch (ParseException e)
+					{
+						throw new DynamicExtensionsSystemException(PARSE_EXCEPTION, e);
+					}
+
 				}
 			}
 			formulaValue = formulaParser.evaluateExpression();
 			if (formulaValue != null)
 			{
 				PermissibleValueInterface defaultValue = null;
-				if (((AttributeMetadataInterface) categoryAttribute)
-						.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+				if (((AttributeMetadataInterface) categoryAttribute).getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
 					if (dateValue != null)
 					{
-						String value = setDate(dateValue, formulaValue, (AttributeMetadataInterface) categoryAttribute);
-						try 
+						String value = setDate(dateValue, formulaValue,
+								(AttributeMetadataInterface) categoryAttribute);
+						try
 						{
 							defaultValue = ((AttributeMetadataInterface) categoryAttribute)
-									.getAttributeTypeInformation()
-									.getPermissibleValueForString(value);
-						} 
-						catch (ParseException e) 
+									.getAttributeTypeInformation().getPermissibleValueForString(
+											value);
+						}
+						catch (ParseException e)
 						{
-							throw new DynamicExtensionsSystemException("ParseException",e);
+							throw new DynamicExtensionsSystemException(PARSE_EXCEPTION, e);
 						}
 					}
 				}
 				else
 				{
-					try 
+					try
 					{
-						NumericAttributeTypeInformation numericAttributeTypeInformation = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttribute)
+						NumericAttributeTypeInformation numericAttributeTypeInfo = ((NumericAttributeTypeInformation) ((AttributeMetadataInterface) categoryAttribute)
 								.getAttributeTypeInformation());
-						defaultValue = numericAttributeTypeInformation
-								.getPermissibleValueForString(numericAttributeTypeInformation
+						defaultValue = numericAttributeTypeInfo
+								.getPermissibleValueForString(numericAttributeTypeInfo
 										.getFormattedValue(formulaValue));
 					}
-					catch (ParseException e) 
+					catch (ParseException e)
 					{
-						throw new DynamicExtensionsSystemException("ParseException",e);
+						throw new DynamicExtensionsSystemException(PARSE_EXCEPTION, e);
 					}
 				}
 				categoryAttribute.setDefaultValue(defaultValue);
@@ -433,19 +568,21 @@ public class FormulaCalculator
 		}
 		return message.toString();
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	public FormulaParser getFormulaParser() 
+	public FormulaParser getFormulaParser()
 	{
 		return formulaParser;
 	}
+
 	/**
-	 * 
+	 *
 	 * @param formulaParser
 	 */
-	public void setFormulaParser(FormulaParser formulaParser) 
+	public void setFormulaParser(FormulaParser formulaParser)
 	{
 		this.formulaParser = formulaParser;
 	}

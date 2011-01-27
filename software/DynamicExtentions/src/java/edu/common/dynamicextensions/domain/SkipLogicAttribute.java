@@ -1,14 +1,15 @@
+
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
-
 
 /**
  * This Class represents the general Attribute of the Entities
@@ -16,59 +17,66 @@ import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class SkipLogicAttribute extends BaseAbstractAttribute
-    implements SkipLogicAttributeInterface
+		implements
+			SkipLogicAttributeInterface
 {
-    /**
-     * 
-     */
-    protected static final long serialVersionUID = 12345254735L;
-    /**
-     * 
-     */
-    protected CategoryAttributeInterface sourceSkipLogicAttribute;
-    /**
-     * 
-     */
-    protected CategoryAttributeInterface targetSkipLogicAttribute;
-    /**
-     * 
-     */
-    protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
-    /**
-     * 
-     */
-    protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
+
+	/**
+	 *
+	 */
+	protected static final long serialVersionUID = 12345254735L;
+	/**
+	 *
+	 */
+	protected CategoryAttributeInterface sourceSkipLogicAttribute;
+	/**
+	 *
+	 */
+	protected CategoryAttributeInterface targetSkipLogicAttribute;
+	/**
+	 *
+	 */
+	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
+	/**
+	 * The PV set from targetSkipLogicAttribute to be displayed,
+	 * depending on the value of source attribute
+	 */
+	protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
 
 	/**
 	 * @return
 	 * @hibernate.many-to-one cascade="save-update" column="SOURCE_SKIP_LOGIC_ID" class="edu.common.dynamicextensions.domain.CategoryAttribute" constrained="true"
 	 */
-    public CategoryAttributeInterface getSourceSkipLogicAttribute()
-    {
-        return sourceSkipLogicAttribute;
-    }
-    /**
-     * 
-     */
-    public void setSourceSkipLogicAttribute(CategoryAttributeInterface sourceSkipLogicAttribute)
-    {
-        this.sourceSkipLogicAttribute = sourceSkipLogicAttribute;
-    }
+	public CategoryAttributeInterface getSourceSkipLogicAttribute()
+	{
+		return sourceSkipLogicAttribute;
+	}
+
+	/**
+	 *
+	 */
+	public void setSourceSkipLogicAttribute(CategoryAttributeInterface sourceSkipLogicAttribute)
+	{
+		this.sourceSkipLogicAttribute = sourceSkipLogicAttribute;
+	}
+
 	/**
 	 * @return
 	 * @hibernate.many-to-one cascade="save-update" column="TARGET_SKIP_LOGIC_ID" class="edu.common.dynamicextensions.domain.CategoryAttribute" constrained="true"
 	 */
-    public CategoryAttributeInterface getTargetSkipLogicAttribute()
-    {
-        return targetSkipLogicAttribute;
-    }
-    /**
-     * 
-     */
-    public void setTargetSkipLogicAttribute(CategoryAttributeInterface targetSkipLogicAttribute)
-    {
-        this.targetSkipLogicAttribute = targetSkipLogicAttribute;
-    }
+	public CategoryAttributeInterface getTargetSkipLogicAttribute()
+	{
+		return targetSkipLogicAttribute;
+	}
+
+	/**
+	 *
+	 */
+	public void setTargetSkipLogicAttribute(CategoryAttributeInterface targetSkipLogicAttribute)
+	{
+		this.targetSkipLogicAttribute = targetSkipLogicAttribute;
+	}
+
 	/**
 	 * @hibernate.set name="defaultPermissibleValuesCollection" table="DYEXTN_PERMISSIBLE_VALUE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -90,8 +98,9 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
 	{
 		this.defaultPermissibleValuesCollection = defaultPermissibleValuesCollection;
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public PermissibleValueInterface getDefaultValuePermissibleValue()
@@ -106,26 +115,30 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
 		}
 		return permissibleValueInterface;
 	}
-    /**
-     * 
-     */
-    public String getDefaultValue()
-    {
-        String defaultValue = null;
-        if(defaultPermissibleValuesCollection != null && !defaultPermissibleValuesCollection.isEmpty())
-        {
-        	Iterator<PermissibleValueInterface> dataElementIter = defaultPermissibleValuesCollection.iterator();
-            Object nextPV = ((PermissibleValueInterface)dataElementIter.next()).getValueAsObject();
-            if(nextPV != null)
-            {
-                defaultValue = String.valueOf(nextPV);
-            }
-        }
-        return defaultValue;
-    }
-    /**
-     * 
-     */
+
+	/**
+	 *
+	 */
+	public String getDefaultValue()
+	{
+		String defaultValue = null;
+		if (defaultPermissibleValuesCollection != null
+				&& !defaultPermissibleValuesCollection.isEmpty())
+		{
+			Iterator<PermissibleValueInterface> dataElementIter = defaultPermissibleValuesCollection
+					.iterator();
+			Object nextPV = dataElementIter.next().getValueAsObject();
+			if (nextPV != null)
+			{
+				defaultValue = String.valueOf(nextPV);
+			}
+		}
+		return defaultValue;
+	}
+
+	/**
+	 *
+	 */
 	public void setDefaultValue(PermissibleValueInterface permissibleValue)
 	{
 		if (defaultPermissibleValuesCollection == null)
@@ -140,8 +153,9 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
 			defaultPermissibleValuesCollection.remove(iterator.next());
 		}
 
-		this.defaultPermissibleValuesCollection.add(permissibleValue);
+		defaultPermissibleValuesCollection.add(permissibleValue);
 	}
+
 	/**
 	 * @hibernate.set name="dataElementCollection" table="DYEXTN_DATA_ELEMENT" cascade="save-update" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="SKIP_LOGIC_ATTRIBUTE_ID"
@@ -174,13 +188,14 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
 			Iterator<DataElementInterface> dataElementIterator = dataElementCollection.iterator();
 			if (dataElementIterator.hasNext())
 			{
-				dataElementInterface = (DataElement) dataElementIterator.next();
+				dataElementInterface = dataElementIterator.next();
 			}
 		}
 		return dataElementInterface;
 	}
+
 	/**
-	 * 
+	 *
 	 */
 	public void clearDataElementCollection()
 	{
@@ -197,14 +212,15 @@ public class SkipLogicAttribute extends BaseAbstractAttribute
 		{
 			dataElementCollection = new HashSet();
 		}
-		this.dataElementCollection.add(dataElementInterface);
+		dataElementCollection.add(dataElementInterface);
 	}
-    /**
-     * 
-     */
-    public boolean getIsSkipLogic()
-    {
-        return dataElementCollection.isEmpty();
-    }
+
+	/**
+	 *
+	 */
+	public boolean getIsSkipLogic()
+	{
+		return dataElementCollection.isEmpty();
+	}
 
 }

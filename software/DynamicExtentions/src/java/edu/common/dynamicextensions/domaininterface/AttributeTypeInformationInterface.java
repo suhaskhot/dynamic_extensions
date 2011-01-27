@@ -24,16 +24,19 @@ public interface AttributeTypeInformationInterface
 	DataElementInterface getDataElement();
 
 	/**
+	 * Sets the data element for this attribute type info.
 	 * @param dataElementInterface data element interface
 	 */
 	void setDataElement(DataElementInterface dataElementInterface);
 
 	/**
+	 * removes the given data element from the data element collection.
 	 * @param dataElementInterface data element interface
 	 */
 	void removeDataElement(DataElementInterface dataElementInterface);
 
 	/**
+	 * returns the default permissible value.
 	 * @return return the default value for this attribute type.
 	 */
 	PermissibleValueInterface getDefaultValue();
@@ -51,10 +54,16 @@ public interface AttributeTypeInformationInterface
 	String getDataType();
 
 	/**
-	 *
-	 * @param value
-	 * @return
-	 * @throws ParseException
+	 * This method returns the class type of the attribute based on it's attributeTypeInformation object.
+	 * @return Class attribute type.
+	 */
+	Class getAttributeDataType();
+
+	/**
+	 *Return the permissible value object for the given string.
+	 * @param value string value from which to create the object
+	 * @return permissible value object from the given Value.
+	 * @throws ParseException exception.
 	 */
 	PermissibleValueInterface getPermissibleValueForString(String value) throws ParseException;
 }

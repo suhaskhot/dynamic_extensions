@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false">
@@ -71,6 +71,7 @@
             update="true"
             insert="true"
             column="NAME"
+            length="400"
         />
 
         <property
@@ -103,7 +104,7 @@
             name="baseAbstractAttribute"
             class="edu.common.dynamicextensions.domain.BaseAbstractAttribute"
             cascade="save-update"
-            outer-join="auto"
+            outer-join="false"
             update="true"
             insert="true"
             column="BASE_ABST_ATR_ID"
@@ -131,6 +132,7 @@
             update="true"
             insert="true"
             column="HEADING"
+            length="800"
         />
 
         <list
@@ -171,6 +173,40 @@
             column="SKIP_LOGIC_TARGET_CONTROL"
         />
 
+       <property
+            name="isPasteEnable"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_PASTE_BUTTON_EANBLED"
+        />
+
+        <many-to-one
+            name="sourceSkipControl"
+            class="edu.common.dynamicextensions.domain.userinterface.Control"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="SOURCE_CONTROL_ID"
+        />
+
+        <property
+            name="isShowHide"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="SHOW_HIDE"
+        />
+
+        <property
+            name="isSelectiveReadOnly"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="SELECTIVE_READ_ONLY"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-Control.xml
@@ -205,6 +241,7 @@
             outer-join="auto"
             update="true"
             insert="true"
+            lazy="false"
             column="CONTAINER_ID"
         />
 
@@ -305,6 +342,13 @@
         <key
             column="IDENTIFIER"
         />
+        <property
+            name="showCalendar"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="SHOWCALENDAR"
+        />
 
         <property
             name="dateValueType"
@@ -313,15 +357,7 @@
             insert="true"
             column="DATE_VALUE_TYPE"
         />
-     
-        <property
-            name="showCalendar"
-            type="boolean"
-            update="true"
-            insert="true"
-            column="SHOWCALENDAR"
-        />
-        
+
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.userinterface.SelectControl"
@@ -401,6 +437,32 @@
         >
         <key
             column="IDENTIFIER"
+        />
+        <property
+            name="columns"
+            type="integer"
+            update="true"
+            insert="true"
+            column="NO_OF_COLUMNS"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.userinterface.MultiSelectCheckBox"
+            table="DYEXTN_MULTISELECT_CHECK_BOX"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <property
+            name="isMultiSelect"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="MULTISELECT"
         />
 
         </joined-subclass>

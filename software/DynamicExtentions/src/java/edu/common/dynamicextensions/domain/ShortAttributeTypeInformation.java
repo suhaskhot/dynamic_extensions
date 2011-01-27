@@ -37,11 +37,22 @@ public class ShortAttributeTypeInformation extends NumericAttributeTypeInformati
 
 		return shortValue;
 	}
+
 	/**
 	 * 
 	 */
 	public String getFormattedValue(Double value)
 	{
 		return Short.valueOf(value.shortValue()).toString();
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getAttributeDataType()
+	 * @return Class type for attribute.
+	 */
+	public Class getAttributeDataType()
+	{
+		return Short.class;
 	}
 }

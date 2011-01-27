@@ -17,10 +17,8 @@ import edu.common.dynamicextensions.util.global.DEConstants;
 public class CacheManager
 {
 
-	static Map cacheMap;
-
 	/**
-	 * Add object to cache 
+	 * Add object to cache
 	 * @param request : HTTP Request object
 	 * @param key : Key to be used while storing object in cache
 	 * @param formDetailsObject : Object to be stored in cache
@@ -30,7 +28,7 @@ public class CacheManager
 			Object formDetailsObject)
 	{
 		HttpSession session = request.getSession();
-		cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
+		Map cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 
 		if (cacheMap == null)
 		{
@@ -54,7 +52,7 @@ public class CacheManager
 
 		if (session.getAttribute(DEConstants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
+			Map cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 			result = cacheMap.get(key);
 		}
 		return result;
@@ -70,7 +68,7 @@ public class CacheManager
 		HttpSession session = request.getSession();
 		if (session.getAttribute(DEConstants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
+			Map cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 			cacheMap.remove(key);
 		}
 	}
@@ -84,7 +82,7 @@ public class CacheManager
 		HttpSession session = request.getSession();
 		if (session.getAttribute(DEConstants.CACHE_MAP) != null)
 		{
-			cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
+			Map cacheMap = (Map) session.getAttribute(DEConstants.CACHE_MAP);
 			cacheMap.clear();
 		}
 	}

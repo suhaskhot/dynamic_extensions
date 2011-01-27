@@ -36,11 +36,22 @@ public class LongAttributeTypeInformation extends NumericAttributeTypeInformatio
 
 		return longValue;
 	}
+
 	/**
 	 * 
 	 */
 	public String getFormattedValue(Double value)
 	{
 		return Long.valueOf(value.longValue()).toString();
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getAttributeDataType()
+	 * @return Class type for attribute.
+	 */
+	public Class getAttributeDataType()
+	{
+		return Long.class;
 	}
 }

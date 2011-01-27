@@ -4,12 +4,12 @@
 
 package edu.common.dynamicextensions.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import static edu.common.dynamicextensions.util.global.DEConstants.FALSE_VALUE_LIST;
+import static edu.common.dynamicextensions.util.global.DEConstants.TRUE_VALUE_LIST;
+
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -25,8 +25,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -36,6 +38,13 @@ import java.util.regex.Pattern;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
@@ -60,11 +69,15 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
@@ -83,7 +96,9 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.util.global.DEConstants.InheritanceStrategy;
@@ -91,6 +106,7 @@ import edu.common.dynamicextensions.xmi.XMIConfiguration;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.CVSTagReader;
@@ -98,11 +114,13 @@ import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.common.util.logger.LoggerConfig;
+import edu.wustl.dao.DAO;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
+import edu.wustl.metadata.util.DyExtnObjectCloner;
 
 /**
  * @author chetan_patil
@@ -111,34 +129,16 @@ import edu.wustl.dao.exception.DAOException;
 public class DynamicExtensionsUtility
 {
 
-	/**
-	 * This method fetches the Control instance from the Database given the corresponding Control Identifier.
-	 * @param controlIdentifier The identifier of the Control.
-	 * @return the ControlInterface
-	 * @throws DynamicExtensionsSystemException on System exception
-	 * @throws DynamicExtensionsApplicationException on Application exception
-	 */
-	public static ControlInterface getControlByIdentifier(String controlIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		ControlInterface controlInterface = null;
-		if (controlIdentifier != null && !"".equals(controlIdentifier))
-		{
-			controlInterface = EntityCache.getInstance().getControlById(
-					Long.valueOf(controlIdentifier));
-		}
-		return controlInterface;
-	}
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = Logger.getCommonLogger(DynamicExtensionsUtility.class);
 
 	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The identifier of the container.
-	 * @return the ContainerInterface
-	 * @throws DynamicExtensionsSystemException on System exception
-	 * @throws DynamicExtensionsApplicationException on Application exception
+	 * @param entityGroupIdentifier The entity group identifier.
+	 * @return the ContainerInterface.
 	 */
 	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupInterface entityGroupInterface = null;
 		if (entityGroupIdentifier != null && !"".equals(entityGroupIdentifier))
@@ -153,11 +153,8 @@ public class DynamicExtensionsUtility
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The Identifier of the Container.
 	 * @return the ContainerInterface
-	 * @throws DynamicExtensionsSystemException on System exception
-	 * @throws DynamicExtensionsApplicationException on Application exception
 	 */
 	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface containerInterface = null;
 		if (containerIdentifier != null && !"".equals(containerIdentifier))
@@ -169,8 +166,48 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
+	 * This method returns the containerInterface object.
+	 * @param containerIdentifier Container identifier.
+	 * @return ContainerInterface
+	 */
+	public static ContainerInterface getClonedContainerFromCache(String containerIdentifier)
+	{
+		ContainerInterface containerInterface = getContainerByIdentifier(containerIdentifier);
+		DyExtnObjectCloner cloner = new DyExtnObjectCloner();
+		return cloner.clone(containerInterface);
+	}
+
+	/**
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The Identifier of the Container.
+	 * @param mainContainer Container Interface object.
+	 * @return the ContainerInterface
+	 * @throws DynamicExtensionsSystemException on System exception
+	 * @throws DynamicExtensionsApplicationException on Application exception
+	 */
+	public static ContainerInterface getContainerByIdentifier(String containerIdentifier,
+			ContainerInterface mainContainer) throws DynamicExtensionsSystemException
+	{
+		ContainerInterface containerInterface = null;
+		if (containerIdentifier != null && mainContainer.getId() != null)
+		{
+			if (containerIdentifier.equals(mainContainer.getId().toString()))
+			{
+				containerInterface = mainContainer;
+			}
+			else
+			{
+				AbstractContainmentControlInterface containmentControl = UserInterfaceiUtility
+						.getAssociationControl(mainContainer, containerIdentifier);
+				containerInterface = containmentControl.getContainer();
+			}
+		}
+		return containerInterface;
+	}
+
+	/**
+	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
+	 * @param attributeIdentifier The Identifier of the Container.
 	 * @return the ContainerInterface
 	 * @throws DynamicExtensionsSystemException on System exception
 	 * @throws DynamicExtensionsApplicationException on Application exception
@@ -208,8 +245,9 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * It will add the taggedValue to the given attribute in parameter with key "derived" and its value also"derived" 
-	 * @param attribute
+	 * It will add the taggedValue to the given attribute in parameter.
+	 * with key "derived" and its value also "derived".
+	 * @param attribute AttributeInterface object.
 	 */
 	public static void addInheritedTaggedValue(AttributeInterface attribute)
 	{
@@ -223,7 +261,7 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method clears data value for all controls within container
+	 * This method clears data value for all controls within container.
 	 * @param baseContainerObject Container Object
 	 */
 	public static void cleanContainerControlsValue(ContainerInterface baseContainerObject)
@@ -256,58 +294,60 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
+	 * This method returns the control name.
 	 * @param controlInterface ControlInterface
 	 * @return String ControlName
 	 */
 	public static String getControlName(ControlInterface controlInterface)
 	{
+		String typeOfControl = null;
 		if (controlInterface != null)
 		{
 			if (controlInterface instanceof TextFieldInterface)
 			{
-				return ProcessorConstants.TEXT_CONTROL;
+				typeOfControl = ProcessorConstants.TEXT_CONTROL;
 			}
 			else if (controlInterface instanceof ComboBoxInterface)
 			{
-				return ProcessorConstants.COMBOBOX_CONTROL;
+				typeOfControl = ProcessorConstants.COMBOBOX_CONTROL;
 			}
 			else if (controlInterface instanceof ListBoxInterface)
 			{
-				return ProcessorConstants.COMBOBOX_CONTROL;
+				typeOfControl = ProcessorConstants.COMBOBOX_CONTROL;
 			}
 			else if (controlInterface instanceof DatePickerInterface)
 			{
-				return ProcessorConstants.DATEPICKER_CONTROL;
+				typeOfControl = ProcessorConstants.DATEPICKER_CONTROL;
 			}
 			else if (controlInterface instanceof TextAreaInterface)
 			{
-				return ProcessorConstants.TEXT_CONTROL;
+				typeOfControl = ProcessorConstants.TEXT_CONTROL;
 			}
 			else if (controlInterface instanceof RadioButtonInterface)
 			{
-				return ProcessorConstants.RADIOBUTTON_CONTROL;
+				typeOfControl = ProcessorConstants.RADIOBUTTON_CONTROL;
 			}
 			else if (controlInterface instanceof CheckBoxInterface)
 			{
-				return ProcessorConstants.CHECKBOX_CONTROL;
+				typeOfControl = ProcessorConstants.CHECKBOX_CONTROL;
 			}
 			else if (controlInterface instanceof FileUploadInterface)
 			{
-				return ProcessorConstants.FILEUPLOAD_CONTROL;
+				typeOfControl = ProcessorConstants.FILEUPLOAD_CONTROL;
 			}
 			if (controlInterface instanceof AbstractContainmentControl)
 			{
-				return ProcessorConstants.ADD_SUBFORM_CONTROL;
+				typeOfControl = ProcessorConstants.ADD_SUBFORM_CONTROL;
 			}
 		}
-		return null;
+		return typeOfControl;
 	}
 
 	/**
-	 *
+	 * This method returns controlInterface object by sequence number.
 	 * @param controlCollection
 	 * @param sequenceNumber
-	 * @return
+	 * @return ControlInterface object.
 	 */
 	public static ControlInterface getControlBySequenceNumber(Collection controlCollection,
 			int sequenceNumber)
@@ -324,21 +364,61 @@ public class DynamicExtensionsUtility
 				/*&& !controlInterface.getSequenceNumberChanged()*/)
 				{
 					controlInterface.setSequenceNumberChanged(true);
-					return controlInterface;
+					break;
 				}
 			}
 		}
-		return null;
+		return controlInterface;
 	}
+
 	/**
-	 *
-	 * @param abstractAttribute
+	 * This method returns controlInterface object.
+	 * @param attributeMetadataInterface
 	 * @param containerInterface
-	 * @return
+	 * @return ControlInterface object.
 	 */
 	public static ControlInterface getControlForAbstractAttribute(
 			AttributeMetadataInterface attributeMetadataInterface,
 			ContainerInterface containerInterface)
+	{
+		ControlInterface control = null;
+		Collection<ControlInterface> controlCollection = containerInterface
+				.getAllControlsUnderSameDisplayLabel();
+		for (ControlInterface controlInterface : controlCollection)
+		{
+			if (controlInterface instanceof AbstractContainmentControlInterface)
+			{
+				control = getControlForAbstractAttribute(attributeMetadataInterface,
+						((AbstractContainmentControlInterface) controlInterface).getContainer());
+				if (control != null)
+				{
+					break;
+				}
+			}
+			else if (controlInterface.getBaseAbstractAttribute() != null
+					&& controlInterface.getBaseAbstractAttribute().getId() != null
+					&& controlInterface.getBaseAbstractAttribute().equals(
+							attributeMetadataInterface)
+					|| attributeMetadataInterface.equals(controlInterface
+							.getBaseAbstractAttribute()))
+			{
+				control = controlInterface;
+				break;
+			}
+		}
+		return control;
+	}
+
+	/**
+	 * This method returns controlInterface object.
+	 * @param attributeMetadataInterface AttributeMetadataInterface object.
+	 * @param containerInterface ContainerInterface object
+	 * @param categoryEntityName category entity name.
+	 * @return ControlInterface object.
+	 */
+	public static ControlInterface getControlForAbstractAttribute(
+			AttributeMetadataInterface attributeMetadataInterface,
+			ContainerInterface containerInterface, String categoryEntityName)
 	{
 		ControlInterface control = null;
 		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
@@ -350,14 +430,18 @@ public class DynamicExtensionsUtility
 						((AbstractContainmentControlInterface) controlInterface).getContainer());
 				if (control != null)
 				{
-					return control;
+					break;
 				}
 			}
 			else if (controlInterface.getBaseAbstractAttribute() != null)
 			{
-				if (controlInterface.getBaseAbstractAttribute().getId() != null)
+				if (controlInterface.getBaseAbstractAttribute().getId() == null)
 				{
-					if (controlInterface.getBaseAbstractAttribute().equals(attributeMetadataInterface))
+					if (controlInterface.getParentContainer().getAbstractEntity().getName() != null
+							&& controlInterface.getParentContainer().getAbstractEntity().getName()
+									.equals(categoryEntityName)
+							&& controlInterface.getBaseAbstractAttribute().getName().equals(
+									attributeMetadataInterface.getName()))
 					{
 						control = controlInterface;
 						break;
@@ -365,7 +449,8 @@ public class DynamicExtensionsUtility
 				}
 				else
 				{
-					if (controlInterface.getBaseAbstractAttribute().getName().equals(attributeMetadataInterface.getName()))
+					if (controlInterface.getBaseAbstractAttribute().equals(
+							attributeMetadataInterface))
 					{
 						control = controlInterface;
 						break;
@@ -376,18 +461,19 @@ public class DynamicExtensionsUtility
 		return control;
 
 	}
+
 	/**
-	 * 
+	 * This method returns controlInterface object.
 	 * @param controlIdentifier
 	 * @param containerInterface
-	 * @return
+	 * @return ControlInterface object.
 	 */
-	public static ControlInterface getControlByIdentifier(
-			String controlIdentifier,
+	public static ControlInterface getControlByIdentifier(String controlIdentifier,
 			ContainerInterface containerInterface)
 	{
 		ControlInterface control = null;
-		Collection<ControlInterface> controlCollection = containerInterface.getAllControls();
+		Collection<ControlInterface> controlCollection = containerInterface
+				.getAllControlsUnderSameDisplayLabel();
 		for (ControlInterface controlInterface : controlCollection)
 		{
 			if (controlInterface instanceof AbstractContainmentControlInterface)
@@ -396,26 +482,28 @@ public class DynamicExtensionsUtility
 						((AbstractContainmentControlInterface) controlInterface).getContainer());
 				if (control != null)
 				{
-					return control;
-				}
-			}
-			else if (controlInterface.getId() != null)
-			{
-				if (controlInterface.getId().toString().equals(controlIdentifier))
-				{
-					control = controlInterface;
 					break;
 				}
+			}
+			else if (controlInterface.getId() != null
+					&& controlInterface.getId().toString().equals(controlIdentifier))
+			{
+				control = controlInterface;
+				break;
+
 			}
 		}
 		return control;
 
 	}
+
 	/**
-	 * 
-	 * @return
+	 * This method returns ContainerInterface object.
+	 * @param abstractEntityInterface AbstractEntityInterface object.
+	 * @return ContainerInterface object.
 	 */
-	public static ContainerInterface getContainerForAbstractEntity(AbstractEntityInterface abstractEntityInterface)
+	public static ContainerInterface getContainerForAbstractEntity(
+			AbstractEntityInterface abstractEntityInterface)
 	{
 		ContainerInterface containerInterface = null;
 		List<ContainerInterface> containerList = new ArrayList<ContainerInterface>();
@@ -426,49 +514,9 @@ public class DynamicExtensionsUtility
 		}
 		return containerInterface;
 	}
-	/**
-	 * @param controlCollection collection of controls
-	 * @param sequenceNumber sequence number
-	 * @return control
-	 */
-	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection,
-			int sequenceNumber)
-	{
-		ControlInterface controlInterface = null;
-		if (controlCollection != null)
-		{
-			int noOfControls = controlCollection.length;
-			for (int i = 0; i < noOfControls; i++)
-			{
-				controlInterface = controlCollection[i];
-				if (controlInterface.getSequenceNumber() != null
-						&& controlInterface.getSequenceNumber() == sequenceNumber)
-				{
-					controlInterface.setSequenceNumberChanged(true);
-					return controlInterface;
-				}
-				else
-				{
-					controlInterface = null;
-				}
-			}
-		}
-		return controlInterface;
-	}
 
 	/**
-	 * initialize application variables
-	 */
-	public static void initialiseApplicationVariables()
-	{
-		if (Logger.out == null)
-		{
-			LoggerConfig.configureLogger("");
-		}
-	}
-
-	/**
-	 *
+	 * Initialize Application Information.
 	 */
 	public static void initialiseApplicationInfo()
 	{
@@ -479,27 +527,21 @@ public class DynamicExtensionsUtility
 		CVSTagReader cvsTagReader = new CVSTagReader();
 		String cvsTag = cvsTagReader.readTag(fileName);
 		Variables.applicationCvsTag = cvsTag;
-		Logger.out.info("========================================================");
-		Logger.out.info("Application Information");
-		Logger.out.info("-----------------------");
-		Logger.out.info("Name : " + DynamicExtensionDAO.getInstance().getAppName());
-		Logger.out.info("CVS TAG : " + Variables.applicationCvsTag);
-		Logger.out.info("Path : " + serviceLocator.getAppHome());
-		Logger.out.info("========================================================");
+		LOGGER.info("========================================================");
+		LOGGER.info("Application Information");
+		LOGGER.info("-----------------------");
+		LOGGER.info("Name : " + DynamicExtensionDAO.getInstance().getAppName());
+		LOGGER.info("CVS TAG : " + Variables.applicationCvsTag);
+		LOGGER.info("Path : " + serviceLocator.getAppHome());
+		LOGGER.info("========================================================");
 
-		try
-		{
-			Logger.out.info(" ");
-			Logger.out.info("Preloading the DE metadata....this may take a few minutes!!");
-			Logger.out.info(" ");
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
+		LOGGER.info(" ");
+		LOGGER.info("Preloading the DE metadata....this may take a few minutes!!");
+		LOGGER.info(" ");
 	}
 
 	/**
+	 * This method returns AttributeTypeInformationInterface object.
 	 * @param abstractAttributeInterface
 	 * @return attributeTypeInformation
 	 */
@@ -516,8 +558,8 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method converts stack trace to the string representation
-	 * @param aThrowable   throwable object
+	 * This method converts stack trace to the string representation.
+	 * @param throwable throwable object
 	 * @return String representation  of the stack trace
 	 */
 	public static String getStackTrace(Throwable throwable)
@@ -529,10 +571,10 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * Converts string to integer
+	 * Converts string to integer.
 	 * @param string
-	 * @return
-	 * @throws DynamicExtensionsApplicationException
+	 * @return int vale.
+	 * @throws DynamicExtensionsApplicationException.
 	 */
 	public static int convertStringToInt(String string)
 			throws DynamicExtensionsApplicationException
@@ -569,8 +611,7 @@ public class DynamicExtensionsUtility
 		boolean isNaturalNumber = true;
 		try
 		{
-			double doubleValue = Double.parseDouble(numString);
-			if (doubleValue < 0)
+			if (Double.parseDouble(numString) < 0)
 			{
 				isNaturalNumber = false;
 			}
@@ -619,7 +660,7 @@ public class DynamicExtensionsUtility
 	 */
 	public static int getCurrentMonth()
 	{
-		return (Calendar.getInstance().get(Calendar.MONTH) + 1);
+		return Calendar.getInstance().get(Calendar.MONTH) + 1;
 	}
 
 	/**
@@ -647,50 +688,20 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 *
-	 * @param originalObject Object
-	 * @return Object
-	 */
-	public static Object cloneObject(Object originalObject)
-	{
-		Object clonedObject = null;
-		try
-		{
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-			objectOutputStream.writeObject(originalObject);
-			//retrieve back
-			ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-			clonedObject = objectInputStream.readObject();
-		}
-		catch (IOException e)
-		{
-			Logger.out.error(e);
-		}
-		catch (ClassNotFoundException e)
-		{
-			Logger.out.error(e);
-		}
-
-		return clonedObject;
-	}
-
-	/**
-	 * @param string : string to be checked
+	 * @param string : string to be checked.
 	 * @param list: List that is to be checked if string is contained
 	 * @return check if a string is contained in the passed list and return true if yes
 	 */
 	public static boolean isStringInList(String string, List<String> list)
 	{
 		boolean isContainedInList = false;
-		if ((string != null) && (list != null))
+		if (string != null && list != null)
 		{
-			String listString = null;
+			//String listString = null;
 			Iterator<String> iterator = list.iterator();
 			while (iterator.hasNext())
 			{
-				listString = iterator.next();
+				String listString = iterator.next();
 				if (string.equals(listString))
 				{
 					isContainedInList = true;
@@ -728,56 +739,33 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * @param entity Entity Object
-	 * @return entityGroup of a entity
-	 */
-	public static EntityGroupInterface getEntityGroup(EntityInterface entity)
-	{
-		EntityGroupInterface entityGroup = null;
-		if (entity != null)
-		{
-			//			Collection<EntityGroupInterface> entityGroupCollection = entity
-			//					.getEntityGroupCollection();
-			//			if (entityGroupCollection != null)
-			//			{
-			//				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
-			//				if (entityGroupIter.hasNext())
-			//				{
-			entityGroup = entity.getEntityGroup();
-			//				}
-			//			}
-		}
-		return entityGroup;
-	}
-
-	/**
 	 * @param controlsSeqNumbers : String of controls sequence numbers
 	 * @param delimiter Delimiter used in string
-	 * @return
+	 * @return Integer objecta array.
 	 */
 	public static Integer[] convertToIntegerArray(String controlsSeqNumbers, String delimiter)
 	{
 		ArrayList<Integer> integerList = new ArrayList<Integer>();
 		if (controlsSeqNumbers != null)
 		{
-			String str = null;
-			Integer integer = null;
 			StringTokenizer strTokenizer = new StringTokenizer(controlsSeqNumbers, delimiter);
 			if (strTokenizer != null)
 			{
+				//String str = null;
+				//Integer integer = null;
 				while (strTokenizer.hasMoreElements())
 				{
-					str = strTokenizer.nextToken();
+					String str = strTokenizer.nextToken();
 					if (str != null)
 					{
 						try
 						{
-							integer = Integer.valueOf(str);
+							Integer integer = Integer.valueOf(str);
 							integerList.add(integer);
 						}
 						catch (NumberFormatException e)
 						{
-							Logger.out.error(e);
+							LOGGER.error(e);
 						}
 					}
 				}
@@ -791,7 +779,7 @@ public class DynamicExtensionsUtility
 	 * 1. Name - should not contain any special characters, should not be empty,null
 	 * 2. Description - should be less than 1000 characters.
 	 *
-	 * @param entity
+	 * @param entity EntityInterface object.
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void validateEntityForSaving(EntityInterface entity)
@@ -816,8 +804,6 @@ public class DynamicExtensionsUtility
 			throw new DynamicExtensionsApplicationException("Entity description size exceeded ",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_004);
 		}
-		//This validation is already in place in ApplyFormControlsProcessor
-		//(entity, entity.getName());
 
 		if (entity.getInheritanceStrategy().equals(InheritanceStrategy.TABLE_PER_HEIRARCHY)
 				&& entity.getParentEntity() != null)
@@ -828,7 +814,6 @@ public class DynamicExtensionsUtility
 				throw new DynamicExtensionsApplicationException(
 						"Discriminator Column and value is required for TABLE_PER_HEIRARCHY strategy",
 						null, EntityManagerExceptionConstantsInterface.DYEXTN_A_012);
-
 			}
 
 			if (entity.getDiscriminatorValue() == null || entity.getDiscriminatorValue().equals(""))
@@ -849,7 +834,7 @@ public class DynamicExtensionsUtility
 			String attributeName) throws DynamicExtensionsApplicationException
 	{
 		Collection<AbstractAttributeInterface> collection = entity.getAbstractAttributeCollection();
-		if (collection != null || !collection.isEmpty())
+		if (collection != null && !collection.isEmpty())
 		{
 			for (AbstractAttributeInterface attribute : collection)
 			{
@@ -858,14 +843,13 @@ public class DynamicExtensionsUtility
 					throw new DynamicExtensionsApplicationException(
 							"Attribute names should be unique for the entity ", null,
 							EntityManagerExceptionConstantsInterface.DYEXTN_A_006);
-
 				}
 			}
 		}
 	}
 
 	/**
-	 * @param name
+	 * @param name Name.
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void validateName(String name) throws DynamicExtensionsApplicationException
@@ -875,7 +859,7 @@ public class DynamicExtensionsUtility
 		 */
 		final String VALIDCHARSREGEX = "[^\\\\/:*?\"<>&;|']*";
 
-		if (name == null || name.trim().length() == 0 || !name.matches(VALIDCHARSREGEX))
+		if (name == null || "".equals(name.trim()) || !name.matches(VALIDCHARSREGEX))
 		{
 			throw new DynamicExtensionsApplicationException("Object name invalid", null,
 					EntityManagerExceptionConstantsInterface.DYEXTN_A_003);
@@ -884,40 +868,6 @@ public class DynamicExtensionsUtility
 		{
 			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
-		}
-	}
-
-	/**
-	 * @param abstractAttribute abstract attribute
-	 */
-	public static void updateEntityReferences(AbstractAttributeInterface abstractAttribute)
-	{
-
-		if (abstractAttribute instanceof AttributeInterface)
-		{
-			return;
-		}
-		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
-		entitySet.add(abstractAttribute.getEntity());
-		getAssociatedEntities(abstractAttribute.getEntity(), entitySet);
-		List<EntityInterface> entityList = new ArrayList<EntityInterface>(entitySet);
-
-		AssociationInterface association = (AssociationInterface) abstractAttribute;
-		EntityInterface targetEntity = association.getTargetEntity();
-		if (entityList.contains(targetEntity))
-		{
-			association.setTargetEntity((EntityInterface) entityList.get(entityList
-					.indexOf(targetEntity)));
-			return;
-		}
-		for (AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection())
-		{
-			EntityInterface entity = tagretEntityAssociation.getTargetEntity();
-			if (entityList.contains(entity))
-			{
-				tagretEntityAssociation.setTargetEntity((EntityInterface) entityList.get(entityList
-						.indexOf(entity)));
-			}
 		}
 	}
 
@@ -961,7 +911,7 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * @param entityGroup
-	 * @param entitySet
+	 * @return EntityInterface list.
 	 */
 	public static List<EntityInterface> getSavedEntities(EntityGroupInterface entityGroup)
 	{
@@ -988,7 +938,7 @@ public class DynamicExtensionsUtility
 	public static boolean isDateValid(String dateFormat, String strAsDate)
 	{
 		boolean isDateValid = false;
-		Date date = null;
+
 		String strDate = strAsDate;
 		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
 		{
@@ -1003,7 +953,7 @@ public class DynamicExtensionsUtility
 
 		try
 		{
-			date = Utility.parseDate(strDate, dateFormat);
+			Date date = Utility.parseDate(strDate, dateFormat);
 			if (date != null)
 			{
 				isDateValid = true;
@@ -1053,7 +1003,7 @@ public class DynamicExtensionsUtility
 	public static boolean isCheckBoxChecked(String value)
 	{
 		boolean isChecked = false;
-		if ((value != null && value.trim().length() > 0)
+		if (value != null && !"".equals(value.trim())
 				&& (value.equals("1") || value.equals("true")))
 		{
 			isChecked = true;
@@ -1078,13 +1028,13 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method returns the html keyword checked for checkbox selection
-	 * @param ischecked
+	 * @param value String value.
 	 * @return 'checked' string or empty string
 	 */
 	public static String getCheckboxSelectionValue(String value)
 	{
 		String checkboxValue = "";
-		if (value != null && value.trim().length() > 0
+		if (value != null && !"".equals(value.trim())
 				&& value.equalsIgnoreCase(getValueForCheckBox(true)))
 		{
 			checkboxValue = "checked";
@@ -1137,6 +1087,9 @@ public class DynamicExtensionsUtility
 
 		try
 		{
+			// Fix to support different formats in DE :Pavan.
+			date1 = date1.replace('/', '-');
+			date2 = date2.replace('/', '-');
 			Date firstDate = Utility.parseDate(date1, "MM-dd-yyyy");
 			Date secondDate = Utility.parseDate(date2, "MM-dd-yyyy");
 			if (firstDate.after(secondDate))
@@ -1161,7 +1114,7 @@ public class DynamicExtensionsUtility
 	 * @param date2 date in string format
 	 * @return
 	 */
-	public static boolean areBothDatesOfSameFormat(String date1, String date2)
+	private static boolean areBothDatesOfSameFormat(String date1, String date2)
 	{
 		boolean returnValue = false;
 		if (date1.length() != date2.length())
@@ -1221,42 +1174,25 @@ public class DynamicExtensionsUtility
 	{
 		DefaultBizLogic defaultBizLogic = BizLogicFactory.getDefaultBizLogic();
 		defaultBizLogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
-		List objectList = new ArrayList();
-		ContainerInterface containerInterface = null;
-		if (caption == null || caption.trim().length() == 0)
-		{
-			return null;
-		}
 		try
 		{
-			objectList = defaultBizLogic.retrieve(Container.class.getName(), "caption", caption);
+			ContainerInterface containerInterface = null;
+			if (caption != null && !"".equals(caption.trim()))
+			{
+				List objectList;
+				objectList = defaultBizLogic
+						.retrieve(Container.class.getName(), "caption", caption);
+				if (!objectList.isEmpty())
+				{
+					containerInterface = (ContainerInterface) objectList.get(0);
+				}
+			}
+			return containerInterface;
 		}
 		catch (BizLogicException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-
-		if (!objectList.isEmpty())
-		{
-			containerInterface = (ContainerInterface) objectList.get(0);
-		}
-
-		return containerInterface;
-	}
-
-	/**
-	 * @param containerColl
-	 * @return
-	 */
-	public static List<String> getMainContainerNamesList(
-			Collection<ContainerInterface> containerColl)
-	{
-		List<String> mainContainerNames = new ArrayList<String>();
-		for (ContainerInterface container : containerColl)
-		{
-			mainContainerNames.add(container.getCaption());
-		}
-		return mainContainerNames;
 	}
 
 	/**
@@ -1315,16 +1251,6 @@ public class DynamicExtensionsUtility
 		validateEntityForSaving(entity);// chk if entity is valid or not.
 
 		correctCardinalities(entity); // correct the cardinality if max cardinality  < min cardinality
-
-		//        if (entity.getId() != null)
-		//        {
-		//            entity.setLastUpdated(new Date());
-		//        }
-		//        else
-		//        {
-		//            entity.setCreatedDate(new Date());
-		//            entity.setLastUpdated(entity.getCreatedDate());
-		//        }
 	}
 
 	/**
@@ -1362,11 +1288,11 @@ public class DynamicExtensionsUtility
 	public static EntityGroupInterface retrieveEntityGroup(String name)
 	{
 		//DefaultBizLogic bizlogic = new DefaultBizLogic();
-		Collection<EntityGroupInterface> entityGroupCollection = new HashSet<EntityGroupInterface>();
+		Collection<EntityGroupInterface> entityGroupCollection;
 		EntityGroupInterface entityGroup = null;
 		DefaultBizLogic bizlogic = BizLogicFactory.getDefaultBizLogic();
 		bizlogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
-		Logger.out.info("-retrieveEntityGroup APP NAME-----"
+		LOGGER.info("-retrieveEntityGroup APP NAME-----"
 				+ DynamicExtensionDAO.getInstance().getAppName());
 		bizlogic.setAppName(DynamicExtensionDAO.getInstance().getAppName());
 		//
@@ -1379,12 +1305,12 @@ public class DynamicExtensionsUtility
 
 			if (entityGroupCollection != null && !entityGroupCollection.isEmpty())
 			{
-				entityGroup = (EntityGroupInterface) entityGroupCollection.iterator().next();
+				entityGroup = entityGroupCollection.iterator().next();
 			}
 		}
 		catch (BizLogicException e)
 		{
-			Logger.out.debug(e.getMessage(), e);
+			LOGGER.debug(e.getMessage(), e);
 
 		}
 
@@ -1399,8 +1325,7 @@ public class DynamicExtensionsUtility
 	public static boolean isDataTypeNumeric(String dataType)
 	{
 		boolean isDataTypeNumber = false;
-		if (dataType.equals(ProcessorConstants.DATATYPE_SHORT)
-				|| dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
+		if (dataType.equals(ProcessorConstants.DATATYPE_INTEGER)
 				|| dataType.equals(ProcessorConstants.DATATYPE_LONG)
 				|| dataType.equals(ProcessorConstants.DATATYPE_FLOAT)
 				|| dataType.equals(ProcessorConstants.DATATYPE_DOUBLE)
@@ -1418,15 +1343,11 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void getUnsavedCategoryEntityList(CategoryEntityInterface categoryEntity,
-			HashMap<String, CategoryEntityInterface> objCategoryMap)
+			Map<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-		if (categoryEntity != null)
+		if (categoryEntity != null && !objCategoryMap.containsKey(categoryEntity.getName()))
 		{
-			if (objCategoryMap.containsKey(categoryEntity.getName()))
-			{
-				return;
-			}
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 			if (objCategoryEntity.getParentCategoryEntity() != null
 					&& !objCategoryMap.containsKey(objCategoryEntity.getParentCategoryEntity()
@@ -1437,31 +1358,26 @@ public class DynamicExtensionsUtility
 				getUnsavedCategoryEntityList(objCategoryEntity.getParentCategoryEntity(),
 						objCategoryMap);
 			}
-			if (!objCategoryMap.containsKey(categoryEntity.getName())
-					&& objCategoryEntity.isCreateTable())
+			if (objCategoryEntity.isCreateTable())
 			{
 				if (objCategoryEntity.getId() == null && objCategoryEntity.isCreateTable())
 				{
 					//Only includes those category entity for which table is required to be created
 					objCategoryMap.put(categoryEntity.getName(), objCategoryEntity);
 				}
-			}
-			else
-			{
-				return;
-			}
-			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
-					.getCategoryAssociationCollection())
-			{
-				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
-						.getTargetCategoryEntity();
-				if (objCEntity != null
-						&& objCEntity.isCreateTable()
-						&& !objCategoryMap.containsKey(categoryAssociationInterface
-								.getTargetCategoryEntity().getName()))
+				for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
+						.getCategoryAssociationCollection())
 				{
-					getUnsavedCategoryEntityList(categoryAssociationInterface
-							.getTargetCategoryEntity(), objCategoryMap);
+					CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
+							.getTargetCategoryEntity();
+					if (objCEntity != null
+							&& objCEntity.isCreateTable()
+							&& !objCategoryMap.containsKey(categoryAssociationInterface
+									.getTargetCategoryEntity().getName()))
+					{
+						getUnsavedCategoryEntityList(categoryAssociationInterface
+								.getTargetCategoryEntity(), objCategoryMap);
+					}
 				}
 			}
 		}
@@ -1473,15 +1389,11 @@ public class DynamicExtensionsUtility
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void getSavedCategoryEntityList(CategoryEntityInterface categoryEntity,
-			HashMap<String, CategoryEntityInterface> objCategoryMap)
+			Map<String, CategoryEntityInterface> objCategoryMap)
 			throws DynamicExtensionsSystemException
 	{
-		if (categoryEntity != null)
+		if (categoryEntity != null && !objCategoryMap.containsKey(categoryEntity.getName()))
 		{
-			if (objCategoryMap.containsKey(categoryEntity.getName()))
-			{
-				return;
-			}
 			CategoryEntity objCategoryEntity = (CategoryEntity) categoryEntity;
 			if (categoryEntity.getParentCategoryEntity() != null
 					&& !objCategoryMap.containsKey(categoryEntity.getParentCategoryEntity()
@@ -1491,38 +1403,34 @@ public class DynamicExtensionsUtility
 			{
 				getSavedCategoryEntityList(categoryEntity.getParentCategoryEntity(), objCategoryMap);
 			}
-			if (!objCategoryMap.containsKey(categoryEntity.getName())
-					&& objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
+			if (objCategoryEntity.getId() != null && objCategoryEntity.isCreateTable())
 			{
 				objCategoryMap.put(categoryEntity.getName(), categoryEntity);
-			}
-			else
-			{
-				return;
-			}
-			for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
-					.getCategoryAssociationCollection())
-			{
-				CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
-						.getTargetCategoryEntity();
-				if (objCEntity != null
-						&& objCEntity.isCreateTable()
-						&& objCEntity.getId() != null
-						&& !objCategoryMap.containsKey(categoryAssociationInterface
-								.getTargetCategoryEntity().getName()))
+
+				for (CategoryAssociationInterface categoryAssociationInterface : categoryEntity
+						.getCategoryAssociationCollection())
 				{
-					getSavedCategoryEntityList(categoryAssociationInterface
-							.getTargetCategoryEntity(), objCategoryMap);
+					CategoryEntity objCEntity = (CategoryEntity) categoryAssociationInterface
+							.getTargetCategoryEntity();
+					if (objCEntity != null
+							&& objCEntity.isCreateTable()
+							&& objCEntity.getId() != null
+							&& !objCategoryMap.containsKey(categoryAssociationInterface
+									.getTargetCategoryEntity().getName()))
+					{
+						getSavedCategoryEntityList(categoryAssociationInterface
+								.getTargetCategoryEntity(), objCategoryMap);
+					}
 				}
 			}
 		}
 	}
 
 	/**
-	 * This method populates the constraint properties for the childEntity 
+	 * This method populates the constraint properties for the childEntity
 	 * @param childEntity whose constraint properties is to be updated
-	 * @param isAddColumnForInheritance 
-	 * @throws DynamicExtensionsSystemException 
+	 * @param isAddColumnForInheritance
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void getConstraintKeyPropertiesForInheritance(EntityInterface childEntity,
 			boolean isAddColumnForInheritance) throws DynamicExtensionsSystemException
@@ -1536,15 +1444,9 @@ public class DynamicExtensionsUtility
 		}
 		else if (identifier != null)
 		{
-			try
-			{
-				dbaseCopy = (Entity) DynamicExtensionsUtility.getCleanObject(Entity.class
-						.getCanonicalName(), identifier);
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
+			dbaseCopy = (Entity) DynamicExtensionsUtility.getCleanObject(Entity.class
+					.getCanonicalName(), identifier);
+
 			if (EntityManagerUtil.isParentChanged((Entity) childEntity, dbaseCopy)
 					|| EntityManagerUtil.isPrimaryKeyChanged(parentEntity))
 			{
@@ -1555,28 +1457,29 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method populates the constraint properties of the child depending on the parentEntity primary key 
+	 * This method populates the constraint properties of the child depending on the parentEntity primary key
 	 * @param childEntity whose constraintProperties is to be populated
 	 * @param parentEntity
-	 * @param isAddColumnForInheritance 
-	 * @throws DynamicExtensionsSystemException 
+	 * @param isAddColumnForInheritance
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private static void getConstraintKeyProperties(EntityInterface childEntity,
 			EntityInterface parentEntity, boolean isAddColumnForInheritance)
 			throws DynamicExtensionsSystemException
 	{
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
-		Collection<ConstraintKeyPropertiesInterface> cnstrKeyProp = childEntity
-				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+		ConstraintPropertiesInterface constraintProperties = childEntity.getConstraintProperties();
+		if (constraintProperties == null)
+		{
+			constraintProperties = factory.createConstraintPropertiesForInheritance();
+			childEntity.setConsraintProperties(constraintProperties);
+		}
+		Collection<ConstraintKeyPropertiesInterface> cnstrKeyProp = constraintProperties
+				.getSrcEntityConstraintKeyPropertiesCollection();
 		ConstraintKeyPropertiesInterface primaryCnstrKeyProp = null;
 		cnstrKeyProp.clear();
-		if (parentEntity == null)
-		{
-			Logger.out.info("");
-			//do nothing as parent entity is null
-		}
-		else if ((EntityManagerUtil.isIdAttributePresent(parentEntity) && EntityManagerUtil
-				.isIdAttributePresent(childEntity))
+		if (EntityManagerUtil.isAttributePresent(parentEntity,"id")
+				&& EntityManagerUtil.isAttributePresent(childEntity,"id")
 				&& !isAddColumnForInheritance)
 		{
 			AttributeInterface parentIdAtt = parentEntity.getAttributeByName("id");
@@ -1608,12 +1511,12 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method sets the constraintProperties of the association depending
-	 * on weather it is edited one or not 
-	 * 
+	 * This method sets the constraintProperties of the association depending.
+	 * on weather it is edited one or not
+	 *
 	 * @param association
 	 * @return ConstraintPropertiesInterface
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public static ConstraintPropertiesInterface getConstraintPropertiesForAssociation(
 			AssociationInterface association) throws DynamicExtensionsSystemException
@@ -1628,16 +1531,8 @@ public class DynamicExtensionsUtility
 		else
 		{
 			AssociationInterface dbaseCopy;
-			try
-			{
-				dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(
-						Association.class.getCanonicalName(), identifier);
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
-
+			dbaseCopy = (AssociationInterface) DynamicExtensionsUtility.getCleanObject(
+					Association.class.getCanonicalName(), identifier);
 			if (EntityManagerUtil.isCardinalityChanged(association, dbaseCopy)
 					|| EntityManagerUtil.isPrimaryKeyChanged(association.getEntity())
 					|| EntityManagerUtil.isPrimaryKeyChanged(association.getTargetEntity()))
@@ -1654,8 +1549,9 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * It will verify weather the attributeColl is not empty 
-	 * @param attributeColl collection of attribute to check 
+	 * It will verify weather the attributeColl is not empty.
+	 * @param attributeColl collection of attribute to check
+	 * @return boolean value.
 	 * @throws DynamicExtensionsSystemException if attributeColl is Empty
 	 */
 	private static boolean isPrimaryKeyAttributeCollectionEmpty(
@@ -1671,10 +1567,10 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * This method sets the constraintProperties of the association depending on
-	 * whether the association is one-to-one, one-to-many or many-to-one. 
+	 * whether the association is one-to-one, one-to-many or many-to-one.
 	 * @param association
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private static ConstraintPropertiesInterface getConstraintKeyPropertiesForAssociation(
 			AssociationInterface association) throws DynamicExtensionsSystemException
@@ -1682,6 +1578,11 @@ public class DynamicExtensionsUtility
 		ConstraintPropertiesInterface constraintProperties = association.getConstraintProperties();
 		EntityInterface srcEntity = association.getEntity();
 		EntityInterface tgtEntity = association.getTargetEntity();
+		if (srcEntity == null || tgtEntity == null)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Please set source & target entity of the association");
+		}
 		DomainObjectFactory factory = DomainObjectFactory.getInstance();
 		Collection<ConstraintKeyPropertiesInterface> srcCnstrKeyPropColl;
 		Collection<ConstraintKeyPropertiesInterface> tgtCnstrKeyPropColl;
@@ -1762,11 +1663,7 @@ public class DynamicExtensionsUtility
 
 			}
 		}
-		catch (NullPointerException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Please set source & target entity of the association", e);
-		}
+
 		catch (NoSuchElementException e)
 		{
 			throw new DynamicExtensionsSystemException(
@@ -1778,7 +1675,7 @@ public class DynamicExtensionsUtility
 	/**
 	 *
 	 * @param controlCollection
-	 * @param sequenceNumber
+	 * @param sequenceNumbers
 	 * @return
 	 */
 	public static List<Long> getDeletedAssociationIds(ControlInterface[] controlCollection,
@@ -1813,92 +1710,37 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * This method used to replace escape characters such as single and double quote
+	 * This method used to replace escape characters such as single and double
+	 * quote.
+	 *
 	 * @param str
+	 *            the str
 	 * @param one
+	 *            the one
 	 * @param another
-	 * @return
+	 *            the another
+	 * @return the string
 	 */
 	public static String replaceUtil(String str, String one, String another)
 	{
-		if (str == null)
+		String string = str;
+		if (str != null && !"".equals(str))
 		{
-			return str;
+			StringBuilder res = new StringBuilder();
+			int index = str.indexOf(one, 0);
+			int lastpos = 0;
+			while (index != -1)
+			{
+				res.append(str.substring(lastpos, index) + another);
+				lastpos = index + one.length();
+				index = str.indexOf(one, lastpos);
+			}
+			res.append(str.substring(lastpos));
+			string = res.toString();
 		}
-		//    	 In a string replace one substring with another
-		if ("".equals(str))
-		{
-			return "";
-		}
-		String res = "";
-		int index = str.indexOf(one, 0);
-		int lastpos = 0;
-		while (index != -1)
-		{
-			res += str.substring(lastpos, index) + another;
-			lastpos = index + one.length();
-			index = str.indexOf(one, lastpos);
-		}
-		res += str.substring(lastpos);
-		return res;
+		return string;
 	}
 
-	/**
-	 * @param attr
-	 * @param value
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws ParseException
-	 */
-	public static String getDefaultDateForRelatedCategoryAttribute(AttributeInterface attr,
-			Object value) throws DynamicExtensionsSystemException
-	{
-		String formattedvalue = null;
-		Date date = null;
-
-		String dateFormat = ((DateAttributeTypeInformation) attr.getAttributeTypeInformation())
-				.getFormat();
-		if (dateFormat == null)
-		{
-			dateFormat = CommonServiceLocator.getInstance().getDatePattern();
-		}
-
-		String str = null;
-		if (value instanceof Date)
-		{
-			str = Utility.parseDateToString(((Date) value), dateFormat);
-		}
-		else
-		{
-			str = (String) value;
-		}
-		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR, locale);
-		try
-		{
-			date = simpleDateFormat.parse(str);
-		}
-		catch (ParseException e)
-		{
-			throw new DynamicExtensionsSystemException("Unable to parse given date.", e);
-		}
-
-		String appName = DynamicExtensionDAO.getInstance().getAppName();
-		JDBCDAO jdbcDao = null;
-		try
-		{
-			jdbcDao = (JDBCDAO) DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
-		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException("Unable to JDBCDAO object.", e);
-		}
-		formattedvalue = jdbcDao.getStrTodateFunction() + "('" + simpleDateFormat.format(date)
-				+ "','" + ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";
-
-		return formattedvalue;
-	}
 
 	/**
 	 *
@@ -1939,7 +1781,8 @@ public class DynamicExtensionsUtility
 	 * This method checks if an entity with the same name exists in the entity group.
 	 * @param entityGroup
 	 * @param container
-	 * @param formDefinitionForm
+	 * @param formName
+	 * @param mainFormContainer
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup,
@@ -1978,16 +1821,16 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * If a sub-form is selected using the XML tree, and its name is changed, 
+	 * If a sub-form is selected using the XML tree, and its name is changed,
 	 * and if an entity already exists with the same name, then throw an exception.
-	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form 
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form
 	 * by the name 'FA' is added, and a sub form by the name 'FB' is added to 'FA',
-	 * and previous is clicked, 'FB' is selected from XML tree and name of 'FB' 
-	 * is changed to 'FA', then this block is executed. 
+	 * and previous is clicked, 'FB' is selected from XML tree and name of 'FB'
+	 * is changed to 'FA', then this block is executed.
 	 * also if a new entity group by the name 'TestGroup' is added and a new form by the
 	 * name 'FA' is added and a sub form 'FB' is added to 'FA' and 'FA' is saved. Then in
-	 * edit mode, 'FB' is opened again and its name is changed to 'FA', then this block 
-	 * is executed. Call delegation from editSubForm method of ApplyFormDefinitionAction or 
+	 * edit mode, 'FB' is opened again and its name is changed to 'FA', then this block
+	 * is executed. Call delegation from editSubForm method of ApplyFormDefinitionAction or
 	 * call delegation from addSubForm method of ApplyFormDefinitionAction.
 	 * @param entityGroup
 	 * @param caption
@@ -2005,14 +1848,14 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
-	 * If a new sub-form is being added, and if an entity with the same name 
+	 * If a new sub-form is being added, and if an entity with the same name
 	 * already exists in the entity group, then throw an exception.
-	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form 
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form
 	 * by the name 'FA' is added, and a sub-form by the same name 'FA' is added to
 	 * main form 'FA', then this block is executed. Call delegation from addSubForm
 	 * method of ApplyFormDefinitionAction.
-	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form 
-	 * by the name 'FA' is added, and a sub form by the name 'FB' is added to 
+	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form
+	 * by the name 'FA' is added, and a sub form by the name 'FB' is added to
 	 * main form 'FA', then this block is executed. Call delegation from addSubForm
 	 * method of ApplyFormDefinitionAction.
 	 * @param entityGroup
@@ -2020,7 +1863,7 @@ public class DynamicExtensionsUtility
 	 * @param mainContainer
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption,
+	public static void checkIfEntityPreExists(EntityGroupInterface entityGroup, String caption,
 			ContainerInterface mainContainer) throws DynamicExtensionsApplicationException
 	{
 		if (mainContainer != null && mainContainer.getCaption().equals(caption))
@@ -2037,11 +1880,11 @@ public class DynamicExtensionsUtility
 
 	/**
 	 * If a entity whose parent is a persistent object is selected using the XML tree
-	 * and its name is not changed, then check if the entity already exists 
+	 * and its name is not changed, then check if the entity already exists
 	 * and if it exists, then throw an exception.
 	 * e.g. If a new entity group by the name 'TestGroup' is added and a new form by the
 	 * name 'FA' is added, or if 'FA' is previously saved and a sub form 'FB' is added
-	 * to 'FA', then this block is executed. Call delegation from applyFormDefinition 
+	 * to 'FA', then this block is executed. Call delegation from applyFormDefinition
 	 * method of ApplyFormDefinitionAction
 	 * @param entityGroup
 	 * @param formName
@@ -2072,13 +1915,51 @@ public class DynamicExtensionsUtility
 	 * @return String query
 	 * @throws DAOException Generic DAO Exception
 	 * @throws ClassNotFoundException
+	 * @throws DynamicExtensionsSystemException
 	 */
-	public static List executeQuery(String hql) throws DAOException, ClassNotFoundException
+	public static List executeQuery(String hql) throws DAOException,
+			DynamicExtensionsSystemException
 	{
 		HibernateDAO dao = DynamicExtensionsUtility.getHibernateDAO();
 		List list = dao.executeQuery(hql);
-		DynamicExtensionsUtility.closeHibernateDAO(dao);
+		DynamicExtensionsUtility.closeDAO(dao);
 		return list;
+	}
+
+	/**
+	 * This method executes a SQL query.
+	 * @param query
+	 * @param userId
+	 * @param jdbcDao
+	 * @param colValBeanList
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void executeUpdateQuery(final String query, final Long userId,
+			final JDBCDAO jdbcDao, final LinkedList<ColumnValueBean> colValBeanList)
+			throws DynamicExtensionsSystemException
+	{
+		JDBCDAO dao = jdbcDao;
+		try
+		{
+			if (dao == null)
+			{
+				dao = getJDBCDAO();
+			}
+			final LinkedList<LinkedList<ColumnValueBean>> valueBeanList = new LinkedList<LinkedList<ColumnValueBean>>();
+			valueBeanList.add(colValBeanList);
+			dao.executeUpdate(query, valueBeanList);
+		}
+		catch (final DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
+		}
+		finally
+		{
+			if (jdbcDao == null)
+			{
+				closeDAO(dao);
+			}
+		}
 	}
 
 	/**
@@ -2088,14 +1969,31 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getEscapedStringValue(String value)
 	{
-		String replacedValue = value;
-		replacedValue = replaceUtil(replacedValue, "'", "&#39");
-		replacedValue = replaceUtil(replacedValue, "\"", "&#34");
-		if (replacedValue != null)
+		String originalString = null;
+		if (value != null)
 		{
-			replacedValue = replacedValue.trim();
+			originalString = replaceUtil(value, "'", "&#39");
+			originalString = replaceUtil(originalString, "\"", "&#34");
+			originalString = originalString.trim();
 		}
-		return replacedValue;
+		return originalString;
+	}
+
+	/**
+	 * Replace any single and double quotes value with proper escape character	in HTML
+	 * @param value
+	 * @return String value
+	 */
+	public static String getUnEscapedStringValue(String value)
+	{
+		String originalString = null;
+		if (value != null)
+		{
+			originalString = replaceUtil(value, "&#39", "'");
+			originalString = replaceUtil(originalString, "&#34", "\"");
+			originalString = originalString.trim();
+		}
+		return originalString;
 	}
 
 	/**
@@ -2115,18 +2013,19 @@ public class DynamicExtensionsUtility
 
 		Collection<ControlInterface> controls = container.getAllControls();
 
+		boolean catAttributeNotRelated = true;
 		if (controls != null)
 		{
 			for (ControlInterface control : controls)
 			{
 				if (control.getIsReadOnly() != null && control.getIsReadOnly())
 				{
-					return false;
+					catAttributeNotRelated = false;
+					break;
 				}
 			}
 		}
-
-		return true;
+		return catAttributeNotRelated;
 	}
 
 	/**
@@ -2135,10 +2034,11 @@ public class DynamicExtensionsUtility
 	 */
 	public static String getCategoryEntityName(String categoryEntityName)
 	{
-		Pattern pattern = Pattern.compile("[]]");
+
 		String entityName = categoryEntityName;
 		if (entityName != null && entityName.length() > 0)
 		{
+			Pattern pattern = Pattern.compile("[]]");
 			Matcher matcher = pattern.matcher(entityName);
 			StringBuffer stringBuff = new StringBuffer();
 			boolean result = matcher.find();
@@ -2169,65 +2069,126 @@ public class DynamicExtensionsUtility
 	 * @throws DAOException generic DAO exception.
 	 */
 	public static Object getCleanObject(String sourceObjectName, Long identifier)
-			throws DAOException
+			throws DynamicExtensionsSystemException
 	{
 		HibernateDAO hibernateDao = null;
 		try
 		{
-			String appName = DynamicExtensionDAO.getInstance().getAppName();
-			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
-					.getDAO();
-			hibernateDao.openSession(null);
+
+			hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
 			return hibernateDao.retrieveById(sourceObjectName, identifier);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the Clean Object", e);
 		}
 		finally
 		{
-			hibernateDao.closeSession();
+			DynamicExtensionsUtility.closeDAO(hibernateDao);
 		}
 	}
 
 	/**
 	 * @return jdbcDao
-	 * @throws DAOException generic DAO exception
+	 * @throws DynamicExtensionsSystemException
+	 * @deprecated Use {@link #getJDBCDAO(SessionDataBean)} instead
 	 */
-	public static JDBCDAO getJDBCDAO() throws DAOException
+	public static JDBCDAO getJDBCDAO() throws DynamicExtensionsSystemException
 	{
+		return getJDBCDAO(null);
+	}
 
+	/**
+	 * @param sessionDataBean TODO
+	 * @return jdbcDao
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static JDBCDAO getJDBCDAO(SessionDataBean sessionDataBean) throws DynamicExtensionsSystemException
+	{
 		String appName = DynamicExtensionDAO.getInstance().getAppName();
-		JDBCDAO jdbcDao = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
-		jdbcDao.openSession(null);
+		JDBCDAO jdbcDao = null;
+		try
+		{
+			jdbcDao = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
+			jdbcDao.openSession(sessionDataBean);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Error occured while opening the DAO session", e);
+		}
 		return jdbcDao;
 	}
 
 	/**
 	 * @return hibernateDao
-	 * @throws DAOException generic DAO exception
+	 * @throws DynamicExtensionsSystemException
+	 * @deprecated Use {@link #getHibernateDAO(SessionDataBean)} instead
 	 */
-	public static HibernateDAO getHibernateDAO() throws DAOException
+	public static HibernateDAO getHibernateDAO() throws DynamicExtensionsSystemException
+	{
+		return getHibernateDAO(null);
+	}
+
+	/**
+	 * @param sessionDataBean
+	 * @return hibernateDao
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static HibernateDAO getHibernateDAO(SessionDataBean sessionDataBean) throws DynamicExtensionsSystemException
 	{
 		String appName = DynamicExtensionDAO.getInstance().getAppName();
-		HibernateDAO hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(
-				appName).getDAO();
-		hibernateDao.openSession(null);
+		HibernateDAO hibernateDao = null;
+		try
+		{
+			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+					.getDAO();
+			hibernateDao.openSession(sessionDataBean);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Error occured while opening the DAO session", e);
+		}
 		return hibernateDao;
 	}
 
 	/**
 	 * @param jdbcDao DAO object
+	 * @throws DynamicExtensionsSystemException
 	 * @throws DAOException generic DAO exception
 	 */
-	public static void closeJDBCDAO(JDBCDAO jdbcDao) throws DAOException
+	public static void closeDAO(DAO dao) throws DynamicExtensionsSystemException
 	{
-		jdbcDao.closeSession();
+		if (dao != null)
+		{
+			try
+			{
+				dao.closeSession();
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Eror while closing the DAO", e);
+			}
+		}
 	}
 
 	/**
-	 * @param hibernateDao DAO object
-	 * @throws DAOException generic DAO exception
+	 * Roll Back DAO.
+	 * @param hibernateDAO DAO
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
 	 */
-	public static void closeHibernateDAO(HibernateDAO hibernateDao) throws DAOException
+	public static void rollBackDAO(DAO hibernateDAO) throws DynamicExtensionsSystemException
 	{
-		hibernateDao.closeSession();
+		try
+		{
+			hibernateDAO.rollback();
+		}
+		catch (DAOException daoExp)
+		{
+			throw new DynamicExtensionsSystemException(DEConstants.DATA_INSERTION_ERROR_MESSAGE,
+					daoExp);
+		}
 	}
 
 	/**
@@ -2241,10 +2202,7 @@ public class DynamicExtensionsUtility
 		HibernateDAO hibernateDao = null;
 		try
 		{
-			String appName = DynamicExtensionDAO.getInstance().getAppName();
-			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
-					.getDAO();
-			hibernateDao.openSession(null);
+			hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
 
 			// populate entity for generating constraint properties if it has any parent set
 			for (EntityInterface entity : entityGroup.getEntityCollection())
@@ -2253,22 +2211,9 @@ public class DynamicExtensionsUtility
 						.isAddColumnForInherianceInChild(), hibernateDao);
 			}
 		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException(
-					"Exception encountered while populating constraint properties for entity.", e);
-		}
 		finally
 		{
-			try
-			{
-				hibernateDao.closeSession();
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException(
-						"Exception encountered while closing session.", e);
-			}
+			DynamicExtensionsUtility.closeDAO(hibernateDao);
 		}
 	}
 
@@ -2353,49 +2298,294 @@ public class DynamicExtensionsUtility
 
 		return constraintProperties;
 	}
+
 	/**
 	 * @param filePath
 	 * @param jsFunctionName
 	 * @param jsFunctParameters
 	 * @return
 	 */
-	public static String executeJavaScriptFunc(String filePath, String jsFunctionName, Object[] jsFunctParameters)
+	public static String executeJavaScriptFunc(String filePath, String jsFunctionName,
+			Object[] jsFunctParameters)
 	{
 		String output = null;
-		FileReader reader =null;
+		FileReader reader = null;
 		try
 		{
 			ScriptEngineManager manager = new ScriptEngineManager();
-			if(manager!=null)
+			if (manager != null)
 			{
 				ScriptEngine engine = manager.getEngineByName("javascript");
 				reader = new FileReader(filePath);
-				if(reader!=null && engine!=null)
+				if (reader != null && engine != null)
 				{
 					engine.eval(reader);
 					Invocable invokeEngine = (Invocable) engine;
-				    output = invokeEngine.invokeFunction(jsFunctionName, jsFunctParameters).toString();    
+					output = invokeEngine.invokeFunction(jsFunctionName, jsFunctParameters)
+							.toString();
 				}
 			}
 		}
 		catch (Exception e)
 		{
-			Logger.out.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
-		 finally
-		 {
-			 try
+		finally
+		{
+			try
 			{
-				 if(reader!=null)
-				 {
-					 reader.close();
-				 }
+				if (reader != null)
+				{
+					reader.close();
+				}
 			}
 			catch (IOException e)
 			{
-				Logger.out.error(e.getMessage());
+				LOGGER.error(e.getMessage());
 			}
-		 }
-		 return output;
+		}
+		return output;
 	}
+
+	/**
+	 * This function will return the next sequence number for control by incrementing the maximum sequence number within current control collection.
+	 * @param container
+	 * @return
+	 */
+	public static int getSequenceNumberForNextControl(ContainerInterface container)
+	{
+		int nextSeqNumber = 0;
+		if (container.getControlCollection() != null)
+		{
+			List<ControlInterface> controls = new ArrayList<ControlInterface>(container
+					.getControlCollection());
+
+			for (ControlInterface control : controls)
+			{
+				nextSeqNumber = nextSeqNumber > control.getSequenceNumber()
+						? nextSeqNumber
+						: control.getSequenceNumber();
+			}
+		}
+		return nextSeqNumber + 1;
+	}
+
+	/**
+	 * It will return the List of all  valid Patterns specified in the ValidDatePatterns.xml
+	 * @return List of datePatterns.
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static Map<String, String> getAllValidDatePatterns()
+			throws DynamicExtensionsSystemException
+	{
+		Map<String, String> validDatePatternMap = new HashMap<String, String>();
+
+		InputStream inputStream = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream("ValidDatePatterns.xml");
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try
+		{
+			Document doc = dbf.newDocumentBuilder().parse(inputStream);
+			NodeList nodeList = doc.getElementsByTagName("pattern");
+			for (int s = 0; s < nodeList.getLength(); s++)
+			{
+				Node firstNode = nodeList.item(s);
+
+				if (firstNode.getNodeType() == Node.ELEMENT_NODE)
+				{
+					NamedNodeMap attributeMap = firstNode.getAttributes();
+					Node attributeNode = attributeMap.getNamedItem("regex");
+					String regex = attributeNode.getNodeValue();
+					NodeList fstNm = firstNode.getChildNodes();
+					validDatePatternMap.put(fstNm.item(0).getNodeValue(), regex);
+				}
+			}
+		}
+		catch (Exception exception)
+		{
+			throw new DynamicExtensionsSystemException(exception.getMessage(), exception);
+		}
+		return validDatePatternMap;
+	}
+
+	/**
+	 * Replace any single and double quotes value with proper escape character	in HTML
+	 * @param value
+	 * @return String value
+	 */
+	public static String replaceHTMLSpecialCharacters(String value)
+	{
+		/*String escapeStringValue = value;
+		escapeStringValue = getUnEscapedStringValue(escapeStringValue);*/
+		String escapeStringValue = getUnEscapedStringValue(value);
+		if (escapeStringValue != null && escapeStringValue.length() > 0)
+		{
+			escapeStringValue = StringEscapeUtils.escapeHtml(escapeStringValue);
+		}
+		return escapeStringValue;
+	}
+
+	/**
+	 * This method will populate all the category entities associated with
+	 * the categoryEntity in the given paramater categoryEntityList.
+	 * @param categoryEntityList list of categroy entities to be populated in.
+	 * @param categoryEntity category entity who's all associated categroy entities to be added in the list.
+	 */
+	public static void populateAllCategoryEntityList(
+			List<CategoryEntityInterface> categoryEntityList, CategoryEntityInterface categoryEntity)
+	{
+		if (categoryEntity != null)
+		{
+			categoryEntityList.add(categoryEntity);
+			for (CategoryEntityInterface categoryEntityInterface : categoryEntity
+					.getChildCategories())
+			{
+				populateAllCategoryEntityList(categoryEntityList, categoryEntityInterface);
+			}
+		}
+	}
+
+	/**
+	 * Set context parameters to all the child container of the main container.
+	 * @param containerInterface main  container.
+	 * @param contextParameter Context parameters.
+	 */
+	public static void setEncounterDateToChildContainer(ContainerInterface containerInterface,
+			Map<String, Object> contextParameter)
+	{
+		Collection<ContainerInterface> childContainerCollection = containerInterface
+				.getChildContainerCollection();
+		for (ContainerInterface childcContainerInterface : childContainerCollection)
+		{
+			childcContainerInterface.setContextParameter(contextParameter);
+			setEncounterDateToChildContainer(childcContainerInterface, contextParameter);
+		}
+
+		Collection<ControlInterface> controls = containerInterface.getControlCollection();
+		for (ControlInterface controlInterface : controls)
+		{
+			if (controlInterface instanceof AbstractContainmentControl)
+			{
+				ContainerInterface abstCtnmentCtrlContainer = ((AbstractContainmentControl) controlInterface)
+						.getContainer();
+				abstCtnmentCtrlContainer.setContextParameter(contextParameter);
+				setEncounterDateToChildContainer(abstCtnmentCtrlContainer, contextParameter);
+			}
+		}
+	}
+
+	/**
+	 * Validate boolean value.
+	 *
+	 * @param booleanValue the boolean value
+	 *
+	 * @return true, if successful
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static boolean validateAndReturnBooleanValue(String booleanValue)
+			throws DynamicExtensionsSystemException
+	{
+		String upperCaseBooleanValue = booleanValue.toUpperCase(Locale.getDefault());
+		boolean returnValue = false;
+		if (TRUE_VALUE_LIST.contains(upperCaseBooleanValue))
+		{
+			returnValue = true;
+		}
+		else if (FALSE_VALUE_LIST.contains(upperCaseBooleanValue))
+		{
+			returnValue = false;
+		}
+		else
+		{
+			throw new DynamicExtensionsSystemException(
+					"Incorrect spelling for Paste Button Configuration value");
+		}
+		return returnValue;
+	}
+
+	/**
+	 * This method will search the ConceptCode from the given semanticPropCollection
+	 * and return them.
+	 * @param semanticPropCollection semantic property collection.
+	 * @return the collection of concept codes retrieved from semanticPropCollection.
+	 */
+	public static Collection<String> getConceptCodes(
+			Collection<SemanticPropertyInterface> semanticPropCollection)
+	{
+		Collection<String> conceptCodeColl = new HashSet<String>();
+		// get the concpt code fom the semantic properties
+		for (SemanticPropertyInterface semanticProp : semanticPropCollection)
+		{
+			String conceptCode = semanticProp.getConceptCode().trim();
+			if (conceptCode != null && !"".equals(conceptCode))
+			{
+				conceptCodeColl.add(conceptCode);
+			}
+		}
+		return conceptCodeColl;
+	}
+
+	/**
+	 * This method will return the concept code associated with the given defaultValue from the
+	 * permissible value collection of the catAttribute.
+	 * @param catAttribute category attribute from whose pv collection to search the concept code.
+	 * @param defaultValue value for which concept code is to be searched.
+	 * @return concept code associated with the default value.
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	public static String getConceptCodeForValue(CategoryAttributeInterface catAttribute,
+			String defaultValue) throws DynamicExtensionsSystemException
+	{
+		String conceptCode = null;
+		AttributeInterface attribute = getBaseAttributeOfcategoryAttribute(catAttribute);
+		UserDefinedDEInterface userdefinedDe = (UserDefinedDEInterface) attribute
+				.getAttributeTypeInformation().getDataElement();
+		if (userdefinedDe != null)
+		{
+			for (PermissibleValueInterface permValue : userdefinedDe
+					.getPermissibleValueCollection())
+			{
+				if (defaultValue.equals(permValue.getValueAsObject().toString()))
+				{
+					for (SemanticPropertyInterface semanticProp : permValue
+							.getSemanticPropertyCollection())
+					{
+						conceptCode = semanticProp.getConceptCode();
+					}
+					break;
+				}
+			}
+		}
+		if (conceptCode == null)
+		{
+			throw new DynamicExtensionsSystemException("No concept code found for Value "
+					+ defaultValue);
+		}
+		return conceptCode;
+	}
+
+	/**
+	 * This method will return the baseAttribute of the given category Attribute,
+	 * if the base attribute is association i.e. multiselect case then it will search the original
+	 * attribute created for it & return that.
+	 * @param catAttribute category attribute whose base attribute is needed.
+	 * @return attribute from which the category attribute is derived.
+	 */
+	public static AttributeInterface getBaseAttributeOfcategoryAttribute(
+			CategoryAttributeInterface catAttribute)
+	{
+		AttributeInterface attribute;
+		if (catAttribute.getAbstractAttribute() instanceof AssociationInterface)
+		{
+			attribute = (AttributeInterface) EntityManagerUtil.filterSystemAttributes(
+					((AssociationInterface) catAttribute.getAbstractAttribute()).getTargetEntity()
+							.getAbstractAttributeCollection()).iterator().next();
+		}
+		else
+		{
+			attribute = (AttributeInterface) catAttribute.getAbstractAttribute();
+		}
+		return attribute;
+	}
+
 }

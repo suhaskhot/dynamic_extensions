@@ -1,19 +1,18 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
-import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.xmi.XMIConfiguration;
+import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.exception.DAOException;
+import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 
 public class XMIImporterUtil
 {
@@ -36,7 +35,7 @@ public class XMIImporterUtil
 			SemanticPropertyInterface semanticProp = deFactory.createSemanticProperty();
 			semanticProp.setSequenceNumber(i);
 			semanticProp.setConceptCode(semanticMetadataArr[i].getConceptCode());
-			semanticProp.setTerm(semanticMetadataArr[i].getConceptName());
+			semanticProp.setConceptPreferredName(semanticMetadataArr[i].getConceptName());
 			owner.addSemanticProperty(semanticProp);
 		}
 	}
@@ -44,15 +43,16 @@ public class XMIImporterUtil
 	/**
 	 * @return container list
 	 */
+	/*
 	public static List<ArrayList> getProcessedContainerList()
 	{
-		List<ArrayList> processedContainerListEntityList = new ArrayList<ArrayList>();
-		ArrayList<ContainerInterface> processedContainerList = new ArrayList<ContainerInterface>();
-		ArrayList<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
-		processedContainerListEntityList.add(0, processedContainerList);
-		processedContainerListEntityList.add(1, processedEntityList);
-		return processedContainerListEntityList;
-	}
+	List<ArrayList> processedContainerListEntityList = new ArrayList<ArrayList>();
+	ArrayList<ContainerInterface> processedContainerList = new ArrayList<ContainerInterface>();
+	ArrayList<EntityInterface> processedEntityList = new ArrayList<EntityInterface>();
+	processedContainerListEntityList.add(0, processedContainerList);
+	processedContainerListEntityList.add(1, processedEntityList);
+	return processedContainerListEntityList;
+	}*/
 
 	/**
 	 * @param entityGroup
@@ -64,5 +64,34 @@ public class XMIImporterUtil
 	{
 		DynamicExtensionsUtility.populateEntityForConstraintProperties(entityGroup,
 				xmiConfigurationObject);
+	}
+
+	/**
+	 * This method is added for only using the Query which has inner query in it
+	 * for inserting the data in it.
+	 * @param queryList queries to be executed
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static void executeDML(List<String> queryList) throws DynamicExtensionsSystemException
+	{
+		JDBCDAO jdbcDao = null;
+
+		try
+		{
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			for (String query : queryList)
+			{
+				jdbcDao.executeUpdate(query);
+			}
+			jdbcDao.commit();
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+		}
+		finally
+		{
+			DynamicExtensionsUtility.closeDAO(jdbcDao);
+		}
 	}
 }

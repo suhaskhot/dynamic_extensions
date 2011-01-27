@@ -19,6 +19,7 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 		implements
 			FloatTypeInformationInterface
 {
+
 	/** 
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
@@ -39,6 +40,7 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 
 		return floatValue;
 	}
+
 	/**
 	 * 
 	 */
@@ -49,14 +51,11 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 		{
 			if (this.decimalPlaces.intValue() > 0)
 			{
-				DecimalFormat formatDecimal = (DecimalFormat) NumberFormat
-						.getNumberInstance();
+				DecimalFormat formatDecimal = (DecimalFormat) NumberFormat.getNumberInstance();
 				formatDecimal.setParseBigDecimal(true);
 				formatDecimal.setGroupingUsed(false);
-				formatDecimal.setMaximumFractionDigits(this.decimalPlaces
-						.intValue());
-				formattedValue = formatDecimal.format(Float.valueOf(value
-						.floatValue()));
+				formatDecimal.setMaximumFractionDigits(this.decimalPlaces.intValue());
+				formattedValue = formatDecimal.format(Float.valueOf(value.floatValue()));
 			}
 			else
 			{
@@ -64,5 +63,16 @@ public class FloatAttributeTypeInformation extends NumericAttributeTypeInformati
 			}
 		}
 		return formattedValue;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getAttributeDataType()
+	 * @return Class type for attribute.
+	 */
+	public Class getAttributeDataType()
+	{
+		// TODO Auto-generated method stub
+		return Float.class;
 	}
 }

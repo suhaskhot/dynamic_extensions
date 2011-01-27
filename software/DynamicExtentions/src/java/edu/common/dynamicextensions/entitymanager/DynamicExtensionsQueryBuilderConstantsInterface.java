@@ -45,6 +45,7 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String UNIQUE_CONSTRAINT_SUFFIX = "UC";
 	String OPENING_BRACKET = "( ";
 	String CLOSING_BRACKET = " ) ";
+	String QUESTION_MARK = " ? ";
 	String COMMA = " , ";
 	String EQUAL = "=";
 	String IN_KEYWORD = "IN";
@@ -64,5 +65,5 @@ public interface DynamicExtensionsQueryBuilderConstantsInterface
 	String VALUES_KEYWORD = "VALUES";
 	String RECORD_ID = "RECORD_ID";
 	String ASTERIX = "*";
-
+	String ACTIVITY_STATUS = "ACTIVITY_STATUS";
 }

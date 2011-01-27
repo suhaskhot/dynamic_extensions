@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.global.CommonServiceLocator;
 
 /**
@@ -39,9 +40,9 @@ public class FutureDateValidator implements ValidatorRuleInterface
 		/* Check for the validity of the future date */
 		DateValidator dateValidator = new DateValidator();
 		dateValidator.validate(attribute, valueObject, parameterMap, controlCaption, true);
-		
+
 		validateFutureDate(attribute, valueObject, controlCaption);
-		
+
 		return true;
 	}
 
@@ -57,14 +58,15 @@ public class FutureDateValidator implements ValidatorRuleInterface
 	{
 		AttributeTypeInformationInterface attributeTypeInformation = attribute
 				.getAttributeTypeInformation();
-
-		if (((valueObject != null) && (!((String) valueObject).trim().equals("")))
-				&& ((attributeTypeInformation != null) && (attributeTypeInformation instanceof DateAttributeTypeInformation)))
+		boolean isValidValue = ((valueObject != null) && (!(valueObject.toString()).trim().equals("")))
+				&& ((attributeTypeInformation != null) && (attributeTypeInformation instanceof DateAttributeTypeInformation));
+		if (isValidValue)
 		{
 			Date inputDate = null;
 			DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
-			String dateFormat = dateAttributeTypeInformation.getFormat();
-			String value = (String) valueObject;
+			String dateFormat = DynamicExtensionsUtility.getDateFormat(dateAttributeTypeInformation
+					.getFormat());
+			String value =valueObject.toString();
 			try
 			{
 				Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
@@ -74,9 +76,10 @@ public class FutureDateValidator implements ValidatorRuleInterface
 			}
 			catch (ParseException parseException)
 			{
-				ValidatorUtil.reportInvalidInput(controlCaption, "today's date.", "dynExtn.validation.Date.MinDate");
+				ValidatorUtil.reportInvalidInput(controlCaption, "today's date.",
+						"dynExtn.validation.Date.MinDate");
 			}
-			
+
 			reportInvalidDate(inputDate, controlCaption);
 		}
 	}

@@ -65,7 +65,7 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	AbstractEntityInterface getAbstractEntity();
 
 	/**
-	 * @param entityInterface The entity to set.
+	 * @param abstractEntityInterface The entity to set.
 	 */
 	void setAbstractEntity(AbstractEntityInterface abstractEntityInterface);
 
@@ -125,13 +125,13 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	void removeControl(ControlInterface controlInterface);
 
 	/**
-	 * Remove all controls
+	 * Remove all controls.
 	 *
 	 */
 	void removeAllControls();
 
 	/**
-	 * @return
+	 * @return Return the mode.
 	 */
 	String getMode();
 
@@ -141,63 +141,75 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	void setMode(String mode);
 
 	/**
-	 * @param caption
+	 * This method generates HTML for container.
+	 * @param dataEntryOperation Operation being performed.
 	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsSystemException  the dynamic extensions system exception
 	 */
-	String generateContainerHTML(String caption,String dataEntryOperation) throws DynamicExtensionsSystemException;
-
-	/**
-	 * @param caption
-	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException
-	 */
-	String generateControlsHTML(String caption,String dataEntryOperation) throws DynamicExtensionsSystemException;
-
-	/**
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap,String dataEntryOperation)
+	String generateContainerHTML(String caption, String dataEntryOperation)
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * @return
+	 * This method generates HTML for container.
+	 * @param dataEntryOperation Operation being performed.
+	 * @return return the HTML string for this type of a object
+	 * @throws DynamicExtensionsSystemException  the dynamic extensions system exception
+	 */
+	String generateControlsHTML(String caption, String dataEntryOperation,
+			ContainerInterface container) throws DynamicExtensionsSystemException;
+
+	/**
+	 * This method generates HTML for control as grid.
+	 * @param valueMap attribute to value map.
+	 * @param dataEntryOperation Operation being performed.
+	 * @param container Container.
+	 * @param isPasteEnable Whether past is enable or not.
+	 * @return Generated HTML string.
+	 * @throws DynamicExtensionsSystemException the dynamic extensions system exception
+	 */
+	String generateControlsHTMLAsGrid(List<Map<BaseAbstractAttributeInterface, Object>> valueMap,
+			String dataEntryOperation, ContainerInterface container, boolean isPasteEnable,List<String> errorList)
+			throws DynamicExtensionsSystemException;
+
+	/**
+	 * This method gets attribute to value map for container.
+	 * @return attribute to value map.
 	 */
 	Map<BaseAbstractAttributeInterface, Object> getContainerValueMap();
 
 	/**
-	 * @param containerValueMap
+	 * This method sets attribute to value map for container.
+	 * @param containerValueMap attribute to value map.
 	 */
 	void setContainerValueMap(Map<BaseAbstractAttributeInterface, Object> containerValueMap);
 
 	/**
-	 *
-	 * @return
+	 * This method return whether to show association control as link for the container.
+	 * @return return whether to show association control as link.
 	 */
 	Boolean getShowAssociationControlsAsLink();
 
 	/**
-	 *
-	 * @param showAssociationControlsAsLink
+	 * This method sets whether to show association control as link for the container.
+	 * @param showAssociationControlsAsLink whether to show association control as link.
 	 */
 	void setShowAssociationControlsAsLink(Boolean showAssociationControlsAsLink);
 
 	/**
-	 *
-	 * @return
+	 * returns all controls.
+	 * @return List of all controls.
 	 */
 	List<ControlInterface> getAllControls();
 
 	/**
-	 *
-	 * @return
+	 * Returns the base container.
+	 * @return Base Container
 	 */
 	ContainerInterface getBaseContainer();
 
 	/**
-	 *
-	 * @param baseContainer
+	 * Sets the base container for the control.
+	 * @param baseContainer Base container.
 	 */
 	void setBaseContainer(ContainerInterface baseContainer);
 
@@ -207,18 +219,19 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 	ContainerInterface getIncontextContainer();
 
 	/**
-	 * @param incontextContainer the incontextContainer to set
+	 * @param incontextContainer the incontextContainer to set.
 	 */
 	void setIncontextContainer(ContainerInterface incontextContainer);
 
 	/**
-	 * This method is used to decide where caption is to be added to the table or not
-	 * @return
+	 * This method is used to decide where caption is to be added to the table or not.
+	 * @return whether to add caption or not.
 	 */
 	Boolean getAddCaption();
 
 	/**
-	 * @param addCaption
+	 * This method Sets whether to add caption or not.
+	 * @param addCaption whether to add caption or not.
 	 */
 	void setAddCaption(Boolean addCaption);
 
@@ -229,50 +242,94 @@ public interface ContainerInterface extends DynamicExtensionBaseDomainObjectInte
 			throws DynamicExtensionsSystemException;
 
 	/**
+	 * This method returns the position of the control of the container.
 	 * @param xPosition
 	 * @param yPosition
 	 * @return
 	 */
 	ControlInterface getControlByPosition(Integer xPosition, Integer yPosition);
-	
+
 	/**
-	 * @return
+	 * This method return all the controls under same display label of container.
+	 * @return List of controls.
 	 */
 	List<ControlInterface> getAllControlsUnderSameDisplayLabel();
-	
+
 	/**
-	 * @return
+	 * This method returns child containers of container.
+	 * @return collection of child container.
 	 */
 	Collection<ContainerInterface> getChildContainerCollection();
-	
+
 	/**
-	 * @return
+	 * This method return whether its an Ajax request.
+	 * @return whether its an Ajax request.
 	 */
-	public boolean isAjaxRequest();
-	
+	boolean isAjaxRequest();
+
 	/**
 	 * @param isAjaxRequest
 	 */
-	public void setAjaxRequest(boolean isAjaxRequest);
-	
+	void setAjaxRequest(boolean isAjaxRequest);
+
 	/**
 	 * @param request the request to set
 	 */
-	public void setRequest(HttpServletRequest request);
-	
+	void setRequest(HttpServletRequest request);
+
 	/**
 	 * @return the request
 	 */
-	public HttpServletRequest getRequest();
-
+	HttpServletRequest getRequest();
 
 	/**
+	 * this method return whether to show required field warning or not.
 	 * @return true if required field warning has to be shown
 	 */
-	public Boolean isShowRequiredFieldWarningMessage();
-	
+	Boolean isShowRequiredFieldWarningMessage();
+
 	/**
 	 * @param showRequiredFieldWarningMessage the showRequiredFieldWarningMessage to set
 	 */
-	public void setShowRequiredFieldWarningMessage(Boolean showRequiredFieldWarningMessage);
+	void setShowRequiredFieldWarningMessage(Boolean showRequiredFieldWarningMessage);
+
+	/**
+	 * @param set previous page data value map
+	 */
+	void setPreviousValueMap(Map<BaseAbstractAttributeInterface, Object> peek);
+
+	/**
+	 * @return previous page data value map
+	 */
+	Map<BaseAbstractAttributeInterface, Object> getPreviousValueMap();
+
+	/**
+	 *
+	 * @return
+	 */
+	boolean getIsSourceCalculatedAttributes();
+
+	/**
+	 * @return
+	 */
+	Object getContextParameter(String key);
+
+	/**
+	 * @param contextParameter
+	 */
+	void setContextParameter(Map<String, Object> contextParameter);
+
+	/**
+	 * @param id control id
+	 * @return control object
+	 */
+	ControlInterface getControlById(Long id);
+
+	/**
+	 * Gets the parent container.
+	 * @param container the container
+	 * @return the parent container
+	 */
+	ContainerInterface getParentContainer(ContainerInterface container);
+	List<String> getErrorList();
 }

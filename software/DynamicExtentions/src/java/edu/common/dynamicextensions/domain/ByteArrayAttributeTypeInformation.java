@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.sql.Clob;
+
 import edu.common.dynamicextensions.domaininterface.ByteArrayTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
@@ -32,7 +34,7 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation
 	 */
 	public String getContentType()
 	{
-		return contentType;
+		return this.contentType;
 	}
 
 	/**
@@ -56,6 +58,16 @@ public class ByteArrayAttributeTypeInformation extends AttributeTypeInformation
 	public PermissibleValueInterface getPermissibleValueForString(String value)
 	{
 		return null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getAttributeDataType()
+	 * @return Class type for attribute.
+	 */
+	public Class getAttributeDataType()
+	{
+		return Clob.class;
 	}
 
 }

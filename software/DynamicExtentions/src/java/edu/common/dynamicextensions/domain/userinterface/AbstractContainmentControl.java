@@ -31,7 +31,8 @@ public abstract class AbstractContainmentControl extends Control
 	 */
 	protected ContainerInterface container;
 
-	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = this.getContainer();
 		this.setIsSubControl(true);
@@ -39,15 +40,15 @@ public abstract class AbstractContainmentControl extends Control
 		if (this.getParentContainer().getShowAssociationControlsAsLink())
 		{
 			String previousLink = containerInterface.generateLink(getParentContainer());
-			String link = UserInterfaceiUtility.getControlHTMLAsARow(this, previousLink);
-			return link;
+			return UserInterfaceiUtility.getControlHTMLAsARow(this, previousLink);
 		}
 
 		String subContainerHTML = "";
 		if (isCardinalityOneToMany())
 		{
 			List<Map<BaseAbstractAttributeInterface, Object>> valueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) value;
-			subContainerHTML = containerInterface.generateControlsHTMLAsGrid(valueMapList,getDataEntryOperation());
+			subContainerHTML = containerInterface.generateControlsHTMLAsGrid(valueMapList,
+					getDataEntryOperation(), container,getIsPasteEnable(),errorList);
 		}
 		else
 		{
@@ -55,15 +56,19 @@ public abstract class AbstractContainmentControl extends Control
 			{
 				Map<BaseAbstractAttributeInterface, Object> displayContainerValueMap = ((List<Map<BaseAbstractAttributeInterface, Object>>) value)
 						.get(0);
-				containerInterface.setContainerValueMap(displayContainerValueMap);
+				UserInterfaceiUtility.setContainerValueMap(containerInterface,displayContainerValueMap);
 			}
 			this.getContainer().setShowAssociationControlsAsLink(true);
-			subContainerHTML = containerInterface.generateControlsHTML(null,getDataEntryOperation());
+			subContainerHTML = containerInterface.generateControlsHTML(null,
+					getDataEntryOperation(), container);
+			errorList.addAll(containerInterface.getErrorList());
 		}
+
 		return subContainerHTML;
 	}
 
-	public String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	public String generateViewModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException
 	{
 		String subContainerHTML = "";
 		this.setIsSubControl(true);
@@ -72,7 +77,8 @@ public abstract class AbstractContainmentControl extends Control
 			List<Map<BaseAbstractAttributeInterface, Object>> valueMapList = (List<Map<BaseAbstractAttributeInterface, Object>>) value;
 			String oldMode = this.getContainer().getMode();
 			this.getContainer().setMode(WebUIManagerConstants.VIEW_MODE);
-			subContainerHTML = this.getContainer().generateControlsHTMLAsGrid(valueMapList,getDataEntryOperation());
+			subContainerHTML = this.getContainer().generateControlsHTMLAsGrid(valueMapList,
+					getDataEntryOperation(), container,getIsPasteEnable(),errorList);
 			this.getContainer().setMode(oldMode);
 		}
 		else
@@ -86,7 +92,8 @@ public abstract class AbstractContainmentControl extends Control
 			this.getContainer().setShowAssociationControlsAsLink(true);
 			String oldMode = this.getContainer().getMode();
 			this.getContainer().setMode(WebUIManagerConstants.VIEW_MODE);
-			subContainerHTML = this.getContainer().generateControlsHTML(null,getDataEntryOperation());
+			subContainerHTML = this.getContainer().generateControlsHTML(null,
+					getDataEntryOperation(), container);
 			this.getContainer().setMode(oldMode);
 		}
 		return subContainerHTML;
@@ -98,9 +105,9 @@ public abstract class AbstractContainmentControl extends Control
 	public String generateLinkHTML() throws DynamicExtensionsSystemException
 	{
 		String detailsString = "Details";
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer stringBuffer = new StringBuffer(208);
 		stringBuffer
-				.append("<img src='de/images/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'><a href='#' style='cursor:hand' class='set1' onclick='showChildContainerInsertDataPage(");
+				.append("<img src='images/de/ic_det.gif' alt='Details' width='12' height='12' hspace='3' border='0' align='absmiddle'><a href='#' style='cursor:hand' class='set1' onclick='showChildContainerInsertDataPage(");
 		stringBuffer.append(this.getParentContainer().getIncontextContainer().getId());
 		stringBuffer.append(",this)'>");
 		stringBuffer.append(detailsString);
@@ -126,5 +133,4 @@ public abstract class AbstractContainmentControl extends Control
 	{
 		this.container = container;
 	}
-
 }

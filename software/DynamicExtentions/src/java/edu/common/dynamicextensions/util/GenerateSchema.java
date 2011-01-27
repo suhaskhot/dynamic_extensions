@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.util;
 
 import java.io.BufferedInputStream;
@@ -25,38 +26,27 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
  */
 public class GenerateSchema
 {
-	public static void main(String[] args) throws HibernateException , IOException, Exception
+
+	public static void main(String[] args) throws HibernateException, IOException
 	{
 		boolean isToPrintOnConsole = false;
 		boolean isToExecuteOnDB = false;
-		if(args.length!=0)
+		if (args.length != 0)
 		{
-			String arg = args[0];
-			if(arg.equalsIgnoreCase("true"))
-			{
-				isToPrintOnConsole = true;
-				isToExecuteOnDB = true;
-			}
-			if(arg.equalsIgnoreCase("false"))
-			{
-				isToPrintOnConsole = false;
-				isToExecuteOnDB = false;
-			}
+			isToPrintOnConsole = isToExecuteOnDB = Boolean.valueOf(args[0]);
 		}
-		
+
 		File file = new File("../DynamicExtentions/src/conf/db.properties");
-		BufferedInputStream stram = new BufferedInputStream(new FileInputStream(file));  
+		BufferedInputStream stram = new BufferedInputStream(new FileInputStream(file));
 		Properties properties = new Properties();
 		properties.load(stram);
 		stram.close();
-		
-		
-			
+
 		Configuration cfg = new Configuration();
 		cfg.setProperties(properties);
 		cfg.addDirectory(new File("../DynamicExtentions/src"));
 		new SchemaExport(cfg).setOutputFile("query.sql").setDelimiter(";").create(isToPrintOnConsole, isToExecuteOnDB);
-//		if(isToExecuteOnDB)
-//			new GenerateUser();
+		//		if(isToExecuteOnDB)
+		//			new GenerateUser();
 	}
 }

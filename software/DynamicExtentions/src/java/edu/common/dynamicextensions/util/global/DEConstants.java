@@ -10,6 +10,10 @@
 
 package edu.common.dynamicextensions.util.global;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+
 /**
  * This class stores the constants used in the operations in the application.
  * @author Sujay Narkar
@@ -43,6 +47,9 @@ public class DEConstants
 	public static final String CONTAINER_INTERFACE = "containerInterface";
 	public static final String CONTAINER_STACK = "containerStack";
 	public static final String VALUE_MAP_STACK = "valueMapStack";
+	public static final String SCROLL_TOP_STACK = "scrollTopStack";
+	public static final String SCROLL_TOP = "scrollTop";
+	public static final String SCROLL_POSITION = "scrollPostion";
 
 	public static final String ENTITYGROUP_INTERFACE = "entityGroupInterface";
 	public static final String CURRENT_CONTAINER_NAME = "currentContainerName";
@@ -106,21 +113,17 @@ public class DEConstants
 	public static final String AUDIT_USER_ID_COLUMN = "USER_ID";
 	public static final String OPENING_SQUARE_BRACKET = "[";
 	public static final String CLOSING_SQUARE_BRACKET = "]";
-	public static final String CATEGORY_ENTITY_ID = "category.entity.id.column.name";
-	public static final String PATH_TABLE_NAME = "dyextn.path.table.name";
-	public static final String ABSTRACT_METADATA_TABLE_NAME = "abstract.metadata.table.name";
-	public static final String NAME = "name.column.name";
+	public static final String CATEGORY_ENTITY_ID = "CATEGORY_ENTITY_ID";
+	public static final String PATH_TABLE_NAME = "DYEXTN_PATH";
+	public static final String ABSTRACT_METADATA_TABLE_NAME = "DYEXTN_ABSTRACT_METADATA";
+	public static final String NAME = "NAME";
 	public static final String APPLICATION_RESOURCES = "ApplicationResources";
 	public static final int TWO = 2;
-	public static String DATE = "date";
-	public static String DATE_RANGE = "dateRange";
+	public static final String DATE = "date";
+	public static final String DATE_RANGE = "dateRange";
 	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
 	public static final String RANGE = "range";
-	public static final String DATE_MONTH_YEAR_CAL = "MM-DD-YYYY";
-	public static final String DATE_TIME_CAL = "MM-DD-YYYY HH:MM";
-	public static final String YEAR_ONLY_CAL = "YYYY";
-	public static final String MONTH_YEAR_CAL = "MM-YYYY";
-	public static final String CANCEl = "cancel";
+	public static final String CANCEL = "cancel";
 	public static final String IS_DIRTY = "isDirty";
 	public static final String BREAD_CRUMB_POSITION = "breadCrumbPosition";
 	public static final String HTML_SPACE = "&nbsp;";
@@ -134,11 +137,44 @@ public class DEConstants
 	public static final String SINGLE_QUOTE = "'";
 	public static final String OPEN_ROUND_BRACE = "(";
 	public static final String CLOSED_ROUND_BRACE = ")";
-	public static final String INDEX ="index";
+	public static final String INDEX = "index";
 	public static final String COMMA = ",";
 	public static final String CONTAINER_ID = "containerId";
+	public static final int CONTROL_DEFAULT_VALUE = 10;
+	public static final String ATTRIBUTE_IDENTIFIER = "attributeIdentifier";
+	public static final String RECORD_IDENTIFIER = "recordIdentifier";
 
-	
+	public static final String JAVA_UTIL_COLLECTION_CLASS = "java.util.Collection";
+	public static final String GET_ID = "getId";
+	public static final String INVALID_CONTROL_VALUE = "errors.invalidInputForControl";
+	public static final String VIOLATING_PROPERTY_NAMES = "propertyNamesList";
+
+	public static final String DATA_INSERTION_ERROR_MESSAGE = "Error while inserting data";
+
+	public static final String APPLICATION_ERROR_MSGS = "ApplicationErrorMsgs";
+
+	public static final Collection<String> TRUE_VALUE_LIST;
+
+	public static final Collection<String> FALSE_VALUE_LIST;
+
+	static
+	{
+		Collection<String> trueValues = new HashSet<String>();
+		trueValues.add("TRUE");
+		trueValues.add("T");
+		trueValues.add("1");
+		trueValues.add("YES");
+		TRUE_VALUE_LIST = Collections.unmodifiableCollection(trueValues);
+
+		Collection<String> falseValues = new HashSet<String>();
+		falseValues.add("FALSE");
+		falseValues.add("F");
+		falseValues.add("0");
+		falseValues.add("NO");
+		FALSE_VALUE_LIST = Collections.unmodifiableCollection(falseValues);
+
+	}
+
 	public enum Cardinality {
 		ZERO(0), ONE(1), MANY(100);
 
@@ -151,7 +187,7 @@ public class DEConstants
 
 		public Integer getValue()
 		{
-			return value;
+			return this.value;
 		}
 
 		public static Cardinality get(Integer value)
@@ -181,7 +217,7 @@ public class DEConstants
 
 		public String getValue()
 		{
-			return value;
+			return this.value;
 		}
 
 		public static AssociationDirection get(String value)
@@ -211,7 +247,7 @@ public class DEConstants
 
 		public String getValue()
 		{
-			return value;
+			return this.value;
 		}
 
 		public static AssociationType get(String value)
@@ -230,7 +266,7 @@ public class DEConstants
 	}
 
 	/**
-	 * enum to define strategies of the inheritance 
+	 * enum to define strategies of the inheritance
 	 */
 	public enum InheritanceStrategy {
 		TABLE_PER_CONCRETE_CLASS(1), TABLE_PER_HEIRARCHY(2), TABLE_PER_SUB_CLASS(3);
@@ -244,7 +280,7 @@ public class DEConstants
 
 		public int getValue()
 		{
-			return value;
+			return this.value;
 		}
 
 		public static InheritanceStrategy get(int value)
@@ -274,7 +310,7 @@ public class DEConstants
 
 		public String getValue()
 		{
-			return value;
+			return this.value;
 		}
 
 		public static ValueDomainType get(String value)
@@ -292,4 +328,18 @@ public class DEConstants
 		}
 	}
 
+	public static final String XML_PACKAGE_NAME = "edu.common.dynamicextensions.util.xml";
+
+	/**
+	 * Constant for directory.
+	 */
+	public static final String TEMPLATE_DIR = "XMLAndCSVTemplate";
+	/**
+	 * Constant for CSV extension.
+	 */
+	public static final String CSV_SUFFIX = ".csv";
+	/**
+	 * Constant for XML extension.
+	 */
+	public static final String XML_SUFFIX = ".xml";
 }

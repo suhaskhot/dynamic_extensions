@@ -30,7 +30,7 @@ public class BizLogicFactory
 	 */
 	public static AbstractBizLogic getBizLogic(int FORM_TYPE)
 	{
-		AbstractBizLogic abstractBizLogic = null;
+		AbstractBizLogic abstractBizLogic;
 
 		if (FORM_TYPE == Constants.QUERY_INTERFACE_ID)
 		{

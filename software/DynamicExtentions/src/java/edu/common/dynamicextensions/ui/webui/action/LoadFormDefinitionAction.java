@@ -4,8 +4,8 @@ package edu.common.dynamicextensions.ui.webui.action;
 /**
  * This Action class Loads the Primary Information needed for CreateForm.jsp.
  * This will first check if the form object is already present in cache , If yes, it will update
- * the actionForm and If No, It will populate the actionForm with fresh data.  
- * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * the actionForm and If No, It will populate the actionForm with fresh data.
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed
  * added with error messages .
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
@@ -45,15 +45,15 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * This method will call LoadFormDefinitionProcessor to load all the information needed for the form.
-	 * It will then forward the action to CreateForm.jsp. 
-	 * 
+	 * It will then forward the action to CreateForm.jsp.
+	 *
 	 * @param mapping ActionMapping mapping
 	 * @param form ActionForm form
 	 * @param  request HttpServletRequest request
 	 * @param response HttpServletResponse response
 	 * @return ActionForward forward to next action
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
 	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response)
@@ -80,12 +80,10 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 
 	/**
 	 * @param request
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void populateContainerInformation(HttpServletRequest request,
-			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException
 	{
 		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor
 				.getInstance();
@@ -101,7 +99,17 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			formDefinitionForm.setOperationMode(operationMode);
 		}
 		String containerIdentifier = request.getParameter("containerIdentifier");
-		if (operationMode != null)
+		if (operationMode == null)
+		{
+			formDefinitionForm.setOperationMode("");
+			container = WebUIManager.getCurrentContainer(request);
+			if (container != null)
+			{
+				loadFormDefinitionProcessor.populateContainerInformation(container,
+						formDefinitionForm, entityGroup);
+			}
+		}
+		else
 		{
 			if (operationMode.equalsIgnoreCase(DEConstants.ADD_NEW_FORM))
 			{
@@ -110,14 +118,14 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 			else if (operationMode.equalsIgnoreCase(DEConstants.EDIT_FORM))
 			{
-				if (containerIdentifier != null)
+				if (containerIdentifier == null)
 				{
-					container = loadFormDefinitionProcessor
-							.getContainerForEditing(containerIdentifier);
+					container = WebUIManager.getCurrentContainer(request);
 				}
 				else
 				{
-					container = WebUIManager.getCurrentContainer(request);
+					container = loadFormDefinitionProcessor
+							.getContainerForEditing(containerIdentifier);
 				}
 				loadFormDefinitionProcessor.populateContainerInformation(container,
 						formDefinitionForm, entityGroup);
@@ -133,8 +141,6 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 				loadFormDefinitionProcessor.populateContainerInformation(container,
 						formDefinitionForm, entityGroup);
 
-				ContainerInterface parentContainer = null;
-
 				String parentContainerName = formDefinitionForm.getCurrentContainerName();
 				if (parentContainerName == null
 						&& request.getAttribute("currentContainerName") != null)
@@ -145,28 +151,20 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 
 				if (parentContainerName != null)
 				{
-					parentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
-							parentContainerName);
+					ContainerInterface parentContainer = (ContainerInterface) CacheManager
+							.getObjectFromCache(request, parentContainerName);
 					populateAssociationInformation(parentContainer, container, formDefinitionForm);
 				}
 			}
-			boolean isDataEntered=false;
-			if ((operationMode != null) && (operationMode.equals(DEConstants.EDIT_FORM)) && container.getId()!=null)
+			boolean isDataEntered = false;
+			if ((operationMode != null) && (operationMode.equals(DEConstants.EDIT_FORM))
+					&& container.getId() != null)
 			{
-				AbstractEntityInterface abstractEntityInterface =entityGroup.getEntityByName(container.getAbstractEntity().getName());
-				isDataEntered=CategoryHelper.isDataEntered(abstractEntityInterface);
+				AbstractEntityInterface abstractEntityInterface = entityGroup
+						.getEntityByName(container.getAbstractEntity().getName());
+				isDataEntered = CategoryHelper.isDataEntered(abstractEntityInterface);
 			}
 			formDefinitionForm.setDataEntered(isDataEntered);
-		}
-		else
-		{
-			formDefinitionForm.setOperationMode("");
-			container = WebUIManager.getCurrentContainer(request);
-			if (container != null)
-			{
-				loadFormDefinitionProcessor.populateContainerInformation(container,
-						formDefinitionForm, entityGroup);
-			}
 		}
 
 		ContainerInterface cachedContainer = (ContainerInterface) CacheManager.getObjectFromCache(
@@ -190,26 +188,25 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if ((parentContainer != null) && (childContainer != null))
 		{
-			String childContainerId = "";
-			if (childContainer.getId() != null)
+			String childContainerId;
+			if (childContainer.getId() == null)
 			{
-				childContainerId = childContainer.getId().toString();
+				childContainerId = childContainer.getCaption();
 			}
 			else
 			{
-				childContainerId = childContainer.getCaption();
+				childContainerId = childContainer.getId().toString();
 			}
 			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
 					.getAssociationControl(parentContainer, childContainerId);
 			if (containmentAssociationControl != null)
 			{
-				AssociationInterface association = null;
 				AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
 						.getBaseAbstractAttribute();
 				if ((abstractAttributeInterface != null)
 						&& (abstractAttributeInterface instanceof AssociationInterface))
 				{
-					association = (AssociationInterface) abstractAttributeInterface;
+					AssociationInterface association = (AssociationInterface) abstractAttributeInterface;
 					Cardinality cardinality = association.getTargetRole().getMaximumCardinality();
 					if (cardinality == Cardinality.MANY)
 					{
@@ -238,7 +235,7 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			Collection<ControlInterface> controlsCollection = parentContainer
 					.getControlCollection();
-			if ((controlsCollection != null) || (!controlsCollection.isEmpty()))
+			if ((controlsCollection != null) && (!controlsCollection.isEmpty()))
 			{
 				for (ControlInterface control : controlsCollection)
 				{

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false">
@@ -58,7 +58,14 @@
             column="NAME"
             length="1000"
         />
-
+ 		<property
+            name="activityStatus"
+            type="string"
+            update="true"
+            insert="true"
+            column="ACTIVITY_STATUS"
+            length="10"
+        />
         <set
             name="taggedValueCollection"
             lazy="false"
@@ -66,8 +73,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -86,8 +93,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -131,8 +138,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -176,8 +183,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -199,6 +206,16 @@
 
         </joined-subclass>
         <joined-subclass
+            name="edu.common.dynamicextensions.domain.AbstractCategory"
+            table="DYEXTN_ABSTR_CATEGORY"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <joined-subclass
             name="edu.common.dynamicextensions.domain.Category"
             table="DYEXTN_CATEGORY"
             dynamic-update="false"
@@ -206,6 +223,42 @@
         >
         <key
             column="IDENTIFIER"
+        />
+        <property
+            name="isPopulateFromXml"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="POPULATE_FROM_XML"
+        />
+       <set
+            name="autoLoadXpathCollection"
+            table="DYEXTN_AUTO_LOADXPATH"
+            lazy="false"
+            inverse="false"
+            cascade="save-update"
+            sort="unsorted"
+        >
+            <cache
+                usage="read-write"
+             />
+
+              <key
+                  column="CATEGORY_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.AutoLoadXpath"
+              />
+        </set>
+
+        <property
+            name="userId"
+            type="long"
+            update="true"
+            insert="true"
+            column="USER_ID"
+            length="19"
         />
 
         <many-to-one
@@ -226,8 +279,8 @@
             cascade="all"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -239,6 +292,33 @@
               />
         </set>
 
+        <property
+            name="isCacheable"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_CACHEABLE"
+        />
+
+        </joined-subclass>
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.StaticCategory"
+            table="DYEXTN_STATIC_CATEGORY"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+        <property
+            name="formURL"
+            length="800"
+            type="string"
+            update="true"
+            insert="true"
+            column="FORM_URL"
+        />
+        </joined-subclass>
         </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.BaseAbstractAttribute"
@@ -250,6 +330,37 @@
             column="IDENTIFIER"
         />
 
+        <joined-subclass
+            name="edu.common.dynamicextensions.domain.CalculatedAttribute"
+            table="DYEXTN_CALCULATED_ATTRIBUTE"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="IDENTIFIER"
+        />
+
+        <many-to-one
+            name="calculatedAttribute"
+            class="edu.common.dynamicextensions.domain.CategoryAttribute"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="SOURCE_CAT_ATTR_ID"
+        />
+
+        <many-to-one
+            name="sourceForCalculatedAttribute"
+            class="edu.common.dynamicextensions.domain.CategoryAttribute"
+            cascade="save-update"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            column="TARGET_CAL_ATTR_ID"
+        />
+
+        </joined-subclass>
         <joined-subclass
             name="edu.common.dynamicextensions.domain.AbstractAttribute"
             table="DYEXTN_ATTRIBUTE"
@@ -268,8 +379,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -309,8 +420,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -346,8 +457,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -375,8 +486,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -421,6 +532,7 @@
             outer-join="auto"
             update="true"
             insert="true"
+            lazy="false"
             column="TARGET_ENTITY_ID"
         />
 
@@ -431,6 +543,7 @@
             outer-join="auto"
             update="true"
             insert="true"
+            lazy="false"
             column="SOURCE_ROLE_ID"
         />
 
@@ -452,8 +565,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -485,7 +598,13 @@
         <key
             column="IDENTIFIER"
         />
-
+<property
+            name="isPopulateFromXml"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="POPULATE_FROM_XML"
+        />
         <set
             name="columnPropertiesCollection"
             table="DYEXTN_COLUMN_PROPERTIES"
@@ -494,8 +613,8 @@
             cascade="all"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -515,8 +634,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -536,8 +655,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -549,15 +668,16 @@
               />
         </set>
 
-        <many-to-one
+		<property
             name="abstractAttribute"
-            class="edu.common.dynamicextensions.domain.AbstractAttribute"
-            cascade="save-update"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="ABSTRACT_ATTRIBUTE_ID"
-        />
+            column="ABSTRACT_ATTRIBUTE_ID">
+	       <type name="edu.wustl.common.hibernate.CanonicalFormType">
+				<param name="canonical-form-provider">
+					edu.wustl.metadata.hibernate.AttributeCanonicalFormProvider
+				</param>
+			</type>
+		</property>
+
 
         <many-to-one
             name="categoryEntity"
@@ -577,8 +697,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -598,8 +718,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -619,8 +739,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -633,15 +753,15 @@
         </set>
 
         <set
-            name="calculatedCategoryAttributeCollection"
+            name="calculatedAttributeCollection"
             table="DYEXTN_CATEGORY_ATTRIBUTE"
             lazy="false"
             inverse="false"
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -661,8 +781,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -671,6 +791,27 @@
 
               <one-to-many
                   class="edu.common.dynamicextensions.domain.CategoryAttribute"
+              />
+        </set>
+
+        <set
+            name="calculatedCategoryAttributeCollection"
+            table="DYEXTN_CALCULATED_ATTRIBUTE"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache
+                usage="read-write"
+             />
+
+              <key
+                  column="CAL_CATEGORY_ATTR_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.CalculatedAttribute"
               />
         </set>
 
@@ -699,12 +840,41 @@
         />
 
         <property
+            name="isSourceForCalculatedAttribute"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_SRC_FOR_CAL_ATTR"
+        />
+
+        <property
             name="isSkipLogic"
             type="boolean"
             update="true"
             insert="true"
             column="IS_SKIP_LOGIC"
         />
+
+        <set
+            name="dependentSkipLogicAttributes"
+            table="DYEXTN_SKIP_LOGIC_ATTRIBUTE"
+            lazy="false"
+            inverse="false"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+        >
+            <cache
+                usage="read-write"
+             />
+
+              <key
+                  column="CAT_ATTR_ID"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.SkipLogicAttribute"
+              />
+        </set>
 
         </joined-subclass>
         <joined-subclass
@@ -745,8 +915,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -766,8 +936,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -805,11 +975,11 @@
             table="DYEXTN_CATEGORY_ENTITY"
             lazy="false"
             inverse="false"
-            cascade="none"
+            cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -829,8 +999,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -863,8 +1033,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -884,8 +1054,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -905,8 +1075,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -942,8 +1112,8 @@
             inverse="false"
             cascade="save-update"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -981,8 +1151,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -1062,8 +1232,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -1083,8 +1253,8 @@
             cascade="none"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -1095,16 +1265,16 @@
                   class="edu.common.dynamicextensions.domain.CategoryEntity"
               />
         </set>
-
-        <many-to-one
+		<property
             name="entity"
-            class="edu.common.dynamicextensions.domain.Entity"
-            cascade="save-update"
-            outer-join="auto"
-            update="true"
-            insert="true"
-            column="ENTITY_ID"
-        />
+            column="ENTITY_ID">
+	       <type name="edu.wustl.common.hibernate.CanonicalFormType">
+				<param name="canonical-form-provider">
+					edu.wustl.metadata.hibernate.EntityCanonicalFormProvider
+				</param>
+			</type>
+		</property>
+
 
         <set
             name="pathCollection"
@@ -1114,8 +1284,8 @@
             cascade="save-update"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -1135,8 +1305,8 @@
             cascade="none"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -1156,8 +1326,8 @@
             cascade="all-delete-orphan"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key

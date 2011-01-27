@@ -57,7 +57,9 @@ public class Constants
 	public static final String CONCEPT_DEFINITION = "Concept_Definition";
 	public static final String DEFINITION_SOURCE = "Definition_Source";
 	public static final String PREFERRED_NAME = "Preferred_Name";
-	
+
 	public static final String ASSO_TGT_ENT_CONSTR_KEY_PROP = "ASSOCIATION_TARGET_ENTITY_CONSTRAINT_KEY_PROPERTIES";
 	public static final String SELECTED_VALUES = "selectedCoordinators";
+	public static final String ENCOUNTER_DATE="encounterDate";
+	public static final String PV_With_Nearest_Past_Date="PVWithNearestPastDate";
 }

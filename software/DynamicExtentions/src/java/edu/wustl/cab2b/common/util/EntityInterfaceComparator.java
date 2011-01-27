@@ -1,16 +1,20 @@
 
 package edu.wustl.cab2b.common.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 
 /**
- * Comparator for EntityInterface needed for metadata search 
+ * Comparator for EntityInterface needed for metadata search
  * @author chandrakant_talele
  */
-public class EntityInterfaceComparator implements Comparator<EntityInterface>
+public class EntityInterfaceComparator implements Comparator<EntityInterface>,Serializable
 {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 7430350729343331670L;
 
 	/**
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)

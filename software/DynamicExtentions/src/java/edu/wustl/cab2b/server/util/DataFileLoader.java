@@ -15,12 +15,15 @@ import org.apache.log4j.Logger;
 import edu.wustl.cab2b.common.errorcodes.ErrorCodeConstants;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Bulk data loader for any database.
  * @author Chandrakant Talele
  */
 public class DataFileLoader implements DataFileLoaderInterface {
-    private static final Logger logger = edu.wustl.common.util.logger.Logger.getLogger(DataFileLoader.class);
+
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = edu.wustl.common.util.logger.Logger.getLogger(DataFileLoader.class);
 
     /**
      * Loads data from given file into given table.
@@ -29,23 +32,17 @@ public class DataFileLoader implements DataFileLoaderInterface {
      * @param fileName Full path of data file.
      * @param columns Data columns in table. They should be in format (column1,column2,...) braces included
      * @param tableName Name of the table in which data to load.
-     * @param dataTypes Data type of each column. 
+     * @param dataTypes Data type of each column.
      * @param fieldSeperator String used to separate values of columns in one line of given file.
      * Order of this array must be same as columns names given in "columns" parameter above.
      */
     public void loadDataFromFile(Connection con, String fileName, String columns, String tableName,
                                  Class<?>[] dataTypes, String fieldSeperator) {
-        logger.debug("Entering method loadDataFromFile()");
+        LOGGER.debug("Entering method loadDataFromFile()");
 
         BufferedReader reader = readFile(fileName);
         int columnCount = columns.split(",").length;
-        StringBuffer sql = new StringBuffer(400);
-        sql.append("insert into ").append(tableName).append(' ').append(columns).append(" values(");
-        for (int i = 0; i < columnCount; i++) {
-            sql.append("?,");
-        }
-        sql.deleteCharAt(sql.length() - 1);
-        sql.append(')');
+        StringBuffer sql = getSqlString(columns, tableName, columnCount);
 
         PreparedStatement preparedStatement = null;
         try {
@@ -62,34 +59,76 @@ public class DataFileLoader implements DataFileLoaderInterface {
             if (!con.getAutoCommit()) {
                 con.commit();
             }
-            
+
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new RuntimeException("Error while loading path information into database", e,
                     ErrorCodeConstants.DB_0006);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOGGER.error(e.getMessage());
             throw new RuntimeException("Error while loading path information into database", e,
                     ErrorCodeConstants.DB_0006);
         } finally {
             close(preparedStatement);
         }
-        logger.debug("Leaving method loadDataFromFile()");
+        LOGGER.debug("Leaving method loadDataFromFile()");
     }
 
-    private void process(Class<?>[] dataTypes, String[] values, int columnCount, PreparedStatement preparedStatement)
-            throws SQLException {
-        for (int j = 0; j < columnCount; j++) {
-            if (dataTypes[j].equals(String.class)) {
+    /**
+     * Gets the sql string.
+     *
+     * @param columns the columns
+     * @param tableName the table name
+     * @param columnCount the column count
+     * @return the sql string
+     */
+    private StringBuffer getSqlString(String columns, String tableName,
+            int columnCount)
+    {
+        StringBuffer sql = new StringBuffer(400);
+        sql.append("insert into ").append(tableName).append(' ').append(columns).append(" values(");
+        for (int i = 0; i < columnCount; i++) {
+            sql.append("?,");
+        }
+        sql.deleteCharAt(sql.length() - 1);
+        sql.append(')');
+        return sql;
+    }
+
+    /**
+     * Process.
+     *
+     * @param dataTypes the data types
+     * @param values the values
+     * @param columnCount the column count
+     * @param preparedStatement the prepared statement
+     * @throws SQLException the sQL exception
+     */
+    private void process(Class<?>[] dataTypes, String[] values,
+            int columnCount, PreparedStatement preparedStatement)
+            throws SQLException
+    {
+        for (int j = 0; j < columnCount; j++)
+        {
+            if (dataTypes[j].equals(String.class))
+            {
                 preparedStatement.setString(j + 1, values[j]);
-            } else if (dataTypes[j].equals(Long.class)) {
+            } else if (dataTypes[j].equals(Long.class))
+            {
                 preparedStatement.setLong(j + 1, Long.parseLong(values[j]));
-            } else if (dataTypes[j].equals(Integer.class)) {
+            } else if (dataTypes[j].equals(Integer.class))
+            {
                 preparedStatement.setInt(j + 1, Integer.parseInt(values[j]));
             }
         }
     }
 
+    /**
+     * Read file.
+     *
+     * @param fileName the file name
+     * @return the buffered reader
+     */
     private BufferedReader readFile(String fileName) {
         BufferedReader reader = null;
         try {
@@ -100,12 +139,17 @@ public class DataFileLoader implements DataFileLoaderInterface {
         return reader;
     }
 
+    /**
+     * Close.
+     *
+     * @param preparedStatement the prepared statement
+     */
     private void close(PreparedStatement preparedStatement) {
         if (preparedStatement != null) {
             try {
                 preparedStatement.close();
             } catch (SQLException e) {
-                logger.error(e);
+                LOGGER.error(e);
             }
         }
     }

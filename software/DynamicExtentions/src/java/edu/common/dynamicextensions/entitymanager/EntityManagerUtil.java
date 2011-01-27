@@ -8,7 +8,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -16,11 +17,9 @@ import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -30,7 +29,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.util.StatementData;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 
 public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstantsInterface
 {
@@ -44,58 +43,72 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @throws DynamicExtensionsSystemException
 	 */
 	/*public static ResultSet executeQuery(String query,DAO dao)
-			throws DynamicExtensionsSystemException
-	{
-		Connection conn = null;
-		try
-		{
-			conn = dao.getCleanConnection();
-			conn.setAutoCommit(false);
-			Statement statement = null;
-			statement = conn.createStatement();
-			ResultSet resultSet = statement.executeQuery(query);
-			return resultSet;
-		}
-		catch (Exception e)
-		{
-			try
-			{
-				conn.rollback();
-			}
-			catch (SQLException e1)
-			{
-				throw new DynamicExtensionsSystemException(e.getMessage(), e);
-			}
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-	}*/
+	 throws DynamicExtensionsSystemException
+	 {
+	 Connection conn = null;
+	 try
+	 {
+	 conn = dao.getCleanConnection();
+	 conn.setAutoCommit(false);
+	 Statement statement = null;
+	 statement = conn.createStatement();
+	 ResultSet resultSet = statement.executeQuery(query);
+	 return resultSet;
+	 }
+	 catch (Exception e)
+	 {
+	 try
+	 {
+	 conn.rollback();
+	 }
+	 catch (SQLException e1)
+	 {
+	 throw new DynamicExtensionsSystemException(e.getMessage(), e);
+	 }
+	 throw new DynamicExtensionsSystemException(e.getMessage(), e);
+	 }
+	 }*/
 
 	/**
-	 * @param inputs
-	 * @return
+	 * @param inputs list which should be aappended to query
+	 * @param query Query to which append it in its IN clause
+	 * @return LinkedList of column value bean for executing this query using prepared statement
 	 */
-	public static String getListToString(List inputs)
-	{
-		String query = inputs.toString();
-		query = query.replace("[", OPENING_BRACKET);
-		query = query.replace("]", CLOSING_BRACKET);
+	/*public static LinkedList<ColumnValueBean> appendListToQueryInCluase(List inputs,StringBuffer query)
+	 {
+	 LinkedList<ColumnValueBean> queryDataList = new LinkedList<ColumnValueBean>();
+	 query.append(OPENING_BRACKET);
+	 int index = 0;
+	 query.append(QUESTION_MARK);
+	 queryDataList.add(new ColumnValueBean(IDENTIFIER, inputs.get(index++)));
+	 for(;index<inputs.size();index++)
+	 {
+	 query.append(COMMA);
+	 queryDataList.add(new ColumnValueBean(IDENTIFIER, inputs.get(index++)));
+	 query.append(QUESTION_MARK);
+	 }
+	 query.append(CLOSING_BRACKET);
 
-		return query;
-	}
+	 return queryDataList;
+	 }*/
 
 	/**
-	 * @param query
-	 * @return
-	 * @throws DynamicExtensionsSystemException
+	 * This will return the no of records returned by the Query.
+	 * @param query query to be executed
+	 * @param queryDataList coloumnValue Bean List.
+	 * @return number of records.
+	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws DAOException
 	 */
-	public static int getNoOfRecord(String query) throws DynamicExtensionsSystemException
+	public static int getNoOfRecord(String query, List<ColumnValueBean> queryDataList)
+			throws DynamicExtensionsSystemException, DAOException
 	{
 		ResultSet resultSet = null;
 		JDBCDAO jdbcDao = null;
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			resultSet = jdbcDao.getQueryResultSet(query);
+			resultSet = jdbcDao.getResultSet(query, queryDataList, null);
 			resultSet.next();
 			return resultSet.getInt(1);
 		}
@@ -111,72 +124,33 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		{
 			if (resultSet != null)
 			{
-				try
-				{
-					jdbcDao.closeStatement(resultSet);
-					DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
-				}
-				catch (DAOException e)
-				{
-					throw new DynamicExtensionsSystemException(e.getMessage(), e);
-				}
+
+				jdbcDao.closeStatement(resultSet);
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
 			}
-		}
-	}
 
-	/**
-	 * @param jdbcDAO
-	 * @param query query to be executed
-	 * @throws DynamicExtensionsSystemException
-	 */
-	public StatementData executeDML(JDBCDAO jdbcDao, String query) throws DynamicExtensionsSystemException
-	{
-		Logger.out.info(query);
-		try
-		{
-			return jdbcDao.executeUpdate(query);
 		}
-		catch (DAOException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * @param jdbcDAO
-	 * @param queries
-	 * @throws DynamicExtensionsSystemException
-	 */
-	public void executeDMLQueryList(JDBCDAO jdbcDao, List<String> queries)
-			throws DynamicExtensionsSystemException
-	{
-		int result = -1;
-		for (String query : queries)
-		{
-			StatementData stmtData = executeDML(jdbcDao, query);
-			result = stmtData.getRowCount();
-		}
-		
 	}
 
 	/**
 	 * Method generates the next identifier for the table that stores the value of the passes entity.
 	 * @param tableName
-	 * @return
-	 * @throws DynamicExtensionsSystemException
+	 * @return next identifier
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	synchronized public static Long getNextIdentifier(String tableName)
 			throws DynamicExtensionsSystemException
 	{
 		// Query to get next identifier.
-		StringBuffer query = new StringBuffer("SELECT MAX(IDENTIFIER) FROM " + tableName);
+		StringBuffer query = new StringBuffer("SELECT MAX(IDENTIFIER) FROM ");
+		query.append(tableName);
 		JDBCDAO jdbcDao = null;
 		try
 		{
 			Long identifier = null;
 			if (idMap.containsKey(tableName))
 			{
-				Long newIdentifier = (Long) idMap.get(tableName);
+				Long newIdentifier = idMap.get(tableName);
 				identifier = newIdentifier + 1;
 			}
 			else
@@ -185,7 +159,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				try
 				{
 					jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-					resultSet = jdbcDao.getQueryResultSet(query.toString());
+					resultSet = jdbcDao.getResultSet(query.toString(), null, null);
 					resultSet.next();
 					identifier = resultSet.getLong(1);
 					identifier = identifier + 1;
@@ -197,7 +171,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 						try
 						{
 							jdbcDao.closeStatement(resultSet);
-							DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+							DynamicExtensionsUtility.closeDAO(jdbcDao);
 						}
 						catch (DAOException e)
 						{
@@ -224,11 +198,13 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * This method is used in case result of the query is multiple records.
-	 * @param query
-	 * @return
-	 * @throws DynamicExtensionsSystemException
+	 * @param query query to be executed
+	 * @param queryDataList columnValue Bean List
+	 * @return list of records.
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
-	public List<Long> getResultInList(String query) throws DynamicExtensionsSystemException
+	public List<Long> getResultInList(String query, List<ColumnValueBean> queryDataList)
+			throws DynamicExtensionsSystemException
 	{
 		List<Long> results = new ArrayList<Long>();
 
@@ -237,7 +213,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			resultSet = jdbcDao.getQueryResultSet(query);
+			resultSet = jdbcDao.getResultSet(query, queryDataList, null);
 			while (resultSet.next())
 			{
 				Long identifier = resultSet.getLong(1);
@@ -257,7 +233,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			try
 			{
 				jdbcDao.closeStatement(resultSet);
-				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
 			}
 			catch (DAOException e)
 			{
@@ -270,24 +246,6 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * This method returns all the entity groups reachable from given entity.
-	 *
-	 * @param entity
-	 * @param prcesdEntities
-	 * @param prcesdEntGroup
-	 */
-	public static void getAllEntityGroups(EntityInterface entity,
-			Set<EntityInterface> prcesdEntities, Set<EntityGroupInterface> prcesdEntGroup)
-	{
-		if (prcesdEntities.contains(entity))
-		{
-			return;
-		}
-
-		prcesdEntities.add(entity);
-	}
-
-	/**
 	 * @param attributes
 	 * @return
 	 */
@@ -297,7 +255,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		List<AbstractAttributeInterface> attributeList = new ArrayList<AbstractAttributeInterface>();
 		for (AbstractAttributeInterface attribute : attributes)
 		{
-			if (!attribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME))
+			if (!attribute.getName().equalsIgnoreCase(ID_ATTRIBUTE_NAME)
+					&& !attribute.getName().equalsIgnoreCase(ACTIVITY_STATUS_ATTRIBUTE_NAME))
 			{
 				attributeList.add(attribute);
 			}
@@ -322,7 +281,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 */
 	public static void addIdAttribute(EntityInterface entity)
 	{
-		if (!isIdAttributePresent(entity))
+		if (!isAttributePresent(entity, ID_ATTRIBUTE_NAME))
 		{
 			DomainObjectFactory factory = DomainObjectFactory.getInstance();
 			AttributeInterface idAttribute = factory.createLongAttribute();
@@ -343,30 +302,49 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param entity
 	 * @return boolean
 	 */
-	public static boolean isIdAttributePresent(EntityInterface entity)
+	public static boolean isAttributePresent(EntityInterface entity, String attributeName)
 	{
 		boolean isAttrPresent = false;
-
 		Collection<AbstractAttributeInterface> attributes = entity.getAbstractAttributeCollection();
 		if (attributes != null && !attributes.isEmpty())
 		{
 			for (AbstractAttributeInterface attribute : attributes)
 			{
-				if (ID_ATTRIBUTE_NAME.equalsIgnoreCase(attribute.getName()))
+				if (attributeName.equalsIgnoreCase(attribute.getName()))
 				{
 					isAttrPresent = true;
 					break;
 				}
 			}
 		}
-
 		return isAttrPresent;
 	}
 
 	/**
+	 * This method adds a system generated attribute to the entity.
+	 * @param entity
+	 */
+	public static void addAcitvityStatusAttribute(EntityInterface entity)
+	{
+		if (!isAttributePresent(entity, ACTIVITY_STATUS_ATTRIBUTE_NAME))
+		{
+			DomainObjectFactory factory = DomainObjectFactory.getInstance();
+			AttributeInterface activityStatusAttribute = factory.createStringAttribute();
+			activityStatusAttribute.setName(ACTIVITY_STATUS_ATTRIBUTE_NAME);
+			activityStatusAttribute.setIsPrimaryKey(Boolean.FALSE);
+			activityStatusAttribute.setIsNullable(Boolean.TRUE);
+			ColumnPropertiesInterface column = factory.createColumnProperties();
+			column.setName(ACTIVITY_STATUS);
+			activityStatusAttribute.setColumnProperties(column);
+			entity.addAttribute(activityStatusAttribute);
+			activityStatusAttribute.setEntity(entity);
+		}
+	}
+
+	/**
 	 * It will check weather the primary key of the entity is changed
-	 * @param entity to be checked 
-	 * @return 
+	 * @param entity to be checked
+	 * @return
 	 */
 	public static boolean isPrimaryKeyChanged(EntityInterface entity)
 	{
@@ -382,7 +360,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 					dbaseCopy = (Entity) DynamicExtensionsUtility.getCleanObject(Entity.class
 							.getCanonicalName(), entityId);
 				}
-				catch (DAOException e)
+				catch (DynamicExtensionsSystemException e)
 				{
 					Logger.out.debug(e.getMessage());
 				}
@@ -394,29 +372,32 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 
 	/**
 	 * It will check weather the primary key of the entity is changed
-	 * @param entity to be checked 
-	 * @return 
+	 * @param entity to be checked
+	 * @return
 	 */
 	public static boolean isPrimaryKeyChanged(EntityInterface entity, EntityInterface dbaseCopy)
 	{
 		boolean isChanged = false;
 		Collection<AttributeInterface> entityPrmKeyColl = entity.getPrimaryKeyAttributeCollection();
-		Collection<AttributeInterface> dbasePrmKeyColl = dbaseCopy
-				.getPrimaryKeyAttributeCollection();
-		for (AttributeInterface entityAttribute : entityPrmKeyColl)
+		if (dbaseCopy != null)
 		{
-			if (!dbasePrmKeyColl.contains(entityAttribute))
+			Collection<AttributeInterface> dbasePrmKeyColl = dbaseCopy
+					.getPrimaryKeyAttributeCollection();
+			for (AttributeInterface entityAttribute : entityPrmKeyColl)
 			{
-				isChanged = true;
-				break;
+				if (!dbasePrmKeyColl.contains(entityAttribute))
+				{
+					isChanged = true;
+					break;
+				}
 			}
-		}
-		for (AttributeInterface dbaseAttribute : dbasePrmKeyColl)
-		{
-			if (!entityPrmKeyColl.contains(dbaseAttribute))
+			for (AttributeInterface dbaseAttribute : dbasePrmKeyColl)
 			{
-				isChanged = true;
-				break;
+				if (!entityPrmKeyColl.contains(dbaseAttribute))
+				{
+					isChanged = true;
+					break;
+				}
 			}
 		}
 
@@ -492,58 +473,6 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	}
 
 	/**
-	 * @param entityGroup
-	 * @param revQueries
-	 * @param hibernateDAO
-	 * @param queries
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	public List<String> getDynamicQueryList(EntityGroupInterface entityGroup,
-			List<String> revQueries, HibernateDAO hibernateDAO, List<String> queries)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
-
-		List<EntityInterface> entities = DynamicExtensionsUtility.getUnsavedEntities(entityGroup);
-		for (EntityInterface entity : entities)
-		{
-			List<String> createQueries = queryBuilder.getCreateEntityQueryList((Entity) entity,
-					revQueries);
-			if (createQueries != null && !createQueries.isEmpty())
-			{
-				queries.addAll(createQueries);
-			}
-		}
-
-		List<EntityInterface> savedEntities = DynamicExtensionsUtility
-				.getSavedEntities(entityGroup);
-
-		try
-		{
-			for (EntityInterface savedEntity : savedEntities)
-			{
-				Entity dbaseCopy = (Entity) hibernateDAO.retrieveById(Entity.class
-						.getCanonicalName(), savedEntity.getId());
-
-				List<String> updateQueries = queryBuilder.getUpdateEntityQueryList(
-						(Entity) savedEntity, (Entity) dbaseCopy, revQueries, hibernateDAO);
-				if (updateQueries != null && !updateQueries.isEmpty())
-				{
-					queries.addAll(updateQueries);
-				}
-			}
-		}
-		catch (DAOException exception)
-		{
-			throw new DynamicExtensionsSystemException(exception.getMessage(), exception);
-		}
-
-		return queries;
-	}
-
-	/**
 	 * This method checks the data in the form.
 	 * @param tableName
 	 * @return
@@ -555,7 +484,6 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 		return queryBuilder.isDataPresent(tableName);
 	}
 
-	
 	/**
 	 * @param assoType type of association
 	 * @param name name of association
@@ -584,43 +512,16 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			throws DynamicExtensionsSystemException
 	{
 		String query = "select count(*) from " + tableName;
-		return getNoOfRecord(query);
-	}
-
-	/**
-	 * @param queryList queries to be executed
-	 * @throws DynamicExtensionsSystemException
-	 */
-	public static void executeDML(List<String> queryList) throws DynamicExtensionsSystemException
-	{
-		JDBCDAO jdbcDao = null;
-
-		System.out.println(queryList);
+		int noOfRecord;
 		try
 		{
-			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			for (String query : queryList)
-			{
-				jdbcDao.executeUpdate(query);
-			}
+			noOfRecord = getNoOfRecord(query, null);
 		}
-
 		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		finally
-		{
-			try
-			{
-				jdbcDao.commit();
-				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
-			}
-			catch (DAOException e)
-			{
-				throw new DynamicExtensionsSystemException("Error while retrieving the data", e);
-			}
-		}
+		return noOfRecord;
 	}
 
 	/**
@@ -633,44 +534,47 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			EntityInterface entity, AssociationInterface association, AttributeInterface attribute,
 			AttributeInterface originalAttribute)
 	{
-		return "insert into "
-				+ association.getTargetEntity().getTableProperties().getName()
-				+ "(activity_status,identifier,"
-				+ attribute.getColumnProperties().getName()
-				+ ","
+		return "insert into " + association.getTargetEntity().getTableProperties().getName()
+				+ "(activity_status,identifier," + attribute.getColumnProperties().getName() + ","
 				+ Constants.ASSO_TGT_ENT_CONSTR_KEY_PROP + ") "
 				+ "(select activity_status,identifier,"
 				+ originalAttribute.getColumnProperties().getName() + " ,identifier from "
 				+ entity.getTableProperties().getName() + ")";
 	}
-	
+
 	/**
 	 * This method replaces deprecated target entity constraint key properties with the new ones.
 	 * @param multiSelMigrationQueries
 	 * @param multiselectMigartionScripts
 	 */
-	public static List<String> updateSqlScriptToMigrateOldDataForMultiselectAttribute(Map<AssociationInterface, String> multiselectMigartionScripts)
+	public static List<String> updateSqlScriptToMigrateOldDataForMultiselectAttribute(
+			Map<AssociationInterface, String> multiselectMigartionScripts)
 	{
 		List<String> multiSelMigrationQueries = new ArrayList<String>();
-		for (AssociationInterface association : multiselectMigartionScripts.keySet())
+		for (Entry<AssociationInterface, String> entryObject : multiselectMigartionScripts
+				.entrySet())
 		{
-			String query = changeTgtEntityConstraintKeyPropertiesInQuery(association, multiselectMigartionScripts.get(association));
+			String query = changeTgtEntityConstraintKeyPropertiesInQuery(entryObject.getKey(),
+					entryObject.getValue());
 			multiSelMigrationQueries.add(query);
 		}
-		
+
 		return multiSelMigrationQueries;
 	}
-	
+
 	/**
 	 * This method replaces deprecated target entity constraint key properties with the new ones.
 	 * @param association association whose target constraint key properties has to change
 	 * @param query
 	 */
-	private static String changeTgtEntityConstraintKeyPropertiesInQuery(AssociationInterface association, String query)
+	private static String changeTgtEntityConstraintKeyPropertiesInQuery(
+			AssociationInterface association, String query)
 	{
-		String newTgtEntConstrKeyProp = association.getConstraintProperties().getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
-		String newQuery = query.replace(edu.common.dynamicextensions.ui.util.Constants.ASSO_TGT_ENT_CONSTR_KEY_PROP, newTgtEntConstrKeyProp);
-		return newQuery;
+		String newTgtEntConstrKeyProp = association.getConstraintProperties()
+				.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().getName();
+		return query.replace(
+				edu.common.dynamicextensions.ui.util.Constants.ASSO_TGT_ENT_CONSTR_KEY_PROP,
+				newTgtEntConstrKeyProp);
 	}
 
 	/**
@@ -678,8 +582,7 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 	 * @param hibernateDao DAO object
 	 * @return true if primary key of an entity is changed else false
 	 */
-	public static boolean isPrimaryKeyChanged(EntityInterface entity,
-			HibernateDAO hibernateDao)
+	public static boolean isPrimaryKeyChanged(EntityInterface entity, HibernateDAO hibernateDao)
 	{
 		boolean isChanged = false;
 		if (entity != null)
@@ -690,8 +593,8 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 				EntityInterface dbaseCopy = null;
 				try
 				{
-					dbaseCopy = (Entity) hibernateDao.retrieveById(Entity.class
-							.getCanonicalName(), entityId);
+					dbaseCopy = (Entity) hibernateDao.retrieveById(Entity.class.getCanonicalName(),
+							entityId);
 				}
 				catch (DAOException e)
 				{
@@ -701,6 +604,39 @@ public class EntityManagerUtil implements DynamicExtensionsQueryBuilderConstants
 			}
 		}
 		return isChanged;
+	}
+
+	/**
+	 * This method will create the source role name for the association which
+	 * is to be added in the model between the  given two entities.
+	 * @param srcEntity source entity of association.
+	 * @param targetEntity target entity of association.
+	 * @return association role name.
+	 */
+	public static String getHookAssociationSrcRoleName(EntityInterface srcEntity,
+			EntityInterface targetEntity)
+	{
+		String srcEntityname = getHookEntityName(srcEntity.getName());
+		String tgtEntityName = getHookEntityName(targetEntity.getName());
+		return srcEntityname + "_" + tgtEntityName;
+
+	}
+
+	/**
+	 * this method will return the name of the entity by removing its package name.
+	 * @param name name of the entity.
+	 * @return trimmed name.
+	 */
+	public static String getHookEntityName(final String name)
+	{
+		//Return last token from name
+		String hookEntityname = null;
+		final StringTokenizer strTokenizer = new StringTokenizer(name, ".");
+		while (strTokenizer.hasMoreElements())
+		{
+			hookEntityname = strTokenizer.nextToken();
+		}
+		return hookEntityname;
 	}
 
 }

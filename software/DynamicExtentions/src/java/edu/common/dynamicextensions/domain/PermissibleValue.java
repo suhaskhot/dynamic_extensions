@@ -1,44 +1,71 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
-import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 
 /**
- * @author sujay_narkar
- * @hibernate.class table="DYEXTN_PERMISSIBLE_VALUE" 
+ * The Class PermissibleValue.
  *
+ * @author sujay_narkar
+ * @hibernate.class table="DYEXTN_PERMISSIBLE_VALUE"
  */
-public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
-		implements
-			PermissibleValueInterface
+public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject // NOPMD
+		implements PermissibleValueInterface, Comparator<PermissibleValue>
 {
 
-	/**
-	 * 
-	 */
-	protected String description;
-	/**
-	 * Semantic property collection.
-	 */
 
-	protected Collection<SemanticPropertyInterface> semanticPropertyCollection = new HashSet<SemanticPropertyInterface>();
-	/**
-	 * Collection of category attributes.
-	 */
-	protected Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes = new HashSet<SkipLogicAttributeInterface>();
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1941346367802489075L;
+
+	/** The description. */
+	private String description;
+
+	/** The numeric code. */
+	private Long numericCode;
+
 
 	/**
-	 * @hibernate.property name="description" type="string" column="DESCRIPTION" 
+	 * Gets the numeric code.
+	 * @return the numericCode
+	 */
+	public Long getNumericCode()
+	{
+		return numericCode;
+	}
+
+	/**
+	 * Sets the numeric code.
+	 * @param numericCode the numericCode to set
+	 */
+	public void setNumericCode(Long numericCode)
+	{
+		this.numericCode = numericCode;
+	}
+
+	/** Semantic property collection. */
+	private Collection<SemanticPropertyInterface> semanticPropertyCollection =
+        new HashSet<SemanticPropertyInterface>();
+
+	/** Collection of category attributes. */
+	private Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes =
+	    new HashSet<SkipLogicAttributeInterface>();
+
+	/**
+	 * Gets the description.
+	 *
 	 * @return Returns the buttonCss.
+	 *
+	 * @hibernate.property name="description" type="string" column="DESCRIPTION"
 	 */
 	public String getDescription()
 	{
@@ -46,7 +73,8 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * setter method for description
+	 * setter method for description.
+	 *
 	 * @param description description of the value
 	 */
 	public void setDescription(String description)
@@ -55,15 +83,13 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @see edu.common.dynamicextensions.domaininterface.PermissibleValueInterface#getValueAsObject()
-	 */
-	public abstract Object getValueAsObject();
-
-	/**
+	 * Gets the id.
+	 *
+	 * @return Returns the id.
+	 *
 	 * @hibernate.id name="id" column="IDENTIFIER" type="long"
 	 * length="30" unsaved-value="null" generator-class="native"
-	 * @hibernate.generator-param name="sequence" value="DYEXTN_PERMISSIBLEVAL_SEQ" 
-	 * @return Returns the id.
+	 * @hibernate.generator-param name="sequence" value="DYEXTN_PERMISSIBLEVAL_SEQ"
 	 */
 	public Long getId()
 	{
@@ -71,12 +97,13 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
+	 * Gets the semantic property collection.
+	 * @return Returns the semanticPropertyCollection.
 	 * @hibernate.set name="semanticPropertyCollection" cascade="save-update"
 	 * inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ABSTRACT_VALUE_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SemanticProperty"
-	 * @return Returns the semanticPropertyCollection.
 	 */
 	public Collection getSemanticPropertyCollection()
 	{
@@ -84,6 +111,8 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
+	 * Sets the semantic property collection.
+	 *
 	 * @param semanticPropertyCollection The semanticPropertyCollection to set.
 	 */
 	public void setSemanticPropertyCollection(Collection semanticPropertyCollection)
@@ -93,6 +122,7 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method adds a SemanticProperty to the AbstractMetadata.
+	 *
 	 * @param semanticPropertyInterface A SemanticProperty to be added.
 	 */
 	public void addSemanticProperty(SemanticPropertyInterface semanticPropertyInterface)
@@ -106,7 +136,8 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method removes a SemanticProperty from the AbstractMetadata.
-	 * @param semanticPropertyInterface A SemanticProperty to be removed.
+	 *
+	 * @param semanticPropertyInterface SemanticProperty to be removed.
 	 */
 	public void removeSemanticProperty(SemanticPropertyInterface semanticPropertyInterface)
 	{
@@ -128,46 +159,59 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 		}
 	}
 
-	/**
-	 * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
-	 */
+    /**
+     * Gets the ordered semantic property collection.
+     *
+     * @return the ordered semantic property collection
+     *
+     * @see edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface#getOrderedSemanticPropertyCollection()
+     */
 	public List<SemanticPropertyInterface> getOrderedSemanticPropertyCollection()
 	{
 		List<SemanticPropertyInterface> semanticPropertyList = new ArrayList<SemanticPropertyInterface>();
 
-		if (this.semanticPropertyCollection != null && !this.semanticPropertyCollection.isEmpty())
+		if (semanticPropertyCollection != null && !semanticPropertyCollection.isEmpty())
 		{
-			semanticPropertyList.addAll(this.semanticPropertyCollection);
+			semanticPropertyList.addAll(semanticPropertyCollection);
 			Collections.sort(semanticPropertyList);
 		}
 		return semanticPropertyList;
 	}
+
 	/**
+	 * Gets the dependent skip logic attributes.
+	 *
+	 * @return Returns the dependentSkipLogicAttributes.
+	 *
 	 * @hibernate.set name="dependentSkipLogicAttributes" table="DYEXTN_SKIP_LOGIC_ATTRIBUTE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="PERM_VALUE_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SkipLogicAttribute"
-	 * @return Returns the dependentSkipLogicAttributes.
 	 */
 	public Collection<SkipLogicAttributeInterface> getDependentSkipLogicAttributes()
 	{
 		return dependentSkipLogicAttributes;
 	}
+
 	/**
-	 * 
-	 * @param dependentSkipLogicAttributes
+	 * Sets the dependent skip logic attributes.
+	 *
+	 * @param dependentSkipLogicAttributes the dependent skip logic attributes
 	 */
 	public void setDependentSkipLogicAttributes(
 			Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes)
 	{
 		this.dependentSkipLogicAttributes = dependentSkipLogicAttributes;
 	}
+
 	/**
 	 * This method adds a skip logic attribute.
-	 * @param skipLogicAttributeInterface
+	 *
+	 * @param skipLogicAttributeInterface the skip logic attribute interface
 	 */
-	public void addDependentSkipLogicAttribute(SkipLogicAttributeInterface skipLogicAttributeInterface)
+	public void addDependentSkipLogicAttribute(
+			SkipLogicAttributeInterface skipLogicAttributeInterface)
 	{
 		if (dependentSkipLogicAttributes == null)
 		{
@@ -175,11 +219,14 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 		}
 		dependentSkipLogicAttributes.add(skipLogicAttributeInterface);
 	}
+
 	/**
 	 * This method removes a SkipLogic Attribute.
-	 * @param skipLogicAttributeInterface.
+	 *
+	 * @param skipLogicAttributeInterface the skip logic attribute interface
 	 */
-	public void removeDependentSkipLogicAttribute(SkipLogicAttributeInterface skipLogicAttributeInterface)
+	public void removeDependentSkipLogicAttribute(
+			SkipLogicAttributeInterface skipLogicAttributeInterface)
 	{
 		if ((dependentSkipLogicAttributes != null)
 				&& (dependentSkipLogicAttributes.contains(skipLogicAttributeInterface)))
@@ -198,10 +245,12 @@ public abstract class PermissibleValue extends DynamicExtensionBaseDomainObject
 			dependentSkipLogicAttributes.clear();
 		}
 	}
+
 	/**
-	 * 
-	 * @param stringValue
-	 * @return
+	 * Sets the value as string.
+	 * @param value the new value as string
+	 * @throws ParseException the parse exception
 	 */
-	public abstract PermissibleValueInterface clone();
+	public abstract void setObjectValue(Object value) throws ParseException;
+
 }

@@ -31,7 +31,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 	/**
 	 * Do get method calls do post method
 	 * @param req HttpServletRequest
-	 * @param res HttpServletResponse 
+	 * @param res HttpServletResponse
 	 * @throws ServletException servlet exception
 	 * @throws IOException io exception
 	 */
@@ -44,7 +44,7 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 	/**
 	 * Do post method of the servlet
 	 * @param req HttpServletRequest
-	 * @param res HttpServletResponse 
+	 * @param res HttpServletResponse
 	 * @throws ServletException servlet exception
 	 * @throws IOException io exception
 	 */
@@ -67,27 +67,13 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 			generateOutput(res, entityInterfaceJSONArray);
 		}
 
-		JSONObject requestObject = null;
-		try
-		{
-			requestObject = new JSONObject(json.toString());
-		} catch (JSONException e1)
-		{
-			Logger.out.error(e1.getMessage());
-		}
-
 		//check which operation needs to be performed
+		//JSONObject requestObject = null;
 		String operation = null;
-		try
-		{
-			operation = requestObject.getString("operation");
-		} catch (JSONException e1)
-		{
-			Logger.out.error(e1.getMessage());
-		}
+		operation = getOperation(json, operation);
 
 		//depending upon the operation execute the appropriate steps
-		if (operation.equalsIgnoreCase(GET_ALL_CONTAINERS))
+		if (GET_ALL_CONTAINERS.equalsIgnoreCase(operation))
 		{
 
 			EntityManagerInterface entityManager = EntityManager.getInstance();
@@ -121,7 +107,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 					{
 						containerInterfaceJSONObject.put(CONTAINER_NAME, containerInterface
 								.getCaption());
-					} catch (JSONException e)
+					}
+					catch (JSONException e)
 					{
 						Logger.out.error(e.getMessage());
 					}
@@ -129,7 +116,8 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 					{
 						containerInterfaceJSONObject.put(CONTAINER_IDENTIFIER, containerInterface
 								.getId());
-					} catch (JSONException e)
+					}
+					catch (JSONException e)
 					{
 						Logger.out.error(e.getMessage());
 					}
@@ -144,7 +132,32 @@ public class DynamicExtensionsInterfaceAction extends HttpServlet implements Web
 	}
 
 	/**
-	 * 
+	 * Gets the operation.
+	 *
+	 * @param json the json
+	 * @param operation the operation
+	 * @return the operation
+	 */
+	private String getOperation(Object json, String operation)
+	{
+		JSONObject requestObject;
+		try
+		{
+			if (json != null)
+			{
+				requestObject = new JSONObject(json.toString());
+				operation = requestObject.getString("operation");
+			}
+		}
+		catch (JSONException e1)
+		{
+			Logger.out.error(e1.getMessage());
+		}
+		return operation;
+	}
+
+	/**
+	 *
 	 * @param res HttpServletResponse
 	 * @param entityInterfaceJSONArray JSONArray
 	 * @throws IOException IOException

@@ -20,7 +20,7 @@ public class Path implements IPath
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2375912190167946239L;
 
@@ -39,7 +39,7 @@ public class Path implements IPath
 	private String intermediatePaths;
 
 	/**
-	 * 
+	 *
 	 */
 	public Path()
 	{
@@ -79,7 +79,7 @@ public class Path implements IPath
 	 * @hibernate.property name="sourceEntityId" column="FIRST_ENTITY_ID"
 	 *                     type="long" length="30" unsaved-value="null"
 	 *                     update="true" insert="true" length="30"
-	 * 
+	 *
 	 */
 	public void setSourceEntityId(long sourceEntityId)
 	{
@@ -91,7 +91,7 @@ public class Path implements IPath
 	 * @hibernate.property name="targetEntityId" column="LAST_ENTITY_ID"
 	 *                     type="long" length="30" unsaved-value="null"
 	 *                     update="true" insert="true" length="30"
-	 * 
+	 *
 	 */
 
 	public long getTargetEntityId()
@@ -111,7 +111,7 @@ public class Path implements IPath
 	 * @return the intermediatePaths
 	 * @hibernate.property name="intermediatePaths" column="INTERMEDIATE_PATH"
 	 *                     update="true" insert="true" length="150"
-	 * 
+	 *
 	 */
 
 	public String getIntermediatePaths()
@@ -202,9 +202,9 @@ public class Path implements IPath
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Returns the curated_path_Id.
-	 * 
+	 *
 	 * @hibernate.id name="pathId" column="PATH_ID" type="long" length="30"
 	 *               unsaved-value="null" generator-class="native"
 	 * @hibernate.generator-param name="sequence" value="PATH_SEQ"
@@ -226,12 +226,15 @@ public class Path implements IPath
 	@Override
 	public String toString()
 	{
-		StringBuffer buff = new StringBuffer();
-		buff.append("Start Entity : " + sourceEntity.getName());
-		buff.append("End Entity : " + targetEntity.getName());
+		StringBuffer buff = new StringBuffer(35);
+		buff.append("Start Entity : ");
+		buff.append(sourceEntity.getName());
+		buff.append("End Entity : ");
+		buff.append(targetEntity.getName());
 		for (IAssociation association : intermediateAssociations)
 		{
-			buff.append("\t" + association.toString());
+			buff.append('\t');
+			buff.append(association.toString());
 		}
 		return buff.toString();
 	}

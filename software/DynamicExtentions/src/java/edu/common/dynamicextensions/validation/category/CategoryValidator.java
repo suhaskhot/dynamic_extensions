@@ -2,8 +2,10 @@
 package edu.common.dynamicextensions.validation.category;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,25 +22,24 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ComboBoxInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.MultiSelectInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.CategoryHelperInterface.ControlEnum;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
 import edu.common.dynamicextensions.validation.DateRangeValidator;
 import edu.common.dynamicextensions.validation.FutureDateValidator;
 import edu.common.dynamicextensions.validation.RangeValidator;
+import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.dao.exception.DAOException;
@@ -50,11 +51,9 @@ import edu.wustl.dao.exception.DAOException;
 public class CategoryValidator
 {
 
-	Long entityGroupId;
+	private Long entityGroupId;
 
-	CategoryCSVFileParser categoryFileParser;
-
-	StringBuffer errorMessage = new StringBuffer();
+	private final CategoryCSVFileParser categoryFileParser;
 
 	/**
 	 * @param entityGroup
@@ -62,15 +61,7 @@ public class CategoryValidator
 	public CategoryValidator(CategoryCSVFileParser categoryFileParser)
 	{
 		this.categoryFileParser = categoryFileParser;
-		ApplicationProperties.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
-	}
-
-	/**
-	 * @return
-	 */
-	public Long getEntityGroupId()
-	{
-		return entityGroupId;
+		ApplicationProperties.initBundle("ApplicationResources");
 	}
 
 	/**
@@ -86,7 +77,8 @@ public class CategoryValidator
 	 */
 	public void validateMultiplicity() throws DynamicExtensionsSystemException
 	{
-		if (categoryFileParser.readLine()[0].split(":").length < 2)
+		if (categoryFileParser.processEscapeCharacter(categoryFileParser.readLine()[0].split(":"),
+				categoryFileParser.readLine()[0], "\\", ":").length < 2)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -98,27 +90,28 @@ public class CategoryValidator
 	/**
 	 * @param entityName
 	 * @throws DynamicExtensionsSystemException
-	 * @throws ClassNotFoundException 
-	 * @throws DAOException 
+	 * @throws ClassNotFoundException
+	 * @throws DAOException
 	 */
 	public void validateEntityName(String entityName) throws DynamicExtensionsSystemException,
 			DAOException, ClassNotFoundException
 	{
-		String errorMessage = getErrorMessageStart()
-				+ ApplicationProperties.getValue(CategoryConstants.NO_ENTITY) + entityName;
 
 		String entityHQL = "select id from Entity entity where entity.entityGroup.id = "
 				+ entityGroupId + " and entity.name = '" + entityName + "'";
 		List entityIdList = DynamicExtensionsUtility.executeQuery(entityHQL);
 		if (entityIdList.isEmpty())
 		{
+			String errorMessage = getErrorMessageStart()
+					+ ApplicationProperties.getValue(CategoryConstants.NO_ENTITY) + entityName;
+
 			throw new DynamicExtensionsSystemException(errorMessage);
 		}
-		checkForNullRefernce(entityIdList.get(0), errorMessage);
+		// checkForNullRefernce(entityIdList.get(0), errorMessage);
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public void validateSubcategoryTag()
 	{
@@ -126,34 +119,51 @@ public class CategoryValidator
 	}
 
 	/**
+	 * Check is object null & if yes then throw exception with the given message
+	 *
 	 * @param object
+	 *            object to check for null
 	 * @param message
+	 *            message to append
+	 * @param isImportPv
+	 *            if passed then the message will be shown with respect to
+	 *            import PV case else Category creation.
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkForNullRefernce(Object object, String message)
+	public static void checkForNullRefernce(Object object, String message, boolean... isImportPv)
 			throws DynamicExtensionsSystemException
 	{
 		if (object == null)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties
-					.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ message);
+			if (isImportPv != null && isImportPv.length > 0 && isImportPv[0])
+			{
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.IMPORT_PV_FAILS)
+						+ message);
+			}
+			else
+			{
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ message);
+			}
 		}
 	}
 
 	/**
 	 * This method checks whether the range specified for category attribute is
 	 * a valid subset of range specified for its attribute.
+	 *
 	 * @param attribute
 	 * @param rules
 	 * @throws DynamicExtensionsSystemException
 	 * @throws ParseException
-	 * @throws DynamicExtensionsValidationException 
+	 * @throws DynamicExtensionsValidationException
 	 */
 	public static void checkRangeAgainstAttributeValueRange(AttributeInterface attribute,
 			Map<String, Object> rules) throws DynamicExtensionsSystemException, ParseException
 	{
-		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+
 		if (attribute == null)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -164,21 +174,17 @@ public class CategoryValidator
 		if (!rules.isEmpty())
 		{
 			Map<String, Object> catMinMaxValues = null;
-
+			// Locale locale =
+			// CommonServiceLocator.getInstance().getDefaultLocale();
 			if (rules.containsKey(CategoryCSVConstants.DATE_RANGE))
 			{
 				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.DATE_RANGE);
-				if (attribute == null)
-				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
-				}
 			}
-			else if (rules.containsKey(CategoryCSVConstants.RANGE.toLowerCase(locale)))
+			else if (rules.containsKey(CategoryCSVConstants.RANGE.toLowerCase(CommonServiceLocator
+					.getInstance().getDefaultLocale())))
 			{
 				catMinMaxValues = (Map<String, Object>) rules.get(CategoryCSVConstants.RANGE
-						.toLowerCase(locale));
+						.toLowerCase(CommonServiceLocator.getInstance().getDefaultLocale()));
 			}
 
 			if (catMinMaxValues != null && !catMinMaxValues.isEmpty())
@@ -186,12 +192,14 @@ public class CategoryValidator
 				validateAttributeTypeInformationMetadata(attribute);
 				validateRangeValues(attribute, catMinMaxValues);
 			}
+
 		}
 	}
 
 	/**
 	 * This method checks whether the range specified for category attribute is
 	 * a valid subset of range specified for its attribute.
+	 *
 	 * @param attribute
 	 * @param catMinMaxValues
 	 * @throws DynamicExtensionsSystemException
@@ -204,9 +212,7 @@ public class CategoryValidator
 				.get(CategoryCSVConstants.MIN.toLowerCase(locale));
 		String maxValue = (String) catMinMaxValues
 				.get(CategoryCSVConstants.MAX.toLowerCase(locale));
-
 		Map<String, String> values = new HashMap<String, String>();
-
 		Set<RuleInterface> attributeRules = new HashSet<RuleInterface>(attribute
 				.getRuleCollection());
 
@@ -215,9 +221,8 @@ public class CategoryValidator
 			if (rule.getName().equalsIgnoreCase(CategoryCSVConstants.RANGE)
 					|| rule.getName().equalsIgnoreCase(ProcessorConstants.DATE_RANGE))
 			{
-				Set<RuleParameterInterface> ruleParameters = new HashSet<RuleParameterInterface>(
-						rule.getRuleParameterCollection());
-
+				Collection<RuleParameterInterface> ruleParameters = rule
+						.getRuleParameterCollection();
 				for (RuleParameterInterface ruleParameter : ruleParameters)
 				{
 					if (ruleParameter.getName().equalsIgnoreCase(CategoryCSVConstants.MIN))
@@ -242,9 +247,10 @@ public class CategoryValidator
 	}
 
 	/**
-	 * This method performs some basic validations like checking if the attribute or
-	 * the attribute type information is null. It also checks whether range is specified 
-	 * for valid attribute type information.
+	 * This method performs some basic validations like checking if the
+	 * attribute or the attribute type information is null. It also checks
+	 * whether range is specified for valid attribute type information.
+	 *
 	 * @param attribute
 	 * @throws DynamicExtensionsSystemException
 	 */
@@ -271,8 +277,9 @@ public class CategoryValidator
 	}
 
 	/**
-	 * This method checks whether the range specified for category attribute 
-	 * is a valid subset of range specified for its attribute.
+	 * This method checks whether the range specified for category attribute is
+	 * a valid subset of range specified for its attribute.
+	 *
 	 * @param catAttrValue
 	 * @param attribute
 	 * @param values
@@ -296,7 +303,8 @@ public class CategoryValidator
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(), e);
+						+ ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList()),
+						e);
 			}
 		}
 		else
@@ -305,23 +313,85 @@ public class CategoryValidator
 
 			try
 			{
-				dateRangeValidator.validate((AttributeMetadataInterface) attribute, catAttrValue,
+				// Fix to support different date formats in DE :Pavan.
+				String dateFormat = getRuleDateInAttributeDateFormat(catAttrValue, attribute
+						.getAttributeTypeInformation(), attribute.getName());
+				dateRangeValidator.validate((AttributeMetadataInterface) attribute, dateFormat,
 						values, attribute.getName());
 			}
 			catch (DynamicExtensionsValidationException e)
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(e.getErrorCode()) + attribute.getName(), e);
+						+ ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList())
+						+ attribute.getName(), e);
 			}
 		}
 	}
 
 	/**
+	 * It will convert the Date given in the Date Range Rule(MM-dd-yyyy) in the
+	 * currently given date Pattern.
+	 *
+	 * @param catAttrValue
+	 *            date Value
+	 * @param attributeTypeInformation
+	 *            attribute type info
+	 * @param controlCaption
+	 *            caption of the control
+	 * @return the date in the Given date pattern
+	 * @throws DynamicExtensionsValidationException
+	 *             exception.
+	 */
+	private static String getRuleDateInAttributeDateFormat(String catAttrValue,
+			AttributeTypeInformationInterface attributeTypeInformation, String controlCaption)
+			throws DynamicExtensionsValidationException
+	{
+
+		DateAttributeTypeInformation dateAttributeTypeInformation = (DateAttributeTypeInformation) attributeTypeInformation;
+		String dateFormat = DynamicExtensionsUtility.getDateFormat(dateAttributeTypeInformation
+				.getFormat());
+		String retString = catAttrValue;
+		if (dateFormat.equals(ProcessorConstants.MONTH_YEAR_FORMAT))
+		{
+			retString = DynamicExtensionsUtility.formatMonthAndYearDate(retString, false);
+			retString = retString.substring(0, retString.length() - 4);
+		}
+		if (dateFormat.equals(ProcessorConstants.YEAR_ONLY_FORMAT))
+		{
+			retString = DynamicExtensionsUtility.formatYearDate(retString, false);
+			retString = retString.substring(0, retString.length() - 4);
+		}
+		try
+		{
+			retString = retString.replace('/', '-');
+			Date catAttDate = Utility.parseDate(retString, ProcessorConstants.SQL_DATE_ONLY_FORMAT);
+			SimpleDateFormat simpleDateFormatter = new SimpleDateFormat(
+					ProcessorConstants.DATE_ONLY_FORMAT, CommonServiceLocator.getInstance()
+							.getDefaultLocale());
+			retString = simpleDateFormatter.format(catAttDate);
+		}
+		catch (ParseException ParseException)
+		{
+			List<String> placeHolders = new ArrayList<String>();
+			placeHolders.add(controlCaption);
+			placeHolders.add(dateFormat);
+			throw new DynamicExtensionsValidationException("Validation failed", ParseException,
+					"dynExtn.validation.Date", placeHolders);
+		}
+
+		return retString;
+	}
+
+	/**
 	 * This method check for allowing future date rule.
-	 * @param attribute attribute to be validated for allowing future date
-	 * @param rules rule collection for that attribute
-	 * @throws DynamicExtensionsSystemException  fails to create category
+	 *
+	 * @param attribute
+	 *            attribute to be validated for allowing future date
+	 * @param rules
+	 *            rule collection for that attribute
+	 * @throws DynamicExtensionsSystemException
+	 *             fails to create category
 	 * @throws ParseException
 	 */
 	public static void checkIfFutureDateRuleSpecified(AttributeInterface attribute,
@@ -333,6 +403,7 @@ public class CategoryValidator
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
 		}
+
 		if (attribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 		{
 			for (RuleInterface rule : attribute.getRuleCollection())
@@ -352,10 +423,15 @@ public class CategoryValidator
 	}
 
 	/**
-	 * this method validates for future date(default value given while creating category) given for an attribute
-	 * @param attribute attribute
-	 * @param rules rule collection
-	 * @throws DynamicExtensionsSystemException fails to create category
+	 * this method validates for future date(default value given while creating
+	 * category) given for an attribute
+	 *
+	 * @param attribute
+	 *            attribute
+	 * @param rules
+	 *            rule collection
+	 * @throws DynamicExtensionsSystemException
+	 *             fails to create category
 	 * @throws ParseException
 	 */
 	public static void validateCSVFutureDateValue(AttributeInterface attribute,
@@ -368,27 +444,27 @@ public class CategoryValidator
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue(CategoryConstants.NULL_ATTR));
 		}
-		if (attribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
+		if (attribute.getAttributeTypeInformation() instanceof DateAttributeTypeInformation
+				&& rules != null && rules.containsKey(CategoryConstants.ALLOW_FUTURE_DATE)
+				&& value != null && !(value.trim().equals("")))
 		{
-			if (rules != null && rules.containsKey(CategoryConstants.ALLOW_FUTURE_DATE)
-					&& value != null && !(value.trim().equals("")))
+			FutureDateValidator futureDateValidation = new FutureDateValidator();
+			try
 			{
-				FutureDateValidator futureDateValidation = new FutureDateValidator();
-				String defaultDateValue = value.replaceAll("/", "-");
-				try
-				{
-					futureDateValidation.validate((AttributeMetadataInterface) attribute,
-							defaultDateValue, null, attribute.getName());
-				}
-				catch (DynamicExtensionsValidationException e)
-				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(e.getErrorCode())
-							+ attribute.getName(), e);
-				}
+				String defaultDateValue = getRuleDateInAttributeDateFormat(value.replaceAll("/",
+						"-"), attribute.getAttributeTypeInformation(), attribute.getName());
+				futureDateValidation.validate((AttributeMetadataInterface) attribute,
+						defaultDateValue, null, attribute.getName());
+			}
+			catch (DynamicExtensionsValidationException e)
+			{
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList()),
+						e);
 			}
 		}
+
 	}
 
 	/**
@@ -425,12 +501,14 @@ public class CategoryValidator
 	 */
 	private String getErrorMessageStart()
 	{
-		return ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+		return ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER) + ":"
 				+ categoryFileParser.getLineNumber();
 	}
 
 	/**
-	 * User should not be allowed to use root entity twice in the category creation.
+	 * User should not be allowed to use root entity twice in the category
+	 * creation.
+	 *
 	 * @param entityName
 	 * @param mainForms
 	 * @param catEntNames
@@ -463,7 +541,9 @@ public class CategoryValidator
 	}
 
 	/**
-	 * This method checks whether 'textArea' is the control type specified for numeric type field.  
+	 * This method checks whether 'textArea' is the control type specified for
+	 * numeric type field.
+	 *
 	 * @param controlType
 	 * @param attribute
 	 * @throws DynamicExtensionsSystemException
@@ -488,7 +568,9 @@ public class CategoryValidator
 	}
 
 	/**
-	 * This method checks if multiselect specified for a category attribute is valid.
+	 * This method checks if multiselect specified for a category attribute is
+	 * valid.
+	 *
 	 * @param entity
 	 * @param attributeName
 	 * @param control
@@ -497,14 +579,17 @@ public class CategoryValidator
 	public static void checkIsMultiSelectValid(EntityInterface entity, String attributeName,
 			ControlInterface control) throws DynamicExtensionsSystemException
 	{
-		AbstractAttributeInterface abstractAttribute = entity
-				.getAbstractAttributeByName(attributeName);
+		AbstractAttributeInterface abstractAttribute;
 
-		if (control instanceof ListBoxInterface)
+		if (control instanceof MultiSelectInterface)
 		{
-			Boolean isMultiSelect = ((ListBoxInterface) control).getIsMultiSelect();
-			Boolean IsUsingAutoCompleteDropdown = ((ListBoxInterface) control)
-					.getIsUsingAutoCompleteDropdown();
+			Boolean isMultiSelect = ((MultiSelectInterface) control).getIsMultiSelect();
+			Boolean IsUsingAutoCompleteDropdown = false;
+			if (control instanceof ListBoxInterface)
+			{
+				IsUsingAutoCompleteDropdown = ((ListBoxInterface) control)
+						.getIsUsingAutoCompleteDropdown();
+			}
 
 			if (IsUsingAutoCompleteDropdown != null && IsUsingAutoCompleteDropdown)
 			{
@@ -527,18 +612,10 @@ public class CategoryValidator
 							+ attributeName);
 				}
 			}
-
+			abstractAttribute = entity.getAbstractAttributeByName(attributeName);
 			if (isMultiSelect != null && isMultiSelect && abstractAttribute != null)
 			{
-				if (!(abstractAttribute instanceof AssociationInterface))
-				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties
-									.getValue(CategoryConstants.INVALID_MULTI_SELECT)
-							+ attributeName);
-				}
-				else
+				if (abstractAttribute instanceof AssociationInterface)
 				{
 					Boolean isCollection = ((AssociationInterface) abstractAttribute)
 							.getIsCollection();
@@ -551,10 +628,20 @@ public class CategoryValidator
 								+ attributeName);
 					}
 				}
+				else
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.INVALID_MULTI_SELECT)
+							+ attributeName);
+
+				}
 			}
 		}
 		else
 		{
+			abstractAttribute = entity.getAbstractAttributeByName(attributeName);
 			if (abstractAttribute instanceof AssociationInterface)
 			{
 				Boolean isCollection = ((AssociationInterface) abstractAttribute).getIsCollection();
@@ -573,6 +660,7 @@ public class CategoryValidator
 	/**
 	 * This method checks if the heading information has been repeated and
 	 * throws an exception if it is repeated.
+	 *
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static void checkHeadingInfoRepeatation(String lineAfterHeading, long lineNumber)
@@ -588,6 +676,7 @@ public class CategoryValidator
 
 	/**
 	 * This method checks if the note is appropriate.
+	 *
 	 * @param note
 	 * @param lineNumber
 	 * @throws DynamicExtensionsSystemException
@@ -595,8 +684,7 @@ public class CategoryValidator
 	public static void checkIfNoteIsAppropriate(String note, long lineNumber)
 			throws DynamicExtensionsSystemException
 	{
-		if (note.trim().split("~").length != 2 || note.trim().split("~")[1].length() > 255
-				|| note.contains(":"))
+		if (note.length() > 255)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -606,15 +694,17 @@ public class CategoryValidator
 
 	/**
 	 * This method checks if the heading is appropriate.
+	 *
 	 * @param note
 	 * @param lineNumber
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static void checkIfHeadingIsAppropriate(String heading, long lineNumber)
+	public void checkIfHeadingIsAppropriate(String heading, long lineNumber)
 			throws DynamicExtensionsSystemException
 	{
-		if (heading.split("~").length != 2 || heading.split("~")[1].length() > 255
-				|| heading.contains(":") || heading.contains(","))
+		String[] strings = categoryFileParser.processEscapeCharacter(heading.split("~"), heading,
+				categoryFileParser.DEFAULT_ESCAPE_CHARACTER, "~");
+		if (strings.length < 2 || strings[1].length() > 255)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -631,12 +721,21 @@ public class CategoryValidator
 	private static void validateCategoryAttributeRangeValues(String minValue, String maxValue,
 			AttributeInterface attribute) throws DynamicExtensionsSystemException
 	{
-		AttributeTypeInformationInterface attrTypeInfo = attribute.getAttributeTypeInformation();
-
 		if (minValue != null && maxValue != null)
 		{
+			AttributeTypeInformationInterface attrTypeInfo = attribute
+					.getAttributeTypeInformation();
 			if (attrTypeInfo instanceof NumericAttributeTypeInformation)
 			{
+				if (!DynamicExtensionsUtility.isNumeric(minValue)
+						|| !DynamicExtensionsUtility.isNumeric(maxValue))
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties
+									.getValue(CategoryConstants.INCORRECT_NUMBER_RANGE)
+							+ attribute.getName());
+				}
 				if (Double.parseDouble(minValue) > Double.parseDouble(maxValue))
 				{
 					throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -648,7 +747,8 @@ public class CategoryValidator
 			else
 			{
 				String dateFormat = ((DateAttributeTypeInformation) attrTypeInfo).getFormat();
-				int result = DynamicExtensionsUtility.compareDates(minValue, maxValue, dateFormat);
+				String datePattern = DynamicExtensionsUtility.getDateFormat(dateFormat);
+				int result = DynamicExtensionsUtility.compareDates(minValue, maxValue, datePattern);
 				if (result == 1 || result == -2)
 				{
 					throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -662,93 +762,59 @@ public class CategoryValidator
 	}
 
 	/**
-	 * @param controlType
-	 * @param controlXPosition
-	 * @param container 
+	 * @param line
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void validateControlInSingleLine(String controlType, int controlXPosition,
-			ContainerInterface container) throws DynamicExtensionsSystemException
+	public void validateQuotes(String[] line) throws DynamicExtensionsSystemException
 	{
-		ControlEnum controlEnum = ControlEnum.get(controlType);
-		if (!isValidControlType(controlType)
-				|| !(controlEnum.equals(ControlEnum.LIST_BOX_CONTROL)
-						|| controlEnum.equals(ControlEnum.COMBO_BOX_CONTROL) || controlEnum
-						.equals(ControlEnum.TEXT_FIELD_CONTROL)))
+		if (line != null)
 		{
-			throw new DynamicExtensionsSystemException(getErrorMessageStart()
-					+ ApplicationProperties
-							.getValue("dyExtn.category.validation.singleLineDisaply"));
-		}
-	}
-
-	/**
-	 * @param controlCollection
-	 * @return
-	 */
-	private static ControlEnum getAllowedControlType(List<ControlInterface> controlCollection)
-	{
-		ControlEnum controlEnum = null;
-		for (ControlInterface controlInterface : controlCollection)
-		{
-			if (controlInterface.getBaseAbstractAttribute() != null)
+			for (String string : line)
 			{
-				if (controlInterface instanceof ListBoxInterface)
+				if (string.contains("\n"))
 				{
-					controlEnum = ControlEnum.LIST_BOX_CONTROL;
-				}
-				else if (controlInterface instanceof TextFieldInterface)
-				{
-					controlEnum = ControlEnum.TEXT_FIELD_CONTROL;
-				}
-				else if (controlInterface instanceof ComboBoxInterface)
-				{
-					controlEnum = ControlEnum.COMBO_BOX_CONTROL;
+					throw new DynamicExtensionsSystemException(getErrorMessageStart()
+							+ " Missing qoute(\").");
 				}
 			}
+
 		}
 
-		return controlEnum;
 	}
 
 	/**
-	 * @param containerInterface
-	 * @param sequenceNumber
-	 * @return
+	 * @param category
+	 * @throws DynamicExtensionsSystemException
 	 */
-	private static List<ControlInterface> getAllControlWithSameSequenceNumber(
-			ContainerInterface containerInterface, Integer sequenceNumber)
+	public void isRootEntitySeconadIntsnaceUsed(CategoryInterface category)
+			throws DynamicExtensionsSystemException
 	{
-		Collection<ControlInterface> controlCollection = containerInterface.getControlCollection();
-		List<ControlInterface> controlsWithSameSequenceNumber = new ArrayList<ControlInterface>();
-		if (controlCollection != null && controlCollection.size() > 0)
+		if (!category.getRootCategoryElement().getName().endsWith("[1]"))
 		{
-			for (ControlInterface controlInterface : controlCollection)
-			{
-				if (sequenceNumber.equals(controlInterface.getSequenceNumber()))
-				{
-					controlsWithSameSequenceNumber.add(controlInterface);
-				}
-			}
+			String errorMessage = getErrorMessageStart()
+					+ " Root entity insatnce should be 1 only.";
+			throw new DynamicExtensionsSystemException(errorMessage);
 		}
 
-		return controlsWithSameSequenceNumber;
 	}
 
 	/**
-	 * @param controlType
-	 * @return
+	 * If the category is marked as populateFromXml & it does not have any
+	 * conceptCodes associated with it, then it will throw the exception.
+	 *
+	 * @param category
+	 *            category
+	 * @throws DynamicExtensionsSystemException
+	 *             exception.
 	 */
-	public static boolean isValidControlType(String controlType)
+	public static void validateCategoryForConceptCodes(CategoryInterface category)
+			throws DynamicExtensionsSystemException
 	{
-		boolean isValid = true;
-
-		if (controlType == null)
+		if (category.getIsPopulateFromXml() && category.getAutoLoadXpathCollection().isEmpty())
 		{
-			isValid = false;
+			throw new DynamicExtensionsSystemException(
+					"Category contains the attribute to populateFromXml but none of the "
+							+ "attribute has identifying XPath & concept code associated with it or its permissible values.");
 		}
-
-		return isValid;
 	}
-
 }

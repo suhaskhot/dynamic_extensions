@@ -17,13 +17,20 @@ import edu.wustl.common.util.logger.Logger;
  * Utility which generates and closes connection.
  * @author Chandrakant Talele
  */
-public class ConnectionUtil
+public final class ConnectionUtil
 {
+
+	/**
+	 * Instantiates a new connection util.
+	 */
+	private ConnectionUtil()
+	{
+	}
 
 	/**
 	 * Creates a connection from data-source and returns it.
 	 * @return Returns the Connection object
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static Connection getConnection()
 	{
@@ -43,7 +50,12 @@ public class ConnectionUtil
 		}
 
 		Connection connection = null;
-		if (dataSource != null)
+		if (dataSource == null)
+		{
+			throw new RuntimeException("Datasource lookup failed, got null datasource",
+					new RuntimeException(), ErrorCodeConstants.JN_0001);
+		}
+		else
 		{
 			try
 			{
@@ -54,11 +66,6 @@ public class ConnectionUtil
 				throw new RuntimeException("Unable to create a connection from datasource.", e,
 						ErrorCodeConstants.DB_0002);
 			}
-		}
-		else
-		{
-			throw new RuntimeException("Datasource lookup failed, got null datasource",
-					new RuntimeException(), ErrorCodeConstants.JN_0001);
 		}
 		return connection;
 	}

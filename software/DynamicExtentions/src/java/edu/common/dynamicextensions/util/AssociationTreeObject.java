@@ -7,76 +7,60 @@ import java.util.HashSet;
 public class AssociationTreeObject
 {
 
-	/**
-	 * 
-	 */
-	Long identifier;
+	/** The identifier. */
+	private Long identifier;
+
+	/** The label. */
+	private String label;
+
+	/** The association tree obj collection. */
+	private Collection<AssociationTreeObject> associationTreeObjCollection;
 
 	/**
-	 * 
-	 */
-
-	String label;
-
-	/**
-	 * 
-	 * @param identifier
-	 * @param label
+	 * The Constructor.
+	 * @param identifier the identifier
+	 * @param label the label
 	 */
 	public AssociationTreeObject(Long identifier, String label)
 	{
-		this.identifier = identifier;
-		this.label = label;
+		setId(identifier);
+		setLabel(label);
 	}
 
 	/**
-	 * 
-	 *
+	 * Gets the association tree object collection.
+	 * @return the association tree object collection
 	 */
-	public AssociationTreeObject()
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * 
-	 */
-	Collection associationTreeObjCollection;
-
-	/**
-	 * 
-	 * @return
-	 */
-	public Collection getAssociationTreeObjectCollection()
+	public Collection<AssociationTreeObject> getAssociationTreeObjectCollection()
 	{
 		return associationTreeObjCollection;
 	}
 
 	/**
-	 * 
-	 * @param associationTreeObjCollection
+	 * Sets the association tree object collection.
+	 * @param associationTreeObjCollection the association tree obj collection
 	 */
-	public void setAssociationTreeObjectCollection(Collection associationTreeObjCollection)
+	public void setAssociationTreeObjectCollection(Collection<AssociationTreeObject> associationTreeObjCollection)
 	{
 		this.associationTreeObjCollection = associationTreeObjCollection;
 	}
 
 	/**
-	 * 
-	 * @param associationTreeObject
+	 * Adds the association tree object.
+	 * @param associationTreeObject the association tree object
 	 */
 	public void addAssociationTreeObject(AssociationTreeObject associationTreeObject)
 	{
-		if (this.associationTreeObjCollection == null)
+		if (associationTreeObjCollection == null)
 		{
-			associationTreeObjCollection = new HashSet();
+			associationTreeObjCollection = new HashSet<AssociationTreeObject>();
 		}
 		associationTreeObjCollection.add(associationTreeObject);
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Gets the id.
+	 * @return the id
 	 */
 	public Long getId()
 	{
@@ -84,8 +68,8 @@ public class AssociationTreeObject
 	}
 
 	/**
-	 * 
-	 * @param identifier
+	 * Sets the id.
+	 * @param identifier the identifier
 	 */
 	public void setId(Long identifier)
 	{
@@ -93,8 +77,8 @@ public class AssociationTreeObject
 	}
 
 	/**
-	 * 
-	 * @return
+	 * Gets the label.
+	 * @return the label
 	 */
 	public String getLabel()
 	{
@@ -102,8 +86,8 @@ public class AssociationTreeObject
 	}
 
 	/**
-	 * 
-	 * @param label
+	 * Sets the label.
+	 * @param label the label
 	 */
 	public void setLabel(String label)
 	{

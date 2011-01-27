@@ -38,6 +38,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ControlUIBeanInterface;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -276,12 +277,12 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		listBoxIntf.setIsMultiSelect(controlUIBeanInterface.getIsMultiSelect());
 		listBoxIntf.setNoOfRows(controlUIBeanInterface.getRows());
 		//Set isCollection=true in the attribute
-		AbstractAttributeInterface controlAttribute = controlUIBeanInterface.getAbstractAttribute();
-/*		if ((controlAttribute != null) && (controlAttribute instanceof AttributeInterface))
-		{
-			//((AttributeInterface) controlAttribute).setIsCollection(new Boolean(true));
-		}
-*/		if (listBoxIntf instanceof SelectControl)
+		//AbstractAttributeInterface controlAttribute = controlUIBeanInterface.getAbstractAttribute();
+		/*		if ((controlAttribute != null) && (controlAttribute instanceof AttributeInterface))
+				{
+					//((AttributeInterface) controlAttribute).setIsCollection(new Boolean(true));
+				}
+		*/if (listBoxIntf instanceof SelectControl)
 		{
 			initializeSelectControl((SelectControl) listBoxIntf, controlUIBeanInterface,
 					entityGroup);
@@ -321,6 +322,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 			initializeSelectControl((SelectControl) comboBoxIntf, controlUIBeanInterface,
 					entityGroup);
 		}
+		comboBoxIntf.setColumns(controlUIBeanInterface.getColumns());
 		return comboBoxIntf;
 
 	}
@@ -414,8 +416,7 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		AttributeInterface attribute = null;
-		if (controlId != null && control != null &&
-				control.getBaseAbstractAttribute() != null
+		if (controlId != null && control != null
 				&& control.getBaseAbstractAttribute() instanceof AttributeInterface)
 		{
 			attribute = (AttributeInterface) control.getBaseAbstractAttribute();
@@ -687,13 +688,14 @@ public class ControlProcessor extends BaseDynamicExtensionsProcessor
 		containmentAssociationControl.setContainer(container);
 		containmentAssociationControl.setBaseAbstractAttribute(attributeIntf);
 		//attributeIntf.setControl((Control) containmentAssociationControl);
-		Integer containerSequenceNumber = Integer.valueOf(1);
+		/*Integer containerSequenceNumber = Integer.valueOf(1);
 		if (container.getControlCollection() != null)
 		{
 			containerSequenceNumber = Integer.valueOf(container.getControlCollection().size() + 1);
 		}
-		containmentAssociationControl.setSequenceNumber(containerSequenceNumber);
-
+		containmentAssociationControl.setSequenceNumber(containerSequenceNumber);*/
+		containmentAssociationControl.setSequenceNumber(DynamicExtensionsUtility
+				.getSequenceNumberForNextControl(container));
 		return containmentAssociationControl;
 
 	}

@@ -101,10 +101,9 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 
 			target = findForwardTarget(operation);
-			String callbackURL = null;
 			if (target.equals(DEConstants.SHOW_DYEXTN_HOMEPAGE))
 			{
-				callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
+				String callbackURL = redirectCallbackURL(request, WebUIManagerConstants.SUCCESS);
 				if (callbackURL != null && !callbackURL.equals(""))
 				{
 					response.sendRedirect(callbackURL);
@@ -155,18 +154,19 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	private String findForwardTarget(String operation)
 	{
+		String target = null;
 		if (operation != null)
 		{
 			if (operation.equals(DEConstants.BUILD_FORM))
 			{
-				return DEConstants.SHOW_BUILD_FORM_JSP;
+				target = DEConstants.SHOW_BUILD_FORM_JSP;
 			}
 			else if (operation.equals(DEConstants.SAVE_FORM))
 			{
-				return DEConstants.SHOW_DYEXTN_HOMEPAGE;
+				target = DEConstants.SHOW_DYEXTN_HOMEPAGE;
 			}
 		}
-		return null;
+		return target;
 	}
 
 	/**
@@ -200,12 +200,11 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 
 			//Update Associations
 			//Get parent container
-			ContainerInterface parentContainer = null;
 			String parentContainerName = formDefinitionForm.getCurrentContainerName();
 			if (parentContainerName != null)
 			{
-				parentContainer = (ContainerInterface) CacheManager.getObjectFromCache(request,
-						parentContainerName);
+				ContainerInterface parentContainer = (ContainerInterface) CacheManager
+						.getObjectFromCache(request, parentContainerName);
 				updateAssociation(parentContainer, currentContainer, formDefinitionForm);
 			}
 		}
@@ -224,27 +223,26 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	{
 		if (parentContainer != null && childContainer != null && childContainer.getId() != null)
 		{
-			
-				AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
-						.getAssociationControl(parentContainer, childContainer.getId().toString());
 
-				if (containmentAssociationControl != null)
+			AbstractContainmentControlInterface containmentAssociationControl = UserInterfaceiUtility
+					.getAssociationControl(parentContainer, childContainer.getId().toString());
+
+			if (containmentAssociationControl != null)
+			{
+				containmentAssociationControl.setCaption(childContainer.getCaption());
+				AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
+						.getBaseAbstractAttribute();
+				if ((abstractAttributeInterface != null)
+						&& (abstractAttributeInterface instanceof AssociationInterface))
 				{
-					containmentAssociationControl.setCaption(childContainer.getCaption());
-					AssociationInterface association = null;
-					AbstractAttributeInterface abstractAttributeInterface = (AbstractAttributeInterface) containmentAssociationControl
-							.getBaseAbstractAttribute();
-					if ((abstractAttributeInterface != null)
-							&& (abstractAttributeInterface instanceof AssociationInterface))
-					{
-						association = (AssociationInterface) abstractAttributeInterface;
-						ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
-								.getInstance();
-						association = applyFormDefinitionProcessor.associateEntity(association,
-								parentContainer, childContainer, formDefinitionForm);
-					}
+					AssociationInterface association = (AssociationInterface) abstractAttributeInterface;
+					ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
+							.getInstance();
+					applyFormDefinitionProcessor.associateEntity(association, parentContainer,
+							childContainer, formDefinitionForm);
 				}
-			
+			}
+
 		}
 	}
 
@@ -286,8 +284,8 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			//if new entity is created, set its container id in form and container interface in cache.
 			applyFormDefinitionProcessor.associateParentGroupToNewEntity(subFormContainer,
-						mainFormContainer);
-				updateCacheReferences(request, subFormContainer);
+					mainFormContainer);
+			updateCacheReferences(request, subFormContainer);
 		}
 	}
 
@@ -318,10 +316,6 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 			}
 			isValidSubForm(association, traversedAssocioations);
 		}
-		else
-		{
-			return;
-		}
 	}
 
 	/**
@@ -344,11 +338,13 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	private boolean isNewEnityCreated(FormDefinitionForm formDefinitionForm)
 	{
-		if (formDefinitionForm != null && ProcessorConstants.CREATE_AS_NEW.equals(formDefinitionForm.getCreateAs()))
+		boolean isNewEntity = false;
+		if (formDefinitionForm != null
+				&& ProcessorConstants.CREATE_AS_NEW.equals(formDefinitionForm.getCreateAs()))
 		{
-			return true;
+			isNewEntity = true;
 		}
-		return false;
+		return isNewEntity;
 	}
 
 	/**

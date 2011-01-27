@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -19,6 +20,10 @@ import edu.wustl.common.exception.AssignDataException;
  * @hibernate.joined-subclass table="DYEXTN_USERDEFINED_DE"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
+/**
+ * @author deepali_ahirrao
+ *
+ */
 public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 {
 
@@ -30,13 +35,27 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	 * By default the permissible values are ordered alphabetically.
 	 */
 	protected Boolean isOrdered = true;
+	
+
+	/** The order. */
+	protected String order = "Ascending";
+
 	/**
 	 * Collection of PermissibleValues
 	 */
 	protected Collection<PermissibleValueInterface> permissibleValueCollection = new LinkedHashSet<PermissibleValueInterface>();
+	/**
+	 * Collection of default permissible values
+	 */
+	protected Collection<PermissibleValueInterface> defaultPermissibleValues = new LinkedHashSet<PermissibleValueInterface>();
 
 	/**
-	 * Set all values from the form
+	 * Activation date of Version
+	 */
+	protected Date activationDate;
+
+	/**
+	 * Set all values from the form.
 	 * @param abstractActionForm the ActionForm
 	 * @throws AssignDataException if data is not in proper format.
 	 */
@@ -151,8 +170,71 @@ public class UserDefinedDE extends DataElement implements UserDefinedDEInterface
 	 */
 	public Collection<PermissibleValueInterface> getPermissibleValues()
 	{
-		return (this.id != null)
+		return this.id != null
 				? sortPermissibleValuesList(permissibleValueCollection)
 				: permissibleValueCollection;
 	}
+
+	/**
+	 * @return activationDate
+	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface#getActivationDate()
+	 */
+	public Date getActivationDate()
+	{
+		return activationDate;
+	}
+
+	/**
+	 * @param versionActivationDate version Activation Date
+	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface
+	 * #setActivationDate(java.util.Date)
+	 */
+	public void setActivationDate(Date versionActivationDate)
+	{
+		this.activationDate = versionActivationDate;
+	}
+
+	/**
+	 * This method returns the Collection of PermissibleValues.
+	 *
+	 * @hibernate.set name="defaultPermissibleValues" table="DYEXTN_USERDEF_DEF_PV_REL"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="USER_DEF_DE_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-many-to-many class="edu.common.dynamicextensions.domain.PermissibleValue" column="PERMISSIBLE_VALUE_ID"
+	 */
+	public Collection<PermissibleValueInterface> getDefaultPermissibleValues()
+	{
+		return defaultPermissibleValues;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface#
+	 * setDefaultPermissibleValues(java.util.Collection)
+	 */
+	public void setDefaultPermissibleValues(
+			Collection<PermissibleValueInterface> defaultPermissibleValues)
+	{
+		this.defaultPermissibleValues = defaultPermissibleValues;
+	}
+
+	/**
+	 * Gets the order.
+	 * @return the order
+	 */
+	public String getOrder()
+	{
+		return order;
+	}
+
+
+	/**
+	 * Sets the order.
+	 * @param order the order to set
+	 */
+	public void setOrder(String order)
+	{
+		this.order = order;
+	}
+
 }

@@ -6,8 +6,8 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author sujay_narkar
- * @hibernate.joined-subclass table="DYEXTN_INTEGER_CONCEPT_VALUE" 
- * @hibernate.joined-subclass-key column="IDENTIFIER"  
+ * @hibernate.joined-subclass table="DYEXTN_INTEGER_CONCEPT_VALUE"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class IntegerValue extends PermissibleValue implements IntegerValueInterface
 {
@@ -24,7 +24,7 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 
 	/**
 	 * This method returns the predefined value of IntegerValue.
-	 * @hibernate.property name="value" type="integer" column="VALUE" 
+	 * @hibernate.property name="value" type="integer" column="VALUE"
 	 * @return the predefined value of IntegerValue.
 	 */
 	public Integer getValue()
@@ -51,13 +51,25 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	}
 
 	/**
-	 * 
+	 * This method type casts the value into Integer value and saves it.
+	 * This method can throw Cast Class Exception is value is not of type Integer
+	 * @param value the value
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#setObjectValue(java.lang.Object)
 	 */
-	public PermissibleValueInterface clone()
+	public void setObjectValue(Object value)
+	{
+		Integer integerValue = (Integer) value;
+		setValue(integerValue);
+	}
+
+	/**
+	 *
+	 */
+	public PermissibleValueInterface getObjectCopy()
 	{
 		IntegerValueInterface integerValueInterface = DomainObjectFactory.getInstance()
 				.createIntegerValue();
-		integerValueInterface.setValue(this.value);
+		integerValueInterface.setValue(value);
 		return integerValueInterface;
 	}
 
@@ -67,10 +79,41 @@ public class IntegerValue extends PermissibleValue implements IntegerValueInterf
 	public boolean equals(Object obj)
 	{
 		boolean isEqual = false;
-		if (obj instanceof IntegerValue && (value!= null && value.equals(((IntegerValue) obj).getValue())))
+		if (obj instanceof IntegerValue
+				&& (value != null && value.equals(((IntegerValue) obj).getValue())))
 		{
 			isEqual = true;
 		}
 		return isEqual;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hashCodeValue;
+		if (value != null)
+		{
+			hashCodeValue = value.hashCode();
+		}
+		else
+		{
+			hashCodeValue = 0;
+		}
+		return hashCodeValue;
+	}
+
+	public int compare(PermissibleValue o1, PermissibleValue o2)
+	{
+		Integer value1 = ((IntegerValue) o1).value;
+		Integer value2 = ((IntegerValue) o2).value;
+		if (value1 < value2)
+		{
+			return -1;
+		}
+		else if (value1 > value2)
+		{
+			return 1;
+		}
+		return 0;
 	}
 }

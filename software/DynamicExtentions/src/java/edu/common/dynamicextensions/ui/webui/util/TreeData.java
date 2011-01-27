@@ -19,11 +19,11 @@ public class TreeData
 	private static final String EXPANDED_CLASS_NAME = "folderOpen";
 	private static final String COLLAPSED_CLASS_NAME = "folder";
 
-	private String folder = "/de/images";
-	private String color = "navy";
-	private TreeNodesList nodes;
-	private String target = "";
-	private StringBuffer buf = null;
+	private String folder = "/images/de";
+	private static final String COLOR = "navy";
+	private final TreeNodesList nodes;
+	private final static String target = "";
+	private String buf = "";
 	private String nodeClickedFunction = null;
 
 	/**
@@ -31,7 +31,7 @@ public class TreeData
 	 */
 	public String getNodeClickedFunction()
 	{
-		return this.nodeClickedFunction;
+		return nodeClickedFunction;
 	}
 
 	/**
@@ -48,26 +48,26 @@ public class TreeData
 	 */
 	public TreeData()
 	{
-		folder = "/de/images/";
+		folder = "/images/de/";
 		nodes = new TreeNodesList();
 	}
 
 	/**
-	 * 
+	 *
 	 * @param url URL for the image files
 	 */
 	public void setImagesUrl(String url)
 	{
-		this.folder = url;
+		folder = url;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return URL of image files
 	 */
 	public String getImagesUrl()
 	{
-		return this.folder;
+		return folder;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class TreeData
 	}
 
 	/**
-	 * 
+	 *
 	 * @param text  : Text for the node
 	 * @param href : refernce for the node link
 	 * @param toolTip : tooltip for tree node
@@ -114,22 +114,22 @@ public class TreeData
 	}
 
 	/**
-	 * 
+	 *
 	 * @param text text to be added to buffer
 	 */
 	private void print(String text)
 	{
-		buf.append(text);
+		buf = buf + text;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return : String having the HTML code for the tree like representation of the data
 	 */
 	public String getTree(String treeName, String fieldForSelectedObject, String strIsTreeExpanded,
 			String nodeClickedFunction)
 	{
-		buf = new StringBuffer();
+		buf = "";
 
 		print("<style>ul.collapsedTree{display:none;margin-left:17px;}ul.expandedTree{margin-left:17px;}li.folder{list-style-image: url("
 				+ folder
@@ -138,10 +138,10 @@ public class TreeData
 				+ "/minus.gif);}li.file{FONT-WEIGHT:normal;list-style-image: url("
 				+ folder
 				+ "/dot.gif);}a.treeview{color:"
-				+ color
+				+ COLOR
 				+ ";font-family:verdana;font-size:9pt;}a.treeview:link {text-decoration:none;}a.treeview:visited{text-decoration:none;}a.treeview:hover {text-decoration:underline;}</style>");
 
-		this.setNodeClickedFunction(nodeClickedFunction);
+		setNodeClickedFunction(nodeClickedFunction);
 		boolean isTreeExpanded = false;
 		if ((strIsTreeExpanded != null) && (strIsTreeExpanded.equals("true")))
 		{
@@ -156,11 +156,11 @@ public class TreeData
 			Logger.out.error("Nodes List Is null(get Tree)");
 		}
 
-		return buf.toString();
+		return buf;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nodeList :  List of tree nodes
 	 * @param parent : Name of parent node
 	 */
@@ -178,7 +178,7 @@ public class TreeData
 			}
 			String style = null;
 			String identifier = "";
-			if (! "0".equals(parent))
+			if (!"0".equals(parent))
 			{
 				identifier = treeName + "N" + parent;
 				if (isTreeExpanded)
@@ -210,7 +210,7 @@ public class TreeData
 						hasChild = false;
 					}
 
-					if ( "".equals(node.getImageUrl()))
+					if ("".equals(node.getImageUrl()))
 					{
 						style = "style = 'FONT-WEIGHT:normal;'";
 					}
@@ -221,7 +221,8 @@ public class TreeData
 					if (hasChild)
 					{
 						identifier = treeName + "P" + parent + i;
-						print("<li " + style + " class='" + defaultClassName + "' id='" + identifier + "'>");
+						print("<li " + style + " class='" + defaultClassName + "' id='"
+								+ identifier + "'>");
 						if (displayRadioButton)
 						{
 							print("<input type='radio' name='selectedObjectId' id='selectedObjectId' value='"
@@ -256,10 +257,12 @@ public class TreeData
 						}
 						else
 						{
-							node.setHref("javascript:changeSelection('" + fieldForSelectedObject
-									+ "','" + identifier + "','" + node.getSequenceNumber() + "');");
+							node
+									.setHref("javascript:changeSelection('"
+											+ fieldForSelectedObject + "','" + identifier + "','"
+											+ node.getSequenceNumber() + "');");
 						}
-						if ( "".equals(node.getTarget()))
+						if ("".equals(node.getTarget()))
 						{
 							node.setTarget(target);
 						}
@@ -270,8 +273,8 @@ public class TreeData
 									+ node.getSequenceNumber() + "' />");
 						}
 						print("<a class=treeview href=\"" + node.getHref() + "\"  title=\""
-								+ node.getToolTip() + "\" id='" + identifier + "'>" + node.getText()
-								+ "</a>");
+								+ node.getToolTip() + "\" id='" + identifier + "'>"
+								+ node.getText() + "</a>");
 					}
 
 					if (hasChild)

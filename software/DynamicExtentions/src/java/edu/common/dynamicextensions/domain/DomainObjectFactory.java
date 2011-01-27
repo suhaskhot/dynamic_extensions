@@ -9,8 +9,11 @@ import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryB
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.TABLE_NAME_PREFIX;
 import static edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface.UNDERSCORE;
 
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import org.owasp.stinger.Stinger;
 
 import edu.common.dynamicextensions.domain.databaseproperties.ColumnProperties;
 import edu.common.dynamicextensions.domain.databaseproperties.ConstraintKeyProperties;
@@ -26,6 +29,7 @@ import edu.common.dynamicextensions.domain.userinterface.DatePicker;
 import edu.common.dynamicextensions.domain.userinterface.FileUploadControl;
 import edu.common.dynamicextensions.domain.userinterface.Label;
 import edu.common.dynamicextensions.domain.userinterface.ListBox;
+import edu.common.dynamicextensions.domain.userinterface.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.userinterface.RadioButton;
 import edu.common.dynamicextensions.domain.userinterface.TextArea;
 import edu.common.dynamicextensions.domain.userinterface.TextField;
@@ -39,6 +43,7 @@ import edu.common.dynamicextensions.domaininterface.BooleanValueInterface;
 import edu.common.dynamicextensions.domaininterface.ByteArrayValueInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRDEInterface;
 import edu.common.dynamicextensions.domaininterface.CaDSRValueDomainInfoInterface;
+import edu.common.dynamicextensions.domaininterface.CalculatedAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
@@ -59,6 +64,7 @@ import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.StaticCategoryInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
@@ -74,13 +80,18 @@ import edu.common.dynamicextensions.domaininterface.userinterface.DataGridInterf
 import edu.common.dynamicextensions.domaininterface.userinterface.DatePickerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.MultiSelectCheckBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.RadioButtonInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
+import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.parser.CategoryCSVFileParser;
+import edu.common.dynamicextensions.util.parser.CategoryFileParser;
 
 /**
  * This is a singleton class which provides methods for generating domain
@@ -95,7 +106,7 @@ public class DomainObjectFactory
 	/**
 	 * Domain Object Factory Instance
 	 */
-	private static DomainObjectFactory domainObjectFactory;
+	private static DomainObjectFactory domainObjFactory;
 
 	/**
 	 * Empty Constructor
@@ -112,11 +123,11 @@ public class DomainObjectFactory
 	 */
 	public static synchronized DomainObjectFactory getInstance()
 	{
-		if (domainObjectFactory == null)
+		if (domainObjFactory == null)
 		{
-			domainObjectFactory = new DomainObjectFactory();
+			domainObjFactory = new DomainObjectFactory();
 		}
-		return domainObjectFactory;
+		return domainObjFactory;
 	}
 
 	/**
@@ -127,7 +138,7 @@ public class DomainObjectFactory
 	 */
 	public void setInstance(DomainObjectFactory domainObjectFactory)
 	{
-		DomainObjectFactory.domainObjectFactory = domainObjectFactory;
+		domainObjFactory = domainObjectFactory;
 
 	}
 
@@ -228,7 +239,7 @@ public class DomainObjectFactory
 
 	/**
 	 * This method creates an object of constraintKeyProperties set column name to the given parameter
-	 * @param columnName 
+	 * @param columnName
 	 * @return an instance of constraintKeyProperties
 	 */
 	public ConstraintKeyPropertiesInterface createConstraintKeyProperties(String columnName)
@@ -239,7 +250,7 @@ public class DomainObjectFactory
 	}
 
 	/**
-	 * This method creates constraintKeyProperties for inheritance, creates only the constraint name 
+	 * This method creates constraintKeyProperties for inheritance, creates only the constraint name
 	 * @return an instance of constraintProperties
 	 */
 	public ConstraintPropertiesInterface createConstraintPropertiesForInheritance()
@@ -612,6 +623,16 @@ public class DomainObjectFactory
 	}
 
 	/**
+	 * This method creates an object of MultiSelectCheckBox.
+	 *
+	 * @return an instance of ListBox.
+	 */
+	public MultiSelectCheckBoxInterface createMultiSelectCheckBox()
+	{
+		return new MultiSelectCheckBox();
+	}
+
+	/**
 	 * This method creates an object of RadioButton.
 	 *
 	 * @return an instance of RadioButton.
@@ -852,11 +873,21 @@ public class DomainObjectFactory
 		categoryAttribute.setColumnProperties(createColumnProperties());
 		return categoryAttribute;
 	}
+
 	public SkipLogicAttributeInterface createSkipLogicAttribute()
 	{
-		SkipLogicAttribute skipLogicAttribute = new SkipLogicAttribute();
-		return skipLogicAttribute;
+		return new SkipLogicAttribute();
 	}
+
+	/**
+	 *
+	 * @return
+	 */
+	public CalculatedAttributeInterface createCalculatedAttribute()
+	{
+		return new CalculatedAttribute();
+	}
+
 	/**
 	 * @return IdGeneratorInterface
 	 */
@@ -912,6 +943,7 @@ public class DomainObjectFactory
 	{
 		return new Label();
 	}
+
 	/**
 	 * @return
 	 */
@@ -920,5 +952,41 @@ public class DomainObjectFactory
 		Formula formula = new Formula();
 		formula.setExpression(expression);
 		return formula;
+	}
+
+	/**
+	 * It will create the instance on CategoryFile Parser depending on the
+	 * file path given to it. e.g if file is csv it will give CategoryCSVFileParser
+	 * & etc.
+	 * If file specified is of not in supported formats it will return null.
+	 * @param filePath file to use for category creation.
+	 * @param baseDir base directory.
+	 * @param stinger the stinger validator object which is used to validate the pv strings.
+	 * @return category File Parser according to file Type.
+	 * @throws DynamicExtensionsSystemException Exception.
+	 * @throws FileNotFoundException if file is not found at proper place.
+	 */
+	public CategoryFileParser createCategoryFileParser(String filePath, String baseDir,
+			Stinger stinger) throws DynamicExtensionsSystemException, FileNotFoundException
+	{
+		CategoryFileParser categoryFileParser = null;
+		if (filePath.endsWith(".csv") || filePath.endsWith(".CSV"))
+		{
+			categoryFileParser = new CategoryCSVFileParser(filePath, baseDir, stinger);
+		}
+		else if (!filePath.endsWith(DEConstants.XML_SUFFIX) || !filePath.endsWith(".XML"))
+		{
+			throw new DynamicExtensionsSystemException("Invalid file type.");
+		}
+		return categoryFileParser;
+	}
+
+	/**
+	 * It will create the instance on Static Category.
+	 * @return Static Category
+	 */
+	public StaticCategoryInterface createStaticCategory()
+	{
+		return new StaticCategory();
 	}
 }

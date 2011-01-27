@@ -1,14 +1,20 @@
 
 package edu.common.dynamicextensions.domain.userinterface;
 
+import java.util.Collection;
 import java.util.List;
 
+import edu.common.dynamicextensions.category.beans.UIProperty;
+import edu.common.dynamicextensions.category.enums.TextFieldEnum;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.Constants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 /**
  * This Class represents the TextField (TextBox) of the HTML page.
@@ -20,9 +26,7 @@ import edu.common.dynamicextensions.ui.util.Constants;
 public class TextField extends Control implements TextFieldInterface
 {
 
-	/**
-	 *
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -79,17 +83,17 @@ public class TextField extends Control implements TextFieldInterface
 	 * @return HTML code for TextField
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	public String generateEditModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException
 	{
-		String defaultValue = getDefaultValueForControl(rowId);
+		String defaultValue = DynamicExtensionsUtility
+				.replaceHTMLSpecialCharacters(getDefaultValueForControl());
 
 		String htmlComponentName = getHTMLComponentName();
 		String htmlString = "";
-		if (getIsSkipLogicTargetControl())
+		if (getIsSkipLogicTargetControl() || getIsCalculated())
 		{
-			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
-					+ getHTMLComponentName() + "_div' /><div id='"
-					+ getHTMLComponentName() + "_div' name='"
+			htmlString += "<div id='" + getHTMLComponentName() + "_div' name='"
 					+ getHTMLComponentName() + "_div'>";
 		}
 		if (isUrl != null && isUrl)
@@ -101,13 +105,27 @@ public class TextField extends Control implements TextFieldInterface
 		}
 		else
 		{
-			htmlString += "<INPUT " + "class='font_bl_nor' " + "name='" + htmlComponentName + "' "
-					+ "id='" + htmlComponentName + "' onchange='isDataChanged();' value='" + defaultValue + "' ";
+			htmlString += "<INPUT "
+					+ "class='font_bl_nor' "
+					+ "name='"
+					+ htmlComponentName
+					+ "' "
+					+ "id='"
+					+ htmlComponentName
+					+ "' onchange=\""
+					+ getOnchangeServerCall()
+					+ ";"
+					+ (this.getIsSourceForCalculatedAttribute() != null
+							&& this.getIsSourceForCalculatedAttribute()
+							? "calculateAttributes();"
+							: "") + "\" value='"
+					+ DynamicExtensionsUtility.getEscapedStringValue(defaultValue) + "' ";
 
-			int columnSize = columns.intValue() - 2;
+			int columnSize = columns.intValue();
 			if (columnSize > 0)
 			{
 				htmlString += "size='" + columnSize + "' ";
+				htmlString += "style='width:" + (columnSize + 1) + "ex' ";
 			}
 			else
 			{
@@ -125,7 +143,8 @@ public class TextField extends Control implements TextFieldInterface
 
 			//set isdisabled property
 
-			if ((this.isReadOnly != null && this.isReadOnly) || (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
+			if ((this.isReadOnly != null && this.isReadOnly)
+					|| (this.isSkipLogicReadOnly != null && this.isSkipLogicReadOnly))
 			{
 				htmlString += " readonly='" + ProcessorConstants.TRUE + "' ";
 			}
@@ -137,7 +156,7 @@ public class TextField extends Control implements TextFieldInterface
 				maxChars = attibute.getMaxSize();
 			}
 			//Changed by: Kunal
-			//Incase of input type is chosen as number 
+			//Incase of input type is chosen as number
 			//the max char size is -1
 			if (maxChars > 0)
 			{
@@ -145,13 +164,6 @@ public class TextField extends Control implements TextFieldInterface
 			}
 
 			htmlString += "/>";
-			if (this.isCalculated != null && this.isCalculated)
-			{
-				htmlString += "<img src=\"de/images/b_calculate.gif\" alt=\"Calculate\" width=\"62\" height=\"21\" hspace=\"3\" align=\"absmiddle\" onClick=\"calculateAttributes();\" >";
-				htmlString += "<map alt=\"Calculate\">";
-				htmlString += "<area href=\"javascript:calculateAttributes()\" shape=\"default\">";
-				htmlString += "</map>";
-			}
 			//String measurementUnit = getMeasurementUnit(this.getAbstractAttribute());
 			String measurementUnit = this.getAttibuteMetadataInterface().getMeasurementUnit();
 			if (measurementUnit != null)
@@ -164,6 +176,16 @@ public class TextField extends Control implements TextFieldInterface
 			}
 		}
 		if (getIsSkipLogicTargetControl())
+		{
+			htmlString += "<input type='hidden' name='skipLogicControl' id='skipLogicControl' value = '"
+					+ getHTMLComponentName() + "_div' />";
+		}
+		if (getIsCalculated())
+		{
+			htmlString += "<input type='hidden' name='calculatedControl' id='calculatedControl' value = '"
+					+ getHTMLComponentName() + "_div' />";
+		}
+		if (getIsSkipLogicTargetControl() || getIsCalculated())
 		{
 			htmlString += "</div>";
 		}
@@ -181,7 +203,7 @@ public class TextField extends Control implements TextFieldInterface
 
 	/**
 	 * This method returns the Boolean value that decides whether the value of this control should be treated as normal text or URL.
-	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL" 
+	 * @hibernate.property name="isUrl" type="boolean" column="IS_URL"
 	 * @return the Boolean value	true - value is URL
 	 * 								false - value is normal text.
 	 */
@@ -201,82 +223,139 @@ public class TextField extends Control implements TextFieldInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(ContainerInterface container)
+			throws DynamicExtensionsSystemException
 	{
-		String defaultValue = getDefaultValueForControl(rowId);
-		String htmlString = "&nbsp;";
+		String defaultValue = getDefaultValueForControl();
+		StringBuffer htmlStringBuffer =new StringBuffer();
+		htmlStringBuffer.append("&nbsp;");
 		if (defaultValue != null)
 		{
 			if (isUrl != null && (isUrl.booleanValue()))
 			{
-				htmlString = "<a href='javascript:void(0)' onclick=\"window.open('"
-						+ defaultValue
-						+ "','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">"
-						+ defaultValue + "</a>";
+				htmlStringBuffer.append("<a href='javascript:void(0)' onclick=\"window.open('");
+				htmlStringBuffer.append(defaultValue);
+				htmlStringBuffer.append("','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">");
+				htmlStringBuffer.append(defaultValue);
+				htmlStringBuffer.append("</a>");
 			}
 			else
 			{
-				htmlString = "<span class = 'font_bl_nor'> " + defaultValue + "</span>";
+				htmlStringBuffer.append("<span class = 'font_bl_nor'> ");
+				htmlStringBuffer.append(defaultValue);
+				htmlStringBuffer.append("</span>");
 			}
 		}
-		return htmlString;
+		return htmlStringBuffer.toString();
 	}
 
-	private String getDefaultValueForControl(Integer rowId)
+	/**
+	 * Gets the default value for control.
+	 * @return the default value for control
+	 */
+	private String getDefaultValueForControl()
 	{
-		String defaultValue = (String) this.value;
-		if (!getIsSkipLogicTargetControl())
+		String defaultValue;
+		if (this.value == null || this.value.toString().length() == 0)
 		{
-			if (this.value == null) 
+			if (isSkipLogicDefaultValue())
 			{
-				defaultValue = "";
-			} 
-			else 
-			{
-				defaultValue = (String) this.value;
+				defaultValue = getDefaultSkipLogicValue();
 			}
-			if (isUrl != null && (isUrl.booleanValue())) 
+			else
 			{
-				defaultValue = this.getAttibuteMetadataInterface()
-						.getDefaultValue();
-			} 
-			else 
-			{
-				if (this.value == null) 
+				defaultValue = this.getAttibuteMetadataInterface().getDefaultValue(null);
+				if (defaultValue == null || defaultValue.length() == 0)
 				{
-					defaultValue = this.getAttibuteMetadataInterface()
-							.getDefaultValue();
-					if (defaultValue == null || (defaultValue.length() == 0)) 
-					{
-						defaultValue = "";
-					}
+					defaultValue = "";
 				}
 			}
 		}
 		else
 		{
-			if (defaultValue == null || defaultValue.length() == 0)
-			{
-				defaultValue = getSkipLogicDefaultValue(rowId);
-			}
+			defaultValue = this.value.toString();
 		}
 		return defaultValue;
 	}
 
 	/**
-	 * 
+	 * Gets the default skip logic value.
+	 * @return the default skip logic value
 	 */
-	public List<String> getValueAsStrings(Integer rowId) 
+	private String getDefaultSkipLogicValue()
+	{
+		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) this
+				.getAttibuteMetadataInterface();
+		Object defaultValue = categoryAttribute.getDefaultSkipLogicValue().getValueAsObject();
+		return defaultValue.toString();
+
+	}
+
+	/**
+	 * Checks if is skip logic default value.
+	 * @return true, if is skip logic default value
+	 */
+	private boolean isSkipLogicDefaultValue()
+	{
+		return ((CategoryAttributeInterface) this.getAttibuteMetadataInterface())
+				.getDefaultSkipLogicValue() != null;
+	}
+
+	/**
+	 *
+	 */
+	public List<String> getValueAsStrings()
 	{
 		return null;
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public void setValueAsStrings(List<String> listOfValues) 
+	public void setValueAsStrings(List<String> listOfValues)
 	{
 		// TODO Auto-generated method stub
-		
+	}
+
+	/**
+	 *
+	 */
+	public boolean getIsEnumeratedControl()
+	{
+		return false;
+	}
+
+	/**
+	 * Returns collection of key-value pairs.
+	 */
+	public Collection<UIProperty> getControlTypeValues()
+	{
+		Collection<UIProperty> controlTypeValues = super.getControlTypeValues();
+		TextFieldEnum[] uiPropertyValues = TextFieldEnum.values();
+
+		for (TextFieldEnum propertyType : uiPropertyValues)
+		{
+			String controlProperty = propertyType.getControlProperty(this);
+			//LOGGER.debug("Control property value is: " + controlProperty);
+			if (controlProperty != null)
+			{
+				controlTypeValues.add(new UIProperty(propertyType.getValue(), controlProperty));
+			}
+		}
+		return controlTypeValues;
+	}
+
+	/**
+	 * Set collection of key-value pairs for a control.
+	 */
+	public void setControlTypeValues(Collection<UIProperty> uiProperties)
+	{
+		super.setControlTypeValues(uiProperties);
+
+		for (UIProperty uiProperty : uiProperties)
+		{
+			TextFieldEnum propertyType = TextFieldEnum.getValue(uiProperty.getKey());
+			propertyType.setControlProperty(this, uiProperty.getValue());
+		}
 	}
 }

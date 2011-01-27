@@ -2,6 +2,8 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -39,10 +41,10 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	void setCategoryEntity(CategoryEntityInterface categoryEntityInterface);
 
 	/**
-	 *
-	 * @return
+	 * @param encounterDate the encounter date.
+	 * @return default value.
 	 */
-	String getDefaultValue();
+	String getDefaultValue(Date encounterDate);
 
 	/**
 	 *
@@ -55,6 +57,12 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 * @param dataElementInterface
 	 */
 	void setDataElement(DataElementInterface dataElementInterface);
+
+	/**
+	 *
+	 * @param dataElementInterface
+	 */
+	Collection<PermissibleValueInterface> getAllPermissibleValues();
 
 	/**
 	 * This method returns the ColumnProperties of the Attribute.
@@ -94,7 +102,7 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 *
 	 */
 	void setIsRelatedAttribute(Boolean isRelatedAttribute);
-	
+
 	/**
 	 *
 	 */
@@ -104,85 +112,151 @@ public interface CategoryAttributeInterface extends BaseAbstractAttributeInterfa
 	 *
 	 */
 	void setIsCalculated(Boolean isCalculated);
+
 	/**
-	 * 
+	 *
 	 * @param formulaInterface
 	 */
 	void setFormula(FormulaInterface formulaInterface);
+
 	/**
 	 * This method return the formula.
 	 * @return
 	 */
 	FormulaInterface getFormula();
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
-	Collection<CategoryAttributeInterface> getCalculatedCategoryAttributeCollection();
+	Collection<CategoryAttributeInterface> getCalculatedAttributeCollection();
+
 	/**
-	 * 
+	 *
+	 * @return
+	 */
+	Collection<CalculatedAttributeInterface> getCalculatedCategoryAttributeCollection();
+
+	/**
+	 *
 	 * @param calculatedCategoryAttributeCollection
 	 */
 	void setCalculatedCategoryAttributeCollection(
-			Collection<CategoryAttributeInterface> calculatedCategoryAttributeCollection);
-	/**
-	 * 
-	 * @return
-	 */
-	Collection<CategoryAttributeInterface> getCalculatedDependentCategoryAttributes();
-	/**
-	 * 
-	 * @param calculatedDependentCategoryAttributes
-	 */
-	void setCalculatedDependentCategoryAttributes(
-			Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes);
+			Collection<CalculatedAttributeInterface> calculatedCategoryAttributeCollection);
+
 	/**
 	 *
 	 */
-	void addCalculatedDependentCategoryAttribute(
-			CategoryAttributeInterface categoryAttributeInterface);
+	void addCalculatedCategoryAttribute(CalculatedAttributeInterface calculatedAttributeInterface);
+
 	/**
 	 *
-	 */
-	void addCalculatedCategoryAttribute(
-			CategoryAttributeInterface categoryAttributeInterface);
-	/**
-	 * 
 	 * @return
 	 */
 	PermissibleValueInterface getDefaultValuePermissibleValue();
-	/**
-	 * This method removes all Calculated Category Attributes.
-	 */
-	void removeAllCalculatedDependentCategoryAttributes();
+
 	/**
 	 * This method removes all Calculated Category Attributes.
 	 */
 	void removeAllCalculatedCategoryAttributes();
+
 	/**
-	 * 
+	 *
 	 * @param isSkipLogic
 	 */
 	void setIsSkipLogic(Boolean isSkipLogic);
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	Boolean getIsSkipLogic();
+
 	/**
-	 * 
+	 *
 	 * @param permissibleValue
 	 */
 	void addSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	Collection<PermissibleValueInterface> getSkipLogicPermissibleValues();
+
 	/**
-	 * 
+	 *
 	 * @param permissibleValue
 	 * @return
 	 */
-	PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
+	PermissibleValueInterface getSkipLogicPermissibleValue(
+			PermissibleValueInterface permissibleValue);
+
+	/**
+	 *
+	 * @return
+	 */
+	Collection<SkipLogicAttributeInterface> getDependentSkipLogicAttributes();
+
+	/**
+	 *
+	 * @param dependentSkipLogicAttributes
+	 */
+	void setDependentSkipLogicAttributes(
+			Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes);
+
+	/**
+	 * This method adds a skip logic attribute.
+	 * @param skipLogicAttributeInterface
+	 */
+	void addDependentSkipLogicAttribute(SkipLogicAttributeInterface skipLogicAttributeInterface);
+
+	/**
+	 * This method removes a SkipLogic Attribute.
+	 * @param skipLogicAttributeInterface.
+	 */
+	void removeDependentSkipLogicAttribute(SkipLogicAttributeInterface skipLogicAttributeInterface);
+
+	/**
+	 * This method removes all SkipLogic Attributes.
+	 */
+	void removeAllDependentSkipLogicAttributes();
+
+	/**
+	 *
+	 * @return
+	 */
+	Boolean getIsSourceForCalculatedAttribute();
+
+	/**
+	 *
+	 * @param isSourceForCalculatedAttribute
+	 */
+	void setIsSourceForCalculatedAttribute(Boolean isSourceForCalculatedAttribute);
+
+	/**
+	 * This method will returns whether this category is to be populated from XML or not.
+	 * @return Returns the isPopulateFromXml.
+	 */
+	boolean getIsPopulateFromXml();
+
+	/**
+	 *	sets isPopulateFromXml.
+	 * @return returns isPopulateFromXml.
+	 */
+	void setIsPopulateFromXml(boolean isPopulateFromXml);
+
+	Set<DataElementInterface> getDataElementCollection();
+
+	/**
+	 * Gets the default skip logic value.
+	 * @return the default skip logic value
+	 */
+	PermissibleValueInterface getDefaultSkipLogicValue();
+
+	/**
+	 * Sets the default skip logic value.
+	 * @param defaultSkipLogicValue the new default skip logic value
+	 */
+	void setDefaultSkipLogicValue(PermissibleValueInterface defaultSkipLogicValue);
 }

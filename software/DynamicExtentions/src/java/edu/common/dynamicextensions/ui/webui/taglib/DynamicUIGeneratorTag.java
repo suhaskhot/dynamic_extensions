@@ -2,43 +2,67 @@
 package edu.common.dynamicextensions.ui.webui.taglib;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.Constants;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.common.util.logger.Logger;
 
 public class DynamicUIGeneratorTag extends TagSupport
 {
 
 	/**
-	 * 
+	 *
 	 */
+	public Map<String,Object> contextParameter = new HashMap<String,Object>();
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 
-	 */
 
-	protected ContainerInterface containerInterface = null;
+	protected transient ContainerInterface container = null;
+
+	protected Map<BaseAbstractAttributeInterface, Object> previousDataMap;
 
 	/**
-	 * 
-	 * @return
+	 * Returns the previous data map.
+	 * @return Map of BaseAbstractAttributeInterface to Object value.
 	 */
-	public ContainerInterface getContainerInterface()
+	public Map<BaseAbstractAttributeInterface, Object> getPreviousDataMap()
 	{
-		return containerInterface;
+		return previousDataMap;
 	}
 
 	/**
-	 * 
-	 * @param containerInterface
+	 * Set the old BaseAbstractAttributeInterface to Object value.
+	 * @param previousDataMap Map of BaseAbstractAttributeInterface to Object value.
 	 */
-	public void setContainerInterface(ContainerInterface containerInterface)
+	public void setPreviousDataMap(final Map<BaseAbstractAttributeInterface, Object> previousDataMap)
 	{
-		this.containerInterface = containerInterface;
+		this.previousDataMap = previousDataMap;
+	}
+
+	/**
+	 * Returns the ContainerInterface.
+	 * @return ContainerInterface
+	 */
+	public ContainerInterface getContainerInterface()
+	{
+		return container;
+	}
+
+	/**
+	 * Set ContainerInterface.
+	 * @param container ContainerInterface
+	 */
+	public void setContainerInterface(final ContainerInterface container)
+	{
+		this.container = container;
 	}
 
 	/**
@@ -69,7 +93,7 @@ public class DynamicUIGeneratorTag extends TagSupport
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public int doEndTag()
 	{
@@ -79,20 +103,30 @@ public class DynamicUIGeneratorTag extends TagSupport
 		}
 		try
 		{
-			String generatedHTML = "<div id='skipLogicDiv'>";
-			String caption = (String) pageContext.getSession().getAttribute("OverrideCaption");
-			this.containerInterface.setShowRequiredFieldWarningMessage(Boolean.valueOf(pageContext.getSession().getAttribute("mandatory_Message").toString()));
-			String dataEntryOperation = pageContext.getRequest().getParameter("dataEntryOperation");
-			generatedHTML += this.containerInterface.generateContainerHTML(caption,dataEntryOperation);
-			generatedHTML += "</div>";
-			JspWriter out = pageContext.getOut();
-			out.println(generatedHTML);
+
+
+			final String caption = (String) pageContext.getSession()
+			.getAttribute("OverrideCaption");
+			this.container.setShowRequiredFieldWarningMessage(Boolean.valueOf(pageContext
+					.getSession().getAttribute("mandatory_Message").toString()));
+			final String operation = pageContext.getRequest().getParameter("dataEntryOperation");
+			final String encounterDate=pageContext.getRequest().getParameter(Constants.ENCOUNTER_DATE);
+			if(container.getContextParameter(Constants.ENCOUNTER_DATE)== null)
+			{
+				contextParameter.put(Constants.ENCOUNTER_DATE, ControlsUtility.getFormattedDate(encounterDate));
+				container.setContextParameter(contextParameter);
+			}
+			DynamicExtensionsUtility.setEncounterDateToChildContainer(container, contextParameter);
+
+			final JspWriter out = pageContext.getOut();
+			container.setPreviousValueMap(previousDataMap);
+			out.println(this.container.generateContainerHTML(caption, operation));
 		}
-		catch (DynamicExtensionsSystemException e)
+		catch (final DynamicExtensionsSystemException e)
 		{
 			Logger.out.debug("DynamicExtensionsSystemException. No response generated.");
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			Logger.out.debug("IOException. No response generated.");
 		}

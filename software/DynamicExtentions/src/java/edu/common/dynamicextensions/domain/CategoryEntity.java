@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
+import edu.common.dynamicextensions.util.global.CategoryConstants;
 
 /**
  *
@@ -40,17 +41,17 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	protected Collection<CategoryEntityInterface> childCategories = new HashSet<CategoryEntityInterface>();
 
 	/**
-	 * 
+	 *
 	 */
 	protected CategoryEntityInterface parentCategoryEntity;
 
 	/**
-	 * 
+	 *
 	 */
 	protected CategoryEntityInterface treeParentCategoryEntity;
 
 	/**
-	 * 
+	 *
 	 */
 	//protected Collection<CategoryEntityInterface> parentCategoryEntityCollection = new HashSet<CategoryEntityInterface>();
 	/**
@@ -74,11 +75,11 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	protected Collection<CategoryInterface> categoryCollection = new HashSet<CategoryInterface>();
 
 	/**
-	 * 
+	 *
 	 */
 	protected Collection<CategoryAssociationInterface> CategoryAssociationCollection = new HashSet<CategoryAssociationInterface>();
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean isCreateTable = Boolean.TRUE;
 
@@ -145,7 +146,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 
 	/**
-	 * 
+	 *
 	 * @param categoryEntityInterface
 	 */
 	public void addChildCategory(CategoryEntityInterface categoryEntityInterface)
@@ -241,7 +242,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	 */
 	public void addPath(PathInterface pathInterface)
 	{
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -375,8 +376,8 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 
 	/* (non-Javadoc)
-	 * Incase of CategoryEntity this method will alwas return false, 
-	 * since category entity cannot be abstract. 
+	 * Incase of CategoryEntity this method will alwas return false,
+	 * since category entity cannot be abstract.
 	 * @see edu.common.dynamicextensions.domaininterface.AbstractEntityInterface#isAbstract()
 	 */
 	public boolean isAbstract()
@@ -397,7 +398,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 
 	/**
-	 * 
+	 *
 	 * @param attributeName
 	 * @return
 	 */
@@ -480,6 +481,18 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	}
 
 	/**
+	 *
+	 * @param entityAttributeName entity attribute name.
+	 * @return category attribute with given name, else null.
+	 */
+	public CategoryAttributeInterface getAttributeByEntityAttributeName(String entityAttributeName)
+	{
+		String categoryAttributeName = entityAttributeName
+				+ CategoryConstants.CAT_ATTRIBUTE_NAME_POSTFIX;
+		return getAttributeByName(categoryAttributeName);
+	}
+
+	/**
 	 * @hibernate.many-to-one column="TREE_PARENT_CATEGORY_ENTITY_ID" cascade="all" class="edu.common.dynamicextensions.domain.CategoryEntity"
 	 * @return the parentCategoryEntity
 	 */
@@ -499,7 +512,7 @@ public class CategoryEntity extends AbstractEntity implements CategoryEntityInte
 	/**
 	 * This method returns the create table
 	 * @hibernate.property name="isCreateTable" type="boolean" column="IS_CREATETABLE"
-	 * @return the isCreateTable 
+	 * @return the isCreateTable
 	 */
 	public Boolean isCreateTable()
 	{

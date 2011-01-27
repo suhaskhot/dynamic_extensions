@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 package edu.common.dynamicextensions.ui.webui.taglib;
@@ -22,19 +22,19 @@ public class DisplayRecordListTag extends TagSupport
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 
+	 *
 	 */
 	protected String containerIdentifier = null;
 	/**
-	 * 
+	 *
 	 */
 	protected List<EntityRecord> entityRecordList = null;
 	/**
-	 * 
+	 *
 	 */
 	protected String mode = null;
 
@@ -45,7 +45,7 @@ public class DisplayRecordListTag extends TagSupport
 	private boolean isDataValid()
 	{
 		boolean isDataValid = true;
-		if (this.getEntityRecordList() == null)
+		if (getEntityRecordList() == null)
 		{
 			Logger.out.debug("Container interface is null");
 			isDataValid = false;
@@ -65,7 +65,7 @@ public class DisplayRecordListTag extends TagSupport
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public int doEndTag()
 	{
@@ -75,12 +75,12 @@ public class DisplayRecordListTag extends TagSupport
 		}
 		try
 		{
-			StringBuffer stringBuffer = new StringBuffer();
+			StringBuffer stringBuffer = new StringBuffer(350);
 			stringBuffer
 					.append("<div style='border:solid 1px; padding:1px; height:500px; overflow:auto;' width='100%'><table class='dataTable' width='100%' cellpadding='4' cellspacing='0' border='1'><thead><tr class='formTitle'><th width='5%' align='center'>");
 			stringBuffer.append(ApplicationProperties.getValue("record.id"));
 			stringBuffer.append("</th><th>Delete</th></tr></thead><tbody>");
-			for (EntityRecord entityRecord : this.entityRecordList)
+			for (EntityRecord entityRecord : entityRecordList)
 			{
 				stringBuffer.append("<tr><td>");
 
@@ -92,7 +92,7 @@ public class DisplayRecordListTag extends TagSupport
 
 					stringBuffer.append("<span style='cursor:hand' onclick=\"setRecordListTarget(");
 					String target = "'/dynamicExtensions/LoadDataEntryFormAction.do?containerIdentifier="
-							+ this.containerIdentifier
+							+ containerIdentifier
 							+ "&recordIdentifier="
 							+ recordId.toString()
 							+ "&showFormPreview=false" + "&mode=" + mode + "'";
@@ -101,8 +101,9 @@ public class DisplayRecordListTag extends TagSupport
 					stringBuffer.append(")\">Record No. ");
 
 					stringBuffer.append(recordId.toString());
-					stringBuffer.append("</span></td><td><span style='cursor:hand' onclick='deleteRecord(");
-					stringBuffer.append(this.containerIdentifier);
+					stringBuffer
+							.append("</span></td><td><span style='cursor:hand' onclick='deleteRecord(");
+					stringBuffer.append(containerIdentifier);
 					stringBuffer.append(" , ");
 					stringBuffer.append(recordId.toString());
 					stringBuffer.append(" ,\"");

@@ -19,9 +19,12 @@ public class DEMysqlUtility extends AbstractDEDBUtility
 	@Override
 	public String formatMonthAndYearDate(String strDate,boolean removeTime)
 	{
-		String month = strDate.substring(0, 2);
-		String year = strDate.substring(3, strDate.length());
-		return month + "-" + "01" + "-" + year;
+		String formattedDate = super.formatMonthAndYearDate(strDate, removeTime);
+		if(removeTime)
+		{
+			formattedDate = formattedDate.substring(0, formattedDate.length() - 4);
+		}
+		return formattedDate;
 	}
 	/**
 	 * @param strDate date as string.
@@ -31,9 +34,14 @@ public class DEMysqlUtility extends AbstractDEDBUtility
 	@Override
 	public String formatYearDate(String strDate,boolean removeTime)
 	{
-		return "01" + "-" + "01" + "-" + strDate;		
+		String formattedDate= super.formatYearDate(strDate, removeTime);
+		if(removeTime)
+		{
+			formattedDate = formattedDate.substring(0, formattedDate.length() - 4);
+		}
+		return formattedDate;
 	}
-	
+
 	/**
 	 * @param ischecked  return 0 or 1 depending on boolean value passed.
 	 * @return formatted date.
@@ -43,7 +51,7 @@ public class DEMysqlUtility extends AbstractDEDBUtility
 	{
 		return ischecked?"1":"0";
 	}
-	
+
 	/**
 	 * method to clean database.
 	 * @param args argument from main method.

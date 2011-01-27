@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!DOCTYPE hibernate-mapping PUBLIC
-    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping default-lazy="false">
@@ -45,11 +45,11 @@
             table="DYEXTN_USERDEF_DE_VALUE_REL"
             lazy="false"
             inverse="false"
-            cascade="all-delete-orphan"
+            cascade="all"
             sort="unsorted"
         >
-            <cache 
-                usage="read-write" 
+            <cache
+                usage="read-write"
              />
 
               <key
@@ -64,12 +64,39 @@
 
         </set>
 
+       <set name="defaultPermissibleValues" table="DYEXTN_USERDEF_DEF_PV_REL"
+			lazy="false" inverse="false" cascade="all-delete-orphan" sort="unsorted">
+			<cache usage="read-write" />
+
+			<key column="USER_DEF_DE_ID" />
+
+			<many-to-many class="edu.common.dynamicextensions.domain.PermissibleValue"
+				column="PERMISSIBLE_VALUE_ID" outer-join="auto" />
+
+		</set>
+
         <property
             name="isOrdered"
             type="boolean"
             update="true"
             insert="true"
             column="IS_ORDERED"
+        />
+
+        <property
+            name="order"
+            type="string"
+            update="true"
+            insert="true"
+            column="SORT"
+        />
+
+        <property
+            name="activationDate"
+            type="date"
+            update="true"
+            insert="true"
+            column="ACTIVATION_DATE"
         />
 
         </joined-subclass>

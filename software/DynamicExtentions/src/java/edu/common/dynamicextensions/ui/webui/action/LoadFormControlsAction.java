@@ -29,8 +29,8 @@ import edu.wustl.common.util.logger.Logger;
 /**
  * This Action class Loads the Primary Information needed for BuildForm.jsp.
  * This will first check if the object is already present in cache , If yes, it will update
- * the actionForm and If No, It will populate the actionForm with fresh data.  
- * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed  
+ * the actionForm and If No, It will populate the actionForm with fresh data.
+ * The exception thrown can be of 'Application' type ,in this case the same Screen will be displayed
  * added with error messages .
  * And The exception thrown can be of 'System' type, in this case user will be directed to Error Page.
  * @author deepti_shelar
@@ -42,7 +42,8 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 * (non-Javadoc)
 	 * @see org.apache.struts.actions.DispatchAction#execute(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form,
+	@Override
+    public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws IOException,
 			DynamicExtensionsApplicationException
 	{
@@ -56,20 +57,20 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 			String controlOperation = controlsForm.getControlOperation();
 			if (controlOperation != null
 					&& controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_EDIT)
-					&& containerInterface != null && controlsForm != null)
+					&& containerInterface != null)
 			{
-			
-					ControlsUtility.reinitializeSequenceNumbers(containerInterface
-							.getControlCollection(), controlsForm.getControlsSequenceNumbers());
+
+				ControlsUtility.reinitializeSequenceNumbers(containerInterface
+						.getControlCollection(), controlsForm.getControlsSequenceNumbers());
+				Logger.out.debug("Loading form controls for [" + containerInterface.getCaption()
+						+ "]");
 			}
-			Logger.out.debug("Loading form controls for [" + containerInterface.getCaption() + "]");
 			LoadFormControlsProcessor loadFormControlsProcessor = LoadFormControlsProcessor
 					.getInstance();
 
 			ControlInterface selectedControl = loadFormControlsProcessor.getSelectedControl(
 					controlsForm, containerInterface);
-			if ((selectedControl != null)
-					&& (selectedControl instanceof ContainmentAssociationControl))
+			if (selectedControl instanceof ContainmentAssociationControl)
 			{
 				loadContainmentAssociationControl(request,
 						(ContainmentAssociationControl) selectedControl);
@@ -84,7 +85,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 				request.setAttribute("controlsList", controlsForm.getChildList());
 				actionForwardString = DEConstants.SHOW_BUILD_FORM_JSP;
 			}
-			if ((controlsForm.getDataType() != null)
+			if (controlsForm.getDataType() != null
 					&& DynamicExtensionsUtility.isDataTypeNumeric(controlsForm.getDataType()))
 			{
 				initializeMeasurementUnits(controlsForm);
@@ -98,7 +99,7 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 		catch (Exception e)
 		{
 			actionForwardString = catchException(e, request);
-			if ((actionForwardString == null) || (actionForwardString.equals("")))
+			if (actionForwardString == null || actionForwardString.equals(""))
 			{
 				return mapping.getInputForward();
 			}
@@ -127,19 +128,19 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 */
 	private void initializeMeasurementUnits(ControlsForm controlsForm)
 	{
-		if ((controlsForm != null) && (controlsForm.getAttributeMeasurementUnits() != null))
+		if (controlsForm != null && controlsForm.getAttributeMeasurementUnits() != null)
 		{
 			//If value is not contained in the list, make "other" option as selected and value in textbox
-			if (!containsValue(controlsForm.getMeasurementUnitsList(), controlsForm
+			if (containsValue(controlsForm.getMeasurementUnitsList(), controlsForm
 					.getAttributeMeasurementUnits()))
+			{
+				controlsForm.setMeasurementUnitOther("");
+			}
+			else
 			{
 				controlsForm.setMeasurementUnitOther(controlsForm.getAttributeMeasurementUnits());
 				controlsForm
 						.setAttributeMeasurementUnits(ProcessorConstants.MEASUREMENT_UNIT_OTHER);
-			}
-			else
-			{
-				controlsForm.setMeasurementUnitOther("");
 			}
 		}
 		else
@@ -157,23 +158,24 @@ public class LoadFormControlsAction extends BaseDynamicExtensionsAction
 	 */
 	private boolean containsValue(List measurementUnitsList, String attributeMeasurementUnit)
 	{
-		String measurementUnit = null;
-		if ((measurementUnitsList != null) && (attributeMeasurementUnit != null))
+		boolean isContains = false;
+		if (measurementUnitsList != null && attributeMeasurementUnit != null)
 		{
 			Iterator iter = measurementUnitsList.iterator();
 			if (iter != null)
 			{
 				while (iter.hasNext())
 				{
-					measurementUnit = (String) iter.next();
+					String measurementUnit = (String) iter.next();
 					if (attributeMeasurementUnit.equals(measurementUnit))
 					{
-						return true;
+						isContains = true;
+						break;
 					}
 				}
 			}
 		}
-		return false;
+		return isContains;
 	}
 
 }

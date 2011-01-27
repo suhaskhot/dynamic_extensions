@@ -37,4 +37,9 @@ public class BooleanAttributeTypeInformation extends AttributeTypeInformation
 		return booleanValue;
 	}
 
+	public Class getAttributeDataType()
+	{
+		return Boolean.class;
+	}
+
 }

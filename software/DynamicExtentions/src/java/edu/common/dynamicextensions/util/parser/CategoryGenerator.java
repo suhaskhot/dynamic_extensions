@@ -6,12 +6,19 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import org.owasp.stinger.Stinger;
+
+import edu.common.dynamicextensions.category.creation.HandleSkipLogic;
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -25,18 +32,19 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
-import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
-import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.skiplogic.ConditionStatements;
+import edu.common.dynamicextensions.skiplogic.SkipLogic;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.CategoryHelperInterface;
@@ -47,48 +55,53 @@ import edu.common.dynamicextensions.validation.category.CategoryValidator;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
- * @author kunal_kamble 
+ * @author kunal_kamble
  * This class creates the category/categories defined in
  * the CSV file.
  */
 public class CategoryGenerator
 {
 
-	private CategoryFileParser categoryFileParser;
+	private final CategoryFileParser categoryFileParser;
 
 	private CategoryValidator categoryValidator;
 
-	private CategoryHelperInterface categoryHelper;
+	private final CategoryHelperInterface categoryHelper;
 
-	private List<String> mainFormList = new ArrayList<String>();
+	private final List<String> mainFormList = new ArrayList<String>();
+
+	private Map<ControlInterface, ConditionStatements> controlVsConditionStatements;
 
 	private CategoryInterface category;
 	private EntityGroupInterface entityGroup;
 	private List<ContainerInterface> containerCollection;
 	private Map<String, String> categoryEntityNameInstanceMap;
-	Map<String, List<AssociationInterface>> entityNameAssociationMap;
+	private Map<String, List<AssociationInterface>> entityNameAssociationMap;
 
 	public CategoryValidator getCategoryValidator()
 	{
 		return categoryValidator;
 	}
 
-	public void setCategoryValidator(CategoryValidator categoryValidator)
+	public void setCategoryValidator(final CategoryValidator categoryValidator)
 	{
 		this.categoryValidator = categoryValidator;
 	}
 
 	/**
-	 * @param filePath
+	 * @param filePath the path of the category file
+	 * @param baseDir base directory from which the filepath is mentioned.
+	 * @param stinger the stinger validator object which is used to validate the pv strings.
 	 * @throws DynamicExtensionsSystemException
 	 * @throws FileNotFoundException
 	 */
-	public CategoryGenerator(String filePath) throws DynamicExtensionsSystemException,
-			FileNotFoundException
+	public CategoryGenerator(final String filePath, final String baseDir, Stinger stinger)
+			throws DynamicExtensionsSystemException, FileNotFoundException
 	{
-		categoryFileParser = new CategoryCSVFileParser(filePath);
+		categoryFileParser = DomainObjectFactory.getInstance().createCategoryFileParser(filePath,
+				baseDir, stinger);
 		categoryValidator = new CategoryValidator((CategoryCSVFileParser) categoryFileParser);
-		categoryHelper = new CategoryHelper();
+		categoryHelper = new CategoryHelper(categoryFileParser);
 	}
 
 	/**
@@ -97,12 +110,11 @@ public class CategoryGenerator
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws ParseException
 	 */
-	public List<CategoryInterface> getCategoryList() throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException, ParseException
+	public CategoryInterface generateCategory() throws DynamicExtensionsSystemException
+
 	{
-		CategoryHelperInterface categoryHelper = new CategoryHelper();
-		List<CategoryInterface> categoryList = new ArrayList<CategoryInterface>();
-		ApplicationProperties.initBundle(CategoryCSVConstants.DYEXTN_ERROR_MESSAGES_FILE);
+		final CategoryHelperInterface categoryHelper = new CategoryHelper(categoryFileParser);
+		ApplicationProperties.initBundle("ApplicationResources");
 
 		try
 		{
@@ -134,7 +146,12 @@ public class CategoryGenerator
 
 				// 3: Get the path represented by ordered entity names.
 				categoryFileParser.readNext();
-				Map<String, List<String>> paths = categoryFileParser.getPaths();
+				if (categoryFileParser.hasTagValues())
+				{
+					handleTagValues(category);
+					categoryFileParser.readNext();
+				}
+				final Map<String, List<String>> paths = categoryFileParser.getPaths();
 
 				// 4: Get the association names list.
 				entityNameAssociationMap = CategoryGenerationUtil.getAssociationList(paths,
@@ -214,25 +231,25 @@ public class CategoryGenerator
 							commonControlOptions = categoryFileParser.getCommonControlOptions();
 							categoryFileParser.readNext();
 						}
-						String heading = categoryFileParser.getHeading();
+						final String heading = categoryFileParser.getHeading();
 
-						List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
+						final List<FormControlNotesInterface> controlNotes = new LinkedList<FormControlNotesInterface>();
 						categoryFileParser.getFormControlNotes(controlNotes);
 
-						Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser
+						final Set<String> permissibleValues = categoryFileParser
 								.getPermissibleValues();
 
-						Map<String, String> permissibleValueOptions = categoryFileParser
+						final Map<String, String> permissibleValueOptions = categoryFileParser
 								.getPermissibleValueOptions();
 
-						String attributeName = categoryFileParser.getAttributeName();
+						final String attributeName = categoryFileParser.getAttributeName();
 
 						entityInterface = entityGroup.getEntityByName(categoryFileParser
 								.getEntityName());
 
 						// Added for category inheritance, check if a given
 						// attribute is parent category attribute.
-						boolean isAttributePresent = entityInterface
+						final boolean isAttributePresent = entityInterface
 								.isAttributePresent(attributeName);
 
 						CategoryValidator.checkForNullRefernce(getcategoryEntityName(
@@ -247,14 +264,16 @@ public class CategoryGenerator
 								containerCollection, getCategoryEntityName(categoryEntityName,
 										categoryFileParser.getEntityName()));
 
-						AttributeInterface attribute = entityInterface
+						final AttributeInterface attribute = entityInterface
 								.getAttributeByName(attributeName);
 
 						if (attribute != null && permissibleValues != null)
 						{
-							UserDefinedDE userDefinedDE = (UserDefinedDE) attribute
+							final UserDefinedDE userDefinedDE = (UserDefinedDE) attribute
 									.getAttributeTypeInformation().getDataElement();
-							if (userDefinedDE == null)
+							if (userDefinedDE == null
+									|| userDefinedDE.getPermissibleValueCollection() == null
+									|| userDefinedDE.getPermissibleValueCollection().isEmpty())
 							{
 								throw new DynamicExtensionsSystemException(ApplicationProperties
 										.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -281,17 +300,18 @@ public class CategoryGenerator
 						{
 							previousEntityName = container.getAbstractEntity().getName();
 						}
-						CategoryEntityInterface categoryEntity = (CategoryEntityInterface) container
-								.getAbstractEntity();
+
 						// If this is a parent attribute and currently the
 						// parent category entity is not created
 						// for given category entity, create parent category
 						// hierarchy up to where attribute is found.
 						if (!isAttributePresent)
 						{
-							EntityInterface parentEntity = entityInterface.getParentEntity();
-							EntityInterface childEntity = entityInterface;
-							CategoryEntityInterface parentCategoryEntity = categoryEntity
+							CategoryEntityInterface categoryEntity = (CategoryEntityInterface) container
+									.getAbstractEntity();
+							final EntityInterface parentEntity = entityInterface.getParentEntity();
+							final EntityInterface childEntity = entityInterface;
+							final CategoryEntityInterface parentCategoryEntity = categoryEntity
 									.getParentCategoryEntity();
 
 							categoryEntity = processInheritance(parentEntity, childEntity,
@@ -301,8 +321,8 @@ public class CategoryGenerator
 							entityInterface = categoryEntity.getEntity();
 						}
 
-						Map<String, Object> rules = categoryFileParser
-								.getRules(attribute.getName());
+						final Map<String, Object> rules = categoryFileParser.getRules(attribute
+								.getName());
 						if (rules != null)
 						{
 							CategoryValidator
@@ -313,7 +333,7 @@ public class CategoryGenerator
 						CategoryValidator.validateCSVFutureDateValue(attribute, rules,
 								categoryFileParser.getDefaultValue());
 
-						String controlType = categoryFileParser.getControlType();
+						final String controlType = categoryFileParser.getControlType();
 						getCategoryValidator().isTextAreaForNumeric(controlType, attribute);
 						/*if (categoryFileParser.isSingleLineDisplayStarted())
 						{
@@ -333,13 +353,17 @@ public class CategoryGenerator
 								.setIsRelatedAttribute(false);
 						((CategoryAttributeInterface) lastControl.getAttibuteMetadataInterface())
 								.setIsVisible(true);
+						categoryHelper.updateCategoryAttributeForXmlPopulation(
+								(CategoryAttributeInterface) lastControl
+										.getAttibuteMetadataInterface(), category);
 
 						// Set default value for control's option.
 						// This is required in case of edit of category entity.
 						categoryHelper.setDefaultControlsOptions(lastControl, ControlEnum
 								.get(categoryFileParser.getControlType()));
 
-						Map<String, String> controlOptions = categoryFileParser.getControlOptions();
+						final Map<String, String> controlOptions = categoryFileParser
+								.getControlOptions();
 
 						if (commonControlOptions != null)
 						{
@@ -388,31 +412,37 @@ public class CategoryGenerator
 				}
 
 				CategoryGenerationUtil.setRootContainer(category, container, containerCollection,
-						entityNameAssociationMap, paths, categoryEntityNameInstanceMap);
+						entityNameAssociationMap, paths, categoryEntityNameInstanceMap,
+						categoryHelper);
 
 				categoryValidator.isRootEntityUsedTwice(category.getRootCategoryElement(), category
 						.getRootCategoryElement().getEntity());
+				categoryValidator.isRootEntitySeconadIntsnaceUsed(category);
 
 				if (categoryFileParser.hasRelatedAttributes())
 				{
 					handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
 							containerCollection);
-				}
-				else if (!categoryFileParser.hasRelatedAttributes() && categoryFileParser.hasSkipLogicAttributes())
-				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber()
-							+ " "
-							+ ApplicationProperties.getValue("relatedAttributeNotDefined"));
+					if (categoryFileParser.hasSkipLogicAttributes())
+					{
+						HandleSkipLogic skipLogic = new HandleSkipLogic(entityGroup, category,
+								entityNameAssociationMap, categoryFileParser);
+						controlVsConditionStatements = skipLogic.populateSkipLogic();
+					}
 				}
 				if (categoryFileParser.hasSkipLogicAttributes())
 				{
-					handleSkipLogicAttributes(entityGroup, category, entityNameAssociationMap,
-							containerCollection);
+					HandleSkipLogic skipLogic = new HandleSkipLogic(entityGroup, category,
+							entityNameAssociationMap, categoryFileParser);
+					controlVsConditionStatements = skipLogic.populateSkipLogic();
+
+					if (categoryFileParser.hasRelatedAttributes())
+					{
+						handleRelatedAttributes(entityGroup, category, entityNameAssociationMap,
+								containerCollection);
+					}
 				}
-				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category,category
+				CategoryGenerationUtil.setDefaultValueForCalculatedAttributes(category, category
 						.getRootCategoryElement(), categoryFileParser.getLineNumber());
 
 				// Commented this code since the method is error prone
@@ -420,47 +450,36 @@ public class CategoryGenerator
 				// rearrangeControlSequence((ContainerInterface)
 				// category.getRootCategoryElement()
 				// .getContainerCollection().iterator().next(), sequenceMap);
-				categoryList.add(category);
 
 			}
 
 		}
-		catch (FileNotFoundException e)
+		catch (DynamicExtensionsSystemException e)
 		{
-			throw new DynamicExtensionsSystemException(ApplicationProperties
-					.getValue(CategoryConstants.CREATE_CAT_FAILS)
-					+ ApplicationProperties.getValue("fileNotFound"), e);
+			categoryHelper.releaseLockOnCategory(category);
+			throw new DynamicExtensionsSystemException("", e);
 		}
-		catch (IOException e)
+		catch (final Exception e)
 		{
+			categoryHelper.releaseLockOnCategory(category);
 			throw new DynamicExtensionsSystemException(ApplicationProperties
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
 					+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
 					+ categoryFileParser.getLineNumber()
 					+ " "
 					+ ApplicationProperties.getValue("readingFile")
-					+ categoryFileParser.getFilePath(), e);
-		}
-		catch (Exception e)
-		{
-			if (!(e instanceof DynamicExtensionsSystemException))
-			{
-				throw new DynamicExtensionsSystemException(ApplicationProperties
-						.getValue(CategoryConstants.CREATE_CAT_FAILS)
-						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-						+ categoryFileParser.getLineNumber()
-						+ " "
-						+ ApplicationProperties.getValue("readingFile")
-						+ categoryFileParser.getFilePath(), e);
-			}
+					+ categoryFileParser.getRelativeFilePath(), e);
 
-			throw new DynamicExtensionsSystemException("", e);
 		}
-		return categoryList;
+		finally
+		{
+			categoryFileParser.closeResources();
+		}
+		return category;
 	}
 
 	private ControlInterface processSubcategory(boolean firstTimeinDisplayLabel,
-			EntityInterface entityInterface, List<String> categoryEntityName)
+			final EntityInterface entityInterface, final List<String> categoryEntityName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		// Set this flag when sub category is just after display label
@@ -469,20 +488,20 @@ public class CategoryGenerator
 			firstTimeinDisplayLabel = false;
 		}
 		ContainerInterface sourceContainer = null;
-		if (entityInterface != null)
+		if (entityInterface == null)
+		{
+			sourceContainer = CategoryGenerationUtil.getContainer(containerCollection,
+					categoryFileParser.getDisplyLable());
+		}
+		else
 		{
 			// Always add sub-category to the container.
 			sourceContainer = CategoryGenerationUtil.getContainerWithCategoryEntityName(
 					containerCollection, categoryEntityName.get(0));
 		}
-		else
-		{
-			sourceContainer = CategoryGenerationUtil.getContainer(containerCollection,
-					categoryFileParser.getDisplyLable());
-		}
 
-		String targetContainerCaption = categoryFileParser.getTargetContainerCaption();
-		ContainerInterface targetContainer = CategoryGenerationUtil.getContainer(
+		final String targetContainerCaption = categoryFileParser.getTargetContainerCaption();
+		final ContainerInterface targetContainer = CategoryGenerationUtil.getContainer(
 				containerCollection, targetContainerCaption);
 
 		CategoryValidator.checkForNullRefernce(targetContainer, ApplicationProperties
@@ -490,12 +509,13 @@ public class CategoryGenerator
 				+ categoryFileParser.getLineNumber()
 				+ ApplicationProperties.getValue("subcategoryNotFound") + targetContainerCaption);
 
-		String multiplicity = categoryFileParser.getMultiplicity();
+		final String multiplicity = categoryFileParser.getMultiplicity();
 
-		String categoryEntName = ((CategoryEntityInterface) CategoryGenerationUtil.getContainer(
-				containerCollection, targetContainerCaption).getAbstractEntity()).getName();
+		final String categoryEntName = ((CategoryEntityInterface) CategoryGenerationUtil
+				.getContainer(containerCollection, targetContainerCaption).getAbstractEntity())
+				.getName();
 
-		List<AssociationInterface> associationNameList = entityNameAssociationMap
+		final List<AssociationInterface> associationNameList = entityNameAssociationMap
 				.get(CategoryGenerationUtil
 						.getEntityNameForAssociationMap(categoryEntityNameInstanceMap
 								.get(categoryEntName)));
@@ -505,8 +525,8 @@ public class CategoryGenerator
 				+ categoryFileParser.getLineNumber()
 				+ ApplicationProperties.getValue("pathNotFound") + targetContainerCaption);
 
-		CategoryHelper categoryHelper = new CategoryHelper();
-		ControlInterface lastControl = categoryHelper.associateCategoryContainers(category,
+		final CategoryHelper categoryHelper = new CategoryHelper(categoryFileParser);
+		final ControlInterface lastControl = categoryHelper.associateCategoryContainers(category,
 				entityGroup, sourceContainer, targetContainer, associationNameList,
 				CategoryGenerationUtil.getMultiplicityInNumbers(multiplicity),
 				categoryEntityNameInstanceMap.get(targetContainer.getAbstractEntity().getName()));
@@ -520,17 +540,16 @@ public class CategoryGenerator
 	 * @param entityName
 	 * @return
 	 */
-	private String getcategoryEntityName(Map<String, String> categoryEntityNameInstanceMap,
-			String entityName)
+	private String getcategoryEntityName(final Map<String, String> categoryEntityNameInstanceMap,
+			final String entityName)
 	{
 		String categoryEntityName = null;
-		for (String name : categoryEntityNameInstanceMap.keySet())
+		for (Entry<String, String> entryObject : categoryEntityNameInstanceMap.entrySet())
 		{
 			if (entityName.equals(CategoryGenerationUtil
-					.getEntityNameFromCategoryEntityInstancePath(categoryEntityNameInstanceMap
-							.get(name))))
+					.getEntityNameFromCategoryEntityInstancePath(entryObject.getValue())))
 			{
-				categoryEntityName = name;
+				categoryEntityName = entryObject.getKey();
 			}
 		}
 		return categoryEntityName;
@@ -545,12 +564,13 @@ public class CategoryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 */
 	private ContainerInterface createParentCategoryEntity(
-			CategoryEntityInterface childCategoryEntity, EntityInterface parentEntity,
-			EntityGroupInterface entityGroup, Collection<ContainerInterface> containerCollection)
+			final CategoryEntityInterface childCategoryEntity, final EntityInterface parentEntity,
+			final EntityGroupInterface entityGroup,
+			final Collection<ContainerInterface> containerCollection)
 			throws DynamicExtensionsSystemException
 	{
-		String newCategoryEntityName = parentEntity.getName() + "[1]";
-		for (ContainerInterface objContainer : containerCollection)
+		final String newCategoryEntityName = parentEntity.getName() + "[1]";
+		for (final ContainerInterface objContainer : containerCollection)
 		{
 			if (objContainer.getCaption().equals(newCategoryEntityName))
 			{
@@ -559,19 +579,15 @@ public class CategoryGenerator
 
 		}
 
-		CategoryHelper categoryHelper = new CategoryHelper();
-		CategoryInterface parentCategory = categoryHelper.getCategory(newCategoryEntityName);
-
-		ContainerInterface parentContainer = createCategoryEntityAndContainer(entityGroup
+		final ContainerInterface parentContainer = createCategoryEntityAndContainer(entityGroup
 				.getEntityByName(parentEntity.getName()), newCategoryEntityName,
-				newCategoryEntityName, false, containerCollection, parentCategory);
-		((CategoryEntityInterface) childCategoryEntity)
-				.setParentCategoryEntity((CategoryEntityInterface) parentContainer
-						.getAbstractEntity());
-		CategoryEntity parentCEntity = (CategoryEntity) parentContainer.getAbstractEntity();
+				newCategoryEntityName, false, containerCollection, category);
+		childCategoryEntity.setParentCategoryEntity((CategoryEntityInterface) parentContainer
+				.getAbstractEntity());
+		final CategoryEntity parentCEntity = (CategoryEntity) parentContainer.getAbstractEntity();
 		parentCEntity.addChildCategory(childCategoryEntity);
 
-		CategoryEntity parentCategoryEntity = (CategoryEntity) ((CategoryEntityInterface) childCategoryEntity)
+		final CategoryEntity parentCategoryEntity = (CategoryEntity) childCategoryEntity
 				.getParentCategoryEntity();
 		parentCategoryEntity.setCreateTable(false);
 		return parentContainer;
@@ -586,30 +602,27 @@ public class CategoryGenerator
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void handleRelatedAttributes(EntityGroupInterface entityGroup,
-			CategoryInterface category,
-			Map<String, List<AssociationInterface>> entityNameAssociationMap,
-			List<ContainerInterface> containerCollection) throws IOException, ParseException,
+	private void handleRelatedAttributes(final EntityGroupInterface entityGroup,
+			final CategoryInterface category,
+			final Map<String, List<AssociationInterface>> entityNameAssociationMap,
+			final List<ContainerInterface> containerCollection) throws IOException, ParseException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		while (categoryFileParser.readNext() && !categoryFileParser.hasSkipLogicAttributes())
 		{
-			String[] categoryPaths = categoryFileParser.getCategoryPaths();
-			String categoryEntityName = CategoryGenerationUtil
-					.getCategoryEntityName(categoryPaths[0],entityNameAssociationMap);
+			final String[] categoryPaths = categoryFileParser.getCategoryPaths();
+			final String categoryEntityName = CategoryGenerationUtil.getCategoryEntityName(
+					categoryPaths[0], entityNameAssociationMap);
 
-			String entityName = CategoryGenerationUtil
+			final String entityName = CategoryGenerationUtil
 					.getEntityNameFromCategoryEntityInstancePath(categoryPaths[0]);
-
-			String entityNameForEntityAssociationMap = CategoryGenerationUtil
-					.getEntityNameForAssociationMap(categoryPaths[0]);
 
 			EntityInterface entity = entityGroup.getEntityByName(CategoryGenerationUtil
 					.getEntityNameExcludingAssociationRoleName(entityName));
 
 			categoryFileParser.readNext();
-			String attributeName = categoryFileParser.getRelatedAttributeName();
-			CategoryHelperInterface categoryHelper = new CategoryHelper();
+			final String attributeName = categoryFileParser.getRelatedAttributeName();
+			final CategoryHelperInterface categoryHelper = new CategoryHelper(categoryFileParser);
 			boolean newCategoryCreated = false;
 			if (category.getCategoryEntityByName(categoryEntityName) == null)
 			{
@@ -620,11 +633,14 @@ public class CategoryGenerator
 
 			if (newCategoryCreated)
 			{
-				String associationName = category.getRootCategoryElement() + " to "
+				final String associationName = category.getRootCategoryElement() + " to "
 						+ categoryEntity.getName() + " association";
+				final String entityNameForEntAssocMap = CategoryGenerationUtil
+						.getEntityNameForAssociationMap(categoryPaths[0]);
+
 				categoryHelper.associateCategoryEntities(category.getRootCategoryElement(),
 						categoryEntity, associationName, 1, entityGroup, entityNameAssociationMap
-								.get(entityNameForEntityAssociationMap), categoryPaths[0]);
+								.get(entityNameForEntAssocMap), categoryPaths[0]);
 			}
 			CategoryValidator.checkForNullRefernce(entity.getAttributeByName(attributeName),
 					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
@@ -635,7 +651,7 @@ public class CategoryGenerator
 							+ entity.getName());
 
 			// Added for category inheritance.
-			boolean isAttributePresent = entity.isAttributePresent(attributeName);
+			final boolean isAttributePresent = entity.isAttributePresent(attributeName);
 
 			// If this is the parent attribute and currently the parent category
 			// entity is not created
@@ -643,9 +659,9 @@ public class CategoryGenerator
 			// where attribute is found.
 			if (!isAttributePresent)
 			{
-				EntityInterface parentEntity = entity.getParentEntity();
-				EntityInterface childEntity = entity;
-				CategoryEntityInterface parentCategoryEntity = categoryEntity
+				final EntityInterface parentEntity = entity.getParentEntity();
+				final EntityInterface childEntity = entity;
+				final CategoryEntityInterface parentCategoryEntity = categoryEntity
 						.getParentCategoryEntity();
 
 				categoryEntity = processInheritance(parentEntity, childEntity,
@@ -654,15 +670,17 @@ public class CategoryGenerator
 
 			}
 
-			CategoryAttributeInterface categoryAttribute = categoryHelper.getCategoryAttribute(
-					entity, attributeName, categoryEntity);
-			Map<String, String> controlOptions = categoryFileParser.getControlOptions();
+			final CategoryAttributeInterface categoryAttribute = categoryHelper
+					.getCategoryAttribute(entity, attributeName, categoryEntity);
+			final Map<String, String> controlOptions = categoryFileParser.getControlOptions();
 
 			categoryHelper.setOptions(categoryAttribute, controlOptions, categoryFileParser
 					.getLineNumber());
 
-			String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
-
+			final String defaultValue = categoryFileParser.getDefaultValueForRelatedAttribute();
+			categoryAttribute.setIsVisible(false);
+			categoryAttribute.setIsRelatedAttribute(true);
+			category.addRelatedAttributeCategoryEntity(categoryEntity);
 			if (categoryAttribute.getIsCalculated() != null && categoryAttribute.getIsCalculated())
 			{
 				setFormula(categoryAttribute, defaultValue);
@@ -672,257 +690,28 @@ public class CategoryGenerator
 				categoryAttribute.setDefaultValue(entity.getAttributeByName(attributeName)
 						.getAttributeTypeInformation().getPermissibleValueForString(
 								DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
+				categoryHelper.updateCategoryAttributeForXmlPopulation(categoryAttribute, category);
 			}
-			categoryAttribute.setIsVisible(false);
-			categoryAttribute.setIsRelatedAttribute(true);
-			category.addRelatedAttributeCategoryEntity(categoryEntity);
 
 		}
 	}
+
 	/**
-	 * @param entityGroup
-	 * @param category
-	 * @param entityNameAssociationMap
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	private void handleSkipLogicAttributes(EntityGroupInterface entityGroup,
-			CategoryInterface category,
-			Map<String, List<AssociationInterface>> entityNameAssociationMap,
-			List<ContainerInterface> containerCollection) throws IOException, ParseException,
-			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
-	{
-		while (categoryFileParser.readNext() && !categoryFileParser.hasRelatedAttributes())
-		{
-			String[] categoryPaths = categoryFileParser.getCategoryPaths();
-			
-			categoryFileParser.readNext();
-			
-			String sourceAttributeClassName = categoryFileParser
-					.getSkipLogicSourceAttributeClassName();
-
-			String sourceInstancePath = getInstancePath(categoryPaths,
-					sourceAttributeClassName);
-
-			String sourceCategoryEntityName = CategoryGenerationUtil
-					.getCategoryEntityName(sourceInstancePath,
-							entityNameAssociationMap);
-
-			String sourceEntityName = CategoryGenerationUtil
-					.getEntityNameFromCategoryEntityInstancePath(sourceInstancePath);
-
-			EntityInterface sourceEntity = entityGroup
-					.getEntityByName(CategoryGenerationUtil
-							.getEntityNameExcludingAssociationRoleName(sourceEntityName));
-
-			CategoryEntityInterface sourceCategoryEntity = categoryHelper
-					.createOrUpdateCategoryEntity(category, sourceEntity,
-							sourceCategoryEntityName);
-	
-			String targetAttributeClassName = categoryFileParser
-					.getSkipLogicTargetAttributeClassName();
-
-			String targetInstancePath = getInstancePath(categoryPaths,
-					targetAttributeClassName);
-
-			String targetCategoryEntityName = CategoryGenerationUtil
-					.getCategoryEntityName(targetInstancePath,
-							entityNameAssociationMap);
-
-			String targetEntityName = CategoryGenerationUtil
-					.getEntityNameFromCategoryEntityInstancePath(targetInstancePath);
-
-			EntityInterface targetEntity = entityGroup
-					.getEntityByName(CategoryGenerationUtil
-							.getEntityNameExcludingAssociationRoleName(targetEntityName));
-			
-			CategoryEntityInterface targetCategoryEntity = categoryHelper
-			.createOrUpdateCategoryEntity(category, targetEntity,
-					targetCategoryEntityName);
-			
-			String sourceAttributeName = categoryFileParser.getSkipLogicSourceAttributeName();
-			
-			CategoryValidator.checkForNullRefernce(sourceEntity.getAttributeByName(sourceAttributeName),
-					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber() + " "
-							+ ApplicationProperties.getValue(CategoryConstants.ATTR)
-							+ sourceAttributeName + " "
-							+ ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT)
-							+ sourceEntity.getName());
-			boolean isAttributePresent = sourceEntity.isAttributePresent(sourceAttributeName);
-
-			// If this is the parent attribute and currently the parent category
-			// entity is not created
-			// for given category entity, create parent category hierarchy up to
-			// where attribute is found.
-			if (!isAttributePresent)
-			{
-				EntityInterface parentEntity = sourceEntity.getParentEntity();
-				EntityInterface childEntity = sourceEntity;
-				CategoryEntityInterface parentCategoryEntity = sourceCategoryEntity
-						.getParentCategoryEntity();
-
-				sourceCategoryEntity = processInheritance(parentEntity, childEntity,
-						parentCategoryEntity, sourceCategoryEntity, sourceAttributeName, containerCollection);
-				sourceEntity = sourceCategoryEntity.getEntity();
-
-			}
-
-			CategoryAttributeInterface sourceCategoryAttribute = categoryHelper.getCategoryAttribute(
-					sourceEntity, sourceAttributeName, sourceCategoryEntity);
-			ControlInterface sourceControl = DynamicExtensionsUtility
-					.getControlForAbstractAttribute(
-							(AttributeMetadataInterface) sourceCategoryAttribute,
-							DynamicExtensionsUtility
-									.getContainerForAbstractEntity(category
-											.getRootCategoryElement()));
-			sourceControl.setIsSkipLogic(Boolean.valueOf(true));
-			sourceCategoryAttribute.setIsSkipLogic(Boolean.valueOf(true));
-
-			String targetAttributeName = categoryFileParser.getSkipLogicTargetAttributeName();
-			
-			CategoryValidator.checkForNullRefernce(targetEntity.getAttributeByName(targetAttributeName),
-					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber() + " "
-							+ ApplicationProperties.getValue(CategoryConstants.ATTR)
-							+ targetAttributeName + " "
-							+ ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT)
-							+ targetEntity.getName());
-			 isAttributePresent = targetEntity.isAttributePresent(targetAttributeName);
-
-			// If this is the parent attribute and currently the parent category
-			// entity is not created
-			// for given category entity, create parent category hierarchy up to
-			// where attribute is found.
-			if (!isAttributePresent)
-			{
-				EntityInterface parentEntity = targetEntity.getParentEntity();
-				EntityInterface childEntity = targetEntity;
-				CategoryEntityInterface parentCategoryEntity = targetCategoryEntity
-						.getParentCategoryEntity();
-
-				targetCategoryEntity = processInheritance(parentEntity, childEntity,
-						parentCategoryEntity, targetCategoryEntity, targetAttributeName, containerCollection);
-				targetEntity = targetCategoryEntity.getEntity();
-
-			}
-
-			CategoryAttributeInterface targetCategoryAttribute = categoryHelper.getCategoryAttribute(
-					targetEntity, targetAttributeName, targetCategoryEntity);
-			
-			ControlInterface targetControl = DynamicExtensionsUtility
-			.getControlForAbstractAttribute(
-					(AttributeMetadataInterface) targetCategoryAttribute,
-					DynamicExtensionsUtility
-							.getContainerForAbstractEntity(category
-									.getRootCategoryElement()));
-			targetControl.setIsSkipLogicTargetControl(Boolean.valueOf(true));
-			String permissibleValue = categoryFileParser.getSkipLogicPermissibleValueName();
-			
-			DataElementInterface dataElementInterface = ((AttributeMetadataInterface)sourceCategoryAttribute).getDataElement();
-			UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElementInterface;
-			
-			PermissibleValueInterface permissibleValueInterface = categoryHelper
-					.getPermissibleValue(userDefinedDEInterface
-							.getPermissibleValueCollection(), permissibleValue);
-			
-			sourceCategoryAttribute.addSkipLogicPermissibleValue(permissibleValueInterface);
-			
-			CategoryValidator.checkForNullRefernce(permissibleValueInterface,
-					ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber() + " "
-							+ ApplicationProperties.getValue(CategoryConstants.ATTR)
-							+ sourceAttributeName + " "
-							+ ApplicationProperties.getValue(CategoryConstants.ATTR_NOT_PRESENT)
-							+ sourceEntity.getName());
-			SkipLogicAttributeInterface skipLogicAttributeInterface = DomainObjectFactory.getInstance().createSkipLogicAttribute();
-			skipLogicAttributeInterface.setSourceSkipLogicAttribute(sourceCategoryAttribute);
-			skipLogicAttributeInterface.setTargetSkipLogicAttribute(targetCategoryAttribute);
-			
-			String defaultValue = categoryFileParser.getDefaultValue();
-			if (defaultValue == null)
-			{
-				// Validation-If category attribute is of type Read-only its default
-				// value must be specified
-				if ((targetControl.getIsReadOnly() != null && targetControl.getIsReadOnly())
-						|| (targetControl.getIsCalculated() != null && targetControl.getIsCalculated()))
-				{
-					throw new DynamicExtensionsSystemException(ApplicationProperties
-							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber()
-							+ " "
-							+ ApplicationProperties.getValue("mandatoryDValueForRO") + targetAttributeName);
-				}
-				return;
-			}
-			skipLogicAttributeInterface
-					.setDefaultValue(((AttributeMetadataInterface) targetCategoryAttribute)
-							.getAttributeTypeInformation()
-							.getPermissibleValueForString(
-									DynamicExtensionsUtility
-											.getEscapedStringValue(defaultValue)));
-			
-			permissibleValueInterface.addDependentSkipLogicAttribute(skipLogicAttributeInterface);
-			Map<String, Collection<SemanticPropertyInterface>> permissibleValues = categoryFileParser
-					.getPermissibleValues();
-
-			Map<String, String> permissibleValueOptions = categoryFileParser
-					.getPermissibleValueOptions();
-			
-			List<PermissibleValueInterface> permissibleValuesList = categoryHelper
-					.createPermissibleValuesList(targetAttributeName, targetAttributeClassName,
-							skipLogicAttributeInterface, categoryFileParser
-									.getLineNumber(), permissibleValues);
-			
-			skipLogicAttributeInterface.clearDataElementCollection();
-			if (permissibleValues != null)
-			{
-				UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance()
-						.createUserDefinedDE();
-				for (PermissibleValueInterface pv : permissibleValuesList)
-				{
-					userDefinedDE.addPermissibleValue(pv);
-				}
-	
-				//add new permissible values
-				skipLogicAttributeInterface.setDataElement(userDefinedDE);
-	
-				categoryHelper.setOptions(userDefinedDE, permissibleValueOptions, categoryFileParser.getLineNumber());
-			}
-		}
-	}
-	private String getInstancePath(String[] categoryPaths,String className)
-	{
-		String instancePathInformation = "";
-		for (String instancePath :categoryPaths)
-		{
-			if (instancePath.contains(className))
-			{
-				instancePathInformation = instancePath;
-				break;
-			}
-		}
-		return instancePathInformation;
-	}
-	/**
-	 * 
+	 *
 	 * @param categoryAttribute
 	 * @param defaultValue
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void setFormula(CategoryAttributeInterface categoryAttribute, String defaultValue)
-			throws DynamicExtensionsApplicationException
+	private void setFormula(final CategoryAttributeInterface categoryAttribute,
+			final String defaultValue) throws DynamicExtensionsApplicationException
 	{
 		boolean isValidFormula = false;
-		FormulaParser formulaParser = new FormulaParser();
+		final FormulaParser formulaParser = new FormulaParser();
 		try
 		{
 			isValidFormula = formulaParser.validateExpression(defaultValue);
 		}
-		catch (DynamicExtensionsSystemException ex)
+		catch (final DynamicExtensionsSystemException ex)
 		{
 			throw new DynamicExtensionsApplicationException(ApplicationProperties
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -958,10 +747,10 @@ public class CategoryGenerator
 	 */
 	private CategoryEntityInterface processInheritance(EntityInterface parentEntity,
 			EntityInterface childEntity, CategoryEntityInterface parentCategoryEntity,
-			CategoryEntityInterface childCategoryEntity, String attributeName,
-			List<ContainerInterface> containerCollection) throws DynamicExtensionsSystemException
+			CategoryEntityInterface childCategoryEntity, final String attributeName,
+			final List<ContainerInterface> containerCollection)
+			throws DynamicExtensionsSystemException
 	{
-		boolean isAttributeCategoryMatched = false;
 		while (childEntity.getParentEntity() != null)
 		{
 			parentEntity = childEntity.getParentEntity();
@@ -971,13 +760,13 @@ public class CategoryGenerator
 			// If not created, then create it.
 			if (parentCategoryEntity == null)
 			{
-				ContainerInterface parentContainer = createParentCategoryEntity(
+				final ContainerInterface parentContainer = createParentCategoryEntity(
 						childCategoryEntity, parentEntity, childEntity.getEntityGroup(),
 						containerCollection);
 				parentCategoryEntity = (CategoryEntityInterface) parentContainer
 						.getAbstractEntity();
 
-				ContainerInterface childcontainerInterface = CategoryGenerationUtil
+				final ContainerInterface childcontainerInterface = CategoryGenerationUtil
 						.getContainerWithCategoryEntityName(containerCollection,
 								childCategoryEntity.getName());
 				childcontainerInterface.setBaseContainer(parentContainer);
@@ -985,18 +774,7 @@ public class CategoryGenerator
 
 			// Iterate over parent entity's attribute, check whether its present
 			// in parent entity.
-			Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity
-					.getAbstractAttributeCollection().iterator();
-
-			while (parentattrIterator.hasNext())
-			{
-				AbstractAttributeInterface objParentAttribute = parentattrIterator.next();
-				if (attributeName.equals(objParentAttribute.getName()))
-				{
-					isAttributeCategoryMatched = true;
-					break;
-				}
-			}
+			boolean isAttributeCategoryMatched = isAttributePresentInParent(parentEntity, attributeName);
 
 			childEntity = childEntity.getParentEntity();
 			childCategoryEntity = parentCategoryEntity;
@@ -1013,41 +791,71 @@ public class CategoryGenerator
 	}
 
 	/**
+	 * This will check weather the Attribute with the name attributeName is present in the parentEntity
+	 * or not.
+	 * @param parentEntity Entity
+	 * @param attributeName Attribute to search in the parentEntity
+	 * @return true if attribute present else returns false.
+	 */
+	private boolean isAttributePresentInParent(EntityInterface parentEntity,
+			final String attributeName)
+	{
+		boolean isAttributeCategoryMatched = false;
+		final Iterator<AbstractAttributeInterface> parentattrIterator = parentEntity
+				.getAbstractAttributeCollection().iterator();
+
+		while (parentattrIterator.hasNext())
+		{
+			final AbstractAttributeInterface objParentAttribute = parentattrIterator.next();
+			if (attributeName.equals(objParentAttribute.getName()))
+			{
+				isAttributeCategoryMatched = true;
+				break;
+			}
+		}
+		return isAttributeCategoryMatched;
+	}
+
+	/**
 	 * Adds containers to containerCollection
 	 * @param childCategoryEntity
 	 */
-	private void addContainerInfo(CategoryEntityInterface childCategoryEntity)
+	private void addContainerInfo(final CategoryEntityInterface childCategoryEntity)
 	{
-		boolean isContainerPresent = false;
-		if(childCategoryEntity.getContainerCollection()!=null)
+		if (childCategoryEntity.getContainerCollection() != null)
 		{
-			ContainerInterface container = (ContainerInterface)childCategoryEntity.getContainerCollection().iterator().next();
-			for (ContainerInterface containerInterface : containerCollection)
+			boolean isContainerPresent = false;
+			final ContainerInterface container = (ContainerInterface) childCategoryEntity
+					.getContainerCollection().iterator().next();
+			for (final ContainerInterface containerInterface : containerCollection)
 			{
-				if (container.getAbstractEntity().getName().equals(containerInterface.getAbstractEntity().getName()))
+				if (container.getAbstractEntity().getName().equals(
+						containerInterface.getAbstractEntity().getName()))
 				{
 					isContainerPresent = true;
 					break;
 				}
 			}
-			if(!isContainerPresent)
+			if (!isContainerPresent)
 			{
 				containerCollection.add(container);
 			}
 		}
 	}
-	
+
 	/**
 	 * @param categoryEntityNameList
 	 * @param entityName
 	 * @return
 	 */
-	private String getCategoryEntityName(List<String> categoryEntityNameList, String entityName)
+	private String getCategoryEntityName(final List<String> categoryEntityNameList,
+			final String entityName)
 	{
 		String categoryEntityName = null;
-		for (String categoryEntName : categoryEntityNameList)
+		for (final String categoryEntName : categoryEntityNameList)
 		{
-			String catEntityName = DynamicExtensionsUtility.getCategoryEntityName(categoryEntName);
+			final String catEntityName = DynamicExtensionsUtility
+					.getCategoryEntityName(categoryEntName);
 			if (entityName.equals(catEntityName.substring(0, catEntityName.indexOf('['))))
 			{
 				categoryEntityName = categoryEntName;
@@ -1066,13 +874,14 @@ public class CategoryGenerator
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private ContainerInterface createCategoryEntityAndContainer(EntityInterface entityInterface,
-			String categoryEntityName, String displayLable, Boolean showCaption,
-			Collection<ContainerInterface> containerCollection, CategoryInterface category)
-			throws DynamicExtensionsSystemException
+	private ContainerInterface createCategoryEntityAndContainer(
+			final EntityInterface entityInterface, final String categoryEntityName,
+			final String displayLable, final Boolean showCaption,
+			final Collection<ContainerInterface> containerCollection,
+			final CategoryInterface category) throws DynamicExtensionsSystemException
 	{
 		ContainerInterface containerInterface = null;
-		CategoryHelperInterface categoryHelper = new CategoryHelper();
+		final CategoryHelperInterface categoryHelper = new CategoryHelper(categoryFileParser);
 
 		containerInterface = categoryHelper.createOrUpdateCategoryEntityAndContainer(
 				entityInterface, displayLable, category, categoryEntityName);
@@ -1100,20 +909,19 @@ public class CategoryGenerator
 
 		Boolean showCaption = categoryFileParser.isShowCaption();
 		ContainerInterface mainContainer = null;
-		String displayLable = categoryFileParser.getDisplyLable();
-		List<String> categoryEntityName = new ArrayList<String>();
-		String categoryEntName = null;
-
+		final List<String> categoryEntityName = new ArrayList<String>();
+		final String displayLabel = categoryFileParser.getDisplyLable();
 		try
 		{
 			categoryFileParser.readNext();
-			String[] categoryPaths = categoryFileParser.getCategoryPaths();
+			List<String> categoryPaths = CategoryGenerationUtil
+					.getCategoryEntityPath(categoryFileParser.getCategoryPaths());
 			//categoryValidator.validateContainersUnderSameDisplayLabel(categoryPaths, showCaption);
-			ContainerInterface temp = null;
 			for (String categoryPath : categoryPaths)
 			{
-				categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath,entityNameAssociationMap);
-				temp = createForm(displayLable, categoryPath, categoryEntityName, categoryEntName,
+				String categoryEntName = CategoryGenerationUtil.getCategoryEntityName(categoryPath,
+						entityNameAssociationMap);
+				ContainerInterface temp = createForm(displayLabel, categoryPath, categoryEntityName, categoryEntName,
 						categoryPaths, showCaption);
 				categoryHelper.removeAllSeprators(temp);
 				if (mainContainer == null)
@@ -1122,20 +930,20 @@ public class CategoryGenerator
 				}
 				else
 				{
-					List<AssociationInterface> associationNameList = entityNameAssociationMap
+					final List<AssociationInterface> associationNameList = entityNameAssociationMap
 							.get(CategoryGenerationUtil
 									.getEntityNameForAssociationMap(categoryEntityNameInstanceMap
 											.get(categoryEntName)));
 
-					new CategoryHelper().addChildContainers(category, entityGroup, mainContainer,
-							temp, associationNameList, 1, categoryEntityNameInstanceMap.get(temp
-									.getAbstractEntity().getName()));
+					new CategoryHelper(categoryFileParser).addChildContainers(category,
+							entityGroup, mainContainer, temp, associationNameList, 1,
+							categoryEntityNameInstanceMap.get(temp.getAbstractEntity().getName()));
 				}
 
 				showCaption = false;
 			}
 		}
-		catch (IOException exception)
+		catch (final IOException exception)
 		{
 			throw new DynamicExtensionsSystemException(ApplicationProperties
 					.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -1148,22 +956,22 @@ public class CategoryGenerator
 	}
 
 	private ContainerInterface createForm(String displayLable, String categoryPath,
-			List<String> categoryEntityNameList, String categoryEntityName, String[] categoryPaths,
-			boolean showCaption) throws DynamicExtensionsSystemException
+			List<String> categoryEntityNameList, String categoryEntityName,
+			List<String> categoryPaths, boolean showCaption)
+			throws DynamicExtensionsSystemException
 	{
-		String entityName = null;
+
 		String[] categoryEntitiesInPath;
 
 		categoryEntitiesInPath = categoryPath.split("->");
-		String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
-		entityName = CategoryGenerationUtil.getEntityName(newCategoryEntityName);
+		final String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
 
 		// Check if instance information is wrong, i.e. entity mentioned
 		// in
 		// the instance information exists in the entity group.
 		for (int i = 0; i < categoryEntitiesInPath.length; i++)
 		{
-			String entName = CategoryGenerationUtil
+			final String entName = CategoryGenerationUtil
 					.getEntityNameExcludingAssociationRoleName(categoryEntitiesInPath[i].substring(
 							0, categoryEntitiesInPath[i].indexOf('[')));
 
@@ -1171,15 +979,15 @@ public class CategoryGenerator
 			{
 				try
 				{
-					String prevInstance = categoryEntitiesInPath[i].substring(
+					final String prevInstance = categoryEntitiesInPath[i].substring(
 							categoryEntitiesInPath[i].indexOf('[') + 1, categoryEntitiesInPath[i]
 									.indexOf(']'));
-					String nextInstance = categoryEntitiesInPath[i + 1].substring(
+					final String nextInstance = categoryEntitiesInPath[i + 1].substring(
 							categoryEntitiesInPath[i + 1].indexOf('[') + 1,
 							categoryEntitiesInPath[i + 1].indexOf(']'));
 
-					Integer prevInstanceNo = Integer.valueOf(prevInstance);
-					Integer nextInstanceNo = Integer.valueOf(nextInstance);
+					final Integer prevInstanceNo = Integer.valueOf(prevInstance);
+					final Integer nextInstanceNo = Integer.valueOf(nextInstance);
 
 					if (prevInstanceNo.compareTo(nextInstanceNo) > 0)
 					{
@@ -1187,12 +995,12 @@ public class CategoryGenerator
 								categoryEntitiesInPath[i + 1]);
 					}
 				}
-				catch (NumberFormatException eNumberFormatException)
+				catch (final NumberFormatException eNumberFormatException)
 				{
 					handleInstanceException(categoryEntitiesInPath[i],
 							categoryEntitiesInPath[i + 1]);
 				}
-				catch (StringIndexOutOfBoundsException eStringIndexOutOfBoundsException)
+				catch (final StringIndexOutOfBoundsException indexOutOfBoundsException)
 				{
 					handleInstanceException(categoryEntitiesInPath[i],
 							categoryEntitiesInPath[i + 1]);
@@ -1213,13 +1021,14 @@ public class CategoryGenerator
 		if (!categoryEntityNameList.contains(categoryEntityName))
 		{
 
-			container = SearchExistingCategoryEntityAndContainer(categoryEntityName,
+			container = searchExistingCategoryEntityAndContainer(categoryEntityName,
 					containerCollection);
 			if (container == null)
 			{
 				container = createCategoryEntityAndContainer(entityGroup
-						.getEntityByName(entityName), categoryEntityName, displayLable,
-						showCaption, containerCollection, category);
+						.getEntityByName(CategoryGenerationUtil
+								.getEntityName(newCategoryEntityName)), categoryEntityName,
+						displayLable, showCaption, containerCollection, category);
 			}
 
 			categoryEntityNameInstanceMap.put(container.getAbstractEntity().getName(),
@@ -1233,12 +1042,12 @@ public class CategoryGenerator
 
 	/**
 	 * handleInstanceException.
-	 * 
+	 *
 	 * @param sourceInstance
 	 * @param targetInstance
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void handleInstanceException(String sourceInstance, String targetInstance)
+	private void handleInstanceException(final String sourceInstance, final String targetInstance)
 			throws DynamicExtensionsSystemException
 	{
 		throw new DynamicExtensionsSystemException(ApplicationProperties
@@ -1255,22 +1064,24 @@ public class CategoryGenerator
 	 * @param containerCollection
 	 * @return
 	 */
-	private ContainerInterface SearchExistingCategoryEntityAndContainer(String categoryEntityName,
-			List<ContainerInterface> containerCollection)
+	private ContainerInterface searchExistingCategoryEntityAndContainer(
+			final String categoryEntityName, final List<ContainerInterface> containerCollection)
 	{
 		// Check whether the container is already created for category entity
 		// and return it if it exists.
-		Iterator<ContainerInterface> containerIterator = containerCollection.iterator();
+		ContainerInterface existingContainer = null;
+		final Iterator<ContainerInterface> containerIterator = containerCollection.iterator();
 		while (containerIterator.hasNext())
 		{
-			ContainerInterface container = containerIterator.next();
+			final ContainerInterface container = containerIterator.next();
 			if (container.getAbstractEntity().getName().equals(categoryEntityName))
 			{
-				return container;
+				existingContainer = container;
+				break;
 			}
 		}
 
-		return null;
+		return existingContainer;
 	}
 
 	/**
@@ -1278,14 +1089,15 @@ public class CategoryGenerator
 	 * @param newCategoryEntityName
 	 * @return
 	 */
-	private String getCategoryPath(String[] categoryPaths, String newCategoryEntityName)
+	private String getCategoryPath(List<String> categoryPaths, String newCategoryEntityName)
 	{
 		String categoryPath = null;
-		for (String string : categoryPaths)
+		for (final String string : categoryPaths)
 		{
-			if (string.endsWith(newCategoryEntityName))
+			if (string.endsWith("->" + newCategoryEntityName))
 			{
 				categoryPath = string;
+				break;
 			}
 		}
 		return categoryPath;
@@ -1294,20 +1106,20 @@ public class CategoryGenerator
 	/**
 	 * @param control
 	 * @throws ParseException
-	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void setDefaultValue(ControlInterface control) throws ParseException,
+	private void setDefaultValue(final ControlInterface control) throws ParseException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		String defaultValue = categoryFileParser.getDefaultValue();
-		String attributeName = ((CategoryAttributeInterface) control.getAttibuteMetadataInterface())
-				.getAbstractAttribute().getName();
+		final String defaultValue = categoryFileParser.getDefaultValue();
+		final String attributeName = ((CategoryAttributeInterface) control
+				.getAttibuteMetadataInterface()).getAbstractAttribute().getName();
 		if (defaultValue == null)
 		{
 			// Validation-If category attribute is of type Read-only its default
 			// value must be specified
-			if ((control.getIsReadOnly() != null && control.getIsReadOnly())
-					|| (control.getIsCalculated() != null && control.getIsCalculated()))
+			if (control.getIsReadOnly() != null && control.getIsReadOnly()
+					|| control.getIsCalculated() != null && control.getIsCalculated())
 			{
 				throw new DynamicExtensionsSystemException(ApplicationProperties
 						.getValue(CategoryConstants.CREATE_CAT_FAILS)
@@ -1319,13 +1131,13 @@ public class CategoryGenerator
 			return;
 		}
 
-		CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control
+		final CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control
 				.getAttibuteMetadataInterface();
-		if (!defaultValue.equals(categoryAttribute.getDefaultValue()))
+		Date encounterDate = (Date) control.getParentContainer().getContextParameter(
+				Constants.ENCOUNTER_DATE);
+		if (!defaultValue.equals(categoryAttribute.getDefaultValue(encounterDate)))
 		{
-			AttributeInterface attributeInterface = categoryAttribute.getAbstractAttribute()
-					.getEntity().getAttributeByName(
-							categoryAttribute.getAbstractAttribute().getName());
+
 			if (control.getIsCalculated() != null && control.getIsCalculated())
 			{
 				if (control instanceof TextField)
@@ -1361,24 +1173,87 @@ public class CategoryGenerator
 			}
 			else
 			{
-				categoryAttribute.setDefaultValue(attributeInterface.getAttributeTypeInformation()
-						.getPermissibleValueForString(
-								DynamicExtensionsUtility.getEscapedStringValue(defaultValue)));
+				final AttributeInterface attributeInterface = categoryAttribute
+						.getAbstractAttribute().getEntity().getAttributeByName(
+								categoryAttribute.getAbstractAttribute().getName());
+
+				PermissibleValueInterface permissibleValue = attributeInterface
+						.getAttributeTypeInformation().getPermissibleValueForString(
+								DynamicExtensionsUtility.getEscapedStringValue(defaultValue));
+				categoryHelper.setDefaultValue(categoryAttribute, permissibleValue, true);
+
 			}
 		}
 	}
 
 	/**
 	 * This method populate the main form list for the given entity group
-	 * 
+	 *
 	 * @param entityGroup
 	 */
-	private void populateMainFormList(EntityGroupInterface entityGroup)
+	private void populateMainFormList(final EntityGroupInterface entityGroup)
 	{
-		for (ContainerInterface containerInterface : entityGroup.getMainContainerCollection())
+		for (final ContainerInterface containerInterface : entityGroup.getMainContainerCollection())
 		{
 			mainFormList.add(containerInterface.getAbstractEntity().getName());
 		}
 	}
 
+	/**
+	 * @param category category
+	 */
+	private void handleTagValues(final CategoryInterface category)
+	{
+		Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
+		Map<String, String> tagValueMap = categoryFileParser.getTagValueMap();
+		Set<Entry<String, String>> entrySet = tagValueMap.entrySet();
+		for (Entry<String, String> entry : entrySet)
+		{
+			TaggedValueInterface taggedValue = DomainObjectFactory.getInstance().createTaggedValue();
+			taggedValue.setKey(entry.getKey());
+			taggedValue.setValue(entry.getValue());
+			taggedValueCollection.add(taggedValue);
+		}
+		category.setTaggedValueCollection(taggedValueCollection);
+	}
+
+	public Map<ContainerInterface, SkipLogic> getContainerVsSkipLogicMap()
+	{
+		return HandleSkipLogic.populateControlIdentifierInSkipLogic(controlVsConditionStatements);
+	}
+
+	public Collection<ContainerInterface> getAllContainersForCategory(CategoryInterface category)
+	{
+		Collection<ContainerInterface> allContainers = new HashSet<ContainerInterface>();
+		ContainerInterface rootContainer = (ContainerInterface) category.getRootCategoryElement()
+				.getContainerCollection().iterator().next();
+		allContainers.add(rootContainer);
+
+		for (ControlInterface control : rootContainer.getControlCollection())
+		{
+			addChildContainers(control,allContainers);
+		}
+		return allContainers;
+	}
+
+
+	private void addChildContainers(ControlInterface control, Collection<ContainerInterface> allContainers)
+	{
+		if(control instanceof AbstractContainmentControlInterface)
+		{
+			AbstractContainmentControlInterface abstractControl = (AbstractContainmentControlInterface)control;
+			if(!allContainers.contains(abstractControl.getContainer()))
+			{
+				allContainers.add(abstractControl.getContainer());
+			}
+			for(ControlInterface childControl : abstractControl.getContainer().getControlCollection())
+			{
+				addChildContainers(childControl, allContainers);
+			}
+		}
+		else if(allContainers.contains(control.getParentContainer()))
+		{
+			allContainers.add(control.getParentContainer());
+		}
+	}
 }

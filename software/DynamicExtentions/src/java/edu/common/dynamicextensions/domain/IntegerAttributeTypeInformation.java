@@ -36,12 +36,23 @@ public class IntegerAttributeTypeInformation extends NumericAttributeTypeInforma
 
 		return integerValue;
 	}
+
 	/**
 	 * 
 	 */
 	public String getFormattedValue(Double value)
 	{
 		return Integer.valueOf(value.intValue()).toString();
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getAttributeDataType()
+	 * @return Class type for attribute.
+	 */
+	public Class getAttributeDataType()
+	{
+		return Integer.class;
 	}
 
 }

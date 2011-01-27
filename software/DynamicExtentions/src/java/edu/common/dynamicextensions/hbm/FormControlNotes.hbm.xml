@@ -30,7 +30,7 @@
             update="true"
             insert="true"
             column="NOTE"
-            length="255"
+            length="800"
         />
 
         <!--

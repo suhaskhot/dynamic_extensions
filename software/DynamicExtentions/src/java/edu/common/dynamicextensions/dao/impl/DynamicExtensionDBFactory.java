@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.dao.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -90,7 +91,8 @@ public final class DynamicExtensionDBFactory
 	 */
 	public DynamicExtensionBaseQueryBuilder getQueryBuilder(String dbType)
 	{
-		return ((DynamicExtensionDBGroup) mapDbTypeVsDbServiceGroup.get(dbType)).getQueryBuilder();
+		return mapDbTypeVsDbServiceGroup.get(dbType.toLowerCase(Locale.getDefault()))
+				.getQueryBuilder();
 	}
 
 	/**
@@ -100,7 +102,8 @@ public final class DynamicExtensionDBFactory
 	 */
 	public IDEDBUtility getDbUtility(String dbType)
 	{
-		return ((DynamicExtensionDBGroup) mapDbTypeVsDbServiceGroup.get(dbType)).getDbUtility();
+		return mapDbTypeVsDbServiceGroup.get(dbType.toLowerCase(Locale.getDefault()))
+				.getDbUtility();
 	}
 
 	/**
@@ -110,7 +113,7 @@ public final class DynamicExtensionDBFactory
 	 */
 	public String getDataTypeMappingFile(String dbType)
 	{
-		return ((DynamicExtensionDBGroup) mapDbTypeVsDbServiceGroup.get(dbType))
+		return mapDbTypeVsDbServiceGroup.get(dbType.toLowerCase(Locale.getDefault()))
 				.getDataTypeMappingFile();
 	}
 
@@ -160,7 +163,7 @@ public final class DynamicExtensionDBFactory
 			IllegalAccessException, ClassNotFoundException
 	{
 		Node dbUtilityNode;
-		int noOfNode=dbUtilityNodeLst.getLength();
+		int noOfNode = dbUtilityNodeLst.getLength();
 		mapDbTypeVsDbServiceGroup = new HashMap<String, DynamicExtensionDBGroup>();
 		for (int s = 0; s < noOfNode; s++)
 		{
@@ -193,7 +196,7 @@ public final class DynamicExtensionDBFactory
 		IDEDBUtility dbUtility = (IDEDBUtility) Class.forName(dbUtilityClasName).newInstance();
 		DynamicExtensionDBGroup dEServiceGroup = new DynamicExtensionDBGroup(queryBuilder,
 				dbUtility, dataTypeMappingFile);
-		mapDbTypeVsDbServiceGroup.put(dbType, dEServiceGroup);
+		mapDbTypeVsDbServiceGroup.put(dbType.toLowerCase(Locale.getDefault()), dEServiceGroup);
 	}
 
 	/**
@@ -205,7 +208,7 @@ public final class DynamicExtensionDBFactory
 	 */
 	private String getClassName(Element dbTypeNode, String eleName, String attName)
 	{
-		Node node = ((NodeList) dbTypeNode.getElementsByTagName(eleName)).item(0);
+		Node node = dbTypeNode.getElementsByTagName(eleName).item(0);
 		Element nodeElement = (Element) node;
 		return nodeElement.getAttribute(attName);
 

@@ -40,6 +40,10 @@ public interface WebUIManagerConstants
 	/**
 	 *
 	 */
+	String IS_SHOW_TEMPLATE_RECORD = "isShowTemplateRecord";
+	/**
+	 *
+	 */
 	String OPERATION_STATUS = "operationStatus";
 	/**
 	 *
@@ -88,4 +92,8 @@ public interface WebUIManagerConstants
 	 *
 	 */
 	String DELETED_ASSOCIATION_IDS = "deletedAssociationIds";
+
+	String CACHE_ERROR = "cacheError";
+
+	String CONTAINER_MAP = "containerMap";
 }

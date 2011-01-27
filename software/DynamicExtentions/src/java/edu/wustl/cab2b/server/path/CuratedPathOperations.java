@@ -28,16 +28,15 @@ public class CuratedPathOperations extends DefaultBizLogic
 	 */
 	public ICuratedPath getCuratePathById(Long identifier)
 	{
-		List<?> curatePathList = null;
 		try
 		{
-			curatePathList = retrieve(CuratedPath.class.getName(), "id", identifier);
+			List<?> curatePathList = retrieve(CuratedPath.class.getName(), "id", identifier);
+			return (ICuratedPath) curatePathList.get(0);
 		}
 		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to retrieve object, Exception:" + e.getMessage(),e);
 		}
-		return (ICuratedPath) curatePathList.get(0);
 	}
 
 	/**
@@ -48,16 +47,14 @@ public class CuratedPathOperations extends DefaultBizLogic
 	@SuppressWarnings("unchecked")
 	public List<ICuratedPath> getAllCuratedPath()
 	{
-		List<ICuratedPath> curatePathList = null;
 		try
 		{
-			curatePathList = (List<ICuratedPath>) retrieve(CuratedPath.class.getName());
+			return retrieve(CuratedPath.class.getName());
 		}
 		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to retrieve object, Exception:" + e.getMessage(),e);
 		}
-		return curatePathList;
 	}
 
 	/**
@@ -83,16 +80,15 @@ public class CuratedPathOperations extends DefaultBizLogic
 	 */
 	public IPath getPathById(Long identifier)
 	{
-		List<?> pathList = null;
 		try
 		{
-			pathList = retrieve(Path.class.getName(), "pathId", identifier);
+			List<?> pathList = retrieve(Path.class.getName(), "pathId", identifier);
+			return (IPath) pathList.get(0);
 		}
 		catch (BizLogicException e)
 		{
 			throw new RuntimeException("Unable to retrieve object, Exception:" + e.getMessage(),e);
 		}
-		return (IPath) pathList.get(0);
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package edu.wustl.cab2b.common.beans;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
@@ -10,10 +11,10 @@ import edu.wustl.cab2b.common.util.Utility;
 /**
  * A comparator for the {@link MatchedClassEntry}.
  * It checks in following order
- * 
+ *
  * 1. User defined Category Name
- * 2. User defined Category 
- * 3. Category 
+ * 2. User defined Category
+ * 3. Category
  *    Name
  *    Description
  *    SemanticProperty
@@ -24,10 +25,14 @@ import edu.wustl.cab2b.common.util.Utility;
  * 5. PermissibleValue
  *    Name
  *    SemanticProperty
- * 
+ *
  * @author rahul_ner
  */
-public class MatchedClassEntryCompator implements Comparator<MatchedClassEntry> {
+public class MatchedClassEntryCompator implements Comparator<MatchedClassEntry>, Serializable {
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
+
     /**
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */

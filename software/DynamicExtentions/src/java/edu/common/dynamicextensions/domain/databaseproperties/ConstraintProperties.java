@@ -19,21 +19,24 @@ public class ConstraintProperties extends DatabaseProperties
 			ConstraintPropertiesInterface
 {
 
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 7190506925704368959L;
+
 	/**
 	 * The source entity key through which constraint is related.
 	 * e.g. Used in case of foreign key constraint in one to many relation.
 	 */
-	protected Collection<ConstraintKeyPropertiesInterface> srcEntityConstraintKeyPropertiesCollection = new HashSet<ConstraintKeyPropertiesInterface>();
+	protected Collection<ConstraintKeyPropertiesInterface> srcEntityConstKeyPropColl = new HashSet<ConstraintKeyPropertiesInterface>();
 	/**
 	 * The target entity key through which constraint is related.
 	 * Used in case of many to many relation.Both source and target entity key is entered in the intermediate table.
 	 */
-	protected Collection<ConstraintKeyPropertiesInterface> tgtEntityConstraintKeyPropertiesCollection = new HashSet<ConstraintKeyPropertiesInterface>();
+	protected Collection<ConstraintKeyPropertiesInterface> tgtEntityConstKeyPropColl = new HashSet<ConstraintKeyPropertiesInterface>();
 
 	/**
-	 * The name of the Constraint  
+	 * The name of the Constraint
 	 */
-	protected String ConstraintName;
+	protected String constraintName;
 
 	/**
 	 * It will return the srcEntityConstraintCollection on which the constraint depends
@@ -47,7 +50,7 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public Collection<ConstraintKeyPropertiesInterface> getSrcEntityConstraintKeyPropertiesCollection()
 	{
-		return srcEntityConstraintKeyPropertiesCollection;
+		return srcEntityConstKeyPropColl;
 	}
 
 	/**
@@ -55,9 +58,9 @@ public class ConstraintProperties extends DatabaseProperties
 	 * @param srcEntityConstraint
 	 */
 	public void setSrcEntityConstraintKeyPropertiesCollection(
-			Collection<ConstraintKeyPropertiesInterface> srcEntityConstraintKeyPropertiesCollection)
+			Collection<ConstraintKeyPropertiesInterface> srcEntityConstKeyPropColl)
 	{
-		this.srcEntityConstraintKeyPropertiesCollection = srcEntityConstraintKeyPropertiesCollection;
+		this.srcEntityConstKeyPropColl = srcEntityConstKeyPropColl;
 	}
 
 	/**
@@ -70,7 +73,7 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public Collection<ConstraintKeyPropertiesInterface> getTgtEntityConstraintKeyPropertiesCollection()
 	{
-		return tgtEntityConstraintKeyPropertiesCollection;
+		return tgtEntityConstKeyPropColl;
 	}
 
 	/**
@@ -80,23 +83,23 @@ public class ConstraintProperties extends DatabaseProperties
 	public void setTgtEntityConstraintKeyPropertiesCollection(
 			Collection<ConstraintKeyPropertiesInterface> tgtEntityConstraintCollection)
 	{
-		this.tgtEntityConstraintKeyPropertiesCollection = tgtEntityConstraintCollection;
+		this.tgtEntityConstKeyPropColl = tgtEntityConstraintCollection;
 	}
 
 	/**
-	 * It will clear the srcEntityConstraintCollection and then add add the srcEntityConstraint properties 
+	 * It will clear the srcEntityConstraintCollection and then add add the srcEntityConstraint properties
 	 */
 	public void setSrcEntityConstraintKeyProp(ConstraintKeyPropertiesInterface srcEntityConstraint)
 	{
-		if (srcEntityConstraintKeyPropertiesCollection == null)
+		if (srcEntityConstKeyPropColl == null)
 		{
-			srcEntityConstraintKeyPropertiesCollection = new HashSet();
+			srcEntityConstKeyPropColl = new HashSet();
 		}
 		else
 		{
-			srcEntityConstraintKeyPropertiesCollection.clear();
+			srcEntityConstKeyPropColl.clear();
 		}
-		this.srcEntityConstraintKeyPropertiesCollection.add(srcEntityConstraint);
+		this.srcEntityConstKeyPropColl.add(srcEntityConstraint);
 	}
 
 	/**
@@ -104,16 +107,16 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public void setTgtEntityConstraintKeyProp(ConstraintKeyPropertiesInterface tgtEntityConstraint)
 	{
-		if (tgtEntityConstraintKeyPropertiesCollection == null)
+		if (tgtEntityConstKeyPropColl == null)
 		{
-			tgtEntityConstraintKeyPropertiesCollection = new HashSet();
+			tgtEntityConstKeyPropColl = new HashSet();
 		}
 		else
 		{
-			tgtEntityConstraintKeyPropertiesCollection.clear();
+			tgtEntityConstKeyPropColl.clear();
 		}
 
-		this.tgtEntityConstraintKeyPropertiesCollection.add(tgtEntityConstraint);
+		this.tgtEntityConstKeyPropColl.add(tgtEntityConstraint);
 
 	}
 
@@ -124,10 +127,10 @@ public class ConstraintProperties extends DatabaseProperties
 	public ConstraintKeyPropertiesInterface getSrcEntityConstraintKeyProperties()
 	{
 		ConstraintKeyPropertiesInterface cnstrKeyProp = null;
-		if (srcEntityConstraintKeyPropertiesCollection != null
-				&& !srcEntityConstraintKeyPropertiesCollection.isEmpty())
+		if (srcEntityConstKeyPropColl != null
+				&& !srcEntityConstKeyPropColl.isEmpty())
 		{
-			Iterator srcEntityConstraintIterator = srcEntityConstraintKeyPropertiesCollection
+			Iterator srcEntityConstraintIterator = srcEntityConstKeyPropColl
 					.iterator();
 			cnstrKeyProp = (ConstraintKeyPropertiesInterface) srcEntityConstraintIterator.next();
 		}
@@ -142,10 +145,10 @@ public class ConstraintProperties extends DatabaseProperties
 	public ConstraintKeyPropertiesInterface getTgtEntityConstraintKeyProperties()
 	{
 		ConstraintKeyPropertiesInterface cnstrKeyProp = null;
-		if (tgtEntityConstraintKeyPropertiesCollection != null
-				&& !tgtEntityConstraintKeyPropertiesCollection.isEmpty())
+		if (tgtEntityConstKeyPropColl != null
+				&& !tgtEntityConstKeyPropColl.isEmpty())
 		{
-			Iterator tgtEntityConstraintIterator = tgtEntityConstraintKeyPropertiesCollection
+			Iterator tgtEntityConstraintIterator = tgtEntityConstKeyPropColl
 					.iterator();
 			cnstrKeyProp = (ConstraintKeyPropertiesInterface) tgtEntityConstraintIterator.next();
 		}
@@ -160,7 +163,7 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public String getConstraintName()
 	{
-		return ConstraintName;
+		return constraintName;
 	}
 
 	/**
@@ -168,7 +171,7 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public void setConstraintName(String constraintName)
 	{
-		ConstraintName = constraintName;
+		this.constraintName = constraintName;
 	}
 
 	/**
@@ -177,11 +180,11 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public void addSrcConstaintKeyProperties(ConstraintKeyPropertiesInterface srcCnstrKeyProp)
 	{
-		if (srcEntityConstraintKeyPropertiesCollection == null)
+		if (srcEntityConstKeyPropColl == null)
 		{
-			srcEntityConstraintKeyPropertiesCollection = new HashSet();
+			srcEntityConstKeyPropColl = new HashSet();
 		}
-		srcEntityConstraintKeyPropertiesCollection.add(srcCnstrKeyProp);
+		srcEntityConstKeyPropColl.add(srcCnstrKeyProp);
 
 	}
 
@@ -191,11 +194,11 @@ public class ConstraintProperties extends DatabaseProperties
 	 */
 	public void addTgtConstraintKeyProperties(ConstraintKeyPropertiesInterface tgtCnstrKeyProp)
 	{
-		if (tgtEntityConstraintKeyPropertiesCollection == null)
+		if (tgtEntityConstKeyPropColl == null)
 		{
-			tgtEntityConstraintKeyPropertiesCollection = new HashSet();
+			tgtEntityConstKeyPropColl = new HashSet();
 		}
-		tgtEntityConstraintKeyPropertiesCollection.add(tgtCnstrKeyProp);
+		tgtEntityConstKeyPropColl.add(tgtCnstrKeyProp);
 	}
 
 }

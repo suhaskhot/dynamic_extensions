@@ -64,8 +64,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_SEPARATOR = "Separator";
 	public static final String TAGGED_VALUE_ATTRIBUTES_IN_ASSOCIATION_DROP_DOWN = "AttributesInAssociationDropDown";
 
-	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_CODE = "ObjectClassConceptCode";
-	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION = "ObjectClassConceptDefinition";
+	public static final String TV_OBJECT_CLASS_CONCEPT_CODE = "ObjectClassConceptCode";
+	public static final String TV_OBJECT_CLASS_CONCEPT_DEF = "ObjectClassConceptDefinition";
 	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_PREFERRED_NAME = "ObjectClassConceptPreferredName";
 	public static final String TAGGED_VALUE_OBJECT_CLASS_CONCEPT_DEFINITION_SOURCE = "ObjectClassConceptDefinitionSource";
 	public static final String TAGGED_VALUE_OBJECT_CLASS_QUALIFIER_CONCEPT_CODE = "ObjectClassQualifierConceptCode";
@@ -84,6 +84,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_OWNER_REVIEWED = "OWNER_REVIEWED";
 	public static final String TAGGED_VALUE_CURATOR_REVIEWED = "CURATOR_REVIEWED";
 	public static final String TAGGED_NAME_PACKAGE_NAME = "PackageName";
+	public static final String TAGGED_KEY_HS = "Alias";
+	
 	//Package & model name
 	public static final String PACKAGE_NAME_LOGICAL_VIEW = "Logical View";
 	public static final String PACKAGE_NAME_LOGICAL_MODEL = "Logical Model";
@@ -129,16 +131,24 @@ public class XMIConstants
 
 	public static final String CATISSUE_PACKAGE = "edu.wustl.catissuecore.domain.";
 
-	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "255";
-	public static final String MAX_LENGTH_LIMIT = "999";
-	public static final String TAGGED_VALUE_REFERENCED_PRIMARY_KEY = "referenced-primaryKey";
+	public static final String DEFAULT_TEXT_FIELD_MAX_LENGTH = "4000";
+	public static final String MAX_LENGTH_LIMIT = "4000";
+	public static final String MAX_DISPLAY_LENGTH_LIMIT = "999";
+	public static final String TAGGED_VALUE_REFERENCED_PK = "referenced-primaryKey";
 	public static final String TAGGED_VALUE_ASSOCIATION_NAME = "association-name";
 	public static final String ID_ATTRIBUTE_NAME = "id";
 	public static final String TAGGED_VALUE_ASSN_ENTITY = "association-entity";
 	public static final String ASSN_SRC_ENTITY = "SRC_ENTITY";
 	public static final String ASSN_TGT_ENTITY = "TGT_ENTITY";
-	
+
 	public final static String CONFLICTING_RULES_PRESENT = "conflictingRulesPresent";
 	public final static String XMI_IMPORT_FAILED = "xmiImportFailed";
 
+	public static final String NONE = "none";
+	public static final String CONCEPT_CODE_LOC_ATTRIBUTE = "Attribute";
+	public static final String CONCEPT_CODE_LOC_PV = "Permissible value";
+	public static final String TAGGED_NAME_VALUE_XPATH = "VALUE_XPATH";
+	public static final String TAGGED_NAME_IDENTIFYING_XPATH = "IDENTIFYING_XPATH";
+	public static final String TAGGED_NAME_PREDICATE_XPATH = "PREDICATE";
+	public static final String TAGGED_NAME_CONCEPT_LOCATION = "CONCEPT_CODE_LOCATION";
 }

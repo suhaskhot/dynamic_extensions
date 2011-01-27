@@ -41,15 +41,15 @@ public class LoadFormsIndexAction extends BaseDynamicExtensionsAction
 	{
 		String callBackURL = request.getParameter(WebUIManagerConstants.CALLBACK_URL_PARAM_NAME);
 		String userId = request.getParameter(WebUIManagerConstants.USER_ID);
-		if (callBackURL != null && !callBackURL.equals(""))
+		if (callBackURL == null || callBackURL.equals(""))
+		{
+			UserInterfaceiUtility.clearContainerStack(request);
+		}
+		else
 		{
 			CacheManager.clearCache(request);
 			CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callBackURL);
 			CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
-		}
-		else
-		{
-			UserInterfaceiUtility.clearContainerStack(request);
 		}
 
 		FormsIndexForm loadFormIndexForm = (FormsIndexForm) form;

@@ -12,20 +12,28 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 public class FileReader
 {
 
-	private String filePath;
+	/** The file path. */
+	private final String filePath;
+
+	/** The base dir. */
+	private final String baseDir;
 
 	/**
+	 * Overloaded constructor with base directory
 	 * @param filePath file path
-	 * @throws DynamicExtensionsSystemException
+	 * @param baseDirectory base directory
+	 * @throws DynamicExtensionsSystemException exception
 	 */
-	public FileReader(String filePath) throws DynamicExtensionsSystemException
+	public FileReader(String filePath, String baseDirectory)
+			throws DynamicExtensionsSystemException
 	{
+		baseDir = baseDirectory;
 		this.filePath = getSystemIndependantFilePath(filePath);
 	}
 
 	/**
-	 * @return file path by replacing %20 by space 
-	 * sinces spaces are replaced by %20 
+	 * @return file path by replacing %20 by space
+	 * sinces spaces are replaced by %20
 	 */
 	public String getFilePath()
 	{
@@ -33,11 +41,13 @@ public class FileReader
 	}
 
 	/**
-	 * @param filePath 
+	 * @return relative file path from base directory by replacing %20 by space
+	 * sinces spaces are replaced by %20
 	 */
-	public void setFilePath(String filePath)
+
+	public String getRelativeFilePath()
 	{
-		this.filePath = filePath;
+		return getFilePath().replace(baseDir, "");
 	}
 
 	/**
@@ -46,11 +56,14 @@ public class FileReader
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static String getSystemIndependantFilePath(String path)
-			throws DynamicExtensionsSystemException
+	public String getSystemIndependantFilePath(String path) throws DynamicExtensionsSystemException
 	{
-		File file = new File(path.replace(" ", "%20"));
+		String relativePath = path;
+		if (baseDir != null && !"".equals(baseDir))
+		{
+			relativePath = baseDir + "/" + path;
+		}
+		File file = new File(relativePath.replace(" ", "%20"));
 		return file.getAbsolutePath();
 	}
-
 }

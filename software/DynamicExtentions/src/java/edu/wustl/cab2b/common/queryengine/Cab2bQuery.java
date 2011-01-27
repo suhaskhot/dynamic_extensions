@@ -44,9 +44,9 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
      * Parameterized constructor
      * @param query
      */
-    public Cab2bQuery(Long id, String name, String description, Date createdDate) {
+    public Cab2bQuery(Long identifier, String name, String description, Date createdDate) {
     //    super(id, name, description, createdDate);
-        super(id, name, description);
+        super(identifier, name, description);
     }
 
     /**

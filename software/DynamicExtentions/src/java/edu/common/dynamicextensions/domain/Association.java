@@ -135,7 +135,7 @@ public class Association extends AbstractAttribute
 	/**
 	 * This method returns the source Role of the Association.
 	 * @return the source Role of the Association.
-	 * @hibernate.many-to-one  cascade="save-update" column="SOURCE_ROLE_ID" class="edu.common.dynamicextensions.domain.Role" constrained="true"
+	 * @hibernate.many-to-one  cascade="save-update" column="SOURCE_ROLE_ID" lazy="false" class="edu.common.dynamicextensions.domain.Role" constrained="true"
 	 */
 	public RoleInterface getSourceRole()
 	{
@@ -154,7 +154,7 @@ public class Association extends AbstractAttribute
 	/**
 	 * This method returns the targetRole of the Association.
 	 * @return the targetRole of the Association.
-	 * @hibernate.many-to-one cascade="save-update" column="TARGET_ROLE_ID" class="edu.common.dynamicextensions.domain.Role" constrained="true"
+	 * @hibernate.many-to-one cascade="save-update" column="TARGET_ROLE_ID" lazy="false" class="edu.common.dynamicextensions.domain.Role" constrained="true"
 	 */
 
 	public RoleInterface getTargetRole()
@@ -227,7 +227,7 @@ public class Association extends AbstractAttribute
 		{
 			constraintPropertiesCollection.clear();
 		}
-		this.constraintPropertiesCollection.add(constraintProperties);
+		constraintPropertiesCollection.add(constraintProperties);
 	}
 
 	/* (non-Javadoc)
@@ -276,7 +276,7 @@ public class Association extends AbstractAttribute
 	 * In this case we no longer need the system generated association.
 	 * So if the sys. generated association is present , it is removed.
 	 * @param association
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	private void populateSystemGeneratedAssociation(Association association)
 			throws DynamicExtensionsSystemException
@@ -291,10 +291,11 @@ public class Association extends AbstractAttribute
 			Association systemGeneratedAssociation = getSystemGeneratedAssociation(association);
 			if (association.getAssociationDirection() == AssociationDirection.BI_DIRECTIONAL)
 			{
-				ConstraintPropertiesInterface constraintPropertiesSysGen = new ConstraintProperties();
+				ConstraintPropertiesInterface constraintPropertiesSysGen;
 				if (systemGeneratedAssociation == null)
 				{
 					systemGeneratedAssociation = new Association();
+					constraintPropertiesSysGen = new ConstraintProperties();
 				}
 				else
 				{
@@ -362,7 +363,8 @@ public class Association extends AbstractAttribute
 
 				for (TaggedValueInterface taggedValue : association.getTaggedValueCollection())
 				{
-					systemGeneratedAssociation.addTaggedValue(((TaggedValue) taggedValue).clone());
+					systemGeneratedAssociation.addTaggedValue(((TaggedValue) taggedValue)
+							.getObjectCopy());
 				}
 
 				//Adding the sys.generated association to the target entity.
@@ -418,20 +420,20 @@ public class Association extends AbstractAttribute
 	 */
 	public AssociationType getAssociationType()
 	{
-		RoleInterface roleInterface = this.getTargetRole();
+		RoleInterface roleInterface = getTargetRole();
 		return roleInterface.getAssociationsType();
 	}
 
 	/**
-	 * This method will update the constraint properties of the association 
+	 * This method will update the constraint properties of the association
 	 * depending on the source & target Entities.
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * @throws DynamicExtensionsSystemException
+	 *
 	 */
 	public void populateAssociationForConstraintProperties()
 			throws DynamicExtensionsSystemException
 	{
-		this.setConstraintProperties(DynamicExtensionsUtility
+		setConstraintProperties(DynamicExtensionsUtility
 				.getConstraintPropertiesForAssociation(this));
 	}
 

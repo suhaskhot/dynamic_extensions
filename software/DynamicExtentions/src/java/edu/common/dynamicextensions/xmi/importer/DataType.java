@@ -130,7 +130,7 @@ enum DataType {
 			//                UserDefinedDEInterface userDefinedDE = DomainObjectFactory.getInstance().createUserDefinedDE();
 			//                for (Enumeration e : arr) {
 			//                    DateValueInterface value = domainObjectFactory.createDateValue();
-			//                    //TODO what is meaning of permissible values for Date ??? 
+			//                    //TODO what is meaning of permissible values for Date ???
 			//                    //Not clear about date format string
 			//                    Logger.out.info("Date Attribute has permissible value : " + e.getPermissibleValue());
 			//                    value.setValue(new Date(e.getPermissibleValue()));
@@ -304,9 +304,9 @@ enum DataType {
 	private static DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 
 	/**
-	 * Method which creates dynamic extension attribute based on datatype. 
-	 * Each enumration must provide implement of this method.    
-	 * @param umlAttribute source UML attribute 
+	 * Method which creates dynamic extension attribute based on datatype.
+	 * Each enumration must provide implement of this method.
+	 * @param umlAttribute source UML attribute
 	 * @return the newly created dynamic extension attribute.
 	 */
 	public AttributeInterface createAttribute(Attribute umlAttribute)

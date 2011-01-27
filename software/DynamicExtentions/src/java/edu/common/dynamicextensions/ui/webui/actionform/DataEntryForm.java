@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.wustl.common.actionForm.AbstractActionForm;
@@ -18,53 +19,57 @@ public class DataEntryForm extends AbstractActionForm
 {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7828307676065035418L;
 
 	/**
-	 * 
+	 *
 	 */
 	protected String entitySaved;
 	/**
-	 * 
+	 *
 	 */
 	protected String showFormPreview = "false";
 
 	/**
-	 * 
+	 *
 	 */
 	protected ContainerInterface containerInterface;
 	/**
-	 * 
+	 *
 	 */
 	protected String recordIdentifier;
 	/**
-	 * 
+	 *
+	 */
+	protected String isShowTemplateRecord = "";
+	/**
+	 *
 	 */
 	protected List<String> errorList;
 	/**
-	 * 
+	 *
 	 */
 	protected String mode = WebUIManagerConstants.EDIT_MODE;
 	/**
-	 * 
+	 *
 	 */
 	protected Map<String, Object> valueMap = new HashMap<String, Object>();
 	/**
-	 * 
+	 *
 	 */
 	protected String childContainerId;
 	/**
-	 * 
+	 *
 	 */
 	protected String childRowId;
 	/**
-	 * 
+	 *
 	 */
 	protected String dataEntryOperation = "";
 	/*
-	 * 
+	 *
 	 */
 	protected boolean isTopLevelEntity = true;
 
@@ -72,6 +77,18 @@ public class DataEntryForm extends AbstractActionForm
 
 	protected String containerId;
 
+	private Map<BaseAbstractAttributeInterface, Object> previousDataMap = new HashMap<BaseAbstractAttributeInterface, Object>();
+
+	public Map<BaseAbstractAttributeInterface, Object> getPreviousDataMap()
+	{
+		return previousDataMap;
+	}
+
+
+	public void setPreviousDataMap(final Map<BaseAbstractAttributeInterface, Object> previousValueMap)
+	{
+		this.previousDataMap = previousValueMap;
+	}
 	/**
 	 * @return the containerId
 	 */
@@ -83,27 +100,27 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param containerId the containerId to set
 	 */
-	public void setContainerId(String containerId)
+	public void setContainerId(final String containerId)
 	{
 		this.containerId = containerId;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @param value
 	 */
-	public void setValue(String key, Object value)
+	public void setValue(final String key, final Object value)
 	{
 		valueMap.put(key, value);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param key
 	 * @return
 	 */
-	public Object getValue(String key)
+	public Object getValue(final String key)
 	{
 		return valueMap.get(key);
 	}
@@ -119,13 +136,13 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param valueMap The valueMap to set.
 	 */
-	public void setValueMap(Map<String, Object> valueMap)
+	public void setValueMap(final Map<String, Object> valueMap)
 	{
 		this.valueMap = valueMap;
 	}
 
 	/**
-	 * @return int formId
+	 * @return formId
 	 */
 	public int getFormId()
 	{
@@ -135,13 +152,13 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param arg0 abstractDomainObject
 	 */
-	public void setAllValues(AbstractDomainObject arg0)
+	public void setAllValues(final AbstractDomainObject arg0)
 	{
 		//TODO empty method
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected void reset()
 	{
@@ -157,15 +174,15 @@ public class DataEntryForm extends AbstractActionForm
 	}
 
 	/**
-	 * @param containerInterface The container to set.
+	 * @param container The container to set.
 	 */
-	public void setContainerInterface(ContainerInterface containerInterface)
+	public void setContainerInterface(final ContainerInterface container)
 	{
-		this.containerInterface = containerInterface;
+		this.containerInterface = container;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return entitySaved
 	 */
 	public String getEntitySaved()
@@ -174,17 +191,17 @@ public class DataEntryForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param entitySaved entitySaved
 	 */
-	public void setEntitySaved(String entitySaved)
+	public void setEntitySaved(final String entitySaved)
 	{
 		this.entitySaved = entitySaved;
 	}
 
 	/**
-	 * 
-	 * @return String showFormPreview 
+	 *
+	 * @return String showFormPreview
 	 */
 	public String getShowFormPreview()
 	{
@@ -192,10 +209,10 @@ public class DataEntryForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param showFormPreview String showFormPreview
 	 */
-	public void setShowFormPreview(String showFormPreview)
+	public void setShowFormPreview(final String showFormPreview)
 	{
 		this.showFormPreview = showFormPreview;
 	}
@@ -208,7 +225,7 @@ public class DataEntryForm extends AbstractActionForm
 		return recordIdentifier;
 	}
 
-	public void setRecordIdentifier(String recordIdentifier)
+	public void setRecordIdentifier(final String recordIdentifier)
 	{
 		this.recordIdentifier = recordIdentifier;
 	}
@@ -224,7 +241,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param errorList the errorList to set
 	 */
-	public void setErrorList(List<String> errorList)
+	public void setErrorList(final List<String> errorList)
 	{
 		this.errorList = errorList;
 	}
@@ -240,13 +257,13 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param mode The mode to set.
 	 */
-	public void setMode(String mode)
+	public void setMode(final String mode)
 	{
 		this.mode = mode;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getChildContainerId()
@@ -255,16 +272,16 @@ public class DataEntryForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param childContainerId
 	 */
-	public void setChildContainerId(String childContainerId)
+	public void setChildContainerId(final String childContainerId)
 	{
 		this.childContainerId = childContainerId;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getChildRowId()
@@ -273,16 +290,16 @@ public class DataEntryForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param childRowId
 	 */
-	public void setChildRowId(String childRowId)
+	public void setChildRowId(final String childRowId)
 	{
 		this.childRowId = childRowId;
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public String getDataEntryOperation()
@@ -291,12 +308,12 @@ public class DataEntryForm extends AbstractActionForm
 	}
 
 	/**
-	 * 
-	 * @param dataEntryOperation
+	 *
+	 * @param operation
 	 */
-	public void setDataEntryOperation(String dataEntryOperation)
+	public void setDataEntryOperation(final String operation)
 	{
-		this.dataEntryOperation = dataEntryOperation;
+		this.dataEntryOperation = operation;
 	}
 
 	/**
@@ -310,7 +327,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param isTopLevelEntity The isTopLevelEntity to set.
 	 */
-	public void setIsTopLevelEntity(boolean isTopLevelEntity)
+	public void setIsTopLevelEntity(final boolean isTopLevelEntity)
 	{
 		this.isTopLevelEntity = isTopLevelEntity;
 	}
@@ -326,7 +343,7 @@ public class DataEntryForm extends AbstractActionForm
 	/**
 	 * @param previewBack the previewBack to set
 	 */
-	public void setPreviewBack(String previewBack)
+	public void setPreviewBack(final String previewBack)
 	{
 		this.previewBack = previewBack;
 	}
@@ -338,10 +355,25 @@ public class DataEntryForm extends AbstractActionForm
 	 * @param addObjectIdentifier - Identifier of newly added object by AddNew operation
 	 */
 	@Override
-	public void setAddNewObjectIdentifier(String addNewFor, Long addObjectIdentifier)
+	public void setAddNewObjectIdentifier(final String addNewFor, final Long addObjectIdentifier)
 	{
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
+	/**
+	 *
+	 * @return
+	 */
+	public String getIsShowTemplateRecord()
+	{
+		return isShowTemplateRecord;
+	}
+	/**
+	 *
+	 * @param isShowTemplateRecord
+	 */
+	public void setIsShowTemplateRecord(String isShowTemplateRecord)
+	{
+		this.isShowTemplateRecord = isShowTemplateRecord;
+	}
 }

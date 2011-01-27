@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -11,8 +12,8 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerConstantsInterfac
 /**
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
- * @hibernate.joined-subclass table="DYEXTN_FILE_TYPE_INFO" 
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass table="DYEXTN_FILE_TYPE_INFO"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class FileAttributeTypeInformation extends AttributeTypeInformation
 		implements
@@ -27,20 +28,20 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	/**
 	 * allowed file types for this attribute
 	 */
-	Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
+	private Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
 
 	/**
 	 * @hibernate.set name="fileExtensionCollection" table="DYEXTN_FILE_EXTENSIONS"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="ATTRIBUTE_ID"
 	 * @hibernate.cache  usage="read-write"
-	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.FileExtension" 
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.FileExtension"
 	 * @return Returns the fileExtensionCollection.
 	 */
 
 	public Collection<FileExtension> getFileExtensionCollection()
 	{
-		return fileExtensionCollection;
+		return this.fileExtensionCollection;
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 
 	public Float getMaxFileSize()
 	{
-		return maxFileSize;
+		return this.maxFileSize;
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 		}
 	}
 
-	/** 
+	/**
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getDataType()
 	 */
 	public String getDataType()
@@ -112,11 +113,21 @@ public class FileAttributeTypeInformation extends AttributeTypeInformation
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public PermissibleValueInterface getPermissibleValueForString(String value)
 	{
 		return null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface#getAttributeDataType()
+	 * @return Class type for attribute.
+	 */
+	public Class getAttributeDataType()
+	{
+		return File.class;
 	}
 
 }

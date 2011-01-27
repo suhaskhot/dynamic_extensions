@@ -2,21 +2,29 @@
 package edu.common.dynamicextensions.domain;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
+import edu.common.dynamicextensions.domaininterface.CalculatedAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.FormulaInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.Constants;
 
 /**
  *
@@ -30,59 +38,51 @@ public class CategoryAttribute extends BaseAbstractAttribute
 			AttributeMetadataInterface
 {
 
-	/**
-	 * Serial Version UID
-	 */
+	/** The is populate from xml. */
+	protected boolean isPopulateFromXml = false;
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 12345235L;
 
-	/**
-	 *
-	 */
+	/** The data element collection. */
 	protected Set<DataElementInterface> dataElementCollection = new HashSet<DataElementInterface>();
 
-	/**
-	 *
-	 */
+	/** The column properties collection. */
 	protected Set<ColumnPropertiesInterface> columnPropertiesCollection = new HashSet<ColumnPropertiesInterface>();
 
-	/**
-	 *
-	 */
+	/** The rule collection. */
 	protected Collection<RuleInterface> ruleCollection = new HashSet<RuleInterface>();
 
-	/**
-	 *
-	 */
+	/** The abstract attribute. */
 	protected AbstractAttributeInterface abstractAttribute;
 
-	/**
-	 *
-	 */
+	/** The category entity. */
 	protected CategoryEntityInterface categoryEntity;
 
-	/**
-	 *
-	 */
+	/** The default permissible values collection. */
 	protected Collection<PermissibleValueInterface> defaultPermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
+
 	/**
-	 *
+	 * 100,101,102
+	 * The permissible value used by sourceSkipLogicAttribute, depending on which
+	 * the targetSkipLogicAttribute works. PV is a Reference of Cat attr PV
 	 */
 	protected Collection<PermissibleValueInterface> skipLogicpermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 
-	/**
-	 *
-	 */
+	/** The is visible. */
 	protected Boolean isVisible;
-	/**
-	 *
-	 */
+
+	/** The is related attribute. */
 	protected Boolean isRelatedAttribute;
-	/**
-	 *
-	 */
+
+	/** The is calculated. */
 	protected Boolean isCalculated;
+
+	/** The is source for calculated attribute. */
+	protected Boolean isSourceForCalculatedAttribute = false;
+
 	/**
-	 *
+	 * Set for sourceSkipLogicAttribute
 	 */
 	protected Boolean isSkipLogic;
 	/**
@@ -92,11 +92,41 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	/**
 	 * Collection of calculated CategoryAttribute Collection.
 	 */
-	protected Collection<CategoryAttributeInterface> calculatedCategoryAttributeCollection = new HashSet<CategoryAttributeInterface>();
+	protected Collection<CalculatedAttributeInterface> calculatedCategoryAttributeCollection = new HashSet<CalculatedAttributeInterface>();
+	/**
+	 * Collection of calculated CategoryAttribute Collection.
+	 */
+	protected Collection<CategoryAttributeInterface> calculatedAttributeCollection = new HashSet<CategoryAttributeInterface>();
 	/**
 	 * Collection of category attributes where in this category attribute is used in formula.
 	 */
 	protected Collection<CategoryAttributeInterface> calculatedDependentCategoryAttributes = new HashSet<CategoryAttributeInterface>();
+	/**
+	 * Collection of category attributes.
+	 */
+	protected Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes = new HashSet<SkipLogicAttributeInterface>();
+
+	/** The default skip logic value. */
+	protected PermissibleValueInterface defaultSkipLogicValue;
+
+	/**
+	 * Gets the default skip logic value.
+	 * @return the defaultSkipLogicValue
+	 */
+	public PermissibleValueInterface getDefaultSkipLogicValue()
+	{
+		return defaultSkipLogicValue;
+	}
+
+	/**
+	 * Sets the default skip logic value.
+	 * @param defaultSkipLogicValue the defaultSkipLogicValue to set
+	 */
+	public void setDefaultSkipLogicValue(PermissibleValueInterface defaultSkipLogicValue)
+	{
+		this.defaultSkipLogicValue = defaultSkipLogicValue;
+	}
+
 	/**
 	 * This method returns the Collection of Column Properties of the Attribute.
 	 * @hibernate.set name="columnPropertiesCollection" table="DYEXTN_COLUMN_PROPERTIES" cascade="all" inverse="false" lazy="false"
@@ -149,7 +179,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		{
 			columnPropertiesCollection.clear();
 		}
-		this.columnPropertiesCollection.add(columnProperties);
+		columnPropertiesCollection.add(columnProperties);
 	}
 
 	/**
@@ -159,7 +189,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.DataElement"
 	 * @return Returns the dataElementCollection.
 	 */
-	private Set<DataElementInterface> getDataElementCollection()
+	public Set<DataElementInterface> getDataElementCollection()
 	{
 		return dataElementCollection;
 	}
@@ -167,27 +197,112 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	/**
 	 * @param dataElementCollection The dataElementCollection to set.
 	 */
-	private void setDataElementCollection(Set<DataElementInterface> dataElementCollection)
+	public void setDataElementCollection(Set<DataElementInterface> dataElementCollection)
 	{
 		this.dataElementCollection = dataElementCollection;
 	}
 
 	/**
-	 *
-	 * @return
+	 * This method returns data element interface for attribute
+	 * based on PV version.
+	 * @param encounterDate date of encounter of visit.
+	 * @return dataElementInterface based on PV version.
 	 */
-	public DataElementInterface getDataElement()
+	public DataElementInterface getDataElement(Date encounterDate)
 	{
 		DataElementInterface dataElementInterface = null;
 		if (dataElementCollection != null)
 		{
-			Iterator dataElementIterator = dataElementCollection.iterator();
-			if (dataElementIterator.hasNext())
-			{
-				dataElementInterface = (DataElement) dataElementIterator.next();
-			}
+			Iterator<DataElementInterface> dataElementIterator = dataElementCollection.iterator();
+			dataElementInterface = getDataElement(dataElementIterator, encounterDate);
+
 		}
 		return dataElementInterface;
+	}
+
+	/**
+	 * This method returns the nearest past date of encounter date.
+	 * @param dataElementIterator Data element collection to be process.
+	 * @param encounterDate Encounter date of visit.
+	 * @return DataElementInterface data element with the activation date is the nearest
+	 * past date of encounter date.
+	 */
+	private DataElementInterface getDataElement(Iterator<DataElementInterface> dataElementIterator,
+			Date encounterDate)
+	{
+		DataElementInterface dataElementInterface = null;
+		Map<String, UserDefinedDEInterface> dateToUDDEInterface = new HashMap<String, UserDefinedDEInterface>();
+		while (dataElementIterator.hasNext())
+		{
+			dataElementInterface = dataElementIterator.next();
+			if (dataElementInterface instanceof UserDefinedDEInterface)
+			{
+				UserDefinedDEInterface userDefinedDEInterface = (UserDefinedDEInterface) dataElementInterface;
+				getPVMap(encounterDate, dateToUDDEInterface, userDefinedDEInterface);
+			}
+		}
+		if (dateToUDDEInterface.get(Constants.PV_With_Nearest_Past_Date) == null)
+		{
+			dataElementInterface = dateToUDDEInterface.get("Default");
+		}
+		else
+		{
+			dataElementInterface = dateToUDDEInterface.get(Constants.PV_With_Nearest_Past_Date);
+		}
+		return dataElementInterface;
+	}
+
+	/**
+	 * This method will set a map for the default PV version and
+	 * PV version with the nearest past date then encounter date.
+	 * @param encounterDate Encounter date of visit.
+	 * @param dateToUDDEInterface Which contains default UserDefinedDEInterface
+	 * and UserDefinedDEInterface with the nearest activation date from encounter date.
+	 * @param userDefinedDEInterface Whose activation date need to be compare with the
+	 * current nearest date UserDefinedDEInterface.
+	 */
+	private void getPVMap(Date encounterDate,
+			Map<String, UserDefinedDEInterface> dateToUDDEInterface,
+			UserDefinedDEInterface userDefinedDEInterface)
+	{
+		if (userDefinedDEInterface.getActivationDate() == null)
+		{
+			dateToUDDEInterface.put("Default", userDefinedDEInterface);
+		}
+		else if (encounterDate != null
+				&& userDefinedDEInterface.getActivationDate().before(encounterDate))
+		{
+
+			getPVWithNearestPastDate(dateToUDDEInterface, userDefinedDEInterface);
+		}
+	}
+
+	/**
+	 * Check whether the activation date of the UserDefinedDEInterface is after the
+	 * current nearest value or not.And if its after the current nearest value then replace with
+	 * the current UserDefinedDEInterface.
+	 * @param dateToUDDEInterface Which contains default UserDefinedDEInterface
+	 * and UserDefinedDEInterface with the nearest activation date from encounter date.
+	 * @param userDefinedDEInterface Whose activation date need to be compare with the
+	 * current nearest date UserDefinedDEInterface.
+	 */
+	private void getPVWithNearestPastDate(Map<String, UserDefinedDEInterface> dateToUDDEInterface,
+			UserDefinedDEInterface userDefinedDEInterface)
+	{
+		if (dateToUDDEInterface.get(Constants.PV_With_Nearest_Past_Date) == null)
+		{
+			dateToUDDEInterface.put(Constants.PV_With_Nearest_Past_Date, userDefinedDEInterface);
+		}
+		else
+		{
+			Date PVWithNearestPastDate = dateToUDDEInterface.get(
+					Constants.PV_With_Nearest_Past_Date).getActivationDate();
+			if (userDefinedDEInterface.getActivationDate().after(PVWithNearestPastDate))
+			{
+				dateToUDDEInterface
+						.put(Constants.PV_With_Nearest_Past_Date, userDefinedDEInterface);
+			}
+		}
 	}
 
 	public void clearDataElementCollection()
@@ -205,7 +320,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		{
 			dataElementCollection = new HashSet();
 		}
-		this.dataElementCollection.add(dataElementInterface);
+		dataElementCollection.add(dataElementInterface);
 	}
 
 	/**
@@ -244,7 +359,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 */
 	public void setAbstractAttribute(AbstractAttributeInterface attribute)
 	{
-		this.abstractAttribute = attribute;
+		abstractAttribute = attribute;
 	}
 
 	/**
@@ -265,7 +380,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		if (categoryEntityInterface != null)
 		{
-			this.categoryEntity = categoryEntityInterface;
+			categoryEntity = categoryEntityInterface;
 		}
 	}
 
@@ -290,8 +405,9 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.defaultPermissibleValuesCollection = defaultPermissibleValuesCollection;
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public PermissibleValueInterface getDefaultValuePermissibleValue()
@@ -306,6 +422,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		}
 		return permissibleValueInterface;
 	}
+
 	/**
 	 * @hibernate.set name="skipLogicpermissibleValuesCollection" table="DYEXTN_PERMISSIBLE_VALUE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -320,13 +437,14 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	}
 
 	/**
-	 * @param defaultPermissibleValuesCollection the defaultPermissibleValuesCollection to set
+	 * @param defaultPermissibleValuesColl the defaultPermissibleValuesCollection to set
 	 */
 	private void setSkipLogicPermissibleValuesCollection(
 			Collection<PermissibleValueInterface> skipLogicpermissibleValuesCollection)
 	{
 		this.skipLogicpermissibleValuesCollection = skipLogicpermissibleValuesCollection;
 	}
+
 	/**
 	 * @param sourceEntity
 	 */
@@ -336,8 +454,9 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		{
 			skipLogicpermissibleValuesCollection = new HashSet<PermissibleValueInterface>();
 		}
-		this.skipLogicpermissibleValuesCollection.add(permissibleValue);
+		skipLogicpermissibleValuesCollection.add(permissibleValue);
 	}
+
 	/**
 	 * @param sourceEntity
 	 */
@@ -345,24 +464,26 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		if (skipLogicpermissibleValuesCollection != null)
 		{
-			this.skipLogicpermissibleValuesCollection.clear();
+			skipLogicpermissibleValuesCollection.clear();
 		}
 	}
+
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public Collection<PermissibleValueInterface> getSkipLogicPermissibleValues()
 	{
 		return skipLogicpermissibleValuesCollection;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param permissibleValue
 	 * @return
 	 */
-	public PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue)
+	public PermissibleValueInterface getSkipLogicPermissibleValue(
+			PermissibleValueInterface permissibleValue)
 	{
 		PermissibleValueInterface permissibleValueInterface = null;
 		if (skipLogicpermissibleValuesCollection != null
@@ -379,6 +500,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		}
 		return permissibleValueInterface;
 	}
+
 	/**
 	 * @hibernate.set name="formulaCollection" table="DYEXTN_FORMULA"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -399,45 +521,30 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.formulaCollection = formulaCollection;
 	}
+
 	/**
-	 * @hibernate.set name="calculatedCategoryAttributeCollection" table="DYEXTN_CATEGORY_ATTRIBUTE"
+	 * @hibernate.set name="calculatedAttributeCollection" table="DYEXTN_CATEGORY_ATTRIBUTE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
 	 * @hibernate.collection-key column="CAL_CATEGORY_ATTR_ID"
 	 * @hibernate.cache  usage="read-write"
 	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CategoryAttribute"
-	 * @return Returns the calculatedCategoryAttributeCollection.
+	 * @return Returns the calculatedAttributeCollection.
 	 */
-	public Collection<CategoryAttributeInterface> getCalculatedCategoryAttributeCollection()
+	public Collection<CategoryAttributeInterface> getCalculatedAttributeCollection()
 	{
-		return calculatedCategoryAttributeCollection;
+		return calculatedAttributeCollection;
 	}
-	/**
-	 * 
-	 * @param calculatedCategoryAttributeCollection
-	 */
-	public void setCalculatedCategoryAttributeCollection(
-			Collection<CategoryAttributeInterface> calculatedCategoryAttributeCollection)
-	{
-		this.calculatedCategoryAttributeCollection = calculatedCategoryAttributeCollection;
-	}
+
 	/**
 	 *
+	 * @param calculatedAttributeCollection
 	 */
-	public void addCalculatedCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
+	public void setCalculatedAttributeCollection(
+			Collection<CategoryAttributeInterface> calculatedAttributeCollection)
 	{
-		if (this.calculatedCategoryAttributeCollection == null)
-		{
-			this.calculatedCategoryAttributeCollection = new HashSet<CategoryAttributeInterface>();
-		}
-		this.calculatedCategoryAttributeCollection.add(categoryAttributeInterface);
+		this.calculatedAttributeCollection = calculatedAttributeCollection;
 	}
-	/**
-	 * This method removes all Calculated Category Attributes.
-	 */
-	public void removeAllCalculatedCategoryAttributes()
-	{
-		calculatedCategoryAttributeCollection.clear();
-	}
+
 	/**
 	 * @hibernate.set name="calculatedCategoryAttributeCollection" table="DYEXTN_CATEGORY_ATTRIBUTE"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -450,8 +557,9 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		return calculatedDependentCategoryAttributes;
 	}
+
 	/**
-	 * 
+	 *
 	 * @param calculatedDependentCategoryAttributes
 	 */
 	public void setCalculatedDependentCategoryAttributes(
@@ -459,35 +567,79 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.calculatedDependentCategoryAttributes = calculatedDependentCategoryAttributes;
 	}
-	/**
-	 * This method removes all Calculated Category Attributes.
-	 */
-	public void removeAllCalculatedDependentCategoryAttributes()
-	{
-		calculatedCategoryAttributeCollection.clear();
-	}
+
 	/**
 	 *
 	 */
-	public void addCalculatedDependentCategoryAttribute(CategoryAttributeInterface categoryAttributeInterface)
+	public void addCalculatedDependentCategoryAttribute(
+			CategoryAttributeInterface categoryAttributeInterface)
 	{
-		if (this.calculatedDependentCategoryAttributes == null)
+		if (calculatedDependentCategoryAttributes == null)
 		{
-			this.calculatedDependentCategoryAttributes = new HashSet<CategoryAttributeInterface>();
+			calculatedDependentCategoryAttributes = new HashSet<CategoryAttributeInterface>();
 		}
-		this.calculatedDependentCategoryAttributes.add(categoryAttributeInterface);
+		calculatedDependentCategoryAttributes.add(categoryAttributeInterface);
 	}
+
+	/**
+	 * @hibernate.set name="calculatedCategoryAttributeCollection" table="DYEXTN_CALCULATED_ATTRIBUTE"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CAL_CATEGORY_ATTR_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.CalculatedAttribute"
+	 * @return Returns the calculatedCategoryAttributeCollection.
+	 */
+	public Collection<CalculatedAttributeInterface> getCalculatedCategoryAttributeCollection()
+	{
+		return calculatedCategoryAttributeCollection;
+	}
+
+	/**
+	 *
+	 * @param calculatedCategoryAttributeCollection
+	 */
+	public void setCalculatedCategoryAttributeCollection(
+			Collection<CalculatedAttributeInterface> calculatedCategoryAttributeCollection)
+	{
+		this.calculatedCategoryAttributeCollection = calculatedCategoryAttributeCollection;
+	}
+
+	/**
+	 *
+	 */
+	public void addCalculatedCategoryAttribute(
+			CalculatedAttributeInterface calculatedAttributeInterface)
+	{
+		if (calculatedCategoryAttributeCollection == null)
+		{
+			calculatedCategoryAttributeCollection = new HashSet<CalculatedAttributeInterface>();
+		}
+		calculatedCategoryAttributeCollection.add(calculatedAttributeInterface);
+	}
+
+	/**
+	 * This method removes all Calculated Category Attributes.
+	 */
+	public void removeAllCalculatedCategoryAttributes()
+	{
+		calculatedCategoryAttributeCollection.clear();
+	}
+
 	/**
 	 * This method return the default value for the category attribute if set otherwise
 	 * return the default value for the original attribute
 	 * @return
 	 */
-	public String getDefaultValue()
+	private String getDefaultValue()
 	{
 		String defaultValue = null;
 
-		if (defaultPermissibleValuesCollection != null
-				&& !defaultPermissibleValuesCollection.isEmpty())
+		if (defaultPermissibleValuesCollection == null
+				|| defaultPermissibleValuesCollection.isEmpty())
+		{
+			defaultValue = getDefaultValueForAbstractAttribute();
+		}
+		else
 		{
 			Iterator<PermissibleValueInterface> dataElementIter = defaultPermissibleValuesCollection
 					.iterator();
@@ -497,27 +649,47 @@ public class CategoryAttribute extends BaseAbstractAttribute
 				defaultValue = String.valueOf(nextPV);
 			}
 		}
+
+		return defaultValue;
+	}
+
+	public String getDefaultValue(Date encounterDate)
+	{
+		String defaultValue = null;
+
+		if (dataElementCollection != null && !dataElementCollection.isEmpty())
+		{
+			DataElementInterface dataElement = getDataElement(encounterDate);
+			Collection<PermissibleValueInterface> defValues = ((UserDefinedDEInterface) dataElement)
+					.getDefaultPermissibleValues();
+			if (defValues != null && !defValues.isEmpty())
+			{
+				Object pValue = defValues.iterator().next().getValueAsObject();
+				if (pValue != null)
+				{
+					defaultValue = String.valueOf(pValue);
+				}
+			}
+		}
 		else
 		{
-			defaultValue = getDefaultValueForAbstractAttribute();
-
+			defaultValue = getDefaultValue();
 		}
-
 		return defaultValue;
 	}
 
 	/**
 	 * It will check weather categoryAttribute's abstract attribute is attribute or association.
-	 * If it is association will return null else will return the default value of the original attribute  
+	 * If it is association will return null else will return the default value of the original attribute
 	 * @return
 	 */
 	private String getDefaultValueForAbstractAttribute()
 	{
 		String defaultValue = null;
-		AbstractAttributeInterface attribute = this.abstractAttribute;
+		AbstractAttributeInterface attribute = abstractAttribute;
 		if (attribute instanceof Attribute)
 		{
-			defaultValue = ((AttributeMetadataInterface) this.abstractAttribute).getDefaultValue();
+			defaultValue = ((AttributeMetadataInterface) abstractAttribute).getDefaultValue(null);
 		}
 		return defaultValue;
 	}
@@ -539,10 +711,11 @@ public class CategoryAttribute extends BaseAbstractAttribute
 			defaultPermissibleValuesCollection.remove(iterator.next());
 		}
 
-		this.defaultPermissibleValuesCollection.add(permissibleValue);
+		defaultPermissibleValuesCollection.add(permissibleValue);
 	}
+
 	/**
-	 * 
+	 *
 	 * @param formulaInterface
 	 */
 	public void setFormula(FormulaInterface formulaInterface)
@@ -551,16 +724,15 @@ public class CategoryAttribute extends BaseAbstractAttribute
 		{
 			formulaCollection = new HashSet<FormulaInterface>();
 		}
-		if (formulaCollection != null
-				&& !formulaCollection.isEmpty())
+		if (formulaCollection != null && !formulaCollection.isEmpty())
 		{
-			Iterator<FormulaInterface> iterator = formulaCollection
-					.iterator();
+			Iterator<FormulaInterface> iterator = formulaCollection.iterator();
 			formulaCollection.remove(iterator.next());
 		}
 
-		this.formulaCollection.add(formulaInterface);
+		formulaCollection.add(formulaInterface);
 	}
+
 	/**
 	 * This method return the formula.
 	 * @return
@@ -568,21 +740,20 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	public FormulaInterface getFormula()
 	{
 		FormulaInterface formula = null;
-		if (formulaCollection != null
-				&& !formulaCollection.isEmpty())
+		if (formulaCollection != null && !formulaCollection.isEmpty())
 		{
-			Iterator<FormulaInterface> iterator = formulaCollection
-					.iterator();
+			Iterator<FormulaInterface> iterator = formulaCollection.iterator();
 			formula = iterator.next();
 		}
 		return formula;
 	}
+
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface#getMaxSize()
 	 */
 	public int getMaxSize()
 	{
-		return ((AttributeMetadataInterface) this.abstractAttribute).getMaxSize();
+		return ((AttributeMetadataInterface) abstractAttribute).getMaxSize();
 	}
 
 	/* (non-Javadoc)
@@ -590,7 +761,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 */
 	public String getMeasurementUnit()
 	{
-		return ((AttributeMetadataInterface) this.abstractAttribute).getMeasurementUnit();
+		return ((AttributeMetadataInterface) abstractAttribute).getMeasurementUnit();
 	}
 
 	/* (non-Javadoc)
@@ -598,12 +769,12 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	 */
 	public int getDecimalPlaces()
 	{
-		return ((AttributeMetadataInterface) this.abstractAttribute).getDecimalPlaces();
+		return ((AttributeMetadataInterface) abstractAttribute).getDecimalPlaces();
 	}
 
 	public AttributeTypeInformationInterface getAttributeTypeInformation()
 	{
-		return ((AttributeMetadataInterface) this.abstractAttribute).getAttributeTypeInformation();
+		return ((AttributeMetadataInterface) abstractAttribute).getAttributeTypeInformation();
 	}
 
 	/**
@@ -637,6 +808,7 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		this.isRelatedAttribute = isRelatedAttribute;
 	}
+
 	/**
 	* @hibernate.property name="isCalculated" type="boolean" column="IS_CAL_ATTRIBUTE"
 	*/
@@ -644,36 +816,161 @@ public class CategoryAttribute extends BaseAbstractAttribute
 	{
 		return isCalculated;
 	}
+
 	/**
-	 * 
+	 *
 	 * @param isCalculatedAttribute
 	 */
-	public void setIsCalculated(Boolean isCalculatedAttribute) 
+	public void setIsCalculated(Boolean isCalculatedAttribute)
 	{
-		this.isCalculated = isCalculatedAttribute;
+		isCalculated = isCalculatedAttribute;
 	}
+
+	/**
+	 * @hibernate.property name="isSourceForCalculatedAttribute" type="boolean" column="IS_SRC_FOR_CAL_ATTR"
+	 * @return Returns the isHidden.
+	 */
+	public Boolean getIsSourceForCalculatedAttribute()
+	{
+		return isSourceForCalculatedAttribute;
+	}
+
+	/**
+	 *
+	 * @param isSourceForCalculatedAttribute
+	 */
+	public void setIsSourceForCalculatedAttribute(Boolean isSourceForCalculatedAttribute)
+	{
+		this.isSourceForCalculatedAttribute = isSourceForCalculatedAttribute;
+	}
+
 	/**
 	* @hibernate.property name="isSkipLogic" type="boolean" column="IS_SKIP_LOGIC"
 	*/
-	public Boolean getIsSkipLogic() 
+	public Boolean getIsSkipLogic()
 	{
 		return isSkipLogic;
 	}
+
 	/**
-	 * 
+	 *
 	 * @param isSkipLogic
 	 */
-	public void setIsSkipLogic(Boolean isSkipLogic) 
+	public void setIsSkipLogic(Boolean isSkipLogic)
 	{
 		this.isSkipLogic = isSkipLogic;
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public boolean isValuePresent(Object value) throws DynamicExtensionsSystemException
 	{
-		return ((AttributeMetadataInterface) this.getAbstractAttribute()).isValuePresent(value);
+		return ((AttributeMetadataInterface) getAbstractAttribute()).isValuePresent(value);
 	}
 
+	/**
+	 * @hibernate.set name="dependentSkipLogicAttributes" table="DYEXTN_SKIP_LOGIC_ATTRIBUTE"
+	 * cascade="all-delete-orphan" inverse="false" lazy="false"
+	 * @hibernate.collection-key column="CAT_ATTR_ID"
+	 * @hibernate.cache  usage="read-write"
+	 * @hibernate.collection-one-to-many class="edu.common.dynamicextensions.domain.SkipLogicAttribute"
+	 * @return Returns the dependentSkipLogicAttributes.
+	 */
+	public Collection<SkipLogicAttributeInterface> getDependentSkipLogicAttributes()
+	{
+		return dependentSkipLogicAttributes;
+	}
+
+	/**
+	 *
+	 * @param dependentSkipLogicAttributes
+	 */
+	public void setDependentSkipLogicAttributes(
+			Collection<SkipLogicAttributeInterface> dependentSkipLogicAttributes)
+	{
+		this.dependentSkipLogicAttributes = dependentSkipLogicAttributes;
+	}
+
+	/**
+	 * This method adds a skip logic attribute.
+	 * @param skipLogicAttributeInterface
+	 */
+	public void addDependentSkipLogicAttribute(
+			SkipLogicAttributeInterface skipLogicAttributeInterface)
+	{
+		if (dependentSkipLogicAttributes == null)
+		{
+			dependentSkipLogicAttributes = new HashSet<SkipLogicAttributeInterface>();
+		}
+		dependentSkipLogicAttributes.add(skipLogicAttributeInterface);
+	}
+
+	/**
+	 * This method removes a SkipLogic Attribute.
+	 * @param skipLogicAttributeInterface.
+	 */
+	public void removeDependentSkipLogicAttribute(
+			SkipLogicAttributeInterface skipLogicAttributeInterface)
+	{
+		if ((dependentSkipLogicAttributes != null)
+				&& (dependentSkipLogicAttributes.contains(skipLogicAttributeInterface)))
+		{
+			dependentSkipLogicAttributes.remove(skipLogicAttributeInterface);
+		}
+	}
+
+	/**
+	 * This method removes all SkipLogic Attributes.
+	 */
+	public void removeAllDependentSkipLogicAttributes()
+	{
+		if (dependentSkipLogicAttributes != null)
+		{
+			dependentSkipLogicAttributes.clear();
+		}
+	}
+
+	/**
+	 * return the underlying attribute.
+	 * @return attributeInterface
+	 */
+	public AttributeInterface getAttribute()
+	{
+		return (AttributeInterface) getAbstractAttribute();
+
+	}
+
+	/**
+	 * This method will retrun all the permissible values of the category Attribtue.
+	 * @return Collection of permissible values.
+	 */
+	public Collection<PermissibleValueInterface> getAllPermissibleValues()
+	{
+		Collection<PermissibleValueInterface> permissibleValues = new HashSet<PermissibleValueInterface>();
+		for (DataElementInterface dataElement : getDataElementCollection())
+		{
+			permissibleValues.addAll(((UserDefinedDEInterface) dataElement)
+					.getPermissibleValueCollection());
+		}
+		return permissibleValues;
+	}
+
+	/**
+	 * @hibernate.property name="isPopulateFromXml" type="boolean" column="POPULATE_FROM_XML"
+	 * @return Returns the isAutoPopulate.
+	 */
+	public boolean getIsPopulateFromXml()
+	{
+		return isPopulateFromXml;
+	}
+
+	/**
+	 *	sets isPopulateFromXml.
+	 * @return returns isPopulateFromXml.
+	 */
+	public void setIsPopulateFromXml(boolean isPopulateFromXml)
+	{
+		this.isPopulateFromXml = isPopulateFromXml;
+	}
 }

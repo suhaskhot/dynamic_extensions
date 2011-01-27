@@ -6,8 +6,8 @@ import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 
 /**
  * @author sujay_narkar
- * @hibernate.joined-subclass table="DYEXTN_FLOAT_CONCEPT_VALUE" 
- * @hibernate.joined-subclass-key column="IDENTIFIER"  
+ * @hibernate.joined-subclass table="DYEXTN_FLOAT_CONCEPT_VALUE"
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  *
  */
 public class FloatValue extends PermissibleValue implements FloatValueInterface
@@ -25,7 +25,7 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 
 	/**
 	 * This method returns the predefined value of FloatValue.
-	 * @hibernate.property name="value" type="float" column="VALUE" 
+	 * @hibernate.property name="value" type="float" column="VALUE"
 	 * @return Returns the predefined value of FloatValue.
 	 */
 	public Float getValue()
@@ -52,13 +52,25 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 	}
 
 	/**
-	 * 
+	 * This method type casts the value into Float value and saves it.
+	 * This method can throw Cast Class Exception is value is not of type Float
+	 * @param value the value
+	 * @see edu.common.dynamicextensions.domain.PermissibleValue#setObjectValue(java.lang.Object)
 	 */
-	public PermissibleValueInterface clone()
+	public void setObjectValue(Object value)
+	{
+		Float floatValue = (Float) value;
+		setValue(floatValue);
+	}
+
+	/**
+	 *
+	 */
+	public PermissibleValueInterface getObjectCopy()
 	{
 		FloatValueInterface floatValueInterface = DomainObjectFactory.getInstance()
 				.createFloatValue();
-		floatValueInterface.setValue(this.value);
+		floatValueInterface.setValue(value);
 		return floatValueInterface;
 	}
 
@@ -68,10 +80,41 @@ public class FloatValue extends PermissibleValue implements FloatValueInterface
 	public boolean equals(Object obj)
 	{
 		boolean isEqual = false;
-		if (obj instanceof FloatValue && (value!= null && value.equals(((FloatValue) obj).getValue())))
+		if (obj instanceof FloatValue
+				&& (value != null && value.equals(((FloatValue) obj).getValue())))
 		{
 			isEqual = true;
 		}
 		return isEqual;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		int hashCodeValue;
+		if (value != null)
+		{
+			hashCodeValue = value.hashCode();
+		}
+		else
+		{
+			hashCodeValue = 0;
+		}
+		return hashCodeValue;
+	}
+
+	public int compare(PermissibleValue o1, PermissibleValue o2)
+	{
+		Float value1 = ((FloatValue) o1).value;
+		Float value2 = ((FloatValue) o2).value;
+		if (value1 < value2)
+		{
+			return -1;
+		}
+		else if (value1 > value2)
+		{
+			return 1;
+		}
+		return 0;
 	}
 }

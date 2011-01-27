@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.BooleanValue;
@@ -27,8 +26,6 @@ import edu.common.dynamicextensions.domain.IntegerValue;
 import edu.common.dynamicextensions.domain.LongAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.LongValue;
 import edu.common.dynamicextensions.domain.PermissibleValue;
-import edu.common.dynamicextensions.domain.ShortAttributeTypeInformation;
-import edu.common.dynamicextensions.domain.ShortValue;
 import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.StringValue;
 import edu.common.dynamicextensions.domain.UserDefinedDE;
@@ -47,7 +44,6 @@ import edu.common.dynamicextensions.domaininterface.IntegerValueInterface;
 import edu.common.dynamicextensions.domaininterface.LongValueInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.domaininterface.ShortValueInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
@@ -174,10 +170,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 										.getAttributeDecimalPlaces());
 						attribute = createAttributeForNumericDataType(noOfDecimals);
 					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_SHORT))
-					{
-						attribute = domainObjectFactory.createShortAttribute();
-					}
 					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_INTEGER))
 					{
 						attribute = domainObjectFactory.createIntegerAttribute();
@@ -218,7 +210,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			EntityGroupInterface... entityGroup) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		if ((attributeUIBeanInformationIntf != null) && (attributeInterface != null))
+		if ((attributeUIBeanInformationIntf == null) || (attributeInterface == null))
+		{
+			Logger.out
+					.error("Either Attribute interface or attribute information interface is null ["
+							+ attributeInterface + "] / [" + attributeUIBeanInformationIntf + "]");
+		}
+		else
 		{
 			if (attributeInterface instanceof AssociationInterface)
 			{
@@ -247,12 +245,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			//populate rules
 			populateRules(userSelectedControlName, attributeInterface,
 					attributeUIBeanInformationIntf);
-		}
-		else
-		{
-			Logger.out
-					.error("Either Attribute interface or attribute information interface is null ["
-							+ attributeInterface + "] / [" + attributeUIBeanInformationIntf + "]");
 		}
 
 	}
@@ -458,12 +450,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						(FileAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
-			{
-				populateShortAttributeInterface(attribute,
-						(ShortAttributeTypeInformation) attributeTypeInformation,
-						attributeUIBeanInformationIntf);
-			}
 			else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 			{
 				populateLongAttributeInterface(attribute,
@@ -510,9 +496,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			}
 
 			//Set list of extensions supported
-			fileAttributeInformation.setFileExtensionCollection(getFileExtensionCollection(
-					attributeUIBeanInformationIntf.getFileFormats(), attributeUIBeanInformationIntf
-							.getFormat()));
+			fileAttributeInformation
+					.setFileExtensionCollection(getFileExtensionCollection(attributeUIBeanInformationIntf
+							.getFileFormats()));
 		}
 	}
 
@@ -521,8 +507,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param fileFormatsString Comma separated set of file formats specified by the user explicitly
 	 * @return
 	 */
-	private Collection<FileExtension> getFileExtensionCollection(String[] fileFormats,
-			String fileFormatsString)
+	private Collection<FileExtension> getFileExtensionCollection(String[] fileFormats)
 	{
 		Collection<FileExtension> fileExtensionCollection = new HashSet<FileExtension>();
 		if (fileFormats != null)
@@ -537,20 +522,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				fileExtensionCollection.add(getFileExtension(fileFormats[i]));
 			}
 		}
-		if (fileFormatsString != null)
-		{
-			StringTokenizer stringTokenizer = new StringTokenizer(fileFormatsString,
-					ProcessorConstants.FILE_FORMATS_SEPARATOR);
-			if (stringTokenizer != null)
-			{
-				while (stringTokenizer.hasMoreElements())
-				{
-					fileExtensionCollection.add(getFileExtension(stringTokenizer.nextToken()));
-				}
-			}
-		}
-		return fileExtensionCollection;
 
+		return fileExtensionCollection;
 	}
 
 	/**
@@ -641,11 +614,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			attributeRuleCollection.removeAll(obsoleteRules);
 			attributeRuleCollection.addAll(newRules);
 		}
-		ValidatorUtil.checkForConflictingRules(allValidationRules, abstractAttributeInterface.getName());
+		String attributeName = abstractAttributeInterface.getName();
+		ValidatorUtil.checkForConflictingRules(allValidationRules, attributeName);
 		if (allValidationRules != null && !allValidationRules.isEmpty())
 		{
 			for (String validationRule : allValidationRules)
 			{
+				ValidatorUtil.checkForValidDateRangeRule(validationRule,
+						attributeUIBeanInformationIntf, attributeName);
 				RuleInterface rule = instantiateRule(validationRule,
 						attributeUIBeanInformationIntf, implicitRules);
 				abstractAttributeInterface.addRule(rule);
@@ -671,11 +647,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 		ControlConfigurationsFactory configurationsFactory = ControlConfigurationsFactory
 				.getInstance();
-		Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
 
 		ruleConfigurationObject = configurationsFactory.getRuleObject(validationRule);
-		ruleParameterCollection = getRuleParameterCollection(ruleConfigurationObject,
-				attributeUIBeanInfo);
+		Collection<RuleParameterInterface> ruleParameterCollection = getRuleParameterCollection(
+				ruleConfigurationObject, attributeUIBeanInfo);
 
 		rule = domainObjectFactory.createRule();
 		rule.setName(ruleConfigurationObject.getRuleName());
@@ -849,13 +824,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			int counter = 2;
 			while (counter < columnValues.length)
 			{
-				if (columnValues[counter] != null)
+				if (columnValues[counter] == null)
 				{
-					csvValues[counter - 2][i] = columnValues[counter++];
+					csvValues[counter - 2][i] = "";
 				}
 				else
 				{
-					csvValues[counter - 2][i] = "";
+					csvValues[counter - 2][i] = columnValues[counter++];
 				}
 			}
 		}
@@ -933,8 +908,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException :Exception
 	 */
 	private PermissibleValueInterface getPermissibleValueInterfaceForNumber(
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf,
-			String permissibleValue)
+			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf, String permissibleValue)
 			throws DynamicExtensionsApplicationException
 	{
 
@@ -1046,9 +1020,8 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		// Set Date format based on the UI selection : DATE ONLY or DATE And TIME.
 		String format = attributeUIBeanInformationIntf.getFormat();
+		dateAttributeIntf.setFormat(format);
 		String dateFormat = DynamicExtensionsUtility.getDateFormat(format);
-		dateAttributeIntf.setFormat(dateFormat);
-
 		Date defaultValue = null;
 		String dateValueType = attributeUIBeanInformationIntf.getDateValueType();
 		if (dateValueType != null)
@@ -1132,14 +1105,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		Integer size = null;
 		try
 		{
-			if ((attributeUIBeanInformationIntf.getAttributeSize() != null)
-					&& (!attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
+			if ((attributeUIBeanInformationIntf.getAttributeSize() == null)
+					|| (attributeUIBeanInformationIntf.getAttributeSize().trim().equals("")))
 			{
-				size = Integer.valueOf(attributeUIBeanInformationIntf.getAttributeSize());
+				size = Integer.valueOf(0);
 			}
 			else
 			{
-				size = Integer.valueOf(0);
+				size = Integer.valueOf(attributeUIBeanInformationIntf.getAttributeSize());
 			}
 			stringAttributeIntf.setSize(size);
 		}
@@ -1148,68 +1121,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			throw new DynamicExtensionsApplicationException(e.getMessage(), e);
 		}
 
-	}
-
-	/**
-	 *
-	 * @param shortAttributeTypeInfo : Short attribute object
-	 * @param attributeUIBeanInformationIntf  : UI Bean containing attribute information entered by user on UI
-	 */
-	public void populateShortAttributeInterface(AbstractAttributeInterface attribute,
-			ShortAttributeTypeInformation shortAttributeTypeInfo,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-			throws DynamicExtensionsApplicationException
-	{
-		shortAttributeTypeInfo.setMeasurementUnits(attributeUIBeanInformationIntf
-				.getAttributeMeasurementUnits());
-
-		// Set decimal places.
-		String decimalPlaces = attributeUIBeanInformationIntf.getAttributeDecimalPlaces();
-		if ((decimalPlaces != null) && (!decimalPlaces.trim().equals("")))
-		{
-			shortAttributeTypeInfo.setDecimalPlaces(Integer.parseInt(decimalPlaces));
-		}
-		// Set digits.
-		String digits = attributeUIBeanInformationIntf.getAttributeDigits();
-		if ((digits != null) && (!digits.trim().equals("")))
-		{
-			shortAttributeTypeInfo.setDigits(Integer.parseInt(digits));
-		}
-
-		// Set default value.
-		if ((attributeUIBeanInformationIntf.getAttributeDefaultValue() != null))
-		{
-			Short defaultValue = null;
-			try
-			{
-				if (!attributeUIBeanInformationIntf.getAttributeDefaultValue().trim().equals(""))
-				{
-					defaultValue = Short.valueOf(attributeUIBeanInformationIntf
-							.getAttributeDefaultValue());
-				}
-			}
-			catch (NumberFormatException e)
-			{
-				throw new DynamicExtensionsApplicationException(e.getMessage(), e);
-			}
-
-			if (attributeUIBeanInformationIntf instanceof ControlsModel)
-			{
-				XMIImportValidator.verifyDefaultValueIsInRange(attribute,
-						attributeUIBeanInformationIntf, defaultValue);
-			}
-			ShortValueInterface shortValue = (ShortValueInterface) shortAttributeTypeInfo
-					.getDefaultValue();
-			if (shortValue == null)
-			{
-				shortValue = DomainObjectFactory.getInstance().createShortValue();
-			}
-			if (defaultValue != null)
-			{
-				shortValue.setValue(Short.valueOf(defaultValue));
-				shortAttributeTypeInfo.setDefaultValue(shortValue);
-			}
-		}
 	}
 
 	/**
@@ -1632,12 +1543,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 						(IntegerAttributeTypeInformation) attributeTypeInformation,
 						attributeUIBeanInformationIntf);
 			}
-			else if (attributeTypeInformation instanceof ShortAttributeTypeInformation)
-			{
-				populateShortAttributeUIBeanInterface(
-						(ShortAttributeTypeInformation) attributeTypeInformation,
-						attributeUIBeanInformationIntf);
-			}
 			else if (attributeTypeInformation instanceof LongAttributeTypeInformation)
 			{
 				populateLongAttributeUIBeanInterface(
@@ -1722,22 +1627,22 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
 	{
 		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_NUMBER);
-		if (doubleAttributeInformation.getDefaultValue() != null)
+		if (doubleAttributeInformation.getDefaultValue() == null)
+		{
+			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+		}
+		else
 		{
 			DoubleValue doubleValue = (DoubleValue) doubleAttributeInformation.getDefaultValue();
-			if (doubleValue.getValue() != 0)
+			if (doubleValue.getValue() == 0)
+			{
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+			}
+			else
 			{
 				attributeUIBeanInformationIntf.setAttributeDefaultValue(doubleValue.getValue()
 						.toString());
 			}
-			else
-			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
-			}
-		}
-		else
-		{
-			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(doubleAttributeInformation
 				.getMeasurementUnits());
@@ -1816,39 +1721,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 * @param information
 	 * @param attributeUIBeanInformationIntf
 	 */
-	private void populateShortAttributeUIBeanInterface(
-			ShortAttributeTypeInformation shortAttributeInformation,
-			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
-	{
-		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_SHORT);
-		if (shortAttributeInformation.getDefaultValue() == null)
-		{
-			attributeUIBeanInformationIntf.setAttributeDefaultValue("");
-		}
-		else
-		{
-			ShortValue shortDefaultValue = (ShortValue) shortAttributeInformation.getDefaultValue();
-			if (shortDefaultValue.getValue() == 0)
-			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
-			}
-			else
-			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue(shortDefaultValue
-						.getValue().toString());
-			}
-		}
-		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(shortAttributeInformation
-				.getMeasurementUnits());
-		attributeUIBeanInformationIntf.setAttributeDecimalPlaces(shortAttributeInformation
-				.getDecimalPlaces().toString());
-		//	attributeUIBeanInformationIntf.setAttributeDigits(shortAttributeInformation.getDigits().toString());
-	}
-
-	/**
-	 * @param information
-	 * @param attributeUIBeanInformationIntf
-	 */
 	private void populateIntegerAttributeUIBeanInterface(
 			IntegerAttributeTypeInformation integerAttributeInformation,
 			AbstractAttributeUIBeanInterface attributeUIBeanInformationIntf)
@@ -1862,14 +1734,14 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			IntegerValue integerDefaultValue = (IntegerValue) integerAttributeInformation
 					.getDefaultValue();
-			if (integerDefaultValue.getValue() != 0)
+			if (integerDefaultValue.getValue() == 0)
 			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue
-						.getValue().toString());
+				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
 			}
 			else
 			{
-				attributeUIBeanInformationIntf.setAttributeDefaultValue("");
+				attributeUIBeanInformationIntf.setAttributeDefaultValue(integerDefaultValue
+						.getValue().toString());
 			}
 		}
 		attributeUIBeanInformationIntf.setAttributeMeasurementUnits(integerAttributeInformation
@@ -1911,7 +1783,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		attributeUIBeanInformationIntf.setDataType(ProcessorConstants.DATATYPE_DATE);
 
-		String format = getDateFormat(datAttributeInformation.getFormat());
+		String format = datAttributeInformation.getFormat();
 		attributeUIBeanInformationIntf.setFormat(format);
 
 		if (datAttributeInformation.getDefaultValue() == null)
@@ -1927,7 +1799,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 	}
 
-	private String getDateFormat(String dateFormat)
+	/*private String getDateFormat(String dateFormat)
 	{
 		String format = null;
 		if (dateFormat == null)
@@ -1955,7 +1827,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		}
 
 		return format;
-	}
+	}*/
 
 	/**
 	 * @param information
@@ -2064,15 +1936,13 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			attributeUIBeanInformationIntf
 					.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_LOOKUP);
-			if ((associationInterface != null) && (attributeUIBeanInformationIntf != null))
+			EntityInterface targetEntity = associationInterface.getTargetEntity();
+			if (targetEntity != null)
 			{
-				EntityInterface targetEntity = associationInterface.getTargetEntity();
-				if (targetEntity != null)
-				{
-					attributeUIBeanInformationIntf.setGroupName(getGroupName(targetEntity));
-					attributeUIBeanInformationIntf.setFormName(getFormName(targetEntity));
-				}
+				attributeUIBeanInformationIntf.setGroupName(getGroupName(targetEntity));
+				attributeUIBeanInformationIntf.setFormName(getFormName(targetEntity));
 			}
+
 		}
 
 	}
@@ -2086,21 +1956,22 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	private String getFormName(EntityInterface entity) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
+		String formName = null;
 		if (entity != null)
 		{
 			EntityManagerInterface entityManager = EntityManager.getInstance();
 			ContainerInterface containerInterface = entityManager
 					.getContainerByEntityIdentifier(entity.getId());
-			if ((containerInterface != null) && (containerInterface.getId() != null))
+			if ((containerInterface == null) || (containerInterface.getId() == null))
 			{
-				return containerInterface.getId().toString();
+				formName = entity.getId().toString();
 			}
 			else
 			{
-				return entity.getId().toString();
+				formName = containerInterface.getId().toString();
 			}
 		}
-		return null;
+		return formName;
 	}
 
 	/**
@@ -2109,6 +1980,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private String getGroupName(EntityInterface targetEntity)
 	{
+		String groupName = null;
 		//Initialize group name
 		EntityGroupInterface entityGroup = targetEntity.getEntityGroup();
 		//Assumed that the collection will contain just one entity. So fetching first elt of collection
@@ -2122,9 +1994,9 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			//					return entityGroup.getId().toString();
 			//				}
 			//			}
-			return entityGroup.getId().toString();
+			groupName = entityGroup.getId().toString();
 		}
-		return null;
+		return groupName;
 	}
 
 	/**
@@ -2137,7 +2009,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	{
 		ArrayList<OptionValueObject> optionDetails = new ArrayList<OptionValueObject>();
 		DataElementInterface dataEltInterface = attributeTypeInformation.getDataElement();
-		if ((attributeTypeInformation != null) && (attributeUIBeanInformationIntf != null))
+		if (attributeUIBeanInformationIntf != null)
 		{
 			attributeUIBeanInformationIntf
 					.setDisplayChoice(ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED);
@@ -2165,6 +2037,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 	 */
 	private OptionValueObject getOptionDetails(PermissibleValueInterface permissibleValueIntf)
 	{
+		OptionValueObject valueObject = null;
 		if (permissibleValueIntf != null)
 		{
 			Object permissibleValueObjectValue = permissibleValueIntf.getValueAsObject();
@@ -2178,10 +2051,10 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 				{
 					populateOptionDetails(optionDetail, ((PermissibleValue) permissibleValueIntf));
 				}
-				return optionDetail;
+				valueObject = optionDetail;
 			}
 		}
-		return null;
+		return valueObject;
 	}
 
 	/**
@@ -2374,11 +2247,6 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 					attributeTypeInformation = createAttributeTypeInfoForNumericDataType(
 							noOfDecimals, originalAttrTypeInfo);
 				}
-				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_SHORT))
-				{
-					attributeTypeInformation = domainObjectFactory
-							.createShortAttributeTypeInformation();
-				}
 				else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_INTEGER))
 				{
 					attributeTypeInformation = domainObjectFactory
@@ -2416,12 +2284,7 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 
 		if (noOfDecimalPlaces == Constants.ZERO)
 		{
-			if (originalAttrTypeInfo instanceof ShortAttributeTypeInformation)
-			{
-				numAttrTypeInfo = DomainObjectFactory.getInstance()
-						.createShortAttributeTypeInformation();
-			}
-			else if (originalAttrTypeInfo instanceof IntegerAttributeTypeInformation)
+			if (originalAttrTypeInfo instanceof IntegerAttributeTypeInformation)
 			{
 				numAttrTypeInfo = DomainObjectFactory.getInstance()
 						.createIntegerAttributeTypeInformation();

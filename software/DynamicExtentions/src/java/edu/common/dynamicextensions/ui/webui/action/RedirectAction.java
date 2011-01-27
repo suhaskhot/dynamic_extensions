@@ -33,17 +33,18 @@ public class RedirectAction extends BaseDynamicExtensionsAction
 
 		String callbackURL = (String) CacheManager.getObjectFromCache(request,
 				DEConstants.CALLBACK_URL);
-		if (callbackURL != null && !callbackURL.equals(""))
+		if (callbackURL == null || callbackURL.equals(""))
+		{
+			return mapping.findForward(DEConstants.SUCCESS);
+		}
+		else
 		{
 			callbackURL = callbackURL + "?" + WebUIManager.getOperationStatusParameterName() + "="
 					+ "cancel";
 			CacheManager.clearCache(request);
 			response.sendRedirect(callbackURL);
 			return null;
-		}
-		else
-		{
-			return mapping.findForward(DEConstants.SUCCESS);
+
 		}
 	}
 }

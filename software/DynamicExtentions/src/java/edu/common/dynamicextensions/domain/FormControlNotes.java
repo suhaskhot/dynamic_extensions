@@ -32,7 +32,7 @@ public class FormControlNotes extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="note" type="string" column="NOTE" length="255"
+	 * @hibernate.property name="note" type="string" column="NOTE" length="800"
 	 * @return Returns the note.
 	 */
 	public String getNote()

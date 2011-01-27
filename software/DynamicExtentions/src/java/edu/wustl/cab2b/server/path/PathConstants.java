@@ -32,13 +32,13 @@ public interface PathConstants
 	/**
 	 * Represents the location where InterModelAssociations file is generated.Used to populate INTER_MODEL_ASSOCIATION table
 	 */
-	String INTER_MODEL_ASSOCIATION_FILE_NAME = System.getProperty("user.home") + File.separator
+	String INTER_MODEL_ASSO_FILE_NAME = System.getProperty("user.home") + File.separator
 			+ "InterModelAssociations.txt";
 
 	/**
 	 * Represents the location where IntraModelAssociations file is generated.Used to populate INTRA_MODEL_ASSOCIATION table
 	 */
-	String INTRA_MODEL_ASSOCIATION_FILE_NAME = System.getProperty("user.home") + File.separator
+	String INTRA_MODEL_ASSO_FILE_NAME = System.getProperty("user.home") + File.separator
 			+ "IntraModelAssociations.txt";
 
 	/**

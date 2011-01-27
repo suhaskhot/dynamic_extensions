@@ -14,10 +14,10 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 
 /**
  * This is an abstract class extended by Entity, Entity group, Attribute.
- * This class stores basic information needed for metadata objects.  
+ * This class stores basic information needed for metadata objects.
  * @version 1.0
  * @created 28-Sep-2006 12:20:06 PM
- * @hibernate.class table="DYEXTN_ABSTRACT_METADATA" 
+ * @hibernate.class table="DYEXTN_ABSTRACT_METADATA"
  * @hibernate.cache  usage="read-write"
  */
 public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
@@ -69,6 +69,11 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	protected String publicId;
 
 	/**
+	 * The activity status.
+	 */
+	protected String activityStatus;
+
+	/**
 	 * Semantic property collection.
 	 */
 	protected Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
@@ -80,7 +85,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method returns the Created Date of the AbstractMetadata.
-	 * @hibernate.property name="createdDate" type="date" column="CREATED_DATE" 
+	 * @hibernate.property name="createdDate" type="date" column="CREATED_DATE"
 	 * @return the createdDate of the AbstractMetadata.
 	 */
 	public Date getCreatedDate()
@@ -118,7 +123,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method returns the date of last updation of the meta data.
-	 * @hibernate.property name="lastUpdated" type="date" column="LAST_UPDATED" 
+	 * @hibernate.property name="lastUpdated" type="date" column="LAST_UPDATED"
 	 * @return the date of last updation of the meta data.
 	 */
 	public Date getLastUpdated()
@@ -137,7 +142,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * This method returns the name of the AbstractMetadata.
-	 * @hibernate.property name="name" type="string" column="NAME" length="1000" 
+	 * @hibernate.property name="name" type="string" column="NAME" length="1000"
 	 * @return the name of the AbstractMetadata.
 	 */
 	public String getName()
@@ -178,7 +183,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * 
+	 *
 	 * @param taggedValueInterface
 	 */
 	public void addTaggedValue(TaggedValueInterface taggedValueInterface)
@@ -239,8 +244,8 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	 */
 	public void removeSemanticProperty(SemanticPropertyInterface semanticPropertyInterface)
 	{
-		if ((semanticPropertyCollection != null)
-				&& (semanticPropertyCollection.contains(semanticPropertyInterface)))
+		if (semanticPropertyCollection != null
+				&& semanticPropertyCollection.contains(semanticPropertyInterface))
 		{
 			semanticPropertyCollection.remove(semanticPropertyInterface);
 		}
@@ -276,9 +281,9 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	{
 		List<SemanticPropertyInterface> semanticPropertyList = new ArrayList<SemanticPropertyInterface>();
 
-		if (this.semanticPropertyCollection != null && !this.semanticPropertyCollection.isEmpty())
+		if (semanticPropertyCollection != null && !semanticPropertyCollection.isEmpty())
 		{
-			semanticPropertyList.addAll(this.semanticPropertyCollection);
+			semanticPropertyList.addAll(semanticPropertyCollection);
 			Collections.sort(semanticPropertyList);
 		}
 		return semanticPropertyList;
@@ -293,7 +298,7 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="publicId" type="string" column="PUBLIC_ID"  
+	 * @hibernate.property name="publicId" type="string" column="PUBLIC_ID"
 	 * @return the publicId
 	 */
 	public String getPublicId()
@@ -319,4 +324,61 @@ public abstract class AbstractMetadata extends DynamicExtensionBaseDomainObject
 		return name;
 	}
 
+	/**
+	 * This method overrides the equals method of the Object Class.
+	 * This method checks the equality of the AbstractMetadata objects.
+	 * @param obj
+	 * @return boolean true if the both AbstractMetadata objects are equal otherwise false.
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean equals = id == null && obj instanceof AbstractMetadata && this == obj;
+		if (!equals)
+		{
+			equals = super.equals(obj);
+		}
+		return equals;
+	}
+
+	/**
+	 * This method overrides the equals method of the Object Class.
+	 * It returns the HashCode of this AttributeMetadata instance.
+	 * @return int The HashCode of the AttributeMetadata instance.
+	 */
+	public int hashCode()
+	{
+		return 1;
+	}
+
+	/**
+	 * This method will return the tagged value for the given key
+	 * if not found will return the null.
+	 * @param key key of the tag which is to be found.
+	 * @return tagged value with the given key.
+	 */
+	public String getTaggedValue(String key)
+	{
+		String value = null;
+		for (TaggedValueInterface taggedValue : taggedValueCollection)
+		{
+			if (taggedValue.getKey().equals(key))
+			{
+				value = taggedValue.getValue();
+			}
+		}
+		return value;
+	}
+	/**
+	 * @return Returns the activityStatus.
+	 *  @hibernate.property name="activityStatus" column="ACTIVITY_STATUS" type="string" length="10"
+	 */
+	public String getActivityStatus()
+	{
+		return activityStatus;
+	}
+
+	public void setActivityStatus(String activityStatus)
+	{
+		this.activityStatus = activityStatus;
+	}
 }

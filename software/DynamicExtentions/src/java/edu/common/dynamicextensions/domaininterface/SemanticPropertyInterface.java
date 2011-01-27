@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domaininterface;
 
+import java.util.Collection;
+
 /**
  * For every abstract metadata object semantic properties are associated.
  * @author sujay_narkar
@@ -10,12 +12,6 @@ public interface SemanticPropertyInterface
 			DynamicExtensionBaseDomainObjectInterface,
 			Comparable
 {
-
-	/**
-	 * This method returns the Unique identifier.
-	 * @return the Unique identifier.
-	 */
-	Long getId();
 
 	/**
 	 * This method returns the concept code.
@@ -30,41 +26,41 @@ public interface SemanticPropertyInterface
 	void setConceptCode(String conceptCode);
 
 	/**
-	 * This method returns the tem i.e. concept name. 
-	 * @return Returns the term i.e. concept name
+	 * This method returns the concept preferred Name i.e. concept name.
+	 * @return Returns the concept preferred Name i.e. concept name
 	 */
-	String getTerm();
+	String getConceptPreferredName();
 
 	/**
-	 * This method sets the term.
-	 * @param term the term to be set.
+	 * This method sets the conceptPreferredName.
+	 * @param conceptPreferredName the term to be set.
 	 */
-	void setTerm(String term);
+	void setConceptPreferredName(String conceptPreferredName);
 
 	/**
-	 * This method returns the thesaurus name.
-	 * @return the thesaurus name.
+	 * This method returns the conceptDefinitionSource name.
+	 * @return the conceptDefinitionSource name.
 	 */
-	String getThesaurasName();
+	String getConceptDefinitionSource();
 
 	/**
-	 * This method sets the thesauras name.
-	 * @param thesaurasName the thesauras name to be set.
+	 * This method sets the conceptDefinitionSource name.
+	 * @param conceptDefinitionSource the conceptDefinitionSource name to be set.
 	 */
-	void setThesaurasName(String thesaurasName);
+	void setConceptDefinitionSource(String conceptDefinitionSource);
 
 	/**
 	 * @return int
 	 */
-	int getSequenceNumber();
+	long getSequenceNumber();
 
 	/**
 	 * @param sequenceNumber int
 	 */
-	void setSequenceNumber(int sequenceNumber);
+	void setSequenceNumber(long sequenceNumber);
 
 	/**
-	 * This method returns the tem i.e. concept name. 
+	 * This method returns the tem i.e. concept name.
 	 * @return the conceptDefinition
 	 */
 	String getConceptDefinition();
@@ -74,4 +70,15 @@ public interface SemanticPropertyInterface
 	 */
 	void setConceptDefinition(String conceptDefinition);
 
+	/**
+	 * This method gets teh list of Qualifiers for the given concept definition
+	 * @return the listOfQualifier
+	 */
+	Collection<SemanticPropertyInterface> getListOfQualifier();
+
+	/**
+	 * This method sets the qualifiers for given concept definition
+	 * @param listOfQualifier the listOfQualifier to set
+	 */
+	void setListOfQualifier(Collection<SemanticPropertyInterface> listOfQualifier);
 }

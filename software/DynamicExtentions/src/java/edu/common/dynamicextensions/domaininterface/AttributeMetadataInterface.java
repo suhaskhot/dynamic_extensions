@@ -2,9 +2,11 @@
 package edu.common.dynamicextensions.domaininterface;
 
 import java.util.Collection;
+import java.util.Date;
 
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+
 
 /**
  * @author kunal_kamble
@@ -14,11 +16,11 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 {
 
 	/**
-	 * This method returns the default value of the PrimitiveAttribute for displaying in corresponding controls on UI. 
-	 * @param abstractAttribute the PrimitiveAttribute
+	 * This method returns the default value of the PrimitiveAttribute for displaying in corresponding controls on UI.
+	 * @param encounterDate the encounter date
 	 * @return the Default Value of the PrimitiveAttribute
 	 */
-	String getDefaultValue();
+	String getDefaultValue(Date encounterDate);
 
 	/**
 	 * This method returns the length if the attribute is of type
@@ -48,7 +50,7 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	Collection<RuleInterface> getRuleCollection();
 
 	/**
-	 * 
+	 *
 	 * @return AttributeTypeInformationInterface
 	 */
 	AttributeTypeInformationInterface getAttributeTypeInformation();
@@ -57,7 +59,7 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	 * This method returns a data element for an attribute.
 	 * @return DataElementInterface
 	 */
-	DataElementInterface getDataElement();
+	DataElementInterface getDataElement(Date encounterDate);
 
 	/**
 	 * @param value
@@ -66,24 +68,29 @@ public interface AttributeMetadataInterface extends AbstractMetadataInterface
 	 */
 	boolean isValuePresent(Object value) throws DynamicExtensionsSystemException;
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	PermissibleValueInterface getDefaultValuePermissibleValue();
 	/**
-	 * 
+	 *
 	 * @param permissibleValue
 	 */
 	void addSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	Collection<PermissibleValueInterface> getSkipLogicPermissibleValues();
 	/**
-	 * 
+	 *
 	 * @param permissibleValue
 	 * @return
 	 */
 	PermissibleValueInterface getSkipLogicPermissibleValue(PermissibleValueInterface permissibleValue);
+
+	/**
+	 * @return attributeInterface
+	 */
+	AttributeInterface getAttribute();
 }

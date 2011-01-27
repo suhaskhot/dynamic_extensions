@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.userinterface;
 
 import java.util.List;
 
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.LabelInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 
@@ -22,7 +23,7 @@ public class Label extends Control implements LabelInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateEditModeHTML()
 	 */
-	protected String generateEditModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	protected String generateEditModeHTML(ContainerInterface container) throws DynamicExtensionsSystemException
 	{
 		return "<div style='float:left'><b>" + caption + "</b></div>";
 	}
@@ -30,26 +31,32 @@ public class Label extends Control implements LabelInterface
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.domain.userinterface.Control#generateViewModeHTML()
 	 */
-	protected String generateViewModeHTML(Integer rowId) throws DynamicExtensionsSystemException
+	protected String generateViewModeHTML(ContainerInterface container) throws DynamicExtensionsSystemException
 	{
 		return "<b>" + caption + "</b>";
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public List<String> getValueAsStrings(Integer rowId) {
+	public List<String> getValueAsStrings() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public void setValueAsStrings(List<String> listOfValues) 
+	public void setValueAsStrings(List<String> listOfValues)
 	{
 		// TODO Auto-generated method stub
-		
-	}
 
+	}
+	/**
+	 *
+	 */
+	public boolean getIsEnumeratedControl()
+	{
+		return false;
+	}
 }

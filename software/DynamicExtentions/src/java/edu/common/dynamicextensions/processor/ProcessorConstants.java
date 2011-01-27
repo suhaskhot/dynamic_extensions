@@ -29,7 +29,6 @@ public class ProcessorConstants
 	public static final String DATATYPE_BYTEARRAY = "ByteArray";
 	public static final String DATATYPE_FILE = "File";
 	public static final String DATATYPE_INTEGER = "Integer";
-	public static final String DATATYPE_SHORT = "Short";
 	public static final String DATATYPE_LONG = "Long";
 	public static final String DATATYPE_FLOAT = "Float";
 	public static final String DATATYPE_DOUBLE = "Double";
@@ -46,14 +45,17 @@ public class ProcessorConstants
 	public static final String OPERATION_EDIT = "Edit";
 
 	// Date Formats.
-	public static final String DATE_ONLY_FORMAT = CommonServiceLocator.getInstance().getDatePattern();
-	public static final String DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
+	public static final String DATE_SEPARATOR = CommonServiceLocator.getInstance()
+			.getDateSeparator();
+	public static final String DATE_ONLY_FORMAT = CommonServiceLocator.getInstance()
+			.getDatePattern();
+	public static final String DATE_TIME_FORMAT = CommonServiceLocator.getInstance()
+			.getTimeStampPattern();
 	public static final int DATE_TIME_FORMAT_ROUND_OFF = 12;
-	public static final String MONTH_YEAR_FORMAT = "MM-yyyy";
+	public static final String MONTH_YEAR_FORMAT = "MM" + DATE_SEPARATOR + "yyyy";
 	public static final String YEAR_ONLY_FORMAT = "yyyy";
 	public static final String SQL_DATE_ONLY_FORMAT = "MM-dd-yyyy";
-	public static final String SQL_DATE_TIME_FORMAT = "MM-dd-yyyy HH24:MI";
-	public static final String DATE_SEPARATOR = CommonServiceLocator.getInstance().getDateSeparator();
+	public static final String SQL_DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
 
 	// Types of permisible value sources for Combobox.
 	public static final String DISPLAY_CHOICE_USER_DEFINED = "UserDefined";
@@ -104,7 +106,7 @@ public class ProcessorConstants
 
 	// Separator for specifying file formats.
 	public static final String FILE_FORMATS_SEPARATOR = ",";
-	public static final String CONTROLS_SEQUENCE_NUMBER_SEPARATOR = ",";
+	public static final String CONTROLS_SEQ_NUMBER_SEPARATOR = ",";
 
 	// DEFAULT VALUE CONSTANTS.
 	// Default value for create entity as new/from existing.
@@ -118,7 +120,7 @@ public class ProcessorConstants
 	// Default selected control : text control
 	public static final String DEFAULT_SELECTED_CONTROL = TEXT_CONTROL;
 
-	// Default specification of list values : User defined 
+	// Default specification of list values : User defined
 	public static final String DEFAULT_DISPLAY_CHOICE_TYPE = DISPLAY_CHOICE_USER_DEFINED;
 
 	// Default line type for text : single line
@@ -151,8 +153,8 @@ public class ProcessorConstants
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
 
-	public static String DATE = "date";
-	public static String DATE_RANGE = "dateRange";
+	public static final String DATE = "date";
+	public static final String DATE_RANGE = "dateRange";
 	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
 	public static final String RANGE = "range";
 
@@ -160,8 +162,8 @@ public class ProcessorConstants
 	public static final String DISABLED = " disabled ";
 
 	// File formats.
-	public static String JPEG_FORMAT = "jpeg";
-	public static String JPG_FORMAT = "jpg";
+	public static final String JPEG_FORMAT = "jpeg";
+	public static final String JPG_FORMAT = "jpg";
 
 	public static final String SDF_ORCL_CAT_REL_ATTR = "yyyy-MM-dd HH:mm:ss";
 	public static final String ORCL_CAT_REL_ATTR_FORMAT = "YYYY-MM-DD HH24:MI:SS";

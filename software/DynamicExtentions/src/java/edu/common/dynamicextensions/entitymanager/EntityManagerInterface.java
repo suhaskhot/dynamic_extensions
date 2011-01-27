@@ -7,9 +7,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
-import edu.common.dynamicextensions.domain.integration.EntityMapCondition;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
@@ -17,13 +17,13 @@ import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
@@ -48,7 +48,7 @@ public interface EntityManagerInterface
 			DynamicExtensionsApplicationException;
 
 	/**
-	 * This method is used to save the meta data information  
+	 * This method is used to save the meta data information
 	 * of the given entity without creating its data table.
 	 * @param entityInterface entity to be persisted
 	 */
@@ -77,7 +77,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public Collection<AssociationInterface> getAssociations(Long srcEntityId, Long tgtEntityId,
+	Collection<AssociationInterface> getAssociations(Long srcEntityId, Long tgtEntityId,
 			HibernateDAO hibernatedao) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
 
@@ -206,45 +206,55 @@ public interface EntityManagerInterface
 
 	/**
 	 * This method inserts one record for the entity.
+	 * @deprecated Use {@link #insertData(EntityInterface,Map<AbstractAttributeInterface, Object>,HibernateDAO,List<FileQueryBean>,SessionDataBean,Long...)} instead
 	 */
 	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue,
-			Long... userId) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+			HibernateDAO hibernateDao, List<FileQueryBean> fileRecordQueryList, Long... userId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
-	 * This method inserts multiple records for the entity. This is a single transaction, so either all records are inserted or nothing
-	 * is persisted.
-	 * It returns the record id in the same sequence as that of input maps in dataValueMapList.
+	 * This method inserts one record for the entity.
+	 * @param sessionDataBean TODO
 	 */
-	List<Long> insertData(EntityInterface entity,
-			List<Map<AbstractAttributeInterface, Object>> dataValueMapList, Long... userId)
+	Long insertData(EntityInterface entity, Map<AbstractAttributeInterface, Object> dataValue,
+			HibernateDAO hibernateDao, List<FileQueryBean> fileRecordQueryList, SessionDataBean sessionDataBean, Long... userId)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
 	 * This method updates the existing record for the given entity.
-	 * @param entity       Entity for which record needs to be updated
-	 * @param dataValue    map that contains  name of the attribute whose value is changed and its new value
-	 *                     If it is multiselect attribute then value should be List<string>
-	 * @param recordId     Id of the record
-	 * @return true if success
+	 * @param entity Entity for which record needs to be updated
+	 * @param dataValue map that contains  name of the attribute whose value is changed and its new value
+	 *                  If it is multiselect attribute then value should be List<string>
+	 * @param recordId Id of the record
+	 * @param hibernateDao
+	 * @param userId
+	 * @return true if edit is successful
+	 * @throws DynamicExtensionsApplicationException
+	 * @throws DynamicExtensionsSystemException
+	 * @deprecated Use {@link #editData(EntityInterface,Map<AbstractAttributeInterface, ?>,Long,HibernateDAO,List<FileQueryBean>,SessionDataBean,Long...)} instead
+	 */
+	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue,
+			Long recordId, HibernateDAO hibernateDao, List<FileQueryBean> fileRecordQueryList,
+			Long... userId) throws DynamicExtensionsApplicationException,
+			DynamicExtensionsSystemException;
+
+	/**
+	 * This method updates the existing record for the given entity.
+	 * @param entity Entity for which record needs to be updated
+	 * @param dataValue map that contains  name of the attribute whose value is changed and its new value
+	 *                  If it is multiselect attribute then value should be List<string>
+	 * @param recordId Id of the record
+	 * @param hibernateDao
+	 * @param sessionDataBean TODO
+	 * @param userId
+	 * @return true if edit is successful
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
 	boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue,
-			Long recordId, Long... userId) throws DynamicExtensionsApplicationException,
+			Long recordId, HibernateDAO hibernateDao, List<FileQueryBean> fileRecordQueryList,
+			SessionDataBean sessionDataBean, Long... userId) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException;
-
-	/**
-	 * The method returns the entity records for the given entity, attribute and records.
-	 * @param entity
-	 * @param abstrAttributes
-	 * @param recordIds
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 */
-	EntityRecordResultInterface getEntityRecords(EntityInterface entity,
-			List<? extends AbstractAttributeInterface> abstrAttributes, List<Long> recordIds)
-			throws DynamicExtensionsSystemException;
 
 	/**
 	 * Returns a particular record for the given recordId of the given entityId
@@ -255,39 +265,6 @@ public interface EntityManagerInterface
 	 */
 	Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity, Long recordId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * This method deletes a particular record for an entity.
-	 * @param entity Entity for which record needs to be deleted
-	 * @param recordId Id of the record
-	 * @return success failure flag. true if successful
-	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
-	 */
-	boolean deleteRecord(EntityInterface entity, Long recordId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
-
-	/**
-	 * Method deletes the passed records of the passed container.
-	 * @param containerId
-	 * @param recordIdList
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	void deleteRecords(Long containerId, List<Long> recordIdList)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * This method returns the all the record for the given control of the
-	 * association.
-	 *
-	 * @return map
-	 *    key   recordId
-	 *    value List<String> list of column values
-	 */
-	Map<Long, List<String>> getRecordsForAssociationControl(
-			AssociationControlInterface associationControl) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @return
@@ -364,9 +341,21 @@ public interface EntityManagerInterface
 	 * @param sourceEntityRecordId
 	 * @param TargetEntityRecordId
 	 * @throws DynamicExtensionsSystemException
+	 * @deprecated Use {@link #associateEntityRecords(AssociationInterface,Long,Long,SessionDataBean)} instead
 	 */
 	void associateEntityRecords(AssociationInterface associationInterface,
 			Long sourceEntityRecordId, Long TargetEntityRecordId)
+			throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param associationInterface
+	 * @param sourceEntityRecordId
+	 * @param TargetEntityRecordId
+	 * @param sessionDataBean TODO
+	 * @throws DynamicExtensionsSystemException
+	 */
+	void associateEntityRecords(AssociationInterface associationInterface,
+			Long sourceEntityRecordId, Long TargetEntityRecordId, SessionDataBean sessionDataBean)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -471,7 +460,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	Collection<AssociationTreeObject> getAssociationTree(Long entityGroupId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param attribute
@@ -479,9 +468,9 @@ public interface EntityManagerInterface
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws DAOException 
-	 * @throws SQLException 
-	 * @throws IOException 
+	 * @throws DAOException
+	 * @throws SQLException
+	 * @throws IOException
 	 */
 	FileAttributeRecordValue getFileAttributeRecordValueByRecordId(AttributeInterface attribute,
 			Long recordId) throws DynamicExtensionsSystemException,
@@ -503,7 +492,7 @@ public interface EntityManagerInterface
 	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException
 	 */
-	Collection<ContainerInterface> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
+	Collection<NameValueBean> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
@@ -595,65 +584,11 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			throws DynamicExtensionsSystemException;
 
 	Map<AbstractAttributeInterface, Object> getEntityRecordById(EntityInterface entity,
 			Long recordId, JDBCDAO... dao) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException;
-
-	/**
-	 * @param entity
-	 * @param dataValue
-	 * @param jdbcDao
-	 * @param parentRecordId
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Long insertDataForSingleEntity(EntityInterface entity, Map<?, ?> dataValue, JDBCDAO jdbcDao,
-			Long parentRecordId, Long... userId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
-
-	/**
-	 * @param entity
-	 * @param dataValue
-	 * @param recordId
-	 * @param jdbcDAO
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	boolean editDataForSingleEntity(EntityInterface entity, Map<?, ?> dataValue, Long recordId,
-			JDBCDAO jdbcDao, Long... userId) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
-
-	/**
-	 * @param entity
-	 * @param dataValue
-	 * @param jdbcDAO
-	 * @param identifier
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	Long insertDataForHeirarchy(EntityInterface entity,
-			Map<AbstractAttributeInterface, ?> dataValue, JDBCDAO jdbcDao, Long... identifier)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
-
-	/**
-	 * @param entity
-	 * @param dataValue
-	 * @param recordId
-	 * @param jdbcDAO
-	 * @param userId
-	 * @return
-	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
-	 */
-	boolean editDataForHeirarchy(EntityInterface entity,
-			Map<AbstractAttributeInterface, ?> dataValue, Long recordId, JDBCDAO jdbcDao,
-			Long... userId) throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
 
 	/**
 	 * This method updates attribute type info object
@@ -663,8 +598,7 @@ public interface EntityManagerInterface
 	 * @throws DynamicExtensionsApplicationException
 	 */
 	AttributeTypeInformationInterface updateAttributeTypeInfo(
-			AttributeTypeInformationInterface attrTypeInfo)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+			AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException;
 
 	/**
 	 * This method retrieves entity group id given the entity group name by executing hql query
@@ -771,14 +705,6 @@ public interface EntityManagerInterface
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * @param staticRecordId
-	 * @return collection of EntityMapConditions for a staticRecordId
-	 * @throws DynamicExtensionsSystemException
-	 */
-	Collection<EntityMapCondition> getAllConditionsByStaticRecordId(Long staticRecordId)
-			throws DynamicExtensionsSystemException;
-
-	/**
 	 * @param entityName to get entityGroup
 	 * @return entityGroupName of a particular entity
 	 * @throws DynamicExtensionsSystemException
@@ -860,4 +786,38 @@ public interface EntityManagerInterface
 	String getCategoryEntityNameByCategoryEntityId(Long categoryId)
 			throws DynamicExtensionsSystemException;
 
+	/**
+	 * This method will return the Entity of the RootCategoryEntity based on the
+	 * container ID of the root CategoryEntity.
+	 * @param containerId Container id of the root container id.
+	 * @return Entity from which the root category Entity is created
+	 * & its container id as given in the parameter.
+	 * @exception DynamicExtensionsSystemException exception.
+	 */
+	EntityInterface getCategoryRootEntityByContainerId(Long containerId)
+			throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param categoryName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public Long getRootCategoryContainerIdByName(String categoryName)
+			throws DynamicExtensionsSystemException;
+
+	/**
+	 * @param recordIdentifier
+	 * @param containerStack
+	 * @deprecated Use {@link #disableEntityRecords(Long,Stack<ContainerInterface>,SessionDataBean)} instead
+	 */
+	public void disableEntityRecords(Long recordIdentifier, Stack<ContainerInterface> containerStack)
+			throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
+
+	/**
+	 * @param recordIdentifier
+	 * @param containerStack
+	 * @param sessionDataBean TODO
+	 */
+	public void disableEntityRecords(Long recordIdentifier, Stack<ContainerInterface> containerStack, SessionDataBean sessionDataBean)
+			throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException;
 }

@@ -1,3 +1,4 @@
+
 package edu.wustl.cab2b.common.util;
 
 import java.io.Serializable;
@@ -5,126 +6,197 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tree node
+ * Tree node.
+ *
+ * @param <T>
+ *            the < t>
  * @author Chetan Patil
  */
-public class TreeNode<T> implements Serializable, Cloneable {
-    private static final long serialVersionUID = -7880358558369168948L;
+public class TreeNode<T> implements Serializable
+{
 
-    private T value;
+	/**
+	 * The Constant serialVersionUID.
+	 */
+	private static final long serialVersionUID = -7880358558369168948L;
 
-    private List<TreeNode<T>> children;
+	/**
+	 * The value.
+	 */
+	private T value;
 
-    private TreeNode<T> parent;
+	/**
+	 * The children.
+	 */
+	private List<TreeNode<T>> children;
 
-    /**
-     * @param value value
-     */
-    public TreeNode(T value) {
-        setValue(value);
-    }
+	/**
+	 * The parent.
+	 */
+	private TreeNode<T> parent;
 
-    /**
-     * @param value child value to add
-     * @return child node
-     */
-    public TreeNode<T> addChildValue(T value) {
-        TreeNode<T> child = new TreeNode<T>(value);
-        addChild(child);
-        return child;
-    }
+	/**
+	 * Instantiates a new tree node.
+	 *
+	 * @param value
+	 *            value
+	 */
+	public TreeNode(T value)
+	{
+		setValue(value);
+	}
 
-    /**
-     * @return Value
-     */
-    public T getValue() {
-        return value;
-    }
+	/**
+	 * Adds the child value.
+	 *
+	 * @param value
+	 *            child value to add
+	 * @return child node
+	 */
+	public TreeNode<T> addChildValue(T value)
+	{
+		TreeNode<T> child = new TreeNode<T>(value);
+		addChild(child);
+		return child;
+	}
 
-    /**
-     * @param value value
-     */
-    private void setValue(T value) {
-        this.value = value;
-    }
+	/**
+	 * Gets the value.
+	 *
+	 * @return Value
+	 */
+	public T getValue()
+	{
+		return value;
+	}
 
-    /**
-     * @return All children
-     */
-    public List<TreeNode<T>> getChildren() {
-        if (children == null) {
-            children = new ArrayList<TreeNode<T>>();
-        }
-        return children;
-    }
+	/**
+	 * Sets the value.
+	 *
+	 * @param value
+	 *            value
+	 */
+	private void setValue(T value)
+	{
+		this.value = value;
+	}
 
-    /**
-     * @param child child to add
-     */
-    public void addChild(TreeNode<T> child) {
-        getChildren().add(child);
-        child.setParent(this);
-    }
+	/**
+	 * Gets the children.
+	 *
+	 * @return All children
+	 */
+	public List<TreeNode<T>> getChildren()
+	{
+		if (children == null)
+		{
+			children = new ArrayList<TreeNode<T>>();
+		}
+		return children;
+	}
 
-    /**
-     * @return Returns the parent.
-     */
-    public TreeNode<T> getParent() {
-        return parent;
-    }
+	/**
+	 * Adds the child.
+	 *
+	 * @param child
+	 *            child to add
+	 */
+	public void addChild(TreeNode<T> child)
+	{
+		getChildren().add(child);
+		child.setParent(this);
+	}
 
-    private void setParent(TreeNode<T> parent) {
-        this.parent = parent;
-    }
+	/**
+	 * Gets the parent.
+	 *
+	 * @return Returns the parent.
+	 */
+	public TreeNode<T> getParent()
+	{
+		return parent;
+	}
 
-    /**
-     * @return TRUE if this node is leaf
-     */
-    public boolean isLeaf() {
-        return (children == null) || (children.size() == 0);
-    }
+	/**
+	 * Sets the parent.
+	 *
+	 * @param parent
+	 *            the new parent
+	 */
+	private void setParent(TreeNode<T> parent)
+	{
+		this.parent = parent;
+	}
 
-    /**
-     * @return TRUE if this node is root
-     */
-    public boolean isRoot() {
-        return getParent() == null;
-    }
-    
-    /**
-     * @return String representation
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return value.toString();
-    }
+	/**
+	 * Checks if is leaf.
+	 *
+	 * @return TRUE if this node is leaf
+	 */
+	public boolean isLeaf()
+	{
+		return (children == null) || (children.isEmpty());
+	}
 
-    /**
-     * @return TRUE if equals
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-        boolean flag = false;
-        if (!TreeNode.class.equals(obj.getClass())) {
-            TreeNode<T> treeNode = (TreeNode<T>) obj;
-            if (this.getValue().equals(treeNode.getValue()) && this.getParent().equals(treeNode.getParent())
-                    && this.getChildren().equals(treeNode.getChildren())) {
-                flag = true;
-            }
-        }
+	/**
+	 * Checks if is root.
+	 *
+	 * @return TRUE if this node is root
+	 */
+	public boolean isRoot()
+	{
+		return getParent() == null;
+	}
 
-        return flag;
-    }
+	/**
+	 * To string.
+	 *
+	 * @return String representation
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString()
+	{
+		return value.toString();
+	}
 
-    /**
-     * @return hash code
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        int hashCode = 0;
-        if (null != value && null != parent && null != children) {
-            hashCode = value.hashCode() + parent.hashCode() + children.hashCode();
-        }
-        return hashCode;
-    }
+	/**
+	 * Equals.
+	 *
+	 * @param obj
+	 *            the obj
+	 * @return TRUE if equals
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj)
+	{
+		boolean flag = false;
+		if (obj instanceof TreeNode<?>)
+		{
+			TreeNode<T> treeNode = (TreeNode<T>) obj;
+			if (this.getValue().equals(treeNode.getValue())
+					&& this.getParent().equals(treeNode.getParent())
+					&& this.getChildren().equals(treeNode.getChildren()))
+			{
+				flag = true;
+			}
+		}
+
+		return flag;
+	}
+
+	/**
+	 * Hash code.
+	 *
+	 * @return hash code
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode()
+	{
+		int hashCode = 0;
+		if (null != value && null != parent && null != children)
+		{
+			hashCode = value.hashCode() + parent.hashCode() + children.hashCode();
+		}
+		return hashCode;
+	}
 }

@@ -111,8 +111,28 @@ public interface AbstractMetadataInterface extends SemanticAnnotatableInterface
 			Collection<SemanticPropertyInterface> semanticPropertyCollection);
 
 	/**
-	 *It will remove all the taggedValues in the given object 
+	 *It will remove all the taggedValues in the given object
 	 */
 	void removeAllTaggedValues();
 
+	/**
+	 * This method will return the tagged value for the given key
+	 * if not found will return the null.
+	 * @param key key of the tag which is to be found.
+	 * @return tagged value with the given key.
+	 */
+	String getTaggedValue(String key);
+	/**
+	 * Sets the activity status.
+	 *
+	 * @param activityStatus the new activity status
+	 */
+	void setActivityStatus(String activityStatus);
+
+	/**
+	 * Gets the activity status.
+	 *
+	 * @return the activity status
+	 */
+	String getActivityStatus();
 }

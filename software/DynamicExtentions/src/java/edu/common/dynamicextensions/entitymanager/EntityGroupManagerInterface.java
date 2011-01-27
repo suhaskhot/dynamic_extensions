@@ -7,7 +7,9 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
+import edu.common.dynamicextensions.xmi.DynamicQueryList;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.dao.HibernateDAO;
 
 /**
 *
@@ -19,25 +21,30 @@ public interface EntityGroupManagerInterface
 
 	/**
 	 * This method persists an entity group and the associated entities and also creates the data table
-	 * for the entities.
-	 * @param entityGroup
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	 * for the entities only if the hibernateDao is not provided.
+	 * if HibernateDao is provided then its the responsibility of the caller to execute all
+	 * the Queries which are returned from this method just before commiting the hibernate Dao.
+	 * @param entityGroup entity group to be save
+	 * @param hibernatedao dao which should be used (optional).
+	 * @return queryList to be executed.
+	 * @throws DynamicExtensionsSystemException exception
+	 * @throws DynamicExtensionsApplicationException exception
 	 */
-	EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroup)
+	DynamicQueryList persistEntityGroup(EntityGroupInterface group, HibernateDAO... hibernateDao)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
 
 	/**
 	 * This method persists an entity group and the associated entities without creating the data table
 	 * for the entities.
-	 * @param entityGroup
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	 * @param entityGroup entity group to be save
+	 * @param hibernatedao dao which should be used (optional).
+	 * @return queryList to be executed
+	 * @throws DynamicExtensionsSystemException exception
+	 * @throws DynamicExtensionsApplicationException exception
 	 */
-	EntityGroupInterface persistEntityGroupMetadata(EntityGroupInterface entityGroup)
-			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException;
+	DynamicQueryList persistEntityGroupMetadata(EntityGroupInterface entityGroup,
+			HibernateDAO... hibernateDao) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException;
 
 	/**
 	 * This method returns the entity group given the short name for the same.
@@ -54,8 +61,7 @@ public interface EntityGroupManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	EntityGroupInterface getEntityGroupByName(String name) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
+	EntityGroupInterface getEntityGroupByName(String name) throws DynamicExtensionsSystemException;
 
 	/**
 	 * @param identifier

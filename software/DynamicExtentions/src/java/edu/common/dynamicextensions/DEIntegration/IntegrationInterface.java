@@ -2,7 +2,7 @@
  *<p>Title: </p>
  *<p>Description:  </p>
  *<p>Copyright:TODO</p>
- *@author 
+ *@author
  *@version 1.0
  */
 
@@ -21,77 +21,76 @@ import edu.wustl.dao.exception.DAOException;
  * @author shital_lawhale
  *
  */
-
 public interface IntegrationInterface
 {
 
 	/**
-	 * 
+	 *
 	 * @param hookEntityId
-	 * @return the container Id of the DE entities that are associated with given static hook entity
+	 * @return the container Id of the DE entities that are associated with
+	 * given static hook entity
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	Collection getDynamicEntitiesContainerIdFromHookEntity(Long hookEntityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * 
+	 *
 	 * @param hookEntityId
-	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
-	 * @throws DynamicExtensionsSystemException
+	 * @return  the container Id of the DE entities/categories that are
+	 * associated with given static hook entity
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	Collection getCategoriesContainerIdFromHookEntity(Long hookEntityId)
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * 
+	 *
 	 * @param hookEntityRecId
 	 * @param containerId
 	 * @param hookEntityId
-	 * @return the category or form record id based on the containerId and hookentityRecId  
+	 * @return the category or form record id based on the containerId and hookentityRecId
+	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws SQLException exception.
 	 */
 	Collection getDynamicEntityRecordIdFromHookEntityRecordId(String hookEntityRecId,
 			Long containerId, Long hookEntityId) throws DynamicExtensionsSystemException,
 			SQLException;
 
 	/**
-	 * 
+	 *
 	 * @param categoryContainerId
 	 * @param staticRecId
 	 * @param hookEntityId
-	 * @return the record id of the category depending on hook entity record id. 
+	 * @return the record id of the category depending on hook entity record id.
+	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws SQLException exception.
+	 * @throws DAOException exception.
 	 */
 	Collection getCategoryRecIdBasedOnHookEntityRecId(Long categoryContainerId,
 			Long staticRecId, Long hookEntityId) throws DynamicExtensionsSystemException,
 			SQLException,DAOException;
 
 	/**
-	 * This method associate the DE records with the given Static hook entity record id 
-	 * @param containerId
-	 * @param staticEntityRecordId
-	 * @param dynamicEntityRecordId
-	 * @param hookEntityId
-	 */
-	void associateRecords(Long containerId, Long staticEntityRecordId,
-			Long dynamicEntityRecordId, Long hookEntityId)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
-			BizLogicException, DAOException;
-
-	/**
-	 * This method associate the static hook entity with the Dynamic entity  
+	 * This method associate the static hook entity with the Dynamic entity
 	 * @param hookEntityId
 	 * @param dynamicEntityId
 	 * @param isEntityFromXmi
 	 * @param isCategory
 	 * @return
+	 * @throws DynamicExtensionsApplicationException exception.
+	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws BizLogicException exception.
 	 */
 	Long addAssociation(Long hookEntityId, Long dynamicEntityId, boolean isEntityFromXmi,
 			boolean isCategory) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException, BizLogicException;
 
 	/**
-	 * 
+	 *
 	 * @param containerId
-	 * @return whether this entity is simple DE form /category. 
+	 * @return whether this entity is simple DE form /category.
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	boolean isCategory(Long containerId) throws DynamicExtensionsSystemException;
 

@@ -9,14 +9,13 @@ import static edu.wustl.cab2b.server.ServerConstants.LOAD_STATUS;
 import static edu.wustl.cab2b.server.path.PathConstants.CREATE_TABLE_FOR_ENTITY;
 import static edu.wustl.cab2b.server.path.PathConstants.METADATA_ENTITY_GROUP;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.SemanticAnnotatableInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
@@ -38,6 +37,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.StringValueInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
+import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
@@ -45,6 +45,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.skiplogic.SkipLogic;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
@@ -52,33 +53,43 @@ import edu.wustl.cab2b.common.errorcodes.ErrorCodeConstants;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.cache.EntityCache;
-import edu.wustl.common.bizlogic.AbstractBizLogic;
-import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.querysuite.queryobject.DataType;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.DBTypes;
+import edu.wustl.dao.util.NamedQueryParam;
 import gov.nih.nci.cagrid.metadata.common.SemanticMetadata;
 
 /**
- * This class decides whether to create a storage table for entity or not based on 
- * {@link edu.wustl.cab2b.server.path.PathConstants#CREATE_TABLE_FOR_ENTITY}
+ * This class decides whether to create a storage table for entity or not based on
  * To create a table for entity set this to TRUE before calling this code else set it to false.
  * @author Chandrakant Talele
  */
-public class DynamicExtensionUtility
+public final class DynamicExtensionUtility
 {
 
+	/**
+	 * Instantiates a new dynamic extension utility.
+	 */
+	private DynamicExtensionUtility()
+	{
+		// private constructor
+	}
+
+	/**
+	 * The domain object factory.
+	 */
 	private static DomainObjectFactory domainObjectFactory = DomainObjectFactory.getInstance();
 
 	/**
 	 * Persist given entity using dynamic extension APIs.
-	 * Whether to create data space (table) for this entity or not is decided by 
-	 * {@link PathConstants.CREATE_TABLE_FOR_ENTITY} 
+	 * Whether to create data space (table) for this entity or not is decided by
+	 * {PathConstants.CREATE_TABLE_FOR_ENTITY}
 	 * @param entity Entity to persist.
 	 * @return The saved entity
 	 */
-	public static EntityInterface persistEntity(EntityInterface entity)
+	public static EntityInterface persistEntity(final EntityInterface entity)
 	{
 		EntityManagerInterface entityManager = EntityManager.getInstance();
 		EntityInterface entityToPersist;
@@ -102,13 +113,15 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Persist given entity Group using dynamic extension APIs.
-	 * Whether to store only metadata for this entity Group is decided by 
-	 * {@link PathConstants.CREATE_TABLE_FOR_ENTITY} 
-	 * @param entityGroup entity Group to persist.
+	 * Persist given entity Group using dynamic extension APIs. Whether to store
+	 * only metadata for this entity Group is decided by
+	 * {@link edu.wustl.cab2b.server.path.PathConstants.CREATE_TABLE_FOR_ENTITY}
+	 *
+	 * @param entityGroup
+	 *            entity Group to persist.
 	 * @return The saved entity Group
 	 */
-	public static EntityGroupInterface persistEntityGroup(EntityGroupInterface entityGroup)
+	public static EntityGroupInterface persistEntityGroup(final EntityGroupInterface entityGroup)
 	{
 		EntityGroupInterface entityGroupObject = null;
 		try
@@ -124,36 +137,43 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Persist given entity Group using dynamic extension APIs.
-	 * Whether to store only metadata for this entity Group is decided by 
-	 * {@link PathConstants.CREATE_TABLE_FOR_ENTITY} 
-	 * @param entityGroup entity Group to persist.
+	 * Persist given entity Group using dynamic extension APIs. Whether to store
+	 * only metadata for this entity Group is decided by
+	 *
+	 * @param entityGroup
+	 *            entity Group to persist.
 	 * @return The saved entity Group
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsApplicationException
+	 *             the dynamic extensions application exception
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
+	 *             {@link edu.wustl.cab2b.server.path.PathConstants.CREATE_TABLE_FOR_ENTITY}
 	 */
-	public static EntityGroupInterface persistEGroup(EntityGroupInterface entityGroup)
+	public static EntityGroupInterface persistEGroup(final EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		EntityGroupManagerInterface entityGroupManager = EntityGroupManager.getInstance();
-		EntityGroupInterface entityGroupObject;
+
 		if (CREATE_TABLE_FOR_ENTITY)
 		{
-			entityGroupObject = entityGroupManager.persistEntityGroup(entityGroup);
+			entityGroupManager.persistEntityGroup(entityGroup);
 		}
 		else
 		{
-			entityGroupObject = entityGroupManager.persistEntityGroupMetadata(entityGroup);
+			entityGroupManager.persistEntityGroupMetadata(entityGroup);
 		}
-		return entityGroupObject;
+
+		return entityGroup;
 	}
 
 	/**
-	 * Returns the Entity for given Identifier
-	 * @param identifier Id of the entity
+	 * Returns the Entity for given Identifier.
+	 *
+	 * @param identifier
+	 *            Id of the entity
 	 * @return Actual Entity for given id.
 	 */
-	public static EntityInterface getEntityById(Long identifier)
+	public static EntityInterface getEntityById(final Long identifier)
 	{
 		try
 		{
@@ -166,11 +186,13 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Returns the Association for given Identifier
-	 * @param identifier Id of the Association
+	 * Returns the Association for given Identifier.
+	 *
+	 * @param identifier
+	 *            Id of the Association
 	 * @return Actual Association for given id.
 	 */
-	public static AssociationInterface getAssociationById(Long identifier)
+	public static AssociationInterface getAssociationById(final Long identifier)
 	{
 		try
 		{
@@ -185,24 +207,29 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Returns the entity group of given entity Id
-	 * @param identifier Entity Id
+	 * Returns the entity group of given entity Id.
+	 *
+	 * @param identifier
+	 *            Entity Id
 	 * @return Returns parent Entity Group
 	 */
-	public static EntityGroupInterface getEntityGroupForEntityId(Long identifier)
+	public static EntityGroupInterface getEntityGroupForEntityId(final Long identifier)
 	{
 		EntityInterface entity = getEntityById(identifier);
 		return Utility.getEntityGroup(entity);
 	}
 
 	/**
-	 * Returns the AttributeInterface whose name matches with given "attributeName" and 
-	 * whose parent name matches with "entityName" 
-	 * @param entityName name of parent entity.
-	 * @param attributeName name of required attribute.
-	 * @return Returns Attribute satisfying given conditions. 
+	 * Returns the AttributeInterface whose name matches with given
+	 * "attributeName" and whose parent name matches with "entityName".
+	 *
+	 * @param entityName
+	 *            name of parent entity.
+	 * @param attributeName
+	 *            name of required attribute.
+	 * @return Returns Attribute satisfying given conditions.
 	 */
-	public static AttributeInterface getAttribute(String entityName, String attributeName)
+	public static AttributeInterface getAttribute(final String entityName, String attributeName)
 	{
 		try
 		{
@@ -216,12 +243,15 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Stores the SemanticMetadata to the owner which can be class or attribute
-	 * @param owner EntityInterface OR AttributeInterface
-	 * @param semanticMetadataArr Semantic Metadata array to set.
+	 * Stores the SemanticMetadata to the owner which can be class or attribute.
+	 *
+	 * @param owner
+	 *            EntityInterface OR AttributeInterface
+	 * @param semanticMetadataArr
+	 *            Semantic Metadata array to set.
 	 */
-	public static void setSemanticMetadata(SemanticAnnotatableInterface owner,
-			SemanticMetadata[] semanticMetadataArr)
+	public static void setSemanticMetadata(final SemanticAnnotatableInterface owner,
+			final SemanticMetadata[] semanticMetadataArr)
 	{
 		if (semanticMetadataArr == null)
 		{
@@ -233,7 +263,7 @@ public class DynamicExtensionUtility
 			SemanticPropertyInterface semanticProp = domainObjectFactory.createSemanticProperty();
 			semanticProp.setSequenceNumber(i);
 			semanticProp.setConceptCode(semanticMetadataArr[i].getConceptCode());
-			semanticProp.setTerm(semanticMetadataArr[i].getConceptName());
+			semanticProp.setConceptPreferredName(semanticMetadataArr[i].getConceptName());
 			semanticProp.setConceptDefinition(semanticMetadataArr[i].getConceptDefinition());
 			owner.addSemanticProperty(semanticProp);
 		}
@@ -245,7 +275,8 @@ public class DynamicExtensionUtility
 	 * @param key Key to be used for tagging
 	 * @param value Actual value of the tag.
 	 */
-	public static void addTaggedValue(AbstractMetadataInterface owner, String key, String value)
+	public static void addTaggedValue(final AbstractMetadataInterface owner, final String key,
+			final String value)
 	{
 		TaggedValueInterface taggedValue = domainObjectFactory.createTaggedValue();
 		taggedValue.setKey(key);
@@ -254,10 +285,13 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * This method adds a tag to entity group to distinguish it as metadata entity group. 
+	 * This method adds a tag to entity group to distinguish it as metadata
+	 * entity group.
+	 *
 	 * @param entityGroup
+	 *            the entity group
 	 */
-	public static void markMetadataEntityGroup(EntityGroupInterface entityGroup)
+	public static void markMetadataEntityGroup(final EntityGroupInterface entityGroup)
 	{
 		TaggedValueInterface taggedValue = DomainObjectFactory.getInstance().createTaggedValue();
 		taggedValue.setKey(METADATA_ENTITY_GROUP);
@@ -266,13 +300,13 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * This method searches for is there any entity group present with given name. 
+	 * This method searches for is there any entity group present with given name.
 	 * If present it returns the entity group.If not present then it creates a entity group with given name.
 	 * Saves it, and returns the saved Entity Group.
 	 * @param name Name of the entity group.
 	 * @return Entity group with  given name
 	 */
-	public static synchronized EntityGroupInterface getEntityGroupByName(String name)
+	public static synchronized EntityGroupInterface getEntityGroupByName(final String name)
 	{
 		EntityGroupInterface entityGroup = null;
 		try
@@ -281,9 +315,8 @@ public class DynamicExtensionUtility
 		}
 		catch (BaseDynamicExtensionsException e)
 		{
-			throw new RuntimeException(
-					"Got System exception from Dynamic Extension while fetching entity group", e,
-					ErrorCodeConstants.DB_0001);
+			throw new RuntimeException("Got System exception from Dynamic Extension "
+					+ "while fetching entity group", e, ErrorCodeConstants.DB_0001);
 		}
 		if (entityGroup == null)
 		{
@@ -309,13 +342,17 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Copies the attribute's description, semantic metadata and associated permissible values.
-	 * Sets the given name to copied attribute
-	 * @param source Attribute to copy
-	 * @param name New name to be given to copied attribute
+	 * Copies the attribute's description, semantic metadata and associated
+	 * permissible values. Sets the given name to copied attribute
+	 *
+	 * @param source
+	 *            Attribute to copy
+	 * @param name
+	 *            New name to be given to copied attribute
 	 * @return The copied attribute
 	 */
-	public static AttributeInterface getAttributeCopy(AttributeInterface source, String name)
+	public static AttributeInterface getAttributeCopy(final AttributeInterface source,
+			final String name)
 	{
 		AttributeInterface attribute = getAttributeCopy(source);
 		attribute.setName(name);
@@ -323,140 +360,18 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Copies the attribute's name,description, semantic metadata and associated permissible values
-	 * @param source Attribute to copy
+	 * Copies the attribute's name,description, semantic metadata and associated
+	 * permissible values.
+	 *
+	 * @param source
+	 *            Attribute to copy
 	 * @return The cloned attribute
 	 */
-	public static AttributeInterface getAttributeCopy(AttributeInterface source)
+	public static AttributeInterface getAttributeCopy(final AttributeInterface source)
 	{
-		AttributeInterface attribute = null;
 		DataType type = Utility.getDataType(source.getAttributeTypeInformation());
 		DataElementInterface dataEle = source.getAttributeTypeInformation().getDataElement();
-		switch (type)
-		{
-			case String :
-				attribute = domainObjectFactory.createStringAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						StringValueInterface value = domainObjectFactory.createStringValue();
-						value.setValue((String) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			case Double :
-				attribute = domainObjectFactory.createDoubleAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						DoubleValueInterface value = domainObjectFactory.createDoubleValue();
-						value.setValue((Double) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			case Integer :
-				attribute = domainObjectFactory.createIntegerAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						IntegerValueInterface value = domainObjectFactory.createIntegerValue();
-						value.setValue((Integer) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			case Date :
-				attribute = domainObjectFactory.createDateAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						DateValueInterface value = domainObjectFactory.createDateValue();
-						value.setValue((Date) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			case Float :
-				attribute = domainObjectFactory.createFloatAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						FloatValueInterface value = domainObjectFactory.createFloatValue();
-						value.setValue((Float) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			case Boolean :
-				attribute = domainObjectFactory.createBooleanAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						BooleanValueInterface value = domainObjectFactory.createBooleanValue();
-						value.setValue((Boolean) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			case Long :
-				attribute = domainObjectFactory.createLongAttribute();
-				if (dataEle instanceof UserDefinedDEInterface)
-				{
-					UserDefinedDEInterface userDefinedDE = domainObjectFactory
-							.createUserDefinedDE();
-					UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
-					for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
-					{
-						LongValueInterface value = domainObjectFactory.createLongValue();
-						value.setValue((Long) val.getValueAsObject());
-						userDefinedDE.addPermissibleValue(value);
-					}
-					attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
-				}
-				break;
-
-			default :
-				Logger.out.info("Data type value not in specified types");
-
-		}
+		AttributeInterface attribute = handleDataTypes(type, dataEle);
 		attribute.setName(source.getName());
 		attribute.setDescription(source.getDescription());
 		copySemanticProperties(source, attribute);
@@ -464,33 +379,271 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Stores the SemanticMetadata to the owner which can be class or attribute
-	 * @param owner
-	 *            EntityInterface OR AttributeInterface
-	 * @param semanticMetadataArr
-	 *            Semantic Metadata array to set.
+	 * Handle data types.
+	 * @param type
+	 *            the type
+	 * @param dataEle
+	 *            the data ele
+	 *
+	 * @return the attribute interface
 	 */
-	private static void copySemanticProperties(AbstractMetadataInterface from,
-			AbstractMetadataInterface copyTo)
+	private static AttributeInterface handleDataTypes(final DataType type,
+			final DataElementInterface dataEle)
+	{
+		AttributeInterface attribute = null;
+		switch (type)
+		{
+			case String :
+				attribute = domainObjectFactory.createStringAttribute();
+				handleStringType(attribute, dataEle);
+				break;
+
+			case Double :
+				attribute = domainObjectFactory.createDoubleAttribute();
+				handleDoubleType(attribute, dataEle);
+				break;
+
+			case Integer :
+				attribute = domainObjectFactory.createIntegerAttribute();
+				handleIntegerType(attribute, dataEle);
+				break;
+
+			case Date :
+				attribute = domainObjectFactory.createDateAttribute();
+				handleDateType(attribute, dataEle);
+				break;
+
+			case Float :
+				attribute = domainObjectFactory.createFloatAttribute();
+				handleFloatType(attribute, dataEle);
+				break;
+
+			case Boolean :
+				attribute = domainObjectFactory.createBooleanAttribute();
+				handleBooleanType(attribute, dataEle);
+				break;
+
+			case Long :
+				attribute = domainObjectFactory.createLongAttribute();
+				handleLongType(attribute, dataEle);
+				break;
+
+			default :
+				Logger.out.info("Data type value not in specified types");
+
+		}
+		return attribute;
+	}
+
+	/**
+	 * Handle long type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleLongType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				LongValueInterface value = domainObjectFactory.createLongValue();
+				value.setValue((Long) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Handle boolean type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleBooleanType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				BooleanValueInterface value = domainObjectFactory.createBooleanValue();
+				value.setValue((Boolean) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Handle float type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleFloatType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				FloatValueInterface value = domainObjectFactory.createFloatValue();
+				value.setValue((Float) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Handle date type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleDateType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				DateValueInterface value = domainObjectFactory.createDateValue();
+				value.setValue((Date) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Handle integer type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleIntegerType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				IntegerValueInterface value = domainObjectFactory.createIntegerValue();
+				value.setValue((Integer) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Handle double type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleDoubleType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				DoubleValueInterface value = domainObjectFactory.createDoubleValue();
+				value.setValue((Double) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Handle string type.
+	 *
+	 * @param attribute
+	 *            the attribute
+	 * @param dataEle
+	 *            the data ele
+	 */
+	private static void handleStringType(final AttributeInterface attribute,
+			final DataElementInterface dataEle)
+	{
+		if (dataEle instanceof UserDefinedDEInterface)
+		{
+			UserDefinedDEInterface userDefinedDE = domainObjectFactory.createUserDefinedDE();
+			UserDefinedDEInterface userDe = (UserDefinedDEInterface) dataEle;
+			for (PermissibleValueInterface val : userDe.getPermissibleValueCollection())
+			{
+				StringValueInterface value = domainObjectFactory.createStringValue();
+				value.setValue((String) val.getValueAsObject());
+				userDefinedDE.addPermissibleValue(value);
+			}
+			attribute.getAttributeTypeInformation().setDataElement(userDefinedDE);
+		}
+	}
+
+	/**
+	 * Stores the SemanticMetadata to the owner which can be class or attribute.
+	 *
+	 * @param from
+	 *            the from
+	 * @param copyTo
+	 *            the copy to
+	 */
+	private static void copySemanticProperties(final AbstractMetadataInterface from,
+			final AbstractMetadataInterface copyTo)
 	{
 		for (SemanticPropertyInterface p : from.getSemanticPropertyCollection())
 		{
 			SemanticPropertyInterface semanticProp = domainObjectFactory.createSemanticProperty();
-			semanticProp.setTerm(p.getTerm());
+			semanticProp.setConceptPreferredName(p.getConceptPreferredName());
 			semanticProp.setConceptCode(p.getConceptCode());
 			copyTo.addSemanticProperty(semanticProp);
 		}
 	}
 
 	/**
-	 * Creates and returns a new one to many association between source target entities.
-	 * @param srcEntity source entity of the new association
-	 * @param tarEntity target enetiyt of the new association
+	 * Creates and returns a new one to many association between source target
+	 * entities.
+	 *
+	 * @param srcEntity
+	 *            source entity of the new association
+	 * @param tarEntity
+	 *            target entity of the new association
 	 * @return new association
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 */
-	public static AssociationInterface createNewOneToManyAsso(EntityInterface srcEntity,
-			EntityInterface tarEntity) throws DynamicExtensionsSystemException
+	public static AssociationInterface createNewOneToManyAsso(final EntityInterface srcEntity,
+			final EntityInterface tarEntity) throws DynamicExtensionsSystemException
 	{
 		AssociationInterface association = domainObjectFactory.createAssociation();
 		String associationName = "AssociationName_"
@@ -511,14 +664,19 @@ public class DynamicExtensionUtility
 
 	/**
 	 * Creates and returns new Role for an association.
-	 * @param associationType associationType
-	 * @param name name
-	 * @param minCard  minCard
-	 * @param maxCard maxCard
-	 * @return  RoleInterface
+	 *
+	 * @param associationType
+	 *            associationType
+	 * @param name
+	 *            name
+	 * @param minCard
+	 *            minCard
+	 * @param maxCard
+	 *            maxCard
+	 * @return RoleInterface
 	 */
-	public static RoleInterface getNewRole(AssociationType associationType, String name,
-			Cardinality minCard, Cardinality maxCard)
+	public static RoleInterface getNewRole(final AssociationType associationType,
+			final String name, final Cardinality minCard, final Cardinality maxCard)
 	{
 		RoleInterface role = domainObjectFactory.createRole();
 		role.setAssociationsType(associationType);
@@ -529,18 +687,21 @@ public class DynamicExtensionUtility
 	}
 
 	/**
-	 * Returns Cab2b Entity Groups
+	 * Returns Cab2b Entity Groups.
+	 *
 	 * @param hibernateDAO
+	 *            the hibernate dao
 	 * @return Cab2b Entity Groups
-	 * @throws DAOException 
+	 * @throws DAOException
+	 *             the DAO exception
 	 */
+	@SuppressWarnings("unchecked")
 	public static Collection<EntityGroupInterface> getSystemGeneratedEntityGroups(
-			HibernateDAO hibernateDAO) throws DAOException
+			final HibernateDAO hibernateDAO) throws DAOException
 	{
 		List<EntityGroupInterface> entityGroups = new ArrayList<EntityGroupInterface>();
-		Collection<EntityGroupInterface> allEntityGroups = new HashSet<EntityGroupInterface>();
-		allEntityGroups = hibernateDAO.retrieve(EntityGroupInterface.class.getName());
-
+		Collection<EntityGroupInterface> allEntityGroups = hibernateDAO
+				.retrieve(EntityGroupInterface.class.getName());
 		for (EntityGroupInterface entityGroup : allEntityGroups)
 		{
 			if (isEntityGroupMetadata(entityGroup))
@@ -551,28 +712,129 @@ public class DynamicExtensionUtility
 		return entityGroups;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static Collection<SkipLogic> getSkipLogicsDefinedForCategories(
+			final HibernateDAO hibernateDAO) throws DAOException
+	{
+		return hibernateDAO.retrieve(SkipLogic.class.getName());
+	}
+
 	/**
 	 * It will retrieve all the categories present in the dataBase.
+	 *
 	 * @param hibernateDAO
+	 *            the hibernate dao
 	 * @return List Of the categories present in the DB.
-	 * @throws DAOException 
+	 * @throws DAOException
+	 *             the DAO exception
 	 */
-	public static List<CategoryInterface> getAllCategories(HibernateDAO hibernateDAO)
+	@SuppressWarnings("unchecked")
+	public static List<CategoryInterface> getAllCategories(final HibernateDAO hibernateDAO)
 			throws DAOException
 	{
 		Logger.out.info("EntityCache in before GetAll Categories ");
-		List<CategoryInterface> categoryList = new ArrayList<CategoryInterface>();
-		categoryList = hibernateDAO.retrieve(CategoryInterface.class.getName());
+		List<CategoryInterface> categoryList = hibernateDAO.retrieve(CategoryInterface.class
+				.getName());
 		Logger.out.info("EntityCache in after getAllCategories ");
 		return categoryList;
 	}
 
 	/**
-	 * This method checks if the given entity group is a metadata entity group or not.
-	 * @param entityGroup
-	 * @return
+	 * It will retrieve all the cacheable categories present in the dataBase.
+	 * @param hibernateDAO hibernateDAO
+	 * @return List Of the categories present in the DB.
+	 * @throws DAOException exception.
 	 */
-	public static boolean isEntityGroupMetadata(EntityGroupInterface entityGroup)
+	public static List<CategoryInterface> getAllCacheableCategories(HibernateDAO hibernateDAO)
+			throws DAOException
+	{
+		Logger.out.info("Loading cacheable categories ");
+		List<CategoryInterface> categoryList = hibernateDAO.retrieve(CategoryInterface.class
+				.getName(), "isCacheable", Boolean.TRUE);
+		Logger.out.info("Loading cacheable categories finished");
+		return categoryList;
+	}
+
+	/**
+	 * It will retrieve Identifier of all the categories present in the
+	 * dataBase.
+	 *
+	 * @param hibernateDAO
+	 *            the hibernate dao
+	 * @return List Of the categories present in the DB.
+	 * @throws DAOException
+	 *             the DAO exception
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static List<Long> getAllCategoryIds(final HibernateDAO hibernateDAO) throws DAOException
+	{
+		String[] columnName = {"id"};
+		List<Long> categoryList = hibernateDAO.retrieve(CategoryInterface.class.getName(),
+				columnName);
+		return categoryList;
+	}
+
+	/**
+	 * It will retrieve Identifier of all the categories present in the
+	 * dataBase.
+	 *
+	 * @param hibernateDAO
+	 *            the hibernate dao
+	 * @return List Of the categories present in the DB.
+	 * @throws DAOException
+	 *             the DAO exception
+	 */
+	@SuppressWarnings({"unchecked"})
+	public static List<Long> getAllEntityGroupIds(final HibernateDAO hibernateDAO)
+			throws DAOException
+	{
+		String[] columnName = {"id"};
+		List<Long> entityGroupList = hibernateDAO.retrieve(EntityGroupInterface.class.getName(),
+				columnName);
+		return entityGroupList;
+	}
+
+	/**
+	 * It will retrieve Identifier of all the categories present in the
+	 * dataBase.
+	 *
+	 * @param hibernateDAO
+	 *            the hibernate dao
+	 * @param entityGroupID
+	 *            the entity group id
+	 * @return List Of the categories present in the DB.
+	 * @throws DAOException
+	 *             the DAO exception
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
+	 */
+	@SuppressWarnings({"unchecked", "deprecation"})
+	public static List<Long> getAllCategoryIdsForEntityGroupId(final HibernateDAO hibernateDAO,
+			final Long entityGroupID) throws DAOException, DynamicExtensionsSystemException
+	{
+		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+		substParams.put("0", new NamedQueryParam(DBTypes.LONG, entityGroupID));
+
+		// Following method is called to execute the stored HQL, the name of
+		// which is given as
+		// the first parameter. The second parameter is the map which contains
+		// the actual values
+		// that are replaced for the place holders.
+		List<Long> categoryList = (List<Long>) AbstractMetadataManager.executeHQL(
+				"getAllCategoryIdsForEntityGroupId", substParams);
+
+		return categoryList;
+	}
+
+	/**
+	 * This method checks if the given entity group is a metadata entity group
+	 * or not.
+	 *
+	 * @param entityGroup
+	 *            the entity group
+	 * @return true, if is entity group metadata
+	 */
+	public static boolean isEntityGroupMetadata(final EntityGroupInterface entityGroup)
 	{
 		boolean hasMetadataTag = false;
 		Collection<TaggedValueInterface> tags = entityGroup.getTaggedValueCollection();
@@ -585,28 +847,40 @@ public class DynamicExtensionUtility
 				break;
 			}
 		}
-		return (hasMetadataTag && isSuccessfullyLoaded(tags));
+		return hasMetadataTag && isSuccessfullyLoaded(tags);
 	}
 
-	private static boolean isSuccessfullyLoaded(Collection<TaggedValueInterface> taggedValues)
+	/**
+	 * Checks if is successfully loaded.
+	 *
+	 * @param taggedValues
+	 *            the tagged values
+	 * @return true, if is successfully loaded
+	 */
+	private static boolean isSuccessfullyLoaded(final Collection<TaggedValueInterface> taggedValues)
 	{
+		boolean isSuccessfullyLoaded = true;
 		for (TaggedValueInterface taggedValue : taggedValues)
 		{
 			String taggedKey = taggedValue.getKey();
 			String tagggedValue = taggedValue.getValue();
 			if (LOAD_STATUS.equals(taggedKey) && LOAD_FAILED.equals(tagggedValue))
 			{
-				return false;
+				isSuccessfullyLoaded = false;
 			}
 		}
-		return true;
+		return isSuccessfullyLoaded;
 	}
 
 	/**
-	 * @param entityId Entity Id
+	 * Gets the incoming intramodel associations.
+	 *
+	 * @param entityId
+	 *            Entity Id
 	 * @return associations with given entity as the target entity.
 	 */
-	public static Collection<AssociationInterface> getIncomingIntramodelAssociations(Long entityId)
+	public static Collection<AssociationInterface> getIncomingIntramodelAssociations(
+			final Long entityId)
 	{
 		EntityInterface entity = EntityCache.getInstance().getEntityById(entityId);
 		try
@@ -624,7 +898,7 @@ public class DynamicExtensionUtility
 	 * @param role Role to clone
 	 * @return the clone of the Role
 	 */
-	public static RoleInterface cloneRole(RoleInterface role)
+	public static RoleInterface cloneRole(final RoleInterface role)
 	{
 		RoleInterface clone = domainObjectFactory.createRole();
 		clone.setAssociationsType(role.getAssociationsType());
@@ -633,4 +907,5 @@ public class DynamicExtensionUtility
 		clone.setMinimumCardinality(role.getMinimumCardinality());
 		return clone;
 	}
+
 }

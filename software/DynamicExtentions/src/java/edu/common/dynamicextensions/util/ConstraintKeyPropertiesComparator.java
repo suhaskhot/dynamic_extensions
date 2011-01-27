@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
@@ -12,12 +13,15 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.Constrain
  */
 public class ConstraintKeyPropertiesComparator
 		implements
-			Comparator<ConstraintKeyPropertiesInterface>
+			Comparator<ConstraintKeyPropertiesInterface>, Serializable
 {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -5257147587074026659L;
 
 	/**
 	 * it will compare the constraintKeyProperties object in natural sort order of the column names of there primaryKeyAttribute
-	 * @return 
+	 * @return
 	 */
 	public int compare(ConstraintKeyPropertiesInterface src, ConstraintKeyPropertiesInterface tgt)
 	{

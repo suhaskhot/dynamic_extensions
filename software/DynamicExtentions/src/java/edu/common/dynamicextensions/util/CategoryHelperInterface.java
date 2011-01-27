@@ -2,9 +2,9 @@
 package edu.common.dynamicextensions.util;
 
 import java.text.ParseException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
@@ -18,8 +18,6 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.FormControlNotesInterface;
 import edu.common.dynamicextensions.domaininterface.PathInterface;
 import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
-import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
-import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CategoryAssociationControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
@@ -41,7 +39,8 @@ public interface CategoryHelperInterface
 		TEXT_FIELD_CONTROL("textField"), LIST_BOX_CONTROL("listBox"), DATE_PICKER_CONTROL(
 				"datePicker"), FILE_UPLOAD_CONTROL("fileUpload"), RADIO_BUTTON_CONTROL(
 				"radioButton"), TEXT_AREA_CONTROL("textArea"), CHECK_BOX_CONTROL("checkBox"), COMBO_BOX_CONTROL(
-				"comboBox"), LABEL_CONTROL("label");
+				"comboBox"), LABEL_CONTROL("label"), MULTISELECT_CHECKBOX_CONTROL(
+				"multiselectCheckBox");
 
 		String value;
 
@@ -78,28 +77,10 @@ public interface CategoryHelperInterface
 	/**
 	 * Create a new category if category with the given name does not exist.
 	 * @param name name by which we wish to create the category.
-	 * @return category 
+	 * @return category
 	 * @throws DynamicExtensionsSystemException
 	 */
 	CategoryInterface getCategory(String name) throws DynamicExtensionsSystemException;
-
-	/**
-	 * Saves a category.
-	 * @param category category object to be saved.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	void saveCategory(CategoryInterface category) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
-
-	/**
-	 * Saves a category metadata Only .
-	 * @param category category object to be saved.
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
-	 */
-	void saveCategoryMetadata(CategoryInterface category) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException;
 
 	/**
 	 * Create category container and category entity from given entity.
@@ -120,8 +101,8 @@ public interface CategoryHelperInterface
 	void setRootCategoryEntity(ContainerInterface container, CategoryInterface category);
 
 	/**
-	 * Add a controls to category containers. Attribute name is used to get the attribute of the entity. 
-	 * controlValue is used to select the type of control desired. controlCaption is used to modify the 
+	 * Add a controls to category containers. Attribute name is used to get the attribute of the entity.
+	 * controlValue is used to select the type of control desired. controlCaption is used to modify the
 	 * UI property i.e. label of the attribute. Lastly a list of permissible values is passed if any permissible
 	 * values subset exist for an attribute.
 	 * @param entity used to create a category entity.
@@ -130,21 +111,14 @@ public interface CategoryHelperInterface
 	 * @param controlType type of control to be created. (e.g. ControlEnum.TEXT_FIELD_CONTROL)
 	 * @param permissibleValues in case of radio buttons, lists and combo boxes, the list of permissible values is required, optional otherwise.
 	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException 
+	 * @throws DynamicExtensionsSystemException
 	 */
 	ControlInterface addOrUpdateControl(EntityInterface entity, String attributeName,
 			ContainerInterface container, ControlEnum controlType, String controlCaption,
 			String heading, List<FormControlNotesInterface> controlNotes,
 			Map<String, Object> rulesMap, Map<String, String> permValueOptions, long lineNumber,
-			Map<String, Collection<SemanticPropertyInterface>>... permissibleValueList)
-			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
-
-	/**
-	 * This method is used when there is inheritance between two entities.
-	 * @param parentContainer parentForm
-	 * @param childContainer childForm
-	 */
-	void setParentContainer(ContainerInterface parentContainer, ContainerInterface childContainer);
+			Set<String>... permissibleValues)
+			throws DynamicExtensionsSystemException;
 
 	/**
 	 * Associate category containers with each other.
@@ -158,8 +132,8 @@ public interface CategoryHelperInterface
 	 * @param associationList association(s) present between two entities involved.
 	 * e.g 'userstudyassociation' as depicted above
 	 * @param noOfEntries indicates multiplicity. e.g. one-to-one (1) or one-to-many (-1) etc.
-	 * @param string 
-	 * @return CategoryAssociationControlInterface 
+	 * @param string
+	 * @return CategoryAssociationControlInterface
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
@@ -177,68 +151,74 @@ public interface CategoryHelperInterface
 	int getNextSequenceNumber(ContainerInterface container);
 
 	/**
-	 * 
-	 * @param entity
-	 * @param attributeName
-	 * @param desiredPermissibleValues
-	 * @return
-	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
+	 * It will create a list of permissible values by reading the file.
+	 * @param entity entity to which attribute belongs.
+	 * @param attributeName name of the attribute whose permissible values are needed.
+	 * @param desiredPermissibleValues collection of permissible values.
+	 * @return List of permissible values
+	 * @throws DynamicExtensionsApplicationException exception.
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
-	List<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity,
+	Set<PermissibleValueInterface> createPermissibleValuesList(EntityInterface entity,
 			String attributeName, Long lineNo,
-			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			Set<String> desiredPermissibleValues)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException;
 
 	/**
-	 * @param path
-	 * @param instance
-	 * @throws DynamicExtensionsSystemException 
+	 * This method will add the instance information to the given path.
+	 * @param path path which is to be updated for instance information.
+	 * @param instance instance string
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	void addInstanceInformationToPath(PathInterface path, String instance)
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * @param attributeTypeInformation
-	 * @param desiredPermissibleValues
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws ParseException
+	 * This will return the list of permissible values.
+	 * @param attributeTypeInformation attribute type information.
+	 * @param desiredPermissibleValues desired values collection.
+	 * @return list of permissible value.
+	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws ParseException exception.
 	 */
 	List<PermissibleValueInterface> getPermissibleValueList(
 			AttributeTypeInformationInterface attributeTypeInformation,
-			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
+			Set<String> desiredPermissibleValues)
 			throws DynamicExtensionsSystemException, ParseException;
 
 	/**
-	 * @param category
-	 * @param entity
-	 * @param categoryEntityName
-	 * @return
+	 * It will check whether any category entity with the name categoryEntityName is present in category if,
+	 * present will return that else will create a new category entity with the given name.
+	 * @param category category in which to search for category entity.
+	 * @param entity entity from which to create the category entity.
+	 * @param categoryEntityName name of the catgory entity.
+	 * @return created or found category entity.
 	 */
 	CategoryEntityInterface createOrUpdateCategoryEntity(CategoryInterface category,
 			EntityInterface entity, String categoryEntityName);
 
 	/**
-	 * @param entity
-	 * @param attributeName
-	 * @param categoryEntity
-	 * @return
+	 * It will create a category attribute with the name attributeName, for categoryEntity.
+	 * @param entity entity from which to search for underlying attribute.
+	 * @param attributeName name of the attribtue in entity.
+	 * @param categoryEntity category entity in which to add the category attribute.
+	 * @return created category attribute.
 	 */
 	CategoryAttributeInterface createCategoryAttribute(EntityInterface entity,
 			String attributeName, CategoryEntityInterface categoryEntity);
 
 	/**
-	 * @param sourceCategoryEntity
-	 * @param targetCategoryEntity
-	 * @param name
-	 * @param numberOfentries
-	 * @param entityGroup
-	 * @param associationList
-	 * @param instance
-	 * @return
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException
+	 * It will associate category entities given as parameter in sourceCategoryEntity & targetCategoryEntity.
+	 * @param sourceCategoryEntity source category entity for association.
+	 * @param targetCategoryEntity target category entity for association.
+	 * @param name name of the category association
+	 * @param numberOfentries multiplicity of the association wheather its single or multiline.
+	 * @param entityGroup entity group.
+	 * @param associationList list of associations.
+	 * @param instance instance string.
+	 * @return created association.
+	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws DynamicExtensionsApplicationException exception.
 	 */
 	CategoryAssociationInterface associateCategoryEntities(
 			CategoryEntityInterface sourceCategoryEntity,
@@ -248,26 +228,30 @@ public interface CategoryHelperInterface
 			DynamicExtensionsApplicationException;
 
 	/**
-	 * @param control
-	 * @param controlType
-	 * @throws DynamicExtensionsSystemException
+	 * It will set the default control options for each type of control.
+	 * @param control control for which to set options.
+	 * @param controlType type of the control.
+	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	void setDefaultControlsOptions(ControlInterface control, ControlEnum controlType)
 			throws DynamicExtensionsSystemException;
 
 	/**
-	 * @param control
-	 * @param nextLine
-	 * @throws DynamicExtensionsSystemException
+	 * It will set the options for given control by reading the csv file.
+	 * e.g. columns, iscalculated etc.
+	 * @param control control for which to set options.
+	 * @param nextLine next line read.
+	 * @throws DynamicExtensionsSystemException exception
 	 */
 	void setOptions(DynamicExtensionBaseDomainObjectInterface dyextnBaseDomainObject,
 			Map<String, String> options, long lineNumber) throws DynamicExtensionsSystemException;
 
 	/**
-	 * @param entity
-	 * @param attributeName
-	 * @param categoryEntity
-	 * @return
+	 * return the category attribute with the given name which is created using the given entity & attribtue name.
+	 * @param entity entity from which to search the attribute.
+	 * @param attributeName name of the attribute.
+	 * @param categoryEntity category entity in which to add it.
+	 * @return created category attribute.
 	 */
 	CategoryAttributeInterface getCategoryAttribute(EntityInterface entity, String attributeName,
 			CategoryEntityInterface categoryEntity);
@@ -279,40 +263,44 @@ public interface CategoryHelperInterface
 	 * @param temp
 	 */
 	void removeAllSeprators(ContainerInterface temp);
-	
+
 	/**
 	 * Separates the instance information form the string of the format entityName[instance]
 	 * @param categoryEntityName
 	 * @return
 	 */
-	public abstract Long getInsatnce(String categoryEntityName);
+	Long getInsatnce(String categoryEntityName);
+
 	/**
-	 * 
-	 * @param permissibleValueCollection
-	 * @param value
-	 * @return
+	 * This method will release the lock on the category so that other users can use it
+	 * for furthure.
+	 * @param category category on which the lock is released.
 	 */
-	PermissibleValueInterface getPermissibleValue(
-			Collection<PermissibleValueInterface> permissibleValueCollection,
-			String value);
+	void releaseLockOnCategory(CategoryInterface category);
+
 	/**
-	 * 
-	 * @param attributeName
-	 * @param entityName
-	 * @param skipLogicAttributeInterface
-	 * @param lineNo
-	 * @param desiredPermissibleValues
-	 * @return
-	 * @throws DynamicExtensionsApplicationException
-	 * @throws DynamicExtensionsSystemException
+	 * This method will verify weather this category attribute is marked as populateFromXml.
+	 * If the attribute is marked then its properties will be set accordingly & category is also
+	 * marked as populateFromXml & its concept code collection will be modified according to the
+	 * category attribute.
+	 * If only related attribute is marked as populateFromXml then validation will be thrown.
+	 * If Attribute is marked populateFromXml & it does not have XPath tag then validation will be thrown.
+	 * @param catAttribute category attribute which is to be checked for populateFromXml tag.
+	 * @param category it's underlying category.
+	 * @throws DynamicExtensionsSystemException thrown if any of the above mentioned criteria's failed.
+	 *
 	 */
-	public List<PermissibleValueInterface> createPermissibleValuesList(
-			String attributeName,
-			String entityName,
-			SkipLogicAttributeInterface skipLogicAttributeInterface,
-			Long lineNo,
-			Map<String, Collection<SemanticPropertyInterface>> desiredPermissibleValues)
-			throws DynamicExtensionsApplicationException,
-			DynamicExtensionsSystemException;
+	void updateCategoryAttributeForXmlPopulation(CategoryAttributeInterface catAttribute,
+			CategoryInterface category) throws DynamicExtensionsSystemException;
+
+	/**
+	 *
+	 * @param categoryAttribute
+	 * @param permissibleValue
+	 * @throws @throws DynamicExtensionsSystemException
+	 */
+	void setDefaultValue(CategoryAttributeInterface categoryAttribute,
+			PermissibleValueInterface permissibleValue, boolean isNotAttributeTypeInfo)
+			throws DynamicExtensionsSystemException;
 
 }

@@ -1,51 +1,67 @@
 
 package edu.common.dynamicextensions.util;
 
-import java.text.ParseException;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.domain.CategoryEntity;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
+import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
+import edu.common.dynamicextensions.domaininterface.CalculatedAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryInterface;
+import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.PermissibleValueInterface;
+import edu.common.dynamicextensions.domaininterface.SkipLogicAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.CategoryConstants;
 import edu.common.dynamicextensions.util.parser.CategoryCSVConstants;
+import edu.common.dynamicextensions.util.parser.CategoryFileParser;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.util.global.ApplicationProperties;
+import edu.wustl.dao.HibernateDAO;
 
 /**
- * 
- * @author kunal_kamble
+ * The Class CategoryGenerationUtil.
  *
+ * @author kunal_kamble
  */
 public class CategoryGenerationUtil
 {
 
-	public static CategoryHelperInterface categoryHelper = new CategoryHelper();
-
 	/**
 	 * This method returns the entity from the entity group.
+	 *
 	 * @param entityName
+	 *            the entity name
 	 * @param entityGroup
+	 *            the entity group
+	 * @return the entity
 	 * @return
 	 */
 	public static EntityInterface getEntity(String entityName, EntityGroupInterface entityGroup)
@@ -54,15 +70,19 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * Returns the multiplicity in number for the give string
+	 * Returns the multiplicity in number for the give string.
+	 *
 	 * @param multiplicity
+	 *            the multiplicity
+	 * @return the multiplicity in numbers
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
 	 */
 	public static int getMultiplicityInNumbers(String multiplicity)
 			throws DynamicExtensionsSystemException
 	{
-		int multiplicityI = 1;
+		int multiplicityI = 1; // NOPMD by gaurav_sawant on 5/6/10 2:56 PM
 		if (multiplicity.equalsIgnoreCase(CategoryCSVConstants.MULTILINE))
 		{
 			multiplicityI = -1;
@@ -82,20 +102,30 @@ public class CategoryGenerationUtil
 
 	/**
 	 * Sets the root category entity for the category.
+	 *
 	 * @param category
+	 *            the category
 	 * @param rootContainerObject
+	 *            the root container object
 	 * @param containerCollection
+	 *            the container collection
 	 * @param paths
+	 *            the paths
 	 * @param absolutePath
+	 *            the absolute path
 	 * @param containerNameInstanceMap
+	 *            the container name instance map
+	 *  @param categoryHelper category helper object.
 	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 * @throws DynamicExtensionsApplicationException
+	 *             the dynamic extensions application exception
 	 */
 	public static void setRootContainer(CategoryInterface category,
 			ContainerInterface rootContainerObject, List<ContainerInterface> containerCollection,
 			Map<String, List<AssociationInterface>> paths, Map<String, List<String>> absolutePath,
-			Map<String, String> containerNameInstanceMap) throws DynamicExtensionsSystemException,
-			DynamicExtensionsApplicationException
+			Map<String, String> containerNameInstanceMap, CategoryHelperInterface categoryHelper)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		ContainerInterface rootContainer = rootContainerObject;
 		//		ContainerInterface rootContainer = null;
@@ -109,18 +139,17 @@ public class CategoryGenerationUtil
 		//			}
 		//		}
 
-		CategoryHelperInterface categoryHelper = new CategoryHelper();
-
-		for (String entityName : absolutePath.keySet())
+		for (Entry<String, List<String>> entryObject : absolutePath.entrySet())
 		{
 
-			if (absolutePath.get(entityName).size() == 1 && rootContainer != null)
+			if (entryObject.getValue().size() == 1 && rootContainer != null)
 			{
 				CategoryEntityInterface categoryEntityInterface = (CategoryEntityInterface) rootContainer
 						.getAbstractEntity();
 				String entityNameForAssociationMap = CategoryGenerationUtil
 						.getEntityNameForAssociationMap(containerNameInstanceMap
 								.get(categoryEntityInterface.getName()));
+				String entityName = entryObject.getKey();
 				if (!entityName.equals(entityNameForAssociationMap))
 				{
 					String entName = entityName;
@@ -163,8 +192,8 @@ public class CategoryGenerationUtil
 
 		for (ContainerInterface containerInterface : containerCollection)
 		{
-			CategoryEntityInterface categoryEntity = ((CategoryEntityInterface) containerInterface
-					.getAbstractEntity());
+			CategoryEntityInterface categoryEntity = (CategoryEntityInterface) containerInterface
+					.getAbstractEntity();
 			boolean isTableCreated = ((CategoryEntity) categoryEntity).isCreateTable();
 			if (rootContainer != containerInterface
 					&& categoryEntity.getTreeParentCategoryEntity() == null && isTableCreated)
@@ -193,9 +222,14 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * Returns the container having container caption as one passed to this method.
+	 * Returns the container having container caption as one passed to this
+	 * method.
+	 *
 	 * @param containerCollection
+	 *            the container collection
 	 * @param containerCaption
+	 *            the container caption
+	 * @return the container
 	 * @return
 	 */
 	public static ContainerInterface getContainer(List<ContainerInterface> containerCollection,
@@ -215,8 +249,13 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Gets the container with entity name.
+	 *
 	 * @param containerCollection
+	 *            the container collection
 	 * @param entityName
+	 *            the entity name
+	 * @return the container with entity name
 	 * @return
 	 */
 	public static ContainerInterface getContainerWithEntityName(
@@ -239,8 +278,12 @@ public class CategoryGenerationUtil
 
 	/**
 	 * Returns the container with given category entity name.
+	 *
 	 * @param containerCollection
+	 *            the container collection
 	 * @param categoryEntityName
+	 *            the category entity name
+	 * @return the container with category entity name
 	 * @return
 	 */
 	public static ContainerInterface getContainerWithCategoryEntityName(
@@ -261,10 +304,15 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Gets the association list.
+	 *
 	 * @param paths
+	 *            the paths
 	 * @param entityGroup
-	 * @return
-	 * @throws DynamicExtensionsSystemException 
+	 *            the entity group
+	 * @return the association list
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 */
 	public static Map<String, List<AssociationInterface>> getAssociationList(
 			Map<String, List<String>> paths, EntityGroupInterface entityGroup)
@@ -272,12 +320,10 @@ public class CategoryGenerationUtil
 	{
 		Map<String, List<AssociationInterface>> entityPaths = new HashMap<String, List<AssociationInterface>>();
 
-		Set<String> entitiesNames = paths.keySet();
-		for (String entityName : entitiesNames)
+		for (Entry<String, List<String>> entryObject : paths.entrySet())
 		{
-			// Path stored is from the root. 
-			List<String> pathsForEntity = paths.get(entityName);
-
+			// Path stored is from the root.
+			List<String> pathsForEntity = entryObject.getValue();
 			List<AssociationInterface> associations = new ArrayList<AssociationInterface>();
 			Iterator<String> entNamesIter = pathsForEntity.iterator();
 
@@ -286,6 +332,7 @@ public class CategoryGenerationUtil
 
 			EntityInterface sourceEntity = entityGroup
 					.getEntityByName(getEntityNameExcludingAssociationRoleName(srcEntityName));
+			String entityName = entryObject.getKey();
 			CategoryValidator.checkForNullRefernce(sourceEntity,
 					"ERROR IN DEFINING PATH FOR THE ENTITY " + entityName + ": ENTITY WITH NAME "
 							+ srcEntityName + " DOES NOT EXIST");
@@ -293,7 +340,7 @@ public class CategoryGenerationUtil
 			while (entNamesIter.hasNext())
 			{
 				String targetEntityName = entNamesIter.next();
-
+				int size = associations.size();
 				EntityInterface targetEntity = entityGroup
 						.getEntityByName(getEntityNameExcludingAssociationRoleName(targetEntityName));
 				addAssociation(sourceEntity, targetEntity, associationRoleName, associations);
@@ -306,7 +353,18 @@ public class CategoryGenerationUtil
 
 					parentEntity = parentEntity.getParentEntity();
 				}
-
+				if (associations.size() == size)
+				{
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ "Error in defining path for the entity "
+							+ entityName
+							+ ": "
+							+ sourceEntity.getName()
+							+ " --> "
+							+ targetEntityName
+							+ "  Association does not exist.");
+				}
 				// Source entity should now be target entity.
 				sourceEntity = targetEntity;
 				associationRoleName = getAssociationRoleName(targetEntityName);
@@ -325,8 +383,16 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * Adds the association.
+	 *
+	 * @param sourceEntity
+	 *            the source entity
+	 * @param targetEntity
+	 *            the target entity
+	 * @param associationRoleName
+	 *            the association role name
+	 * @param associations
+	 *            the associations
 	 */
 	private static void addAssociation(EntityInterface sourceEntity, EntityInterface targetEntity,
 			String associationRoleName, List<AssociationInterface> associations)
@@ -351,7 +417,11 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * 
+	 * Gets the entity name excluding association role name.
+	 *
+	 * @param entityName
+	 *            the entity name
+	 * @return the entity name excluding association role name
 	 * @return
 	 */
 	public static String getEntityNameExcludingAssociationRoleName(String entityName)
@@ -366,7 +436,11 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * 
+	 * Gets the association role name.
+	 *
+	 * @param entityName
+	 *            the entity name
+	 * @return the association role name
 	 * @return
 	 */
 	public static String getAssociationRoleName(String entityName)
@@ -381,7 +455,11 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * 
+	 * Gets the full association role name.
+	 *
+	 * @param entityName
+	 *            the entity name
+	 * @return the full association role name
 	 * @return
 	 */
 	public static String getFullAssociationRoleName(String entityName)
@@ -396,89 +474,35 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * This method gets the relative path.
-	 * @param entityNameList ordered entities names in the path
-	 * @param pathMap 
-	 * @return
-	 */
-	public static List<String> getRelativePath(List<String> entityNameList,
-			Map<String, List<String>> pathMap)
-	{
-		List<String> newEntityNameList = new ArrayList<String>();
-		String lastEntityName = null;
-		for (String entityName : entityNameList)
-		{
-			if (pathMap.get(entityName) == null)
-			{
-				newEntityNameList.add(entityName);
-			}
-			else
-			{
-				lastEntityName = entityName;
-			}
-		}
-		if (lastEntityName != null && !newEntityNameList.contains(lastEntityName))
-		{
-			newEntityNameList.add(0, lastEntityName);
-		}
-
-		return newEntityNameList;
-	}
-
-	/**
-	 * Returns the entity group used for careting this category 
+	 * Returns the entity group used for careting this category.
+	 *
 	 * @param category
+	 *            the category
 	 * @param entityGroupName
+	 *            the entity group name
+	 * @return the entity group
 	 * @return
 	 */
 	public static EntityGroupInterface getEntityGroup(CategoryInterface category,
 			String entityGroupName)
 	{
+		EntityGroupInterface entityGroup;
 		if (category.getRootCategoryElement() != null)
 		{
-			return category.getRootCategoryElement().getEntity().getEntityGroup();
+			entityGroup = category.getRootCategoryElement().getEntity().getEntityGroup();
 		}
 
-		return DynamicExtensionsUtility.retrieveEntityGroup(entityGroupName);
+		entityGroup = EntityCache.getInstance().getEntityGroupByName(entityGroupName);
+		return entityGroup;
 
 	}
 
 	/**
-	 * This method finds the main category entity.
-	 * @param categoryPaths
-	 * @return
-	 */
-	public static String getMainCategoryEntityName(String[] categoryPaths)
-	{
-		int minNumOfCategoryEntityNames = categoryPaths[0].split("->").length;
-		for (String string : categoryPaths)
-		{
-			if (minNumOfCategoryEntityNames > string.split("->").length)
-			{
-				minNumOfCategoryEntityNames = string.split("->").length;
-			}
-		}
-		String categoryEntityName = categoryPaths[0].split("->")[0];
-
-		a : for (int i = 0; i < minNumOfCategoryEntityNames; i++)
-		{
-			String temp = categoryPaths[0].split("->")[i];
-			for (String string : categoryPaths)
-			{
-				if (!string.split("->")[i].equals(temp))
-				{
-					break a;
-				}
-			}
-			categoryEntityName = categoryPaths[0].split("->")[i];
-		}
-
-		return categoryEntityName;
-	}
-
-	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
+	 * category names in CSV are of format <entity_name>[instance_Number].
+	 *
 	 * @param categoryNameInCSV
+	 *            the category name in csv
+	 * @return the entity name
 	 * @return
 	 */
 	public static String getEntityName(String categoryNameInCSV)
@@ -488,8 +512,11 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
-	 * @param categoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number].
+	 *
+	 * @param categoryEntityInstancePath
+	 *            the category entity instance path
+	 * @return the entity name for association map
 	 * @return
 	 */
 	public static String getEntityNameForAssociationMap(String categoryEntityInstancePath)
@@ -506,29 +533,32 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
-	 * @param categoryNameInCSV
-	 * @return
+	 * The path which are used for Root Cat Entity path should always be
+	 * NAME[1]->Name[1] but user can only specify Name[1] & thus this method modifies the instance
+	 * information if only NAME[1] is given to NAME[1]->NAME[1].
+	 * @param categoryEntityPath paths.
+	 * @return list of modified category entity paths.
 	 */
-	public static String getCategoryEntityName(String categoryEntityInstancePath)
+	public static List<String> getCategoryEntityPath(String[] categoryEntityPath)
 	{
-		StringBuffer entityNameForAssociationMap = new StringBuffer();
-		String[] categoryEntityPathArray = categoryEntityInstancePath.split("->");
-
-		for (String instancePath : categoryEntityPathArray)
+		List<String> categoryEntityPathList = new ArrayList<String>();
+		for (String categoryPath : categoryEntityPath)
 		{
-			entityNameForAssociationMap.append(instancePath);
+			if (!categoryPath.contains("->"))
+			{
+				categoryPath = categoryPath.concat("->" + categoryPath);
+			}
+			categoryEntityPathList.add(categoryPath);
 		}
-		if (categoryEntityPathArray.length == 1)
-		{
-			entityNameForAssociationMap.append(categoryEntityPathArray[0]);
-		}
-		return entityNameForAssociationMap.toString();
+		return categoryEntityPathList;
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
-	 * @param categoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number].
+	 *
+	 * @param categoryEntityInstancePath
+	 *            the category entity instance path
+	 * @return the entity name from category entity instance path
 	 * @return
 	 */
 	public static String getEntityNameFromCategoryEntityInstancePath(
@@ -538,15 +568,18 @@ public class CategoryGenerationUtil
 		if (categoryEntityInstancePath != null)
 		{
 			String[] categoryEntitiesInPath = categoryEntityInstancePath.split("->");
-			String newCategoryEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
-			entityName = getEntityName(newCategoryEntityName);
+			String newCatEntityName = categoryEntitiesInPath[categoryEntitiesInPath.length - 1];
+			entityName = getEntityName(newCatEntityName);
 		}
 		return entityName;
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
-	 * @param categoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number].
+	 *
+	 * @param assoList
+	 *            the asso list
+	 * @return the entity from entity association map
 	 * @return
 	 */
 	public static EntityInterface getEntityFromEntityAssociationMap(
@@ -555,85 +588,99 @@ public class CategoryGenerationUtil
 		EntityInterface entityInterface = null;
 		if (assoList != null && !assoList.isEmpty())
 		{
-			AssociationInterface associationInterface = assoList.get(assoList.size() - 1);
-			entityInterface = associationInterface.getTargetEntity();
+			AssociationInterface association = assoList.get(assoList.size() - 1);
+			entityInterface = association.getTargetEntity();
 		}
 		return entityInterface;
 	}
 
 	/**
-	 * @throws ParseException 
-	 * @throws DynamicExtensionsApplicationException 
-	 * @throws DynamicExtensionsSystemException 
-	 * @throws DynamicExtensionsSystemException 
-	 * 
+	 * Sets the default value for calculated attributes.
+	 *
+	 * @param category
+	 *            the category
+	 * @param rootCatEntity
+	 *            the root cat entity
+	 * @param lineNumber
+	 *            the line number
+	 * @throws DynamicExtensionsApplicationException
+	 *             the dynamic extensions application exception
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 */
 	public static void setDefaultValueForCalculatedAttributes(CategoryInterface category,
-			CategoryEntityInterface rootCategoryEntity, Long lineNumber)
+			CategoryEntityInterface rootCatEntity, Long lineNumber)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-		for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
-				.getCategoryAssociationCollection())
+
+		for (CategoryAttributeInterface categoryAttributeInterface : rootCatEntity
+				.getAllCategoryAttributes())
 		{
-			for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
-					.getTargetCategoryEntity().getAllCategoryAttributes())
+			Boolean isCalcAttr = categoryAttributeInterface.getIsCalculated();
+			if (isCalcAttr != null && isCalcAttr)
 			{
-				Boolean isCalculatedAttribute = categoryAttributeInterface.getIsCalculated();
-				if (isCalculatedAttribute != null && isCalculatedAttribute)
+				setDefaultValue(categoryAttributeInterface, category);
+				FormulaCalculator formulaCalculator = new FormulaCalculator();
+				String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
+						categoryAttributeInterface, rootCatEntity.getCategory());
+				if (message != null && message.length() > 0)
 				{
-					setDefaultValue(categoryAttributeInterface, category);
-					FormulaCalculator formulaCalculator = new FormulaCalculator();
-					String message = formulaCalculator.setDefaultValueForCalculatedAttributes(
-							categoryAttributeInterface, rootCategoryEntity.getCategory());
-					if (message != null && message.length() > 0)
-					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties
-								.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-								+ lineNumber + " " + message);
-					}
+					throw new DynamicExtensionsSystemException(ApplicationProperties
+							.getValue(CategoryConstants.CREATE_CAT_FAILS)
+							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+							+ lineNumber + " " + message);
 				}
 			}
+		}
+		for (CategoryAssociationInterface categoryAssociationInterface : rootCatEntity
+				.getCategoryAssociationCollection())
+		{
 			setDefaultValueForCalculatedAttributes(category, categoryAssociationInterface
 					.getTargetCategoryEntity(), lineNumber);
 		}
 	}
 
 	/**
-	 * 
+	 * Gets the category attribute.
+	 *
+	 * @param entityName
+	 *            the entity name
+	 * @param instanceNumber
+	 *            the instance number
+	 * @param attributeName
+	 *            the attribute name
+	 * @param rootCatEntity
+	 *            the root cat entity
+	 * @param attributes
+	 *            the attributes
+	 * @return the category attribute
 	 * @return
 	 */
 	public static void getCategoryAttribute(String entityName, Long instanceNumber,
-			String attributeName, CategoryEntityInterface rootCategoryEntity,
+			String attributeName, CategoryEntityInterface rootCatEntity,
 			List<CategoryAttributeInterface> attributes)
 	{
-		if (rootCategoryEntity != null)
+		if (rootCatEntity != null)
 		{
-			for (CategoryAssociationInterface categoryAssociationInterface : rootCategoryEntity
-					.getCategoryAssociationCollection())
+			Long instanceId = getInstanceIdOfCategoryEntity(rootCatEntity);
+			if (rootCatEntity.getEntity().getName().equals(entityName)
+					&& instanceId.equals(instanceNumber))
 			{
-				CategoryEntityInterface categoryEntityInterface = categoryAssociationInterface
-						.getTargetCategoryEntity();
-				List<PathAssociationRelationInterface> pathAssociationCollection = categoryEntityInterface
-						.getPath().getSortedPathAssociationRelationCollection();
-				PathAssociationRelationInterface pathAssociationRelationInterface = pathAssociationCollection
-						.get(pathAssociationCollection.size() - 1);
-				if (categoryEntityInterface.getEntity().getName().equals(entityName)
-						&& pathAssociationRelationInterface.getTargetInstanceId().equals(
-								instanceNumber))
+				for (CategoryAttributeInterface categoryAttributeInterface : rootCatEntity
+						.getCategoryAttributeCollection())
 				{
-					for (CategoryAttributeInterface categoryAttributeInterface : categoryAssociationInterface
-							.getTargetCategoryEntity().getCategoryAttributeCollection())
+					if (categoryAttributeInterface.getAbstractAttribute().getName().equals(
+							attributeName))
 					{
-						if (categoryAttributeInterface.getAbstractAttribute().getName().equals(
-								attributeName))
-						{
-							attributes.add(categoryAttributeInterface);
-							return;
-						}
+						attributes.add(categoryAttributeInterface);
+						return;
 					}
 				}
-				else
+			}
+			else
+			{
+				for (CategoryAssociationInterface categoryAssociationInterface : rootCatEntity
+						.getCategoryAssociationCollection())
 				{
 					getCategoryAttribute(entityName, instanceNumber, attributeName,
 							categoryAssociationInterface.getTargetCategoryEntity(), attributes);
@@ -644,11 +691,15 @@ public class CategoryGenerationUtil
 
 	/**
 	 * setDefaultValueforCalculatedAttributes.
-	 * @param defaultValue
-	 * @param control
+	 *
 	 * @param categoryAttribute
+	 *            the category attribute
+	 * @param categoryInterface
+	 *            the category interface
 	 * @throws DynamicExtensionsApplicationException
+	 *             the dynamic extensions application exception
 	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 */
 	private static void setDefaultValue(CategoryAttributeInterface categoryAttribute,
 			CategoryInterface categoryInterface) throws DynamicExtensionsApplicationException,
@@ -675,10 +726,10 @@ public class CategoryGenerationUtil
 						throw new DynamicExtensionsSystemException(ApplicationProperties
 								.getValue(CategoryConstants.CREATE_CAT_FAILS)
 								+ " "
-								+ names
+								+ Arrays.toString(names)
 								+ ApplicationProperties
 										.getValue("incorrectFormulaSyntaxCalculatedAttribute")
-								+ categoryAttribute.getFormula().getExpression());
+								+ categoryAttribute.getFormula().getExpression(), e);
 
 					}
 					CategoryGenerationUtil.getCategoryAttribute(names[0], Long.valueOf(names[1]),
@@ -688,7 +739,7 @@ public class CategoryGenerationUtil
 						throw new DynamicExtensionsSystemException(ApplicationProperties
 								.getValue(CategoryConstants.CREATE_CAT_FAILS)
 								+ " "
-								+ names
+								+ Arrays.toString(names)
 								+ ApplicationProperties
 										.getValue("incorrectFormulaSyntaxCalculatedAttribute")
 								+ categoryAttribute.getFormula().getExpression());
@@ -700,14 +751,20 @@ public class CategoryGenerationUtil
 								|| ((AttributeMetadataInterface) attributes.get(0))
 										.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 						{
-							categoryAttribute.addCalculatedCategoryAttribute(attributes.get(0));
+							CalculatedAttributeInterface calculatedAttribute = DomainObjectFactory
+									.getInstance().createCalculatedAttribute();
+							calculatedAttribute.setCalculatedAttribute(categoryAttribute);
+							calculatedAttribute.setSourceForCalculatedAttribute(attributes.get(0));
+							calculatedAttribute.getSourceForCalculatedAttribute()
+									.setIsSourceForCalculatedAttribute(Boolean.TRUE);
+							categoryAttribute.addCalculatedCategoryAttribute(calculatedAttribute);
 						}
 						else
 						{
 							throw new DynamicExtensionsSystemException(ApplicationProperties
 									.getValue(CategoryConstants.CREATE_CAT_FAILS)
 									+ " "
-									+ names
+									+ Arrays.toString(names)
 									+ ApplicationProperties
 											.getValue("incorrectDataTypeForCalculatedAttribute")
 									+ categoryAttribute.getFormula().getExpression());
@@ -719,7 +776,7 @@ public class CategoryGenerationUtil
 					throw new DynamicExtensionsSystemException(ApplicationProperties
 							.getValue(CategoryConstants.CREATE_CAT_FAILS)
 							+ " "
-							+ names
+							+ Arrays.toString(names)
 							+ ApplicationProperties
 									.getValue("incorrectFormulaSyntaxCalculatedAttribute")
 							+ categoryAttribute.getFormula().getExpression());
@@ -729,31 +786,36 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
-	 * This method will generate category entity names according to the path. 
-	 * @param categoryNameInCSV
+	 * category names in CSV are of format <entity_name>[instance_Number] This
+	 * method will generate category entity names according to the path.
+	 *
+	 * @param categoryEntityInstancePath
+	 *            the category entity instance path
+	 * @param entityNameAssociationMap
+	 *            the entity name association map
+	 * @return the category entity name
+	 * @throws DynamicExtensionsSystemException
+	 *             the dynamic extensions system exception
 	 * @return
-	 * @throws DynamicExtensionsSystemException 
 	 */
 	public static String getCategoryEntityName(String categoryEntityInstancePath,
 			Map<String, List<AssociationInterface>> entityNameAssociationMap)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer categoryEntityName = new StringBuffer();
-		String entityNameForEntityAssociationMap = CategoryGenerationUtil
-				.getEntityNameForAssociationMap(categoryEntityInstancePath);
+		String entityNameForEntityAssocMap = getEntityNameForAssociationMap(categoryEntityInstancePath);
 
 		//e.g Annotations[1]->PhysicalExam[2]
 		String[] pathWithInstance = categoryEntityInstancePath.split("->");
 
 		int counter = 0;
-		if (entityNameAssociationMap.get(entityNameForEntityAssociationMap) != null)
+		if (entityNameAssociationMap.get(entityNameForEntityAssocMap) != null)
 		{
+			CategoryHelperInterface categoryHelper = new CategoryHelper();
 			for (AssociationInterface association : entityNameAssociationMap
-					.get(entityNameForEntityAssociationMap))
+					.get(entityNameForEntityAssocMap))
 			{
 				String sourceEntityName = pathWithInstance[counter];
-				String targetEntityName = pathWithInstance[counter + 1];
 				if (sourceEntityName.indexOf('[') == -1 || sourceEntityName.indexOf(']') == -1)
 				{
 					throw new DynamicExtensionsSystemException(
@@ -768,6 +830,7 @@ public class CategoryGenerationUtil
 							.getInsatnce(sourceEntityName)));
 				}
 
+				String targetEntityName = pathWithInstance[counter + 1];
 				categoryEntityName.append(association.getTargetEntity().getName());
 				categoryEntityName.append(formatInstance(categoryHelper
 						.getInsatnce(targetEntityName)));
@@ -784,7 +847,11 @@ public class CategoryGenerationUtil
 	}
 
 	/**
+	 * Format instance.
+	 *
 	 * @param insatnce
+	 *            the insatnce
+	 * @return the object
 	 * @return
 	 */
 	private static Object formatInstance(Long insatnce)
@@ -797,8 +864,370 @@ public class CategoryGenerationUtil
 	}
 
 	/**
-	 * category names in CSV are of format <entity_name>[instance_Number]
-	 * @param categoryNameInCSV
-	 * @return
+	 * This method will verify weather all the values in the given collection are
+	 * of Integer type or not.
+	 * @param permissibleValueColl permisibleValueCollection
+	 * @return true if all values are Integer else false
 	 */
+	public static boolean isAllPermissibleValuesInteger(
+			Collection<PermissibleValueInterface> permissibleValueColl)
+	{
+		boolean allIntegerValues = false;
+		Iterator<PermissibleValueInterface> itrPVInteger = permissibleValueColl.iterator();
+		while (itrPVInteger.hasNext())
+		{
+			if (itrPVInteger.next() instanceof edu.common.dynamicextensions.domain.IntegerValue)
+			{
+				allIntegerValues = true;
+			}
+			else
+			{
+				allIntegerValues = false;
+			}
+		}
+		return allIntegerValues;
+	}
+
+	/**
+	 * This method will verify weather all the values in the given collection are
+	 * of Double type or not.
+	 * @param permissibleValueColl permisibleValueCollection
+	 * @return true if all values are Double else false
+	 */
+	public static boolean isAllPermissibleValuesDouble(
+			Collection<PermissibleValueInterface> permissibleValueColl)
+	{
+		boolean allDoubleValues = false; // NOPMD by gaurav_sawant on 5/6/10 2:57 PM
+		Iterator<PermissibleValueInterface> itrPVInteger = permissibleValueColl.iterator();
+		while (itrPVInteger.hasNext())
+		{
+			if (itrPVInteger.next() instanceof edu.common.dynamicextensions.domain.DoubleValue)
+			{
+				allDoubleValues = true;
+			}
+			else
+			{
+				allDoubleValues = false;
+			}
+		}
+		return allDoubleValues;
+	}
+
+	/**
+	 * This method will verify weather all the values in the given collection are
+	 * of Float type or not.
+	 * @param permissibleValueColl permisibleValueCollection
+	 * @return true if all values are Float else false
+	 */
+	public static boolean isAllPermissibleValuesFloat(
+			Collection<PermissibleValueInterface> permissibleValueColl)
+	{
+		boolean allFloatValues = false;
+		Iterator<PermissibleValueInterface> itrPVInteger = permissibleValueColl.iterator();
+		while (itrPVInteger.hasNext())
+		{
+			if (itrPVInteger.next() instanceof edu.common.dynamicextensions.domain.FloatValue)
+			{
+				allFloatValues = true;
+			}
+			else
+			{
+				allFloatValues = false;
+			}
+		}
+		return allFloatValues;
+	}
+
+	/**
+	 * This method will verify weather all the values in the given collection are
+	 * of Short type or not.
+	 * @param permissibleValueColl permisibleValueCollection
+	 * @return true if all values are Short else false
+	 */
+	public static boolean isAllPermissibleValuesShort(
+			Collection<PermissibleValueInterface> permissibleValueColl)
+	{
+		boolean allShortValues = false;
+		Iterator<PermissibleValueInterface> itrPVInteger = permissibleValueColl.iterator();
+		while (itrPVInteger.hasNext())
+		{
+			if (itrPVInteger.next() instanceof edu.common.dynamicextensions.domain.ShortValue)
+			{
+				allShortValues = true;
+			}
+			else
+			{
+				allShortValues = false;
+			}
+		}
+		return allShortValues;
+	}
+
+	/**
+	 * This method will verify weather all the values in the given collection are
+	 * of Long type or not.
+	 * @param permissibleValueColl permisibleValueCollection
+	 * @return true if all values are Long else false
+	 */
+	public static boolean isAllPermissibleValuesLong(
+			Collection<PermissibleValueInterface> permissibleValueColl)
+	{
+		boolean allLongValues = false;
+		Iterator<PermissibleValueInterface> itrPVInteger = permissibleValueColl.iterator();
+		while (itrPVInteger.hasNext())
+		{
+			if (itrPVInteger.next() instanceof edu.common.dynamicextensions.domain.LongValue)
+			{
+				allLongValues = true;
+			}
+			else
+			{
+				allLongValues = false;
+			}
+		}
+		return allLongValues;
+	}
+
+	/**
+	 * It will search in the given base directory & will find out all the category
+	 * files present in the given directory.
+	 * @param baseDirectory directory in which to search for the files.
+	 * @param relativePath path used to reach the category files.
+	 * @return list of the file names relative to the given base directory.
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	public static List<String> getCategoryFileListInDirectory(File baseDirectory,
+			String relativePath) throws DynamicExtensionsSystemException
+	{
+		List<String> fileNameList = new ArrayList<String>();
+		try
+		{
+			for (File file : baseDirectory.listFiles())
+			{
+				if (file.isDirectory())
+				{
+					String childDirPath = relativePath + file.getName() + "/";
+					fileNameList.addAll(getCategoryFileListInDirectory(file, childDirPath));
+				}
+				else
+				{
+					if (file.getAbsolutePath().endsWith(".csv")
+							|| file.getAbsolutePath().endsWith(".CSV"))
+					{
+						CategoryFileParser categoryFileParser = DomainObjectFactory.getInstance()
+								.createCategoryFileParser(file.getAbsolutePath(), "", null);
+						if (categoryFileParser != null)
+						{
+							if (categoryFileParser.isCategoryFile())
+							{
+								fileNameList.add(relativePath + file.getName());
+							}
+							categoryFileParser.closeResources();
+						}
+					}
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while reading the category file names ", e);
+
+		}
+		return fileNameList;
+	}
+
+	/**
+	 * It will search in the given base directory & will find out all the Permissible Value
+	 * files present in the given directory.
+	 * @param baseDirectory directory in which to search for the files.
+	 * @param relativePath path used to reach the category files.
+	 * @return list of the file names relative to the given base directory.
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	public static List<String> getPVFileListInDirectory(File baseDirectory, String relativePath)
+			throws DynamicExtensionsSystemException
+	{
+		List<String> fileNameList = new ArrayList<String>();
+		try
+		{
+			for (File file : baseDirectory.listFiles())
+			{
+				if (file.isDirectory())
+				{
+					String childDirPath = relativePath + file.getName() + "/";
+					fileNameList.addAll(getPVFileListInDirectory(file, childDirPath));
+				}
+				else
+				{
+					if (file.getAbsolutePath().endsWith(".csv")
+							|| file.getAbsolutePath().endsWith(".CSV"))
+					{
+						CategoryFileParser categoryFileParser = DomainObjectFactory.getInstance()
+								.createCategoryFileParser(file.getAbsolutePath(), "", null);
+						if (categoryFileParser != null && categoryFileParser.isPVFile())
+						{
+							fileNameList.add(relativePath + file.getName());
+						}
+						if (categoryFileParser != null)
+						{
+							categoryFileParser.closeResources();
+						}
+					}
+
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Exception occured while reading the Permissible Value file", e);
+		}
+		return fileNameList;
+	}
+
+	/**
+	 * This method will return the Instance no of the entity used by this category Entity.
+	 * @param catEntity category Entity
+	 * @return Instance Id.
+	 */
+	public static long getInstanceIdOfCategoryEntity(CategoryEntityInterface catEntity)
+	{
+
+		long instanceId = 1;
+		if (catEntity.getPath() != null)
+		{
+			List<PathAssociationRelationInterface> pathAssociationColl = catEntity.getPath()
+					.getSortedPathAssociationRelationCollection();
+			PathAssociationRelationInterface pathAssociation = pathAssociationColl
+					.get(pathAssociationColl.size() - 1);
+			instanceId = pathAssociation.getTargetInstanceId();
+		}
+		return instanceId;
+
+	}
+
+	/**
+	 *
+	 * @param dataElementCollection dataElementCollection
+	 * @param hibernateDAO hibernateDAO
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	public static void populateDataElementCollectionFromDB(
+			Collection<DataElementInterface> dataElementCollection, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
+	{
+		CategoryManager.getInstance();
+		for (DataElementInterface dataElement : dataElementCollection)
+		{
+			Collection<PermissibleValueInterface> pvCollection = ((UserDefinedDEInterface) dataElement)
+					.getPermissibleValueCollection();
+			Collection<PermissibleValueInterface> defaultPermissibleValues = ((UserDefinedDEInterface) dataElement)
+					.getDefaultPermissibleValues();
+			populatePVCollectionFromDB(defaultPermissibleValues, hibernateDAO);
+			populatePVCollectionFromDB(pvCollection, hibernateDAO);
+		}
+	}
+
+	/**
+	 *
+	 * @param pvCollection pvCollection
+	 * @param hibernateDAO hibernateDAO
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	private static void populatePVCollectionFromDB(
+			Collection<PermissibleValueInterface> pvCollection, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
+	{
+		Collection<PermissibleValueInterface> newPvCollection = new HashSet<PermissibleValueInterface>();
+		for (PermissibleValueInterface pValue : pvCollection)
+		{
+			if (pValue.getId() != null)
+			{
+				PermissibleValueInterface permissibleValueInterface = (PermissibleValueInterface) CategoryManager
+						.getObjectByIdentifier(PermissibleValueInterface.class.getName(), pValue
+								.getId().toString(), hibernateDAO);
+				newPvCollection.add(permissibleValueInterface);
+				populateSkipLogicPVs(pValue, hibernateDAO);
+			}
+		}
+		if (!newPvCollection.isEmpty())
+		{
+			pvCollection.clear();
+			pvCollection.addAll(newPvCollection);
+		}
+	}
+
+	/**
+	 * It will update entity with DB PV objects.
+	 * @param categoryEntity entity.
+	 * @param categoryHelper Categoryhelper.
+	 * @param hibernateDAO HibernateDao.
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	public static void updateaEntityWithDBPVs(CategoryEntityInterface categoryEntity,
+			CategoryHelperInterface categoryHelper, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
+	{
+		updateAllEntityAttributeWithDBPVs(categoryEntity, categoryHelper, hibernateDAO);
+		Collection<CategoryAssociationInterface> categoryAssociationInterfaces = categoryEntity
+				.getCategoryAssociationCollection();
+
+		for (CategoryAssociationInterface categoryAssociationInterface : categoryAssociationInterfaces)
+		{
+			CategoryEntityInterface tarCategoryEntityInterface = categoryAssociationInterface
+					.getTargetCategoryEntity();
+			updateaEntityWithDBPVs(tarCategoryEntityInterface, categoryHelper, hibernateDAO);
+		}
+	}
+
+	/**
+	 * It will update all attribute of entity with DB PV objects.
+	 * @param categoryEntity entity.
+	 * @param categoryHelper Category helper.
+	 * @param hibernateDAO HibernateDao.
+	 * @throws DynamicExtensionsSystemException exception.
+	 */
+	public static void updateAllEntityAttributeWithDBPVs(CategoryEntityInterface categoryEntity,
+			CategoryHelperInterface categoryHelper, HibernateDAO hibernateDAO)
+			throws DynamicExtensionsSystemException
+	{
+		Collection<CategoryAttributeInterface> attributes = categoryEntity
+				.getAllCategoryAttributes();
+		for (CategoryAttributeInterface categoryAttributeInterface : attributes)
+		{
+			populateDataElementCollectionFromDB(categoryAttributeInterface
+					.getDataElementCollection(), hibernateDAO);
+			populatePVCollectionFromDB(categoryAttributeInterface.getSkipLogicPermissibleValues(),
+					hibernateDAO);
+		}
+	}
+
+	/**
+	 * This method will populate all the skip logic PVs and replace it with DB
+	 * retrieved PV.
+	 * @param pValue PermissibleValueInterface which skip logic attribute needs
+	 * to be populate.
+	 * @param hibernateDAO HibernateDAO.
+	 * @throws DynamicExtensionsSystemException  DynamicExtensionsSystemException.
+	 */
+	private static void populateSkipLogicPVs(PermissibleValueInterface pValue,
+			HibernateDAO hibernateDAO) throws DynamicExtensionsSystemException
+	{
+		if (pValue.getDependentSkipLogicAttributes() != null)
+		{
+			Collection<SkipLogicAttributeInterface> skipLogicAttributes = pValue
+					.getDependentSkipLogicAttributes();
+			for (SkipLogicAttributeInterface skipLogicAttributeInterface : skipLogicAttributes)
+			{
+				if (skipLogicAttributeInterface.getDataElement() != null)
+				{
+					Collection<PermissibleValueInterface> permissibleValueInterfaces = ((UserDefinedDEInterface) skipLogicAttributeInterface
+							.getDataElement()).getPermissibleValueCollection();
+					populatePVCollectionFromDB(permissibleValueInterfaces, hibernateDAO);
+				}
+			}
+		}
+	}
+
 }

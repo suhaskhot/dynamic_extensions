@@ -1,31 +1,25 @@
 
 package edu.common.dynamicextensions.entitymanager;
 
-import java.sql.Types;
-import java.util.Collection;
 import java.util.List;
 
-import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
-import edu.common.dynamicextensions.domain.StringAttributeTypeInformation;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.CiderXMIImporter;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
-import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
 
 /**
  * test cases to verify primary key functionality in the entity
@@ -76,7 +70,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	* PURPOSE : To test the whether editing of an existing entity with primary key works properly or not 
+	* PURPOSE : To test the whether editing of an existing entity with primary key works properly or not
 	* EXPECTED BEHAVIOR : Changes in the existing entity should be stored properly and the changes made to the
 	* attributes of the entity should get reflected properly in the data tables.
 	* TEST CASE FLOW :
@@ -153,12 +147,12 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * Purpose : it will create two entities both without specifying any primary key tag
-	 * 				and inheritance in between them and then verify that it does not add new column 
+	 * 				and inheritance in between them and then verify that it does not add new column
 	 * 				to the child entity for foreign key referencing to the Identifier in parent
 	 * 		step 1 : create two Entities
 	 *  	step 2 : save entities
-	 *  	step 3: verify column counts 
-	 *  
+	 *  	step 3: verify column counts
+	 *
 	 */
 	public void testinheritanceBothWithIdPrimaryKey()
 	{
@@ -199,11 +193,11 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * Purpose : Create entity with composite primary key save it then remove one of the primary key
-	 * 			 Then verify the column and data 
-	 * 
+	 * 			 Then verify the column and data
+	 *
 	 * 		step 1: create Entity with 2 attributes as primary key
 	 * 		step 2: save entity
-	 * 		step 3: verify column count 
+	 * 		step 3: verify column count
 	 * 		step 4: remove one of the primary key
 	 * 		step 5: save entity again
 	 * 		step 6: verify column count
@@ -262,21 +256,21 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * purpose: Import xmi which contains primary key tags.
+	 * This test case is hanged in case of mysql & thus commented for temporary purpose.
 	 */
 	public void testXMIImportWithPrimaryKeyTag()
 	{
 		try
 		{
-			String[] args = {"./xmi/test_primaryKey.xmi", "test_id", "./csv/test_primaryKey.csv","CIDER"};
+			String[] args = {XMI_FILE_PATH + "test_primaryKey.xmi",
+					CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
 			try
 			{
-				XMIImporter.main(args);
+				CiderXMIImporter.main(args);
 
 				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
 						.getEntityGroupByName("test_primaryKey");
-				/*EntityInterface entity = entityGroup.getEntityByName("child");
-				assertEquals(noOfDefaultColumns + 3, getColumnCount("select * from "
-						+ entity.getTableProperties().getName()));*/
+				entityGroup.getEntityByName("child");
 
 				System.out
 						.println("--------------- Test Case to import XMI successful ------------");
@@ -300,11 +294,11 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	{
 		try
 		{
-			String[] args = {"./xmi/testcider.xmi", "test", "./csv/testcider.csv","CIDER"};
-
+			String[] args = {XMI_FILE_PATH + "testcider.xmi", CSV_FILE_PATH + "testcider.csv",
+					"test", "none", "false"};
 			try
 			{
-				XMIImporter.main(args);
+				CiderXMIImporter.main(args);
 
 				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
 						.getEntityGroupByName("testcider");
@@ -321,7 +315,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 				{
 					fail();
 				}
-				Collection<AttributeInterface> att = entity.getEntityAttributes();
+				entity.getEntityAttributes();
 
 				EntityInterface patientEntity = entityGroup.getEntityByName("patient");
 				if (patientEntity.getPrimaryKeyAttributeCollection().size() != 3)
@@ -359,10 +353,11 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	{
 		try
 		{
-			String[] args = {"./edited_xmi/testcider.xmi", "test", "./csv/testcider.csv", "CIDER"};
+			String[] args = {EDITED_XMI_FILE_PATH + "testcider.xmi",
+					CSV_FILE_PATH + "testcider.csv", "test", "none", "false"};
 			try
 			{
-				XMIImporter.main(args);
+				CiderXMIImporter.main(args);
 
 				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
 						.getEntityGroupByName("testcider");
@@ -407,11 +402,12 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	{
 		try
 		{
-			String[] args = {"./xmi/test_association_without_primaryKey.xmi", "test_primaryKey",
-					"./csv/test_association_without_primaryKey.csv","CIDER"};
+			String[] args = {XMI_FILE_PATH + "test_association_without_primaryKey.xmi",
+					CSV_FILE_PATH + "test_association_without_primaryKey.csv", "test_primaryKey",
+					"none", "false"};
 			try
 			{
-				XMIImporter.main(args);
+				CiderXMIImporter.main(args);
 
 				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
 						.getEntityGroupByName("test_association_without_primaryKey");
@@ -445,7 +441,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 * purpose  : import the xmi which is already imported and modified to add a 
+	 * purpose  : import the xmi which is already imported and modified to add a
 	 * 				new attribute as a primary key
 	 */
 	public void testEditXMIImportToAddPrimaryKey()
@@ -454,13 +450,12 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 		try
 		{
 
-			String[] args = {"./edited_xmi/test_primaryKey.xmi", "test_id",
-					"./csv/test_primaryKey.csv","CIDER"};
+			String[] args = {EDITED_XMI_FILE_PATH + "test_primaryKey.xmi",
+					CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
 			try
 			{
-				XMIImporter.main(args);
-				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
-						.getEntityGroupByName("test_primaryKey");
+				CiderXMIImporter.main(args);
+				EntityGroupManager.getInstance().getEntityGroupByName("test_primaryKey");
 				/*EntityInterface entity = entityGroup.getEntityByName("child");
 				assertEquals(noOfDefaultColumns + 3, getColumnCount("select * from "
 						+ entity.getTableProperties().getName()));*/
@@ -491,12 +486,12 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 		try
 		{
 
-			String[] args = {"./xmi/test_primaryKey1.xmi", "test_id", "./csv/test_primaryKey.csv","CIDER"};
+			String[] args = {XMI_FILE_PATH + "cider.xmi", CSV_FILE_PATH + "cider.csv",
+					"edu.wustl.cider.domain", "none"};
 			try
 			{
-				XMIImporter.main(args);
-				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
-						.getEntityGroupByName("test_primaryKey1");
+				CiderXMIImporter.main(args);
+				EntityGroupManager.getInstance().getEntityGroupByName("test_primaryKey1");
 				/*EntityInterface entity = entityGroup.getEntityByName("child");
 				assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
 						+ entity.getTableProperties().getName()));*/
@@ -520,7 +515,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * Import xmi which is already imported and is edited and which does not contains primary key tag
-	 * 
+	 *
 	 * Expected behaviour : should add id as primary key
 	 */
 	public void testEditXMIImport1RemoveAllPrimaryKeyAttribute()
@@ -528,16 +523,15 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 		try
 		{
-			String[] args = {"./edited_xmi/test_primaryKey1.xmi", "test_id",
-					"./csv/test_primaryKey.csv","CIDER"};
+			String[] args = {EDITED_XMI_FILE_PATH + "test_primaryKey1.xmi",
+					CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
 			try
 			{
-				XMIImporter.main(args);
-				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
-						.getEntityGroupByName("test_primaryKey1");
-			/*	EntityInterface entity = entityGroup.getEntityByName("child");
-				assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
-						+ entity.getTableProperties().getName()));*/
+				CiderXMIImporter.main(args);
+				EntityGroupManager.getInstance().getEntityGroupByName("test_primaryKey1");
+				/*	EntityInterface entity = entityGroup.getEntityByName("child");
+					assertEquals(noOfDefaultColumns + 2, getColumnCount("select * from "
+							+ entity.getTableProperties().getName()));*/
 				System.out
 						.println("--------------- Test Case to import XMI successful ------------");
 
@@ -562,36 +556,27 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	 */
 	public void testXMIImportInvalidPrimaryKeyDataType()
 	{
+		//String[] args = {"F:/SCGModel/scg1.xmi","edu.wustl.catissuecore.domain.PathAnnotation_SCG", "F:/SCGModel/scg.csv"};
+		String[] args = {XMI_FILE_PATH + "test_primaryKey_InvalidDataType.xmi",
+				CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
 		try
 		{
-			//String[] args = {"F:/SCGModel/scg1.xmi","edu.wustl.catissuecore.domain.PathAnnotation_SCG", "F:/SCGModel/scg.csv"};
-			String[] args = {"./xmi/test_primaryKey_InvalidDataType.xmi", "test_id",
-					"./csv/test_primaryKey.csv","CIDER"};
-			try
-			{
-				XMIImporter.main(args);
+			CiderXMIImporter.main(args);
 
-				EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
-						.getEntityGroupByName("test_primaryKey_InvalidDataType");
-				EntityInterface entity = entityGroup.getEntityByName("child");
-				assertEquals(noOfDefaultColumns, getColumnCount("select * from "
-						+ entity.getTableProperties().getName()));
-				//exception should occur
+			EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
+					.getEntityGroupByName("test_primaryKey_InvalidDataType");
+			if (entityGroup != null)
+			{
 				fail();
-
-			}
-			catch (Exception e)
-			{
-				System.out
-						.println("--------------- Test Case to import XMI successful ------------");
 			}
 
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			fail("Exception occured");
+			fail();
+			System.out.println("--------------- Test Case to import XMI successful ------------");
 		}
+
 	}
 
 	/**
@@ -602,9 +587,9 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	{
 		try
 		{
-			String[] args = {"./xmi/test_primaryKey_InvalidAttribute.xmi", "test_id",
-					"./csv/test_primaryKey.csv","CIDER"};
-			XMIImporter.main(args);
+			String[] args = {XMI_FILE_PATH + "test_primaryKey_InvalidAttribute.xmi",
+					CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
+			CiderXMIImporter.main(args);
 
 			EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
 					.getEntityGroupByName("test_primaryKey_InvalidAttribute");
@@ -622,7 +607,6 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 		}
 	}
 
-	
 	/**
 	 * Import xmi which contains primary key tag as a attribute which is not present in the entity
 	 * Expected Behaviour : should throw exception saying attribute not present
@@ -632,16 +616,11 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 		try
 		{
 
-			String[] args = {"./xmi/test_primaryKey_association.xmi", "test_id",
-					"./csv/test_primaryKey.csv","CIDER"};
+			String[] args = {XMI_FILE_PATH + "test_primaryKey_association.xmi",
+					CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
 
-			XMIImporter.main(args);
-			EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
-					.getEntityGroupByName("test_primaryKey_association");
-			/*EntityInterface entity = entityGroup.getEntityByName("child");
-			assertEquals(noOfDefaultColumns + 3, getColumnCount("select * from "
-					+ entity.getTableProperties().getName()));*/
-			//Exception should occur
+			CiderXMIImporter.main(args);
+			EntityGroupManager.getInstance().getEntityGroupByName("test_primaryKey_association");
 
 		}
 		catch (Exception e)
@@ -660,16 +639,11 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	{
 		try
 		{
-			String[] args = {"./edited_xmi/test_primaryKey_association.xmi", "test_id",
-					"./csv/test_primaryKey.csv","CIDER"};
-			XMIImporter.main(args);
+			String[] args = {EDITED_XMI_FILE_PATH + "test_primaryKey_association.xmi",
+					CSV_FILE_PATH + "test_primaryKey.csv", "test_id", "none", "false"};
+			CiderXMIImporter.main(args);
 
-			EntityGroupInterface entityGroup = EntityGroupManager.getInstance()
-					.getEntityGroupByName("test_primaryKey_association");
-			/*EntityInterface entity = entityGroup.getEntityByName("child");
-			assertEquals(noOfDefaultColumns + 3, getColumnCount("select * from "
-					+ entity.getTableProperties().getName()));*/
-			//Exception should occur
+			EntityGroupManager.getInstance().getEntityGroupByName("test_primaryKey_association");
 
 		}
 		catch (Exception e)
@@ -683,8 +657,8 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	/**
 	 * Purpose : Create 2 entities parent with composite key and inheritance in them , then remove the one of the primary key
 	 * 			 and save the entity again
-	 * 
-	 * 		step 1: create specimen with composite key , create tissue specimen which inherite from specimen  
+	 *
+	 * 		step 1: create specimen with composite key , create tissue specimen which inherite from specimen
 	 * 		step 2: save entities
 	 * 		step 3: verify column count
 	 * 		step 4: remove one of the primary key form specimen
@@ -822,7 +796,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 			entityGroup.addEntity(user);
 			user.setEntityGroup(entityGroup);
 
-			EntityInterface savedUser = entityManager.persistEntity(user);
+			entityManager.persistEntity(user);
 
 			String tableName = user.getTableProperties().getName();
 
@@ -916,8 +890,8 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 *   To create 2 level inheritance 
-	 *   
+	 *   To create 2 level inheritance
+	 *
 	 */
 	public void testInheritanceTwoLevelWithPrimaryKey()
 	{
@@ -989,15 +963,15 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 *  PURPOSE: This method tests for metadata save of the inheritance when child is edited with edited parent.
-	 *  and both have different primary key attribute other than identifier then set he parent of tissue specimen to null 
+	 *  and both have different primary key attribute other than identifier then set he parent of tissue specimen to null
 	 *
 	 *  EXPECTED BEHAVIOUR: All the hierarchy should get saved. Changes in the parent should get properly reflected
-	 *  in the database. A new column is added in child for primary key of parent. 
+	 *  in the database. A new column is added in child for primary key of parent.
 	 *  Appropriate changes in the data tables should occur without any exception for both
 	 *  the entities.
 	 *
 	 *  TEST CASE FLOW: 1. Create Specimen with composite primary key
-	 *  				2. Persist Specimen 
+	 *  				2. Persist Specimen
 	 *  				3. Create TissueSpecimen and set parent as Specimen.
 	 *                  4. persist TissueSpecimen
 	 *                  5. Add an attribute to specimen
@@ -1117,12 +1091,12 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * purpose: create two entities specimen without specifying any primary key attribute and tissue specimen with primary key attribute
-	 * 			and tissue specimen inherite from specimen 
-	 * 	
+	 * 			and tissue specimen inherite from specimen
+	 *
 	 * 		step 1: create two entities
 	 * 		step 2: save enities
 	 * 		step 3: verify columnCounts
-	 *  
+	 *
 	 */
 	public void testInheritanceChildWithPrimaryKey()
 	{
@@ -1139,7 +1113,6 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 			specimen.setAbstract(true);
 			entityGroup.addEntity(specimen);
 			specimen.setEntityGroup(entityGroup);
-			
 
 			EntityInterface tissueSpecimen = factory.createEntity();
 			tissueSpecimen.setName("tissueSpecimen");
@@ -1150,7 +1123,6 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 			doubleAttribute.setIsPrimaryKey(new Boolean(true));
 			doubleAttribute.setIsNullable(new Boolean(false));
 			tissueSpecimen.addAbstractAttribute(doubleAttribute);
-			
 
 			AttributeInterface quantityInCellCount = factory.createIntegerAttribute();
 			quantityInCellCount.setName("quantityInCellCount");
@@ -1177,7 +1149,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	}
 
 	/**
-	 * purpose : Create 2 entities with primary keys specified 
+	 * purpose : Create 2 entities with primary keys specified
 	 */
 	public void testInheritanceBothWithPrimaryKey()
 	{
@@ -1241,8 +1213,8 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 	 *	step 2: create study entity without specifying any primary key
 	 *  step 3: Associate user (1)------ >(*)study
 	 *  step 5: save entity group
-	 *  step 6: verify column count 
-	 * 
+	 *  step 6: verify column count
+	 *
 	 */
 	/*public void testCreateEntityWithOneToManyAssociationWithSrcPrimaryKey()
 	{
@@ -1448,7 +1420,7 @@ public class TestEntityManagerWithPrimaryKey extends DynamicExtensionsBaseTestCa
 
 	/**
 	 * This test case test for associating three entities with  many to one to one
-	 * user contains different primary key study also contains other primary key 
+	 * user contains different primary key study also contains other primary key
 	 *
 	 * User(*) ---- >(1)Study(1) ------>(1)institute
 	 */

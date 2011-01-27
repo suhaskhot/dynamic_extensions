@@ -9,50 +9,58 @@
 package edu.common.dynamicextensions.util;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import java.util.LinkedList;
 
 import junit.framework.TestCase;
-import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
-import edu.common.dynamicextensions.xmi.importer.XMIImporter;
 import edu.wustl.common.exception.ErrorKey;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.Constants;
-import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.JDBCDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
-import edu.wustl.dao.exception.DAOException;
+import edu.wustl.dao.query.generator.ColumnValueBean;
 
 public class DynamicExtensionsBaseTestCase extends TestCase
 		implements
 			EntityManagerExceptionConstantsInterface
 {
 
+	public static final String TEST_MODLE_PCKAGE_NAME = "test.annotations";
+
 	static
 	{
 		System.setProperty("app.propertiesFile", System.getProperty("user.dir") + "/build.xml");
-		LoggerConfig.configureLogger(System.getProperty("user.dir") + "/src/");
+		LoggerConfig.configureLogger(System.getProperty("user.dir") + "/test/");
 		try
 		{
 			ErrorKey.init("~");
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	protected final static String TEST_MODEL_DIR = "CPUML/TestModels/TestModel_withTags/edited";
+	protected final static String XMI_FILE_PATH = "./src/resources/xmi/";
+    protected final static String XML_FILE_PATH = "./src/resources/xml/";
+//    protected final static String XML_FILE_PATH = "./software/DynamicExtentions/src/resources/xml/";
+	protected final static String CSV_FILE_PATH = "./src/resources/csv/";
+	protected final static String PV_FILE_PATH = "./src/resources/pvs/";
+	protected final static String RESOURCE_DIR_PATH = "./src/resources/";
+	protected final static String EDITED_XMI_FILE_PATH = "./src/resources/edited_xmi/";
+	protected final static String JBOSS_PATH = "http://10.88.199.44:46210/dynamicExtensions";
+	protected final static String TEST_ENTITYGROUP_NAME = "test";
 	protected int noOfDefaultColumns = 2;
 
 	//1:ACTIVITY_STATUS 2:IDENTIFIER 3:FILE NAME 4:CONTENTE_TYPE 5:ACTUAL_CONTENTS
@@ -60,8 +68,12 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 
 	protected final static String STRING_TYPE = "string";
 	protected final static String INT_TYPE = "int";
+	protected final static String LONG_TYPE = "long";
+	protected final String APPLICATIONURL = "http://10.88.199.44:28080/dynamicExtensions";
 
 	JDBCDAO dao;
+
+	protected DummyMapGenerator mapGenerator = new DummyMapGenerator();
 
 	/**
 	 *
@@ -75,7 +87,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	/**
 	 * @param arg0 name
 	 */
-	public DynamicExtensionsBaseTestCase(String arg0)
+	public DynamicExtensionsBaseTestCase(final String arg0)
 	{
 		super(arg0);
 	}
@@ -83,16 +95,16 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	/**
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp()
 	{
-
-		Logger.out = org.apache.log4j.Logger.getLogger("dynamicExtensions.logger");
 		ApplicationProperties.initBundle("ApplicationResources");
 	}
 
 	/**
 	 * @see junit.framework.TestCase#tearDown()
 	 */
+	@Override
 	protected void tearDown()
 	{
 		Variables.containerFlag = true;
@@ -106,26 +118,32 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 * @param columnNumber of which value is to be retrieved
 	 * @return Object of the value
 	 */
-	protected Object executeQuery(String query, String returnType, int columnNumber)
+	protected Object executeQuery(final String query, final String returnType,
+			final int columnNumber, final LinkedList<ColumnValueBean> queryDataList)
 	{
 		ResultSet resultSet = null;
 		Object ans = null;
-		JDBCDAO jdbcDao = getJDBCDAO();
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			resultSet = jdbcDao.getQueryResultSet(query);
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			resultSet = jdbcDao.getResultSet(query, queryDataList, null);
 			resultSet.next();
 			if (STRING_TYPE.equals(returnType))
 			{
 				ans = resultSet.getString(columnNumber);
 			}
-			if (INT_TYPE.equals(returnType))
+			else if (INT_TYPE.equals(returnType))
 			{
 				ans = resultSet.getInt(columnNumber);
 			}
+			else if (LONG_TYPE.equals(returnType))
+			{
+				ans = resultSet.getLong(columnNumber);
+			}
 			resultSet.close();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 			fail();
@@ -134,9 +152,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		{
 			try
 			{
-				closeJDBCDAO(jdbcDao);
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				throw new RuntimeException(e.getCause());
 			}
@@ -145,7 +163,7 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public EntityInterface createAndPopulateEntity()
@@ -200,19 +218,20 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 * @param query to be executed for metadata
 	 * @return number of columns
 	 */
-	protected int getColumnCount(String query)
+	protected int getColumnCount(final String query)
 	{
 		ResultSetMetaData metadata = null;
 		int count = 0;
-		JDBCDAO jdbcDao = getJDBCDAO();
-		PreparedStatement statement = null;
+		ResultSet result = null;
+		JDBCDAO jdbcDao = null;
 		try
 		{
-			statement = jdbcDao.getPreparedStatement(query);
-			metadata = statement.executeQuery().getMetaData();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			result = jdbcDao.getResultSet(query, null, null);
+			metadata = result.getMetaData();
 			count = metadata.getColumnCount();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 			fail();
@@ -221,10 +240,10 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		{
 			try
 			{
-				statement.close();
-				closeJDBCDAO(jdbcDao);
+				jdbcDao.closeStatement(result);
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				throw new RuntimeException(e.getCause());
 			}
@@ -239,20 +258,20 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 * @param columnNumber Of which dataType is required
 	 * @return Data type of the column
 	 */
-	protected int getColumntype(String query, int columnNumber)
+	protected int getColumntype(final String query, final int columnNumber)
 	{
 		ResultSetMetaData metadata = null;
+		ResultSet result = null;
 		int type = 0;
 		JDBCDAO jdbcDao = null;
-		PreparedStatement statement = null;
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			statement = jdbcDao.getPreparedStatement(query);
-			metadata = statement.executeQuery().getMetaData();
+			result = jdbcDao.getResultSet(query, null, null);
+			metadata = result.getMetaData();
 			type = metadata.getColumnType(columnNumber);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 			fail();
@@ -261,10 +280,10 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		{
 			try
 			{
-				statement.close();
-				DynamicExtensionsUtility.closeJDBCDAO(jdbcDao);
+				jdbcDao.closeStatement(result);
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				e.printStackTrace();
 				throw new RuntimeException(e.getCause());
@@ -275,81 +294,31 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	}
 
 	/**
-	 * Close the connection
-	 * @param conn
-	 */
-	private void closeJDBCDAO(JDBCDAO jdbcDao)
-	{
-		try
-		{
-			jdbcDao.closeSession();
-		}
-		catch (DAOException e)
-		{
-			throw new RuntimeException(e.getCause());
-		}
-	}
-
-	/**
-	 * It will execute actual query passed.
-	 * @param conn connection to be used
-	 * @param query to be executed
-	 * @param statement
-	 * @param metadata Object to be used for metadata
-	 * @return
-	 * @throws SQLException
-	 */
-	private ResultSetMetaData executeQueryForMetadata(JDBCDAO jdbcDao, String query,
-			ResultSetMetaData metadata) throws DAOException, SQLException
-	{
-		PreparedStatement statement = jdbcDao.getPreparedStatement(query);
-		metadata = statement.executeQuery().getMetaData();
-		return metadata;
-	}
-
-	/**
-	 * Open the connection for use
-	 * @return connection
-	 */
-	private JDBCDAO getJDBCDAO()
-	{
-		JDBCDAO jdbcDao = null;
-		try
-		{
-			String appName = DynamicExtensionDAO.getInstance().getAppName();
-			jdbcDao = DAOConfigFactory.getInstance().getDAOFactory(appName).getJDBCDAO();
-			jdbcDao.openSession(null);
-		}
-		catch (DAOException e)
-		{
-			e.printStackTrace();
-		}
-		return jdbcDao;
-	}
-
-	/**
-	 * @param query query to be executed
-	 * @return  ResultSetMetaData
-	 */
-	protected ResultSetMetaData executeQueryDDL(String query)
+	* @param query query to be executed
+	* @return  ResultSetMetaData
+	* @throws DynamicExtensionsSystemException
+	*/
+	protected ResultSetMetaData executeQueryDDL(final String query)
+			throws DynamicExtensionsSystemException
 	{
 		//      Checking whether the data table is created properly or not.
-		JDBCDAO jdbcDao = getJDBCDAO();
+		JDBCDAO jdbcDao = null;
 		java.sql.PreparedStatement statement = null;
 		try
 		{
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 			statement = jdbcDao.getPreparedStatement(query);
 			statement.execute();
 			jdbcDao.commit();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			e.printStackTrace();
 			fail();
 		}
 		finally
 		{
-			closeJDBCDAO(jdbcDao);
+			DynamicExtensionsUtility.closeDAO(jdbcDao);
 		}
 
 		return null;
@@ -359,17 +328,18 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 * @param tableName
 	 * @return
 	 */
-	protected boolean isTablePresent(String tableName)
+	protected boolean isTablePresent(final String tableName)
 	{
-		String query = "select * from " + tableName;
-		JDBCDAO jdbcDao = getJDBCDAO();
-		java.sql.PreparedStatement statement = null;
+		final String query = "select * from " + tableName;
+		JDBCDAO jdbcDao = null;
+
 		try
 		{
-			statement = jdbcDao.getPreparedStatement(query);
-			statement.executeQuery();
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			jdbcDao.getResultSet(query, null, null);
+
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			return false;
 		}
@@ -377,10 +347,9 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		{
 			try
 			{
-				statement.close();
-				jdbcDao.closeSession();
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				e.printStackTrace();
 				throw new RuntimeException(e.getCause());
@@ -389,11 +358,15 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 		return true;
 	}
 
-	protected String getActivityStatus(EntityInterface entity, Long recordId) throws Exception
+	protected String getActivityStatus(final EntityInterface entity, final Long recordId)
+			throws Exception
 	{
-		return (String) executeQuery("select " + Constants.ACTIVITY_STATUS_COLUMN + " from "
-				+ entity.getTableProperties().getName() + " where identifier = " + recordId,
-				STRING_TYPE, 1);
+		final StringBuffer query = new StringBuffer();
+		query.append("select " + Constants.ACTIVITY_STATUS_COLUMN + " from"
+				+ entity.getTableProperties().getName() + " where identifier = ?");
+		final LinkedList<ColumnValueBean> queryDataList = new LinkedList<ColumnValueBean>();
+		queryDataList.add(new ColumnValueBean(Constants.IDENTIFIER, recordId));
+		return (String) executeQuery(query.toString(), STRING_TYPE, 1, queryDataList);
 
 	}
 
@@ -404,10 +377,10 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	 * @param maxCard maxCard
 	 * @return  RoleInterface
 	 */
-	protected RoleInterface getRole(AssociationType associationType, String name,
-			Cardinality minCard, Cardinality maxCard)
+	protected RoleInterface getRole(final AssociationType associationType, final String name,
+			final Cardinality minCard, final Cardinality maxCard)
 	{
-		RoleInterface role = DomainObjectFactory.getInstance().createRole();
+		final RoleInterface role = DomainObjectFactory.getInstance().createRole();
 		role.setAssociationsType(associationType);
 		role.setName(name);
 		role.setMinimumCardinality(minCard);
@@ -416,26 +389,21 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	}
 
 	/**
-	 * @param categoryFilePath
-	 */
-	protected void createCaegory(String categoryFilePath)
-	{
-		String[] args2 = {categoryFilePath};
-		CategoryCreator categoryCreator = new CategoryCreator();
-		categoryCreator.main(args2);
-
-	}
-
-	/**
 	 * @param xmi
 	 * @param mainContainerList
 	 * @param packageName
 	 */
-	protected void importModel(String xmi, String mainContainerList, String packageName)
+	protected void importModel(final String xmi, final String mainContainerList,
+			final String packageName)
 	{
-		String[] args1 = {xmi, packageName, mainContainerList};
-		XMIImporter xmImporter = new XMIImporter();
-		xmImporter.main(args1);
+		final String[] args1 = {xmi, mainContainerList, packageName, " "};
+		XMIImporter.main(args1);
 
+	}
+
+	public Long getCategoryIdentifier()
+	{
+		String sql = "select identifier from dyextn_category ";
+		return (Long) executeQuery(sql, LONG_TYPE, 1, new LinkedList<ColumnValueBean>());
 	}
 }

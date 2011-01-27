@@ -1,26 +1,58 @@
+
 package edu.common.dynamicextensions.entitymanager;
 
-import java.io.File;
-
+import edu.common.dynamicextensions.client.PermissibleValuesClient;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
-import edu.common.dynamicextensions.util.parser.ImportPermissibleValues;
 
 /**
- * 
+ *
  * @author mandar_shidhore
  *
  */
 public class TestImportPermissibleValues extends DynamicExtensionsBaseTestCase
 {
+
 	/**
-	 * 
+	 *
 	 */
 	public void testAddPermissibleValues()
 	{
 		try
 		{
-			File file = new File("./pvs/PermissibleValues.csv");
-			ImportPermissibleValues.main(new String[] {file.getCanonicalPath()});
+			String[] parameters = {"CPUML/TestModels/TestModel_withTags/edited/",APPLICATIONURL};
+			PermissibleValuesClient.main(parameters);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	public void testAddPermissibleValuesInXMLFormat()
+	{
+		try
+		{
+			System.out.println("Inside testAddPermissibleValuesInXMLFormat test case");
+			String[] parameters = {"CPUML",APPLICATIONURL,"CPUML/TestModels/TestModel_withTags/original/TestModel_pv.xml","false"};
+			PermissibleValuesClient.main(parameters);
+			System.out.println("Outside testAddPermissibleValuesInXMLFormat test case");
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	public void testEditPermissibleValuesInXMLFormat()
+	{
+		try
+		{
+			System.out.println("Inside testEditPermissibleValuesInXMLFormat test case");
+			String[] parameters = {"CPUML",APPLICATIONURL,"CPUML/TestModels/TestModel_withTags/edited/TestModel_pv.xml","false"};
+			PermissibleValuesClient.main(parameters);
+			System.out.println("Outside testEditPermissibleValuesInXMLFormat test case");
 		}
 		catch (Exception e)
 		{

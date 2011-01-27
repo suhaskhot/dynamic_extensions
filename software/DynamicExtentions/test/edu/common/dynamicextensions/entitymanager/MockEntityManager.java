@@ -572,8 +572,8 @@ public class MockEntityManager extends DynamicExtensionsBaseTestCase
 		SemanticPropertyInterface semanticPropertyInterface = domainObjectFactory
 				.createSemanticProperty();
 		semanticPropertyInterface.setConceptCode("c1");
-		semanticPropertyInterface.setTerm("t1");
-		semanticPropertyInterface.setThesaurasName("th1");
+		semanticPropertyInterface.setConceptPreferredName("t1");
+		semanticPropertyInterface.setConceptDefinitionSource("th1");
 
 		return semanticPropertyInterface;
 	}

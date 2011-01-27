@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormDefinition>
+	<Form name= "Static Form 2">
+		<Url>/pages/content/test1.jsp</Url>
+		<Tag>
+			<name>isParticipantRegistrationForm</name>
+			<value>true</value>
+		</Tag>
+	</Form>
+</FormDefinition>

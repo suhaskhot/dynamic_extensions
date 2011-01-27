@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<xs:schema id="pvVersion" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="pvVersion" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="xmlCategory">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="class-name" type="classType" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string"  use="required"/>
+          </xs:complexType>
+        </xs:element>
+       </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+<xs:complexType name="classType">
+  <xs:sequence>
+    <xs:element name="instance" type="instanceType" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="instanceType">
+  <xs:sequence>
+    <xs:element name="xmlAttribute" type="xmlAttributeType" minOccurs="1" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="id" type="xs:string" use="optional"/>
+</xs:complexType>
+
+<xs:complexType name="xmlAttributeType">
+  <xs:sequence>
+    <xs:element name="pvSet" type="pvSetType" minOccurs="1" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="propertyType">
+  <xs:sequence>
+    <xs:element name="option" minOccurs="1" maxOccurs="unbounded" >
+    	<xs:complexType>
+		  <xs:sequence>
+		    <xs:element name="key" type="xs:string"/>
+		    <xs:element name="value" type="xs:string"/>
+		  </xs:sequence>
+		</xs:complexType>
+	</xs:element>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="pvSetType">
+  <xs:all>
+    <xs:element name="properties" type="propertyType"/>
+    <xs:element name="default-value" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    <xs:element name="xmlPermissible-values" >
+    	<xs:complexType >
+		 <xs:sequence>
+		   <xs:element name="value" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+		 </xs:sequence>
+		</xs:complexType>
+    </xs:element>
+  </xs:all>
+</xs:complexType>
+
+</xs:schema>

@@ -3,8 +3,10 @@ function setContextParameter(contextParameter)
 {
 	contextParam = contextParameter;
 }
+
 function formSelectedAction()
 {
+	return;
 }
 
 function tagHandlerFunction(selectedTool)
@@ -33,6 +35,7 @@ function saveFormDetails()
     setWaitCursorforAllObjectHierarchy(formDefinitionForm);
     formDefinitionForm.submit();
 }
+
 function saveFormDetailsOnKeyDown(evt)
 {
 	var evt = evt || window.event;
@@ -41,6 +44,7 @@ function saveFormDetailsOnKeyDown(evt)
 		saveFormDetails();
 	}
 }
+
 function controlSelectedAction()
 {
     clearControlAttributes();
@@ -51,6 +55,7 @@ function controlSelectedAction()
 
 function formCreateAsChanged()
 {
+	return;
 }
 
 function showHomePageFromCreateForm()
@@ -145,8 +150,8 @@ function closeWindow()
 
 function showNextActionConfirmDialog()
 {
-    var  url= contextParam + "/de/pages/confirmNextActionDialog.jsp";
-	//for bug 5933
+    var  url= contextParam + "/pages/de/confirmNextActionDialog.jsp";
+	// for bug 5933
 	if(navigator.userAgent.indexOf("Firefox")!= -1 )
 	{
 		var windowProperties = "height=200,width=350,top=300,left=350,chrome,centerscreen,dependent=YES, dialog=YES,modal=YES,resizable=NO,scrollbars=NO, location=0,status=0,menubar=0,toolbar=0";
@@ -179,7 +184,7 @@ function showCreateFormJSP()
     window.close();
 }
 
-//Added by Preeti
+// Added by Preeti
 function dataFldDataTypeChanged(datatypeControl)
 {
 	if(datatypeControl!=null)
@@ -199,7 +204,7 @@ function dataFldDataTypeChanged(datatypeControl)
 
 		if(divForDataType!=null)
 		{
-			//alert(document.getElementById('controlOperation').value);
+			// alert(document.getElementById('controlOperation').value);
 			if(document.getElementById('controlOperation') != null && document.getElementById('controlOperation').value=='Add'){
 				clearFields(selectedDatatype);
 			}
@@ -223,6 +228,7 @@ function dataFldDataTypeChanged(datatypeControl)
 		insertRules(datatypeControl);
 	}
 }
+
 // Added Method for bug 5371
 function clearFields(datatypeControl)
 {
@@ -235,6 +241,7 @@ function clearFields(datatypeControl)
 		clearNumberValues();
 	}
 }
+
 function clearTextValues()
 {
 	if(document.getElementById('attributeNoOfRows').value != "")
@@ -320,7 +327,7 @@ function insertRules(datatypeControl)
 function initBuildForm(contextParameter)
 {
 	contextParam = contextParameter;
-    //If single line textbox, dont show row for noOfLines
+    // If single line textbox, dont show row for noOfLines
     if(document.getElementById("linesTypeHidden")!=null)
     {
         textBoxTypeChange(document.getElementById("linesTypeHidden"));
@@ -328,7 +335,7 @@ function initBuildForm(contextParameter)
     var dataTypeElt = document.getElementById("initialDataType");
     if(dataTypeElt!=null)
     {
-        //Load datatype details for selected datatype
+        // Load datatype details for selected datatype
         dataFldDataTypeChanged(dataTypeElt);
     }
     else
@@ -339,38 +346,40 @@ function initBuildForm(contextParameter)
     var sourceElt=document.getElementById("hiddenDisplayChoice");
     if(sourceElt!=null)
     {
-        //Load source details for selected sourcetype
+        // Load source details for selected sourcetype
         changeSourceForValues(sourceElt);
     }
 
-    //Initilialize default value for list of options
+    // Initilialize default value for list of options
     initializeOptionsDefaultValue();
 
-    //If other option is selected in measurement units, enable the text box next to it
-  //  var cboMeasurementUnits = document.getElementById('attributeMeasurementUnits');
- //   measurementUnitsChanged(cboMeasurementUnits);
+    // If other option is selected in measurement units, enable the text box
+	// next to it
+    // var cboMeasurementUnits =
+	// document.getElementById('attributeMeasurementUnits');
+    // measurementUnitsChanged(cboMeasurementUnits);
 
-    //List box type : Combo-box or List box
+    // List box type : Combo-box or List box
     var attributeMultiSelect = document.getElementById('hiddenIsMultiSelect');
     if(attributeMultiSelect!=null)
     {
         listTypeChanged(attributeMultiSelect);
     }
 
-    //Date page initializations
+    // Date page initializations
     var dateValueType = document.getElementById('initialDateValueType');
     if(dateValueType!=null)
     {
         changeDateType(dateValueType);
     }
 
-    //List of form names for selected group
+    // List of form names for selected group
     groupChanged(false);
 
-    //List of attributes for selected form
+    // List of attributes for selected form
     formChanged(false);
 
-    //Create as option for CreateForm
+    // Create as option for CreateForm
     createFormAsChanged();
 }
 
@@ -395,7 +404,8 @@ function changeSourceForValues(sourceControl)
 {
     if(sourceControl!=null)
     {
-        if(canChangeSource(sourceControl)) //If the source of values can be changed
+        if(canChangeSource(sourceControl)) // If the source of values can be
+											// changed
         {
             var sourceForValues = sourceControl.value;
             if(sourceForValues!=null)
@@ -428,7 +438,7 @@ function changeSourceForValues(sourceControl)
     }
 }
 
-//Check if source of values can be changed
+// Check if source of values can be changed
 function canChangeSource(sourceControl)
 {
     var operation = null;
@@ -491,7 +501,7 @@ function setDefaultValue()
     document.getElementById('attributeDefaultValue').value = optionGrid.cells(selectedRowIndices[0],1).getValue();
 }
 
-//Added by sujay
+// Added by Sujay
 function showFormPreview()
 {
     var entitySaved = document.getElementById('entitySaved');
@@ -570,10 +580,10 @@ function clearControlAttributes()
         document.getElementById('attributeDecimalPlaces').value = "";
     }
 
-/*    if(document.getElementById('attributeMeasurementUnits') != null)
-    {
-        document.getElementById('attributeMeasurementUnits').value = "";
-    }*/
+	/*
+	 * if(document.getElementById('attributeMeasurementUnits') != null) {
+	 * document.getElementById('attributeMeasurementUnits').value = ""; }
+	 */
     if(document.getElementById('measurementUnitOther') != null)
     {
         document.getElementById('measurementUnitOther').value = "";
@@ -602,6 +612,7 @@ function clearControlAttributes()
 
     clearSelectedAttributesList();
 }
+
 function setWaitCursorforAllObjectHierarchy(form)
 {
 	form.style.cursor = "wait";
@@ -615,6 +626,7 @@ function resetWaitCursor()
 		dv.style.display = "none";
 	 }
 }
+
 function saveEntity()
 {
 	var entitySaved = document.getElementById('entitySaved');
@@ -630,6 +642,7 @@ function saveEntity()
 		controlsForm.submit();
 	}
 }
+
 function saveEntityOnKeyDown(evt)
 {
 	var evt = evt || window.event;
@@ -672,20 +685,21 @@ function listTypeChanged(obj)
             {
                 rowForDisplayHeight.style.display="";
                 document.getElementById("userSelectedTool").value = "ListBoxControl";
-                //alert(document.getElementById("userSelectedTool").value);
+                // alert(document.getElementById("userSelectedTool").value);
             }
         }
     }
 }
 
-//When Date type is changed :  Disable default value txt box for None and Todays date option
+// When Date type is changed : Disable default value txt box for None and Todays
+// date option
 function changeDateType(dateType)
 {
     if(dateType!=null)
     {
         dateTypeValue =dateType.value;
     }
-    //  var defValueTxtBox = document.getElementById('attributeDefaultValue');
+    // var defValueTxtBox = document.getElementById('attributeDefaultValue');
     var rowForDefaultValue = document.getElementById('rowForDateDefaultValue');
     if((dateTypeValue == "None")||(dateTypeValue == "Today"))
     {
@@ -759,14 +773,15 @@ function hideTooltip()
 
 function controlSelected(rowId,colId)
 {
-    //Added by Preeti
+    // Added by Preeti
     document.getElementById('controlOperation').value='Edit';
     document.getElementById('selectedControlId').value=rowId;
 
-    //Control type is displayed in 2nd column
+    // Control type is displayed in 2nd column
     controlType = mygrid.cells(mygrid.getSelectedId(),2).getValue();
 
-    if(controlType=="Sub Form") //"Sub form"  tightly coupled with ProcessorConstants.ADD_SUBFORM_TYPE
+    if(controlType=="Sub Form") // "Sub form" tightly coupled with
+								// ProcessorConstants.ADD_SUBFORM_TYPE
     {
         var opernMode = document.getElementById('operationMode');
         if(opernMode!=null)
@@ -779,29 +794,17 @@ function controlSelected(rowId,colId)
     controlsForm.submit();
 }
 
-/*function measurementUnitsChanged(cboMeasuremtUnits)
-{
-    if(cboMeasuremtUnits!=null)
-    {
-        var txtMeasurementUnitOther = document.getElementById('measurementUnitOther');
-        if(txtMeasurementUnitOther!=null)
-        {
-            if(cboMeasuremtUnits.value =="other")
-            {
-                txtMeasurementUnitOther.disabled=false;
-                txtMeasurementUnitOther.style.display="inline";
-                txtMeasurementUnitOther.focus();
-
-            }
-            else
-            {
-                txtMeasurementUnitOther.value="";
-                txtMeasurementUnitOther.disabled=true;
-                txtMeasurementUnitOther.style.display="none";
-            }
-        }
-    }
-}*/
+/*
+ * function measurementUnitsChanged(cboMeasuremtUnits) {
+ * if(cboMeasuremtUnits!=null) { var txtMeasurementUnitOther =
+ * document.getElementById('measurementUnitOther');
+ * if(txtMeasurementUnitOther!=null) { if(cboMeasuremtUnits.value =="other") {
+ * txtMeasurementUnitOther.disabled=false;
+ * txtMeasurementUnitOther.style.display="inline";
+ * txtMeasurementUnitOther.focus(); } else { txtMeasurementUnitOther.value="";
+ * txtMeasurementUnitOther.disabled=true;
+ * txtMeasurementUnitOther.style.display="none"; } } } }
+ */
 
 function ruleSelected(ruleObject)
 {
@@ -818,7 +821,7 @@ function ruleSelected(ruleObject)
 function deleteControl()
 {
     deleteControlFromUI();
-    updateControlsSequence();   //ajax code to delete control from form
+    updateControlsSequence();   // ajax code to delete control from form
 }
 
 function deleteControlFromUI()
@@ -832,15 +835,16 @@ function deleteControlFromUI()
 }
 
 
-//ajax function to delete controls from the form
+// AJAX function to delete controls from the form
 function updateControlsSequence()
 {
     var request = newXMLHTTPReq();
     var handlerFunction = getReadyStateHandler(request,ignoreResponseHandler,false);
 
-    //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+    // no brackets after the function name and no parameters are passed because
+	// we are assigning a reference to the function and not actually calling it
     request.onreadystatechange = handlerFunction;
-    //send data to ActionServlet
+    // send data to ActionServlet
     var gridItemIds = mygrid.getAllItemIds(",");
 
     if(gridItemIds!=null)
@@ -850,7 +854,7 @@ function updateControlsSequence()
         {
             controlSeqNos.value = gridItemIds;
         }
-        //Open connection to servlet
+        // Open connection to servlet
         request.open("POST","AjaxcodeHandlerAction.do",true);
         request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         request.send("&ajaxOperation=updateControlsSequence&gridControlIds="+gridItemIds);
@@ -867,7 +871,6 @@ function resetStartPointArray(startPointArray,value)
         }
     }
 }
-
 
 function resetRowNum(checkAttribute)
 {
@@ -910,7 +913,6 @@ function moveRowsUp (tableId, startPoint, counter)
         startPoint +=1;
     }
 }
-
 
 function increaseSequencenumber()
 {
@@ -1058,6 +1060,7 @@ function saveGroup()
 		groupForm.submit();
 	}
 }
+
 function saveGroupOnKeyDown(evt)
 {
 	var evt = evt || window.event;
@@ -1125,7 +1128,6 @@ function changeSelection(fldForSelectedObject,str1,seqno)
     }
 }
 
-
 function  getFormNameFromParent(p)
 {
     var parent = document.getElementById(p);
@@ -1163,7 +1165,10 @@ function getDocumentElementForXML(xmlString)
     return doc;
 }
 
-/***  code using ajax :gets the list of form names for selected group without refreshing the whole page  ***/
+/**
+ * Code using AJAX: gets the list of form names for selected group without
+ * refreshing the whole page.
+ */
 function groupChanged(flagClearAttributeList)
 {
     if(flagClearAttributeList)
@@ -1173,10 +1178,12 @@ function groupChanged(flagClearAttributeList)
     var request = newXMLHTTPReq();
     var handlerFunction = getReadyStateHandler(request,groupChangedResponse,false);
 
-    /* no brackets after the function name and no parameters are passed because we are
-       assigning a reference to the function and not actually calling it */
+    /*
+	 * no brackets after the function name and no parameters are passed because
+	 * we are assigning a reference to the function and not actually calling it
+	 */
     request.onreadystatechange = handlerFunction;
-    //send data to ActionServlet
+    // send data to ActionServlet
     if(document.getElementById('groupName')!=null)
     {
         var grpName  = document.getElementById('groupName').value;
@@ -1219,11 +1226,12 @@ function groupChangedResponse(formNameListXML)
                     }
                     if((optionName != null)&&(optionValue != null))
                     {
-                          var oOption = document.createElement("OPTION");
-                           htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
-                 //       htmlFormNameList.options[htmlFormNameList.options.length] = new Option (optionName,optionValue);
+                    	var oOption = document.createElement("OPTION");
+                        htmlFormNameList.options.add(oOption,htmlFormNameList.options.length+1);
+                        // htmlFormNameList.options[htmlFormNameList.options.length]
+                        // = new Option (optionName,optionValue);
 
-                       if(window.ActiveXObject)
+                        if(window.ActiveXObject)
                         {
                             oOption.text=optionName;
                         }
@@ -1240,7 +1248,7 @@ function groupChangedResponse(formNameListXML)
     }
 }
 
-//When form changed load attributes for form
+// When form changed load attributes for form
 function formChanged(flagClearAttributeList)
 {
     if(flagClearAttributeList)
@@ -1249,18 +1257,19 @@ function formChanged(flagClearAttributeList)
     }
     var request = newXMLHTTPReq();
     var handlerFunction = getReadyStateHandler(request,formChangedResponse,false);
-    //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+    // no brackets after the function name and no parameters are passed because
+	// we are assigning a reference to the function and not actually calling it
     request.onreadystatechange = handlerFunction;
     if(document.getElementById('formName')!=null)
     {
-        //send data to ActionServlet
+        // send data to ActionServlet
         var frmName  = document.getElementById('formName').value;
-        //Open connection to servlet
+        // Open connection to servlet
         /*
-        request.open("POST","LoadFormControlsAction.do",true);
-        request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        request.send("&operation=changeForm&frmName="+frmName);
-        */
+		 * request.open("POST","LoadFormControlsAction.do",true);
+		 * request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		 * request.send("&operation=changeForm&frmName="+frmName);
+		 */
 
         request.open("POST","AjaxcodeHandlerAction.do",true);
         request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1276,7 +1285,8 @@ function formChangedResponse(formAttributesListXML)
         if(htmlFormAttributeList!=null)
         {
             htmlFormAttributeList.options.length = 0;
-            //var formAttributes  =  formAttributesListXML.getElementsByTagName('formAttributes');
+            // var formAttributes =
+			// formAttributesListXML.getElementsByTagName('formAttributes');
             var documentElt  = getDocumentElementForXML(formAttributesListXML);
             var formAttributes  =  documentElt.getElementsByTagName('formAttributes');
             if(formAttributes !=null)
@@ -1303,7 +1313,8 @@ function formChangedResponse(formAttributesListXML)
                     {
                         var oOption = document.createElement("OPTION");
                         htmlFormAttributeList.options.add(oOption,htmlFormAttributeList.options.length+1);
-                     //  htmlFormAttributeList.options[htmlFormAttributeList.options.length] = new Option (optionName,optionValue);
+                     // htmlFormAttributeList.options[htmlFormAttributeList.options.length]
+						// = new Option (optionName,optionValue);
                         if(window.ActiveXObject)
                         {
                             oOption.text = optionName;
@@ -1320,7 +1331,7 @@ function formChangedResponse(formAttributesListXML)
     }
 }
 
-/*** code using ajax  ***/
+/* code using AJAX */
 function clearSelectedAttributesList()
 {
     var selectedAttributeList = document.getElementById('selectedAttributeIds');
@@ -1334,6 +1345,7 @@ function clearSelectedAttributesList()
 
     }
 }
+
 function selectFormAttribute()
 {
     var fromListBox = document.getElementById('formAttributeList');
@@ -1405,7 +1417,7 @@ function selectAllListAttributes(list)
     }
 }
 
-//Create form as New/Existing option changed
+// Create form as New/Existing option changed
 function createFormAsChanged()
 {
     var existingFormDiv = document.getElementById('rowForExistingFormDetails');
@@ -1423,7 +1435,7 @@ function createFormAsChanged()
     }
 }
 
-//added by vishvesh
+// Added by Vishvesh
 function addRow(containerId)
 {
     var divName = "";
@@ -1439,9 +1451,9 @@ function addRow(containerId)
 
     var newRow = table.insertRow(-1);
     if(counter%2==0)
-	{
-		newRow.className="td_color_f0f2f6";
-	}
+  	{
+  		newRow.className="td_color_f0f2f6";
+  	}
 	else
 	{
 		newRow.className="formField_withoutBorder";
@@ -1451,7 +1463,7 @@ function addRow(containerId)
     {
         var newCell = newRow.insertCell(i);
         newCell.className = cells[i].className;
-
+        newCell.style.whiteSpace = "nowrap";
         newCell.innerHTML = cells[i].innerHTML;
         newCell = setDefaultValues(tableId, newCell, containerId);
     }
@@ -1464,16 +1476,19 @@ function addRow(containerId)
     currentRowCounter1 = currentRowCounter.value;
     document.getElementById(hiddenVar).value = parseInt(currentRowCounter1) + 1;
 
-	var x = document.getElementsByTagName("script");
-	var RegularExpression  =  new RegExp("\^print");
-	var RegularExpressionForCombo  =  new RegExp("Ext.form.ComboBox");
-	
-    for(var i=0;i<x.length;i++)
+    if(!document.getElementById('rightpanel'))
     {
-	  if(x[i].text!='' && x[i].text.search(RegularExpression) == -1 && x[i].text.search(RegularExpressionForCombo) == -1)
-	  {
-       		eval(x[i].text);
-	  }
+		var x = document.getElementsByTagName("script");
+		var RegularExpression  =  new RegExp("\^print");
+		var RegularExpressionForCombo  =  new RegExp("Ext.form.ComboBox");
+
+	    for(var i=0;i<x.length;i++)
+	    {
+		  if(x[i].text!='' && x[i].text.search(RegularExpression) == -1 && x[i].text.search(RegularExpressionForCombo) == -1)
+		  {
+	       		eval(x[i].text);
+		  }
+	    }
     }
     document.getElementById('isDirty').value = true;
 }
@@ -1510,49 +1525,105 @@ function removeCheckedRow(containerId)
             }
         }
 
+		table = document.getElementById(containerId + "_table");
+		children = table.rows;
+		rowLength=children.length;
+
         for (var rowIndex = 0; rowIndex < children.length; rowIndex++)
         {
             var childObject = children[rowIndex];
             var cells = childObject.cells;
+
             for (cellIndex = 0; cellIndex < cells.length; cellIndex++)
             {
                 var cell = cells[cellIndex ];
+
                 var childNodes = cell.childNodes;
                 for (childNodeIndex = 0; childNodeIndex < childNodes.length; childNodeIndex++)
                 {
                     var childNode= childNodes[childNodeIndex];
 
                     var childObjectName = childNode.name;
+
+					if (childObjectName != null && "deleteRow" == childObjectName)
+                    {
+						childNode.id = "checkBox_" + containerId + "_" + rowIndex;
+					}
+
+					if(cell.innerHTML.indexOf("comboControl") != -1)
+					{
+
+						var rowTobeCopied = getRowToBeCopied(containerId);
+						var childNodes2 = rowTobeCopied.cells[cellIndex].childNodes;
+
+
+						for(i=0;i<childNodes2.length;i++)
+						{
+
+							if(childNodes2[i].id == 'auto_complete_dropdown')
+							{
+								var oldName = childNodes2[i].childNodes[0].childNodes[0].id;
+								if(oldName == undefined)
+								{
+									oldName = 'combo'+childNodes2[i].childNodes[1].childNodes[0].childNodes[0].id;
+								}
+
+								if(Ext.getCmp(oldName) != undefined)
+								{
+									eval(Ext.getCmp(oldName).destroy());
+								}
+								oldName = replaceAll(oldName,"combo","");
+								var newName = oldName+"_"+rowIndex;
+
+								var newScript = replaceAll(childNodes2[i-1].innerHTML,
+										oldName, newName);
+
+								var comboValue = "";
+								var comboId = getComboControlName(cell);
+								if ( comboId != null)
+								{
+									comboValue = document.getElementById(comboId).value;
+								}
+
+								cell.innerHTML = replaceAll(childNodes2[1].childNodes[1].innerHTML,
+													oldName, newName);
+
+								eval(newScript);
+								// Added code to catch blur event
+								// to set Combobox value to its empty text if it
+								// is blank.
+								if (comboValue != '')
+								{
+									var comboObj = Ext.getCmp("combo" + newName);
+									comboObj.emptyText = comboValue;
+									comboObj.setRawValue(comboValue);
+									document.getElementById("combo" + newName).value = comboValue;
+									comboObj.on("blur",function(comboBox){
+										if(comboBox.getValue()==""){
+											comboBox.setValue(comboBox.emptyText);
+										}
+									})
+								}
+								break;
+							}
+						}
+
+					}
                     if (childObjectName != null && childObjectName.indexOf('_') != -1)
                     {
-            			if (childObjectName.indexOf('_div') != -1) 
+            			if (childObjectName.indexOf('_div') != -1)
             			{
-            				if (childObject.hasChildNodes) 
+            				if (childObject.hasChildNodes)
             				{
             					childObject = childObject.childNodes[0];
             					childObjectName = childObject.name;
             				}
             			}
     					if (childObjectName != null
-    							&& childObjectName.indexOf('_') != -1) 
+    							&& childObjectName.indexOf('_') != -1)
     					{
-	                        var arr = childObjectName.split('_');
-	                    	
-	                        arr[arr.length - 1] = rowIndex;
-	                        var str = "";
-	                        for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
-	                        {
-	                            str += arr[arrIndex];
-	                            if (arrIndex != arr.length - 1)
-	                            {
-	                                str += "_";
-	                            }
-	                        }
-	                        if (childObjectName.indexOf(')') != -1)
-	                        {
-	                            str = str + ")";
-	                        }
-	
+	                        str = getNewName(childObjectName,rowIndex);
+
 							if (document.getElementById(childObjectName) == null)
 							{
 								var controlValue = childNode.value;
@@ -1561,13 +1632,9 @@ function removeCheckedRow(containerId)
 							{
 								var controlValue = document.getElementById(childObjectName).value;
 							}
-	
+
 							cell.innerHTML = replaceAll(cell.innerHTML,childObjectName,str);
-							if (document.getElementById(childObjectName) == null)
-							{
-								str = controlValue;
-							}
-							else
+							if (document.getElementById(str) != null)
 							{
 								document.getElementById(str).value  = controlValue;
 							}
@@ -1590,10 +1657,11 @@ function removeCheckedRow(containerId)
     var request = newXMLHTTPReq();
     var handlerFunction = getReadyStateHandler(request,ignoreResponseHandler,false);
 
-    //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+    // no brackets after the function name and no parameters are passed because
+	// we are assigning a reference to the function and not actually calling it
     request.onreadystatechange = handlerFunction;
-    //send data to ActionServlet
-    //Open connection to servlet
+    // send data to ActionServlet
+    // Open connection to servlet
     request.open("POST","AjaxcodeHandlerAction.do",true);
     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
     request.send("&ajaxOperation=deleteRowsForContainment&containerId=" + containerId+"&deletedRowIds="+deletedRowIds);
@@ -1601,115 +1669,212 @@ function removeCheckedRow(containerId)
 
 function ignoreResponseHandler(str)
 {
+	return;
 }
 
-function setDefaultValues(tableId, obj, containerId) 
+function getRowToBeCopied(containerId)
+{
+	var divName = "";
+	divName = divName + containerId + "_substitutionDiv";
+	var div = document.getElementById(divName);
+
+	var tab = div.childNodes[0];
+	tableId = containerId + "_table";
+	var table = document.getElementById (tableId);
+	var rows = table.rows;
+	return tab.rows[0];
+}
+
+function getComboControlName(cell)
+{
+	var retValue =  null;
+	var i = 0;
+	while(i<cell.childNodes.length)
+		{
+			child = cell.childNodes[i];
+			if(child.id != undefined && child.id.indexOf("comboControl_") != -1)
+			{
+				retValue = child.id;
+				break;
+			}else if(child.childNodes != undefined && child.childNodes.length > 0)
+			{
+				retValue = getComboControlName(child);
+				if(retValue!=null){
+					break;
+				}
+			}
+			 i++;
+		}
+		return retValue
+}
+
+function getNewName(childObjectName,rowIndex )
+{
+	var arr = childObjectName.split('_');
+
+	arr[arr.length - 1] = rowIndex;
+	var str = "";
+	for (arrIndex = 0; arrIndex < arr.length; arrIndex++)
+	{
+		str += arr[arrIndex];
+		if (arrIndex != arr.length - 1)
+		{
+			str += "_";
+		}
+	}
+	if (childObjectName.indexOf(')') != -1)
+	{
+		str = str + ")";
+	}
+	return str;
+}
+
+// Re-factored the entire method as it was very difficult to understand
+// Changes by Gaurav Mehta
+// Modified By Suhas Khot, Date:-13 May 2010
+function setDefaultValues(tableId, obj, containerId)
 {
 	var children = obj.childNodes;
-
 	var rowIndex = document.getElementById(tableId).rows.length;
 	rowIndex = parseInt(rowIndex) - 1;
 
 	var i = 0;
-	for (j = 0; j < children.length; j++) 
+	for (j = 0; j < children.length; j++)
 	{
 		var childObject = children[j];
 		childObjectName = childObject.name;
-		if (childObjectName != null && childObjectName.indexOf('_') != -1) 
+
+		// For calender and other controls
+		if (childObjectName == null && childObject.id != null
+				&& childObject.id != "auto_complete_dropdown"
+					&& childObject.id.indexOf('slcalcodControl') == -1)
 		{
-			if (childObjectName.indexOf(')') != -1) 
-			{
-				childObjectName = childObjectName.substring(0, childObjectName
-						.indexOf(')'));
-				i++;
-				// In case of control having multiple options, setting str
-				// only once
-				if (i == 1) 
-				{
-					str = childObjectName + "_" + rowIndex;
-				}
-				str = str + ")";
-			} 
-			else if (childObjectName.indexOf('_div') != -1) 
-			{
-				if (childObject.hasChildNodes) 
-				{
-					childObject = childObject.childNodes[0];
-					childObjectName = childObject.name;
-
-					if (childObjectName != null
-							&& childObjectName.indexOf('_') != -1) 
-					{
-						if (childObjectName.indexOf(')') != -1) 
-						{
-							childObjectName = childObjectName.substring(0,
-									childObjectName.indexOf(')'));
-							i++;
-							// In case of control having multiple options,
-							// setting str
-							// only once
-							if (i == 1) 
-							{
-								str = childObjectName + "_" + rowIndex;
-							}
-							str = str + ")";
-						} 
-						else 
-						{
-							i++;
-							// In case of control having multiple options,
-							// setting str
-							// only once
-							if (i == 1) {
-								str = childObjectName + "_" + rowIndex;
-							}
-						}
-						obj.innerHTML = replaceAll(obj.innerHTML,
-								childObjectName, str);
-					}
-					if ("auto_complete_dropdown_"+containerId == childObject.id) 
-					{
-						var childNodes2 = childObject.childNodes;
-
-						var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
-						var newName = oldName + "_" + rowIndex;
-						var newScript = replaceAll(childNodes2[1].innerHTML,
-								oldName, newName);
-						obj.innerHTML = replaceAll(childNodes2[2].innerHTML,
-								oldName, newName);
-						eval(newScript);
-					}
-					continue;
-				}
-			} 
-			else 
-			{
-				i++;
-				// In case of control having multiple options, setting str
-				// only once
-				if (i == 1) {
-					str = childObjectName + "_" + rowIndex;
-				}
-			}
-			obj.innerHTML = replaceAll(obj.innerHTML, childObjectName, str);
+			childObjectName = childObject.id;
 		}
-		if ("auto_complete_dropdown_"+containerId == childObject.id) 
+
+		if(childObjectName != null && childObjectName.indexOf('_') != -1)
+		{
+			initializeDefaultValue(childObjectName,childObject,obj,i,rowIndex,true);
+			break;
+		}
+		// For Combobox
+		if ("auto_complete_dropdown" == childObject.id)
 		{
 			var childNodes2 = childObject.childNodes;
-			if(!window.component && document.all)
+			for(i=0;i<childNodes2.length;i++)
 			{
-				childNodes2 = document.getElementById("auto_complete_dropdown_"+containerId).childNodes;
+				if(childNodes2[i].id == 'comboHtml')
+				{
+					var oldName = childNodes2[i].childNodes[0].childNodes[0].name;
+					var newName = oldName + "_" + rowIndex;
+					if(document.getElementById('rightpanel'))
+					{
+						newName = containerId + "_" + oldName + "_" + rowIndex
+					}
+					var newScript = replaceAll(childNodes2[i-1].innerHTML,
+							oldName, newName);
+					obj.innerHTML = replaceAll(childNodes2[i].innerHTML,
+										oldName, newName);
+					eval(newScript);
+					break;
+				}
 			}
-						var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
-						var newName = oldName + "_" + rowIndex;
-						var newScript = replaceAll(childNodes2[1].innerHTML,
-								oldName, newName);
-						obj.innerHTML = replaceAll(childNodes2[2].innerHTML,
-								oldName, newName);
-						eval(newScript);
+		}
+		// Only in case of delete checkbox in addrow
+		if("deleteRow" == childObjectName)
+		{
+			childObject.id = "checkBox_" + containerId + "_" + rowIndex;
 		}
 	}
 	return obj;
+}
+
+function initializeDefaultValue(childObjectName,childObject,obj,i,rowIndex, isFromMain)
+{
+	if (childObjectName.indexOf(')') != -1)
+	{
+		childObjectName = childObjectName.substring(0, childObjectName
+				.indexOf(')'));
+		i++;
+		if (i == 1)
+		{
+			str = childObjectName + "_" + rowIndex;
+		}
+		str = str + ")";
+	}
+	else if (isFromMain == true && (childObjectName.indexOf('_div') != -1  || childObjectName.indexOf('_button') != -1))
+	{
+		if (childObject.hasChildNodes)
+		{
+			childObject = childObject.childNodes[0];
+			childObjectName = childObject.name;
+			if (childObjectName == null && childObject.id != null
+				&& childObject.id != "auto_complete_dropdown"
+					&& childObject.id.indexOf('slcalcodControl') == -1)
+			{
+				childObjectName = childObject.id;
+			}
+			if (childObjectName != null
+							&& childObjectName.indexOf('_') != -1)
+			{
+				initializeDefaultValue(childObjectName,childObject,obj,i,rowIndex, false)
+			}
+			checkForAutoComplete(childObject,obj,rowIndex);
+			// continue;
+		}
+	}
+	else
+	{
+		i++;
+		if (i == 1) {
+			str = childObjectName + "_" + rowIndex;
+		}
+	}
+	if(isFromMain == true  && childObjectName!=null)
+	{
+		obj.innerHTML = replaceAll(obj.innerHTML,childObjectName, str);
+	}
+}
+
+function checkForAutoComplete(childObject,obj,rowIndex)
+{
+	if ("auto_complete_dropdown" == childObject.id)
+	{
+		var childNodes2 = childObject.childNodes;
+
+		var oldName = childNodes2[2].childNodes[0].childNodes[0].name;
+		var newName = oldName + "_" + rowIndex;
+		var newScript = replaceAll(childNodes2[1].innerHTML,
+				oldName, newName);
+
+		var div = document.createElement("DIV");
+		div.id = oldName + "_Outer_div";
+		div.name= oldName + "_Outer_div";
+
+		var divObject = document.createElement("DIV");
+		divObject.id = oldName + "_div";
+		divObject.name= oldName + "_div";
+		divObject.appendChild(childNodes2[2].childNodes[0]);
+		div.appendChild(divObject);
+
+		var inputSkipLogicControl = document.createElement("INPUT");
+		inputSkipLogicControl.type = "hidden";
+		inputSkipLogicControl.id = "skipLogicControl";
+		inputSkipLogicControl.name= "skipLogicControl";
+		inputSkipLogicControl.value= divObject.name;
+		divObject.appendChild(inputSkipLogicControl);
+
+		var inputComboScript = document.createElement("INPUT");
+		inputComboScript.type = "hidden";
+		inputComboScript.id = "skipLogicControlScript";
+		inputComboScript.name= "skipLogicControlScript";
+		inputComboScript.value= "comboScript_" + oldName;
+		divObject.appendChild(inputComboScript);
+
+		obj.innerHTML = replaceAll(div.innerHTML,
+				oldName, newName);
+		eval(newScript);
+	}
 }
 
 function replaceAll(inputString, regExpr, newString)
@@ -1727,26 +1892,29 @@ function replaceAll(inputString, regExpr, newString)
     return outputStr;
 }
 
-//Ajax code for form name selection from tree
+// AJAX code for form name selection from tree
 function treeNodeSelected(fldName)
 {
     var request = newXMLHTTPReq();
     var handlerFunction = getReadyStateHandler(request,treeNodeSelectedResponse,false);
 
-    //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+    // no brackets after the function name and no parameters are passed because
+	// we are assigning a reference to the function and not actually calling it
     request.onreadystatechange = handlerFunction;
 
-    //Open connection to servlet
+    // Open connection to servlet
     request.open("POST","AjaxcodeHandlerAction.do",true);
     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-    //var selectedFormName  = document.getElementById(fldName).value;
+    // var selectedFormName = document.getElementById(fldName).value;
     request.send("&ajaxOperation=selectFormNameFromTree&selectedFormName="+fldName);
 }
 
-//Previously defined entity selected
+// Previously defined entity selected
 function definedEntitySelected(fldname)
 {
-    if(fldname.indexOf("Group_")==-1)   //Selection does not contain string "Group_" implies its not a group but a form
+    if(fldname.indexOf("Group_")==-1)   // Selection does not contain string
+										// "Group_" implies its not a group but
+										// a form
     {
         if(document.getElementById('selectedObjectId')!=null)
         {
@@ -1755,10 +1923,12 @@ function definedEntitySelected(fldname)
         var request = newXMLHTTPReq();
         var handlerFunction = getReadyStateHandler(request,treeNodeSelectedResponse,false);
 
-        //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+        // no brackets after the function name and no parameters are passed
+		// because we are assigning a reference to the function and not actually
+		// calling it
         request.onreadystatechange = handlerFunction;
 
-        //Open connection to servlet
+        // Open connection to servlet
         request.open("POST","AjaxcodeHandlerAction.do",true);
         request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
         request.send("&ajaxOperation=selectFormNameFromAssociationTree&selectedFormId="+fldname);
@@ -1769,7 +1939,7 @@ function definedEntitySelected(fldname)
         {
             document.getElementById('selectedObjectId').value = "";
         }
-        //clear all other form elts
+        // clear all other form elts
         if(document.getElementById("formName")!=null)
         {
             document.getElementById("formName").value = "";
@@ -1884,10 +2054,8 @@ function getElementText(element)
 	return elementText;
 }
 
-
 function insertDataForContainer(containerId)
 {
-
     alert("page to insert date for contianerId" + containerId);
 }
 
@@ -1901,8 +2069,9 @@ function groupSelected(groupList)
             var request = newXMLHTTPReq();
             var handlerFunction = getReadyStateHandler(request,groupSelectedResponse,false);
 
-            //no brackets after the function name and no parameters are passed because we are
-            //assigning a reference to the function and not actually calling it
+            // no brackets after the function name and no parameters are passed
+			// because we are
+            // assigning a reference to the function and not actually calling it
             request.onreadystatechange = handlerFunction;
             request.open("POST","AjaxcodeHandlerAction.do",true);
             request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
@@ -1916,7 +2085,7 @@ function evaluateFormulaForAttribute(controlName)
     if(controlName != null)
     {
         var request = newXMLHTTPReq();
-		var handlerFunction = function() 
+		var handlerFunction = function()
 		{
 	         if(request.readyState  == 4)
 	         {
@@ -1965,6 +2134,7 @@ function groupSelectedResponse(groupXML)
 
 function showChildContainerInsertDataPage(containerId,ths)
 {
+    getValues();
     document.getElementById('childContainerId').value = containerId;
     document.getElementById('dataEntryOperation').value  = "insertChildData";
     document.getElementById('childRowId').value = ths.parentNode.parentNode.rowIndex;
@@ -1978,7 +2148,8 @@ function showChildContainerInsertDataPage(containerId,ths)
     }
     else if(mode == "view" || mode == "edit")
     {
-        dataEntryForm.action= contextParam + "/ApplyDataEntryFormAction.do";
+        dataEntryForm.action= contextParam + "/ApplyDataEntryFormAction.do?scrollTop="+document.getElementById('dataEntryFormDiv').scrollTop;
+        document.getElementById('scrollTop').value = document.getElementById('dataEntryFormDiv').scrollTop;
     }
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
@@ -1994,7 +2165,7 @@ function showEditRecordPage(target)
 function showParentContainerInsertDataPage()
 {
 	getValues();
-    //document.getElementById('mode').value = "edit";
+    // document.getElementById('mode').value = "edit";
     document.getElementById('dataEntryOperation').value = "insertParentData";
     var dataEntryForm = document.getElementById('dataEntryForm');
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
@@ -2003,29 +2174,124 @@ function showParentContainerInsertDataPage()
 function getValues()
 {
 	var frm = document.forms[0];
-	for (f = 0; f < document.forms[0].elements.length; ++f ) 
-	{ 
+	for (f = 0; f < document.forms[0].elements.length; ++f )
+	{
 		var fld = frm.elements[f];
-		
-		// select all values in list box before form is submitted. 
+
+		if(fld.readOnly == true)
+		{
+			fld.disabled = true;
+		}
+
+		// select all values in list box before form is submitted.
 		if (fld.id.startsWith('protocolCoordId_Control_'))
-		{ 
+		{
 			var lbOptions = document.getElementById(fld.id);
 			for (i = lbOptions.options.length-1; i >= 0; i--)
 			{
 				lbOptions.options[i].selected=true;
 			}
 		}
-	} 
+	}
 }
 
 function calculateAttributes()
 {
     document.getElementById('dataEntryOperation').value = "calculateAttributes";
-    var dataEntryForm = document.getElementById('dataEntryForm');
-    setWaitCursorforAllObjectHierarchy(dataEntryForm);
-    dataEntryForm.submit();
+	var str = $("dataEntryForm").serialize();
+	jQuery.ajax(
+	{
+				type :"POST",
+				url :"ApplyDataEntryFormAction.do",
+				dataType: "html",
+				data :str,
+				success : function(htmlresult)
+				{
+					var iframe = document.getElementById("skipLogicIframe");
+					if (iframe != null)
+					{
+						var iframeDocument = getIframeDocument(iframe);
+						if (iframeDocument != null)
+						{
+							iframeDocument.body.innerHTML = htmlresult;
+							var calculatedControlsArray =  iframeDocument.getElementsByName("calculatedControl");
+							if (calculatedControlsArray != null)
+							{
+					            var len = calculatedControlsArray.length;
+					            for(var inputIndex = 0; inputIndex < len; inputIndex++)
+					            {
+					            	var calculatedControl = calculatedControlsArray[inputIndex];
+					            	if (calculatedControl != null)
+					            	{
+					            		var calculatedControlDiv = calculatedControl.value;
+					            		var originalDiv = document.getElementById(calculatedControlDiv);
+					            		var calculatedDiv = iframeDocument.getElementById(calculatedControlDiv);
+					            		if (calculatedDiv!= null && originalDiv != null)
+					            		{
+					            			originalDiv.innerHTML = calculatedDiv.innerHTML;
+					            		}
+					            	}
+					            }
+							}
+							// On error: error_div on the dataEntry.jsp is
+							// populated with error list
+							if(iframeDocument.getElementById("error_div")!= null)
+							{
+								var errorString = iframeDocument.getElementById("error_div").innerHTML;
+								printErrors(errorString)
+							}
+						}
+					}
+				}
+	});
 }
+
+
+function calculateDefaultAttributesValue()
+{
+    document.getElementById('dataEntryOperation').value = "calculateAttributes";
+	var str = $("dataEntryForm").serialize();
+	jQuery.ajax(
+	{
+				type :"POST",
+				url :"ApplyDataEntryFormAction.do",
+				dataType: "html",
+				data :str,
+				success : function(htmlresult)
+				{
+					var iframe = document.getElementById("skipLogicIframe");
+					if (iframe != null)
+					{
+						var iframeDocument = getIframeDocument(iframe);
+						if (iframeDocument != null)
+						{
+							var prevContent = iframeDocument.body.innerHTML;
+							iframeDocument.body.innerHTML = htmlresult;
+							var calculatedControlsArray =  iframeDocument.getElementsByName("calculatedControl");
+							if (calculatedControlsArray != null)
+							{
+					            var len = calculatedControlsArray.length;
+					            for(var inputIndex = 0; inputIndex < len; inputIndex++)
+					            {
+					            	var calculatedControl = calculatedControlsArray[inputIndex];
+					            	if (calculatedControl != null)
+					            	{
+					            		var calculatedControlDiv = calculatedControl.value;
+					            		var originalDiv = document.getElementById(calculatedControlDiv);
+					            		var calculatedDiv = iframeDocument.getElementById(calculatedControlDiv);
+					            		if (calculatedDiv!= null && originalDiv != null)
+					            		{
+					            			originalDiv.innerHTML = calculatedDiv.innerHTML;
+					            		}
+					            	}
+					            }
+							}
+						}
+					}
+				}
+	});
+}
+
 function setInsertDataOperation()
 {
 	getValues();
@@ -2049,6 +2315,67 @@ function changeValueForCheckBox(checkbox)
     }
 }
 
+function changeValueForMultiSelectCheckBox(checkbox)
+{
+    if (checkbox != null)
+    {
+        if (checkbox.checked == true)
+        {
+            checkbox.value = checkbox.id;
+        }
+        else
+        {
+            checkbox.value = false;
+        }
+    }
+}
+
+function changeValueForAllCheckBoxes(checkbox)
+{
+	var elements  = document.getElementsByName(checkbox.name);
+	if(elements!=null && elements!='undefined')
+	{
+		var isAllSelected=0;
+		for(var i=0;i<elements.length;i++)
+		{
+			var chckbox = elements[i];
+			if (chckbox != null && chckbox.checked == true)
+			{
+				isAllSelected = isAllSelected+1;
+			}
+		}
+		if(isAllSelected == (elements.length-1))
+		{
+			selectAllCheckBoxes(false,elements);
+		}
+		else
+		{
+			selectAllCheckBoxes(true,elements);
+		}
+	}
+}
+
+function selectAllCheckBoxes(selectAllchkboxes, elements)
+{
+	for(var i=0;i<elements.length;i++)
+	{
+		var chkbox = elements[i];
+		if (chkbox != null)
+		{
+			if (selectAllchkboxes == true)
+			{
+				chkbox.value = chkbox.id;
+				chkbox.checked="yes";
+			}
+			else
+			{
+				chkbox.value = false;
+				chkbox.checked=null;
+			}
+		}
+	}
+}
+
 function cancelInsertData()
 {
     document.getElementById('dataEntryOperation').value = document.getElementById('operation_mode').value;
@@ -2056,6 +2383,21 @@ function cancelInsertData()
     var dataEntryForm = document.getElementById('dataEntryForm');
     setWaitCursorforAllObjectHierarchy(dataEntryForm);
     dataEntryForm.submit();
+}
+
+function deleteRecordEntry()
+{
+	 var vConfirm= confirm("Do you really want to delete all data?");
+	 if(vConfirm){
+		 var operationElement = document.getElementById('operation');
+		 operationElement.value = "disableRecord";
+		 var url =contextParam + "/DeleteRecordEntryAction.do?";
+		 var dataEntryForm = document.getElementById('dataEntryForm');
+		 dataEntryForm.action = url;
+		 dataEntryForm.submit();
+		 return true;
+	 }
+	 return false;
 }
 
 function setDeleteDataOperation()
@@ -2071,7 +2413,7 @@ function dropFn(srcId,targetId,sourceGridObj,targetGridObj)
     updateControlsSequence();
 }
 
-//Move controls up in sequence
+// Move controls up in sequence
 function moveControlsUp()
 {
     var selectedRows = mygrid.getCheckedRows(0);
@@ -2086,7 +2428,7 @@ function moveControlsUp()
     updateControlsSequence();
 }
 
-//move controls down in sequence
+// move controls down in sequence
 function moveControlsDown()
 {
     var selectedRows = mygrid.getCheckedRows(0);
@@ -2101,7 +2443,7 @@ function moveControlsDown()
     updateControlsSequence();
 }
 
-//Added by Preeti : move elements in list
+// Added by Preeti : move elements in list
 function listEltMoveUp(element)
 {
     for(i = 0; i < element.options.length; i++)
@@ -2141,8 +2483,10 @@ function listEltMoveDown(element)
 
 function setDateTimeControl(showTime, value)
 {
-	// Bugzilla Bug 8682 Date format mismatch in forms created from UI and forms are not getting saved.
-	// 'shouldUseTime' is variable in 'calendarComponent.js' file. It should be same as showTime when
+	// Bugzilla Bug 8682 Date format mismatch in forms created from UI and forms
+	// are not getting saved.
+	// 'shouldUseTime' is variable in 'calendarComponent.js' file. It should be
+	// same as showTime when
 	// calendar changes from date only calendar to date&time calendar.
 	shouldUseTime = showTime;
 
@@ -2174,7 +2518,7 @@ function showDateTimeControl(showTime, divType, id, value)
     }
 }
 
-/* Added by Chetan */
+// Added by Chetan
 function loadOptionGrid()
 {
     var csvStr = document.getElementById('csvStr').value;
@@ -2219,7 +2563,6 @@ function appendRecordId(ths)
     {
     	str = str.replace(/dynamicExtensions/, contextParam);
     }
-    str = str+"&recordIdentifier="+recordIdentifier.value;
     ths.href = str;
 }
 
@@ -2249,13 +2592,12 @@ function trim( value )
     return LTrim(RTrim(value));
 }
 
-
-//for textArea Max length
+// For textArea Max length
 function textCounter( field,  maxlimit )
 {
-  //bug id :7778
-  //Fixed by : prashant
-  //reviewed by : kunal
+  // bug id :7778
+  // Fixed by : prashant
+  // reviewed by : kunal
   var length=field.value.length;
   var n=0;
   var i=0;
@@ -2273,11 +2615,10 @@ function textCounter( field,  maxlimit )
   }
  }
 
-//for resetting the parent timeout counter
-
+// For resetting the parent timeout counter
 function resetTimeoutCounter()
 {
-	//Set last refresh time
+	// Set last refresh time
 	if(window.parent!=null)
 	{
 		if(window.parent.lastRefreshTime!=null)
@@ -2287,16 +2628,16 @@ function resetTimeoutCounter()
 	}
 }
 
-//==========================tool tip code started=========
+// ==========================tool tip code started=========
 var timeInterval=100;
 var interval;
 var objID="";
 
-function showStatus(sMsg) 
+function showStatus(sMsg)
 {
 	 window.status = sMsg ;
 }
- 
+
 function showToolTip(objId)
 {
 	objID = objId;
@@ -2322,7 +2663,7 @@ function hideTip(objId)
 		obj.title = "";
 	}
 	interval = window.clearInterval(interval);
-}     
+}
 
 function setTip()
 {
@@ -2342,7 +2683,7 @@ function setTip()
 				tip="";
 			else
 				tip = obj.options[obj.selectedIndex].text;
-			
+
 			var browser=navigator.appName;
 			if(browser=="Microsoft Internet Explorer")
 			{
@@ -2356,7 +2697,6 @@ function setTip()
 	}
 }
 
- 
 function setGivenTip(tooltipValue)
 {
 	var obj = document.getElementById(objID);
@@ -2371,26 +2711,27 @@ function setGivenTip(tooltipValue)
 		obj.title = ""+tooltipValue;
 	}
 }
-//==================tool tip code ends===============================
+// ==================tool tip code ends===============================
 
 function clearDate(id, pattern)
 {
 	var id = document.getElementById(id);
-	if((pattern == 'MM-DD-YYYY' && id.value == 'MM-DD-YYYY') 
-			|| (pattern == 'MM-DD-YYYY HH:MM' && id.value == 'MM-DD-YYYY HH:MM') 
-			|| (pattern == 'MM-YYYY' && id.value == 'MM-YYYY') 
+	if((pattern == 'MM-DD-YYYY' && id.value == 'MM-DD-YYYY')
+			|| (pattern == 'MM-DD-YYYY HH:MM' && id.value == 'MM-DD-YYYY HH:MM')
+			|| (pattern == 'MM-YYYY' && id.value == 'MM-YYYY')
 			|| (pattern == 'YYYY' && id.value == 'YYYY'))
 	{
 		id.value="";
 		id.style.color="black";
 	}
 }
+
 function getIframeDocument(iframe)
 {
 	var iframeDocument = null;
 	if (iframe.contentDocument)
 	{
-		iframeDocument = iframe.contentDocument; 
+		iframeDocument = iframe.contentDocument;
 	}
 	else if (iframe.contentWindow)
 	{
@@ -2402,20 +2743,30 @@ function getIframeDocument(iframe)
 	}
 	return iframeDocument;
 }
-function getSkipLogicControl(controlName, controlId, containerId) 
+
+function getSkipLogicControl(controlName, controlId, containerId)
 {
+	if(document.getElementById('isDirty')!=null)
+	{
+		document.getElementById('isDirty').value = true;
+	}
     document.getElementById('dataEntryOperation').value = "skipLogicAttributes";
 	var str = $("dataEntryForm").serialize();
-	var controlValue = document.getElementById(controlName).value;
+	var control = document.getElementById(controlName);
+	var controlValue = "";
+	if (control != null && control.value != null)
+	{
+		controlValue = control.value;
+	}
 	str =  str + "&containerId=" + containerId + "&controlId=" + controlId
-			+ "&controlValue=" + controlValue;
-	jQuery.ajax( 
+			+ "&controlValue=" + controlValue + "&controlName=" + controlName;
+	jQuery.ajax(
 	{
 				type :"POST",
 				url :"ApplyDataEntryFormAction.do",
 				dataType: "html",
 				data :str,
-				success : function(htmlresult) 
+				success : function(htmlresult)
 				{
 					var iframe = document.getElementById("skipLogicIframe");
 					if (iframe != null)
@@ -2439,17 +2790,55 @@ function getSkipLogicControl(controlName, controlId, containerId)
 					            		if (skipLogicDiv!= null && originalDiv != null)
 					            		{
 					            			originalDiv.innerHTML = skipLogicDiv.innerHTML;
+					            			var items = originalDiv.getElementsByTagName('script');
+											for(var i=0;i<items.length;i++)
+											{
+												eval(items[i].innerHTML);
+											}
 					            		}
 					            	}
 					            }
-								executeComboScripts();
+					            executeComboScriptsForSkipLogic();
+							}
+							var skipLogicHideControlsArray =  iframeDocument.getElementsByName("skipLogicHideControls");
+							if (skipLogicHideControlsArray != null)
+							{
+								var len = skipLogicHideControlsArray.length;
+					            for(var inputIndex = 0; inputIndex < len; inputIndex++)
+					            {
+					            	var skipLogicHideControl = skipLogicHideControlsArray[inputIndex];
+					            	if (skipLogicHideControl != null)
+					            	{
+					            		var skipLogicHideControlValue = skipLogicHideControl.value;
+					            		var skipLogicHideControlObject = document.getElementById(skipLogicHideControlValue);
+					            		var skipLogicHideControlIframeObject = iframeDocument.getElementById(skipLogicHideControlValue);
+					            		if (skipLogicHideControlObject != null && skipLogicHideControlIframeObject != null)
+					            		{
+					            			skipLogicHideControlObject.style.display = skipLogicHideControlIframeObject.style.display;
+					            			try
+					            			{
+					            				var obj = skipLogicHideControlObject.nextSibling;
+					            				if(obj.cellIndex)
+					            				{
+					            					if(obj.innerHTML.toString().trim()=="")
+					            					{
+					            						obj = obj.nextSibling;
+					            						obj.style.display = skipLogicHideControlObject.style.display;
+					            					}
+					            				}
+					            			}
+					            			catch(e){}
+					            		}
+					            	}
+					            }
 							}
 						}
 					}
 				}
 	});
 }
-function executeComboScripts()
+
+function executeComboScriptsForSkipLogic()
 {
 	var comboScriptDiv= document.getElementsByName("skipLogicControlScript");
 	if (comboScriptDiv != null)
@@ -2459,7 +2848,7 @@ function executeComboScripts()
 		{
 			if (comboScriptDiv[i].value != null)
 			{
-				var comboScript = document.getElementById(comboScriptDiv[i].value)
+				var comboScript = document.getElementById(comboScriptDiv[i].value);
 				if (comboScript != null)
 				{
 					eval(comboScript.innerHTML);
@@ -2491,11 +2880,85 @@ function insertBreadCrumbForSubFormResponse(responseXML)
 
 function isDataChanged()
 {
-	document.getElementById('isDirty').value = true;
+	if(document.getElementById('isDirty')!=null)
+	{
+		document.getElementById('isDirty').value = true;
+	}
 }
 
-//==================copy paste=======================================
+// ===================Update Server State=======================
+function updateServerState(controlName, controlId, containerId)
+{
+	if(document.getElementById('isDirty')!=null)
+	{
+		document.getElementById('isDirty').value = true;
+	}
+	var request = newXMLHTTPReq();
+    var vControl = document.getElementById(controlName);
+	if(vControl == null)
+	{
+		var controls =  document.getElementsByName(controlName);
+		vControl = controls[0];
+	}
+	/*
+	 * Excluded this control since dataValueMap generation logic for controls under same display label
+	 * and for multiselect, listBox, comboBox controls needs to be fixed.
+	 *
+	 * Fixes for bug#19249
+	 *
+	 */
+	if(vControl.type == "select-multiple" || vControl.type=="select-one")
+	{
+		return;
+	}
 
+	/* All the commented Code is for Live Validation. This is being commented as it is not a part of DE 1.5 Release.
+	 * Un-Comment it when Live Validation needs to be done. Also Un-Comment Code in AjaxcodeHandlerAction.java
+	 * from line no. 192 - 198
+	*/
+
+	var controlValue = vControl.value;
+	// Live Validation Code below.
+    /*var vPatentControl = vControl.parentNode;
+    var vParentOriginal = vPatentControl.innerHTML.split('&nbsp;&nbsp;')[0];
+    var vWaiting = '&nbsp;&nbsp;<img src="/clinportal/images/de/waiting.gif" alt="Waiting" width="18" height="15" hspace="3" >';
+    var vErrorImageFirst = '&nbsp;&nbsp;<img src="/clinportal/images/de/validation-error.gif" alt="Error" width="18" height="15" hspace="3" title="';
+    var vSuccessImage = '&nbsp;&nbsp;<img src="/clinportal/images/de/accept.png" alt="Error" width="18" height="15" hspace="3" title="';
+    var vErrorImageSecond = '" >';
+    vPatentControl.innerHTML = vParentOriginal + vWaiting ;
+    document.getElementById(controlName).value = controlValue;*/
+
+    request.open("POST","AjaxcodeHandlerAction.do",true);
+    request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+    request.onreadystatechange=function()
+    {
+    if (request.readyState==4 && request.status==200)
+      {
+    	var vMessage=request.responseText;
+    	// Live Validation Code below.
+    	/*if(vMessage != '' && vMessage.length > 0)
+    	{
+    		var vFormattedMsg=vMessage.replace(',','<br/>');
+        	vMessage = vMessage.replace(',','');
+        	vPatentControl.innerHTML = vParentOriginal + vErrorImageFirst + vMessage+ vErrorImageSecond;
+        	var vRecentControl=document.getElementById(controlName)
+        	vRecentControl.value = controlValue;
+        	vRecentControl.setAttribute("class", "font_bl_nor_error");
+        	vRecentControl.focus();
+    	}
+    	else
+    	{
+    		vPatentControl.innerHTML = vParentOriginal + vSuccessImage + vErrorImageSecond;
+    		document.getElementById(controlName).value = controlValue;
+    		document.getElementById(controlName).setAttribute("class", "'font_bl_nor");
+		}*/
+      }
+    }
+    request.send("&ajaxOperation=updateServerState&containerId=" + containerId + "&controlId=" + controlId
+			+ "&controlValue=" + controlValue + "&controlName=" + controlName);
+}
+
+// ==================Copy Paste=============
 var chkTable,noOfRecordsCopied,cardinality;
 var batch = 10;
 var slice,start,end;
@@ -2503,7 +2966,7 @@ var startTime= new Date(), endTime;
 var rowIndex=0;
 var rowCount = 0;
 var conatinerId;
-
+var numCombosInPastedData;
 
 function intVariables()
 {
@@ -2517,22 +2980,23 @@ endTime="";
 rowIndex=0;
 rowCount = 0;
 conatinerId=0;
-
+numCombosInPastedData=0;
 }
 
-function pasteDataPart(clipboardData,index)
+function pasteDataPart(clipboardData,index,categoryEntityName)
 {
 	var request = newXMLHTTPReq();
     var handlerFunction = getReadyStateHandler(request,paster,false);
 
-    //no brackets after the function name and no parameters are passed because we are assigning a reference to the function and not actually calling it
+    // no brackets after the function name and no parameters are passed because
+	// we are assigning a reference to the function and not actually calling it
     request.onreadystatechange = handlerFunction;
     request.open("POST","AjaxcodeHandlerAction.do",true);
     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-    request.send("&ajaxOperation=pasteData&containerId="+conatinerId+"&cardinality="+cardinality+"&index="+index+"&clipboradData="+clipboardData);
-	
+    request.send("&ajaxOperation=pasteData&containerId="+conatinerId+"&cardinality="+cardinality+"&index="+index+"&clipboradData="+clipboardData+"&categoryEntityName="+categoryEntityName);
 }
-function pasteData(conatinerId_temp,cardinality_temp)
+
+function pasteData(conatinerId_temp,cardinality_temp,categoryEntityName)
 {
 	intVariables();
 	if(window.clipboardData!=null && window.clipboardData!='undefined')
@@ -2541,26 +3005,31 @@ function pasteData(conatinerId_temp,cardinality_temp)
 	}
 	else if(window.Components)
 	{
+		try
+		{
+			this.netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+		} catch(e) {
+			alert("Clipboard access not permitted, sorry. You will have to set signed.applet.codebase_principal_support to true.\nVisit 'about:config' the address bar.\nSearch for 'signed.applets.codebase_principal_support' and set its value to true");
+		}
+		var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);
+		if (!clip) return false;
 		netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-		var clip = Components.classes["@mozilla.org/widget/clipboard;1"].getService(Components.interfaces.nsIClipboard);   
-		if (!clip) return false;   
-		netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-		var trans = Components.classes["@mozilla.org/widget/transferable;1"].createInstance(Components.interfaces.nsITransferable);   
-		if (!trans) return false;   
-		trans.addDataFlavor("text/unicode");  
-		clip.getData(trans, clip.kGlobalClipboard);   
-		var str       = new Object();   
-		var strLength = new Object();   
-		trans.getTransferData("text/unicode", str, strLength);  
-		if (str) str       = str.value.QueryInterface(Components.interfaces.nsISupportsString);   
-		if (str) pastetext = str.data.substring(0, strLength.value / 2);  
+		var trans = Components.classes["@mozilla.org/widget/transferable;1"].createInstance(Components.interfaces.nsITransferable);
+		if (!trans) return false;
+		trans.addDataFlavor("text/unicode");
+		clip.getData(trans, clip.kGlobalClipboard);
+		var str       = new Object();
+		var strLength = new Object();
+		trans.getTransferData("text/unicode", str, strLength);
+		if (str) str       = str.value.QueryInterface(Components.interfaces.nsISupportsString);
+		if (str) pastetext = str.data.substring(0, strLength.value / 2);
 		chkTable = str.data;
 	}
 	else
 	{
 		alert("Your browser doesn't support clipboard access");
 	}
-	
+
 	if(chkTable == null)
 	{
 		return;
@@ -2569,76 +3038,120 @@ function pasteData(conatinerId_temp,cardinality_temp)
 	cardinality = cardinality_temp;
 	conatinerId = conatinerId_temp;
 	start=rowIndex*batch;
-	end = start + batch;
-
-	if( end >noOfRecordsCopied)
-	{
-		end = noOfRecordsCopied;
-	}
-	slice= chkTable.split("\n").slice(start,end);	
+	end = noOfRecordsCopied;
+	slice= chkTable.split("\n").slice(start,end);
 
 	if(cardinality == "many")
 	{
-		rowCount = document.getElementById(conatinerId+"_table").rows.length -1 ;			
+		rowCount = document.getElementById(conatinerId+"_table").rows.length -1 ;
 	}else
 	{
-		slice= chkTable.split("\n").slice(start,start+1);	
+		slice= chkTable.split("\n").slice(start,start+1);
 	}
-	pasteDataPart(slice,rowCount+start+1)
+	pasteDataPart(slice,rowCount+start+1,categoryEntityName)
 }
 
 function paster(response)
 {
 	var reponseList  = response.split("~ErrorList");
 	var generatedHTML  = reponseList[0];
-	var errorString = reponseList[1];
-	//PRINT ERRORS IF ANY 
-	var errorHTML = "<table width=\"100%\" height=\"30\"  border=\"0\" cellpadding=\"4\" cellspacing=\"4\" class=\"td_color_FFFFCC\">";
-	var errors = reponseList[1].split(',');
-
-	for(var i = 0 ;i<errors.length;i++)
+	var matches = generatedHTML.match(/skipLogicControlScript/g);
+	if(matches!=null && matches!='undefined')
 	{
-		if(errors[i].length>0)
-		{
-			errorHTML +=  "<tr><th align=\"center\" class=\"font_bl_nor\"><img src=\"de/images/ic_error.gif\" alt=\"Error\" width=\"28\" height=\"25\" hspace=\"3\" align=\"absmiddle\">"
-			+errors[i]+"<br />"
-		}
-
+		numCombosInPastedData = (matches.length)/2;
 	}
-	errorHTML += "</table>";
+	var errorCountList = reponseList[1].split("~RowsCopied");;
+	var errorString = errorCountList[0];
+	noOfRecordsCopied = errorCountList[1];
+	// PRINT ERRORS IF ANY
+	printErrors(errorString);
+	// ERROR PRINTING FINISHED
 
-	document.getElementById("error_div").innerHTML =  errorHTML;
-	//ERROR PRINTING FINISHED
-	//GET EXTING HTML AND REMOVE THE TABLE
+	// GET EXTING HTML AND REMOVE THE TABLE
 	var existingTableHTML = document.getElementById(conatinerId+"_table").innerHTML;
 	var existingTable = document.getElementById(conatinerId+"_table");
 
 	if(!window.Components && document.all)
 	{
-		removeElement(conatinerId+"_table");
-		//var newRow = existingTable.insertRow(-1);
 		var reg = /<SCRIPT defer>/ig
 		existingTableHTML=	existingTableHTML.replace(reg,"<SCRIPT>");
 		var replaceDiv = document.getElementById("wrapper_div_"+conatinerId);
-		replaceDiv.innerHTML = "<table id='"+conatinerId+"_table'>"+existingTableHTML+generatedHTML+"</table>";
+		var rows = existingTable.rows;
+		var divName = "";
+		divName = divName + conatinerId + "_substitutionDiv";
+		var div = document.getElementById(divName);
+		var tab = div.childNodes[0];
+		var rowTobeCopied = tab.rows[0];
+		var counter = existingTable.rows.length;
+		var cells = rowTobeCopied.cells;
+		replaceDiv.innerHTML = "<table id='"+conatinerId+"_tbl'>"+generatedHTML+"</table>";
+		var wrapperDivName = "wrapper_div_"+conatinerId;
+		var wrapperDiv = document.getElementById(wrapperDivName);
+		var newtab = wrapperDiv.childNodes[0];
+		for(j=0; j<newtab.rows.length; j++)
+		{
+			var newRow = existingTable.insertRow(-1);
+			if(counter%2==0)
+			{
+				newRow.className="td_color_f0f2f6";
+			}
+			else
+			{
+				newRow.className="formField_withoutBorder";
+			}
+			var newRowTobeCopied = newtab.rows[j];
+			var newcells = newRowTobeCopied.cells;
+			for(i = 0 ; i < newcells.length ; i++)
+			{
+				var newCell = newRow.insertCell(i);
+				newCell.className = newcells[i].className;
+				newCell.innerHTML = newcells[i].innerHTML;
+			}
+			counter = existingTable.rows.length;
+		}
+		replaceDiv.innerHTML ="";
 	}
 	else
 	{
-		var tbody = document.createElement('tbody');
-		existingTable.appendChild(tbody);
-		tbody.innerHTML = generatedHTML;
+		if(parseInt(noOfRecordsCopied)>0)
+		{
+			var tbody = document.createElement('tbody');
+			existingTable.appendChild(tbody);
+			tbody.innerHTML = generatedHTML;
+		}
 	}
-
-
 	var rowCount_t = document.getElementById(conatinerId+"_rowCount").value * 1;
-	document.getElementById(conatinerId+"_rowCount").value = rowCount_t+noOfRecordsCopied;
+	document.getElementById(conatinerId+"_rowCount").value = parseInt(rowCount_t)+parseInt(noOfRecordsCopied);
 	executeCombos();
+}
 
+function printErrors(errorString)
+{
+	// PRINT ERRORS IF ANY
+	var errorHTML = "<table width=\"100%\" height=\"30\"  border=\"0\" cellpadding=\"4\" cellspacing=\"4\" class=\"td_color_FFFFCC\">";
+	var errors = errorString.split(',');
+
+	for(var i = 0 ;i<errors.length;i++)
+	{
+		if(errors[i].length>0)
+		{
+			errorHTML +=  "<tr><th align=\"center\" class=\"font_bl_nor\"><img src=\"images/de/ic_error.gif\" alt=\"Error\" width=\"28\" height=\"25\" hspace=\"3\" align=\"absmiddle\">"
+			+errors[i]+"<br />"
+		}
+	}
+	errorHTML += "</table>";
+
+	if(document.getElementById('error_div'))
+	{
+		document.getElementById("error_div").innerHTML =  errorHTML;
+		document.getElementById('error_div').style.display="";
+	}
+	// ERROR PRINTING FINISHED
 }
 
 function executeComboScripts()
 {
-	var temp = document.getElementsByName("auto_complete_dropdown_"+conatinerId);
+	var temp = document.getElementsByName("auto_complete_dropdown");
 	for(var i = rowCount+1;i<temp.length;i++)
 	{
 		eval(temp[i].childNodes[1].innerHTML);
@@ -2647,34 +3160,30 @@ function executeComboScripts()
 
 function executeCombos()
 {
-	var temp = document.getElementsByName("auto_complete_dropdown_"+conatinerId);
-	var newRowCount =  document.getElementById(conatinerId+"_table").rows.length -1;
-	var newRowsAdded = newRowCount -rowCount;
-	if(window.Components)
+	var comboScriptDiv= document.getElementsByName("skipLogicControlScript");
+	if (comboScriptDiv != null)
 	{
-		var length = temp.length;
-		while(newRowsAdded!=0)
+		var totalRowCount =  document.getElementById(conatinerId+"_table").rows.length -1;
+		var newRowsAdded = totalRowCount - rowCount;
+		var combosPerRow = numCombosInPastedData/newRowsAdded;
+		var divCount = comboScriptDiv.length;
+		if(divCount!=0)
 		{
-			eval(temp[length-1].childNodes[1].innerHTML);
-			length = length -1;
-			newRowsAdded = newRowsAdded -1;
+			var totalCombosToBeExecuted = newRowsAdded * combosPerRow;
+			for(var i = 0;i<totalCombosToBeExecuted;i++)
+			{
+				if (comboScriptDiv[(divCount-1)].value != null)
+				{
+					var comboScript = document.getElementById(comboScriptDiv[(divCount-1)].value)
+					if (comboScript != null)
+					{
+						eval(comboScript.innerHTML);
+					}
+				}
+				divCount = divCount-1;
+			}
 		}
 	}
-	else
-	{
-		for(var i =rowCount+1;i<temp.length;i++)
-		{
-			eval(temp[i].childNodes[1].innerHTML);
-		}
-		
-		for(var i = 0;i<=rowCount;i++)
-		{
-			
-			temp[i].childNodes[0].innerHTML=temp[i].childNodes[0].innerHTML.replace(/(<IMG).*/ig, "");
-			eval(temp[i].childNodes[1].innerHTML);
-		}
-	}
-	
 }
 
 function removeElement(id)
@@ -2685,9 +3194,7 @@ function removeElement(id)
 	{
 		p = c.parentNode;
 	}
-	
 	p.removeChild(c);
-	
 }
 
 function updateOffsets()
@@ -2699,4 +3206,124 @@ function updateOffsets()
 		end = noOfRecordsCopied;
 	}
 	rowIndex++;
+}
+
+function updateFileControl(controlId)
+{
+ if(controlId.id == null)
+ {
+    ctrlID = controlId;
+ }
+ else
+ {
+    ctrlID = controlId.id;
+ }
+ var spanName = ctrlID + "_button";
+ var controlID = ctrlID;
+ var spanElement = document.getElementById(spanName);
+ var innerHTMLString = "<input type='file' id='" +controlID+ "' name='" +controlID+ "' onchange='isDataChanged();' />";
+
+ spanElement.innerHTML = innerHTMLString;
+ setJQueryParameters(controlID);
+}
+
+function getTpl(){
+	return '<tpl for=\".\"><div title=\"{excerpt}\" class=\"x-combo-list-item\">{excerpt}</div></tpl>';
+	// return '<tpl for=\".\"><div ext:qtip=\"{excerpt}\"
+	// class=\"x-combo-list-item\">{excerpt}</div></tpl>';
+	// '<tpl for="."><div ext:qtip="{state}. {nick}"
+	// class="x-combo-list-item">{state}</div></tpl>'
+}
+
+function setJQueryParameters(controlId)
+{
+	new AjaxUpload(controlId,
+		{
+		   action: 'UploadFile.do',
+			 name: 'upload1',
+			 responseType: 'json',
+			 onSubmit : function(file,extension)
+					{
+          var submitButton = document.getElementById('btnDESubmit');
+						var imageSrc = "./images/de/waiting.gif";
+						var buttonName = controlId + "_button";
+						var spanElement = document.getElementById(buttonName);
+						var htmlComponent = spanElement.innerHTML;
+						htmlComponent = htmlComponent + "&nbsp;&nbsp;<img src='" +imageSrc+ "'/>";
+						spanElement.innerHTML = htmlComponent;
+					},
+			onComplete : function(file, response)
+					{
+						var jsonResponse = response;
+						var fileId = "1";
+						var contentType = "";
+						var htmlComponent = "";
+						var buttonName = controlId + "_button";
+						var spanElement = document.getElementById(buttonName);
+
+						if(jsonResponse.uploadedFile!=null)
+						{
+							fileId = jsonResponse.uploadedFile[0].uploadedFileId;
+							contentType = jsonResponse.uploadedFile[0].contentType;
+							var imageSrc = "./images/uIEnhancementImages/error-green.gi";
+							var deleteImageSrc = "./images/de/deleteIcon.jpg";
+
+							htmlComponent = "<input type='text' disabled name='" +controlId+ "'_1 id='" +controlId+ "_1' value='" +file+ "'/>&nbsp;&nbsp;";
+							htmlComponent = htmlComponent + "<img src='" +imageSrc+ "' />&nbsp;&nbsp;";
+							htmlComponent = htmlComponent + "<img src='" +deleteImageSrc+ "' style='cursor:pointer' onClick='updateFileControl(\"" +controlId+ "\");' />";
+							htmlComponent = htmlComponent + "<input type='hidden' name='" +controlId+ "' id='" +controlId+ "' value='" +fileId+ "'/>";
+							htmlComponent = htmlComponent + "<input type='hidden' name='" +controlId+ "_hidden' id='" +controlId+ "_hidden' value='" +file+ "'/>";
+							htmlComponent = htmlComponent + "<input type='hidden' name='" +controlId+ "_contentType' id='" +controlId+ "_contentType' value='" +contentType+ "'/>";
+							spanElement.innerHTML = htmlComponent;
+						}
+						else
+						{
+							htmlComponent = "<input type='file' name='" +controlId+ "' id='" +controlId+ "'/>&nbsp;&nbsp;";
+							htmlComponent = htmlComponent + "<span class='font_red'>Error occured .Please try again.</span>";
+							spanElement.innerHTML = htmlComponent;
+							updateFileControl(controlId);
+						}
+					}
+		});
+}
+
+function setFocusOnLoad(scrollTop)
+{
+	if(scrollTop == 0)
+	{
+		if(document.forms.length!=0){
+			for(var i=0;i<document.forms.length;i++){
+			if(document.forms[i].elements.length!=0){
+				for(var j=0;j<document.forms[i].elements.length;j++){
+					if(document.forms[i].elements[j].type!="hidden"){
+						document.forms[i].elements[j].focus();
+						break;
+					}
+				}
+				break;
+				}
+			}
+		}
+	}
+	else
+	{
+		document.getElementById('dataEntryFormDiv').scrollTop=scrollTop;
+	}
+}
+
+function selectRadioButton(controlName,controlValue)
+{
+	var htmlElement=document.getElementsByName(controlName);
+	var htmlElement=document.getElementsByName(controlName);
+	if (htmlElement.length >0)
+    {
+      for(var i = 0; i<htmlElement.length; i++)
+      {
+        if(htmlElement[i].value==controlValue)
+        {
+			htmlElement[i].checked=true;;
+        }
+
+      }
+    }
 }

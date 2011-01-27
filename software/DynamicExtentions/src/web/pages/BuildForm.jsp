@@ -11,22 +11,22 @@
 <html>
 	<!-- HTML Head section -->
 	<head>
-		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/de/css/styleSheet.css"/>
-		<link href="<%=request.getContextPath()%>/de/css/calanderComponent.css" type="text/css" rel=stylesheet/>
-		<link rel="STYLESHEET" type="text/css" href="<%=request.getContextPath()%>/de/dhtml_comp/css/dhtmlXGrid.css"/>
+		<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/stylesheets/de/styleSheet.css"/>
+		<link href="<%=request.getContextPath()%>/stylesheets/de/calanderComponent.css" type="text/css" rel=stylesheet/>
+		<link rel="STYLESHEET" type="text/css" href="<%=request.getContextPath()%>/dhtml/stylesheets/de/dhtmlXGrid.css"/>
 
-		<script src="<%=request.getContextPath()%>/de/jss/dynamicExtensions.js" type="text/javascript"></script>
-		<script src="<%=request.getContextPath()%>/de/jss/script.js" type="text/javascript"></script>
-		<script src="<%=request.getContextPath()%>/de/jss/overlib_mini.js" type="text/javascript"></script>
-		<script src="<%=request.getContextPath()%>/de/jss/calender.js" type="text/javascript"></script>
-		<script src="<%=request.getContextPath()%>/de/jss/calendarComponent.js"></script>
-		<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/de/jss/ajax.js"></script>
+		<script src="<%=request.getContextPath()%>/javascripts/de/dynamicExtensions.js" type="text/javascript"></script>
+		<script src="<%=request.getContextPath()%>/javascripts/de/script.js" type="text/javascript"></script>
+		<script src="<%=request.getContextPath()%>/javascripts/de/overlib_mini.js" type="text/javascript"></script>
+		<script src="<%=request.getContextPath()%>/javascripts/de/calender.js" type="text/javascript"></script>
+		<script src="<%=request.getContextPath()%>/javascripts/de/calendarComponent.js"></script>
+		<script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/javascripts/de/ajax.js"></script>
 
-		<script src="<%=request.getContextPath()%>/de/dhtml_comp/jss/dhtmlXCommon.js"></script>
-		<script src="<%=request.getContextPath()%>/de/dhtml_comp/jss/dhtmlXGrid.js"></script>
-		<script src="<%=request.getContextPath()%>/de/dhtml_comp/jss/dhtmlXGrid_nxml.js"></script>
-		<script src="<%=request.getContextPath()%>/de/dhtml_comp/jss/dhtmlXGrid_drag.js"></script>
-		<script src="<%=request.getContextPath()%>/de/dhtml_comp/jss/dhtmlXGridCell.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml/javascripts/de/dhtmlXCommon.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml/javascripts/de/dhtmlXGrid.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml/javascripts/de/dhtmlXGrid_nxml.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml/javascripts/de/dhtmlXGrid_drag.js"></script>
+		<script src="<%=request.getContextPath()%>/dhtml/javascripts/de/dhtmlXGridCell.js"></script>
 
 		<title>Dynamic Extensions</title>
 		<!--Java Script Function Start -->
@@ -44,7 +44,7 @@
 			function initGridView()
 			{
 				mygrid = new dhtmlXGridObject('gridbox');
-				mygrid.setImagePath("<%=request.getContextPath()%>/de/dhtml_comp/imgs/");
+				mygrid.setImagePath("<%=request.getContextPath()%>/dhtml/de/imgs/");
 				mygrid.setHeader("#,Name,Type");
 				
 				if (document.all || navigator.userAgent.indexOf("Firefox") != -1)
@@ -182,7 +182,7 @@
 													</thead>
 													<tr>
 														<td>
-															<jsp:include page="/de/pages/toolTypeHTML/CommonControlAttributes.jsp"/>
+															<jsp:include page="/pages/de/toolTypeHTML/CommonControlAttributes.jsp"/>
 														</td>
 													</tr>
 													<tr>

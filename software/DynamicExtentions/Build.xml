@@ -1,6 +1,6 @@
 <?xml version ="1.0"?>
 
-<!--Ant Script for create Build for caTISSUE Core-->
+<!--Ant Script for create Build for caTISSUE Core -->
 <project name="DynamicExtensions" default="compile" >
 
 	<!--define require dir and Properties -->

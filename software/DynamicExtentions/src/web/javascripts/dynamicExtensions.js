@@ -2194,7 +2194,12 @@ function getValues()
 		}
 	}
 }
-
+/*
+ * This attribute is added for live validation.
+ * If value is not valid then do not display any other errors.
+ * Display only live validation errors which is shown as toolTip. 
+ */
+var isValid = true;
 function calculateAttributes()
 {
     document.getElementById('dataEntryOperation').value = "calculateAttributes";
@@ -2235,7 +2240,7 @@ function calculateAttributes()
 							}
 							// On error: error_div on the dataEntry.jsp is
 							// populated with error list
-							if(iframeDocument.getElementById("error_div")!= null)
+							if(iframeDocument.getElementById("error_div")!= null && isValid)
 							{
 								var errorString = iframeDocument.getElementById("error_div").innerHTML;
 								printErrors(errorString)
@@ -2893,66 +2898,88 @@ function updateServerState(controlName, controlId, containerId)
 	{
 		document.getElementById('isDirty').value = true;
 	}
+	var checkBoxValue = "";	
 	var request = newXMLHTTPReq();
     var vControl = document.getElementById(controlName);
-	if(vControl == null)
+    if(vControl == null)
 	{
-		var controls =  document.getElementsByName(controlName);
-		vControl = controls[0];
-	}
-	/*
-	 * Excluded this control since dataValueMap generation logic for controls under same display label
-	 * and for multiselect, listBox, comboBox controls needs to be fixed.
-	 *
-	 * Fixes for bug#19249
-	 *
-	 */
-	if(vControl.type == "select-multiple" || vControl.type=="select-one")
+    	var controls =  document.getElementsByName(controlName);		
+		if(controls.length > 1)
+		{
+			for(var i=0;i<controls.length;i++)
+			{
+				var obj = controls.item(i);				
+				if(obj.checked && obj.type == "checkbox") //for multiSelect checkBox.
+				{					
+					vControl = obj;
+					checkBoxValue = checkBoxValue + "~" + obj.value;					
+				}
+				else if(obj.checked) //for radioButton			
+				{
+					vControl = obj;
+					break;
+				}
+			}
+		}
+		else
+		{
+			vControl = controls[0]; // for other controls.
+		}
+	}	
+	if(vControl.type=="select-one")
 	{
 		return;
 	}
-
-	/* All the commented Code is for Live Validation. This is being commented as it is not a part of DE 1.5 Release.
-	 * Un-Comment it when Live Validation needs to be done. Also Un-Comment Code in AjaxcodeHandlerAction.java
-	 * from line no. 192 - 198
-	*/
-
-	var controlValue = vControl.value;
-	// Live Validation Code below.
-    /*var vPatentControl = vControl.parentNode;
-    var vParentOriginal = vPatentControl.innerHTML.split('&nbsp;&nbsp;')[0];
-    var vWaiting = '&nbsp;&nbsp;<img src="/clinportal/images/de/waiting.gif" alt="Waiting" width="18" height="15" hspace="3" >';
-    var vErrorImageFirst = '&nbsp;&nbsp;<img src="/clinportal/images/de/validation-error.gif" alt="Error" width="18" height="15" hspace="3" title="';
-    var vSuccessImage = '&nbsp;&nbsp;<img src="/clinportal/images/de/accept.png" alt="Error" width="18" height="15" hspace="3" title="';
-    var vErrorImageSecond = '" >';
-    vPatentControl.innerHTML = vParentOriginal + vWaiting ;
-    document.getElementById(controlName).value = controlValue;*/
-
+	var controlValue = vControl.value;	
+    var vPatentControl = vControl.parentNode;
+    var vParentOriginal = vPatentControl.innerHTML.split('&nbsp;&nbsp;')[0];    
+	vPatentControl.innerHTML = vParentOriginal ;	    
+    if(vControl.type=="select-multiple") // for listBox
+    {
+    	var newValue = controlValue;
+    	for(var i =0; i < vControl.options.length; i++)
+		{
+			if(vControl.options[i].selected)
+			{
+				if(vControl.options[i].value != controlValue)
+				{
+					newValue = newValue + "~" + vControl.options[i].value;
+				}
+			}
+		}
+		controlValue = newValue.substring(0,newValue.length);
+    }
+    if(vControl.type=="checkbox" && checkBoxValue != "") // for multiSelect checkBox
+	{
+		controlValue = checkBoxValue.substring(1,checkBoxValue.length);
+	}
     request.open("POST","AjaxcodeHandlerAction.do",true);
     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
     request.onreadystatechange=function()
     {
-    if (request.readyState==4 && request.status==200)
-      {
-    	var vMessage=request.responseText;
-    	// Live Validation Code below.
-    	/*if(vMessage != '' && vMessage.length > 0)
-    	{
-    		var vFormattedMsg=vMessage.replace(',','<br/>');
-        	vMessage = vMessage.replace(',','');
-        	vPatentControl.innerHTML = vParentOriginal + vErrorImageFirst + vMessage+ vErrorImageSecond;
-        	var vRecentControl=document.getElementById(controlName)
-        	vRecentControl.value = controlValue;
-        	vRecentControl.setAttribute("class", "font_bl_nor_error");
-        	vRecentControl.focus();
-    	}
-    	else
-    	{
-    		vPatentControl.innerHTML = vParentOriginal + vSuccessImage + vErrorImageSecond;
-    		document.getElementById(controlName).value = controlValue;
-    		document.getElementById(controlName).setAttribute("class", "'font_bl_nor");
-		}*/
-      }
+		if (request.readyState==4 && request.status==200)
+		{
+			// Live Validation Code below only for non-enumerated attributes.
+			var vMessage=request.responseText;							
+			if(vMessage != '' && vMessage.length > 0)
+			{
+				var vFormattedMsg=vMessage.replace(',','<br/>');
+				vMessage = vMessage.replace(',','');
+				vPatentControl.innerHTML = vParentOriginal;
+				var vRecentControl=document.getElementById(controlName);
+				vRecentControl.value = controlValue;
+				vRecentControl.className = "font_bl_nor_error";
+				vRecentControl.title =  vMessage;
+				isValid = false;
+				vRecentControl.focus();
+			}
+			else
+			{
+				var vRecentControl=document.getElementById(controlName);
+				vRecentControl.value = controlValue;
+				vRecentControl.className = "font_bl_nor" ;
+			}
+		}
     }
     request.send("&ajaxOperation=updateServerState&containerId=" + containerId + "&controlId=" + controlId
 			+ "&controlValue=" + controlValue + "&controlName=" + controlName);

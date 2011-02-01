@@ -169,9 +169,9 @@ public class DatePicker extends Control implements DatePickerInterface
 			outputStringBuffer.append((((isReadOnly != null && isReadOnly) || (isSkipLogicReadOnly != null && isSkipLogicReadOnly))
 							? " disabled='" + ProcessorConstants.TRUE
 							: ""));
-			outputStringBuffer.append(" onchange='");
+			outputStringBuffer.append(" onchange=\"");
 			outputStringBuffer.append(getOnchangeServerCall());
-			outputStringBuffer.append(";' onfocus=\"javascript:clearDate('");
+			outputStringBuffer.append(";\" onfocus=\"javascript:clearDate('");
 			outputStringBuffer.append(htmlComponentName);
 			outputStringBuffer.append("','");
 			outputStringBuffer.append(ProcessorConstants.DATE_ONLY_FORMAT);
@@ -249,7 +249,8 @@ public class DatePicker extends Control implements DatePickerInterface
 			outputStringBuffer.append((((isReadOnly != null && isReadOnly) || (isSkipLogicReadOnly != null && isSkipLogicReadOnly))
 							? " disabled='" + ProcessorConstants.TRUE
 							: ""));
-			outputStringBuffer.append(" onchange='isDataChanged();' onfocus=\"javascript:clearDate('");
+			outputStringBuffer.append("onchange=\"isDataChanged();" + getOnchangeServerCall()
+					+ ";\" onfocus=\"javascript:clearDate('");
 			outputStringBuffer.append(htmlComponentName);
 			outputStringBuffer.append("','");
 			outputStringBuffer.append(ProcessorConstants.DATE_TIME_FORMAT);
@@ -334,7 +335,8 @@ public class DatePicker extends Control implements DatePickerInterface
 			outputStringBuffer.append((((isReadOnly != null && isReadOnly) || (isSkipLogicReadOnly != null && isSkipLogicReadOnly))
 							? " disabled='" + ProcessorConstants.TRUE
 							: ""));
-			outputStringBuffer.append(" onchange='isDataChanged();' onfocus=\"javascript:clearDate('");
+			outputStringBuffer.append(" onchange=\"isDataChanged();" + getOnchangeServerCall()
+					+ ";\" onfocus=\"javascript:clearDate('");
 			outputStringBuffer.append(htmlComponentName);
 			outputStringBuffer.append("','");
 			outputStringBuffer.append(ProcessorConstants.MONTH_YEAR_FORMAT);
@@ -410,7 +412,8 @@ public class DatePicker extends Control implements DatePickerInterface
 			outputStringBuffer.append((((isReadOnly != null && isReadOnly) || (isSkipLogicReadOnly != null && isSkipLogicReadOnly))
 							? " disabled='" + ProcessorConstants.TRUE
 							: ""));
-			outputStringBuffer.append(" onchange='isDataChanged();' onfocus=\"javascript:clearDate('");
+			outputStringBuffer.append(" onchange=\"isDataChanged();" + getOnchangeServerCall()
+					+ ";\" onfocus=\"javascript:clearDate('");
 			outputStringBuffer.append(htmlComponentName);
 			outputStringBuffer.append("','");
 			outputStringBuffer.append(ProcessorConstants.YEAR_ONLY_FORMAT);

@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ValidatableInterface;
 import edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
@@ -50,6 +51,7 @@ import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
@@ -176,29 +178,31 @@ public class AjaxcodeHandlerAction extends BaseDynamicExtensionsAction
 	private String updateServerState(HttpServletRequest request)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
 	{
-//		Long containerId = Long.valueOf(request.getParameter("containerId"));
-//		Long controlId = Long.valueOf(request.getParameter("controlId"));
-//		String controlValue = request.getParameter("controlValue");
-//
-//		int rowId = 0;
-//		ContainerInterface container = EntityCache.getInstance().getContainerById(containerId);
-//		ControlInterface control = EntityCache.getInstance().getControlById(controlId);
-//		Map<BaseAbstractAttributeInterface, Object> valueMap = ((Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
-//				.getObjectFromCache(request, DEConstants.VALUE_MAP_STACK)).peek();
-//		DataValueMapUtility.updateDataValueMap(valueMap, rowId, control, controlValue, container);
-		/* All the commented Code is for Live Validation. This is being commented as it is not a part of DE 1.5 Release.
-		 * Un-Comment it when Live Validation needs to be done. Also Un-Comment Code updateServerState(controlName, controlId, containerId) method in DynamicExtensions.js
-		*/
-		/*StringBuilder strAllError = new StringBuilder();
-		List<String> lstError = ValidatorUtil.validateAttributes(control.getBaseAbstractAttribute(),
-				controlValue, control.getCaption());
-		for (String strError : lstError)
+		Long containerId = Long.valueOf(request.getParameter("containerId"));
+		Long controlId = Long.valueOf(request.getParameter("controlId"));
+		String[] controlValue = request.getParameter("controlValue").split("~");
+		Map<Long, ContainerInterface> containerMap = (Map<Long, ContainerInterface>) request
+				.getSession().getAttribute("MapForValidation");
+		int rowId = 0;
+		//ContainerInterface container = EntityCache.getInstance().getContainerById(containerId);		
+		//ControlInterface control = EntityCache.getInstance().getControlById(controlId);
+		ContainerInterface container = containerMap.get(containerId);
+		ControlInterface control = container.getControlById(controlId);
+		Map<BaseAbstractAttributeInterface, Object> valueMap = ((Stack<Map<BaseAbstractAttributeInterface, Object>>) CacheManager
+				.getObjectFromCache(request, DEConstants.VALUE_MAP_STACK)).peek();
+		DataValueMapUtility.updateDataValueMap(valueMap, rowId, control, controlValue, container);
+		StringBuilder strAllError = new StringBuilder();
+		if (control instanceof ValidatableInterface)
 		{
-			strAllError.append(strError);
-			strAllError.append(",");
+			List<String> lstError = ValidatorUtil.validateAttributes(control
+					.getBaseAbstractAttribute(), controlValue[0], control.getCaption());
+			for (String strError : lstError)
+			{
+				strAllError.append(strError);
+				strAllError.append(",");
+			}
 		}
-		return strAllError.toString();*/
-		return "";
+		return strAllError.toString();
 	}
 
 	/**

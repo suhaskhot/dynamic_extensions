@@ -36,6 +36,7 @@ body {
 .font_bl_nor_error {
 	font-family: Arial, Helvetica, sans-serif;
 	border-color: red;
+	background-color:#FFCCCB;
 	/*font-size: .8em;*/
 	color: #333333;
 }

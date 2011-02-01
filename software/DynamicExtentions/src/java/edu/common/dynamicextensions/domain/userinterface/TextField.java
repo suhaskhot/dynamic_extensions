@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ValidatableInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -23,7 +24,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * @hibernate.joined-subclass table="DYEXTN_TEXTFIELD"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class TextField extends Control implements TextFieldInterface
+public class TextField extends Control implements TextFieldInterface, ValidatableInterface
 {
 
 	/** The Constant serialVersionUID. */

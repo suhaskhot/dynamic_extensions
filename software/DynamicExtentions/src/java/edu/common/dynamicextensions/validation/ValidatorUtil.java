@@ -442,7 +442,10 @@ public class ValidatorUtil
 		catch (DynamicExtensionsValidationException e)
 		{
 			errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());
-			errorList.add(errorMessage);
+			if (!errorList.contains(errorMessage))
+			{
+				errorList.add(errorMessage);
+			}
 		}
 	}
 

@@ -267,7 +267,8 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"addLink\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
-							+ coordId + "','" + protocolCoordId + "', 'add')\">\n");
+							+ coordId + "','" + protocolCoordId + "', 'add');"
+							+ getOnchangeServerCall() + "\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_add_inact.gif\" alt=\"Add\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t</a>\n");
@@ -279,7 +280,8 @@ public class ListBox extends SelectControl implements ListBoxInterface
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t<div id=\"removeLink\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t<a href=\"#\" onclick=\"isDataChanged();moveOptions('"
-							+ protocolCoordId + "','" + coordId + "', 'edit')\">\n");
+							+ protocolCoordId + "','" + coordId + "', 'edit');"
+							+ getOnchangeServerCall() + "\">\n");
 			multSelWithAutoCmpltHTML
 					.append("\t\t\t\t\t\t\t\t<img src=\"images/b_remove_inact.gif\" alt=\"Remove\" height=\"18\" border=\"0\" align=\"absmiddle\"/>\n");
 			multSelWithAutoCmpltHTML.append("\t\t\t\t\t\t\t</a>\n");

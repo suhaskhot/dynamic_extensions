@@ -1279,22 +1279,41 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 		this.isPasteEnable = isPasteEnable;
 	}
 
+	/**
+	 * Returns string for skipLogic or live validation.
+	 * @return String.
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
+	 */
 	public String getOnchangeServerCall() throws DynamicExtensionsSystemException
 	{
+		StringBuilder serverCallString = new StringBuilder("");
 		if (isSkipLogic)
 		{
-		    StringBuilder isSkipLogicString=new StringBuilder();
-			isSkipLogicString.append("getSkipLogicControl('");
-			isSkipLogicString.append(getHTMLComponentName());
-			isSkipLogicString.append("','");
-			isSkipLogicString.append(id);
-			isSkipLogicString.append("','");
-			isSkipLogicString.append(getParentContainer().getId());
-			isSkipLogicString.append("')");
-			return isSkipLogicString.toString();
+			serverCallString.append("getSkipLogicControl('");
+			serverCallString.append(getHTMLComponentName());
+			serverCallString.append("','");
+			serverCallString.append(this.id);
+			serverCallString.append("','");
+			serverCallString.append(getParentContainer().getId());
+			serverCallString.append("')");
+			//return isSkipLogicString.toString();
 		}
-		StringBuilder updateServerState=new StringBuilder();
-		updateServerState.append("updateServerState('" );
+		else
+		{
+			serverCallString.append(updateServerState());
+		}
+		return serverCallString.toString();
+	}
+
+	/**
+	 * Returns string for live validation.
+	 * @return String.
+	 * @throws DynamicExtensionsSystemException DynamicExtensionsSystemException
+	 */
+	private String updateServerState() throws DynamicExtensionsSystemException
+	{
+		StringBuilder updateServerState = new StringBuilder();
+		updateServerState.append("updateServerState('");
 		updateServerState.append(getHTMLComponentName());
 		updateServerState.append("','");
 		updateServerState.append(id);

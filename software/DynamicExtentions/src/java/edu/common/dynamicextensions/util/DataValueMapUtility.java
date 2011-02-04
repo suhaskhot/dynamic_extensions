@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -611,13 +612,14 @@ public final class DataValueMapUtility
 				}
 			}
 		}
-			if(controlValue instanceof String[] && ((String[])controlValue).length > 0)
-			{
-				valueMap.put(control.getBaseAbstractAttribute(), ((String[])controlValue)[0]);
-			}else
-			{
-				valueMap.put(control.getBaseAbstractAttribute(), controlValue);
-			}
+		if (controlValue instanceof String[] && ((String[]) controlValue).length > 0)
+		{
+			valueMap.put(control.getBaseAbstractAttribute(), Arrays.asList(controlValue));
+		}
+		else
+		{
+			valueMap.put(control.getBaseAbstractAttribute(), controlValue);
+		}
 
 	}
 }

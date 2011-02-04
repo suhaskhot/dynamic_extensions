@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ValidatableInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -22,7 +23,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
  * @hibernate.joined-subclass table="DYEXTN_TEXTAREA"
  * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
-public class TextArea extends Control implements TextAreaInterface
+public class TextArea extends Control implements TextAreaInterface, ValidatableInterface
 {
 
 	/** The Constant serialVersionUID. */

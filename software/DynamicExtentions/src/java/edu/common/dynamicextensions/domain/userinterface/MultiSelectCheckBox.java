@@ -149,10 +149,11 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectChe
 							+ "'"
 							+ " checked"
 							+ disabled
-							+ " onchange='" + getOnchangeServerCall()+
-									";' ondblclick=\"changeValueForAllCheckBoxes(this);"
-							+ (isSkipLogic ? "getSkipLogicControl('" + htmlComponentName + "','"
-									+ identifier + "','" + parentContainerId + "');" : "")
+							+ " onchange=\""
+							+ getOnchangeServerCall()
+							+ ";\" ondblclick=\"changeValueForAllCheckBoxes(this);"
+							+ (isSkipLogic ? "getSkipLogicControl('" + htmlComponentName
+									+ "','" + identifier + "','" + parentContainerId + "');" : "")
 							+ "\" onclick=\"changeValueForMultiSelectCheckBox(this);"
 							+ (isSkipLogic ? "getSkipLogicControl('" + htmlComponentName + "','"
 									+ identifier + "','" + parentContainerId + "');" : "")
@@ -182,9 +183,11 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectChe
 							+ "id='"
 							+ nameValueBean.getValue()
 							+ "'"
-							+ " onchange='"+getOnchangeServerCall()+";' ondblclick=\"changeValueForAllCheckBoxes(this);"
-							+ (isSkipLogic ? "getSkipLogicControl('" + htmlComponentName + "','"
-									+ identifier + "','" + parentContainerId + "');" : "")
+							+ " onchange=\""
+							+ getOnchangeServerCall()
+							+ ";\" ondblclick=\"changeValueForAllCheckBoxes(this);"
+							+ (isSkipLogic ? "getSkipLogicControl('" + htmlComponentName
+									+ "','" + identifier + "','" + parentContainerId + "');" : "")
 							+ "\" onclick=\"changeValueForMultiSelectCheckBox(this);"
 							+ (isSkipLogic ? "getSkipLogicControl('" + htmlComponentName + "','"
 									+ identifier + "','" + parentContainerId + "');" : "")

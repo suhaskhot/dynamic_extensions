@@ -83,6 +83,7 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
@@ -436,7 +437,7 @@ public class XMIImportProcessor
 		DEClient client = new DEClient();
 		client.setParamaterObjectMap(map);
 		try {
-			client.setServerUrl(new URL(WebUIManagerConstants.HOST_URL+"UpdateCache"));
+			client.setServerUrl(new URL(Variables.serverUrl+"UpdateCache"));
 		} catch (MalformedURLException e) {
 		throw new DynamicExtensionsApplicationException("Error in locking forms on the server cache",e);
 		}

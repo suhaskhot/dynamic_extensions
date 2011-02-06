@@ -44,4 +44,5 @@ public class Variables
 	 * URL of Jboss.
 	 */
 	public static String jbossUrl = "";
+	public static String serverUrl="";
 }

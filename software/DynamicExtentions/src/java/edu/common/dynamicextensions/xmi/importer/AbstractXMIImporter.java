@@ -44,6 +44,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
@@ -178,7 +179,7 @@ public abstract class AbstractXMIImporter
 			map.put(WebUIManagerConstants.ENTITY_GROUP,((EntityInterface)mainContainerList.get(0).getAbstractEntity()).getEntityGroup());
 			DEClient client = new DEClient();
 			client.setParamaterObjectMap(map);
-			client.setServerUrl(new URL(WebUIManagerConstants.HOST_URL+"UpdateCache"));
+			client.setServerUrl(new URL(Variables.serverUrl+"UpdateCache"));
 			client.execute(null);
 		}
 		catch (Exception e)

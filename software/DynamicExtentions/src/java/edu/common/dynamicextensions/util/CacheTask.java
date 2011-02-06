@@ -11,6 +11,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
+import edu.common.dynamicextensions.util.global.Variables;
 
 /**
  * @author kunal_kamble
@@ -32,7 +33,7 @@ public class CacheTask {
 			DEClient client = new DEClient();
 			client.setParamaterObjectMap(map);
 			try {
-				client.setServerUrl(new URL(WebUIManagerConstants.HOST_URL+"UpdateCache"));
+				client.setServerUrl(new URL(Variables.serverUrl+"UpdateCache"));
 			} catch (MalformedURLException e) {
 			throw new DynamicExtensionsApplicationException("Error in releasing forms on the server cache",e);
 			}

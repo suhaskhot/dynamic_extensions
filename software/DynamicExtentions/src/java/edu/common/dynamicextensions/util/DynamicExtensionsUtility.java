@@ -2854,7 +2854,7 @@ public class DynamicExtensionsUtility
 			}
 
 			Variables.jbossUrl=serverUrl.append(serverPrototype).append("://").append(serverHost).append(":").append(serverPort).append("/").toString();
-
+			Variables.serverUrl=props.getProperty("Application.url");
 			stream.close();
 		}
 		catch (IOException exception)

@@ -16,7 +16,6 @@ import java.util.Stack;
 import java.util.Map.Entry;
 
 import edu.common.dynamicextensions.DEIntegration.DEIntegration;
-import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.BaseAbstractAttribute;
 import edu.common.dynamicextensions.domain.Category;
@@ -52,7 +51,6 @@ import edu.common.dynamicextensions.util.CategoryHelperInterface;
 import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.FormulaCalculator;
-import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.ErrorConstants;
 import edu.common.dynamicextensions.validation.ValidatorUtil;
 import edu.common.dynamicextensions.validation.category.CategoryValidator;
@@ -62,7 +60,6 @@ import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
-import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
@@ -115,6 +112,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		if (categoryManager == null)
 		{
 			categoryManager = new CategoryManager();
+			DynamicExtensionsUtility.initialiseApplicationVariables();
 			queryBuilder = QueryBuilderFactory.getQueryBuilder();
 		}
 
@@ -214,8 +212,8 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		CategoryValidator.validateCategoryForConceptCodes(category);
-		persistDynamicExtensionObjectForCategory(category);
-		EntityCache.getInstance().addCategoryToCache(category);
+		persistDynamicExtensionObject(category);
+		/*EntityCache.getInstance().addCategoryToCache(categry);*/
 		return category;
 	}
 

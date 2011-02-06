@@ -47,4 +47,6 @@ public interface RuleInterface extends DynamicExtensionBaseDomainObjectInterface
 
 	void setIsImplicitRule(Boolean isImplicitRule);
 
+	public void copy(RuleInterface rule);
+
 }

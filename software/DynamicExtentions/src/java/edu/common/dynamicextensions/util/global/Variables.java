@@ -40,4 +40,8 @@ public class Variables
 
 	/** The hibernate cfg file name. */
 	public static String hibernateCfgFileName = "hibernate.cfg.xml";
+	/**
+	 * URL of Jboss.
+	 */
+	public static String jbossUrl = "";
 }

@@ -7,9 +7,13 @@ package edu.common.dynamicextensions.util;
 import static edu.common.dynamicextensions.util.global.DEConstants.FALSE_VALUE_LIST;
 import static edu.common.dynamicextensions.util.global.DEConstants.TRUE_VALUE_LIST;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -30,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -38,6 +43,7 @@ import java.util.regex.Pattern;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.servlet.ServletContextEvent;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -138,6 +144,18 @@ public class DynamicExtensionsUtility
 	 * @param entityGroupIdentifier The entity group identifier.
 	 * @return the ContainerInterface.
 	 */
+	public static ControlInterface getControlByIdentifier(String controlIdentifier)
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		ControlInterface controlInterface = null;
+		if (controlIdentifier != null && !"".equals(controlIdentifier))
+		{
+			controlInterface = EntityCache.getInstance().getControlById(
+					Long.valueOf(controlIdentifier));
+		}
+		return controlInterface;
+	}
+
 	public static EntityGroupInterface getEntityGroupByIdentifier(String entityGroupIdentifier)
 	{
 		EntityGroupInterface entityGroupInterface = null;
@@ -516,6 +534,47 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
+	 * @param controlCollection collection of controls
+	 * @param sequenceNumber sequence number
+	 * @return control
+	 */
+	public static ControlInterface getControlBySequenceNumber(ControlInterface[] controlCollection,
+			int sequenceNumber)
+	{
+		ControlInterface controlInterface = null;
+		if (controlCollection != null)
+		{
+			int noOfControls = controlCollection.length;
+			for (int i = 0; i < noOfControls; i++)
+			{
+				controlInterface = controlCollection[i];
+				if (controlInterface.getSequenceNumber() != null
+						&& controlInterface.getSequenceNumber() == sequenceNumber)
+				{
+					controlInterface.setSequenceNumberChanged(true);
+					return controlInterface;
+				}
+				else
+				{
+					controlInterface = null;
+				}
+			}
+		}
+		return controlInterface;
+	}
+
+	/**
+	 * initialize application variables
+	 */
+	public static void initialiseApplicationVariables()
+	{
+		if (Logger.out == null)
+		{
+
+		}
+	}
+
+	/**
 	 * Initialize Application Information.
 	 */
 	public static void initialiseApplicationInfo()
@@ -688,6 +747,36 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
+	 *
+	 * @param originalObject Object
+	 * @return Object
+	 */
+	public static Object cloneObject(Object originalObject)
+	{
+		Object clonedObject = null;
+		try
+		{
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+			objectOutputStream.writeObject(originalObject);
+			//retrieve back
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+			ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+			clonedObject = objectInputStream.readObject();
+		}
+		catch (IOException e)
+		{
+			Logger.out.error(e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			Logger.out.error(e);
+		}
+
+		return clonedObject;
+	}
+
+	/**
 	 * @param string : string to be checked.
 	 * @param list: List that is to be checked if string is contained
 	 * @return check if a string is contained in the passed list and return true if yes
@@ -736,6 +825,29 @@ public class DynamicExtensionsUtility
 				return obj1Name.compareTo(obj2Name);
 			}
 		});
+	}
+
+	/**
+	 * @param entity Entity Object
+	 * @return entityGroup of a entity
+	 */
+	public static EntityGroupInterface getEntityGroup(EntityInterface entity)
+	{
+		EntityGroupInterface entityGroup = null;
+		if (entity != null)
+		{
+			//			Collection<EntityGroupInterface> entityGroupCollection = entity
+			//					.getEntityGroupCollection();
+			//			if (entityGroupCollection != null)
+			//			{
+			//				Iterator<EntityGroupInterface> entityGroupIter = entityGroupCollection.iterator();
+			//				if (entityGroupIter.hasNext())
+			//				{
+			entityGroup = entity.getEntityGroup();
+			//				}
+			//			}
+		}
+		return entityGroup;
 	}
 
 	/**
@@ -868,6 +980,38 @@ public class DynamicExtensionsUtility
 		{
 			throw new DynamicExtensionsApplicationException("Object name exceeds maximum limit",
 					null, EntityManagerExceptionConstantsInterface.DYEXTN_A_007);
+		}
+	}
+
+	/**
+	 * @param abstractAttribute abstract attribute
+	 */
+	public static void updateEntityReferences(AbstractAttributeInterface abstractAttribute)
+	{
+
+		if (abstractAttribute instanceof AttributeInterface)
+		{
+			return;
+		}
+		Set<EntityInterface> entitySet = new HashSet<EntityInterface>();
+		entitySet.add(abstractAttribute.getEntity());
+		getAssociatedEntities(abstractAttribute.getEntity(), entitySet);
+		List<EntityInterface> entityList = new ArrayList<EntityInterface>(entitySet);
+
+		AssociationInterface association = (AssociationInterface) abstractAttribute;
+		EntityInterface targetEntity = association.getTargetEntity();
+		if (entityList.contains(targetEntity))
+		{
+			association.setTargetEntity(entityList.get(entityList.indexOf(targetEntity)));
+			return;
+		}
+		for (AssociationInterface tagretEntityAssociation : targetEntity.getAssociationCollection())
+		{
+			EntityInterface entity = tagretEntityAssociation.getTargetEntity();
+			if (entityList.contains(entity))
+			{
+				tagretEntityAssociation.setTargetEntity(entityList.get(entityList.indexOf(entity)));
+			}
 		}
 	}
 
@@ -1196,6 +1340,21 @@ public class DynamicExtensionsUtility
 	}
 
 	/**
+	 * @param containerColl
+	 * @return
+	 */
+	public static List<String> getMainContainerNamesList(
+			Collection<ContainerInterface> containerColl)
+	{
+		List<String> mainContainerNames = new ArrayList<String>();
+		for (ContainerInterface container : containerColl)
+		{
+			mainContainerNames.add(container.getCaption());
+		}
+		return mainContainerNames;
+	}
+
+	/**
 	 * This method corrects cardinalities such that max cardinality  < minimum cardinality ,otherwise it throws exception
 	 * @param entity
 	 */
@@ -1478,8 +1637,8 @@ public class DynamicExtensionsUtility
 				.getSrcEntityConstraintKeyPropertiesCollection();
 		ConstraintKeyPropertiesInterface primaryCnstrKeyProp = null;
 		cnstrKeyProp.clear();
-		if (EntityManagerUtil.isAttributePresent(parentEntity,"id")
-				&& EntityManagerUtil.isAttributePresent(childEntity,"id")
+		if (EntityManagerUtil.isAttributePresent(parentEntity, "id")
+				&& EntityManagerUtil.isAttributePresent(childEntity, "id")
 				&& !isAddColumnForInheritance)
 		{
 			AttributeInterface parentIdAtt = parentEntity.getAttributeByName("id");
@@ -1741,6 +1900,50 @@ public class DynamicExtensionsUtility
 		return string;
 	}
 
+	/**
+	 * @param attr
+	 * @param value
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 * @throws ParseException
+	 */
+	public static String getDefaultDateForRelatedCategoryAttribute(AttributeInterface attr,
+			Object value) throws DynamicExtensionsSystemException
+	{
+		//String formattedvalue = null;
+		Date date = null;
+		String str = null;
+		if (value instanceof Date)
+		{
+			String dateFormat = ((DateAttributeTypeInformation) attr.getAttributeTypeInformation())
+					.getFormat();
+			String datePatten = DynamicExtensionsUtility.getDateFormat(dateFormat);
+			str = Utility.parseDateToString(((Date) value), datePatten);
+		}
+		else
+		{
+			str = (String) value;
+		}
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				ProcessorConstants.SDF_ORCL_CAT_REL_ATTR, locale);
+		try
+		{
+			date = simpleDateFormat.parse(str);
+		}
+		catch (ParseException e)
+		{
+			throw new DynamicExtensionsSystemException("Unable to parse given date.", e);
+		}
+
+		JDBCDAO jdbcDao = getJDBCDAO();
+
+		String formattedvalue = jdbcDao.getStrTodateFunction() + "('"
+				+ simpleDateFormat.format(date) + "','"
+				+ ProcessorConstants.ORCL_CAT_REL_ATTR_FORMAT + "')";
+
+		return formattedvalue;
+	}
 
 	/**
 	 *
@@ -2103,7 +2306,8 @@ public class DynamicExtensionsUtility
 	 * @return jdbcDao
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static JDBCDAO getJDBCDAO(SessionDataBean sessionDataBean) throws DynamicExtensionsSystemException
+	public static JDBCDAO getJDBCDAO(SessionDataBean sessionDataBean)
+			throws DynamicExtensionsSystemException
 	{
 		String appName = DynamicExtensionDAO.getInstance().getAppName();
 		JDBCDAO jdbcDao = null;
@@ -2135,7 +2339,8 @@ public class DynamicExtensionsUtility
 	 * @return hibernateDao
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public static HibernateDAO getHibernateDAO(SessionDataBean sessionDataBean) throws DynamicExtensionsSystemException
+	public static HibernateDAO getHibernateDAO(SessionDataBean sessionDataBean)
+			throws DynamicExtensionsSystemException
 	{
 		String appName = DynamicExtensionDAO.getInstance().getAppName();
 		HibernateDAO hibernateDao = null;
@@ -2188,6 +2393,42 @@ public class DynamicExtensionsUtility
 		{
 			throw new DynamicExtensionsSystemException(DEConstants.DATA_INSERTION_ERROR_MESSAGE,
 					daoExp);
+		}
+	}
+
+	public static void executeDML(List<Map<String, LinkedList<ColumnValueBean>>> queryList)
+			throws DynamicExtensionsSystemException
+	{
+		JDBCDAO jdbcDao = null;
+		try
+		{
+			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
+			for (Map<String, LinkedList<ColumnValueBean>> query : queryList)
+			{
+				for (Map.Entry<String, LinkedList<ColumnValueBean>> queryRecord : query.entrySet())
+				{
+					LinkedList<LinkedList<ColumnValueBean>> colValBeanList = new LinkedList<LinkedList<ColumnValueBean>>();
+					colValBeanList.add(queryRecord.getValue());
+					jdbcDao.executeUpdate(queryRecord.getKey(), colValBeanList);
+				}
+			}
+		}
+
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException("Error while inserting the data", e);
+		}
+		finally
+		{
+			try
+			{
+				jdbcDao.commit();
+				DynamicExtensionsUtility.closeDAO(jdbcDao);
+			}
+			catch (DAOException e)
+			{
+				throw new DynamicExtensionsSystemException("Error while inserting the data", e);
+			}
 		}
 	}
 
@@ -2587,5 +2828,39 @@ public class DynamicExtensionsUtility
 		}
 		return attribute;
 	}
+	public static void initializeVariables(ServletContextEvent sce)
+	{
+		InputStream stream = DynamicExtensionDAO.class.getClassLoader().getResourceAsStream(
+		"DynamicExtension.properties");
+		try
+		{
+			StringBuffer serverUrl=new StringBuffer();
+			Properties props = new Properties();
+			props.load(stream);
+			String serverHost=props.getProperty("jboss.server.host");
+			String serverPrototype=props.getProperty("jboss.secure");
+			String serverPort=props.getProperty("jboss.server.port");
+			if(serverHost==null || serverHost.trim().equals(""))
+			{
+				serverHost="localhost";
+			}
+			if(serverPrototype==null || serverPrototype.trim().equals(""))
+			{
+				serverPrototype="https";
+			}
+			if(serverPort==null || serverPort.trim().equals(""))
+			{
+				serverPort="8080";
+			}
 
+			Variables.jbossUrl=serverUrl.append(serverPrototype).append("://").append(serverHost).append(":").append(serverPort).append("/").toString();
+
+			stream.close();
+		}
+		catch (IOException exception)
+		{
+			Logger.out.error("Not able to load properties file", exception);
+		}
+
+	}
 }

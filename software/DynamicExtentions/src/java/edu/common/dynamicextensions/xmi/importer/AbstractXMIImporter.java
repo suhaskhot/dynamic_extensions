@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.netbeans.api.mdr.MDRepository;
 import org.omg.uml.UmlPackage;
 import org.openide.util.Lookup;
 
+import edu.common.dynamicextensions.client.DEClient;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
@@ -38,6 +41,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.entitymanager.QueryBuilderFactory;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
@@ -99,6 +103,7 @@ public abstract class AbstractXMIImporter
 	private String coRecObjCsvFName = "";
 
 	private String hookEntityName = "";
+	private final Set<AssociationInterface> intermodelAssociationCollection = new  HashSet<AssociationInterface>();
 	private EntityInterface hookEntity;
 	private boolean isAddQueryPaths = true;
 	private boolean isEntGrpSysGented = false;
@@ -164,6 +169,17 @@ public abstract class AbstractXMIImporter
 			generateValidationLogs();
 
 			generateLog(" IMPORT_XMI -->TOTAL TIME", processStartTime);
+			LOGGER.info("updating server cache");
+			//step 7: update server cache
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put(WebUIManagerConstants.ENTITY, hookEntityName);
+			map.put(WebUIManagerConstants.OPERATION,WebUIManagerConstants.UPDATE_CACHE);
+			map.put(WebUIManagerConstants.ASSOCIATION, intermodelAssociationCollection);
+			map.put(WebUIManagerConstants.ENTITY_GROUP,((EntityInterface)mainContainerList.get(0).getAbstractEntity()).getEntityGroup());
+			DEClient client = new DEClient();
+			client.setParamaterObjectMap(map);
+			client.setServerUrl(new URL(WebUIManagerConstants.HOST_URL+"UpdateCache"));
+			client.execute(null);
 		}
 		catch (Exception e)
 		{

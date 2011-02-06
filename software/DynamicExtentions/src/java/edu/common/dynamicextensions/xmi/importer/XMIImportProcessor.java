@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import org.omg.uml.modelmanagement.ModelClass;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
+import edu.common.dynamicextensions.client.DEClient;
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ByteArrayAttributeTypeInformation;
@@ -76,6 +79,7 @@ import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.DEConstants;
@@ -425,7 +429,20 @@ public class XMIImportProcessor
 		}
 		return dynamicQueryList;
 	}
+	private void lockFroms() throws DynamicExtensionsApplicationException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(WebUIManagerConstants.ENTITY_GROUP,entityGroup);
+		map.put(WebUIManagerConstants.OPERATION,WebUIManagerConstants.LOCK_FORMS);
+		DEClient client = new DEClient();
+		client.setParamaterObjectMap(map);
+		try {
+			client.setServerUrl(new URL(WebUIManagerConstants.HOST_URL+"UpdateCache"));
+		} catch (MalformedURLException e) {
+		throw new DynamicExtensionsApplicationException("Error in locking forms on the server cache",e);
+		}
+		client.execute(null);
 
+	}
 	/**
 	 * This method will check if the model contains the given package& will collect
 	 * all the model elements in the corresponding collections.

@@ -472,7 +472,39 @@ public class CategoryGenerationUtil
 		}
 		return associationRoleName;
 	}
+	/**
+	 * This method gets the relative path.
+	 *
+	 * @param entityNameList
+	 *            ordered entities names in the path
+	 * @param pathMap
+	 *            the path map
+	 * @return the relative path
+	 * @return
+	 */
+	public static List<String> getRelativePath(List<String> entityNameList,
+			Map<String, List<String>> pathMap)
+	{
+		List<String> newEntityNameList = new ArrayList<String>();
+		String lastEntityName = null;
+		for (String entityName : entityNameList)
+		{
+			if (pathMap.get(entityName) == null)
+			{
+				newEntityNameList.add(entityName);
+			}
+			else
+			{
+				lastEntityName = entityName;
+			}
+		}
+		if (lastEntityName != null && !newEntityNameList.contains(lastEntityName))
+		{
+			newEntityNameList.add(0, lastEntityName);
+		}
 
+		return newEntityNameList;
+	}
 	/**
 	 * Returns the entity group used for careting this category.
 	 *
@@ -496,7 +528,41 @@ public class CategoryGenerationUtil
 		return entityGroup;
 
 	}
+	/**
+	 * This method finds the main category entity.
+	 *
+	 * @param categoryPaths
+	 *            the category paths
+	 * @return the main category entity name
+	 * @return
+	 */
+	public static String getMainCategoryEntityName(String[] categoryPaths)
+	{
+		int minNumOfCategoryEntityNames = categoryPaths[0].split("->").length;
+		for (String string : categoryPaths)
+		{
+			if (minNumOfCategoryEntityNames > string.split("->").length)
+			{
+				minNumOfCategoryEntityNames = string.split("->").length;
+			}
+		}
+		String categoryEntityName = categoryPaths[0].split("->")[0];
 
+		a : for (int i = 0; i < minNumOfCategoryEntityNames; i++)
+		{
+			String temp = categoryPaths[0].split("->")[i];
+			for (String string : categoryPaths)
+			{
+				if (!string.split("->")[i].equals(temp))
+				{
+					break a;
+				}
+			}
+			categoryEntityName = categoryPaths[0].split("->")[i];
+		}
+
+		return categoryEntityName;
+	}
 	/**
 	 * category names in CSV are of format <entity_name>[instance_Number].
 	 *
@@ -531,7 +597,29 @@ public class CategoryGenerationUtil
 		}
 		return entityNameForAssociationMap.toString();
 	}
+		/**
+	 * category names in CSV are of format <entity_name>[instance_Number].
+	 *
+	 * @param categoryEntityInstancePath
+	 *            the category entity instance path
+	 * @return the category entity name
+	 * @return
+	 */
+	public static String getCategoryEntityName(String categoryEntityInstancePath)
+	{
+		StringBuffer entityNameForAssociationMap = new StringBuffer();
+		String[] categoryEntityPathArray = categoryEntityInstancePath.split("->");
 
+		for (String instancePath : categoryEntityPathArray)
+		{
+			entityNameForAssociationMap.append(instancePath);
+		}
+		if (categoryEntityPathArray.length == 1)
+		{
+			entityNameForAssociationMap.append(categoryEntityPathArray[0]);
+		}
+		return entityNameForAssociationMap.toString();
+	}
 	/**
 	 * The path which are used for Root Cat Entity path should always be
 	 * NAME[1]->Name[1] but user can only specify Name[1] & thus this method modifies the instance

@@ -96,4 +96,25 @@ public interface WebUIManagerConstants
 	String CACHE_ERROR = "cacheError";
 
 	String CONTAINER_MAP = "containerMap";
+	public final String DATA_VALUE_MAP = "dataValueMap";
+	public final String ENTITY = "entity";
+	public final String DYNAMIC_OBJECT_ID = "dynamicObjectId";
+	public final String OLD_DYNAMIC_OBJECT = "oldDynamicObject";
+	public final String STATIC_OBJECT_ID = "staticObjectId";
+	public final String OLD_STATIC_OBJECT = "oldStaticObject";
+	public final String ASSOCIATION = "association";
+
+	public final String  ENTITY_GROUP = "entityGroupName";
+
+	public final String  CATEGORY = "category";
+
+	public final String DEM_URL = "https://ps7563:8443/dem/";
+	public final String HOST_URL = "https://ps7563:8443/clinportal/";
+
+	public final String PACKAGE_NAME = "packageName";
+	public final String LOCK_FORMS = "lockForms";
+	public final String RELEASE_FORMS= "releaseForms";
+	public final String OPERATION= "operation";
+
+	public final String UPDATE_CACHE = "updateCache";
 }

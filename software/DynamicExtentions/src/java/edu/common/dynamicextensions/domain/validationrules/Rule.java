@@ -2,8 +2,10 @@
 package edu.common.dynamicextensions.domain.validationrules;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
@@ -33,7 +35,7 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 	protected Collection<RuleParameterInterface> ruleParameterCollection = new HashSet<RuleParameterInterface>();
 
 	/**
-	 * 
+	 *
 	 */
 	protected Boolean isImplicitRule = Boolean.TRUE;
 
@@ -51,7 +53,7 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 
 	/**
 	 * This method returns the name of the Rule.
-	 * @hibernate.property name="name" type="string" column="NAME" 
+	 * @hibernate.property name="name" type="string" column="NAME"
 	 * @return the name of the Rule.
 	 */
 	public String getName()
@@ -106,7 +108,7 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 
 	/**
 	 * @hibernate.property name="isImplicitRule" type="boolean" column="IS_IMPLICIT"
-	 * @return the isImplicitRule 
+	 * @return the isImplicitRule
 	 */
 	public Boolean getIsImplicitRule()
 	{
@@ -121,4 +123,21 @@ public class Rule extends DynamicExtensionBaseDomainObject implements RuleInterf
 		this.isImplicitRule = isImplicitRule;
 	}
 
+	public void copy(RuleInterface rule)
+	{
+		this.isImplicitRule = rule.getIsImplicitRule();
+		Map<String, RuleParameterInterface> map = new HashMap<String, RuleParameterInterface>();
+
+		for(RuleParameterInterface parameterInterface:getRuleParameterCollection())
+		{
+			map.put(parameterInterface.getName(), parameterInterface);
+		}
+		for(RuleParameterInterface parameterInterface: rule.getRuleParameterCollection())
+		{
+			if(map.containsKey(parameterInterface.getName()))
+			{
+				map.get(parameterInterface.getName()).copy(parameterInterface);
+			}
+		}
+	}
 }

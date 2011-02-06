@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.utility.HTTPSConnection;
@@ -44,6 +45,19 @@ public abstract class AbstractClient
 	 */
 	protected transient URL serverUrl;
 
+	protected transient URL jbossUrl;
+
+
+
+
+	protected Map<String, Object> paramaterObjectMap ;
+
+	@Override
+	public String toString() {
+		return "AbstractClient [paramaterObjectMap=" + paramaterObjectMap
+				+ ", serverUrl=" + serverUrl + "]";
+	}
+
 	/**
 	 * This method will initiate the task on server by the URl specified.
 	 * @param args The list of arguments this method should be as the child expects
@@ -64,8 +78,8 @@ public abstract class AbstractClient
 			// open the servlet connection
 			URLConnection servletConnection = httpsConnection.openServletConnection(serverUrl);
 			LOGGER.info("Connection established");
-			// upload the Zip file to server
-			httpsConnection.uploadFileToServer(servletConnection, zipFile);
+			performAction(httpsConnection,servletConnection);
+
 			LOGGER.info("Artifacts uploaded");
 			// read the response from server
 			processResponse(servletConnection);
@@ -73,6 +87,7 @@ public abstract class AbstractClient
 		}
 		catch (IOException e)
 		{
+			e.printStackTrace();
 			LOGGER.error("Exception : " + e.getLocalizedMessage());
 			LOGGER.info("For more information please check :/log/dynamicExtentionsError.log");
 			LOGGER.debug("Exception occured is as follows : ", e);
@@ -83,6 +98,12 @@ public abstract class AbstractClient
 			LOGGER.info("For more information please check :/log/dynamicExtentionsError.log");
 			LOGGER.debug("Exception occured is as follows : ", e);
 		}
+	}
+
+	protected void performAction(HTTPSConnection httpsConnection, URLConnection servletConnection) throws DynamicExtensionsSystemException, IOException {
+		// upload the Zip file to server
+		httpsConnection.uploadFileToServer(servletConnection, zipFile);
+
 	}
 
 	/**
@@ -164,4 +185,33 @@ public abstract class AbstractClient
 		}
 		return catFileNameString.toString();
 	}
+
+	public Map<String, Object> getParamaterObjectMap() {
+		return paramaterObjectMap;
+	}
+
+	public void setParamaterObjectMap(Map<String, Object> paramaterObjectMap) {
+		this.paramaterObjectMap = paramaterObjectMap;
+	}
+
+	public URL getServerUrl() {
+		return serverUrl;
+	}
+
+	public void setServerUrl(URL serverUrl) {
+		this.serverUrl = serverUrl;
+	}
+
+	public URL getJbossUrl()
+	{
+		return jbossUrl;
+	}
+
+
+	public void setJbossUrl(URL jbossUrl)
+	{
+		this.jbossUrl = jbossUrl;
+	}
+
+
 }

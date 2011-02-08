@@ -100,6 +100,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.TextFieldInter
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.UserInterfaceiUtility;
@@ -171,8 +172,10 @@ public class DynamicExtensionsUtility
 	 * This method fetches the Container instance from the Database given the corresponding Container Identifier.
 	 * @param containerIdentifier The Identifier of the Container.
 	 * @return the ContainerInterface
+	 * @throws NumberFormatException
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public static ContainerInterface getContainerByIdentifier(String containerIdentifier)
+	public static ContainerInterface getContainerByIdentifier(String containerIdentifier) throws DynamicExtensionsCacheException, NumberFormatException
 	{
 		ContainerInterface containerInterface = null;
 		if (containerIdentifier != null && !"".equals(containerIdentifier))
@@ -187,8 +190,10 @@ public class DynamicExtensionsUtility
 	 * This method returns the containerInterface object.
 	 * @param containerIdentifier Container identifier.
 	 * @return ContainerInterface
+	 * @throws NumberFormatException
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public static ContainerInterface getClonedContainerFromCache(String containerIdentifier)
+	public static ContainerInterface getClonedContainerFromCache(String containerIdentifier) throws DynamicExtensionsCacheException, NumberFormatException
 	{
 		ContainerInterface containerInterface = getContainerByIdentifier(containerIdentifier);
 		DyExtnObjectCloner cloner = new DyExtnObjectCloner();

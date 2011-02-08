@@ -687,7 +687,8 @@ public class CategoryCSVFileParser extends CategoryFileParser
 					if (ruleValue.trim().toLowerCase(locale).startsWith(
 							CategoryCSVConstants.RANGE.toLowerCase(locale)))
 					{
-						String[] rangeValues = ruleValue.trim().split("-");
+						ruleValue=ruleValue.trim().replaceFirst("-","#");
+						String[] rangeValues = ruleValue.trim().split("#");
 						for (String rangeValue : rangeValues)
 						{
 							if (rangeValue.trim().toLowerCase(locale).startsWith(

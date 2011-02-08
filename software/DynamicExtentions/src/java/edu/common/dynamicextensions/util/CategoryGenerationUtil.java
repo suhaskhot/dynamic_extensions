@@ -1286,8 +1286,11 @@ public class CategoryGenerationUtil
 		{
 			populateDataElementCollectionFromDB(categoryAttributeInterface
 					.getDataElementCollection(), hibernateDAO);
-			populatePVCollectionFromDB(categoryAttributeInterface.getSkipLogicPermissibleValues(),
-					hibernateDAO);
+			//TODO
+			/** This is commented as we do not need to upgrade the PV references of Skip Logic. 
+			This could need to be reviewed while removing the old Skip Logic related code.*/
+			/*populatePVCollectionFromDB(categoryAttributeInterface.getSkipLogicPermissibleValues(),
+					hibernateDAO);*/
 		}
 	}
 

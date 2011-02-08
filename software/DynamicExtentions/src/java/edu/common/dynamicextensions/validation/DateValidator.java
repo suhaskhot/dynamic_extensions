@@ -118,7 +118,7 @@ public class DateValidator implements ValidatorRuleInterface
 	 * @return true if date is in proper format.
 	 * @throws DynamicExtensionsValidationException exception.
 	 */
-	private boolean isValidDate(String value, String dateFormat, String controlCaption,
+	protected boolean isValidDate(String value, String dateFormat, String controlCaption,
 			boolean... isFromDateRangeValidator) throws DynamicExtensionsValidationException
 	{
 		boolean isValid = !value.endsWith("0000") && isValidDatePattern(value, dateFormat);
@@ -126,16 +126,7 @@ public class DateValidator implements ValidatorRuleInterface
 		{
 			if (isValid)
 			{
-				Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, locale);
-				simpleDateFormat.setLenient(false);
-				Date tempDate = simpleDateFormat.parse(value);
-
-				if (isFromDateRangeValidator.length == 0 && tempDate.after(new Date()))
-				{
-					ValidatorUtil.reportInvalidInput(controlCaption, "today's date.",
-							"dynExtn.validation.Date.Max");
-				}
+				getFormattedDateValue(value, dateFormat);
 			}
 		}
 		catch (ParseException parseException)
@@ -143,6 +134,25 @@ public class DateValidator implements ValidatorRuleInterface
 			isValid = false;
 		}
 		return isValid;
+	}
+
+	/**
+	 * Gets the formatted date value.
+	 *
+	 * @param value the value
+	 * @param dateFormat the date format
+	 *
+	 * @return the formatted date value
+	 *
+	 * @throws ParseException if unable to parse the date with the given dateFormat
+	 */
+	protected Date getFormattedDateValue(String value, String dateFormat) throws ParseException
+	{
+		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, locale);
+		simpleDateFormat.setLenient(false);
+		Date dtValue = simpleDateFormat.parse(value);
+		return dtValue;
 	}
 
 	/**

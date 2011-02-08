@@ -153,10 +153,20 @@ public class ProcessorConstants
 	public static final String TRUE = "true";
 	public static final String FALSE = "false";
 
+	/** The Constant DATE. */
 	public static final String DATE = "date";
+
+	/** The Constant DATE_RANGE. */
 	public static final String DATE_RANGE = "dateRange";
+
+	/** The Constant ALLOW_FUTURE_DATE. */
 	public static final String ALLOW_FUTURE_DATE = "allowfuturedate";
+
+	/** The Constant RANGE. */
 	public static final String RANGE = "range";
+
+	/** The Constant ALLOW_PAST_AND_PRESENT_DATE_ONLY. */
+	public static final String ALLOW_PAST_AND_PRESENT_DATE_ONLY = "allowpastandpresentdate";
 
 	// Disabled keyword.
 	public static final String DISABLED = " disabled ";

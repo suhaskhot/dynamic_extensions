@@ -22,7 +22,7 @@
     <error-key name="eav.validation.number" />
   </validation-rule>
 
-  <validation-rule display-label="eav.rule.date" rule-name="allowPastAndPresentDateOnly" rule-class="edu.common.dynamicextensions.validation.DateValidator">
+  <validation-rule display-label="eav.rule.date" rule-name="allowPastAndPresentDateOnly" rule-class="edu.common.dynamicextensions.validation.PastAndPresentDateValidator">
     <error-key name="eav.validation.date" />
   </validation-rule>
   

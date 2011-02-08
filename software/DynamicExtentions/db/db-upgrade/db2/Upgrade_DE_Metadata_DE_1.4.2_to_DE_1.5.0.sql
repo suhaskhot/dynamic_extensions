@@ -23,6 +23,8 @@ create table DYEXTN_ABSTR_CATEGORY (IDENTIFIER bigint not null, PRIMARY KEY ("ID
 
 create table DYEXTN_STATIC_CATEGORY (IDENTIFIER bigint not null, FORM_URL varchar(800), PRIMARY KEY ("IDENTIFIER"));
 
+alter table DYEXTN_STATIC_CATEGORY add DataQuery varchar2(1800);
+
 alter table DYEXTN_CATEGORY DROP CONSTRAINT fkd33de81b728b19be;
 
 alter table DYEXTN_ABSTR_CATEGORY add constraint FK12E0EF6A728B19BE foreign key (IDENTIFIER) references DYEXTN_ABSTRACT_METADATA (IDENTIFIER);;

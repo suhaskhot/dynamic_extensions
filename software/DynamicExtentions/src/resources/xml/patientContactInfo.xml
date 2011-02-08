@@ -6,5 +6,15 @@
 			<name>isParticipantRegistrationForm</name>
 			<value>true</value>
 		</Tag>
+		<GridView>
+				<GridDisplayColumn>
+				   <columnName>location</columnName>
+				   <dispalyLabel>gridlocation</dispalyLabel>
+				   <displayOrder>4</displayOrder>
+				</GridDisplayColumn>
+	   </GridView>
+	   <DataQuery>
+			 select * from static category
+	   </DataQuery> 
 	</Form>
 </FormDefinition>

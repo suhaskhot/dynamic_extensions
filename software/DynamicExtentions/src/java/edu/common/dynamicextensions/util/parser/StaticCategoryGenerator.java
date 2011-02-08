@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.GridViewColumn;
 import edu.common.dynamicextensions.domaininterface.StaticCategoryInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.StaticCategoryManager;
@@ -26,6 +27,8 @@ import edu.common.dynamicextensions.util.xml.FormDefinition;
 import edu.common.dynamicextensions.util.xml.XMLToObjectConverter;
 import edu.common.dynamicextensions.util.xml.FormDefinition.Form;
 import edu.common.dynamicextensions.util.xml.FormDefinition.Form.Tag;
+import edu.common.dynamicextensions.util.xml.FormDefinition.Form.GridView.GridDisplayColumn;
+import edu.common.dynamicextensions.util.xml.FormDefinition.Form.GridView;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 
@@ -74,7 +77,24 @@ public class StaticCategoryGenerator
 
 		staticCategory.setFormURL(form.getUrl());
 		Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
+		Collection<GridViewColumn> gridColBeans = new HashSet<GridViewColumn>();
 		List<Tag> taggedValueList = form.getTag();
+		List<GridDisplayColumn> columnDisplayList = form.getGridView().getGridDisplayColumn(); 
+		
+		for (GridDisplayColumn gridDisplayColumn : columnDisplayList)
+		{
+		GridViewColumn gridViewCol = new GridViewColumn();
+			
+		gridViewCol.setGridDisplayColumn(gridDisplayColumn.getDispalyLabel());
+		gridViewCol.setGridTableColumn(gridDisplayColumn.getColumnName());
+		gridViewCol.setDisplayOrder(gridDisplayColumn.getDisplayOrder());
+			gridColBeans.add(gridViewCol);	
+		}
+		 if(staticCategory.getGridViewColumnList()!=null) 
+		  staticCategory.getGridViewColumnList().clear(); 
+		staticCategory.setGridViewColumnList(gridColBeans);
+		String dataQuery  = form.getDataQuery();
+		staticCategory.setDataQuery(dataQuery);
 		for (Tag tag : taggedValueList)
 		{
 			TaggedValueInterface taggedValue = DomainObjectFactory.getInstance()

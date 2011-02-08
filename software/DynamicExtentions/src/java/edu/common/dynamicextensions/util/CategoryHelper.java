@@ -1435,6 +1435,24 @@ public class CategoryHelper implements CategoryHelperInterface
 				}
 			}
 		}
+		StringBuffer missingPVList = new StringBuffer();
+		if(desiredPermissibleValues != null && !desiredPermissibleValues.isEmpty())
+		{
+			for (String pv : desiredPermissibleValues)
+			{
+				missingPVList.append(pv).append(',');
+			}
+		}
+		if (missingPVList.length() > 0)
+		{
+			String pvList = missingPVList.substring(0, (missingPVList.length() - 1));
+			LOGGER.error("Permissible values subset defined for attribute " + attributeName + " is not correct.");
+			LOGGER.error("Following Permissible values are not present at attribute level. Add them to attribute and then try again");
+			LOGGER.error(pvList);
+			throw new DynamicExtensionsSystemException(
+					"Permissible values subset defined for attribute " + attributeName
+							+ " is not correct. Please add " + pvList+ " to model level Permissible values");
+		}
 		return permissibleValues;
 	}
 

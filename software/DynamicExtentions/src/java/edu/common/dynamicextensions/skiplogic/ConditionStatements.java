@@ -112,6 +112,7 @@ public class ConditionStatements
 	 * @param objectValueState the object value state
 	 * @param controlFromCache the control from cache
 	 */
+	 @SuppressWarnings("unchecked")
 	private void updateDataValueMap(Map<BaseAbstractAttributeInterface, Object> objectValueState,
 			ControlInterface controlFromCache)
 	{

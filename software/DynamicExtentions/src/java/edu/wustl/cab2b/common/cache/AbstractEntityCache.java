@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,10 +32,12 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.entitymanager.AbstractBaseMetadataManager;
 import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
+import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.skiplogic.SkipLogic;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
@@ -59,6 +62,16 @@ public abstract class AbstractEntityCache implements IEntityCache
 	private static final long serialVersionUID = 1234567890L;
 
 	public static boolean isCacheReady = true;
+	
+	/**
+	 * Error Constants
+	 */
+	public static final String EXCEPTION_CREATING_CACHE = "Exception encountered while creating EntityCache!!";
+
+	/**
+	 * Error Constants
+	 */
+	public static final String ERROR_CREATING_CACHE = "Error while Creating EntityCache. Error: ";
 
 	private static final Logger LOGGER = edu.wustl.common.util.logger.Logger
 			.getLogger(AbstractEntityCache.class);
@@ -93,6 +106,9 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 */
 	protected Map<Long, AttributeInterface> idVsAttribute = new HashMap<Long, AttributeInterface>();
 
+	/** The container id vs skip logic. */
+	protected Map<Long, SkipLogic> containerIdVsSkipLogic = new HashMap<Long, SkipLogic>();
+	
 	/**
 	 * This map holds all the original association. Associations which are
 	 * replicated by cab2b are not present in this map Key : String to identify
@@ -129,6 +145,8 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 *  category task by more than one user at a time.
 	 */
 	protected long catFileNameCounter = 1L;
+	
+	private static Map<String, CategoryInterface> categoryCache = new LinkedHashMap<String, CategoryInterface>();
 
 	/**
 	 * This set contains all the categories which are in opened at this instance in Edit
@@ -160,6 +178,46 @@ public abstract class AbstractEntityCache implements IEntityCache
 		refreshCache();
 	}
 
+	public final synchronized void cacheSkipLogic()
+	{
+		HibernateDAO hibernateDAO = null;
+		try
+		{
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			Collection<SkipLogic> allSkipLogics = DynamicExtensionUtility
+					.getSkipLogicsDefinedForCategories(hibernateDAO);
+			for (SkipLogic skipLogic : allSkipLogics)
+			{
+				containerIdVsSkipLogic.put(skipLogic.getContainerIdentifier(), skipLogic);
+			}
+		}
+		catch (final DAOException e)
+		{
+			LOGGER.error(ERROR_CREATING_CACHE + e.getMessage());
+			throw new RuntimeException(EXCEPTION_CREATING_CACHE, e);
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			LOGGER.error(ERROR_CREATING_CACHE + e.getMessage());
+			throw new RuntimeException(EXCEPTION_CREATING_CACHE, e);
+		}
+		finally
+		{
+			try
+			{
+				DynamicExtensionsUtility.closeDAO(hibernateDAO);
+			}
+			catch (final DynamicExtensionsSystemException e)
+			{
+				LOGGER.error("Exception encountered while closing session In EntityCache."
+						+ e.getMessage());
+				throw new RuntimeException(
+						"Exception encountered while closing session In EntityCache.", e);
+			}
+
+		}
+	}
+	
 	public AbstractEntityCache(EntityGroupInterface entityGroupInterface) {
 		refreshCache(entityGroupInterface);
 	}
@@ -935,5 +993,62 @@ public abstract class AbstractEntityCache implements IEntityCache
 	public boolean isFormAvailable(Long containerId)
 	{
 		return !containerInUse.contains(containerId);
+	}
+	/**
+	 * Gets the skip logic by container identifier.
+	 * @param containerIdentifier the container identifier
+	 * @return the skip logic by container identifier
+	 */
+	public SkipLogic getSkipLogicByContainerIdentifier(Long containerIdentifier)
+	{
+		return containerIdVsSkipLogic.get(containerIdentifier);
+	}
+
+	/**
+	 * Delete skip logic from cache.
+	 * @param containerIdentifier the container identifier
+	 */
+	public synchronized void deleteSkipLogicFromCache(Long containerIdentifier)
+	{
+		containerIdVsSkipLogic.remove(containerIdentifier);
+	}
+
+	/**
+	 * Update skip logic in cache.
+	 * @param skipLogic the skip logic
+	 */
+	public synchronized void updateSkipLogicInCache(SkipLogic skipLogic)
+	{
+		containerIdVsSkipLogic.put(skipLogic.getContainerIdentifier(), skipLogic);
+	}
+	/**
+	 * This method will add the given category to cache.
+	 * @param category category to be added.
+	 */
+	public synchronized void addCategoryToTempCache(final CategoryInterface category)
+	{
+			categoryCache.remove(category);
+			categoryCache.put(category.getName(),category);
+	}
+
+	/**
+	 * @param categoryName
+	 * @return
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public CategoryInterface getCategoryByName(String categoryName) throws DynamicExtensionsSystemException
+	{
+		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+		CategoryInterface categoryInterface = categoryCache.get(categoryName);
+		if (categoryInterface == null)
+		{
+			categoryInterface = categoryManager.getCategoryByName(categoryName);
+			if (categoryInterface != null)
+			{
+				addCategoryToTempCache(categoryInterface);
+			}
+
+		}
+		return categoryInterface;
 	}
 }

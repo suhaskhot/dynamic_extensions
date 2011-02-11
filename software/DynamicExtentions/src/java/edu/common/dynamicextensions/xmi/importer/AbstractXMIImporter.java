@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,6 +85,7 @@ public abstract class AbstractXMIImporter
 
 	// name of a UML extent (instance of UML metamodel) that the UML models will be loaded into
 	private static final String UML_INSTANCE = "UMLInstance";
+
 	// name of a MOF extent that will contain definition of UML metamodel
 	private static final String UML_MM = "UML";
 
@@ -104,7 +106,7 @@ public abstract class AbstractXMIImporter
 	private String coRecObjCsvFName = "";
 
 	private String hookEntityName = "";
-	private final Set<AssociationInterface> intermodelAssociationCollection = new  HashSet<AssociationInterface>();
+	private final Set<AssociationInterface> intermodelAssociationCollection = new HashSet<AssociationInterface>();
 	private EntityInterface hookEntity;
 	private boolean isAddQueryPaths = true;
 	private boolean isEntGrpSysGented = false;
@@ -133,13 +135,15 @@ public abstract class AbstractXMIImporter
 		List<ContainerInterface> mainContainerList = null;
 		boolean isImportSuccess = true;
 		try
-		{ //step 1: Initialize Resources
+		{
+			//step 1: Initialize Resources
 			long processStartTime = System.currentTimeMillis();
 			initializeResources(args);
 			File file = new File(fileName);
 			fileInput = new FileInputStream(file);
 			reader.read(fileInput, null, uml);
 			List<String> containerNames = readFile(pathCsvFileName);
+
 			//step 2: Process XMI
 			XMIImportProcessor xmiImportProcessor = new XMIImportProcessor();
 			xmiImportProcessor.setXmiConfigurationObject(xmiConfiguration);
@@ -148,11 +152,17 @@ public abstract class AbstractXMIImporter
 					packageName, containerNames, hibernatedao);
 			mainContainerList = xmiImportProcessor.getMainContainerList();
 			boolean isEditedXmi = xmiImportProcessor.isEditedXmi;
+			if (isEditedXmi)
+			{
+				lockFroms(xmiImportProcessor.getEntityGroup());
+			}
 			generateLogForProcessXMI(processXMIStartTime, isEditedXmi);
 			long assoWithHEstartTime = System.currentTimeMillis();
+
 			//Step 3: associate with hook entity.
 			integrateWithHookEntity(hibernatedao, dynamicQueryList, mainContainerList, isEditedXmi);
-			//step 4: commit model & create DE Tables
+
+			//step 4: commit model & create DE Tables.
 			LOGGER.info("Now Creating DE Tables....");
 			if (hibernatedao != null)
 			{
@@ -164,6 +174,7 @@ public abstract class AbstractXMIImporter
 					assoWithHEstartTime);
 			addQueryPaths(mainContainerList);
 			jdbcdao.commit();
+
 			//step 6: associate with clinical study.
 			LOGGER.info("Now associating the clinical study to the main Containers");
 			postProcess(isEditedXmi, coRecObjCsvFName, mainContainerList, domainModelName);
@@ -171,15 +182,18 @@ public abstract class AbstractXMIImporter
 
 			generateLog(" IMPORT_XMI -->TOTAL TIME", processStartTime);
 			LOGGER.info("updating server cache");
+
 			//step 7: update server cache
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put(WebUIManagerConstants.ENTITY, hookEntityName);
-			map.put(WebUIManagerConstants.OPERATION,WebUIManagerConstants.UPDATE_CACHE);
+			map.put(WebUIManagerConstants.OPERATION, WebUIManagerConstants.UPDATE_CACHE);
 			map.put(WebUIManagerConstants.ASSOCIATION, intermodelAssociationCollection);
-			map.put(WebUIManagerConstants.ENTITY_GROUP,((EntityInterface)mainContainerList.get(0).getAbstractEntity()).getEntityGroup());
+			map.put(WebUIManagerConstants.ENTITY_GROUP, ((EntityInterface) mainContainerList.get(0)
+					.getAbstractEntity()).getEntityGroup());
+
 			DEClient client = new DEClient();
 			client.setParamaterObjectMap(map);
-			client.setServerUrl(new URL(Variables.serverUrl+"UpdateCache"));
+			client.setServerUrl(new URL(Variables.serverUrl + "UpdateCache"));
 			client.execute(null);
 		}
 		catch (Exception e)
@@ -201,6 +215,32 @@ public abstract class AbstractXMIImporter
 		{
 			exportXmiForCacore(mainContainerList);
 		}
+	}
+
+	/**
+	 * Lock froms.
+	 * @param entityGroupInterface
+	 * @throws DynamicExtensionsApplicationException the dynamic extensions application exception
+	 */
+	private void lockFroms(EntityGroupInterface entityGroupInterface)
+			throws DynamicExtensionsApplicationException
+	{
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(WebUIManagerConstants.ENTITY_GROUP, entityGroupInterface);
+		map.put(WebUIManagerConstants.OPERATION, WebUIManagerConstants.LOCK_FORMS);
+		DEClient client = new DEClient();
+		client.setParamaterObjectMap(map);
+		try
+		{
+			client.setServerUrl(new URL(Variables.serverUrl + "UpdateCache"));
+		}
+		catch (MalformedURLException e)
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Error in locking forms on the server cache", e);
+		}
+		client.execute(null);
+
 	}
 
 	/**
@@ -760,7 +800,8 @@ public abstract class AbstractXMIImporter
 		DynamicQueryList queryList = null;
 		hookEntity = XMIUtilities.getStaticEntity(hookEntityName, hibernatedao);
 		if (isEditedXmi)
-		{//Edit Case
+		{
+			//Edit Case
 			List<ContainerInterface> newContainers = new ArrayList<ContainerInterface>();
 			List<ContainerInterface> existingContainers = new ArrayList<ContainerInterface>();
 			separateNewAndExistingContainers(mainContainerList, hookEntity, newContainers,

@@ -1,8 +1,6 @@
 
 package edu.common.dynamicextensions.xmi.importer;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,7 +27,6 @@ import org.omg.uml.modelmanagement.ModelClass;
 import org.omg.uml.modelmanagement.ModelManagementPackage;
 
 import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
-import edu.common.dynamicextensions.client.DEClient;
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.ByteArrayAttributeTypeInformation;
@@ -79,11 +76,9 @@ import edu.common.dynamicextensions.processor.ControlProcessor;
 import edu.common.dynamicextensions.processor.EntityProcessor;
 import edu.common.dynamicextensions.processor.LoadFormControlsProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.DEConstants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
@@ -313,7 +308,7 @@ public class XMIImportProcessor
 			}
 			else
 			{//Edit
-					populateAttributes(umlClass, entity);
+				populateAttributes(umlClass, entity);
 			}
 
 			populateEntityProperties(entity, umlClass, entityVsMapTagValues);
@@ -430,20 +425,7 @@ public class XMIImportProcessor
 		}
 		return dynamicQueryList;
 	}
-	private void lockFroms() throws DynamicExtensionsApplicationException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(WebUIManagerConstants.ENTITY_GROUP,entityGroup);
-		map.put(WebUIManagerConstants.OPERATION,WebUIManagerConstants.LOCK_FORMS);
-		DEClient client = new DEClient();
-		client.setParamaterObjectMap(map);
-		try {
-			client.setServerUrl(new URL(Variables.serverUrl+"UpdateCache"));
-		} catch (MalformedURLException e) {
-		throw new DynamicExtensionsApplicationException("Error in locking forms on the server cache",e);
-		}
-		client.execute(null);
 
-	}
 	/**
 	 * This method will check if the model contains the given package& will collect
 	 * all the model elements in the corresponding collections.
@@ -2566,7 +2548,8 @@ public class XMIImportProcessor
 	private void setMultilineTaggedValue(final Map<String, String> taggedValueMap,
 			final ControlsModel controlModel)
 	{
-		if (taggedValueMap!=null && taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTILINE))
+		if (taggedValueMap != null
+				&& taggedValueMap.containsKey(XMIConstants.TAGGED_VALUE_MULTILINE))
 		{
 			controlModel.setLinesType(XMIConstants.MULTILINE);
 			final String noOFLines = getNoOfRowsTagValue(taggedValueMap);
@@ -2630,13 +2613,13 @@ public class XMIImportProcessor
 	private String getPHIAttributeTagValue(final Map<String, String> taggedValueMap)
 	{
 		String PHIAttribute = null;
-		if(taggedValueMap==null)
+		if (taggedValueMap == null)
 		{
 			PHIAttribute = "false";
 		}
 		else
 		{
-			PHIAttribute=taggedValueMap.get(XMIConstants.TAGGED_VALUE_PHI_ATTRIBUTE);
+			PHIAttribute = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PHI_ATTRIBUTE);
 			if (PHIAttribute == null || PHIAttribute.trim().equals(""))
 			{
 				PHIAttribute = "false";
@@ -2652,8 +2635,8 @@ public class XMIImportProcessor
 	 */
 	private String getDisplayWidthTagValue(final Map<String, String> taggedValueMap)
 	{
-		String width ="";
-		if(taggedValueMap!=null)
+		String width = "";
+		if (taggedValueMap != null)
 		{
 			taggedValueMap.get(XMIConstants.TAGGED_VALUE_DISPLAY_WIDTH);
 		}
@@ -2676,10 +2659,10 @@ public class XMIImportProcessor
 	private String getMaxLengthTagValue(final Map<String, String> taggedValueMap)
 	{
 
-		String maxLen ="";
-		if(taggedValueMap!=null)
+		String maxLen = "";
+		if (taggedValueMap != null)
 		{
-			maxLen=taggedValueMap.get(XMIConstants.TAGGED_VALUE_MAX_LENGTH);
+			maxLen = taggedValueMap.get(XMIConstants.TAGGED_VALUE_MAX_LENGTH);
 		}
 		if (maxLen == null || maxLen.trim().equals(""))
 		{
@@ -2730,8 +2713,8 @@ public class XMIImportProcessor
 	 */
 	private String getDefaultValueTagValue(final Map<String, String> taggedValueMap)
 	{
-		String defaultValue="";
-		if(taggedValueMap!=null)
+		String defaultValue = "";
+		if (taggedValueMap != null)
 		{
 			defaultValue = taggedValueMap.get(XMIConstants.TAGGED_VALUE_DEFAULT_VALUE);
 			if (defaultValue == null || defaultValue.trim().equals(""))
@@ -2773,8 +2756,8 @@ public class XMIImportProcessor
 	 */
 	private String getPasswordTagValue(final Map<String, String> taggedValueMap)
 	{
-		String password ="";
-		if(taggedValueMap!=null)
+		String password = "";
+		if (taggedValueMap != null)
 		{
 			taggedValueMap.get(XMIConstants.TAGGED_VALUE_PASSWORD);
 		}
@@ -2792,8 +2775,8 @@ public class XMIImportProcessor
 	 */
 	private String getUrlTagValue(final Map<String, String> taggedValueMap)
 	{
-		String url ="";
-		if(taggedValueMap!=null)
+		String url = "";
+		if (taggedValueMap != null)
 		{
 			taggedValueMap.get(XMIConstants.TAGGED_VALUE_URL);
 		}
@@ -2814,8 +2797,8 @@ public class XMIImportProcessor
 			throws DynamicExtensionsSystemException
 	{
 
-		String precision="";
-		if(taggedValueMap!=null)
+		String precision = "";
+		if (taggedValueMap != null)
 		{
 			precision = taggedValueMap.get(XMIConstants.TAGGED_VALUE_PRECISION);
 		}
@@ -4014,6 +3997,15 @@ public class XMIImportProcessor
 	{
 		final Set<String> attributeColl = (Set<String>) addAttributes(umlClass, entity);
 		entityNameVsAttributeNames.put(entity.getName(), attributeColl);
+	}
+
+	/**
+	 * Gets the entity group.
+	 * @return the entity group
+	 */
+	public EntityGroupInterface getEntityGroup()
+	{
+		return entityGroup;
 	}
 
 }

@@ -873,12 +873,11 @@ public abstract class AbstractXMIImporter
 			DynamicExtensionsApplicationException
 	{
 
-		List<AssociationInterface> asso = new ArrayList<AssociationInterface>();
 		for (ContainerInterface containerInterface : mainContainerList)
 		{
 			AssociationInterface association = addAssociationForEntities(staticEntity,
 					(EntityInterface) containerInterface.getAbstractEntity());
-			asso.add(association);
+			intermodelAssociationCollection.add(association);
 			//staticEntity.addAssociation(association);
 		}
 
@@ -895,7 +894,7 @@ public abstract class AbstractXMIImporter
 
 		List<String> queriesList = new ArrayList<String>();
 		List<String> revQueryList = new ArrayList<String>();
-		for (AssociationInterface associationInterface : asso)
+		for (AssociationInterface associationInterface : intermodelAssociationCollection)
 		{
 			queriesList.addAll(QueryBuilderFactory.getQueryBuilder().getQueryPartForAssociation(
 					associationInterface, revQueryList, true));

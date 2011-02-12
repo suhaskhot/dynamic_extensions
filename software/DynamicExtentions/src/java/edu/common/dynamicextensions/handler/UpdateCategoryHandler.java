@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.handler;
 
 import java.io.IOException;
@@ -8,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.common.dynamicextensions.dem.AbstractHandler;
-import edu.common.dynamicextensions.dem.DyanamicObjectProcessor;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -16,32 +16,46 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
 
-public class UpdateCategoryHandler extends AbstractHandler {
+public class UpdateCategoryHandler extends AbstractHandler
+{
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		try {
+			throws ServletException, IOException
+	{
+		try
+		{
 
 			initAuditManager();
 			initializeParamaterObjectMap(req);
 			updateCategory(paramaterObjectMap);
 
-		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DynamicExtensionsApplicationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DynamicExtensionsSystemException e) {
+		}
+		catch (DAOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		catch (DynamicExtensionsApplicationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	public void updateCategory(Map<String, Object> paramaterObjectMap) throws DynamicExtensionsSystemException, DAOException {
-		HibernateDAO hibernateDao  = DynamicExtensionsUtility.getHibernateDAO();
-		hibernateDao.getSession().merge(paramaterObjectMap.get(WebUIManagerConstants.CATEGORY));
+
+	public void updateCategory(Map<String, Object> paramaterObjectMap)
+			throws DynamicExtensionsSystemException, DAOException
+	{
+		HibernateDAO hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
+		hibernateDao.merge(paramaterObjectMap.get(WebUIManagerConstants.CATEGORY));
 		hibernateDao.commit();
 		hibernateDao.closeSession();
 	}

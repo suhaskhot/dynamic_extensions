@@ -5,12 +5,18 @@ import org.hibernate.Hibernate;
 import org.hibernate.type.NullableType;
 
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.common.hibernate.CanonicalFormProvider;
+import edu.wustl.common.util.logger.Logger;
 
 public abstract class AbstractMetadataCanonicalFormProvider<T extends AbstractMetadataInterface>
 		implements
 			CanonicalFormProvider<T, Long>
 {
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = Logger
+			.getCommonLogger(AbstractMetadataCanonicalFormProvider.class);
 
 	public final boolean equals(T object1, T object2)
 	{
@@ -28,7 +34,15 @@ public abstract class AbstractMetadataCanonicalFormProvider<T extends AbstractMe
 
 	public final T nullSafeFromCanonicalForm(Long entityId)
 	{
-		return entityId == null ? null : getObjectFromEntityCache(entityId);
+		try
+		{
+			return entityId == null ? null : getObjectFromEntityCache(entityId);
+		}
+		catch (DynamicExtensionsCacheException e)
+		{
+			LOGGER.error("Entity with id: " +entityId+ "  is in use");
+			return null;
+		}
 	}
 
 	public final Long nullSafeToCanonicalForm(T abstractMetadataObj)
@@ -43,5 +57,6 @@ public abstract class AbstractMetadataCanonicalFormProvider<T extends AbstractMe
 
 	public abstract Class<T> objectClass();
 
-	protected abstract T getObjectFromEntityCache(Long identifier);
+	protected abstract T getObjectFromEntityCache(Long identifier)
+			throws DynamicExtensionsCacheException;
 }

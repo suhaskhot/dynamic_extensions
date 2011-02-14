@@ -49,6 +49,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -89,10 +90,11 @@ public class TestEntityManager extends DynamicExtensionsBaseTestCase
 	}
 
 	/**
+	 * @throws DynamicExtensionsCacheException
 	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCaseUtility#setUp()
 	 */
 	@Override
-	protected void setUp()
+	protected void setUp() throws DynamicExtensionsCacheException
 	{
 		super.setUp();
 	}

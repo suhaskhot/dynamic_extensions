@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -55,10 +56,11 @@ public class TestEntityManagerForAssociations extends DynamicExtensionsBaseTestC
 	}
 
 	/**
+	 * @throws DynamicExtensionsCacheException
 	 * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCaseUtility#setUp()
 	 */
 	@Override
-	protected void setUp()
+	protected void setUp() throws DynamicExtensionsCacheException
 	{
 		super.setUp();
 	}

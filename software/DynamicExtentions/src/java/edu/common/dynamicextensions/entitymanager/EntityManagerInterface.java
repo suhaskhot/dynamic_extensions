@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.wustl.common.beans.NameValueBean;
@@ -491,9 +492,10 @@ public interface EntityManagerInterface
 	 * @param hookEntityId
 	 * @return  the container Id of the DE entities/categories that are associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException
+	 * @throws DynamicExtensionsCacheException
 	 */
 	Collection<NameValueBean> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
-			throws DynamicExtensionsSystemException;
+			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException;
 
 	/**
 	 *

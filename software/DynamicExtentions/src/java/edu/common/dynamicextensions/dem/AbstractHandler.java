@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.dem;
 
 import java.io.EOFException;
@@ -22,48 +23,69 @@ import edu.wustl.dao.daofactory.DAOConfigFactory;
 import edu.wustl.dao.exception.AuditException;
 import edu.wustl.dao.exception.DAOException;
 
-public class AbstractHandler extends HttpServlet implements WebUIManagerConstants{
+public class AbstractHandler extends HttpServlet implements WebUIManagerConstants
+{
 
 	protected Map<String, Object> paramaterObjectMap;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+			IOException
+	{
 		doPost(req, resp);
 	}
-	protected void initAuditManager() {
-		try {
+
+	protected void initAuditManager()
+	{
+		try
+		{
 			AuditManager.init("DynamicExtensionsAuditMetadata.xml");
-		} catch (AuditException e1) {
+		}
+		catch (AuditException e1)
+		{
 			System.out.println("Error initializing audit manager");
 			e1.printStackTrace();
 		}
 	}
 
 	protected void initializeParamaterObjectMap(HttpServletRequest req)
-			throws DynamicExtensionsApplicationException {
+			throws DynamicExtensionsApplicationException
+	{
 		ObjectInputStream inputFromServlet = null;
-		try {
+		try
+		{
 			inputFromServlet = new ObjectInputStream(req.getInputStream());
 			Object object = null;
-			while ((object = inputFromServlet.readObject()) != null) {
-				if (object instanceof Map) {
+			while ((object = inputFromServlet.readObject()) != null)
+			{
+				if (object instanceof Map)
+				{
 					paramaterObjectMap = (Map<String, Object>) object;
 				}
-
 			}
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e)
+		{
 			throw new DynamicExtensionsApplicationException(
 					"Error in reading objects from request", e);
-		} catch (EOFException e) {
+		}
+		catch (EOFException e)
+		{
 			System.out.println("End of file.");
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			throw new DynamicExtensionsApplicationException(
 					"Error in reading objects from request", e);
-		} finally {
-			try {
+		}
+		finally
+		{
+			try
+			{
 				inputFromServlet.close();
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				throw new DynamicExtensionsApplicationException(
 						"Error in reading objects from request", e);
 			}
@@ -71,27 +93,35 @@ public class AbstractHandler extends HttpServlet implements WebUIManagerConstant
 
 	}
 
-	protected void insertObject(Object object) throws DynamicExtensionsSystemException {
+	protected void insertObject(Object object) throws DynamicExtensionsSystemException
+	{
 		HibernateDAO hibernateDAO = getHibernateDAO();
-		try {
+		try
+		{
 			hibernateDAO.insert(object);
 			hibernateDAO.commit();
-		} catch (DAOException e) {
-			throw new DynamicExtensionsSystemException(
-					"Error occured while inserting object", e);
-		}finally
+		}
+		catch (DAOException e)
 		{
-			try {
+			throw new DynamicExtensionsSystemException("Error occured while inserting object", e);
+		}
+		finally
+		{
+			try
+			{
 				hibernateDAO.closeSession();
-			} catch (DAOException e) {
+			}
+			catch (DAOException e)
+			{
 				throw new DynamicExtensionsSystemException(
 						"Error occured while closing the DAO session", e);
 			}
 		}
 
-
 	}
-	protected HibernateDAO getHibernateDAO() throws DynamicExtensionsSystemException {
+
+	protected HibernateDAO getHibernateDAO() throws DynamicExtensionsSystemException
+	{
 		HibernateDAO hibernateDao = null;
 		try
 		{
@@ -106,30 +136,47 @@ public class AbstractHandler extends HttpServlet implements WebUIManagerConstant
 		}
 		return hibernateDao;
 	}
-	protected void writeObjectToResopnce(Object object, HttpServletResponse res) throws DynamicExtensionsApplicationException {
+
+	protected void writeObjectToResopnce(Object object, HttpServletResponse res)
+			throws DynamicExtensionsApplicationException
+	{
 		ObjectOutputStream objectOutputStream = null;
-		try {
+		try
+		{
 			objectOutputStream = new ObjectOutputStream(res.getOutputStream());
 			objectOutputStream.writeObject(AbstractBaseMetadataManager.getObjectId(object));
-		} catch (IOException e) {
-			throw new DynamicExtensionsApplicationException("Error in writing object to the responce",e);
-		}catch (NoSuchMethodException e) {
-			throw new DynamicExtensionsApplicationException("Error in writing object to the responce",e);		} catch (IllegalAccessException e) {
-		} catch (InvocationTargetException e) {
-			throw new DynamicExtensionsApplicationException("Error in writing object to the responce",e);
-		}finally
+		}
+		catch (IOException e)
 		{
-			try {
+			throw new DynamicExtensionsApplicationException(
+					"Error in writing object to the responce", e);
+		}
+		catch (NoSuchMethodException e)
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Error in writing object to the responce", e);
+		}
+		catch (IllegalAccessException e)
+		{
+		}
+		catch (InvocationTargetException e)
+		{
+			throw new DynamicExtensionsApplicationException(
+					"Error in writing object to the responce", e);
+		}
+		finally
+		{
+			try
+			{
 				objectOutputStream.flush();
 				objectOutputStream.close();
-			} catch (IOException e) {
-				throw new DynamicExtensionsApplicationException("Error in writing object to the responce",e);
+			}
+			catch (IOException e)
+			{
+				throw new DynamicExtensionsApplicationException(
+						"Error in writing object to the responce", e);
 			}
 
 		}
-
-
 	}
-
-
 }

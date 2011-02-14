@@ -48,6 +48,7 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
@@ -2270,7 +2271,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	* @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getCategoriesContainerIdFromHookEntity(java.lang.Long)
 	*/
 	public Collection<NameValueBean> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -2296,7 +2297,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	}
 
-	private Set<EntityInterface> getAssociatedEntities(Long hookEntityId)
+	private Set<EntityInterface> getAssociatedEntities(Long hookEntityId) throws DynamicExtensionsCacheException
 	{
 		Set<EntityInterface> associatedEntities = new HashSet<EntityInterface>();
 		for (AssociationInterface association : EntityCache.getInstance().getEntityById(

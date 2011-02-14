@@ -5,6 +5,7 @@ package edu.wustl.metadata.util;
 
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.wustl.common.querysuite.querableobject.QueryableEntity;
 import edu.wustl.common.querysuite.querableobject.QueryableEntityAttribute;
@@ -17,7 +18,7 @@ import edu.wustl.common.querysuite.querableobjectinterface.QueryableObjectInterf
 public class TestDyExtnObjectCloner extends DynamicExtensionsBaseTestCase
 {
     @Override
-    protected void setUp()
+    protected void setUp() throws DynamicExtensionsCacheException
     {
         super.setUp();
     }

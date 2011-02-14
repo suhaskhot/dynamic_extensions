@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 
 // TODO: Auto-generated Javadoc
@@ -58,11 +59,12 @@ public class TestEntityGroupName extends DynamicExtensionsBaseTestCase
 
     /**
      * Setup method
+     * @throws DynamicExtensionsCacheException
      *
      * @see edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase#setUp()
      */
     @Override
-    protected void setUp()
+    protected void setUp() throws DynamicExtensionsCacheException
     {
         super.setUp();
 

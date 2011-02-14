@@ -44,6 +44,7 @@ import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.CategoryGenerationUtil;
 import edu.common.dynamicextensions.util.CategoryHelper;
@@ -3339,10 +3340,11 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	 * @param recordEntryStaticId Entity id of the static entity which is hooked to the DE model.
 	 * @return recordEntry Id associated with this record.
 	 * @exception DynamicExtensionsSystemException Exception.
+	 * @throws DynamicExtensionsCacheException
 	 *
 	 */
 	public long getRecordEntryIdByEntityRecordId(Long dynEntContainerId, Long deRecordId,
-			Long recordEntryStaticId) throws DynamicExtensionsSystemException
+			Long recordEntryStaticId) throws DynamicExtensionsSystemException, DynamicExtensionsCacheException
 	{
 
 		EntityInterface entity = EntityManager.getInstance().getCategoryRootEntityByContainerId(

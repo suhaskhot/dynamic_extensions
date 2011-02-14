@@ -1,7 +1,6 @@
 
 package edu.wustl.cab2b.common.cache;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,7 +61,7 @@ public abstract class AbstractEntityCache implements IEntityCache
 	private static final long serialVersionUID = 1234567890L;
 
 	public static boolean isCacheReady = true;
-	
+
 	/**
 	 * Error Constants
 	 */
@@ -108,7 +107,7 @@ public abstract class AbstractEntityCache implements IEntityCache
 
 	/** The container id vs skip logic. */
 	protected Map<Long, SkipLogic> containerIdVsSkipLogic = new HashMap<Long, SkipLogic>();
-	
+
 	/**
 	 * This map holds all the original association. Associations which are
 	 * replicated by cab2b are not present in this map Key : String to identify
@@ -140,20 +139,17 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 */
 	protected Set<CategoryInterface> categoriesInUse = new HashSet<CategoryInterface>();
 
-	/**
-	 *  This counter is used for creating the temporary directories in case of create
-	 *  category task by more than one user at a time.
-	 */
+	/** This counter is used for creating the temporary directories in case of create category task by more than one user at a time. */
 	protected long catFileNameCounter = 1L;
-	
+
+	/** The category cache. */
 	private static Map<String, CategoryInterface> categoryCache = new LinkedHashMap<String, CategoryInterface>();
 
-	/**
-	 * This set contains all the categories which are in opened at this instance in Edit
-	 * mode by any user.
-	 */
-	protected Set<Long> containerInUse= new HashSet<Long>();
+	/** This set contains all the categories which are in opened at this instance in Edit mode by any user. */
+	protected Set<Long> containerInUse = new HashSet<Long>();
 
+	/** This set contains all the entity id which are in use. */
+	protected Set<Long> entitiesInUse = new HashSet<Long>();
 
 	/**
 	 * This method gives the singleton cache object. If cache is not present then it
@@ -217,8 +213,9 @@ public abstract class AbstractEntityCache implements IEntityCache
 
 		}
 	}
-	
-	public AbstractEntityCache(EntityGroupInterface entityGroupInterface) {
+
+	public AbstractEntityCache(EntityGroupInterface entityGroupInterface)
+	{
 		refreshCache(entityGroupInterface);
 	}
 
@@ -267,8 +264,8 @@ public abstract class AbstractEntityCache implements IEntityCache
 		LOGGER.info("Initializing cache DONE");
 	}
 
-	public final synchronized void refreshCache(
-			EntityGroupInterface entityGroupInterface) {
+	public final synchronized void refreshCache(EntityGroupInterface entityGroupInterface)
+	{
 		LOGGER.info("Initializing cache, this may take few minutes...");
 		clearCache();
 
@@ -633,8 +630,25 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 *
 	 * @param identifier Id of the entity
 	 * @return Actual Entity for given id.
+	 * @throws DynamicExtensionsCacheException
 	 */
 	public EntityInterface getEntityById(final Long identifier)
+			throws DynamicExtensionsCacheException
+	{
+		if (!entitiesInUse.contains(identifier))
+		{
+			return getEntityByIdForCacheUpdate(identifier);
+		}
+		throw new DynamicExtensionsCacheException("Entity With Identifier :" + identifier
+				+ " is in use.");
+	}
+
+	/**
+	 * Gets the entity by id for cache update.
+	 * @param identifier the identifier
+	 * @return the entity by id for cache update
+	 */
+	public EntityInterface getEntityByIdForCacheUpdate(final Long identifier)
 	{
 		EntityInterface entity = idVsEntity.get(identifier);
 		if (entity == null)
@@ -838,7 +852,8 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 * @throws DynamicExtensionsCacheException
 	*/
 
-	public ContainerInterface getContainerById(final Long identifier) throws DynamicExtensionsCacheException
+	public ContainerInterface getContainerById(final Long identifier)
+			throws DynamicExtensionsCacheException
 	{
 		ContainerInterface container = idVscontainers.get(identifier);
 		try
@@ -859,9 +874,10 @@ public abstract class AbstractEntityCache implements IEntityCache
 			throw new RuntimeException("container with given id is not present in cache : "
 					+ identifier);
 		}
-		if(containerInUse.contains(container.getId()))
+		if (containerInUse.contains(container.getId()))
 		{
-			throw new DynamicExtensionsCacheException("Container is already in use; try after some time.");
+			throw new DynamicExtensionsCacheException(
+					"Container is already in use; try after some time.");
 		}
 		return container;
 	}
@@ -964,6 +980,7 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 		containerInUse.addAll(caontainreIdList);
 	}
+
 	/**
 	 * This method will release all the container ids.
 	 * @param conatiner ids to be released.
@@ -981,6 +998,7 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 		containerInUse.add(containerId);
 	}
+
 	/**
 	 * This method will release the given container.
 	 * @param container id which is to be released.
@@ -994,6 +1012,19 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 		return !containerInUse.contains(containerId);
 	}
+
+	/**
+	 * Lock all entities. This method will lock all the entities as Entities in Use.
+	 * @param allEntities the all entities
+	 */
+	public synchronized void lockAllEntities(Collection<EntityInterface> allEntities)
+	{
+		for (EntityInterface entityInterface : allEntities)
+		{
+			entitiesInUse.add(entityInterface.getId());
+		}
+	}
+
 	/**
 	 * Gets the skip logic by container identifier.
 	 * @param containerIdentifier the container identifier
@@ -1021,14 +1052,15 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 		containerIdVsSkipLogic.put(skipLogic.getContainerIdentifier(), skipLogic);
 	}
+
 	/**
 	 * This method will add the given category to cache.
 	 * @param category category to be added.
 	 */
 	public synchronized void addCategoryToTempCache(final CategoryInterface category)
 	{
-			categoryCache.remove(category);
-			categoryCache.put(category.getName(),category);
+		categoryCache.remove(category);
+		categoryCache.put(category.getName(), category);
 	}
 
 	/**
@@ -1036,7 +1068,8 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public CategoryInterface getCategoryByName(String categoryName) throws DynamicExtensionsSystemException
+	public CategoryInterface getCategoryByName(String categoryName)
+			throws DynamicExtensionsSystemException
 	{
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface categoryInterface = categoryCache.get(categoryName);

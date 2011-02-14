@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Constants;
 import edu.wustl.cab2b.common.util.Utility;
@@ -71,8 +72,9 @@ public class PathFinder
 	 * called at least once. The instance created can then be accessed by {@link PathFinder#getInstance()}
 	 * @param con Database connection to use
 	 * @return Returns the singleton instance of the pathFinder class.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public static synchronized PathFinder getInstance(Connection con)
+	public static synchronized PathFinder getInstance(Connection con) throws DynamicExtensionsCacheException
 	{
 		try
 		{
@@ -97,8 +99,9 @@ public class PathFinder
 	 *
 	 * @param con Database connection to use
 	 * @param updateMetadataCache true if pathfinder is expected to update metadata cache.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public static synchronized void refreshCache(Connection con, boolean updateMetadataCache)
+	public static synchronized void refreshCache(Connection con, boolean updateMetadataCache) throws DynamicExtensionsCacheException
 	{
 		if (updateMetadataCache)
 		{
@@ -111,10 +114,11 @@ public class PathFinder
 	 * Drops all the static data structures and creates them with latest database state.
 	 * Note: This won't refresh the metadata cache
 	 * @param con Database connection to use
+	 * @throws DynamicExtensionsCacheException
 	 * @deprecated Use {@link PathFinder#refreshCache(Connection, boolean)}
 	 */
 	@Deprecated
-	public static synchronized void refreshCache(Connection con)
+	public static synchronized void refreshCache(Connection con) throws DynamicExtensionsCacheException
 	{
 		refreshCache(con, false);
 	}
@@ -122,8 +126,9 @@ public class PathFinder
 	/**
 	 * Populates all the data structures needed for path finding.
 	 * @param con Database connection to use
+	 * @throws DynamicExtensionsCacheException
 	 */
-	private void populateCache(Connection con)
+	private void populateCache(Connection con) throws DynamicExtensionsCacheException
 	{
 		LOGGER.info("PathFinder.populateCache()");
 		setInterModelConnections(cacheInterModelConnections(con));
@@ -209,9 +214,10 @@ public class PathFinder
 	 * @param sourceList collection of classes each of which will be treated as source.
 	 * @param destination End of the path
 	 * @return Returns the Map<EntityInterface,List<IPath>>
+	 * @throws DynamicExtensionsCacheException
 	 */
 	public Map<EntityInterface, List<IPath>> getAllPossiblePaths(List<EntityInterface> sourceList,
-			EntityInterface destination)
+			EntityInterface destination) throws DynamicExtensionsCacheException
 	{
 		LOGGER.debug("Entering in method getAllPossiblePaths()");
 		Map<EntityInterface, List<IPath>> mapToReturn = new HashMap<EntityInterface, List<IPath>>(
@@ -236,8 +242,9 @@ public class PathFinder
 	 * @param source Start of the path.
 	 * @param destination End of the path
 	 * @return Returns the List<IPath>
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public List<IPath> getAllPossiblePaths(EntityInterface source, EntityInterface destination)
+	public List<IPath> getAllPossiblePaths(EntityInterface source, EntityInterface destination) throws DynamicExtensionsCacheException
 	{
 		List<IPath> allPaths = new ArrayList<IPath>();
 		LOGGER.info("Entering in method getAllPossiblePaths() between ==" + source.getId() + "=="
@@ -272,10 +279,11 @@ public class PathFinder
 	 * @param desEntityGroup
 	 * @param srcEntityId
 	 * @param srcEntityGroup
+	 * @throws DynamicExtensionsCacheException
 	 */
 	private List<IPath> findPathsBetweenTwoModels(Long desEntityId,
 			EntityGroupInterface desEntityGroup, Long srcEntityId,
-			EntityGroupInterface srcEntityGroup)
+			EntityGroupInterface srcEntityGroup) throws DynamicExtensionsCacheException
 	{
 		List<IPath> pathList = new ArrayList<IPath>();
 		for (InterModelConnection interModelConnection : interModelConnections)
@@ -331,8 +339,9 @@ public class PathFinder
 	 * @param source Start of the path.
 	 * @param destination End of the path
 	 * @return Returns the List<IPath>
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public List<IPath> getAllPathsForQuery(EntityInterface source, EntityInterface destination)
+	public List<IPath> getAllPathsForQuery(EntityInterface source, EntityInterface destination) throws DynamicExtensionsCacheException
 	{
 		LOGGER.debug("Entering in method getAllPathsForQuery()");
 		Long desEntityId = destination.getId();
@@ -414,9 +423,10 @@ public class PathFinder
 	 *
 	 * @param interModelConnection InterModelConnection to transform
 	 * @return Returns the InterModelAssociation
+	 * @throws DynamicExtensionsCacheException
 	 */
 	protected InterModelAssociation getInterModelAssociation(
-			InterModelConnection interModelConnection)
+			InterModelConnection interModelConnection) throws DynamicExtensionsCacheException
 	{
 		Long leftEntityId = interModelConnection.getLeftEntityId();
 		Long leftAttrId = interModelConnection.getLeftAttributeId();
@@ -435,8 +445,9 @@ public class PathFinder
 	 *
 	 * @param con Database connection to use for fetching the intermodel connections
 	 * @return List of all InterModelConnection.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	private Set<InterModelConnection> cacheInterModelConnections(Connection con)
+	private Set<InterModelConnection> cacheInterModelConnections(Connection con) throws DynamicExtensionsCacheException
 	{
 		LOGGER.info("PathFinder.cacheInterModelConnections()---starts" + con);
 		String sql = "select LEFT_ENTITY_ID,LEFT_ATTRIBUTE_ID,RIGHT_ENTITY_ID,RIGHT_ATTRIBUTE_ID from INTER_MODEL_ASSOCIATION";
@@ -466,8 +477,9 @@ public class PathFinder
 	 * @param pathRecords Array of PathRecords to process
 	 * @param con Database connection to use.
 	 * @return Returns the List of Generated Paths.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	protected List<Path> getPathList(List<PathRecord> pathRecords)
+	protected List<Path> getPathList(List<PathRecord> pathRecords) throws DynamicExtensionsCacheException
 	{
 		List<Path> pathList = new ArrayList<Path>(pathRecords.size());
 		for (PathRecord pathRecord : pathRecords)
@@ -483,8 +495,9 @@ public class PathFinder
 	 * @param pathRecord PathRecords to convert.
 	 * @param con Database connection to use.
 	 * @return Returns the generated Path.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	protected Path getPath(PathRecord pathRecord)
+	protected Path getPath(PathRecord pathRecord) throws DynamicExtensionsCacheException
 	{
 		List<IAssociation> associations = new ArrayList<IAssociation>();
 		for (Long associationId : pathRecord.getAssociationSequence())
@@ -502,8 +515,9 @@ public class PathFinder
 	/**
 	 * @param identifier Path id for which a path is expected.
 	 * @return IPath object for given pathId
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public IPath getPathById(Long identifier)
+	public IPath getPathById(Long identifier) throws DynamicExtensionsCacheException
 	{
 		PathRecord pathRecord = idVsPathRecord.get(identifier);
 		return getPath(pathRecord);
@@ -586,8 +600,9 @@ public class PathFinder
 	 * @param entityId Id of parent Entity.
 	 * @param attributeId Id of the required attribiute.
 	 * @return Attribute of passed entity with given id.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	protected AttributeInterface getAttribute(Long entityId, Long attributeId)
+	protected AttributeInterface getAttribute(Long entityId, Long attributeId) throws DynamicExtensionsCacheException
 	{
 		return getCache().getEntityById(entityId).getAttributeByIdentifier(attributeId);
 	}
@@ -626,8 +641,9 @@ public class PathFinder
 	 * @param strRepresentationOfEntitySet The string representation of entity set generated by
 	 *            {@link PathFinder#getStringRepresentation(Set)}
 	 * @return Set of entities whose ids are present in given string representation of entity set.
+	 * @throws DynamicExtensionsCacheException
 	 */
-	protected Set<EntityInterface> getEntitySet(String strRepresentationOfEntitySet)
+	protected Set<EntityInterface> getEntitySet(String strRepresentationOfEntitySet) throws DynamicExtensionsCacheException
 	{
 		HashSet<EntityInterface> entitySet = new HashSet<EntityInterface>();
 		String[] ids = strRepresentationOfEntitySet.split(Constants.CONNECTOR);
@@ -644,8 +660,9 @@ public class PathFinder
 	 * Caches all the curated paths present in the system.
 	 *
 	 * @param con Database connection to use
+	 * @throws DynamicExtensionsCacheException
 	 */
-	private Map<String, Set<ICuratedPath>> cacheCuratedPaths()
+	private Map<String, Set<ICuratedPath>> cacheCuratedPaths() throws DynamicExtensionsCacheException
 	{
 		List<ICuratedPath> list = new CuratedPathOperations().getAllCuratedPath();
 		Map<String, Set<ICuratedPath>> entitySetVsCuratedPath = new HashMap<String, Set<ICuratedPath>>(
@@ -669,8 +686,9 @@ public class PathFinder
 	 * This method returns the Map which contains Association  Id Vs Association.
 	 * @param con Database connection to be used
 	 * @return Map with KEY as caB2B-Association ID v/s IAssociation
+	 * @throws DynamicExtensionsCacheException
 	 */
-	private Map<Long, IAssociation> cacheAssociationTypes(Connection con)
+	private Map<Long, IAssociation> cacheAssociationTypes(Connection con) throws DynamicExtensionsCacheException
 	{
 		LOGGER.info("PathFinder.cacheAssociationTypes()--start" + con);
 		String[][] intraModelRecords = executeQuery(
@@ -728,8 +746,9 @@ public class PathFinder
 	 *
 	 * @param associations
 	 * @return
+	 * @throws DynamicExtensionsCacheException
 	 */
-	public IPath getPathForAssociations(List<IIntraModelAssociation> associations)
+	public IPath getPathForAssociations(List<IIntraModelAssociation> associations) throws DynamicExtensionsCacheException
 	{
 		if (associations.size() < 1)
 		{
@@ -822,8 +841,9 @@ public class PathFinder
 	 * This method process the given curated path object before saving it.
 	 *
 	 * @param curatedPath
+	 * @throws DynamicExtensionsCacheException
 	 */
-	private void postProcessCuratedPath(ICuratedPath cPath)
+	private void postProcessCuratedPath(ICuratedPath cPath) throws DynamicExtensionsCacheException
 	{
 		CuratedPath curatedPath = (CuratedPath) cPath;
 		// TODO this casting will be removed once we have hibernate layer for path

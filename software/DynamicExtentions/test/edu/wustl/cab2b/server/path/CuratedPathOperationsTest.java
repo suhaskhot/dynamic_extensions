@@ -1,6 +1,7 @@
 
 package edu.wustl.cab2b.server.path;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.cab2b.server.util.TestConnectionUtil;
@@ -12,7 +13,7 @@ public class CuratedPathOperationsTest extends DynamicExtensionsBaseTestCase
 {
 
 	@Override
-	protected void setUp()
+	protected void setUp() throws DynamicExtensionsCacheException
 	{
 		EntityCache.getInstance();
 		PathFinder.getInstance(TestConnectionUtil.getConnection());

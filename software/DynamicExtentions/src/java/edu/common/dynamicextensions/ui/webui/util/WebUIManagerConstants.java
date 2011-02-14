@@ -108,9 +108,6 @@ public interface WebUIManagerConstants
 
 	public final String  CATEGORY = "category";
 
-	public final String DEM_URL = "https://ps7563:8443/dem/";
-	public final String HOST_URL = "https://ps7563:8443/clinportal/";
-
 	public final String PACKAGE_NAME = "packageName";
 	public final String LOCK_FORMS = "lockForms";
 	public final String RELEASE_FORMS= "releaseForms";

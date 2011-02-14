@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerExceptionConstantsInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
@@ -93,10 +94,11 @@ public class DynamicExtensionsBaseTestCase extends TestCase
 	}
 
 	/**
+	 * @throws DynamicExtensionsCacheException
 	 * @see junit.framework.TestCase#setUp()
 	 */
 	@Override
-	protected void setUp()
+	protected void setUp() throws DynamicExtensionsCacheException
 	{
 		ApplicationProperties.initBundle("ApplicationResources");
 	}

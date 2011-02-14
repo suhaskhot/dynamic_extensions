@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.dao.exception.DAOException;
@@ -40,9 +41,10 @@ public interface IntegrationInterface
 	 * @return  the container Id of the DE entities/categories that are
 	 * associated with given static hook entity
 	 * @throws DynamicExtensionsSystemException exception.
+	 * @throws DynamicExtensionsCacheException
 	 */
 	Collection getCategoriesContainerIdFromHookEntity(Long hookEntityId)
-			throws DynamicExtensionsSystemException;
+			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException;
 
 	/**
 	 *

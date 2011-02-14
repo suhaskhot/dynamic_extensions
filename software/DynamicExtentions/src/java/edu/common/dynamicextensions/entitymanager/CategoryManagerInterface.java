@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.SemanticPropertyInterface;
 import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.beans.SessionDataBean;
@@ -467,9 +468,10 @@ public interface CategoryManagerInterface
 	 *             the dynamic extensions system exception
 	 * @exception DynamicExtensionsSystemException
 	 *                Exception.
+	 * @throws DynamicExtensionsCacheException
 	 */
 	long getRecordEntryIdByEntityRecordId(Long dynEntContainerId, Long deRecordId,
-			Long recordEntryStaticId) throws DynamicExtensionsSystemException;
+			Long recordEntryStaticId) throws DynamicExtensionsSystemException, DynamicExtensionsCacheException;
 
 	/**
 	 * This method will return the identifier of the category record from given recordEntry Identifier

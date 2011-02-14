@@ -9,6 +9,7 @@ import java.io.Serializable;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.querysuite.querableobject.QueryableObjectUtility;
 import edu.wustl.common.querysuite.querableobjectinterface.QueryableAttributeInterface;
@@ -83,14 +84,21 @@ public class DyExtnObjectCloner extends ObjectCloner
 		@Override
 		protected Object resolveObject(final Object obj) throws IOException
 		{
-		    Object resolveObj;
+			Object resolveObj;
 			if (obj instanceof Replacement)
 			{
-			    resolveObj = ((Replacement) obj).getOrigObject();
+				try
+				{
+					resolveObj = ((Replacement) obj).getOrigObject();
+				}
+				catch (DynamicExtensionsCacheException e)
+				{
+					resolveObj = null;
+				}
 			}
 			else
 			{
-			    resolveObj = super.resolveObject(obj);
+				resolveObj = super.resolveObject(obj);
 			}
 			return resolveObj;
 		}
@@ -102,64 +110,64 @@ public class DyExtnObjectCloner extends ObjectCloner
 	private static class DyExtnReplaceObjectOutputStream extends CloneOutputStream
 	{
 
-        /**
-         * Instantiates a new dy extn replace object output stream.
-         *
-         * @param out
-         *            the out
-         * @throws IOException
-         *             Signals that an I/O exception has occurred.
-         */
-        public DyExtnReplaceObjectOutputStream(final OutputStream out)
-                throws IOException
-        {
-            super(out);
-            enableReplaceObject(true);
-        }
+		/**
+		 * Instantiates a new dy extn replace object output stream.
+		 *
+		 * @param out
+		 *            the out
+		 * @throws IOException
+		 *             Signals that an I/O exception has occurred.
+		 */
+		public DyExtnReplaceObjectOutputStream(final OutputStream out) throws IOException
+		{
+			super(out);
+			enableReplaceObject(true);
+		}
 
-        /**
-         * Replace object.
-         *
-         * @param obj
-         *            the obj
-         * @return the object
-         * @throws IOException
-         *             Signals that an I/O exception has occurred.
-         * @see java.io.ObjectOutputStream#replaceObject(java.lang.Object)
-         */
-        @Override
-        protected Object replaceObject(final Object obj) throws IOException
-        {
-            // commented cause of QueryableObject & QueryableAttributes
-            // Introduction. Now hose will be
-            // replaced with id & then retrieved from cache.
-            Object replaceObj;
-            if (obj instanceof QueryableAttributeInterface)
-            {
-                replaceObj = new ReplaceForQueryableAttribute(
-                        (QueryableAttributeInterface) obj);
-            } else if (obj instanceof QueryableObjectInterface)
-            {
-                replaceObj = new ReplaceForQueryableObject(
-                        (QueryableObjectInterface) obj);
-            } else if (obj instanceof EntityInterface)
-            {
-                replaceObj = new ReplacementForEntity((EntityInterface) obj);
-            } else if (obj instanceof AttributeInterface)
-            {
-                replaceObj = new ReplacementForAttribute(
-                        (AttributeInterface) obj);
-            } else if (obj instanceof AssociationInterface)
-            {
-                replaceObj = new ReplacementForAssociation(
-                        (AssociationInterface) obj);
-            } else
-            {
-                replaceObj = super.replaceObject(obj);
-            }
-            return replaceObj;
-        }
-    }
+		/**
+		 * Replace object.
+		 *
+		 * @param obj
+		 *            the obj
+		 * @return the object
+		 * @throws IOException
+		 *             Signals that an I/O exception has occurred.
+		 * @see java.io.ObjectOutputStream#replaceObject(java.lang.Object)
+		 */
+		@Override
+		protected Object replaceObject(final Object obj) throws IOException
+		{
+			// commented cause of QueryableObject & QueryableAttributes
+			// Introduction. Now hose will be
+			// replaced with id & then retrieved from cache.
+			Object replaceObj;
+			if (obj instanceof QueryableAttributeInterface)
+			{
+				replaceObj = new ReplaceForQueryableAttribute((QueryableAttributeInterface) obj);
+			}
+			else if (obj instanceof QueryableObjectInterface)
+			{
+				replaceObj = new ReplaceForQueryableObject((QueryableObjectInterface) obj);
+			}
+			else if (obj instanceof EntityInterface)
+			{
+				replaceObj = new ReplacementForEntity((EntityInterface) obj);
+			}
+			else if (obj instanceof AttributeInterface)
+			{
+				replaceObj = new ReplacementForAttribute((AttributeInterface) obj);
+			}
+			else if (obj instanceof AssociationInterface)
+			{
+				replaceObj = new ReplacementForAssociation((AssociationInterface) obj);
+			}
+			else
+			{
+				replaceObj = super.replaceObject(obj);
+			}
+			return replaceObj;
+		}
+	}
 
 	/**
 	 * The Private Interface Replacement.
@@ -180,8 +188,9 @@ public class DyExtnObjectCloner extends ObjectCloner
 		 * Gets the orig object.
 		 *
 		 * @return the orig object
+		 * @throws DynamicExtensionsCacheException
 		 */
-		D getOrigObject();
+		D getOrigObject() throws DynamicExtensionsCacheException;
 	}
 
 	/**
@@ -314,9 +323,10 @@ public class DyExtnObjectCloner extends ObjectCloner
 		 * Gets the orig object.
 		 *
 		 * @return the orig object
+		 * @throws DynamicExtensionsCacheException
 		 * @see edu.wustl.metadata.util.DyExtnObjectCloner.Replacement#getOrigObject()
 		 */
-		public EntityInterface getOrigObject()
+		public EntityInterface getOrigObject() throws DynamicExtensionsCacheException
 		{
 			return EntityCache.getInstance().getEntityById(identifier);
 		}

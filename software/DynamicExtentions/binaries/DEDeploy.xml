@@ -1519,10 +1519,19 @@
 		</antcall>
 		<mkdir dir="tempWar" />
 		<mkdir dir="tempWar/${entitygroupname}.war" />
-		<copy todir="tempWar/${entitygroupname}.war">
-			<fileset dir="${de.temp.dir}/dem.war">
-			</fileset>
-		</copy>
+		<if>
+			<equals arg1="True" arg2="${testcases}" />
+			<then>
+				<copy todir="tempWar/${entitygroupname}.war">
+					<fileset dir="../src/conf/dem.war"/>
+				</copy>
+			</then>
+			<else>
+				<copy todir="tempWar/${entitygroupname}.war">
+					<fileset dir="${de.temp.dir}/dem.war"/>
+				</copy>
+			</else>
+		</if>
 		<ant antfile="build.xml" dir="${cacoresdk.dir}" target="build-system" />
 
 		<delete dir="${cacore.dir}" />

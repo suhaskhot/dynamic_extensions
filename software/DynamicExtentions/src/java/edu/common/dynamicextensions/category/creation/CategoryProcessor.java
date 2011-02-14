@@ -20,6 +20,7 @@ import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.skiplogic.SkipLogic;
 import edu.common.dynamicextensions.util.BOTemplateGenerator;
 import edu.common.dynamicextensions.util.CategoryHelper;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.parser.CategoryGenerator;
 import edu.wustl.bulkoperator.ImportBulkOperationTemplate;
@@ -77,8 +78,8 @@ public class CategoryProcessor
 	 * @param isPersistMetadataOnly if true saves only the metadata , does not create the dynamic tables for category
 	 * @param catNameVsExcep this  is a report map in which the entry is made for each category
 	 * the value will be null if category creation is successful else exception occured will be its value.
-	 * @param mappingXML 
-	 * @param templateFile 
+	 * @param mappingXML
+	 * @param templateFile
 	 */
 	public void createCategory(String filePath, String baseDirectory,
 			boolean isPersistMetadataOnly, Map<String, Exception> catNameVsExcep)
@@ -134,7 +135,7 @@ public class CategoryProcessor
 	 * @param baseDirectory Base directory where BO file exists.
 	 * @param category category object.
 	 * @throws DynamicExtensionsSystemException throw DESystemException.
-	 * @throws BulkOperationException throw BOException.	 
+	 * @throws BulkOperationException throw BOException.
 	 */
 	private void createAndImportBOTemplate(String baseDirectory, CategoryInterface category)
 			throws DynamicExtensionsSystemException, BulkOperationException
@@ -156,7 +157,7 @@ public class CategoryProcessor
 		try
 		{
 			new ImportBulkOperationTemplate(category.getName(), category.getName(), csvFile,
-					xmlFile, propertyFile.getParentFile().getPath() + File.separator);
+					xmlFile, DynamicExtensionsUtility.getJDBCDAO(null));
 		}
 		catch (Exception exception)
 		{

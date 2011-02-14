@@ -14,7 +14,6 @@ import java.util.Collection;
 import au.com.bytecode.opencsv.CSVReader;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.PathAssociationRelationInterface;
-import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
@@ -130,8 +129,8 @@ public class BOTemplateGenerator extends AbstractCategoryIterator<BulkOperationC
 			bulkOperationAttribute.setCsvColumnName(attribute.getAbstractAttribute().getName());
 			bulkOperationAttribute.setUpdateBasedOn(false);
 
-			final AttributeTypeInformationInterface attributeType = ((AttributeInterface) attribute
-					.getAbstractAttribute()).getAttributeTypeInformation();
+			final AttributeTypeInformationInterface attributeType = DynamicExtensionsUtility
+					.getBaseAttributeOfcategoryAttribute(attribute).getAttributeTypeInformation();
 			bulkOperationAttribute.setDataType(attributeType.getAttributeDataType().getName());
 			handleDateFormat(bulkOperationAttribute, attributeType);
 
@@ -462,10 +461,10 @@ public class BOTemplateGenerator extends AbstractCategoryIterator<BulkOperationC
 
 	/**
 	 * This method creates XML and CSV template for specified category.
-	 * @param args arguments containing mapping XML file and template XML file. 
-	 * @param categoryName category name to generate category template. 
+	 * @param args arguments containing mapping XML file and template XML file.
+	 * @param categoryName category name to generate category template.
 	 * @throws DynamicExtensionsSystemException throw DESystemException.
-	 * @throws BulkOperationException throw BulkOperationException. 
+	 * @throws BulkOperationException throw BulkOperationException.
 	 */
 	private static void createCategoryTemplate(String[] args, String categoryName)
 			throws DynamicExtensionsSystemException, BulkOperationException

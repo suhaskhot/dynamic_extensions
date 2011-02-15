@@ -115,4 +115,17 @@ alter table DYEXTN_USERDEFINED_DE add SORT varchar2(20);
 
 alter table DYEXTN_ACTION add (SKIP_LOGIC_DEFAULT_VALUE NUMBER(19,0));
 
+create table DYEXTN_GRID_VIEW_COLUMNS(
+      IDENTIFIER number(19,0) not null,
+      GRID_DISPLAY_COLUMN varchar2(255),
+      GRID_TABLE_COLUMN varchar2(255),
+      CATEGORY_ID number(19,0),
+      DataQuery varchar2(1800), 
+      sortOrder number(11,0) default 0,
+      primary key (IDENTIFIER)); 
+
+alter table DYEXTN_GRID_VIEW_COLUMNS add constraint FK_DYEXTN_GRID_VIEW_COLUMNS  foreign key (CATEGORY_ID) references DYEXTN_STATIC_CATEGORY;
+
+create sequence DYEXTN_GRID_VIEW_COLUMNS_SEQ start with 1;
+
 commit;

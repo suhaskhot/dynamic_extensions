@@ -312,6 +312,73 @@
 		</antcall>
 	</target>
 
+	<!-- =================================================
+				target: upgrade_db_from_DE_1.5.0_to_DE_1.5.1
+				description: upgrade Dynamic Extension database from version 1.5.0 to 1.5.1
+				============================================================================ -->
+	<target name="upgrade_db_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db from DE v1.5.0 to v1.5.1">
+		<delete dir="${de.temp.dir}" failonerror="no" />
+		<mkdir dir="${de.temp.dir}" />
+		<unzip src="dynamicextensions.zip" dest="${de.temp.dir}">
+		</unzip>
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false" />
+			<then>
+				<antcall target="upgrade_db_mysql_from_DE_1.5.0_to_DE_1.5.1" />
+			</then>
+			<elseif>
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false" />
+				<then>
+					<antcall target="upgrade_db_oracle_from_DE_1.5.0_to_DE_1.5.1" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false" />
+				<then>
+					<antcall target="upgrade_db_db2_from_DE_1.5.0_to_DE_1.5.1" />
+				</then>
+			</elseif>
+			<else>
+				<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
+			</else>
+		</if>
+	</target>
+
+	<!-- =========================================================
+				target: upgrade_db_mysql_from_DE_1.5.0_to_DE_1.5.1
+				description: upgrade Dynamic Extensions mysql database from version 1.5.0 to 1.5.1
+				============================================================================ -->
+	<target name="upgrade_db_mysql_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db mysql from DE 1.5.0 to DE 1.5.1">
+		<antcall target="execute_file_db_mysql">
+			<param name="sql.file.name" value="${mysql.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
+		</antcall>
+	</target>
+
+	<!-- ==========================================================
+				target: upgrade_db_oracle_from_DE_1.5.0_to_DE_1.5.1
+				description: upgrade Dynamic Extensions oracle database from version 1.5.0 to 1.5.1
+				============================================================================ -->
+	<target name="upgrade_db_oracle_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db oracle from DE 1.5.0 to DE 1.5.1">
+		<antcall target="execute_file_db_oracle">
+			<param name="sql.file.name" value="${oracle.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
+		</antcall>
+	</target>
+
+	<!-- =======================================================
+				target: upgrade_db_db2_from_DE_1.5.0_to_DE_1.5.1
+				description:- upgrade Dynamic Extensions db2 database from version 1.5.0 to 1.5.1
+				================================================================================= -->
+	<target name="upgrade_db_db2_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db db2 from DE 1.5.0 to DE 1.5.1">
+		<antcall target="execute_file_db_db2">
+			<param name="sql.file.name" value="${db2.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
+		</antcall>
+	</target>
+
 	<target name="upgrade_db_db2_from_DE_1.2.0_to_DE_1.3.0" description="upgrade db db2 from DE 1.2.0 to DE 1.3.0">
 		<antcall target="execute_file_db_db2">
 			<param name="sql.file.name" value="${db2.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.2.0_to_DE_1.3.0.sql" />
@@ -1669,7 +1736,9 @@
 			This target is for bug#16635 Single upgrade target required.
 					         	================================= -->
 	<target name="upgrade.de">
-		<antcall target="upgrade_db_from_DE_1.4.2_to_DE_1.5.0" />
+		<!-- =================================
+			 Currently no DE upgrade is available for ver. 1.5.0 to 1.5.1, so as per bug#16635 empty target is created.
+			                    ================================= -->
 	</target>
 
 	<target name="query.metadata" description="Querying metadata to get dynamically generated table names and column names">

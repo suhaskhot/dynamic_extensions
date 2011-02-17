@@ -117,7 +117,7 @@ public class PermissibleValuesValidator
 	 * @param value PV value.
 	 * @throws DynamicExtensionsSystemException exception.
 	 */
-	public void validateStringForStinger(Stinger stingerValidator, String value)
+	public static void validateStringForStinger(Stinger stingerValidator, String value)
 			throws DynamicExtensionsSystemException
 	{
 		if (!stingerValidator.validate(value))

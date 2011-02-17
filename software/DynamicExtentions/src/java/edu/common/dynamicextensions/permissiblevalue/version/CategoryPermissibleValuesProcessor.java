@@ -1,9 +1,6 @@
 
 package edu.common.dynamicextensions.permissiblevalue.version;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
+import org.owasp.stinger.Stinger;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -29,12 +25,11 @@ import edu.common.dynamicextensions.entitymanager.QueryBuilderFactory;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.FileReader;
+import edu.common.dynamicextensions.util.XMLUtility;
 import edu.common.dynamicextensions.util.xml.ClassType;
 import edu.common.dynamicextensions.util.xml.InstanceType;
 import edu.common.dynamicextensions.util.xml.PvSetType;
 import edu.common.dynamicextensions.util.xml.PvVersion;
-import edu.common.dynamicextensions.util.xml.XMLToObjectConverter;
 import edu.common.dynamicextensions.util.xml.XmlAttributeType;
 import edu.common.dynamicextensions.util.xml.PvVersion.XmlCategory;
 import edu.wustl.common.util.global.ApplicationProperties;
@@ -81,6 +76,14 @@ public class CategoryPermissibleValuesProcessor
 	/** The all encountered date. */
 	protected final Collection<Date> allEncounteredDate = new HashSet<Date>();
 
+	/** The pv processor helper. */
+	private static CategoryPermissibleValuesProcessorHelper pvProcessorHelper;
+
+	public CategoryPermissibleValuesProcessor(Stinger stinger)
+	{
+		pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper(stinger);
+	}
+
 	/**
 	 * This method will start importing the permissible values from XML file.
 	 * @param dataEntryPerformed
@@ -89,56 +92,19 @@ public class CategoryPermissibleValuesProcessor
 	public List<String> importPvVersionValues(final String filePath, final String baseDir)
 			throws DynamicExtensionsSystemException
 	{
-		LOGGER.info("ImportCategoryPermissibleValues : importValues called");
-
-		final PvVersion pvVersion = initialize(filePath, baseDir);
-
-		// get list of categories present in XML
-		final XmlCategory xmlCategory = pvVersion.getXmlCategory();
-
 		try
 		{
+			LOGGER.info("ImportCategoryPermissibleValues : importValues called");
+			// This packageName is used for parsing XML.
+			final String packageName = PvVersion.class.getPackage().getName();
+
+			final PvVersion pvVersion = (PvVersion) XMLUtility.getJavaObjectForXML(filePath,
+					baseDir, packageName, "PvVersion.xsd");
+
+			// get list of categories present in XML
+			final XmlCategory xmlCategory = pvVersion.getXmlCategory();
+
 			return processCategoryList(xmlCategory);
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			LOGGER.error(ApplicationProperties.getValue("error.saving.category"));
-			throw new DynamicExtensionsSystemException(ApplicationProperties
-					.getValue("error.saving.category"), e);
-		}
-	}
-
-	/**
-	 * Initialize the PV version Java object from given XML file.
-	 * @param baseDir
-	 * @param filePath
-	 * @return PvVersion.
-	 * @throws DynamicExtensionsSystemException exception.
-	 */
-	private PvVersion initialize(String filePath, String baseDir)
-			throws DynamicExtensionsSystemException
-	{
-		try
-		{
-			// Creates URL of the XSD specified.
-			URL xsdFileUrl = Thread.currentThread().getContextClassLoader().getResource(
-					"PvVersion.xsd");
-
-			XMLToObjectConverter converter = new XMLToObjectConverter(PvVersion.class.getPackage()
-					.getName(), xsdFileUrl);
-
-			// Populate the POJO from XML
-			final FileReader fileReader = new FileReader(filePath, baseDir);
-
-			// PvVersion represents the XML in object form
-			return (PvVersion) converter
-					.getJavaObject(new FileInputStream(fileReader.getFilePath()));
-		}
-		catch (JAXBException e)
-		{
-			LOGGER.error(ApplicationProperties.getValue(ERROR_PV_PARSE));
-			throw new DynamicExtensionsSystemException(ApplicationProperties
-					.getValue(ERROR_PV_PARSE), e);
 		}
 		catch (SAXException e)
 		{
@@ -146,11 +112,11 @@ public class CategoryPermissibleValuesProcessor
 			throw new DynamicExtensionsSystemException(ApplicationProperties
 					.getValue(ERROR_PV_PARSE), e);
 		}
-		catch (FileNotFoundException e)
+		catch (DynamicExtensionsApplicationException e)
 		{
-			LOGGER.error(ApplicationProperties.getValue("error.pv.filenotfound"));
+			LOGGER.error(ApplicationProperties.getValue("error.saving.category"));
 			throw new DynamicExtensionsSystemException(ApplicationProperties
-					.getValue("error.pv.filenotfound"), e);
+					.getValue("error.saving.category"), e);
 		}
 	}
 
@@ -237,7 +203,6 @@ public class CategoryPermissibleValuesProcessor
 				catEntityName.append('[');
 				List<XmlAttributeType> attributes = instance.getXmlAttribute();
 
-				CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper();
 				// if instance information is not given in XML
 				if ("".equals(instance.getId()) || "ALL".equalsIgnoreCase(instance.getId()))
 				{
@@ -355,8 +320,7 @@ public class CategoryPermissibleValuesProcessor
 			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
 			if (queryBuilder.isDataPresent(tableName))
 			{
-				CategoryPermissibleValuesProcessorHelper catPvHelper = new CategoryPermissibleValuesProcessorHelper();
-				encounteredDateVsActDate = catPvHelper.performCategoryEntityValidations(
+				encounteredDateVsActDate = pvProcessorHelper.performCategoryEntityValidations(
 						categoryAttribute, allEncounteredDate);
 			}
 		}
@@ -393,8 +357,6 @@ public class CategoryPermissibleValuesProcessor
 			CategoryAttributeInterface categoryAttribute, Map<Date, Date> encounteredDateVsActDate)
 			throws DynamicExtensionsSystemException, ParseException
 	{
-		CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper();
-
 		AttributeInterface attribute = DynamicExtensionsUtility
 				.getBaseAttributeOfcategoryAttribute(categoryAttribute);
 
@@ -451,9 +413,15 @@ public class CategoryPermissibleValuesProcessor
 		return null;
 	}
 
+	/**
+	 * The main method.
+	 * @param args the arguments
+	 * @throws DynamicExtensionsSystemException the dynamic extensions system exception
+	 */
 	public static void main(String[] args) throws DynamicExtensionsSystemException
 	{
-		CategoryPermissibleValuesProcessor pvProcessor = new CategoryPermissibleValuesProcessor();
+		CategoryPermissibleValuesProcessor pvProcessor = new CategoryPermissibleValuesProcessor(
+				null);
 		pvProcessor.importPvVersionValues(args[0], args[1]);
 	}
 

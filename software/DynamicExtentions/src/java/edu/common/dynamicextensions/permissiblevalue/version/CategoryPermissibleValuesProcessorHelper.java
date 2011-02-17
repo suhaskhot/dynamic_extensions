@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.owasp.stinger.Stinger;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.helper.CategoryAttributeHelper;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
@@ -27,6 +29,7 @@ import edu.common.dynamicextensions.domaininterface.UserDefinedDEInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.permissiblevalue.PermissibleValuesValidator;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.xml.PropertyType;
 import edu.common.dynamicextensions.util.xml.PvSetType;
@@ -60,6 +63,14 @@ public class CategoryPermissibleValuesProcessorHelper
 
 	/** The entity manager. */
 	private static final EntityManagerInterface ENTITY_MANAGER = EntityManager.getInstance();
+
+	/** The stinger validator. */
+	private static Stinger stingerValidator;
+
+	public CategoryPermissibleValuesProcessorHelper(Stinger stinger)
+	{
+		stingerValidator = stinger;
+	}
 
 	/**
 	 * Create Map of name vs entity.
@@ -137,7 +148,8 @@ public class CategoryPermissibleValuesProcessorHelper
 		for (PermissibleValueInterface permissibleValue : originalPVSet)
 		{
 			String pvValue = permissibleValue.getValueAsObject().toString();
-			if (xmlPermissibleValuesList.contains(DynamicExtensionsUtility.getUnEscapedStringValue(pvValue)))
+			if (xmlPermissibleValuesList.contains(DynamicExtensionsUtility
+					.getUnEscapedStringValue(pvValue)))
 			{
 				permissibleValues.add(permissibleValue);
 			}
@@ -312,6 +324,9 @@ public class CategoryPermissibleValuesProcessorHelper
 
 		for (String pvValue : missingPvInOriginalSet)
 		{
+			//Validation of Stinger.
+			PermissibleValuesValidator.validateStringForStinger(stingerValidator, pvValue);
+
 			// Create an object of Permissible Value which is of Dynamic Extension type.
 			String permissibleValueName = DynamicExtensionsUtility.getEscapedStringValue(pvValue);
 			try
@@ -404,9 +419,8 @@ public class CategoryPermissibleValuesProcessorHelper
 			List<String> defaultPVList = new ArrayList<String>();
 			defaultPVList.add(defaultValue);
 
-			CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper();
-			List<PermissibleValueInterface> permValues = pvProcessorHelper
-					.getPermissibleValuesObjectList(defaultPVList, attribute);
+			List<PermissibleValueInterface> permValues = getPermissibleValuesObjectList(
+					defaultPVList, attribute);
 
 			Collection<PermissibleValueInterface> defaultPvColl = new HashSet<PermissibleValueInterface>();
 			defaultPvColl.addAll(permValues);

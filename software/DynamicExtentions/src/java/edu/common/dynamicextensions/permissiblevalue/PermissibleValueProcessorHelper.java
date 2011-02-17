@@ -377,7 +377,7 @@ public class PermissibleValueProcessorHelper
 		for (ValueType value : pvValueList)
 		{
 			// Check for validating Permissible Value with Stinger Validation
-			pvValidator.validateStringForStinger(stingerValidator, value.getName());
+			PermissibleValuesValidator.validateStringForStinger(stingerValidator, value.getName());
 
 			// This method checks this PV needs to be edited or not
 			checkForPVOverRide(value);

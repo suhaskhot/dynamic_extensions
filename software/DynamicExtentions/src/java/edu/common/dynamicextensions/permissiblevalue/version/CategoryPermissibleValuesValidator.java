@@ -54,7 +54,7 @@ public class CategoryPermissibleValuesValidator
 			CategoryAttributeInterface categoryAttribute, PropertyType properties)
 			throws ParseException, DynamicExtensionsSystemException
 	{
-		CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper();
+		CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper(null);
 		Date activationDate = (Date)pvProcessorHelper.getActivationDate(properties, categoryAttribute);
 
 		CategoryAttributeHelper categoryHelper = new CategoryAttributeHelper();

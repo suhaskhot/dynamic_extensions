@@ -2849,9 +2849,13 @@ public class DynamicExtensionsUtility
 			{
 				serverHost="localhost";
 			}
-			if(serverPrototype==null || serverPrototype.trim().equals(""))
+			if(serverPrototype==null || "".equals(serverPrototype.trim()) || "true".equalsIgnoreCase(serverPrototype.trim()))
 			{
 				serverPrototype="https";
+			}
+			else
+			{
+				serverPrototype="http";
 			}
 			if(serverPort==null || serverPort.trim().equals(""))
 			{

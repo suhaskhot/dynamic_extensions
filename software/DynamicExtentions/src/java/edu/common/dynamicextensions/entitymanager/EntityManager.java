@@ -614,7 +614,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			client.setServerUrl(new URL(Variables.jbossUrl+entity.getEntityGroup().getName()+"/"));
 			client.setParamaterObjectMap(map);
 			client.execute(null);
-
 			identifier = (Long)client.getObject();
 			List<FileQueryBean> queryListForFile = getQueryListForFileAttributes(dataValue, entity,
 					client.getObject());
@@ -859,7 +858,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			Map<AbstractAttributeInterface, Object> dataVal = (Map<AbstractAttributeInterface, Object>) dataValue;
 
-			String packageName = null;
+			/*String packageName = null;
 			packageName = getPackageName(entity, packageName);
 
 			String className = packageName + "." + entity.getName();
@@ -868,7 +867,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			Object updatedObject = updateObject(entity, dataVal, oldObject, hibernateDAO);
 
-			isSuccess = true;
+			isSuccess = true;*/
+
+			DataEditClient client = new DataEditClient(entity, dataVal);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put(WebUIManagerConstants.ENTITY, entity);
+			map.put(WebUIManagerConstants.DATA_VALUE_MAP, dataValue);
+			map.put("recordId", recordId);
+			client.setServerUrl(new URL(Variables.jbossUrl+entity.getEntityGroup().getName()+"/"));
+			client.setParamaterObjectMap(map);
+			client.execute(null);
+			Object updatedObject =client.getObject();
+
 
 			List<FileQueryBean> queryListForFile = getQueryListForFileAttributes(dataVal, entity,
 					updatedObject);
@@ -881,11 +891,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				fileRecordQueryList.addAll(queryListForFile);
 			}
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			DynamicExtensionsUtility.rollBackDAO(hibernateDAO);
-			throw new DynamicExtensionsSystemException(DEConstants.DATA_INSERTION_ERROR_MESSAGE, e);
 		}
 		catch (Exception e)
 		{

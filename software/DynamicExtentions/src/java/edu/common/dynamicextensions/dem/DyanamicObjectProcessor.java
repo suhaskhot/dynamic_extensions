@@ -434,9 +434,10 @@ public class DyanamicObjectProcessor extends AbstractBaseMetadataManager{
 	}
 	public void associateRecord(Map<String, Object> paramaterObjectMap) throws DynamicExtensionsSystemException, DAOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException
 	{
+		HibernateDAO hibernateDAO =null;
 		try
 		{
-			HibernateDAO hibernateDAO = getHibernateDAO();
+			hibernateDAO = getHibernateDAO();
 			Long srcEntityId = (Long) paramaterObjectMap.get(WebUIManagerConstants.STATIC_OBJECT_ID);
 			Long entityId = (Long) paramaterObjectMap.get(WebUIManagerConstants.DYNAMIC_OBJECT_ID);
 			AssociationInterface lastAsso = (AssociationInterface) paramaterObjectMap.get(WebUIManagerConstants.ASSOCIATION);
@@ -463,5 +464,88 @@ public class DyanamicObjectProcessor extends AbstractBaseMetadataManager{
 			}
 		}
 	}
+	public Object insertRecordsForCategoryEntityTree(Map<String, Object> paramaterObjectMap) throws DynamicExtensionsSystemException, DAOException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, IllegalArgumentException, InstantiationException
+	{
+		HibernateDAO hibernateDAO=null;
+		try
+		{
+			hibernateDAO = getHibernateDAO();
+			Long srcEntityId = (Long) paramaterObjectMap.get(WebUIManagerConstants.STATIC_OBJECT_ID);
 
+			AssociationInterface lastAsso = (AssociationInterface) paramaterObjectMap.get(WebUIManagerConstants.ASSOCIATION);
+
+			String packageName = (String) paramaterObjectMap.get(WebUIManagerConstants.PACKAGE_NAME);
+			final String sourceObjectClassName = packageName + "."+ lastAsso.getEntity().getName();
+			final String targetObjectClassName = packageName + "."+ lastAsso.getTargetEntity().getName();
+			final Object sourceObject = hibernateDAO.retrieveById(sourceObjectClassName, srcEntityId);
+			Object clonedSourceObject = cloner.clone(sourceObject);
+			Object targetObject = createObjectForClass(targetObjectClassName);
+
+			hibernateDAO.insert(targetObject);
+			Object clonedTargetObject = cloner.clone(targetObject);
+			addTargetObject(sourceObject, targetObject, targetObjectClassName,lastAsso);
+
+			hibernateDAO.update(sourceObject, clonedSourceObject);
+			addSourceObject(sourceObject, targetObject, sourceObjectClassName,lastAsso);
+
+			hibernateDAO.update(targetObject, clonedTargetObject);
+			return targetObject;
+			/*final Object sourceObject = hibernateDAO.retrieveById(sourceObjectClassName, srcEntityId);
+			final Object targetObject = hibernateDAO.retrieveById(targetObjectClassName, entityId);
+			final DyExtnObjectCloner cloner = new DyExtnObjectCloner();
+			Object clonedTarget = cloner.clone(targetObject);
+			addSourceObject(sourceObject, targetObject, sourceObjectClassName, lastAsso);
+			hibernateDAO.update(targetObject, clonedTarget);*/
+		} catch (DAOException e) {
+			throw new DynamicExtensionsSystemException(
+					"Error in associating objects", e);
+		}finally
+		{
+			try {
+				hibernateDAO.closeSession();
+			} catch (DAOException e) {
+				throw new DynamicExtensionsSystemException(
+						"Error in associating records.", e);
+			}
+		}
+	}
+	public  Object editObject(EntityInterface entity,
+			Map<AbstractAttributeInterface, Object> dataValue,Long recordId)
+			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
+	{
+		HibernateDAO hibernateDAO =null;
+		Object updatedObject =null;
+		try
+		{
+			hibernateDAO = getHibernateDAO();
+
+			String packageName = null;
+			packageName = getPackageName(entity, packageName);
+			String className = packageName + "." + entity.getName();
+			Object oldObject;
+			oldObject = hibernateDAO.retrieveById(className, recordId);
+
+			 updatedObject = updateObject(entity, dataValue, oldObject);
+		}
+		catch (DAOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (DynamicExtensionsSystemException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally
+		{
+			try {
+				hibernateDAO.closeSession();
+			} catch (DAOException e) {
+				throw new DynamicExtensionsSystemException(
+						"Error in associating records.", e);
+			}
+		}
+		return updatedObject;
+	}
 }

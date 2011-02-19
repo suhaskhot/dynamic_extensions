@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.dem;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +22,8 @@ public class RecordAssociationHandler extends AbstractHandler {
 			initAuditManager();
 			initializeParamaterObjectMap(req);
 			DyanamicObjectProcessor dyanamicObjectProcessor = new DyanamicObjectProcessor();
-			dyanamicObjectProcessor.associateObjects(paramaterObjectMap);
-
+			System.out.println();
+			dyanamicObjectProcessor.associateRecord(paramaterObjectMap);
 
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
@@ -31,6 +32,25 @@ public class RecordAssociationHandler extends AbstractHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (DynamicExtensionsSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (NoSuchMethodException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (InvocationTargetException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ClassNotFoundException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

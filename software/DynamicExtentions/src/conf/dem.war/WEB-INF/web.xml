@@ -7,7 +7,7 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 	<display-name>Dyanmic Extensions Data Entry Module</display-name>
 <!-- @@test@@ -->
  
-
+   
 
 	<!-- application properties file path --> 
   	<context-param>
@@ -32,12 +32,20 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 		<servlet-class>edu.common.dynamicextensions.dem.DataEntryHandler</servlet-class>
     </servlet>
 	<servlet>
+		<servlet-name>DataEditHandler</servlet-name>
+		<servlet-class>edu.common.dynamicextensions.dem.DataEditHandler</servlet-class>
+    </servlet>
+	<servlet>
 		<servlet-name>DataAssociationHandler</servlet-name>
 		<servlet-class>edu.common.dynamicextensions.dem.DataAssociationHandler</servlet-class>
     </servlet>
 	<servlet>
 		<servlet-name>RecordAssociationHandler</servlet-name>
 		<servlet-class>edu.common.dynamicextensions.dem.RecordAssociationHandler</servlet-class>
+    </servlet>
+	<servlet>
+		<servlet-name>InsertCategoryEntityTreeHandler</servlet-name>
+		<servlet-class>edu.common.dynamicextensions.dem.InsertCategoryEntityTreeHandler</servlet-class>
     </servlet>
 	
     <!-- servlet>
@@ -73,12 +81,20 @@ PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
 		<url-pattern>/DataEntryHandler</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
+		<servlet-name>DataEditHandler</servlet-name>
+		<url-pattern>/DataEditHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>DataAssociationHandler</servlet-name>
 		<url-pattern>/DataAssociationHandler</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>RecordAssociationHandler</servlet-name>
 		<url-pattern>/RecordAssociationHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>InsertCategoryEntityTreeHandler</servlet-name>
+		<url-pattern>/InsertCategoryEntityTreeHandler</url-pattern>
 	</servlet-mapping>
 	
 	<!--<servlet-mapping>

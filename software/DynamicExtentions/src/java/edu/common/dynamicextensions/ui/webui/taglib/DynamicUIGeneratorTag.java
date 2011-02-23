@@ -8,8 +8,11 @@ import java.util.Map;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import edu.common.dynamicextensions.domain.userinterface.AbstractContainmentControl;
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -116,8 +119,11 @@ public class DynamicUIGeneratorTag extends TagSupport
 				contextParameter.put(Constants.ENCOUNTER_DATE, ControlsUtility.getFormattedDate(encounterDate));
 				container.setContextParameter(contextParameter);
 			}
-			DynamicExtensionsUtility.setEncounterDateToChildContainer(container, contextParameter);
-
+			DynamicExtensionsUtility.setEncounterDateToChildContainer(container,
+					contextParameter);
+			Map<Long, ContainerInterface> containerMap = new HashMap<Long, ContainerInterface>();
+			setValidationMap(containerMap, container);
+			pageContext.getSession().setAttribute("MapForValidation", containerMap);
 			final JspWriter out = pageContext.getOut();
 			container.setPreviousValueMap(previousDataMap);
 			out.println(this.container.generateContainerHTML(caption, operation));
@@ -131,6 +137,30 @@ public class DynamicUIGeneratorTag extends TagSupport
 			Logger.out.debug("IOException. No response generated.");
 		}
 		return EVAL_PAGE;
+	}
+
+	/**
+	 *
+	 * @param containerMap
+	 * @param container
+	 */
+	private void setValidationMap(Map<Long, ContainerInterface> containerMap,
+			ContainerInterface container)
+	{
+		containerMap.put(container.getId(), container);
+		for (ControlInterface control : container.getAllControlsUnderSameDisplayLabel())
+		{
+			if (control instanceof AbstractContainmentControlInterface)
+			{
+				final ContainerInterface containmentContainer = ((AbstractContainmentControl) control)
+						.getContainer();
+				setValidationMap(containerMap, containmentContainer);
+			}
+		}
+		for (ContainerInterface childContainer : container.getChildContainerCollection())
+		{
+			setValidationMap(containerMap, childContainer);
+		}
 	}
 
 }

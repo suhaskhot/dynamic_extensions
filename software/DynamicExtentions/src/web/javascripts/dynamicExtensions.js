@@ -2980,15 +2980,22 @@ function updateServerState(controlName, controlId, containerId)
 				if(vRecentControl == null)
 				{
 					vRecentControl = document.getElementsByName(controlName)[0];
-					var values = controlValue.split("~");
-					for(var i=0; i<values.length;i++)
+					if(vRecentControl.type="radio")
 					{
-						for(var j =0; j < vRecentControl.options.length; j++)
+						vRecentControl.value = controlValue;
+					}
+					else
+					{
+						var values = controlValue.split("~");
+						for(var i=0; i<values.length;i++)
 						{
-							if(values[i] == vRecentControl.options[j].value)
+							for(var j =0; j < vRecentControl.options.length; j++)
 							{
-								vRecentControl.options[j].selected = true;
-								break;
+								if(values[i] == vRecentControl.options[j].value)
+								{
+									vRecentControl.options[j].selected = true;
+									break;
+								}
 							}
 						}
 					}		

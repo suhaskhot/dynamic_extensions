@@ -84,7 +84,7 @@ public class ConditionStatements
 	}
 
 	public void evaluateConditions(Map<BaseAbstractAttributeInterface, Object> objectValueState,
-			ContainerInterface mainContainer) throws DynamicExtensionsSystemException
+			ContainerInterface controllingContainer) throws DynamicExtensionsSystemException
 	{
 		boolean conditionSatisfied = false;
 		for (Condition condition : listOfConditions)
@@ -92,7 +92,7 @@ public class ConditionStatements
 			Action action = condition.getAction();
 			if (condition.checkCondition(objectValueState))
 			{
-				action.performAction(mainContainer.getControlById(action.getControl().getId()));
+				action.performAction(controllingContainer.getControlById(action.getControl().getId()));
 				conditionSatisfied = true;
 				break;
 			}
@@ -101,7 +101,7 @@ public class ConditionStatements
 		{
 			Condition condition = listOfConditions.iterator().next();
 			ControlInterface control = condition.getAction().getControl();
-			ControlInterface controlFromCache = mainContainer.getControlById(control.getId());
+			ControlInterface controlFromCache = controllingContainer.getControlById(control.getId());
 			condition.getAction().resetAction(controlFromCache);
 			updateDataValueMap(objectValueState, controlFromCache);
 		}
@@ -112,6 +112,7 @@ public class ConditionStatements
 	 * @param objectValueState the object value state
 	 * @param controlFromCache the control from cache
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateDataValueMap(Map<BaseAbstractAttributeInterface, Object> objectValueState,
 			ControlInterface controlFromCache)
 	{
@@ -140,5 +141,4 @@ public class ConditionStatements
 			objectValueState.put(categoryAttribute, controlFromCache.getValue());
 		}
 	}
-
 }

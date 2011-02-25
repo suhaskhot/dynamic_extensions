@@ -1108,7 +1108,7 @@ public class CategoryGenerator
 	 * @throws ParseException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void setDefaultValue(final ControlInterface control) throws ParseException,
+		private void setDefaultValue(final ControlInterface control) throws ParseException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		final String defaultValue = categoryFileParser.getDefaultValue();
@@ -1133,56 +1133,48 @@ public class CategoryGenerator
 
 		final CategoryAttributeInterface categoryAttribute = (CategoryAttributeInterface) control
 				.getAttibuteMetadataInterface();
-		Date encounterDate = (Date) control.getParentContainer().getContextParameter(
-				Constants.ENCOUNTER_DATE);
-		if (!defaultValue.equals(categoryAttribute.getDefaultValue(encounterDate)))
+		if (control.getIsCalculated() != null && control.getIsCalculated())
 		{
-
-			if (control.getIsCalculated() != null && control.getIsCalculated())
+			if (control instanceof TextField)
 			{
-				if (control instanceof TextField)
+				if (((AttributeMetadataInterface) categoryAttribute).getAttributeTypeInformation() instanceof NumericAttributeTypeInformation
+						|| ((AttributeMetadataInterface) categoryAttribute)
+								.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
 				{
-					if (((AttributeMetadataInterface) categoryAttribute)
-							.getAttributeTypeInformation() instanceof NumericAttributeTypeInformation
-							|| ((AttributeMetadataInterface) categoryAttribute)
-									.getAttributeTypeInformation() instanceof DateAttributeTypeInformation)
-					{
-						setFormula(categoryAttribute, defaultValue);
-					}
-					else
-					{
-						throw new DynamicExtensionsSystemException(ApplicationProperties
-								.getValue(CategoryConstants.CREATE_CAT_FAILS)
-								+ " "
-								+ ApplicationProperties
-										.getValue("incorrectDataTypeCalculatedAttribute")
-								+ attributeName);
-					}
+					setFormula(categoryAttribute, defaultValue);
 				}
 				else
 				{
 					throw new DynamicExtensionsSystemException(ApplicationProperties
 							.getValue(CategoryConstants.CREATE_CAT_FAILS)
-							+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
-							+ categoryFileParser.getLineNumber()
 							+ " "
 							+ ApplicationProperties
-									.getValue("incorrectControlTypeCalculatedAttribute")
+									.getValue("incorrectDataTypeCalculatedAttribute")
 							+ attributeName);
 				}
 			}
 			else
 			{
-				final AttributeInterface attributeInterface = categoryAttribute
-						.getAbstractAttribute().getEntity().getAttributeByName(
-								categoryAttribute.getAbstractAttribute().getName());
-
-				PermissibleValueInterface permissibleValue = attributeInterface
-						.getAttributeTypeInformation().getPermissibleValueForString(
-								DynamicExtensionsUtility.getEscapedStringValue(defaultValue));
-				categoryHelper.setDefaultValue(categoryAttribute, permissibleValue, true);
-
+				throw new DynamicExtensionsSystemException(ApplicationProperties
+						.getValue(CategoryConstants.CREATE_CAT_FAILS)
+						+ ApplicationProperties.getValue(CategoryConstants.LINE_NUMBER)
+						+ categoryFileParser.getLineNumber()
+						+ " "
+						+ ApplicationProperties.getValue("incorrectControlTypeCalculatedAttribute")
+						+ attributeName);
 			}
+		}
+		else
+		{
+			final AttributeInterface attributeInterface = categoryAttribute.getAbstractAttribute()
+					.getEntity().getAttributeByName(
+							categoryAttribute.getAbstractAttribute().getName());
+
+			PermissibleValueInterface permissibleValue = attributeInterface
+					.getAttributeTypeInformation().getPermissibleValueForString(
+							DynamicExtensionsUtility.getEscapedStringValue(defaultValue));
+			categoryHelper.setDefaultValue(categoryAttribute, permissibleValue, true);
+
 		}
 	}
 

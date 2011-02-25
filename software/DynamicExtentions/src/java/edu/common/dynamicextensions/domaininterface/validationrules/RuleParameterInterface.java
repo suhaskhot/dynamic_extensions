@@ -41,4 +41,6 @@ public interface RuleParameterInterface extends DynamicExtensionBaseDomainObject
 	 */
 	void setValue(String value);
 
+	void copy(RuleParameterInterface parameterInterface);
+
 }

@@ -600,9 +600,8 @@ public class ValidatorUtil
 	public static void checkForConflictingRules(Collection<String> allValidationRules,
 			String attributeName) throws DynamicExtensionsSystemException
 	{
-		if (allValidationRules.contains(ProcessorConstants.DATE)
-				&& (allValidationRules.contains(ProcessorConstants.DATE_RANGE) || allValidationRules
-						.contains(ProcessorConstants.ALLOW_FUTURE_DATE)))
+		if (allValidationRules.contains(ProcessorConstants.ALLOW_FUTURE_DATE)
+				&& (allValidationRules.contains(ProcessorConstants.ALLOW_PAST_AND_PRESENT_DATE_ONLY)))
 		{
 			throw new DynamicExtensionsSystemException(
 					"Conflicting rules present. Allow Past and Present Date and Allow Future Date rules cannot be applied for attribute:, "
@@ -615,6 +614,15 @@ public class ValidatorUtil
 		{
 			throw new DynamicExtensionsSystemException(
 					"Conflicting rules present. Date range and Allow Future Date rules cannot be applied for attribute:, "
+							+ attributeName);
+		}
+
+		if ((allValidationRules.contains(ProcessorConstants.DATE_RANGE) || allValidationRules
+				.contains(ProcessorConstants.RANGE))
+				&& allValidationRules.contains(ProcessorConstants.ALLOW_PAST_AND_PRESENT_DATE_ONLY))
+		{
+			throw new DynamicExtensionsSystemException(
+					"Conflicting rules present. Date range and Allow Past and Present Date rules cannot be applied for attribute:, "
 							+ attributeName);
 		}
 

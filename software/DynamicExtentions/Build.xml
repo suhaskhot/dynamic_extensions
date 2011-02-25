@@ -280,9 +280,10 @@
 			    <include name="*.xsd"/>
 			</fileset>
 		</copy>
-
-
-
+		<copy todir="${temp.dir}/dem.war">
+					<fileset dir="${base.dir}/src/conf/dem.war">
+					 </fileset>
+		</copy>
 		<copy todir="${temp.dir}/db">
 			<fileset dir="${base.dir}/db">
 				<include name="**/*" />
@@ -362,6 +363,51 @@
 			</manifest>
 		</war>
 		<copy file="dynamicExtensions.war" todir="${dist.dir}/build" overwrite="true" />
+	</target>
+	
+	<target name="build.dem.war" depends="compile">
+		<property name="dem.war" value="dem.war"/>
+		<property name="dem.web-inf" value="dem.war/WEB-INF"/>
+		<property name="dem.classes" value="dem.war/WEB-INF/classes"/>
+		<property name="dem.lib" value="dem.war/WEB-INF/lib"/>
+		<property name="dem.meta-inf" value="dem.war/META-INF"/>
+
+		<delete dir="dem.war" />
+		<mkdir dir="${dem.war}"/>
+		<mkdir dir="${dem.web-inf}"/>
+		<mkdir dir="${dem.classes}"/>
+		<mkdir dir="${dem.lib}"/>
+		<mkdir dir="${dem.meta-inf}"/>
+		<copy file="src/conf/dem.web.xml" tofile="${dem.web-inf}/web.xml"/>
+		<copy todir="${dem.classes}">
+			<fileset dir="${target.dir}">
+				<include name="edu/common/dynamicextensions/dem/*.class"/>
+				<include name="OracleDAOProperties.xml"/>
+				<include name="ApplicationResources.properties"/>
+				<include name="ApplicationDAOProperties.xml"/>
+				<include name="OracleDAOProperties.xml"/>
+				<include name="OracleDAOProperties.xml"/>
+			</fileset>
+		</copy>
+		<copy file="src/conf/demHibernate.cfg.xml" todir="${dem.classes}"/>
+		<copy file="src/conf/dem.web.xml" todir="${dem.classes}"/>
+		<copy file="src/conf/DynamicExtensionsAuditMetadata.xml" todir="${dem.classes}"/>
+
+		<copy todir="${dem.lib}">
+			<fileset dir="${lib.dir}">
+				<include name="commonpackage*.jar"/>
+				<include name="washu-commons*.jar"/>
+				<include name="DAO*.jar"/>
+			</fileset>
+		</copy>
+		<manifest file="${dem.meta-inf}/MANIFEST.MF">
+			<section name="${DynamicExtensions.jar.details}">
+				<attribute name="Version" value="${DynamicExtensions.jar.version}" />
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Build-on" value="${TODAY_IND}" />
+				<attribute name="SVN-URL" value="${dist.revision}" />
+			</section>
+		</manifest>
 	</target>
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
 	<target name="build_app_war" depends="init_build_war">

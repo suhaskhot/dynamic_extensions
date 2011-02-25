@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.GridViewColumn;
 import edu.common.dynamicextensions.domaininterface.StaticCategoryInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.StaticCategoryManager;
@@ -26,6 +27,7 @@ import edu.common.dynamicextensions.util.xml.FormDefinition;
 import edu.common.dynamicextensions.util.xml.XMLToObjectConverter;
 import edu.common.dynamicextensions.util.xml.FormDefinition.Form;
 import edu.common.dynamicextensions.util.xml.FormDefinition.Form.Tag;
+import edu.common.dynamicextensions.util.xml.FormDefinition.Form.GridView.GridDisplayColumn;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 
@@ -52,7 +54,8 @@ public class StaticCategoryGenerator
 	public static void main(String[] args) throws JAXBException, FileNotFoundException,
 			DynamicExtensionsSystemException, DynamicExtensionsApplicationException, SAXException
 	{
-		final XMLToObjectConverter converter = new XMLToObjectConverter(FormDefinition.class.getPackage().getName(),null);
+		final XMLToObjectConverter converter = new XMLToObjectConverter(FormDefinition.class
+				.getPackage().getName(), null);
 
 		final String xmlFilePath = args[0];
 
@@ -74,7 +77,30 @@ public class StaticCategoryGenerator
 
 		staticCategory.setFormURL(form.getUrl());
 		Collection<TaggedValueInterface> taggedValueCollection = new HashSet<TaggedValueInterface>();
+		Collection<GridViewColumn> gridColBeans = new HashSet<GridViewColumn>();
 		List<Tag> taggedValueList = form.getTag();
+		if (form.getGridView() != null)
+		{
+			List<GridDisplayColumn> columnDisplayList = form.getGridView().getGridDisplayColumn();
+
+			for (GridDisplayColumn gridDisplayColumn : columnDisplayList)
+			{
+				GridViewColumn gridViewCol = new GridViewColumn();
+
+				gridViewCol.setGridDisplayColumn(gridDisplayColumn.getDispalyLabel());
+				gridViewCol.setGridTableColumn(gridDisplayColumn.getColumnName());
+				gridViewCol.setDisplayOrder(gridDisplayColumn.getDisplayOrder());
+				gridColBeans.add(gridViewCol);
+			}
+			if (staticCategory.getGridViewColumnList() != null)
+				staticCategory.getGridViewColumnList().clear();
+			staticCategory.setGridViewColumnList(gridColBeans);
+		}
+
+		if(form.getDataQuery() != null)
+		{
+			staticCategory.setDataQuery(form.getDataQuery());
+		}
 		for (Tag tag : taggedValueList)
 		{
 			TaggedValueInterface taggedValue = DomainObjectFactory.getInstance()
@@ -87,7 +113,8 @@ public class StaticCategoryGenerator
 
 		staticCategoryManager.persistStaticCategory(staticCategory);
 		Logger.out.info("Static Category Id is " + staticCategory.getId());
-		Logger.out.info("-----------Static Category created sucessfully---------------------------");
+		Logger.out
+				.info("-----------Static Category created sucessfully---------------------------");
 	}
 
 	/**
@@ -97,7 +124,7 @@ public class StaticCategoryGenerator
 	private static void validateStaticFormName(final String formName)
 			throws DynamicExtensionsApplicationException
 	{
-		if(formName== null || "".equals(formName))
+		if (formName == null || "".equals(formName))
 		{
 			throw new DynamicExtensionsApplicationException("Please specify form name in xml.");
 		}

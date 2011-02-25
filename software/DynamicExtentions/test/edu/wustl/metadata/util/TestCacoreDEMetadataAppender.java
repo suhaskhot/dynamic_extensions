@@ -3,13 +3,14 @@ package edu.wustl.metadata.util;
 import java.io.File;
 
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 
 public class TestCacoreDEMetadataAppender extends DynamicExtensionsBaseTestCase
 {
 
     @Override
-    protected void setUp()
+    protected void setUp() throws DynamicExtensionsCacheException
     {
         super.setUp();
     }

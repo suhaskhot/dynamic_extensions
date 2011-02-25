@@ -11,8 +11,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import org.hibernate.HibernateException;
@@ -25,6 +27,8 @@ import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -40,7 +44,6 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.NamedQueryParam;
-
 /**
  * @author gaurav_sawant
  *
@@ -607,7 +610,7 @@ public abstract class AbstractBaseMetadataManager
 	 * @throws IllegalAccessException exception.
 	 * @throws InvocationTargetException exception.
 	 */
-	protected Long getObjectId(Object newObject) throws NoSuchMethodException,
+	public static Long getObjectId(Object newObject) throws NoSuchMethodException,
 			IllegalAccessException, InvocationTargetException
 	{
 		Long identifier = null;
@@ -720,5 +723,34 @@ public abstract class AbstractBaseMetadataManager
 		invokeSetterMethod(tgtObjectClass, sourceRoleName, srcObjectClass, targetObject,
 				sourceObject);
 
+	}
+	/**
+	 * Gets the package name from the tagged values from within the entity
+	 * groups.
+	 *
+	 * @param entity
+	 *            the entity.
+	 * @param packageName
+	 *            the package name.
+	 *
+	 * @return the package name.
+	 */
+	protected String getPackageName(EntityInterface entity, String packageName)
+	{
+		Set<TaggedValueInterface> taggedValues = (Set<TaggedValueInterface>) entity
+				.getEntityGroup().getTaggedValueCollection();
+		Iterator<TaggedValueInterface> taggedValuesIter = taggedValues.iterator();
+		String tmpPackageName = packageName;
+		while (taggedValuesIter.hasNext())
+		{
+			TaggedValueInterface taggedValue = taggedValuesIter.next();
+			if (taggedValue.getKey().equals("PackageName"))
+			{
+				tmpPackageName = taggedValue.getValue();
+				break;
+			}
+		}
+
+		return tmpPackageName;
 	}
 }

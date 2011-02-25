@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
@@ -231,9 +232,10 @@ public class DEIntegration implements IntegrationInterface
 	 * @param hookEntityId
 	 * @throws DynamicExtensionsSystemException system exception
 	 * @return the record id of the category depending on hook entity record id.
+	 * @throws DynamicExtensionsCacheException
 	 */
 	public Collection getCategoriesContainerIdFromHookEntity(Long hookEntityId)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException
 	{
 		Collection dynamicList = EntityManager.getInstance()
 				.getCategoriesContainerIdFromHookEntity(hookEntityId);

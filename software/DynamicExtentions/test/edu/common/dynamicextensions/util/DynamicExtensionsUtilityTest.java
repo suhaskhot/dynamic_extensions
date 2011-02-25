@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
@@ -50,15 +51,31 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 
 		try
 		{
-			LOGGER.info("-----------------Test For getting cloned Container from cache started--------------------");
+			LOGGER
+					.info("-----------------Test For getting cloned Container from cache started--------------------");
 			String containerId = getContainerIdentifier().toString();
 			ContainerInterface patientInformationContainer = DynamicExtensionsUtility
 					.getClonedContainerFromCache(containerId);
 			long id = patientInformationContainer.getId();
 			assertTrue(Long.valueOf(containerId).equals(id));
-			LOGGER.info("-----------------Test For getting cloned Container from cache successful--------------------");
+			LOGGER
+					.info("-----------------Test For getting cloned Container from cache successful--------------------");
 		}
 		catch (DynamicExtensionsSystemException e)
+		{
+			LOGGER
+					.error("-----------------Test For getting cloned Container failed while fecting category--------------------");
+			e.printStackTrace();
+			fail();
+		}
+		catch (DynamicExtensionsCacheException e)
+		{
+			LOGGER
+					.error("-----------------Test For getting cloned Container failed while fecting category--------------------");
+			e.printStackTrace();
+			fail();
+		}
+		catch (NumberFormatException e)
 		{
 			LOGGER
 					.error("-----------------Test For getting cloned Container failed while fecting category--------------------");
@@ -74,8 +91,8 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 			LOGGER
 					.info("-----------------Test For getting Container from cache by Identifier started--------------------");
 			long containerIdentifier = getContainerIdentifier();
-			ContainerInterface mainContainer = (ContainerInterface) getCategory().getRootCategoryElement()
-					.getContainerCollection().iterator().next();
+			ContainerInterface mainContainer = (ContainerInterface) getCategory()
+					.getRootCategoryElement().getContainerCollection().iterator().next();
 			ContainerInterface container = DynamicExtensionsUtility.getContainerByIdentifier(String
 					.valueOf(containerIdentifier), mainContainer);
 			assertTrue(mainContainer.getId().equals(container.getId()));
@@ -97,15 +114,16 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 			LOGGER
 					.info("-----------------Test For getting Child Container from cache by Identifier and Main container started--------------------");
 			long containerIdentifier = getContainerIdentifier();
-			ContainerInterface mainContainer = (ContainerInterface) getCategory().getRootCategoryElement()
-					.getContainerCollection().iterator().next();
+			ContainerInterface mainContainer = (ContainerInterface) getCategory()
+					.getRootCategoryElement().getContainerCollection().iterator().next();
 			Collection<ControlInterface> controls = mainContainer.getAllControls();
 			int i = 0;
 			for (ControlInterface controlInterface : controls)
 			{
 				if (controlInterface instanceof AbstractContainmentControlInterface && i >= 3)
 				{
-					containerIdentifier = ((AbstractContainmentControl) controlInterface).getContainer().getId();
+					containerIdentifier = ((AbstractContainmentControl) controlInterface)
+							.getContainer().getId();
 					break;
 				}
 				i++;
@@ -147,13 +165,15 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 	{
 		try
 		{
-			LOGGER.info("-----------------Test For clearing Container controls value started--------------------");
-			Collection<ContainerInterface> rootContainerCollection = getCategory().getRootCategoryElement()
-					.getContainerCollection();
+			LOGGER
+					.info("-----------------Test For clearing Container controls value started--------------------");
+			Collection<ContainerInterface> rootContainerCollection = getCategory()
+					.getRootCategoryElement().getContainerCollection();
 			ContainerInterface rootContainer = rootContainerCollection.iterator().next();
 			DynamicExtensionsUtility.cleanContainerControlsValue(rootContainer);
 			assertTrue(checkForControlValue(rootContainer));
-			LOGGER.info("-----------------Test For clearing Container controls value successful--------------------");
+			LOGGER
+					.info("-----------------Test For clearing Container controls value successful--------------------");
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -166,13 +186,17 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 	{
 		try
 		{
-			LOGGER.info("-----------------Test For getting container by caption started--------------------");
-			ContainerInterface container = (ContainerInterface) getCategory().getRootCategoryElement()
-						.getContainerCollection().iterator().next();
+			LOGGER
+					.info("-----------------Test For getting container by caption started--------------------");
+			ContainerInterface container = (ContainerInterface) getCategory()
+					.getRootCategoryElement().getContainerCollection().iterator().next();
 			String caption = container.getCaption();
-			ContainerInterface fetchedContainer = DynamicExtensionsUtility.getContainerByCaption(caption);
-			assertTrue(container.getAbstractEntity().getName().equalsIgnoreCase(fetchedContainer.getAbstractEntity().getName()));
-			LOGGER.info("-----------------Test For getting container by caption successful--------------------");
+			ContainerInterface fetchedContainer = DynamicExtensionsUtility
+					.getContainerByCaption(caption);
+			assertTrue(container.getAbstractEntity().getName().equalsIgnoreCase(
+					fetchedContainer.getAbstractEntity().getName()));
+			LOGGER
+					.info("-----------------Test For getting container by caption successful--------------------");
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -183,7 +207,8 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 
 	public void testSortNameValueBeanList()
 	{
-		LOGGER.info("-----------------Test For sorting Name Value Bean List started--------------------");
+		LOGGER
+				.info("-----------------Test For sorting Name Value Bean List started--------------------");
 		List<NameValueBean> nameValueBeanList = new ArrayList<NameValueBean>();
 		nameValueBeanList.add(new NameValueBean("Gaurav", ""));
 		nameValueBeanList.add(new NameValueBean("Pathik", ""));
@@ -195,26 +220,33 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 		nameValueBeanList.add(new NameValueBean("Nitesh", ""));
 		nameValueBeanList.add(new NameValueBean("Sagar", ""));
 		DynamicExtensionsUtility.sortNameValueBeanListByName(nameValueBeanList);
-		LOGGER.info("-----------------Test For sorting Name Value Bean List successful--------------------");
+		LOGGER
+				.info("-----------------Test For sorting Name Value Bean List successful--------------------");
 	}
 
 	public void testConvertTOIntegerArray()
 	{
-		LOGGER.info("-----------------Test For converting to integer array started--------------------");
+		LOGGER
+				.info("-----------------Test For converting to integer array started--------------------");
 		String controlSequenceNumbers = "1,2,6,7,12,45,89,65,67,34,91,44,10,5";
-		Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(controlSequenceNumbers, ",");
+		Integer[] sequenceNumbers = DynamicExtensionsUtility.convertToIntegerArray(
+				controlSequenceNumbers, ",");
 		assertTrue(sequenceNumbers.length == 14);
-		LOGGER.info("-----------------Test For converting to integer array successful--------------------");
+		LOGGER
+				.info("-----------------Test For converting to integer array successful--------------------");
 	}
 
 	public void testGetEntityGroupByIdentifier()
 	{
-		LOGGER.info("-----------------Test For getting Entity Group By Identifier started--------------------");
+		LOGGER
+				.info("-----------------Test For getting Entity Group By Identifier started--------------------");
 		String identifier = "1";
-		EntityGroupInterface testEntityGroup = DynamicExtensionsUtility.getEntityGroupByIdentifier(identifier);
+		EntityGroupInterface testEntityGroup = DynamicExtensionsUtility
+				.getEntityGroupByIdentifier(identifier);
 		String entityGroupName = testEntityGroup.getShortName();
 		assertTrue("TestStaticModel".equalsIgnoreCase(entityGroupName));
-		LOGGER.info("-----------------Test For getting Entity Group By Identifier successful--------------------");
+		LOGGER
+				.info("-----------------Test For getting Entity Group By Identifier successful--------------------");
 	}
 
 	/*public void testGetControlIdentifier()
@@ -309,17 +341,21 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 	 */
 	public void testRetrieveEntityGroupAndValidateEntity()
 	{
-		LOGGER.info("-----------------Test For retrieving Entity Group By Short Name started--------------------");
-		EntityGroupInterface entityGroup = DynamicExtensionsUtility.retrieveEntityGroup("TestStaticModel");
+		LOGGER
+				.info("-----------------Test For retrieving Entity Group By Short Name started--------------------");
+		EntityGroupInterface entityGroup = DynamicExtensionsUtility
+				.retrieveEntityGroup("TestStaticModel");
 		assertTrue("TestStaticModel".equalsIgnoreCase(entityGroup.getShortName()));
-		LOGGER.info("-----------------Test For retrieving Entity Group By Short Name successful--------------------");
+		LOGGER
+				.info("-----------------Test For retrieving Entity Group By Short Name successful--------------------");
 
 		try
 		{
 			LOGGER.info("-----------------Test For validating Entity started--------------------");
 			EntityInterface entity = entityGroup.getEntityCollection().iterator().next();
 			DynamicExtensionsUtility.validateEntity(entity);
-			LOGGER.info("-----------------Test For validating Entity successful--------------------");
+			LOGGER
+					.info("-----------------Test For validating Entity successful--------------------");
 		}
 		catch (DynamicExtensionsApplicationException e)
 		{
@@ -365,7 +401,8 @@ public class DynamicExtensionsUtilityTest extends DynamicExtensionsBaseTestCase
 		{
 			if (control instanceof AbstractContainmentControl)
 			{
-				ContainerInterface subContainer = ((AbstractContainmentControl) control).getContainer();
+				ContainerInterface subContainer = ((AbstractContainmentControl) control)
+						.getContainer();
 				if (subContainer != null)
 				{
 					if (!checkForControlValue(subContainer))

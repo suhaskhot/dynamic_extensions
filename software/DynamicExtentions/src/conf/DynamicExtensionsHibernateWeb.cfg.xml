@@ -87,6 +87,7 @@
 		<mapping resource="edu/wustl/common/hbm/LoginEvent.hbm.xml"/>
 		<mapping resource="edu/common/dynamicextensions/host/csd/util/CategoryInfo.hbm.xml"/>
 		<mapping resource="edu/common/dynamicextensions/hbm/AutoLoadXpath.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/GridViewColumn.hbm.xml" />
 
     </session-factory>
 

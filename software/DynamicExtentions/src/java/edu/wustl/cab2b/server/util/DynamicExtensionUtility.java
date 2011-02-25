@@ -44,6 +44,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.exception.BaseDynamicExtensionsException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.skiplogic.SkipLogic;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
@@ -878,9 +879,10 @@ public final class DynamicExtensionUtility
 	 * @param entityId
 	 *            Entity Id
 	 * @return associations with given entity as the target entity.
+	 * @throws DynamicExtensionsCacheException
 	 */
 	public static Collection<AssociationInterface> getIncomingIntramodelAssociations(
-			final Long entityId)
+			final Long entityId) throws DynamicExtensionsCacheException
 	{
 		EntityInterface entity = EntityCache.getInstance().getEntityById(entityId);
 		try

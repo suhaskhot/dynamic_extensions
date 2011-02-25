@@ -76,7 +76,19 @@ public class PermissibleValueAction implements Action
 	{
 		SelectControl selectControl = (SelectControl) control;
 		selectControl.setOptionList(ControlsUtility.getPermissibleValues(listOfPermissibleValues, control.getAttibuteMetadataInterface()));
-
+		boolean valuePresent = false;
+		for (PermissibleValueInterface pvs : listOfPermissibleValues)
+		{
+			if(pvs.getValueAsObject().toString().endsWith(selectControl.getValue().toString()))
+			{
+				valuePresent = true;
+				break;
+			}
+		}
+		if(!valuePresent)
+		{
+			selectControl.setValue("");
+		}
 	}
 
 	/**

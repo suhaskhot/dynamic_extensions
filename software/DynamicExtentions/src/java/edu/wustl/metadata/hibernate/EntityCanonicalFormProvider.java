@@ -1,6 +1,7 @@
 package edu.wustl.metadata.hibernate;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.cab2b.server.cache.EntityCache;
 
 public class EntityCanonicalFormProvider extends AbstractMetadataCanonicalFormProvider<EntityInterface> {
@@ -10,7 +11,7 @@ public class EntityCanonicalFormProvider extends AbstractMetadataCanonicalFormPr
     }
 
     @Override
-    protected EntityInterface getObjectFromEntityCache(Long identifier) {
+    protected EntityInterface getObjectFromEntityCache(Long identifier) throws DynamicExtensionsCacheException {
         return EntityCache.getInstance().getEntityById(identifier);
     }
 }

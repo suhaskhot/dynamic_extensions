@@ -4,15 +4,16 @@ import java.util.Date;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 import edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery;
 
 /**
- * 
+ *
  * @author chetan_patil
  *
  * @hibernate.joined-subclass table="CAB2B_QUERY" extends="edu.wustl.common.querysuite.queryobject.impl.ParameterizedQuery"
- * @hibernate.joined-subclass-key column="IDENTIFIER" 
+ * @hibernate.joined-subclass-key column="IDENTIFIER"
  */
 public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
     private static final long serialVersionUID = -3676549385071170949L;
@@ -39,7 +40,7 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
         outputEntity = query.getOutputEntity();
         outputClassUrls = query.getOutputUrls();
     }
-    
+
     /**
      * Parameterized constructor
      * @param query
@@ -52,7 +53,7 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
     /**
      * This method returns the list of output URLs
      * @return the outputClassUrls.
-     * 
+     *
      * @hibernate.list name="outputClassUrls" table="OUTPUT_CLASS_URLS" cascade="all-delete-orphan" inverse="false" lazy="false"
      * @hibernate.collection-key column="CAB2B_QUERY_ID"
      * @hibernate.collection-index column="POSITION" type="int"
@@ -65,7 +66,7 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
 
     /**
      * This method sets the list of output class URLs
-     * 
+     *
      * @param outputClassUrls the outputClassUrls to set.
      */
     public void setOutputUrls(List<String> outputClassUrls) {
@@ -82,7 +83,7 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
 
     /**
      * This method sets the output entity
-     * @param outputEntity 
+     * @param outputEntity
      */
     public void setOutputEntity(EntityInterface outputEntity) {
         this.outputEntity = outputEntity;
@@ -90,8 +91,8 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
 
     /**
      * @return the entityId
-     * 
-     * @hibernate.property name="entityId" column="ENTITY_ID" type="long" length="30" not-null="true" 
+     *
+     * @hibernate.property name="entityId" column="ENTITY_ID" type="long" length="30" not-null="true"
      */
     @SuppressWarnings("unused")
     private Long getEntityId() {
@@ -100,15 +101,16 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
 
     /**
      * @param entityId the entityId to set
+     * @throws DynamicExtensionsCacheException
      */
     @SuppressWarnings("unused")
-    private void setEntityId(Long entityId) {
+    private void setEntityId(Long entityId) throws DynamicExtensionsCacheException {
         this.outputEntity = AbstractEntityCache.getCache().getEntityById(entityId);
     }
 
     /**
      * This method returns the user id
-     * @hibernate.property name="userId" column="USER_ID" type="long" length="30" not-null="true" 
+     * @hibernate.property name="userId" column="USER_ID" type="long" length="30" not-null="true"
      * @return user id
      */
     public Long getUserId() {
@@ -117,8 +119,8 @@ public class Cab2bQuery extends ParameterizedQuery implements ICab2bQuery {
 
     /**
      * This method sets the user id
-     * @param userId 
-     * 
+     * @param userId
+     *
      */
     public void setUserId(Long userId) {
         this.userId = userId;

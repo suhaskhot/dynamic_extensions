@@ -308,7 +308,75 @@
 				<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
 			</else>
 		</if>
-		<antcall target="upgrade.old.schema.task"></antcall>
+		<antcall target="upgrade.old.schema.task">
+		</antcall>
+	</target>
+
+	<!-- =================================================
+				target: upgrade_db_from_DE_1.5.0_to_DE_1.5.1
+				description: upgrade Dynamic Extension database from version 1.5.0 to 1.5.1
+				============================================================================ -->
+	<target name="upgrade_db_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db from DE v1.5.0 to v1.5.1">
+		<delete dir="${de.temp.dir}" failonerror="no" />
+		<mkdir dir="${de.temp.dir}" />
+		<unzip src="dynamicextensions.zip" dest="${de.temp.dir}">
+		</unzip>
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false" />
+			<then>
+				<antcall target="upgrade_db_mysql_from_DE_1.5.0_to_DE_1.5.1" />
+			</then>
+			<elseif>
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false" />
+				<then>
+					<antcall target="upgrade_db_oracle_from_DE_1.5.0_to_DE_1.5.1" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false" />
+				<then>
+					<antcall target="upgrade_db_db2_from_DE_1.5.0_to_DE_1.5.1" />
+				</then>
+			</elseif>
+			<else>
+				<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
+			</else>
+		</if>
+	</target>
+
+	<!-- =========================================================
+				target: upgrade_db_mysql_from_DE_1.5.0_to_DE_1.5.1
+				description: upgrade Dynamic Extensions mysql database from version 1.5.0 to 1.5.1
+				============================================================================ -->
+	<target name="upgrade_db_mysql_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db mysql from DE 1.5.0 to DE 1.5.1">
+		<antcall target="execute_file_db_mysql">
+			<param name="sql.file.name" value="${mysql.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
+		</antcall>
+	</target>
+
+	<!-- ==========================================================
+				target: upgrade_db_oracle_from_DE_1.5.0_to_DE_1.5.1
+				description: upgrade Dynamic Extensions oracle database from version 1.5.0 to 1.5.1
+				============================================================================ -->
+	<target name="upgrade_db_oracle_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db oracle from DE 1.5.0 to DE 1.5.1">
+		<antcall target="execute_file_db_oracle">
+			<param name="sql.file.name" value="${oracle.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
+		</antcall>
+	</target>
+
+	<!-- =======================================================
+				target: upgrade_db_db2_from_DE_1.5.0_to_DE_1.5.1
+				description:- upgrade Dynamic Extensions db2 database from version 1.5.0 to 1.5.1
+				================================================================================= -->
+	<target name="upgrade_db_db2_from_DE_1.5.0_to_DE_1.5.1" description="upgrade db db2 from DE 1.5.0 to DE 1.5.1">
+		<antcall target="execute_file_db_db2">
+			<param name="sql.file.name" value="${db2.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
+		</antcall>
 	</target>
 
 	<target name="upgrade_db_db2_from_DE_1.2.0_to_DE_1.3.0" description="upgrade db db2 from DE 1.2.0 to DE 1.3.0">
@@ -559,22 +627,22 @@
 	</target>
 
 	<!-- Target used to upgrade the dynamic data for bug :  17759-->
-		<target name="upgrade_db_maincontainer_data_fixes" description="fixes the data from the inheritance case in main containers bug no:17759">
-			<antcall target="setupClassExecutionEnvironment" />
-			<java classname="edu.common.dynamicextensions.upgrade.MainContainerDataFixer" fork="true" maxmemory="1024M">
-						<classpath>
-							<pathelement location="${temp.dir.DE}" />
-							<fileset dir="${lib.dir.DE}">
-								<include name="*.jar" />
-								<exclude name="uml-1.3.jar" />
-							</fileset>
-							<fileset dir="${extra.lib.dir.DE}">
-								<include name="jboss-j2ee.jar" />
-								<include name="jta.jar" />
-							</fileset>
-						</classpath>
-					</java>
-				</target>
+	<target name="upgrade_db_maincontainer_data_fixes" description="fixes the data from the inheritance case in main containers bug no:17759">
+		<antcall target="setupClassExecutionEnvironment" />
+		<java classname="edu.common.dynamicextensions.upgrade.MainContainerDataFixer" fork="true" maxmemory="1024M">
+			<classpath>
+				<pathelement location="${temp.dir.DE}" />
+				<fileset dir="${lib.dir.DE}">
+					<include name="*.jar" />
+					<exclude name="uml-1.3.jar" />
+				</fileset>
+				<fileset dir="${extra.lib.dir.DE}">
+					<include name="jboss-j2ee.jar" />
+					<include name="jta.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
 
 
 	<!-- - - - - - - - - - - - - - - - - -
@@ -604,7 +672,7 @@
 		</java>
 	</target>
 
-		<target name="import.xmi.for.testcases.without.caCore" description="Target used to Import the Dynamic Model for test cases">
+	<target name="import.xmi.for.testcases.without.caCore" description="Target used to Import the Dynamic Model for test cases">
 		<java classname="edu.common.dynamicextensions.util.CiderXMIImporter" fork="true" maxmemory="1024M">
 			<arg value="${filename}" />
 			<arg value="${mainContainerList}" />
@@ -638,8 +706,12 @@
 		<antcall target="create_csv_from_xml">
 			<param name="categoryCsvFileDir" value="temp_csv"/>
 		</antcall>
+		<unzip dest="${base.dir}/bulkoperator" src="${base.dir}/bulkoperator.zip" />
 		<antcall target="create_category">
 			<param name="categoryFileDir" value="temp_csv"/>
+			<param name="bulkXMLTemplateFile" value="${base.dir}/Participant.xml"/>
+			<param name ="mappingXMLFile" value="${base.dir}/bulkoperator/mapping.xml" />
+			<param name="importBulkTemplate" value=""/>
 		</antcall>
 		<delete dir="temp_csv" />
 	</target>
@@ -675,32 +747,40 @@
 
 	<!-- Target used to create the Category -->
 	<property name="categoryFormNamesFile" value=" " />
-	<property name="isPersistMetadataOnly" value=" " />
-	<property name="categoryFileDir" value=" " />
-	<target name="create_category" description="Target used to create the Category">
-		<delete dir="${de.temp.dir}" failonerror="no" />
-		<mkdir dir="${de.temp.dir}" />
-		<unzip src="clientFormCreator.zip" dest="${de.temp.dir}" overwrite="true" />
-		<copy file="./${de.temp.dir}/log4j.properties.template" tofile="./log4j.properties" overwrite="true" />
-		<mkdir dir="./log" />
-		<replace file="./log4j.properties">
-			<replacefilter token="@@jbosshome@@" value="." />
-		</replace>
-		<echo message="Creating Categories" />
-		<java classname="edu.common.dynamicextensions.client.CategoryClient" fork="true" maxmemory="1024M">
-			<arg value="${categoryFileDir}" />
-			<arg value="${Application.url}" />
-			<arg value="${categoryFormNamesFile}" />
-			<arg value="${isPersistMetadataOnly}" />
+		<property name="isPersistMetadataOnly" value=" " />
+		<property name="categoryFileDir" value=" " />
+		<property name="bulkXMLTemplateFile" value="${base.dir}/Participant.xml"/>
+		<property name="mappingXMLFile" value="${base.dir}/bulkoperator/mapping.xml" />
+		<property name="importBulkTemplate" value="" />
+		<target name="create_category" description="Target used to create the Category">
+			<!-- get default mapping.xml file -->
+			<unzip dest="${base.dir}/bulkoperator" src="${base.dir}/bulkoperator.zip" />
+			<delete dir="${de.temp.dir}" failonerror="no" />
+			<mkdir dir="${de.temp.dir}" />
+			<unzip src="clientFormCreator.zip" dest="${de.temp.dir}" overwrite="true" />
+			<copy file="./${de.temp.dir}/log4j.properties.template" tofile="./log4j.properties" overwrite="true" />
+			<mkdir dir="./log" />
+			<replace file="./log4j.properties">
+				<replacefilter token="@@jbosshome@@" value="." />
+			</replace>
+			<echo message="Creating Categories" />
+			<java classname="edu.common.dynamicextensions.client.CategoryClient" fork="true" maxmemory="1024M">
+				<arg value="${categoryFileDir}" />
+				<arg value="${Application.url}" />
+				<arg value="${categoryFormNamesFile}" />
+				<arg value="${isPersistMetadataOnly}" />
+				<arg value="${bulkXMLTemplateFile}"/>
+				<arg value="${mappingXMLFile}"/>
+				<arg value="${importBulkTemplate}"/>
 
-			<classpath>
-				<fileset dir="${de.temp.dir}">
-					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
-				</fileset>
-			</classpath>
-		</java>
-	</target>
+				<classpath>
+					<fileset dir="${de.temp.dir}">
+						<include name="*.jar" />
+						<exclude name="uml-1.3.jar" />
+					</fileset>
+				</classpath>
+			</java>
+		</target>
 
 	<target name="create_category_metadata_file" description="Target used to create the Category">
 		<delete dir="${de.temp.dir}" failonerror="no" />
@@ -817,31 +897,31 @@
 	<property name="downloadDir" value="" />
 	<property name="inputPVFileDir" value="" />
 	<target name="permissible_values_download">
-			<delete dir="${de.temp.dir}" failonerror="no" />
-			<mkdir dir="${de.temp.dir}" />
-			<unzip src="clientFormCreator.zip" dest="${de.temp.dir}" overwrite="true" />
-			<copy file="./${de.temp.dir}/log4j.properties.template" tofile="./log4j.properties" overwrite="true" />
-			<mkdir dir="./log" />
-			<replace file="./log4j.properties">
-				<replacefilter token="@@jbosshome@@" value="." />
-			</replace>
+		<delete dir="${de.temp.dir}" failonerror="no" />
+		<mkdir dir="${de.temp.dir}" />
+		<unzip src="clientFormCreator.zip" dest="${de.temp.dir}" overwrite="true" />
+		<copy file="./${de.temp.dir}/log4j.properties.template" tofile="./log4j.properties" overwrite="true" />
+		<mkdir dir="./log" />
+		<replace file="./log4j.properties">
+			<replacefilter token="@@jbosshome@@" value="." />
+		</replace>
 
-			<java classname="edu.common.dynamicextensions.client.DownloadPVVersionClient" fork="true" maxmemory="1024M">
-				<arg value="${downloadDir}" />
-				<arg value="${Application.url}" />
-				<arg value="${inputPVFileDir}" />
-				<arg value="${fileName}" />
-				<classpath>
-					<fileset dir="${de.temp.dir}">
-						<include name="*.jar" />
-						<exclude name="uml-1.3.jar" />
-					</fileset>
-				</classpath>
-			</java>
+		<java classname="edu.common.dynamicextensions.client.DownloadPVVersionClient" fork="true" maxmemory="1024M">
+			<arg value="${downloadDir}" />
+			<arg value="${Application.url}" />
+			<arg value="${inputPVFileDir}" />
+			<arg value="${fileName}" />
+			<classpath>
+				<fileset dir="${de.temp.dir}">
+					<include name="*.jar" />
+					<exclude name="uml-1.3.jar" />
+				</fileset>
+			</classpath>
+		</java>
 
-			<delete dir="${base.dir}/tempPVDir" />
-			<delete file="${base.dir}/DownloadPVVersionDir.zip" />
-		</target>
+		<delete dir="${base.dir}/tempPVDir" />
+		<delete file="${base.dir}/DownloadPVVersionDir.zip" />
+	</target>
 	<target name="upgrade_calculated_attributes" description="Upgrade Category Attributes">
 		<antcall target="setupClassExecutionEnvironment" />
 		<java classname="edu.common.dynamicextensions.upgrade.CalculatedAttributeCreator" fork="true" maxmemory="1024M">
@@ -1208,7 +1288,7 @@
 				</fileset>
 			</classpath>
 		</java>
-		<move file="${de.zip.location}/conf/auditablemetadataMerged.xml" tofile="${de.zip.location}/conf/DynamicExtensionsAuditMetadata.xml" overwrite="true" />
+		<move file="${de.zip.location}/conf/auditablemetadataMerged.xml" tofile="tempWar/${entitygroupname}.war/WEB-INF/classes/DynamicExtensionsAuditMetadata.xml" overwrite="true" />
 	</target>
 
 	<target name="generate.xml.for.audit" description="generate the audit metadata xml">
@@ -1244,7 +1324,31 @@
 	<!-- =================================
 	     Audit related targets end
          ================================= -->
+	<target name="release.forms" description="To release forms locked for model updates">
+		<!--antcall target="setupClassExecutionEnvironment" /-->
 
+		<java failonerror="true" classname="edu.common.dynamicextensions.util.CacheTask" fork="yes">
+			<arg value="${entity.group.name}" />
+			<classpath>
+				<pathelement location="D:/installables/clinportal_Installable_v1.6.0/detemp/classes/" />
+				<fileset dir="${de.temp.dir}/binaries/DynamicExtensionsInterface">
+					<include name="*.jar" />
+				</fileset>
+				<fileset dir="${de.temp.dir}/lib/extra">
+					<include name="jboss-j2ee.jar" />
+					<include name="jta.jar" />
+					<exclude name="hibernate.jar" />
+				</fileset>
+				<fileset dir="${de.temp.dir}/lib/server">
+					<include name="*.jar" />
+				</fileset>
+
+				<fileset dir="${de.temp.dir}/lib/client">
+					<exclude name="hibernate.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
 
 	<!-- =================================
           target: import.xmi.to.generate.cacore
@@ -1386,14 +1490,27 @@
 					</else>
 				</if>
 				<antcall target="generate.cacore" />
+				<copy todir="${cacore.deployable.dir}/${entitygroupname}.war">
+					<fileset dir="tempWar/${entitygroupname}.war">
+					</fileset>
+				</copy>
+				<copy todir="${jboss.home.dir}/server/default/deploy/${entitygroupname}.war">
+					<fileset dir="${cacore.deployable.dir}/${entitygroupname}.war" />
+				</copy>
+				<!-- This is to copy latest DE.jar in the ${entitygroupname}.war/WEB-INF/lib folder present in JBoss deploy folder-->
+				<copy todir="${jboss.home.dir}/server/default/deploy/${entitygroupname}.war/WEB-INF/lib">
+					<fileset dir="${de.zip.location}/binaries/DynamicExtensionsInterface" >
+						<include name="DynamicExtensions.jar" />
+					</fileset>
+				</copy>
 			</then>
 			<elseif>
 				<equals arg1="${import.xmi}" arg2="False" casesensitive="false" />
 				<then>
-					<available file="${cacore.deployable.dir}/${entitygroupname}/" property="cacore.present" />
+					<available file="${cacore.deployable.dir}/${entitygroupname}.war" property="cacore.present" />
 
-					<property name="ORM1CfgFile" value="${cacore.deployable.dir}/${entitygroupname}/orm1.cfg.xml" />
-					<property name="DEWebCfgFile" value="${de.zip.location}/conf/DynamicExtensionsHibernateWeb.cfg.xml" />
+					<property name="ORM1CfgFile" value="${cacore.deployable.dir}/${entitygroupname}.war/orm1.cfg.xml" />
+					<property name="DEWebCfgFile" value="${cacore.deployable.dir}/${entitygroupname}.war/WEB-INF/classes/demHibernate.cfg.xml" />
 
 					<echo message="${ORM1CfgFile}" />
 					<echo message="${DEWebCfgFile}" />
@@ -1417,6 +1534,10 @@
 							</antcall>
 							<antcall target="generate.cacore" />
 							<antcall target="merge.audit.xml" />
+							<copy todir="${cacore.deployable.dir}/${entitygroupname}.war">
+								<fileset dir="tempWar/${entitygroupname}.war">
+								</fileset>
+							</copy>
 						</else>
 					</if>
 					<java classname="edu.wustl.metadata.util.CacoreDEMetadataAppender" fork="true" maxmemory="1024M">
@@ -1435,8 +1556,17 @@
 						</classpath>
 					</java>
 					<antcall target="merge.audit.xml" />
-
-					<copy todir="${entityGroup.jar.location}/" file="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}.jar" overwrite="true" />
+					<copy todir="${jboss.home.dir}/server/default/deploy/${entitygroupname}.war">
+						<fileset dir="${cacore.deployable.dir}/${entitygroupname}.war">
+						</fileset>
+					</copy>
+					<!-- This is to copy latest DE.jar in the ${entitygroupname}.war/WEB-INF/lib folder present in JBoss deploy folder-->
+					<copy todir="${jboss.home.dir}/server/default/deploy/${entitygroupname}.war/WEB-INF/lib">
+						<fileset dir="${de.zip.location}/binaries/DynamicExtensionsInterface" >
+							<include name="DynamicExtensions.jar" />
+						</fileset>
+					</copy>
+					<copy todir="tempWar/${entitygroupname}.war/WEB-INF/lib/" file="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}.jar" overwrite="true" />
 					<echo message="${ORM1CfgFile}" />
 					<echo message="${DEWebCfgFile}" />
 					<delete>
@@ -1448,6 +1578,7 @@
 				</then>
 			</elseif>
 		</if>
+		<delete dir="tempWar" />
 	</target>
 
 	<!-- - - - - - - - - - - - - - - - - -
@@ -1464,7 +1595,21 @@
 			<param name="entity.group.name" value="${entitygroupname}" />
 			<param name="entity.package.name" value="${cacore.package.name}" />
 		</antcall>
-
+		<mkdir dir="tempWar" />
+		<mkdir dir="tempWar/${entitygroupname}.war" />
+		<if>
+			<equals arg1="True" arg2="${testcases}" />
+			<then>
+				<copy todir="tempWar/${entitygroupname}.war">
+					<fileset dir="../src/conf/dem.war"/>
+				</copy>
+			</then>
+			<else>
+				<copy todir="tempWar/${entitygroupname}.war">
+					<fileset dir="${de.temp.dir}/dem.war"/>
+				</copy>
+			</else>
+		</if>
 		<ant antfile="build.xml" dir="${cacoresdk.dir}" target="build-system" />
 
 		<delete dir="${cacore.dir}" />
@@ -1481,7 +1626,7 @@
 					</fileset>
 				</copy>
 
-				<property name="classesDEHibernateCfgFile" value="${base.dir}/classes/DynamicExtensionsHibernate.cfg.xml" />
+				<property name="classesDEHibernateCfgFile" value="tempWar/${entitygroupname}.war/WEB-INF/classes/demHibernate.cfg.xml" />
 				<property name="srcDEHibernateCfgFile" value="${base.dir}/../src/conf/DynamicExtensionsHibernate.cfg.xml" />
 				<property name="caCOREHibernateCfgFile" value="${cacore.dir}/WEB-INF/classes/orm1.cfg.xml" />
 
@@ -1520,7 +1665,7 @@
 
 				<jar destfile="${entity.jar.location}/${entitygroupname}.jar" basedir="${entity.jar.location}" />
 				<copy todir="${base.dir}/../lib/server/" file="${entity.jar.location}/${entitygroupname}.jar" overwrite="true" />
-
+				<copy todir="tempWar/${entitygroupname}.war/WEB-INF/lib/" file="${entity.jar.location}/${entitygroupname}.jar" overwrite="true" />
 			</then>
 			<else>
 				<delete dir="${entity.jar.location}" />
@@ -1536,8 +1681,10 @@
 
 				<antcall target="build_artifacts" />
 				<antcall target="generate.xml.for.audit" />
-				<copy todir="${cacore.deployable.dir}/${entitygroupname}/" file="${caCOREHibernateCfgFile}" overwrite="true" />
+
+			   	<copy todir="${cacore.deployable.dir}/${entitygroupname}.war/" file="${caCOREHibernateCfgFile}" overwrite="true" />
 				<copy todir="${cacore.deployable.dir}/${entitygroupname}/" file="${entity.jar.location}/${entitygroupname}.jar" />
+				<copy todir="tempWar/${entitygroupname}.war/WEB-INF/lib/" file="${entity.jar.location}/${entitygroupname}.jar" />
 				<delete>
 					<fileset dir="${cacore.dir}">
 						<include name="**/*" />
@@ -1600,107 +1747,109 @@
 			This target is for bug#16635 Single upgrade target required.
 					         	================================= -->
 	<target name="upgrade.de">
-		<antcall target="upgrade_db_from_DE_1.4.2_to_DE_1.5.0" />
+		<!-- =================================
+			 Currently no DE upgrade is available for ver. 1.5.0 to 1.5.1, so as per bug#16635 empty target is created.
+			                    ================================= -->
 	</target>
 
 	<target name="query.metadata" description="Querying metadata to get dynamically generated table names and column names">
-			<antcall target="setupClassExecutionEnvironment" />
-			<java classname="edu.common.dynamicextensions.util.global.MetadataQueryUtility" fork="true" maxmemory="1024M">
-				<arg value="${de.temp.dir}/conf/metadataQuery.xml" />
-				<arg value="tableNamesColumnNamesQuery" />
-				<arg value="${entityGroupName}" />
-				<arg value="${entityName}" />
-				<classpath>
-					<pathelement location="${temp.dir.DE}" />
-					<fileset dir="${lib.dir.DE}">
-						<include name="*.jar" />
-						<exclude name="uml-1.3.jar" />
-					</fileset>
-					<fileset dir="${extra.lib.dir.DE}">
-						<include name="jboss-j2ee.jar" />
-						<include name="jta.jar" />
-					</fileset>
-				</classpath>
-			</java>
-		</target>
+		<antcall target="setupClassExecutionEnvironment" />
+		<java classname="edu.common.dynamicextensions.util.global.MetadataQueryUtility" fork="true" maxmemory="1024M">
+			<arg value="${de.temp.dir}/conf/metadataQuery.xml" />
+			<arg value="tableNamesColumnNamesQuery" />
+			<arg value="${entityGroupName}" />
+			<arg value="${entityName}" />
+			<classpath>
+				<pathelement location="${temp.dir.DE}" />
+				<fileset dir="${lib.dir.DE}">
+					<include name="*.jar" />
+					<exclude name="uml-1.3.jar" />
+				</fileset>
+				<fileset dir="${extra.lib.dir.DE}">
+					<include name="jboss-j2ee.jar" />
+					<include name="jta.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
 
 	<target name="upgrade_db_from_DE_1.4.0.1_to_DE_1.4.0.2" description="upgrade_db_from_DE_1.4.0.1_to_DE_1.4.0.2">
-			<delete dir="${de.temp.dir}" failonerror="no" />
-			<mkdir dir="${de.temp.dir}" />
-			<unzip src="dynamicextensions.zip" dest="${de.temp.dir}">
-			</unzip>
-			<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-				<classpath>
-					<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
-				</classpath>
-			</taskdef>
-			<if>
-				<equals arg1="mysql" arg2="${database.type}" casesensitive="false" />
+		<delete dir="${de.temp.dir}" failonerror="no" />
+		<mkdir dir="${de.temp.dir}" />
+		<unzip src="dynamicextensions.zip" dest="${de.temp.dir}">
+		</unzip>
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+		<if>
+			<equals arg1="mysql" arg2="${database.type}" casesensitive="false" />
+			<then>
+				<antcall target="execute_file_db_mysql">
+					<param name="sql.file.name" value="${mysql.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.4.0.1_to_DE_1.4.0.2.sql" />
+				</antcall>
+			</then>
+			<elseif>
+				<equals arg1="oracle" arg2="${database.type}" casesensitive="false" />
 				<then>
-					<antcall target="execute_file_db_mysql">
-						<param name="sql.file.name" value="${mysql.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.4.0.1_to_DE_1.4.0.2.sql" />
+					<antcall target="execute_file_db_oracle">
+						<param name="sql.file.name" value="${oracle.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.4.0.1_to_DE_1.4.0.2.sql" />
 					</antcall>
 				</then>
-				<elseif>
-					<equals arg1="oracle" arg2="${database.type}" casesensitive="false" />
-					<then>
-						<antcall target="execute_file_db_oracle">
-							<param name="sql.file.name" value="${oracle.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.4.0.1_to_DE_1.4.0.2.sql" />
-						</antcall>
-					</then>
-				</elseif>
-				<elseif>
-					<equals arg1="db2" arg2="${database.type}" casesensitive="false" />
-					<then>
-						<antcall target="execute_file_db_db2">
-							<param name="sql.file.name" value="${db2.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.4.0.1_to_DE_1.4.0.2.sql" />
-						</antcall>
-					</then>
-				</elseif>
-				<else>
-					<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
-				</else>
-			</if>
-		</target>
+			</elseif>
+			<elseif>
+				<equals arg1="db2" arg2="${database.type}" casesensitive="false" />
+				<then>
+					<antcall target="execute_file_db_db2">
+						<param name="sql.file.name" value="${db2.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.4.0.1_to_DE_1.4.0.2.sql" />
+					</antcall>
+				</then>
+			</elseif>
+			<else>
+				<echo message="DATABASE INITIALIZATION FAILED PLEASE CHECK DATABASE.TYPE PROPERTY" level="error" />
+			</else>
+		</if>
+	</target>
 
-		<target name="add.categories.to.cache" description="Marks given categories as cacheable">
-			<antcall target="setupClassExecutionEnvironment" />
-			<java classname="edu.common.dynamicextensions.util.CategoryUtil" fork="true" maxmemory="1024M">
-				<arg value="${categoryFilePath}" />
-				<arg value="1" />
-				<classpath>
-					<pathelement location="${temp.dir.DE}" />
-					<fileset dir="${lib.dir.DE}">
-						<include name="*.jar" />
-						<exclude name="uml-1.3.jar" />
-					</fileset>
-					<fileset dir="${extra.lib.dir.DE}">
-						<include name="jboss-j2ee.jar" />
-						<include name="jta.jar" />
-					</fileset>
-				</classpath>
-			</java>
+	<target name="add.categories.to.cache" description="Marks given categories as cacheable">
+		<antcall target="setupClassExecutionEnvironment" />
+		<java classname="edu.common.dynamicextensions.util.CategoryUtil" fork="true" maxmemory="1024M">
+			<arg value="${categoryFilePath}" />
+			<arg value="1" />
+			<classpath>
+				<pathelement location="${temp.dir.DE}" />
+				<fileset dir="${lib.dir.DE}">
+					<include name="*.jar" />
+					<exclude name="uml-1.3.jar" />
+				</fileset>
+				<fileset dir="${extra.lib.dir.DE}">
+					<include name="jboss-j2ee.jar" />
+					<include name="jta.jar" />
+				</fileset>
+			</classpath>
+		</java>
 
-		</target>
+	</target>
 
-		<target name="remove.categories.from.cache" description="Marks given categories as non cacheable">
-			<antcall target="setupClassExecutionEnvironment" />
-			<java classname="edu.common.dynamicextensions.util.CategoryUtil" fork="true" maxmemory="1024M">
-				<arg value="${categoryFilePath}" />
-				<arg value="0" />
-				<classpath>
-					<pathelement location="${temp.dir.DE}" />
-					<fileset dir="${lib.dir.DE}">
-						<include name="*.jar" />
-						<exclude name="uml-1.3.jar" />
-					</fileset>
-					<fileset dir="${extra.lib.dir.DE}">
-						<include name="jboss-j2ee.jar" />
-						<include name="jta.jar" />
-					</fileset>
-				</classpath>
-			</java>
-		</target>
+	<target name="remove.categories.from.cache" description="Marks given categories as non cacheable">
+		<antcall target="setupClassExecutionEnvironment" />
+		<java classname="edu.common.dynamicextensions.util.CategoryUtil" fork="true" maxmemory="1024M">
+			<arg value="${categoryFilePath}" />
+			<arg value="0" />
+			<classpath>
+				<pathelement location="${temp.dir.DE}" />
+				<fileset dir="${lib.dir.DE}">
+					<include name="*.jar" />
+					<exclude name="uml-1.3.jar" />
+				</fileset>
+				<fileset dir="${extra.lib.dir.DE}">
+					<include name="jboss-j2ee.jar" />
+					<include name="jta.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
 
 	<!--target name="upgrade.old.schema.task" description="Update the old Skip Logic forms to new skip logic model">
 		<antcall target="setupClassExecutionEnvironment" />
@@ -1807,12 +1956,38 @@
 	<!-- =================================
           target: update.import.pv.version.property.
          ================================= -->
-    <target name="update.import.pv.version.property" depends="" description="This ant task updates the Import pv version property mentioned in Applicaiton Resource Property file of DE">
-    	<!--<if name="import.pv.version.classname">-->
-    		<propertyfile file="${app.resource.path}/ApplicationResources.properties">
-    			<entry key="import.pv.version.implementation" value="${import.pv.version.classname}" />
-    		</propertyfile>
-    	<!--</if>-->
-    </target>
+	<target name="update.import.pv.version.property" depends="" description="This ant task updates the Import pv version property mentioned in Applicaiton Resource Property file of DE">
+		<!--<if name="import.pv.version.classname">-->
+		<propertyfile file="${app.resource.path}/ApplicationResources.properties">
+			<entry key="import.pv.version.implementation" value="${import.pv.version.classname}" />
+		</propertyfile>
+		<!--</if>-->
+	</target>
+
+	<!-- =================================
+		       generate.bo.template
+	     ================================= -->
+	<property name="categoryNameOrFile" value=" " />
+	<property name="bulkXMLTemplateFile" value=" "/>
+	<property name="mappingXMLFile" value="${base.dir}/bulkoperator/mapping.xml" />
+	<target name="generate.bo.template" description="Creates the XML and CSV template required for bulk operation.">
+		<unzip dest="${base.dir}/bulkoperator" src="${base.dir}/bulkoperator.zip" />
+		<antcall target="setupClassExecutionEnvironment" />
+		<java classname="edu.common.dynamicextensions.util.BOTemplateGenerator" fork="true" maxmemory="1024M" failonerror="true">
+			<arg value="${categoryNameOrFile}" />
+			<arg value="${bulkXMLTemplateFile}" />
+			<arg value="${mappingXMLFile}" />
+			<classpath>
+				<pathelement location="${temp.dir.DE}" />
+				<fileset dir="${lib.dir.DE}">
+					<include name="*.jar" />
+					<exclude name="uml-1.3.jar" />
+				</fileset>
+				<fileset dir="${extra.lib.dir.DE}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+	</target>
 
 </project>

@@ -318,6 +318,34 @@
             insert="true"
             column="FORM_URL"
         />
+		 <property
+            name="dataQuery"
+            length="1800"
+            type="string"
+            update="true"
+            insert="true"
+            column="DataQuery"
+        />
+        
+        <set
+            name="gridViewColumnList"
+            table="DYEXTN_GRID_VIEW_COLUMNS"
+            lazy="false"
+            inverse="false"
+            order-by="sortOrder asc"
+            cascade="all"
+            sort="unsorted"
+        >
+            
+
+              <key
+                  column="CATEGORY_ID" not-null="true"
+              />
+
+              <one-to-many
+                  class="edu.common.dynamicextensions.domain.GridViewColumn"
+              />
+        </set>
         </joined-subclass>
         </joined-subclass>
         <joined-subclass

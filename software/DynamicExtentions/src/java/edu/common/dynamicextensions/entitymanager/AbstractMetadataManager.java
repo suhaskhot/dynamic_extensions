@@ -308,7 +308,7 @@ public abstract class AbstractMetadataManager extends AbstractBaseMetadataManage
 	 */
 	protected void saveDynamicExtensionObject(AbstractMetadataInterface abstrMetadata,
 			HibernateDAO hibernateDAO, Stack<String> rlbkQryStack)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException,DynamicExtensionsApplicationException
 	{
 		try
 		{

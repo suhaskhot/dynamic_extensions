@@ -387,5 +387,12 @@
 		select category.rootCategoryElement.containerCollection.id from
 		edu.common.dynamicextensions.domain.Category category where category.name = ?
 	</query>
-
+	<query name="getEntityGroupByName">
+		from EntityGroup eg
+           		where  eg.name = ?
+	</query>
+	<query name="getRootEntityIdAndCategoryContainerId">
+		select category.rootCategoryElement.entity.id,category.rootCategoryElement.containerCollection.id, category.name
+		from edu.common.dynamicextensions.domain.Category category
+	</query>
 </hibernate-mapping>

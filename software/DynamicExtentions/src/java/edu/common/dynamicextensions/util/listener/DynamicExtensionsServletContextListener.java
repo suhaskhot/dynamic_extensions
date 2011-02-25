@@ -45,7 +45,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		{
 			LOGGER.error(ex.getMessage(), ex);
 		}
-
+		DynamicExtensionsUtility.initializeVariables(sce);
 		String propDirPath = sce.getServletContext().getRealPath("WEB-INF")
 				+ System.getProperty("file.separator") + "classes";
 
@@ -116,6 +116,7 @@ public class DynamicExtensionsServletContextListener implements ServletContextLi
 		{
 			SelectControl.minQueryChar = Integer.valueOf(comboQueryChar);
 		}
+		DynamicExtensionsUtility.initialiseApplicationVariables();
 		DynamicExtensionsUtility.initialiseApplicationInfo();
 		DateValidator.validateGivenDatePatterns();
 		LOGGER.info("DynamicExtensionsServletContextListener before Initialising the Cache.");

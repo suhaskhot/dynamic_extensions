@@ -16,9 +16,13 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.userinterface.Container;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
+import edu.common.dynamicextensions.util.EntityGroupManagerUtil;
 import edu.common.dynamicextensions.util.XMIImporter;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
@@ -144,5 +148,11 @@ public class TestEntityMangerForXMIImportExport extends DynamicExtensionsBaseTes
 		{
 			fail("testXmiExporter --> Failed to export test entityGroup in v1.2");
 		}
+	}
+	public void testGetAllAsscoiatedForms() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		EntityManagerInterface entityManager = EntityManager.getInstance();
+		EntityGroupInterface entityGroup = entityManager.getEntityGroupByName("test");
+		System.out.println(EntityGroupManagerUtil.getAssociatedFormId(entityGroup));
 	}
 }

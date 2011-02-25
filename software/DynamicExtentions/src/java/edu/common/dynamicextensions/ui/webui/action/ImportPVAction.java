@@ -114,7 +114,7 @@ public class ImportPVAction extends BaseDynamicExtensionsAction
 			List<String> successMessage = null;
 			if (isCategoryImport)
 			{
-				successMessage = importPvVersion(file,pvDir);
+				successMessage = importPvVersion(file, pvDir, stinger);
 			}
 			else
 			{
@@ -123,8 +123,8 @@ public class ImportPVAction extends BaseDynamicExtensionsAction
 				if (XML.equalsIgnoreCase(fileExtension))
 				{
 					PermissibleValuesProcessor permissibleValueXML = new PermissibleValuesProcessor(
-							file, pvDir, stinger);
-					permissibleValueXML.importPermissibleValues();
+							stinger);
+					permissibleValueXML.importPermissibleValues(file, pvDir);
 				}
 				else
 				{
@@ -144,42 +144,49 @@ public class ImportPVAction extends BaseDynamicExtensionsAction
 		}
 	}
 
-	private List<String> importPvVersion(String file, String pvDir) throws DynamicExtensionsSystemException
+	private List<String> importPvVersion(String file, String pvDir, Stinger stinger)
+			throws DynamicExtensionsSystemException
 	{
-		if(ApplicationProperties.getValue("import.pv.version.implementation") != null)
+		if (ApplicationProperties.getValue("import.pv.version.implementation") != null)
 		{
-			return callHostImplementation(file,pvDir);
+			return callHostImplementation(file, pvDir,stinger);
 		}
 		else
 		{
-			CategoryPermissibleValuesProcessor importPVs = new CategoryPermissibleValuesProcessor();
-			return importPVs.importPvVersionValues(file,pvDir);
+			CategoryPermissibleValuesProcessor importPVs = new CategoryPermissibleValuesProcessor(
+					stinger);
+			return importPVs.importPvVersionValues(file, pvDir);
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<String> callHostImplementation(String file, String pvDir) throws DynamicExtensionsSystemException
+	private List<String> callHostImplementation(String file, String pvDir,Stinger stinger)
+			throws DynamicExtensionsSystemException
 	{
 		try
 		{
-			String hostClassName = ApplicationProperties.getValue("import.pv.version.implementation");
+			String hostClassName = ApplicationProperties
+					.getValue("import.pv.version.implementation");
 			Class hostClass = Class.forName(hostClassName);
-			Object classInstance = hostClass.newInstance();
+			Object classInstance = hostClass.getConstructor(Stinger.class).newInstance(stinger);
 
-			Method callableMethod = hostClass.getMethod(IMPORT_PV_METHOD_NAME, String.class,String.class);
-			return (List<String>) callableMethod.invoke(classInstance, file,pvDir);
+			Method callableMethod = hostClass.getMethod(IMPORT_PV_METHOD_NAME, String.class,
+					String.class);
+			return (List<String>) callableMethod.invoke(classInstance, file, pvDir);
 
 		}
 		catch (InvocationTargetException e)
 		{
-			LOGGER.error(e.getTargetException().getLocalizedMessage(),e);
-			throw new DynamicExtensionsSystemException(e.getTargetException().getLocalizedMessage(),e);
+			LOGGER.error(e.getTargetException().getLocalizedMessage(), e);
+			throw new DynamicExtensionsSystemException(
+					e.getTargetException().getLocalizedMessage(), e);
 		}
 		catch (Exception e)
 		{
-			LOGGER.error("Error occured while calling Host application implementation for Permissible Values Versioning");
-			throw new DynamicExtensionsSystemException(e.getMessage(),e);
+			LOGGER
+					.error("Error occured while calling Host application implementation for Permissible Values Versioning");
+			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
 	}
 

@@ -5,6 +5,7 @@ package edu.wustl.metadata.util;
 
 import java.io.File;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 
 
@@ -15,7 +16,7 @@ public class TestPackageName extends DynamicExtensionsBaseTestCase
 {
 
     @Override
-    protected void setUp()
+    protected void setUp() throws DynamicExtensionsCacheException
     {
         // TODO Auto-generated method stub
         super.setUp();

@@ -29,6 +29,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContai
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadFormDefinitionProcessor;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -81,9 +82,11 @@ public class LoadFormDefinitionAction extends BaseDynamicExtensionsAction
 	/**
 	 * @param request
 	 * @throws DynamicExtensionsSystemException
+	 * @throws NumberFormatException
+	 * @throws DynamicExtensionsCacheException
 	 */
 	private void populateContainerInformation(HttpServletRequest request,
-			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException
+			FormDefinitionForm formDefinitionForm) throws DynamicExtensionsSystemException, DynamicExtensionsCacheException, NumberFormatException
 	{
 		LoadFormDefinitionProcessor loadFormDefinitionProcessor = LoadFormDefinitionProcessor
 				.getInstance();

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.cab2b.server.path.PathConstants;
 
@@ -41,7 +42,7 @@ public class CuratedPath implements ICuratedPath
 
 	/**
 	 * @return Returns the curated_path_Id.
-	 * 
+	 *
 	 * @hibernate.id name="curatedPathId" column="CURATED_PATH_ID" type="long"
 	 *               length="30" unsaved-value="null" generator-class="native"
 	 * @hibernate.generator-param name="sequence" value="CURATED_PATH_SEQ"
@@ -53,10 +54,10 @@ public class CuratedPath implements ICuratedPath
 
 	/**
 	 * @return the entityIds
-	 * 
+	 *
 	 * @hibernate.property name="entityIds" column="ENTITY_IDS" update="true"
 	 *                     insert="true" length="30"
-	 * 
+	 *
 	 */
 	@SuppressWarnings("unused")
 	private String getEntityIds()
@@ -66,11 +67,13 @@ public class CuratedPath implements ICuratedPath
 
 	/**
 	 * @param entityIds the entityIds to set
+	 * @throws NumberFormatException
+	 * @throws DynamicExtensionsCacheException
 	 */
 	@SuppressWarnings("unused")
-	private void setEntityIds(String entityIds)
+	private void setEntityIds(String entityIds) throws DynamicExtensionsCacheException, NumberFormatException
 	{
-		EntityCache cache = (EntityCache) EntityCache.getInstance();
+		EntityCache cache = EntityCache.getInstance();
 		String[] entityIdentifiers = entityIds.split(CONNECTOR);
 		for (String entityId : entityIdentifiers)
 		{
@@ -88,7 +91,7 @@ public class CuratedPath implements ICuratedPath
 	 * @return Returns the isSelected.
 	 * @hibernate.property name="selected" column="SELECTED" type="boolean"
 	 *                     unsaved-value="false" update="true" insert="true"
-	 * 
+	 *
 	 */
 	public boolean isSelected()
 	{
@@ -186,7 +189,7 @@ public class CuratedPath implements ICuratedPath
 	 * Generates string representation of given entity set after sorting it based on id.
 	 * String representation is IDs of entities concatenated by {@link PathConstants#ID_CONNECTOR}
 	 * @param entitySet Set of entities
-	 * @return String representation of the given entity set. 
+	 * @return String representation of the given entity set.
 	 */
 	public static String getStringRepresentation(Set<EntityInterface> entitySet)
 	{

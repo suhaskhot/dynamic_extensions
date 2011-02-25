@@ -441,7 +441,7 @@ public class XmlMessageProcessor
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		if (recordID == null)
 		{// new data insertion.
-			editedRecordId = categoryManager.insertData(rootCatEntity.getCategory(), recordMap, null);
+			editedRecordId = categoryManager.insertData(rootCatEntity.getCategory(), recordMap, sessionDataBean);
 			LOGGER.info("Record inserted successfully with id " + editedRecordId);
 		}
 		else

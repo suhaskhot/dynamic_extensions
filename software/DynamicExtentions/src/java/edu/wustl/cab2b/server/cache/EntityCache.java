@@ -1,6 +1,7 @@
 
 package edu.wustl.cab2b.server.cache;
 
+import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.wustl.cab2b.common.cache.AbstractEntityCache;
 
 /**
@@ -10,7 +11,7 @@ import edu.wustl.cab2b.common.cache.AbstractEntityCache;
  * @author gautam_shetty
  * @author Rahul Ner
  */
-public final class EntityCache extends AbstractEntityCache
+public class EntityCache extends AbstractEntityCache
 {
 
 	private static final long serialVersionUID = 1234567890L;
@@ -18,6 +19,10 @@ public final class EntityCache extends AbstractEntityCache
 	private EntityCache()
 	{
 		super();
+	}
+
+	public EntityCache(EntityGroupInterface entityGroupInterface) {
+		super(entityGroupInterface);
 	}
 
 	/**
@@ -32,4 +37,16 @@ public final class EntityCache extends AbstractEntityCache
 		return (EntityCache) entityCache;
 	}
 
-}
+	/**
+	 * @return the singleton instance of the EntityCache class.
+	 */
+	public static synchronized EntityCache getInstance(EntityGroupInterface entityGroupInterface)
+	{
+		if (entityCache == null)
+		{
+			entityCache = new EntityCache(entityGroupInterface);
+		}
+		return (EntityCache) entityCache;
+	}
+
+	}

@@ -32,6 +32,9 @@ import edu.common.dynamicextensions.entitymanager.AbstractBaseMetadataManager;
 import edu.common.dynamicextensions.entitymanager.AbstractMetadataManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManager;
 import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.skiplogic.SkipLogic;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -136,13 +139,18 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 */
 	protected Set<CategoryInterface> categoriesInUse = new HashSet<CategoryInterface>();
 
-	/**
-	 *  This counter is used for creating the temporary directories in case of create
-	 *  category task by more than one user at a time.
-	 */
+	/** This counter is used for creating the temporary directories in case of create category task by more than one user at a time. */
 	protected long catFileNameCounter = 1L;
 
+	/** The category cache. */
 	private static Map<String, CategoryInterface> categoryCache = new LinkedHashMap<String, CategoryInterface>();
+
+	/** This set contains all the categories which are in opened at this instance in Edit mode by any user. */
+	protected Set<Long> containerInUse = new HashSet<Long>();
+
+	/** This set contains all the entity id which are in use. */
+	protected Set<Long> entitiesInUse = new HashSet<Long>();
+
 	/**
 	 * This method gives the singleton cache object. If cache is not present then it
 	 * throws {@link UnsupportedOperationException}
@@ -206,33 +214,37 @@ public abstract class AbstractEntityCache implements IEntityCache
 		}
 	}
 
+	public AbstractEntityCache(EntityGroupInterface entityGroupInterface)
+	{
+		refreshCache(entityGroupInterface);
+	}
+
 	/**
 	 * Refresh the entity cache.
-	 * @param hibernateDAO2
-	 * @throws DAOException
 	 */
 	public final synchronized void refreshCache()
 	{
 
 		LOGGER.info("Initializing cache, this may take few minutes...");
 		clearCache();
+
 		HibernateDAO hibernateDAO = null;
+		Collection<EntityGroupInterface> entityGroups = null;
 		try
 		{
 			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
-			Collection<EntityGroupInterface> entityGroups = DynamicExtensionUtility
-					.getSystemGeneratedEntityGroups(hibernateDAO);
+			entityGroups = DynamicExtensionUtility.getSystemGeneratedEntityGroups(hibernateDAO);
 			createCache(entityGroups);
 		}
 		catch (final DAOException e)
 		{
-			LOGGER.error(ERROR_CREATING_CACHE + e.getMessage());
-			throw new RuntimeException(EXCEPTION_CREATING_CACHE, e);
+			LOGGER.error("Error while Creating EntityCache. Error: " + e.getMessage());
+			throw new RuntimeException("Exception encountered while creating EntityCache!!", e);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			LOGGER.error(ERROR_CREATING_CACHE + e.getMessage());
-			throw new RuntimeException(EXCEPTION_CREATING_CACHE, e);
+			LOGGER.error("Error while Creating EntityCache. Error: " + e.getMessage());
+			throw new RuntimeException("Exception encountered while creating EntityCache!!", e);
 		}
 		finally
 		{
@@ -252,6 +264,17 @@ public abstract class AbstractEntityCache implements IEntityCache
 		LOGGER.info("Initializing cache DONE");
 	}
 
+	public final synchronized void refreshCache(EntityGroupInterface entityGroupInterface)
+	{
+		LOGGER.info("Initializing cache, this may take few minutes...");
+		clearCache();
+
+		Collection entityGroups = new ArrayList();
+		entityGroups.add(entityGroupInterface);
+		createCache(entityGroups);
+		LOGGER.info("Initializing cache DONE");
+	}
+
 	/**
 	 * Loads cacheable categories to cache
 	 */
@@ -265,13 +288,13 @@ public abstract class AbstractEntityCache implements IEntityCache
 		}
 		catch (final DAOException e)
 		{
-			LOGGER.error(ERROR_CREATING_CACHE + e.getMessage());
-			throw new RuntimeException(EXCEPTION_CREATING_CACHE, e);
+			LOGGER.error("Error while Creating EntityCache. Error: " + e.getMessage());
+			throw new RuntimeException("Exception encountered while creating EntityCache!!", e);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
-			LOGGER.error(ERROR_CREATING_CACHE + e.getMessage());
-			throw new RuntimeException(EXCEPTION_CREATING_CACHE, e);
+			LOGGER.error("Error while Creating EntityCache. Error: " + e.getMessage());
+			throw new RuntimeException("Exception encountered while creating EntityCache!!", e);
 		}
 	}
 
@@ -315,10 +338,11 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 * @param categoryList list of containers to be cached.
 	 * @param entityGroups list of system generated entity groups to be cached.
 	 */
-	private void createCache(final Collection<EntityGroupInterface> entityGroups)
+	public void createCache(final Collection<EntityGroupInterface> entityGroups)
 	{
 		for (final EntityGroupInterface entityGroup : entityGroups)
 		{
+			cab2bEntityGroups.remove(entityGroup);
 			cab2bEntityGroups.add(entityGroup);
 			for (final EntityInterface entity : entityGroup.getEntityCollection())
 			{
@@ -606,17 +630,50 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 *
 	 * @param identifier Id of the entity
 	 * @return Actual Entity for given id.
+	 * @throws DynamicExtensionsCacheException
 	 */
 	public EntityInterface getEntityById(final Long identifier)
+			throws DynamicExtensionsCacheException
+	{
+		if (!entitiesInUse.contains(identifier))
+		{
+			return getEntityByIdForCacheUpdate(identifier);
+		}
+		throw new DynamicExtensionsCacheException("Entity With Identifier :" + identifier
+				+ " is in use.");
+	}
+
+	/**
+	 * Gets the entity by id for cache update.
+	 * @param identifier the identifier
+	 * @return the entity by id for cache update
+	 */
+	public EntityInterface getEntityByIdForCacheUpdate(final Long identifier)
 	{
 		EntityInterface entity = idVsEntity.get(identifier);
 		if (entity == null)
 		{
-			throw new RuntimeException("Entity with given id is not present in cache : "
-					+ identifier);
+			try
+			{
+				entity = EntityManager.getInstance().getEntityByIdentifier(identifier);
+				if (entity == null)
+				{
+					throw new RuntimeException("Entity with given id is not present in cache : "
+							+ identifier);
+				}
+			}
+			catch (DynamicExtensionsSystemException e)
+			{
+				throw new RuntimeException("Entity with given id is not present in cache : "
+						+ identifier, e);
+			}
+			catch (DynamicExtensionsApplicationException e)
+			{
+				throw new RuntimeException("Entity with given id is not present in cache : "
+						+ identifier, e);
+			}
 
 		}
-
 		return entity;
 	}
 
@@ -792,9 +849,11 @@ public abstract class AbstractEntityCache implements IEntityCache
 	* It will return the Container with the id as given identifier in the parameter.
 	* @param identifier
 	* @return Container with given identifier
+	 * @throws DynamicExtensionsCacheException
 	*/
 
 	public ContainerInterface getContainerById(final Long identifier)
+			throws DynamicExtensionsCacheException
 	{
 		ContainerInterface container = idVscontainers.get(identifier);
 		try
@@ -814,6 +873,11 @@ public abstract class AbstractEntityCache implements IEntityCache
 		{
 			throw new RuntimeException("container with given id is not present in cache : "
 					+ identifier);
+		}
+		if (containerInUse.contains(container.getId()))
+		{
+			throw new DynamicExtensionsCacheException(
+					"Container is already in use; try after some time.");
 		}
 		return container;
 	}
@@ -909,6 +973,59 @@ public abstract class AbstractEntityCache implements IEntityCache
 	}
 
 	/**
+	 * This method will add the given container id list to in use/under maintenance containers.
+	 * @param container ids which are to be marked as in use.
+	 */
+	public synchronized void lockAllContainer(Set<Long> caontainreIdList)
+	{
+		containerInUse.addAll(caontainreIdList);
+	}
+
+	/**
+	 * This method will release all the container ids.
+	 * @param conatiner ids to be released.
+	 */
+	public synchronized void releaseAllContainer(Set<Long> containreIdList)
+	{
+		containerInUse.removeAll(containreIdList);
+	}
+
+	/**
+	 * This method will add the given container id to in use/under maintenance containers.
+	 * @param category which is to be marked as in use.
+	 */
+	public synchronized void lockContainer(Long containerId)
+	{
+		containerInUse.add(containerId);
+	}
+
+	/**
+	 * This method will release the given container.
+	 * @param container id which is to be released.
+	 */
+	public synchronized void releaseContainer(Long containerId)
+	{
+		containerInUse.remove(containerId);
+	}
+
+	public boolean isFormAvailable(Long containerId)
+	{
+		return !containerInUse.contains(containerId);
+	}
+
+	/**
+	 * Lock all entities. This method will lock all the entities as Entities in Use.
+	 * @param allEntities the all entities
+	 */
+	public synchronized void lockAllEntities(Collection<EntityInterface> allEntities)
+	{
+		for (EntityInterface entityInterface : allEntities)
+		{
+			entitiesInUse.add(entityInterface.getId());
+		}
+	}
+
+	/**
 	 * Gets the skip logic by container identifier.
 	 * @param containerIdentifier the container identifier
 	 * @return the skip logic by container identifier
@@ -935,14 +1052,15 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 		containerIdVsSkipLogic.put(skipLogic.getContainerIdentifier(), skipLogic);
 	}
+
 	/**
 	 * This method will add the given category to cache.
 	 * @param category category to be added.
 	 */
 	public synchronized void addCategoryToTempCache(final CategoryInterface category)
 	{
-			categoryCache.remove(category);
-			categoryCache.put(category.getName(),category);
+		categoryCache.remove(category);
+		categoryCache.put(category.getName(), category);
 	}
 
 	/**
@@ -950,7 +1068,8 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public CategoryInterface getCategoryByName(String categoryName) throws DynamicExtensionsSystemException
+	public CategoryInterface getCategoryByName(String categoryName)
+			throws DynamicExtensionsSystemException
 	{
 		CategoryManagerInterface categoryManager = CategoryManager.getInstance();
 		CategoryInterface categoryInterface = categoryCache.get(categoryName);

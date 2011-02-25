@@ -23,6 +23,8 @@ create table DYEXTN_ABSTR_CATEGORY (IDENTIFIER bigint not null, PRIMARY KEY ("ID
 
 create table DYEXTN_STATIC_CATEGORY (IDENTIFIER bigint not null, FORM_URL varchar(800), PRIMARY KEY ("IDENTIFIER"));
 
+alter table DYEXTN_STATIC_CATEGORY add DataQuery varchar2(1800);
+
 alter table DYEXTN_CATEGORY DROP CONSTRAINT fkd33de81b728b19be;
 
 alter table DYEXTN_ABSTR_CATEGORY add constraint FK12E0EF6A728B19BE foreign key (IDENTIFIER) references DYEXTN_ABSTRACT_METADATA (IDENTIFIER);;
@@ -111,3 +113,15 @@ alter table DYEXTN_USERDEFINED_DE add SORT varchar(20);
 -- Script for Supporting both ways sorting of permissible values Ends
 
 alter table DYEXTN_ACTION add SKIP_LOGIC_ID integer;
+
+create table DYEXTN_GRID_VIEW_COLUMNS(
+      IDENTIFIER number(19,0) not null,
+      GRID_DISPLAY_COLUMN varchar2(255),
+      GRID_TABLE_COLUMN varchar2(255),
+      CATEGORY_ID number(19,0),
+      sortOrder number(11,0) default 0,
+      primary key (IDENTIFIER)); 
+
+alter table DYEXTN_GRID_VIEW_COLUMNS add constraint FK_DYEXTN_GRID_VIEW_COLUMNS  foreign key (CATEGORY_ID) references DYEXTN_STATIC_CATEGORY;
+
+create sequence DYEXTN_GRID_VIEW_COLUMNS_SEQ start with 1;

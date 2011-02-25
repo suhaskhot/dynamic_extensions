@@ -247,7 +247,7 @@ public class ReadPermissibleValuesProcessor
 				catEntityName.append('[');
 				final List<XmlAttributeType> attributes = instance.getXmlAttribute();
 
-				final CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper();
+				final CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper(null);
 				// if instance information is not given in XML
 				if ("".equals(instance.getId()) || "ALL".equalsIgnoreCase(instance.getId()))
 				{
@@ -410,7 +410,7 @@ public class ReadPermissibleValuesProcessor
 			final XmlAttributeType xmlAttribute,final XmlAttributeType outputXmlAttribute)
 			throws DynamicExtensionsSystemException, ParseException
 	{
-		final CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper();
+		final CategoryPermissibleValuesProcessorHelper pvProcessorHelper = new CategoryPermissibleValuesProcessorHelper(null);
 
 		final List<PvSetType> pvSetTypes = xmlAttribute.getPvSet();
 		for (PvSetType pvSet : pvSetTypes)

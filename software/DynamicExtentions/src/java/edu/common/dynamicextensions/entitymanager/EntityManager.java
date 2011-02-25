@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.entitymanager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +25,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.WordUtils;
 
 import edu.common.dynamicextensions.domain.AbstractAttribute;
+import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.Entity;
@@ -46,10 +48,13 @@ import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
@@ -113,6 +118,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		if (manager == null)
 		{
 			manager = new EntityManager();
+			DynamicExtensionsUtility.initialiseApplicationVariables();
 			queryBuilder = QueryBuilderFactory.getQueryBuilder();
 		}
 
@@ -601,14 +607,16 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = hibernateDao;
 		try
 		{
-			if (hibernateDAO == null)
-			{
-				hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
-			}
-			Object newObject = createObject(entity, dataValue, hibernateDAO);
-			identifier = getObjectId(newObject);
+			DataEntryClient client = new DataEntryClient(entity, dataValue);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put(WebUIManagerConstants.ENTITY, entity);
+			map.put(WebUIManagerConstants.DATA_VALUE_MAP, dataValue);
+			client.setServerUrl(new URL(Variables.jbossUrl+entity.getEntityGroup().getName()+"/"));
+			client.setParamaterObjectMap(map);
+			client.execute(null);
+			identifier = (Long)client.getObject();
 			List<FileQueryBean> queryListForFile = getQueryListForFileAttributes(dataValue, entity,
-					newObject);
+					client.getObject());
 			if (hibernateDao == null)
 			{
 				hibernateDAO.commit();
@@ -850,7 +858,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			Map<AbstractAttributeInterface, Object> dataVal = (Map<AbstractAttributeInterface, Object>) dataValue;
 
-			String packageName = null;
+			/*String packageName = null;
 			packageName = getPackageName(entity, packageName);
 
 			String className = packageName + "." + entity.getName();
@@ -859,7 +867,18 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 			Object updatedObject = updateObject(entity, dataVal, oldObject, hibernateDAO);
 
-			isSuccess = true;
+			isSuccess = true;*/
+
+			DataEditClient client = new DataEditClient(entity, dataVal);
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put(WebUIManagerConstants.ENTITY, entity);
+			map.put(WebUIManagerConstants.DATA_VALUE_MAP, dataValue);
+			map.put("recordId", recordId);
+			client.setServerUrl(new URL(Variables.jbossUrl+entity.getEntityGroup().getName()+"/"));
+			client.setParamaterObjectMap(map);
+			client.execute(null);
+			Object updatedObject =client.getObject();
+
 
 			List<FileQueryBean> queryListForFile = getQueryListForFileAttributes(dataVal, entity,
 					updatedObject);
@@ -872,11 +891,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			{
 				fileRecordQueryList.addAll(queryListForFile);
 			}
-		}
-		catch (DynamicExtensionsApplicationException e)
-		{
-			DynamicExtensionsUtility.rollBackDAO(hibernateDAO);
-			throw new DynamicExtensionsSystemException(DEConstants.DATA_INSERTION_ERROR_MESSAGE, e);
 		}
 		catch (Exception e)
 		{
@@ -1712,29 +1726,23 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 	}
 
+	public void associateEntityRecords(AssociationInterface associationInterface,
+			Long sourceEntityRecordId, Long TargetEntityRecordId, SessionDataBean sessionDataBean)
+			throws DynamicExtensionsSystemException
+	{
+		// TODO Auto-generated method stub
+
+	}
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#associateEntityRecords(edu.common.dynamicextensions.domaininterface.AssociationInterface, java.lang.Long, java.lang.Long)
-	 */
-	/**
-	 * @deprecated Use {@link #associateEntityRecords(AssociationInterface,Long,Long,SessionDataBean)} instead
 	 */
 	public void associateEntityRecords(AssociationInterface association, Long srcEntRecId,
 			Long tgtEntRecId) throws DynamicExtensionsSystemException
 	{
-		associateEntityRecords(association, srcEntRecId, tgtEntRecId, null);
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#associateEntityRecords(edu.common.dynamicextensions.domaininterface.AssociationInterface, java.lang.Long, java.lang.Long)
-	 */
-	public void associateEntityRecords(AssociationInterface association, Long srcEntRecId,
-			Long tgtEntRecId, SessionDataBean sessionDataBean) throws DynamicExtensionsSystemException
-	{
-		HibernateDAO hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
-		String tmpPackageName = getPackageName(association.getTargetEntity(), "");
-		try
+/*		try
 		{
-			Object staticEntity = hibernateDAO.retrieveById(tmpPackageName
+*/
+/*			Object staticEntity = hibernateDAO.retrieveById(tmpPackageName
 					+ "."
 					+ association.getEntity().getName().substring(
 							association.getEntity().getName().lastIndexOf(".") + 1), srcEntRecId);
@@ -1742,45 +1750,34 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			Object dynamicEntity = hibernateDAO.retrieveById(tmpPackageName + "."
 					+ association.getTargetEntity().getName(), tgtEntRecId);
 			Object oldDynamicEntity = cloner.clone(dynamicEntity);
+*/
+			Map<String, Object> map = new HashMap<String, Object>();
 
-			String sourceRoleName = EntityManagerUtil.getHookAssociationSrcRoleName(association
-					.getEntity(), association.getTargetEntity());
-			Set<Object> containedObjects = (Set<Object>) invokeGetterMethod(
-					staticEntity.getClass(),
-					association.getTargetEntity().getName() + "Collection", staticEntity);
-			containedObjects.add(dynamicEntity);
-			invokeSetterMethod(staticEntity.getClass(), association.getTargetEntity().getName()
-					+ "Collection", Class.forName("java.util.Collection"), staticEntity,
-					containedObjects);
-
-			invokeSetterMethod(dynamicEntity.getClass(), sourceRoleName, staticEntity.getClass(),
-					dynamicEntity, staticEntity);
-
-			hibernateDAO.update(dynamicEntity, oldDynamicEntity);
-			hibernateDAO.update(staticEntity, oldStaticEntity);
-			hibernateDAO.commit();
-
+			map.put(WebUIManagerConstants.ASSOCIATION, getTempAssociation(association));
+			map.put(WebUIManagerConstants.STATIC_OBJECT_ID, srcEntRecId);
+			map.put(WebUIManagerConstants.DYNAMIC_OBJECT_ID, tgtEntRecId);
+			map.put(WebUIManagerConstants.PACKAGE_NAME, getPackageName(association.getTargetEntity(), ""));
+			DataAssociationClient associationClient = new DataAssociationClient();
+			associationClient.setParamaterObjectMap(map);
+			associationClient.execute(null);
+/*
 		}
 		catch (DAOException e)
 		{
 			throw new DynamicExtensionsSystemException(e.getMessage(), e);
 		}
-		catch (NoSuchMethodException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-		catch (IllegalAccessException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-		catch (InvocationTargetException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new DynamicExtensionsSystemException(e.getMessage(), e);
-		}
+*/	}
+
+	private Object getTempAssociation(AssociationInterface association) {
+		AssociationInterface associationInterface = new Association();
+		EntityInterface sourceEntity = new Entity();
+		sourceEntity.setName(association.getEntity().getName());
+		EntityInterface targetEntity = new Entity();
+		targetEntity.setName(association.getTargetEntity().getName());
+		associationInterface.setEntity(sourceEntity);
+		associationInterface.setTargetEntity(targetEntity);
+
+		return associationInterface;
 	}
 
 	/* (non-Javadoc)
@@ -2279,7 +2276,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 	* @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getCategoriesContainerIdFromHookEntity(java.lang.Long)
 	*/
 	public Collection<NameValueBean> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException
 	{
 		// Create a map of substitution parameters.
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
@@ -2305,7 +2302,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	}
 
-	private Set<EntityInterface> getAssociatedEntities(Long hookEntityId)
+	private Set<EntityInterface> getAssociatedEntities(Long hookEntityId) throws DynamicExtensionsCacheException
 	{
 		Set<EntityInterface> associatedEntities = new HashSet<EntityInterface>();
 		for (AssociationInterface association : EntityCache.getInstance().getEntityById(
@@ -3144,4 +3141,6 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 			}
 		}
 	}
+
+
 }

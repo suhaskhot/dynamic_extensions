@@ -32,9 +32,12 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.skiplogic.SkipLogic;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.wustl.cab2b.server.cache.EntityCache;
+import edu.wustl.metadata.util.DyExtnObjectCloner;
 
 /**
  * The Class UserInterfaceiUtility.
@@ -88,7 +91,7 @@ public final class UserInterfaceiUtility
 	 */
 	public static String generateHTMLforGrid(ContainerInterface subContainer,
 			List<Map<BaseAbstractAttributeInterface, Object>> valueMaps, String dataEntryOperation,
-			ContainerInterface mainContainer, boolean isPasteEnable,final List<String> errorList)
+			ContainerInterface mainContainer, boolean isPasteEnable, final List<String> errorList)
 			throws DynamicExtensionsSystemException
 	{
 		StringBuffer htmlForGrid = new StringBuffer(1404);
@@ -112,7 +115,7 @@ public final class UserInterfaceiUtility
 		//empty hashmap to generate hidden row
 		subContainer.setContainerValueMap(new HashMap<BaseAbstractAttributeInterface, Object>());
 		htmlForGrid.append(getContainerHTMLAsARow(subContainer, -1, dataEntryOperation,
-				mainContainer,errorList));
+				mainContainer, errorList));
 		htmlForGrid.append("</table></div><input type='hidden' name='");
 
 		htmlForGrid.append(identifier);
@@ -221,9 +224,36 @@ public final class UserInterfaceiUtility
 			int index = 1;
 			for (Map<BaseAbstractAttributeInterface, Object> rowValueMap : valueMaps)
 			{
-				setContainerValueMap(subContainer, rowValueMap);
-				htmlForGrid.append(getContainerHTMLAsARow(subContainer, index, dataEntryOperation,
-						mainContainer,errorList));
+				// Cloning the sub container object to map the UI Object multiple instances of Add more case.
+				ContainerInterface clonedSubContainer = new DyExtnObjectCloner()
+						.clone(subContainer);
+
+				setContainerValueMap(clonedSubContainer, rowValueMap);
+
+				//Evaluating the Skip Logic for the sub container.
+				SkipLogic skipLogic = EntityCache.getInstance().getSkipLogicByContainerIdentifier(
+						clonedSubContainer.getId());
+				if (skipLogic != null)
+				{
+					skipLogic.evaluateSkipLogic(clonedSubContainer, rowValueMap);
+				}
+
+				// This is the case of Single Line Display. In this case the Skip Logic is associated with child container.
+				if (!clonedSubContainer.getChildContainerCollection().isEmpty())
+				{
+					for (ContainerInterface childContainer : clonedSubContainer
+							.getChildContainerCollection())
+					{
+						SkipLogic childSkipLogic = EntityCache.getInstance()
+								.getSkipLogicByContainerIdentifier(childContainer.getId());
+						if (childSkipLogic != null)
+						{
+							childSkipLogic.evaluateSkipLogic(childContainer, rowValueMap);
+						}
+					}
+				}
+				htmlForGrid.append(getContainerHTMLAsARow(clonedSubContainer, index,
+						dataEntryOperation, mainContainer, errorList));
 				index++;
 			}
 		}
@@ -388,8 +418,8 @@ public final class UserInterfaceiUtility
 	 * @throws DynamicExtensionsSystemException the dynamic extensions system exception
 	 */
 	public static String getContainerHTMLAsARow(ContainerInterface container, int rowId,
-			String dataEntryOperation, ContainerInterface mainContainer,final List<String> errorList)
-			throws DynamicExtensionsSystemException
+			String dataEntryOperation, ContainerInterface mainContainer,
+			final List<String> errorList) throws DynamicExtensionsSystemException
 	{
 		StringBuffer contHtmlAsARow = new StringBuffer(96);
 		Map<BaseAbstractAttributeInterface, Object> containerValues = container
@@ -449,7 +479,8 @@ public final class UserInterfaceiUtility
 	 * @throws DynamicExtensionsSystemException the dynamic extensions system exception
 	 */
 	private static void generateHTMLforControl(int rowId, String dataEntryOperation,
-			ContainerInterface mainContainer, StringBuffer contHtmlAsARow, Map<BaseAbstractAttributeInterface, Object> containerValues,
+			ContainerInterface mainContainer, StringBuffer contHtmlAsARow,
+			Map<BaseAbstractAttributeInterface, Object> containerValues,
 			final ControlInterface control) throws DynamicExtensionsSystemException
 	{
 		String controlHTML = "";

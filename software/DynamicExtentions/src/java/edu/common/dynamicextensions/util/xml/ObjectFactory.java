@@ -17,7 +17,9 @@ import edu.common.dynamicextensions.util.xml.Controls.Control.CommonValidation.C
 import edu.common.dynamicextensions.util.xml.DataTypeClass.DataType;
 import edu.common.dynamicextensions.util.xml.DataTypeClass.DataType.Validations;
 import edu.common.dynamicextensions.util.xml.FormDefinition.Form;
+import edu.common.dynamicextensions.util.xml.FormDefinition.Form.GridView;
 import edu.common.dynamicextensions.util.xml.FormDefinition.Form.Tag;
+import edu.common.dynamicextensions.util.xml.FormDefinition.Form.GridView.GridDisplayColumn;
 import edu.common.dynamicextensions.util.xml.PropertyType.Option;
 import edu.common.dynamicextensions.util.xml.PvVersion.XmlCategory;
 import edu.common.dynamicextensions.util.xml.SourceType.QualifierDefinition;
@@ -279,7 +281,22 @@ public class ObjectFactory
 	{
 		return new Form();
 	}
-
+	
+	/**
+    * Create an instance of {@link GridView }
+    * 
+    */
+   public GridView createFormDefinitionFormGridView() {
+       return new GridView();
+   }
+	
+   /**
+    * Create an instance of {@link GridDisplayColumn }
+    * 
+    */
+   public GridDisplayColumn createFormDefinitionFormGridViewGridDisplayColumn() {
+       return new GridDisplayColumn();
+   }
 	/**
 	 * This object contains factory methods for each
 	 * Java content interface and Java element interface

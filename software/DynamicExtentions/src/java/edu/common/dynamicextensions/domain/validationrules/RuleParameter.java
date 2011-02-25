@@ -7,7 +7,7 @@ import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 
 /**
- * This Rule 
+ * This Rule
  * @version 1.0
  * @created 28-Sep-2006 12:20:08 PM
  * @hibernate.class table="DYEXTN_RULE_PARAMETER"
@@ -45,7 +45,7 @@ public class RuleParameter extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="name" type="string" column="NAME" 
+	 * @hibernate.property name="name" type="string" column="NAME"
 	 * @return Returns the name.
 	 */
 	public String getName()
@@ -62,7 +62,7 @@ public class RuleParameter extends DynamicExtensionBaseDomainObject
 	}
 
 	/**
-	 * @hibernate.property name="value" type="string" column="VALUE" 
+	 * @hibernate.property name="value" type="string" column="VALUE"
 	 * @return Returns the value.
 	 */
 	public String getValue()
@@ -76,6 +76,10 @@ public class RuleParameter extends DynamicExtensionBaseDomainObject
 	public void setValue(String value)
 	{
 		this.value = value;
+	}
+
+	public void copy(RuleParameterInterface parameterInterface) {
+		this.value = parameterInterface.getValue();
 	}
 
 }

@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManager;
 import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.ContainerUIBeanInterface;
 import edu.common.dynamicextensions.ui.interfaces.EntityUIBeanInterface;
@@ -88,9 +89,11 @@ public class LoadFormDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @param containerIdentifier the Identifier of the Container to be fetched from database.
 	 * @throws DynamicExtensionsSystemException if System level or run-time exception occurs.
 	 * @return the populated Container instance.
+	 * @throws NumberFormatException
+	 * @throws DynamicExtensionsCacheException
 	 */
 	public ContainerInterface getContainerForEditing(String containerIdentifier)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException, NumberFormatException
 	{
 		return DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 	}

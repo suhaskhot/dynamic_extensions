@@ -141,7 +141,6 @@ public class Container extends DynamicExtensionBaseDomainObject
 
 	public final List<String> errorList=new ArrayList<String>();
 
-
 	/**
 	 * @hibernate.set name="childContainerCollection" table="DYEXTN_CONTAINER"
 	 * cascade="all-delete-orphan" inverse="false" lazy="false"
@@ -533,7 +532,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 		SkipLogic skipLogic = EntityCache.getInstance().getSkipLogicByContainerIdentifier(id);
 		if (skipLogic != null)
 		{
-			skipLogic.evaluateSkipLogic(this, container);
+			skipLogic.evaluateSkipLogic(this, container.getContainerValueMap());
 		}
 
 		// This is the case of Single Line Display. In this case the Skip Logic is associated with child container.
@@ -545,7 +544,7 @@ public class Container extends DynamicExtensionBaseDomainObject
 						.getSkipLogicByContainerIdentifier(childContainer.getId());
 				if (childSkipLogic != null)
 				{
-					childSkipLogic.evaluateSkipLogic(childContainer, container);
+					childSkipLogic.evaluateSkipLogic(childContainer, container.getContainerValueMap());
 				}
 			}
 		}
@@ -1021,5 +1020,4 @@ public class Container extends DynamicExtensionBaseDomainObject
 	{
 		return errorList;
 	}
-
 }

@@ -51,12 +51,11 @@ public class SkipLogic
 	 * @param mainContainer
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void evaluateSkipLogic(ContainerInterface controllingContainer, ContainerInterface mainContainer) throws DynamicExtensionsSystemException
+	public void evaluateSkipLogic(ContainerInterface controllingContainer, Map<BaseAbstractAttributeInterface, Object> dataValueMap) throws DynamicExtensionsSystemException
 	{
-		Map<BaseAbstractAttributeInterface, Object> dataValueMap = mainContainer.getContainerValueMap();
 		for (ConditionStatements conditionStatement : listOfconditionStatements)
 		{
-			conditionStatement.evaluateConditions(dataValueMap,mainContainer);
+			conditionStatement.evaluateConditions(dataValueMap,controllingContainer);
 		}
 	}
 

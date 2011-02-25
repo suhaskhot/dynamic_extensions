@@ -23,7 +23,7 @@ import edu.common.dynamicextensions.util.CategoryHelper;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.parser.CategoryGenerator;
-import edu.wustl.bulkoperator.ImportBulkOperationTemplate;
+import edu.wustl.bulkoperator.ImportBulkOperationUsingDAO;
 import edu.wustl.bulkoperator.util.BulkOperationConstants;
 import edu.wustl.bulkoperator.util.BulkOperationException;
 import edu.wustl.cab2b.server.cache.EntityCache;
@@ -151,12 +151,11 @@ public class CategoryProcessor
 		String xmlFile = tempDirPath + File.separator + DEConstants.TEMPLATE_DIR + File.separator
 				+ category.getName() + DEConstants.XML_SUFFIX;
 		System.setProperty(BulkOperationConstants.CONFIG_DIR, "clinportal-properties");
-		File propertyFile = new File(System.getProperty("app.propertiesDir"));
 
 		//import category XML and CSV template created above.
 		try
 		{
-			new ImportBulkOperationTemplate(category.getName(), category.getName(), csvFile,
+			new ImportBulkOperationUsingDAO(category.getName(), category.getName(), csvFile,
 					xmlFile, DynamicExtensionsUtility.getJDBCDAO(null));
 		}
 		catch (Exception exception)

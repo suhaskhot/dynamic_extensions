@@ -4,6 +4,7 @@
 
 package edu.common.dynamicextensions.util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -291,6 +292,29 @@ public class BOTemplateGenerator extends AbstractCategoryIterator<BulkOperationC
 	}
 
 	/**
+	 * 
+	 * @param pathname
+	 * @throws IOException 
+	 */
+	private void replaceWord(String pathname) throws IOException
+	{
+		String line = "";
+		String text = "";
+		File file = new File(pathname);
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		while ((line = reader.readLine()) != null)
+		{
+			text = text + line;
+		}
+		reader.close();
+		String newText = text.replaceAll("bulkOperationMetaData", "BulkOperationMetadata");
+		newText = newText.replaceAll("bulkOperationClass", "BulkOperationClass");
+		FileWriter writer = new FileWriter(file);
+		writer.write(newText);
+		writer.close();
+	}
+
+	/**
 	 * Generate the XML and CSV template for category required for bulk operation.
 	 * @param baseDir Base Directory to store generated template files.
 	 * @param xmlFilePath XML Template file path.
@@ -326,6 +350,7 @@ public class BOTemplateGenerator extends AbstractCategoryIterator<BulkOperationC
 					+ this.bulkOperationClass.getTemplateName() + DEConstants.XML_SUFFIX;
 			MarshalUtility.marshalObject(mappingXML, bulkMetaData, new FileWriter(
 					new File(pathname)));
+			replaceWord(pathname);
 		}
 		catch (IOException exception)
 		{

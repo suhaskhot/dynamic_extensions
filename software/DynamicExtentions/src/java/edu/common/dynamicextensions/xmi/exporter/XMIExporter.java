@@ -943,7 +943,7 @@ public class XMIExporter
 	private String generateCorelationAttributeName(final EntityInterface entity,
 			final String sourceEntityKey)
 	{
-		return entity.getName() + XMIConstants.SEPARATOR + sourceEntityKey;
+		return sourceEntityKey;
 	}
 
 	/**

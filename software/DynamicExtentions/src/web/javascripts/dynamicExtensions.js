@@ -2952,7 +2952,7 @@ function updateServerState(controlName, controlId, containerId)
     if(vControl.type=="checkbox" && checkBoxValue != "") // for multiSelect checkBox
 	{
 		controlValue = checkBoxValue.substring(1,checkBoxValue.length);
-	}
+	}	
     request.open("POST","AjaxcodeHandlerAction.do",true);
     request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
     request.onreadystatechange=function()
@@ -2975,9 +2975,30 @@ function updateServerState(controlName, controlId, containerId)
 			}
 			else
 			{
+				isValid = true;
 				var vRecentControl=document.getElementById(controlName);
-				vRecentControl.value = controlValue;
+				if(vRecentControl == null)
+				{
+					vRecentControl = document.getElementsByName(controlName)[0];
+					var values = controlValue.split("~");
+					for(var i=0; i<values.length;i++)
+					{
+						for(var j =0; j < vRecentControl.options.length; j++)
+						{
+							if(values[i] == vRecentControl.options[j].value)
+							{
+								vRecentControl.options[j].selected = true;
+								break;
+							}
+						}
+					}		
+				}
+				else
+				{
+					vRecentControl.value = controlValue;
+				}
 				vRecentControl.className = "font_bl_nor" ;
+				vRecentControl.title = "";
 			}
 		}
     }

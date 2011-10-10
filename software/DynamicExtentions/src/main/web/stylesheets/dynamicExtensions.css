@@ -1,0 +1,111 @@
+/* StyleSheet for Container */
+
+.formMessage{ /* for messages above the form */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  color:#000000; /* constant: black */
+  padding-left:0.5em;
+}
+
+.font_red {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 0.9em;
+	color: #FF0000;
+}
+
+.font_gr_s {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.95em;
+	color: #666666;
+}
+
+.td_color_6e81a6 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: .8em;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #6e81a6;
+}
+.td_color_6e81a6_big {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1em;
+	font-weight: bold;
+	color: #FFFFFF;
+	background-color: #6e81a6;
+}
+
+.formRequiredLabel_withoutBorder{ /* for the required form labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+ /* font-weight:bold;*/
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:left;
+}
+
+.notes{ /* for the form control notes */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:left;
+}
+
+.formRequiredNotice_withoutBorder{ /* for the asterisk cell */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:1em;
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+}
+
+.formField_withoutBorder{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  color:#000000; /* constant: black */
+  background-color:#ffffff; /* constant: light gray */
+}
+
+.formFieldContainer_withoutBorder{ /* for the Container as a field during Containment */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  font-weight:bold;
+  background-color:#ffffff; /* constant: light gray */
+  color:#000000; /* constant: black */
+
+}
+
+.formLabel_withoutBorder{ /* for the non-required form labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  background-color:#F4F4F5; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:left;
+}
+.font_bl_nor {
+	font-family: Arial, Helvetica, sans-serif;
+	/*font-size: .8em;*/
+	color: #333333;
+}
+input.actionButton{ /* optional style for form and action buttons */
+   font-family:arial,helvetica,verdana,sans-serif;
+   font-size:0.8em;
+   text-align:center;
+  vertical-align:middle;
+  color:#00000;
+  padding:0.1em;
+   background-color:#E1E1E1;
+   border:1px solid;
+   border-top-color:#646464;
+   border-left-color:#646464;
+   border-right-color:#1E1E1E;
+   border-bottom-color:#1E1E1E;
+   filter:progid:DXImageTransform.Microsoft.Gradient
+    (GradientType=0,StartColorStr='#f0f0f0',EndColorStr='#bebebe');
+}
+
+.font_bl_s {
+	font-family: Arial, Helvetica, sans-serif;
+	/*font-size: .75em;*/
+	color: #333333;
+}

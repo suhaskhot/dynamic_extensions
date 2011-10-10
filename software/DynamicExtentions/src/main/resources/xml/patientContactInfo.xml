@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormDefinition>
+	<Form name= "Static Form 2">
+		<Url>/pages/content/test1.jsp</Url>
+		<Tag>
+			<name>isParticipantRegistrationForm</name>
+			<value>true</value>
+		</Tag>
+		<GridView>
+				<GridDisplayColumn>
+				   <columnName>location</columnName>
+				   <dispalyLabel>gridlocation</dispalyLabel>
+				   <displayOrder>4</displayOrder>
+				</GridDisplayColumn>
+	   </GridView>
+	   <DataQuery>
+			 select * from static category
+	   </DataQuery> 
+	</Form>
+</FormDefinition>

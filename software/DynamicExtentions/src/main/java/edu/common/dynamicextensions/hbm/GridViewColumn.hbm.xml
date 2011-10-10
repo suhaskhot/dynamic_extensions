@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="edu.common.dynamicextensions.domain.GridViewColumn"
+        table="DYEXTN_GRID_VIEW_COLUMNS"
+        dynamic-update="false"
+        dynamic-insert="false"
+        lazy="false" 
+    >
+    
+    <cache usage="read-write" />
+
+        <id
+            name="id"
+            column="IDENTIFIER"
+            type="long"
+            length="30"
+            unsaved-value="null"
+        >
+            <generator class="native">
+                <param name="sequence">DYEXTN_GRID_VIEW_COLUMNS_SEQ</param>
+            </generator>
+        </id>
+
+        <property
+            name="gridDisplayColumn"
+            type="string"
+            update="true"
+            insert="true"
+            column="GRID_DISPLAY_COLUMN"
+            length="500"
+        />
+        
+        <property
+            name="gridTableColumn"
+            type="string"
+            update="true"
+            insert="true"
+            column="GRID_TABLE_COLUMN"
+            length="500"
+        />
+        <property
+            name="displayOrder"
+            type="long"
+            update="true"
+            insert="true"
+            column="sortOrder"
+            length="500"
+        />
+    </class>
+
+</hibernate-mapping>

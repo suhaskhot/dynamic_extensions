@@ -1,0 +1,55 @@
+<pvVersion>
+	<category>
+		<category-name>Test Category_Lab Information</category-name>
+		<class-name name="LabTest">
+
+		<!-- instance id can have a numeric value or can have 'ALL' for all instances-->
+			<instance id="1">
+				<attribute>
+					<name>testName</name>
+					<PermVal_Options>
+						<option>
+							<key>isOrdered</key>
+							<value>true</value>
+						</option>
+						<option>
+							<key>activationDate</key>
+							<value>10/10/2004</value>
+						</option>
+						
+					<!--	 Optional. To be specified if activation date has to be changed.
+						Then 'activationDate' represents new Date and 'currentActivationDate' is the old one -->
+						<option>
+							<key>currentActivationDate</key>
+							<value>03/30/2009</value>
+						</option>
+					</PermVal_Options>
+					<default-value>arsh</default-value>
+					<permissible-values>
+						<value>rohit</value>
+						<value>arya</value>
+						<value>arsh</value>
+					</permissible-values>
+				</attribute>  
+			
+				 <attribute>
+					<name>result</name>
+					<PermVal_Options>
+						<option>
+							<key>isOrdered</key>
+							<value>false</value>
+						</option>
+						<option>
+							<key>activationDate</key>
+							<value>10/12/2009</value>
+						</option>
+					</PermVal_Options>
+					<default-value>violet</default-value> 
+					<!-- in case of PVs in a file -->   
+					<permissible-value-file>Latest/PVs/result.csv</permissible-value-file>
+				</attribute>   
+			</instance>
+
+		</class-name>
+	</category>
+</pvVersion>

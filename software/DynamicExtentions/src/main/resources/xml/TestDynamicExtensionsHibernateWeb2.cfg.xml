@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+
+    <session-factory>
+    	<property name="show_sql">false</property>
+   		<property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
+   	 	<property name="connection.datasource">@@datasource@@</property>
+		<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+       	<property name="transaction.manager_lookup_class">org.hibernate.transaction.JBossTransactionManagerLookup</property>
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="hibernate.jdbc.batch_size">0</property>
+		<property name="hibernate.query.substitutions">true 1,false 0</property>
+		<property name="hibernate.connection.release_mode">after_transaction</property>
+
+
+<!-- My sql settings -->
+
+        <property name="hibernate.c3p0.max_size">15</property>
+		<property name="hibernate.c3p0.min_size">2</property>
+		<property name="hibernate.c3p0.timeout">5000</property>
+		<property name="hibernate.c3p0.max_statements">0</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+		<property name="hibernate.c3p0.acquire_increment">2</property>
+		<property name="hibernate.c3p0.validate">false</property>
+
+
+<!-- My sql settings end -->
+
+<!-- PostGreSQL settings -->
+  <!--
+       	<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+
+       	<property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">test</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property>
+    -->
+<!-- PostGreSQL settings end-->
+
+        <!-- List of all Mapping files -->
+
+        <mapping resource="edu/common/dynamicextensions/hbm/AbstractMetadata.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/AttributeTypeInformation.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/PermissibleValue.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/Role.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/SemanticProperty.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/DataElement.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/TaggedValue.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/AttributeRecord.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/CollectionAttributeRecordValue.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/AssociationDisplayAttribute.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/DatabaseProperties.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/CaDSRValueDomainInfo.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/FileAttributeRecordValue.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/FileExtension.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/ObjectAttributeRecordValue.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/userinterface/DEContainer.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/userinterface/Control.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/userinterface/View.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/validationrules/Rule.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/validationrules/RuleParameter.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/EntityManagerHQL.hbm.xml"/>
+
+        <mapping resource="edu/common/dynamicextensions/hbm/IdGenerator.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/Path.hbm.xml"/>
+        <mapping resource="edu/common/dynamicextensions/hbm/PathAssociationRelation.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/DESQLAudit.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/FormControlNotes.hbm.xml"/>
+		<mapping resource="edu/common/dynamicextensions/hbm/databaseproperties/ConstraintKeyProperties.hbm.xml"/>
+   		<mapping resource="edu/common/dynamicextensions/hbm/Formula.hbm.xml"/>
+   		<mapping resource="edu/wustl/common/hbm/AuditEvent.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/AuditEventDetails.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/AuditEventLog.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/AbstractAuditEventLog.hbm.xml"/>
+		<mapping resource="edu/wustl/common/hbm/LoginEvent.hbm.xml"/>
+
+		<mapping resource="edu/common/dynamicextensions/host/csd/util/CategoryInfo.hbm.xml"/>
+<mapping resource="annotations/SmokingHistory.hbm.xml"/>
+<mapping resource="annotations/impl/SmokingHistoryImpl.hbm.xml"/>
+<mapping resource="annotations/PhysicianInformation.hbm.xml"/>
+<mapping resource="annotations/impl/PhysicianInformationImpl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClassclinics123326.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClassclinics123326Impl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClasshospitals123337.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClasshospitals123337Impl.hbm.xml"/>
+<mapping resource="annotations/PhyContactInfo.hbm.xml"/>
+<mapping resource="annotations/impl/PhyContactInfoImpl.hbm.xml"/>
+<mapping resource="annotations/LabInfo.hbm.xml"/>
+<mapping resource="annotations/impl/LabInfoImpl.hbm.xml"/>
+<mapping resource="annotations/LabTest.hbm.xml"/>
+<mapping resource="annotations/impl/LabTestImpl.hbm.xml"/>
+<mapping resource="annotations/LabReports.hbm.xml"/>
+<mapping resource="annotations/impl/LabReportsImpl.hbm.xml"/>
+<mapping resource="annotations/Diagnosis.hbm.xml"/>
+<mapping resource="annotations/impl/DiagnosisImpl.hbm.xml"/>
+<mapping resource="annotations/PrimaryDiagnosis.hbm.xml"/>
+<mapping resource="annotations/impl/PrimaryDiagnosisImpl.hbm.xml"/>
+<mapping resource="annotations/Infections.hbm.xml"/>
+<mapping resource="annotations/impl/InfectionsImpl.hbm.xml"/>
+<mapping resource="annotations/FungalInfections.hbm.xml"/>
+<mapping resource="annotations/impl/FungalInfectionsImpl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClasstumorSize123302.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClasstumorSize123302Impl.hbm.xml"/>
+<mapping resource="annotations/PathologyReports.hbm.xml"/>
+<mapping resource="annotations/impl/PathologyReportsImpl.hbm.xml"/>
+<mapping resource="annotations/Chemotherapy.hbm.xml"/>
+<mapping resource="annotations/impl/ChemotherapyImpl.hbm.xml"/>
+<mapping resource="annotations/RadiationTherapy.hbm.xml"/>
+<mapping resource="annotations/impl/RadiationTherapyImpl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClassagent123274.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClassagent123274Impl.hbm.xml"/>
+<mapping resource="annotations/HealthAnnotations.hbm.xml"/>
+<mapping resource="annotations/impl/HealthAnnotationsImpl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClasstumorLocation123291.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClasstumorLocation123291Impl.hbm.xml"/>
+<mapping resource="annotations/ViralInfections.hbm.xml"/>
+<mapping resource="annotations/impl/ViralInfectionsImpl.hbm.xml"/>
+<mapping resource="annotations/BacterialInfections.hbm.xml"/>
+<mapping resource="annotations/impl/BacterialInfectionsImpl.hbm.xml"/>
+<mapping resource="annotations/Alcohol.hbm.xml"/>
+<mapping resource="annotations/impl/AlcoholImpl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClasshazardType123358.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClasshazardType123358Impl.hbm.xml"/>
+<mapping resource="annotations/Hazards.hbm.xml"/>
+<mapping resource="annotations/impl/HazardsImpl.hbm.xml"/>
+<mapping resource="annotations/History.hbm.xml"/>
+<mapping resource="annotations/impl/HistoryImpl.hbm.xml"/>
+<mapping resource="annotations/PatientInformation.hbm.xml"/>
+<mapping resource="annotations/impl/PatientInformationImpl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClasstumorSizeChild123433.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClasstumorSizeChild123433Impl.hbm.xml"/>
+<mapping resource="annotations/CollectionAttributeClasstumorLocationChild123422.hbm.xml"/>
+<mapping resource="annotations/impl/CollectionAttributeClasstumorLocationChild123422Impl.hbm.xml"/>
+<mapping resource="annotations/PathAnnotationChild.hbm.xml"/>
+<mapping resource="annotations/impl/PathAnnotationChildImpl.hbm.xml"/>
+<mapping resource="annotations/VitalInformation.hbm.xml"/>
+<mapping resource="annotations/impl/VitalInformationImpl.hbm.xml"/>
+<mapping resource="annotations/ParticipantRecordEntry.hbm.xml"/>
+<mapping resource="annotations/impl/ParticipantRecordEntryImpl.hbm.xml"/>
+</session-factory>
+
+</hibernate-configuration>

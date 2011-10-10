@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<xs:schema id="xmlPermissibleValues" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+
+  <xs:element name="xmlPermissibleValues" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="xmlEntityGroup">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="xmlClass-name" type="xmlClassType" minOccurs="1" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="xmlClassType">
+    <xs:sequence>
+      <xs:element name="xmlDEAttribute" type="attributeType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="attributeType">
+    <xs:sequence>
+      <xs:element name="override" type="xs:boolean" minOccurs="0" />
+      <xs:element name="xmlPermissible-value" >
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="value" type="valueType" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="valueType">
+    <xs:sequence>
+      <xs:element name="oldName" type="xs:string" minOccurs="0" />
+      <xs:element name="name" type="xs:string" />
+      <xs:element name="numericCode" type="xs:long" minOccurs="0" />
+      <xs:element name="source" type="sourceType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="sourceType">
+    <xs:sequence>
+      <xs:element name="primary-definition" type="primaryDefinitionType" />
+      <xs:element name="qualifier-definition" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="qualifier" type="qualifierType" minOccurs="1" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="primaryDefinitionType">
+    <xs:sequence>
+      <xs:element name="primaryConceptDefinitionSource" type="xs:string" />
+      <xs:element name="primaryConceptCode" type="xs:string" />
+      <xs:element name="primaryConceptPreferredName" type="xs:string" />
+      <xs:element name="primaryConceptDefinition" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="qualifierType">
+  	<xs:sequence>
+      <xs:element name="qualifierConceptDefinitionSource" type="xs:string" />
+      <xs:element name="qualifierConceptCode" type="xs:string" />
+      <xs:element name="qualifierConceptPreferredName" type="xs:string" />
+      <xs:element name="qualifierConceptDefinition" type="xs:string" />
+    </xs:sequence>
+   	<xs:attribute name="number" type="xs:long" use="required" />
+  </xs:complexType>
+
+</xs:schema>

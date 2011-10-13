@@ -1,0 +1,9 @@
+<ivy-module version="2.0">
+    <info organisation="gov.nih.nci.catissue" module="ivyTest"/>
+    <dependencies>
+
+<!-- LOCAL SVN REPO -->
+		<dependency org="local" name="localDynamicExtension" rev="1.0"/>
+
+    </dependencies>
+</ivy-module>

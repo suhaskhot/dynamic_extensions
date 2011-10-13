@@ -278,7 +278,7 @@
 	</target>
 	<target name="build:DynamicExtentions-webapp" depends="init, build:DynamicExtentions-api" description="Call webapp sub-projects build target to produce artifiacts">
 		<!-- setting the property in the ant call overrides the property in the sub-project allowing the artifact to be produced where needed -->
-		<ant inheritAll="false" inheritRefs="false" antfile="../DynamicExtentions/build/build.xml" target="${DynamicExtentions-webapp.build.target}" dir="${DynamicExtentions-webapp.base.dir}">
+		<ant inheritAll="false" inheritRefs="false" antfile="../DynamicExtentions/build.xml" target="${DynamicExtentions-webapp.build.target}" dir="${DynamicExtentions-webapp.base.dir}">
 			<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />
 			<property name="env.GLOBUS_LOCATION" value="${env.GLOBUS_LOCATION}"/>
 		</ant>
@@ -568,7 +568,7 @@
 		-->
 	</target>
 	<target name="static-analysis:DynamicExtentions-webapp" depends="init" description="Calls static-analysis target for sub-project">
-		<ant inheritAll="false" inheritRefs="false" antfile="../DynamicExtentions/build/build.xml" target="static-analysis" dir="${DynamicExtentions-webapp.base.dir}">
+		<ant inheritAll="false" inheritRefs="false" antfile="../DynamicExtentions/build.xml" target="static-analysis" dir="${DynamicExtentions-webapp.base.dir}">
 			<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />
 		</ant>
 	</target>

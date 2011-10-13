@@ -1,7 +1,9 @@
 <?xml version ="1.0"?>
 
 <!--Ant Script for create Build for caTISSUE Core -->
-<project name="DynamicExtensions" default="dist" basedir="../">
+<project name="DynamicExtensions" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <import file="ivy-targets.xml" />
 
     <property name="software.dir" value="${basedir}/../" />
     <property name="root.dir" value="${software.dir}/../" />
@@ -89,15 +91,9 @@
 
 	<!-- sub tasks -->
 	<target name="init">
-		<!-- Create the time stamp -->
 		<tstamp />
-		<!-- Create the build directory structure used by compile -->
 		<delete dir="${target.dir}" />
-		<delete dir="${dist.dir}" />
-
 		<mkdir dir="${target.dir}" />
-		<mkdir dir="${dist.dir}" />
-
 	</target>
 
 	<!-- Compile all files, generated and hand-written -->
@@ -475,7 +471,6 @@
 			</manifest>
 		</war>
 		<copy file="dynamicExtensions.war" todir="${dist.dir}" overwrite="true" />
-		<copy file="dynamicExtensions.war" todir="" overwrite="true" />
 		<delete dir="${temp.dir}" />
 	</target>
 
@@ -1053,7 +1048,7 @@
           target: import.static.and.test.model
          - - - - - - - - - - - - - - - - - -->
 		<target name="import.static.and.test.model">
-			<ant antfile="../binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.for.testcases">
+			<ant antfile="binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.for.testcases">
 				<property name="filename" value="${basedir}/${resource.dir}/xmi/TestStaticModel.xmi" />
 				<property name="mainContainerList" value="${basedir}/${resource.dir}/csv/staticModelContainers.csv" />
 				<property name="package" value="staticModel" />
@@ -1068,7 +1063,7 @@
 
 			<echo message="Static Model loaded Successfully" />
 			<echo message="Now importing the test model for junits" />
-			<ant antfile="../binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.to.generate.cacore">
+			<ant antfile="binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.to.generate.cacore">
 				<property name="xmi.name" value="${test.model.dir}/test.xmi" />
 				<property name="mainContainerList" value="${test.model.dir}/main.csv" />
 				<property name="package.name" value="test.annotations" />
@@ -1082,7 +1077,7 @@
 
 			<echo message="Test Model loaded Successfully" />
 			<echo message="Now Editing the test model for junits" />
-			<ant antfile="../binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.to.generate.cacore">
+			<ant antfile="binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.to.generate.cacore">
 				<property name="xmi.name" value="${test.edited.model.dir}/test.xmi" />
 				<property name="mainContainerList" value="${test.edited.model.dir}/main.csv" />
 				<property name="package.name" value="test.annotations" />
@@ -1098,7 +1093,7 @@
 
    		<target name="import.permissiblevalues">
    			<echo message="Now importing Permissible Values for junits" />
-			<ant antfile="../binaries/DEDeploy.xml" dir="./binaries/" target="import_permissible_values">
+			<ant antfile="binaries/DEDeploy.xml" dir="./binaries/" target="import_permissible_values">
 				<property name="pv.dir" value="${test.edited.model.dir}" />
 				<property name="permissibleValuesFile" value="${test.edited.model.dir}/TestModel_pv.xml" />
 			</ant>
@@ -1107,7 +1102,7 @@
 
 
 		<target name="import.caTissueCoreModel" description="Import caTissue Core Model into database">
-			<ant antfile="../binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.for.testcases.without.caCore">
+			<ant antfile="binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.for.testcases.without.caCore">
 				<property name="filename" value="${basedir}/${resource.dir}/xmi/catissueCore.xmi" />
 				<property name="mainContainerList" value="${basedir}/${resource.dir}/csv/caTissueStaticModelContainer.csv" />
 				<property name="package" value="edu.wustl.catissuecore.domain" />
@@ -1120,7 +1115,7 @@
 		</target>
 
 		<target name="import.GeneconnectModel" description="Import Gene connect Model into database">
-			<ant antfile="../binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.for.testcases.without.caCore">
+			<ant antfile="binaries/DEDeploy.xml" dir="./binaries/" target="import.xmi.for.testcases.without.caCore">
 				<property name="filename" value="${basedir}/${resource.dir}/xmi/GeneConnect111.xmi" />
 				<property name="mainContainerList" value="${basedir}/${resource.dir}/csv/geneConnectModelContainer.csv" />
 				<property name="package" value="edu.wustl.geneconnect.domain" />

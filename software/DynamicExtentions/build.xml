@@ -369,8 +369,8 @@
 
 	<!-- Creates the WAR (Web Application Archive) file of the application -->
 	<target name="build_war" depends="compile">
-		<delete file="dynamicExtensions.war" />
-		<war destfile="dynamicExtensions.war" webxml="${basedir}/conf/web.xml">
+		<delete file="${dist.dir}/dynamicExtensions.war" />
+		<war destfile="${dist.dir}/dynamicExtensions.war" webxml="${basedir}/conf/web.xml">
 			<fileset dir="${basedir}">
 				<include name="src/main/web/stylesheets/**/*" />
 				<include name="src/main/web/images/**/*" />
@@ -398,7 +398,6 @@
 				</section>
 			</manifest>
 		</war>
-		<copy file="dynamicExtensions.war" todir="${dist.dir}" overwrite="true" />
 	</target>
 
 	<target name="build.dem.war" depends="compile">
@@ -457,7 +456,7 @@
 			<property name="import.pv.version.classname" value="edu.common.dynamicextensions.permissiblevalue.version.CategoryPermissibleValuesProcessor" />
 		</ant>
 
-		<war destfile="dynamicExtensions.war" webxml="conf/web.xml">
+		<war destfile="${dist.dir}/dynamicExtensions.war" webxml="conf/web.xml">
 			<fileset dir="${temp.dir}">
 				<include name="**/*" />
 			</fileset>
@@ -470,7 +469,6 @@
 				</section>
 			</manifest>
 		</war>
-		<copy file="dynamicExtensions.war" todir="${dist.dir}" overwrite="true" />
 		<delete dir="${temp.dir}" />
 	</target>
 
@@ -548,7 +546,7 @@
 	<target name="deploy" depends="build_app_war">
 		<!--delete file="${jboss.home.dir}/bin/cobertura.ser" /-->
 		<delete dir="${jboss.home.dir}/server/default/log" failonerror="false"/>
-		<copy file="dynamicExtensions.war" todir="${jboss.home.dir}/server/default/deploy" overwrite="true" />
+		<copy file="${dist.dir}/dynamicExtensions.war" todir="${jboss.home.dir}/server/default/deploy" overwrite="true" />
 		<copy file="${interface.dir}/DynamicExtensions.jar" todir="${jboss.home.dir}/server/default/deploy/dynamicExtensions${default.prifix.war}test.war/WEB-INF/lib/" overwrite="true" />
 	</target>
 

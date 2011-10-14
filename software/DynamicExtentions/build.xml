@@ -16,7 +16,7 @@
 	<property name="src.dir" value="${basedir}/src/main/java" />
 	<property name="test.dir" value="${basedir}/src/test/java" />
 	<property name="target.dir" value="${basedir}/binaries/classes" />
-	<property name="lib.dir" value="${basedir}/lib/server" />
+	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="dist.dir" value="${basedir}/dist" />
 	<property name="applet.dir" value="${basedir}/src/main/web/Applet" />
 	<property name="interface.dir" value="${basedir}/binaries/DynamicExtensionsInterface" />
@@ -35,7 +35,7 @@
 
 
 	<property name="hbm.dir" value="${src.dir}/edu/common/dynamicextensions/hbm" />
-	<property name="extra_lib.dir" value="${basedir}/lib/extra" />
+	<property name="extra_lib.dir" value="${basedir}/lib" />
 	<property name="generateforce" value="true" />
 
 	<property name="mysql.dir" value="${basedir}/db/db-install/MySql" />
@@ -64,7 +64,7 @@
 		</filterchain>
 	</loadfile>
 	<path id="app.classpath">
-		<pathelement location="${basedir}/lib/server/postgresql-8.1-405.jdbc3.jar" />
+		<pathelement location="${basedir}/lib/postgresql-8.1-405.jdbc3-1.0.jar" />
 		<fileset dir="${lib.dir}">
 			<include name="*.jar" />
 		</fileset>
@@ -85,7 +85,7 @@
 
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		<classpath>
-			<pathelement location="${extra_lib.dir}/ant-contrib.jar" />
+			<pathelement location="${extra_lib.dir}/ant-contrib-1.0.jar" />
 		</classpath>
 	</taskdef>
 
@@ -379,7 +379,7 @@
 				<include name="src/main/web/dhtml/**/*" />
 				<include name="src/main/web/runtime/**/*" />
 				<include name="src/main/web/taglibs/**/*" />
-				<include name="lib/server/**/*" />
+				<include name="lib/**/*" />
 				<exclude name="**/dom4j.jar" />
 				<exclude name="**/jboss-common-jdbc-wrapper.jar" />
 				<exclude name="**/jboss.jar" />
@@ -487,7 +487,7 @@
 			</fileset>
 		</copy>
 		<copy todir="${temp.dir}/WEB-INF/lib">
-			<fileset dir="../lib/server">
+			<fileset dir="${basedir}/lib">
 				<include name="**/*" />
 			</fileset>
 			<fileset dir="${interface.dir}">
@@ -788,9 +788,9 @@
 			</copy>
 
 			<copy todir="${zip.dir}/lib" overwrite="true">
-				<fileset file="${basedir}/lib/extra/ant-contrib.jar" />
-				<fileset file="${basedir}/lib/server/mysql-connector-java-3.0.16-ga-bin.jar" />
-				<fileset file="${basedir}/lib/server/oracleDriver.jar" />
+				<fileset file="${basedir}/lib/ant-contrib-1.0.jar" />
+				<fileset file="${basedir}/lib/mysql-connector-java-3.0.16-ga-bin-1.0.jar" />
+				<fileset file="${basedir}/lib/oracleDriver-1.0.jar" />
 			</copy>
 
 			<copy todir="${zip.dir}/configuration" overwrite="true">
@@ -1133,11 +1133,11 @@
 				<sysproperty key="net.sourceforge.cobertura.datafile" file="./cobertura/coverage.ser" />
 				<classpath>
 					<pathelement location="${basedir}/binaries/classes/" />
-					<fileset dir="${basedir}/lib/server">
+					<fileset dir="${basedir}/lib">
 						<include name="*.jar" />
 						<exclude name="uml-1.3.jar" />
 					</fileset>
-					<fileset dir="${basedir}/lib/extra">
+					<fileset dir="${basedir}/lib">
 						<include name="jboss-j2ee.jar" />
 						<include name="jta.jar" />
 					</fileset>
@@ -1454,7 +1454,7 @@
 				<fileset dir="${client.jar.dir}">
 					<include name="clientFormCreator.jar" />
 				</fileset>
-				<fileset dir="${basedir}/lib/server">
+				<fileset dir="${basedir}/lib">
 					<include name="washu-commons*.jar" />
 					<include name="cog-jglobus.jar" />
 					<include name="log4j.jar" />

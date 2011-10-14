@@ -3,7 +3,7 @@
     <dependencies>
 
 <!-- LOCAL SVN REPO -->
-		<dependency org="local" name="localDynamicExtension" rev="1.0"/>
+		<dependency org="local" name="DynamicExtension" rev="1.0"/>
 
     </dependencies>
 </ivy-module>

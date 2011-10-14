@@ -5,6 +5,20 @@
 
     <import file="ivy-targets.xml" />
 
+    <target name="postResolve" depends="resolve">
+        <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+            <classpath>
+                <pathelement location="${lib.dir}/ant-contrib-1.0.jar" />
+            </classpath>
+        </taskdef>
+
+        <taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
+            <classpath refid="xdoclet.classpath" />
+        </taskdef>
+
+        <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+    </target>
+
     <property name="software.dir" value="${basedir}/../" />
     <property name="root.dir" value="${software.dir}/../" />
 
@@ -83,12 +97,6 @@
 		<pathelement location="${extra_lib.dir}/xsdlib.jar" />
 	</path>
 
-	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-		<classpath>
-			<pathelement location="${extra_lib.dir}/ant-contrib-1.0.jar" />
-		</classpath>
-	</taskdef>
-
 	<!-- sub tasks -->
 	<target name="init">
 		<tstamp />
@@ -97,7 +105,7 @@
 	</target>
 
 	<!-- Compile all files, generated and hand-written -->
-	<target name="compile" depends="init">
+	<target name="compile" depends="postResolve, init">
 		<javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true" nowarn="on">
 			<src path="${src.dir}" />
 			<classpath refid="app.classpath" />
@@ -675,9 +683,6 @@
 		 This generates the HBM files from the XDoclet tags written in the domain object classes. -->
 	<target name="generate_hbm" description="Generates Hibernate class descriptor files." depends="compile,remove_generics">
 		<!-- Define the hibernatedoclet task -->
-		<taskdef name="hibernatedoclet" classname="xdoclet.modules.hibernate.HibernateDocletTask">
-			<classpath refid="xdoclet.classpath" />
-		</taskdef>
 
 		<!-- Execute the hibernatedoclet task -->
 		<hibernatedoclet destdir="${src.dir}" excludedtags="@version,@author,@todo,@param,@return" force="${generateforce}" mergedir="${src.dir}" verbose="false">
@@ -769,7 +774,7 @@
 			<jar basedir="${javadoc.dir}" destfile="${javadoc.dir}/${javadoc.zip}" />
 		</target>
 
-        <target name="dist" depends="generate_schema" description="Creates the distribution unit"></target>
+        <target name="dist" depends="postResolve, generate_schema" description="Creates the distribution unit"></target>
 
 
 		<target name="create_installable_zip" depends="build_app_war">
@@ -1156,7 +1161,6 @@
 			</fileset>
 		</path>
 
-		<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
 		<target name="checkout_test_model">
 			<delete dir="${basedir}/CPUML" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="software/DynamicExtentions/src/test/resources"/>
-	<classpathentry kind="src" path="software/DynamicExtentionssrc/main/resources"/>
+	<classpathentry kind="src" path="software/DynamicExtentions/src/main/resources"/>
 	<classpathentry kind="src" path="software/DynamicExtentions/src/main/java"/>
 	<classpathentry kind="src" path="software/DynamicExtentions/src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

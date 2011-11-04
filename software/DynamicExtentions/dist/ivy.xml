@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0">
-	<info organisation="gov.nih.nci.catissue" module="DynamicExtensions" revision="1.5.0" status="release" />
+	<info organisation="gov.nih.nci.dynamicextension" module="DynamicExtensions" revision="1.5.0" status="release" />
 	<publications>
 		<artifact name="cawebeav" ext="jar" type="jar" />
 		<artifact name="dynamicExtensions" ext="war" type="war" />

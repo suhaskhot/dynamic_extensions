@@ -1,5 +1,11 @@
 <ivy-module version="2.0">
-    <info organisation="gov.nih.nci.catissue" module="dynamic-extensions"/>
+	<info organisation="gov.nih.nci.catissue" module="dynamic-extensions" revision="${DynamicExtensions.jar.version}" status="integration" />
+	<publications>
+		<artifact name="cawebeav" ext="jar" type="jar" />
+		<artifact name="dynamicExtensions" ext="war" type="war" />
+		<artifact name="dynamic-extensions" ext="pom" type="pom" />
+	</publications>
+	
     <dependencies>
 
 <!--

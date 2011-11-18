@@ -52,6 +52,7 @@ import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
+import edu.common.dynamicextensions.util.parser.ImportPermissibleValues;
 import edu.common.dynamicextensions.xmi.AnnotationUtil;
 import edu.common.dynamicextensions.xmi.DynamicQueryList;
 import edu.common.dynamicextensions.xmi.PathObject;
@@ -106,6 +107,7 @@ public abstract class AbstractXMIImporter
 	private String packageName = "";
 	private String pathCsvFileName = "";
 	private String coRecObjCsvFName = "";
+	private String pvFile="";
 
 	private String hookEntityName = "";
 	private final Set<AssociationInterface> intermodelAssociationCollection = new HashSet<AssociationInterface>();
@@ -196,7 +198,14 @@ public abstract class AbstractXMIImporter
 			LOGGER.info("Now associating the clinical study to the main Containers");
 			postProcess(isEditedXmi, coRecObjCsvFName, mainContainerList, domainModelName);
 			generateValidationLogs();
-
+			//import pv offline 
+			//Specify pv file path as -Dpv.file.name
+			//Sanjay Sengupta
+			if(!pvFile.equals(""))
+			{
+				ImportPermissibleValues.main(new String[] {pvFile});
+				
+			}
 		}
 		catch (Exception e)
 		{
@@ -509,6 +518,10 @@ public abstract class AbstractXMIImporter
 		if (args.length > 7 && args[7].trim().length() > 0)
 		{
 			Variables.serverUrl = args[7];
+		}
+		if (args.length > 8 && args[8].trim().length() > 0)
+		{
+			pvFile = args[8];
 		}
 	}
 

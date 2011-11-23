@@ -808,13 +808,23 @@ function controlSelected(rowId,colId)
 
 function ruleSelected(ruleObject)
 {
-    if(ruleObject.value == 'range')
+    if(ruleObject.value == 'dateRange')
     {
-        if(ruleObject.checked ==false)
+		var minElement = document.getElementById('min');
+		var maxElement = document.getElementById('max');
+		
+        if(ruleObject.checked)
         {
-            document.getElementById('min').value='';
-            document.getElementById('max').value='';
+            minElement.readOnly=false;
+            maxElement.readOnly=false;
         }
+		else
+		{
+			minElement.value='';
+            maxElement.value='';
+			minElement.readOnly='true';
+            maxElement.readOnly='true';
+		}
     }
 }
 

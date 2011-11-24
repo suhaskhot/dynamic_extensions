@@ -121,13 +121,13 @@
 															<input  type="button" value="Add Form" disabled>
 														</td>
 													</tr>
-													<tr height='15%'>
+													<tr height='80%'>
 														<td>
+															<!-- Changes For Bug 21143 -->
 															<label class="formMessage"><%=groupName%></label>
-															<div style="border:solid 0px; padding:1px; width:250px; height:100%; overflow:auto;" id="currentEntityTreeDiv" />
+															<div style="border:solid 0px; padding:1px; width:250px; height:90%; overflow:auto; overflow-x:auto;overflow-y:auto;" id="currentEntityTreeDiv" />
 														</td>
 													</tr>
-													<tr height='80%'><td>&nbsp;</td></tr>
 												</table>
 											</td>
 											<td width="80%" height='100%'>

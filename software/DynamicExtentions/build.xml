@@ -282,8 +282,8 @@
 
 	<!-- Creates the Dynamic Extensions zip of the application -->
 	<target name="create_dynamic_extensions_zip" depends="create_dyn_ext_interface_jar,version_info,init_zip">
-		<delete file="../binaries/dynamicextensions.zip" />
-		<zip destfile="../binaries/dynamicextensions.zip">
+		<delete file="./binaries/dynamicextensions.zip" />
+		<zip destfile="./binaries/dynamicextensions.zip">
 			<fileset dir="${temp.dir}">
 				<include name="**/*" />
 			</fileset>
@@ -371,7 +371,7 @@
 		<copy todir="${temp.dir}/web/conf" file="${basedir}/conf/dynamicextensions-struts-config.xml"></copy>
 		<copy todir="${temp.dir}/META-INF" file="${basedir}/binaries/META-INF/MANIFEST.MF"></copy>
 		<copy todir="${temp.dir}/web/taglibs" file="${basedir}/src/main/web/taglibs/dynamicExtensions.tld"></copy>
-		<copy todir="${temp.dir}/binaries/DynamicExtensionsInterface" file="../binaries/DynamicExtensionsInterface/DynamicExtensions.jar">
+		<copy todir="${temp.dir}/binaries/DynamicExtensionsInterface" file="./binaries/DynamicExtensionsInterface/DynamicExtensions.jar">
 		</copy>
 	</target>
 
@@ -774,7 +774,7 @@
 			<jar basedir="${javadoc.dir}" destfile="${javadoc.dir}/${javadoc.zip}" />
 		</target>
 
-        <target name="dist" depends="postResolve, generate_schema" description="Creates the distribution unit"></target>
+        <target name="dist" depends="postResolve, create.de.zip" description="Creates the distribution unit"></target>
 
 
 		<target name="create_installable_zip" depends="build_app_war">
@@ -1403,14 +1403,23 @@
 
 		<!-- DE release target start -->
 		<target name="de.release" depends="create_dynamic_extensions_zip,build.formCreator.zip">
-			<copy file="../binaries/dynamicextensions.zip" todir="${de_release_dir}" overwrite="true" />
-			<copy file="../binaries/DynamicExtensionsInterface/DynamicExtensions.jar" todir="${de_release_dir}" overwrite="true" />
-			<copy file="../binaries/clientFormCreator.zip" todir="${de_release_dir}" overwrite="true" />
-			<copy file="../binaries/DEDeploy.xml" todir="${de_release_dir}" overwrite="true" />
+			<copy file="./binaries/dynamicextensions.zip" todir="${de_release_dir}" overwrite="true" />
+			<copy file="./binaries/DynamicExtensionsInterface/DynamicExtensions.jar" todir="${de_release_dir}" overwrite="true" />
+			<copy file="./binaries/clientFormCreator.zip" todir="${de_release_dir}" overwrite="true" />
+			<copy file="./binaries/DEDeploy.xml" todir="${de_release_dir}" overwrite="true" />
 		</target>
-
-
-
+		
+		<!-- DE release target start -->
+		<target name="create.de.zip" depends="create_dynamic_extensions_zip,build.formCreator.zip">
+			<delete file="${dist.dir}/dynamicextensions.zip" />
+			<copy file="./binaries/dynamicextensions.zip" todir="${dist.dir}" overwrite="true" />
+			<delete file="${dist.dir}/DynamicExtensions.jar" />
+			<copy file="./binaries/DynamicExtensionsInterface/DynamicExtensions.jar" todir="${dist.dir}" overwrite="true" />
+			<delete file="${dist.dir}/clientFormCreator.zip" />
+			<copy file="./binaries/clientFormCreator.zip" todir="${dist.dir}" overwrite="true" />
+			<copy file="./binaries/DEDeploy.xml" todir="${dist.dir}" overwrite="true" />
+		</target>
+		
 		<!-- DE release target end-->
 
 		<target name="create_junit_reports_for_release" description="copies junit report">
@@ -1453,8 +1462,8 @@
 		</target>
 
 		<target name="build.formCreator.zip" depends="build.formCreator.jar,version_info">
-			<delete file="../binaries/clientFormCreator.zip" />
-			<zip destfile="../binaries/clientFormCreator.zip">
+			<delete file="./binaries/clientFormCreator.zip" />
+			<zip destfile="./binaries/clientFormCreator.zip">
 				<fileset dir="${client.jar.dir}">
 					<include name="clientFormCreator.jar" />
 				</fileset>

@@ -17,6 +17,7 @@
       <artifact name="c3p0-0.8.5.2" ext="jar" type="jar"/>
       <artifact name="c3p0-0.9.0" ext="jar" type="jar"/>
       <artifact name="cab2bStandAlone" ext="jar" type="jar"/>
+	  <artifact name="caCORESDK" ext="zip" type="zip"/>
       <artifact name="cactus-1.6.1" ext="jar" type="jar"/>
       <artifact name="cactus-ant-1.6.1" ext="jar" type="jar"/>
       <artifact name="caGrid-1.0-data-stubs" ext="jar" type="jar"/>

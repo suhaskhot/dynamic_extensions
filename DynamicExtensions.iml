@@ -1,6 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="true">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/activation-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-antlr-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-antlr-1.6.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-contrib-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-junit-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-optional-1.5.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/antlr-2.7.5H3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/asm-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/asm-attrs-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/aspectjrt-1.1.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/axis-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/bulkoperator-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.8.4.5-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.8.5.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.9.0-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cab2bStandAlone-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cactus-1.6.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cactus-ant-1.6.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-1.0-data-stubs-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-1.0-metadata-common-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-core-1.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-syncgts-common-1.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-syncgts-stubs-1.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/castor-1.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/castor-1.3-core-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/catissue_domain-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cglib-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cglib-2.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/checkstyle-all-3.4-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/checkstyle-all-4.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/client-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cobertura-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/codegen-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cog-jglobus-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commonpackage-1.2.7-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-beanutils-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-collections-2.1.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-digester-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-discovery-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-fileupload-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-fileupload-1.2.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-httpclient-2.0-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-io-1.4-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-lang-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-logging-1.0.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-logging-1.0.4-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-net-1.2.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-validator-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/csmapi-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/custom_rhino-0.4.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/DAO-1.1.9.9-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/db2jcc_license_cu-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/db2jcc-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/dom4j-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/dom4j-1.6-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ehcache-1.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ehcache-1.2.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ext-1.1.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/hibernate-tools-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/hibernate3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/httpunit-1.5.4-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaas-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jakarta-oro-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jax-qname-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxen-core-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxen-jdom-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxrpc-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-common-jdbc-wrapper-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-j2ee-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jcs-1.0-dev-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jdom-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jep-2.4.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jmi-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jmiutils-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/js-engine-1.1-jdk14-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/json-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/json-lib-0.7.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jsr173_api-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jstl-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jta-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/junit-3.8.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/log4j-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/lucene-core-2.0.0-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mail-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mdrapi-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mof-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mysql-connector-java-3.0.16-ga-bin-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mysql-connector-java-5.0.8-bin-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/namespace-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/nbmdr-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/nekohtml-0.7.4-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/odmg-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ojdbc14-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/opencsv-1.8-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/openide-lookup-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/openide-util-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/oracleDriver-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/org-netbeans-graph-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/plugin-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/postgresql-8.1-405.jdbc3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/query-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/relaxngDatatype-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/saaj-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/saxpath-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/script-api-1.0-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/sdkClient-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servlet-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servlet-api-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servletapi-2.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/SimpleQuery-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/SimpleQuery-1.1.8-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/smtp-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/sqljdbc-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/standard-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/Stinger-2.6.1-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/struts-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/struts-legacy-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/strutstest-2.1.3-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/titli-washu-1.0-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/uml-1.4-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/uml2mof-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/washu-commons-1.1.8-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/wsrf_core-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xalan-2.4.0-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-1.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-hibernate-module-1.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-xdoclet-module-1.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xerces-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xjavadoc-1.0.2-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xml-apis-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xsdlib-1.0.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/software/DynamicExtentions/src/test/resources" expected_position="0" />
+      <src_folder value="file://$MODULE_DIR$/software/DynamicExtentions/src/main/resources" expected_position="1" />
+      <src_folder value="file://$MODULE_DIR$/software/DynamicExtentions/src/main/java" expected_position="2" />
+      <src_folder value="file://$MODULE_DIR$/software/DynamicExtentions/src/test/java" expected_position="3" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/software/DynamicExtentions/conf" isTestSource="false" />
@@ -8,389 +149,13 @@
       <sourceFolder url="file://$MODULE_DIR$/software/DynamicExtentions/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/software/DynamicExtentions/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/software/DynamicExtentions/src/test/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/software/DynamicExtentions/src/test/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/software/DynamicExtentions/src/test/java" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/oracleDriver-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-j2ee-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jsr173_api-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jakarta-oro-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xalan-2.4.0-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-beanutils-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/db2jcc-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/csmapi-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-1.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/struts-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-1.0-data-stubs-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/js-engine-1.1-jdk14-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-optional-1.5.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/client-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servlet-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/opencsv-1.8-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/dom4j-1.6-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servlet-api-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-validator-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxrpc-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ehcache-1.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cactus-1.6.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-contrib-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ehcache-1.2.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/postgresql-8.1-405.jdbc3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-1.0-metadata-common-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/catissue_domain-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/nekohtml-0.7.4-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/custom_rhino-0.4.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-common-jdbc-wrapper-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ext-1.1.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/nbmdr-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cobertura-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-core-1.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mof-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-discovery-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/standard-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/json-lib-0.7.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-fileupload-1.2.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jta-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/openide-util-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mail-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
+      <library name="activation-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/activation-1.0.jar!/" />
         </CLASSES>
@@ -399,16 +164,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxen-jdom-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
+      <library name="ant-antlr-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-antlr-1.0.jar!/" />
         </CLASSES>
@@ -417,664 +173,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-syncgts-stubs-1.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ojdbc14-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-httpclient-2.0-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/asm-attrs-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/antlr-2.7.5H3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/wsrf_core-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/strutstest-2.1.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-digester-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cactus-ant-1.6.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commonpackage-1.2.7-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-collections-2.1.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/plugin-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/SimpleQuery-1.1.8-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/openide-lookup-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/namespace-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-net-1.2.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/DAO-1.1.9.9-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/saxpath-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xjavadoc-1.0.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/Stinger-2.6.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-junit-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/query-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jax-qname-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cglib-2.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servletapi-2.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/odmg-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cglib-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mdrapi-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/org-netbeans-graph-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xml-apis-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jdom-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-logging-1.0.4-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-lang-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mysql-connector-java-5.0.8-bin-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/titli-washu-1.0-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.8.5.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaas-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/log4j-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/uml-1.4-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/axis-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/smtp-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/hibernate-tools-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/saaj-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/db2jcc_license_cu-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-xdoclet-module-1.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/aspectjrt-1.1.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mysql-connector-java-3.0.16-ga-bin-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/checkstyle-all-4.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/hibernate3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/castor-1.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cog-jglobus-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xerces-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/washu-commons-1.1.8-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jstl-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/junit-3.8.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/asm-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jmi-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-io-1.4-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.8.4.5-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/sdkClient-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cab2bStandAlone-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/struts-legacy-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/json-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-logging-1.0.3-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jcs-1.0-dev-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/checkstyle-all-3.4-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/bulkoperator-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/httpunit-1.5.4-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-hibernate-module-1.2-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/castor-1.3-core-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jep-2.4.1-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxen-core-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/relaxngDatatype-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
+      <library name="ant-antlr-1.6.3-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-antlr-1.6.3-1.0.jar!/" />
         </CLASSES>
@@ -1083,25 +182,106 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="ant-contrib-1.0.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/script-api-1.0-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-contrib-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="ant-junit-1.0.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jmiutils-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-junit-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="ant-optional-1.5.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ant-optional-1.5.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="antlr-2.7.5H3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/antlr-2.7.5H3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="asm-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/asm-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="asm-attrs-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/asm-attrs-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="aspectjrt-1.1.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/aspectjrt-1.1.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="axis-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/axis-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="bulkoperator-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/bulkoperator-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="c3p0-0.8.4.5-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.8.4.5-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="c3p0-0.8.5.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.8.5.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="c3p0-0.9.0-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/c3p0-0.9.0-1.0.jar!/" />
         </CLASSES>
@@ -1110,7 +290,61 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="cab2bStandAlone-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cab2bStandAlone-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cactus-1.6.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cactus-1.6.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cactus-ant-1.6.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cactus-ant-1.6.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="caGrid-1.0-data-stubs-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-1.0-data-stubs-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="caGrid-1.0-metadata-common-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-1.0-metadata-common-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="caGrid-core-1.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-core-1.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="caGrid-syncgts-common-1.2-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-syncgts-common-1.2-1.0.jar!/" />
         </CLASSES>
@@ -1119,7 +353,97 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="caGrid-syncgts-stubs-1.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/caGrid-syncgts-stubs-1.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="castor-1.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/castor-1.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="castor-1.3-core-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/castor-1.3-core-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="catissue_domain-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/catissue_domain-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cglib-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cglib-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cglib-2.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cglib-2.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="checkstyle-all-3.4-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/checkstyle-all-3.4-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="checkstyle-all-4.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/checkstyle-all-4.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="client-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/client-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cobertura-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cobertura-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="codegen-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/codegen-1.0.jar!/" />
         </CLASSES>
@@ -1128,34 +452,61 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="cog-jglobus-1.0.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/sqljdbc-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/cog-jglobus-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="commonpackage-1.2.7-1.0.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xsdlib-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commonpackage-1.2.7-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="commons-beanutils-1.0.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/SimpleQuery-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-beanutils-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="commons-collections-2.1.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-collections-2.1.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-digester-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-digester-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-discovery-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-discovery-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-fileupload-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-fileupload-1.0.jar!/" />
         </CLASSES>
@@ -1164,7 +515,124 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="commons-fileupload-1.2.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-fileupload-1.2.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-httpclient-2.0-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-httpclient-2.0-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-io-1.4-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-io-1.4-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-lang-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-lang-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-logging-1.0.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-logging-1.0.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-logging-1.0.4-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-logging-1.0.4-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-net-1.2.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-net-1.2.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-validator-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/commons-validator-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="csmapi-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/csmapi-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="custom_rhino-0.4.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/custom_rhino-0.4.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="DAO-1.1.9.9-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/DAO-1.1.9.9-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="db2jcc_license_cu-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/db2jcc_license_cu-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="db2jcc-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/db2jcc-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="dom4j-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/dom4j-1.0.jar!/" />
         </CLASSES>
@@ -1173,16 +641,124 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="dom4j-1.6-1.0.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/uml2mof-1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/dom4j-1.6-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="ehcache-1.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ehcache-1.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ehcache-1.2.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ehcache-1.2.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ext-1.1.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ext-1.1.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="hibernate-tools-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/hibernate-tools-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="hibernate3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/hibernate3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="httpunit-1.5.4-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/httpunit-1.5.4-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jaas-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaas-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jakarta-oro-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jakarta-oro-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jax-qname-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jax-qname-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jaxen-core-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxen-core-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jaxen-jdom-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxen-jdom-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jaxrpc-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jaxrpc-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jboss-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-1.0.jar!/" />
         </CLASSES>
@@ -1191,9 +767,576 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library>
+      <library name="jboss-common-jdbc-wrapper-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-common-jdbc-wrapper-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jboss-j2ee-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jboss-j2ee-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jcs-1.0-dev-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jcs-1.0-dev-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jdom-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jdom-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jep-2.4.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jep-2.4.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jmi-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jmi-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jmiutils-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jmiutils-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="js-engine-1.1-jdk14-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/js-engine-1.1-jdk14-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="json-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/json-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="json-lib-0.7.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/json-lib-0.7.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jsr173_api-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jsr173_api-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jstl-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jstl-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jta-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/jta-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="junit-3.8.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/junit-3.8.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/log4j-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lucene-core-2.0.0-1.0.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/lucene-core-2.0.0-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mail-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mail-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mdrapi-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mdrapi-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mof-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mof-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mysql-connector-java-3.0.16-ga-bin-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mysql-connector-java-3.0.16-ga-bin-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="mysql-connector-java-5.0.8-bin-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/mysql-connector-java-5.0.8-bin-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="namespace-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/namespace-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="nbmdr-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/nbmdr-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="nekohtml-0.7.4-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/nekohtml-0.7.4-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="odmg-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/odmg-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ojdbc14-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/ojdbc14-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="opencsv-1.8-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/opencsv-1.8-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="openide-lookup-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/openide-lookup-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="openide-util-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/openide-util-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="oracleDriver-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/oracleDriver-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org-netbeans-graph-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/org-netbeans-graph-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="plugin-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/plugin-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="postgresql-8.1-405.jdbc3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/postgresql-8.1-405.jdbc3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="query-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/query-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="relaxngDatatype-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/relaxngDatatype-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="saaj-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/saaj-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="saxpath-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/saxpath-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="script-api-1.0-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/script-api-1.0-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="sdkClient-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/sdkClient-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="servlet-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servlet-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="servlet-api-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servlet-api-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="servletapi-2.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/servletapi-2.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="SimpleQuery-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/SimpleQuery-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="SimpleQuery-1.1.8-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/SimpleQuery-1.1.8-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="smtp-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/smtp-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="sqljdbc-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/sqljdbc-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="standard-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/standard-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Stinger-2.6.1-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/Stinger-2.6.1-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="struts-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/struts-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="struts-legacy-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/struts-legacy-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="strutstest-2.1.3-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/strutstest-2.1.3-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="titli-washu-1.0-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/titli-washu-1.0-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="uml-1.4-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/uml-1.4-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="uml2mof-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/uml2mof-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="washu-commons-1.1.8-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/washu-commons-1.1.8-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="wsrf_core-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/wsrf_core-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xalan-2.4.0-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xalan-2.4.0-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xdoclet-1.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-1.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xdoclet-hibernate-module-1.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-hibernate-module-1.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xdoclet-xdoclet-module-1.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xdoclet-xdoclet-module-1.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xerces-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xerces-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xjavadoc-1.0.2-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xjavadoc-1.0.2-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xml-apis-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xml-apis-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xsdlib-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/software/DynamicExtentions/lib/xsdlib-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

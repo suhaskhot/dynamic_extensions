@@ -11,6 +11,7 @@ $HeadURL: http://gforge.nci.nih.gov/svnroot/automation/trunk/software/utils/bda-
 	<property name="bda-utils.resource.dir" location="${bda-utils.dir}/resource"/>
  	<property name="antunit.jar" value="antunit-1.0.jar"/>
 	<property name="template.dbintegrate.file" location="${bda-utils.resource.dir}/template-db-integrate.xml"/>
+	<property name="require.build.wscore" value="false" />
 
 	<!-- Supported versions -->
 	<property name="jboss.version.min" value="4.0.4"/>

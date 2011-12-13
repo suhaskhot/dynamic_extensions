@@ -548,16 +548,12 @@ public final class DataValueMapUtility
 		}
 		else
 		{
-			if (value instanceof Date)
+			AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) attributeInterface
+					.getAbstractAttribute()).getAttributeTypeInformation();
+			if (attributeTypeInformationInterface instanceof DateAttributeTypeInformation)
 			{
-				AttributeTypeInformationInterface attributeTypeInformationInterface = ((AttributeInterface) attributeInterface
-						.getAbstractAttribute()).getAttributeTypeInformation();
-				String format = DynamicExtensionsUtility
-						.getDateFormat(((DateAttributeTypeInformation) attributeTypeInformationInterface)
-								.getFormat());
-				DateFormat formatter = new SimpleDateFormat(format);
-				String formatedDate = formatter.format(value);
-				attributeToValueMap.put(attributeInterface, formatedDate);
+				
+				attributeToValueMap.put(attributeInterface, value.toString());
 			}
 			else
 			{

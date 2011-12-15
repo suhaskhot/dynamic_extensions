@@ -100,6 +100,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
+import edu.common.dynamicextensions.xmi.transformer.XMITransformerCaCORE42;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
@@ -716,9 +717,18 @@ public class XMIExporter
 						|| (associationType.equals(XMIConstants.ASSOC_ONE_MANY)))
 				{
 
-					getForeignKeyAttribute(association.getTargetEntity(), constraintProperties
-							.getTgtEntityConstraintKeyPropertiesCollection(), association
-							.getSourceRole().getName());
+					if(associationType.equals(XMIConstants.ASSOC_ONE_MANY))
+					{
+						getForeignKeyAttribute1(association.getTargetEntity(), constraintProperties
+								.getTgtEntityConstraintKeyPropertiesCollection(), association
+								.getSourceRole().getName());
+							
+					}else
+					{
+						getForeignKeyAttribute(association.getTargetEntity(), constraintProperties
+								.getTgtEntityConstraintKeyPropertiesCollection(), association
+								.getSourceRole().getName());
+					}
 					//One-One OR One-Many source will have primary key, target has foreign key
 					/*sourceRole.setName(getPrimaryKeyOperationName(
 							association.getEntity().getName(), constraintProperties
@@ -740,9 +750,9 @@ public class XMIExporter
 				}
 				else if (associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 				{
-					getForeignKeyAttribute(association.getEntity(), constraintProperties
-							.getSrcEntityConstraintKeyPropertiesCollection(), association
-							.getTargetRole().getName());
+					getForeignKeyAttribute(association.getTargetEntity(), constraintProperties
+							.getTgtEntityConstraintKeyPropertiesCollection(), association
+							.getSourceRole().getName());
 					//Many-One source will have foreign key, target primary key
 					/*sourceRole.setName(getForeignkeyOperationName(constraintProperties
 							.getTgtEntityConstraintKeyProperties()
@@ -839,6 +849,65 @@ public class XMIExporter
 		return null;
 	}
 
+	/**
+	 * @param foreignKeyEntity
+	 * @param cnstKeyPropColl
+	 * @param implementedAssociationName
+	 * @return null
+	 * @throws DataTypeFactoryInitializationException
+	 */
+	@SuppressWarnings("unchecked")
+	private Attribute getForeignKeyAttribute1(final EntityInterface foreignKeyEntity,
+			final Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl,
+			final String implementedAssociationName) throws DataTypeFactoryInitializationException
+	{
+		final Classifier foreignKeySQLClass = getSQLClassForEntity(foreignKeyEntity.getName());
+		String columnName;
+		for (final ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
+		{
+			columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+			Attribute foreignKeyAttribute = searchAttribute(foreignKeySQLClass, columnName);
+			final EntityInterface primaryKeyEntity = cnstrKeyProp.getSrcPrimaryKeyAttribute()
+					.getEntity();
+			//Create attribute if does not exist
+			if (foreignKeyAttribute == null)
+			{
+				//Datatype of foreign key and prmary key will be same
+				//AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
+				final AttributeInterface primaryKeyAttr = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+				foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
+				foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
+				//Add foreign key operation
+				foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+			}
+			String implementedAssociation;
+			//TODO  check
+			if (XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
+			{
+				implementedAssociation = packageName + XMIConstants.COLON_SEPARATOR
+						+ foreignKeyEntity.getName() + XMIConstants.COLON_SEPARATOR
+						+ implementedAssociationName + XMIConstants.COLON_SEPARATOR + columnName
+						+ XMIConstants.COLON_SEPARATOR + primaryKeyEntity.getName();
+			}
+			else
+			{
+				implementedAssociation = packageName + XMIConstants.DOT_SEPARATOR
+						+ foreignKeyEntity.getName() + XMIConstants.DOT_SEPARATOR
+						+ implementedAssociationName;
+			}
+			if (foreignKeyAttribute != null)
+			{
+				foreignKeyAttribute.getTaggedValue().add(
+						createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
+								implementedAssociation));
+				foreignKeyAttribute.getTaggedValue().add(
+						createTaggedValue(XMIConstants.TAGGED_VALUE_INVERSE_OF,
+								implementedAssociation));
+			}
+		}
+
+		return null;
+	}
 	/**
 	 * @param constraintProperties
 	 * @throws DataTypeFactoryInitializationException
@@ -959,6 +1028,9 @@ public class XMIExporter
 			coRelationAttribute.getTaggedValue().add(
 					createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
 							srcAttribImplementedAssocn));
+			coRelationAttribute.getTaggedValue().add(
+					createTaggedValue(XMIConstants.TAGGED_VALUE_INVERSE_OF,
+							srcAttribImplementedAssocn));
 			corelationTableFeatures.add(coRelationAttribute);
 			final String foreignKeyOprName = generateForeignkeyOperationName(association
 					.getTargetEntity().getName(), constraintProperties.getName());
@@ -986,6 +1058,9 @@ public class XMIExporter
 			}
 			coRelationAttribute.getTaggedValue().add(
 					createTaggedValue(XMIConstants.TAGGED_VALUE_IMPLEMENTS_ASSOCIATION,
+							targetAttribImplementedAssocn));
+			coRelationAttribute.getTaggedValue().add(
+					createTaggedValue(XMIConstants.TAGGED_VALUE_INVERSE_OF,
 							targetAttribImplementedAssocn));
 			corelationTableFeatures.add(coRelationAttribute);
 			final String foreignKeyOprName = generateForeignkeyOperationName(constraintProperties
@@ -1872,6 +1947,8 @@ public class XMIExporter
 				{
 					umlAssociation.getTaggedValue().add(directionTaggedValue);
 				}
+				
+				addEagarLoadingTaggedValue(umlAssociation,association);
 				//If association is many-to-many add "correlation-table" tagged value
 				if (XMIConstants.ASSOC_MANY_MANY.equals(getAssociationType(association))
 						&& (association.getConstraintProperties() != null))
@@ -1885,6 +1962,52 @@ public class XMIExporter
 			}
 		}
 		return umlAssociation;
+	}
+
+	/**
+	 * Tag Value: NCI_EAGER_LOAD A tag value assigned to an Association element
+	 * (link) between two Logical Model classes. The NCI_EAGER_LOAD tag value
+	 * has a converse meaning of the now obsolete SDK lazy-load tag value. The
+	 * NCI_EAGER_LOAD tag value is used to set the "lazy" attribute in the SDK
+	 * generated hibernate mapping files. If the NCI_EAGER_LOAD tag value is set
+	 * to "true" or "yes", it actually indicates that the "lazy" attribute
+	 * should be set to "false"; i.e., to say that an association is eagerly
+	 * loaded, is the opposite of saying that an association is lazily loaded.
+	 * Any other value (including "no") for the NCI_EAGER_LOAD tag value will
+	 * cause the "lazy" attribute within the corrsesponding hibernate mapping
+	 * file to be set to either "true" or "proxy", as detailed below.
+	 * 
+	 * The Hibernate mapping file "lazy" attribute is set to "proxy" (vs.
+	 * "true") for the following scenarios where NCI_EAGER_LOAD tag value has
+	 * been set to "no":
+	 * 
+	 * Many-to-One One-to-One
+	 * 
+	 * It is set to "true" for the other remaining scenarios where
+	 * NCI_EAGER_LOAD has been set to "no".
+	 * 
+	 * The NCI_EAGER_LOAD tag value, when applied to a Logical Model Association
+	 * element (link), must be specified using the following pattern:
+	 * 
+	 * Tag: NCI_EAGER_LOAD#<fully-qualified logical model class name>.<attribute
+	 * name> Value: <yes | no>
+	 * 
+	 * No example is provided with the SDK sample models.
+	 * 
+	 * @param umlAssociation
+	 * @param association
+	 */
+	private void addEagarLoadingTaggedValue(UmlAssociation umlAssociation, AssociationInterface association) {
+
+
+		TaggedValue 
+			eagerLoadingTag = createTaggedValue(XMIConstants.TAGGED_NAME_ASSOC_NCI_EAGER_LOAD+
+					'#'+packageName + XMIConstants.DOT_SEPARATOR
+					+ association.getEntity().getName() + XMIConstants.DOT_SEPARATOR
+					+ association.getTargetRole().getName(),
+					Boolean.TRUE.toString());
+		umlAssociation.getTaggedValue().add(eagerLoadingTag);
+		
 	}
 
 	/***
@@ -2710,12 +2833,12 @@ public class XMIExporter
 	 * args[3]=hook entity name
 	 * @param args arguments array
 	 */
-	public static void main(final String[] args)
+	public static void main(String[] args)
 	{
 
+		args = new String[]{"testModel2","E:/installable/cacoresdk.4.2/example-project/models/testModel.xmi","1.1"};
 		try
 		{
-			int argsLength = args.length;
 			final XMIExporter xmiExporter = new XMIExporter();
 			if (args != null && args.length > 2)
 			{
@@ -2729,6 +2852,11 @@ public class XMIExporter
 				xmiExporter.retrieveAllEntityGroups();
 				xmiExporter.exportAllXMI();
 			}
+			
+			LOGGER.info("Transforming xmi to caCORE 4.2 compatible");
+			XMITransformerCaCORE42 transformer = new XMITransformerCaCORE42(args[1]);
+			transformer.transform();
+
 
 		}
 		catch (final Exception e)

@@ -32,6 +32,7 @@ import edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInte
 import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.CheckBoxInterface;
@@ -42,7 +43,12 @@ import edu.common.dynamicextensions.domaininterface.userinterface.FileUploadInte
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.MultiSelectInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.SelectInterface;
+import edu.common.dynamicextensions.entitymanager.CategoryManager;
+import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
+import edu.common.dynamicextensions.entitymanager.FileQueryBean;
 import edu.common.dynamicextensions.entitymanager.FileUploadManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -587,28 +593,27 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			DynamicExtensionsSystemException, MalformedURLException
 	{
 		Long recordIdentifier = null;
-		String entityGroupName = null;
-		if (container.getAbstractEntity() instanceof EntityInterface)
+
+		if (container.getAbstractEntity() instanceof CategoryEntityInterface)
 		{
-			entityGroupName = ((Entity) container.getAbstractEntity()).getEntityGroup().getName();
+			CategoryInterface categoryInterface = ((CategoryEntityInterface) container
+					.getAbstractEntity()).getCategory();
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			Long categoryRecordId = categoryManager.insertData(categoryInterface,
+					attributeValueMap, sessionDataBean, userId);
+			recordIdentifier = categoryManager.getEntityRecordIdByRootCategoryEntityRecordId(
+					categoryRecordId, categoryInterface.getRootCategoryElement()
+							.getTableProperties().getName());
 		}
 		else
 		{
-			entityGroupName = ((CategoryEntityInterface) container.getAbstractEntity()).getEntity()
-					.getEntityGroup().getName();
+			Map map = attributeValueMap;
+			EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
+			recordIdentifier = entityManagerInterface.insertData((EntityInterface) container
+					.getAbstractEntity(), map, null, new ArrayList<FileQueryBean>(),
+					sessionDataBean, userId);
 		}
-		Map<String, Object> clientmap = new HashMap<String, Object>();
-		DataEntryClient dataEntryClient = new DataEntryClient();
-		clientmap.put(WebUIManagerConstants.RECORD_ID, recordIdentifier);
-		clientmap.put(WebUIManagerConstants.SESSION_DATA_BEAN, sessionDataBean);
-		clientmap.put(WebUIManagerConstants.USER_ID, userId);
-		clientmap.put(WebUIManagerConstants.CONTAINER, container);
-		clientmap.put(WebUIManagerConstants.DATA_VALUE_MAP, attributeValueMap);
-		dataEntryClient.setServerUrl(new URL(Variables.jbossUrl + entityGroupName + "/"));
-		dataEntryClient.setParamaterObjectMap(clientmap);
-		dataEntryClient.execute(null);
 
-		recordIdentifier = (Long) dataEntryClient.getObject();
 		return recordIdentifier.toString();
 	}
 
@@ -650,28 +655,31 @@ public class ApplyDataEntryFormProcessor extends BaseDynamicExtensionsProcessor
 			SessionDataBean sessionDataBean) throws DynamicExtensionsApplicationException,
 			DynamicExtensionsSystemException, SQLException, MalformedURLException
 	{
-		String entityGroupName = null;
+		boolean isEdited;
+
 		if (container.getAbstractEntity() instanceof EntityInterface)
 		{
-			entityGroupName = ((Entity) container.getAbstractEntity()).getEntityGroup().getName();
+			EntityManagerInterface entityManager = EntityManager.getInstance();
+			EntityInterface entity = (Entity) container.getAbstractEntity();
+			//Correct this:
+			Map map = attributeValueMap;
+
+			isEdited = entityManager.editData(entity, map, recordIdentifier, null,
+					new ArrayList<FileQueryBean>(), sessionDataBean, userId);
 		}
 		else
 		{
-			entityGroupName = ((CategoryEntityInterface) container.getAbstractEntity()).getEntity()
-					.getEntityGroup().getName();
+			CategoryInterface categoryInterface = ((CategoryEntityInterface) container
+					.getAbstractEntity()).getCategory();
+			CategoryManagerInterface categoryManager = CategoryManager.getInstance();
+			Long categoryRecordId = categoryManager.getRootCategoryEntityRecordIdByEntityRecordId(
+					recordIdentifier, categoryInterface.getRootCategoryElement()
+							.getTableProperties().getName());
+			isEdited = CategoryManager.getInstance().editData(
+					(CategoryEntityInterface) container.getAbstractEntity(), attributeValueMap,
+					categoryRecordId, sessionDataBean, userId);
 		}
-		Map<String, Object> clientmap = new HashMap<String, Object>();
-		DataEditClient dataEditClient = new DataEditClient();
-		clientmap.put(WebUIManagerConstants.RECORD_ID, recordIdentifier);
-		clientmap.put(WebUIManagerConstants.SESSION_DATA_BEAN, sessionDataBean);
-		clientmap.put(WebUIManagerConstants.USER_ID, userId);
-		clientmap.put(WebUIManagerConstants.CONTAINER, container);
-		clientmap.put(WebUIManagerConstants.DATA_VALUE_MAP, attributeValueMap);
-		dataEditClient.setServerUrl(new URL(Variables.jbossUrl + entityGroupName + "/"));
-		dataEditClient.setParamaterObjectMap(clientmap);
-		dataEditClient.execute(null);
-
-		return true;
+		return isEdited;
 	}
 
 	public Long getUserId()

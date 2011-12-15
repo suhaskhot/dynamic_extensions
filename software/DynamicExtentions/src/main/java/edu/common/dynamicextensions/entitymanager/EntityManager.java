@@ -4,8 +4,6 @@ package edu.common.dynamicextensions.entitymanager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +23,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.WordUtils;
 
-import edu.common.dynamicextensions.client.DataAssociationClient;
 import edu.common.dynamicextensions.domain.AbstractAttribute;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.Attribute;
@@ -52,11 +49,9 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterfa
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
@@ -72,7 +67,7 @@ import edu.wustl.dao.util.NamedQueryParam;
 import edu.wustl.metadata.util.DyExtnObjectCloner;
 
 /**
- *
+ * 
  * @author mandar_shidhore
  * @author kunal_kamble
  * @author rajesh_patil
@@ -136,8 +131,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		EntityManager.manager = entManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#getQueryBuilderInstance()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.AbstractMetadataManager#
+	 * getQueryBuilderInstance()
 	 */
 	@Override
 	protected DynamicExtensionBaseQueryBuilder getQueryBuilderInstance()
@@ -230,8 +228,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#preProcess(edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface, java.util.List, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#preProcess
+	 * (edu.common.dynamicextensions.domaininterface.
+	 * DynamicExtensionBaseDomainObjectInterface, java.util.List,
+	 * java.util.List)
 	 */
 	@Override
 	protected void preProcess(DynamicExtensionBaseDomainObjectInterface dyExtBsDmnObj,
@@ -258,8 +262,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#postProcess(java.util.List, java.util.List, java.util.Stack)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.AbstractMetadataManager#
+	 * postProcess(java.util.List, java.util.List, java.util.Stack)
 	 */
 	@Override
 	protected void postProcess(List<String> queries, List<String> revQueries,
@@ -284,8 +291,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return getDynamicQueryList(entity.getEntityGroup(), revQueries, queries);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.AbstractMetadataManager#LogFatalError(java.lang.Exception, edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.AbstractMetadataManager#
+	 * LogFatalError(java.lang.Exception,
+	 * edu.common.dynamicextensions.domaininterface.AbstractMetadataInterface)
 	 */
 	@Override
 	protected void logFatalError(Exception exception, AbstractMetadataInterface abstrMetadata)
@@ -402,8 +413,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByName(java.lang.String, edu.wustl.dao.HibernateDAO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getEntityByName(java.lang.String, edu.wustl.dao.HibernateDAO)
 	 */
 	public EntityInterface getEntityByName(String entityName, HibernateDAO hibernateDAO)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -548,8 +562,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				.toString());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityByIdentifier(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getEntityByIdentifier(java.lang.String)
 	 */
 	public EntityInterface getEntityByIdentifier(String identifier)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -558,8 +575,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return (EntityInterface) getObjectByIdentifier(EntityInterface.class.getName(), identifier);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllContainers()
 	 */
 	public Collection<ContainerInterface> getAllContainers()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -568,8 +588,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return getAllObjects(ContainerInterface.class.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainersByEntityGroupId(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllContainersByEntityGroupId(java.lang.Long)
 	 */
 	public Collection<ContainerInterface> getAllContainersByEntityGroupId(Long entGroupId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -580,8 +603,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return executeHQL("getAllContainersByEntityGroupId", substParams);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface,
+	 * java.util.Map, java.lang.Long[])
 	 */
 	/**
 	 * @deprecated Use {@link #insertData(EntityInterface,Map<AbstractAttributeInterface, Object>,HibernateDAO,List<FileQueryBean>,SessionDataBean,Long...)} instead
@@ -594,8 +622,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return insertData(entity, dataValue, hibernateDao, fileRecordQueryList, null, userId);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#insertData
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface,
+	 * java.util.Map, java.lang.Long[])
 	 */
 	public Long insertData(EntityInterface entity,
 			Map<AbstractAttributeInterface, Object> dataValue, HibernateDAO hibernateDao,
@@ -829,8 +862,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long, java.lang.Long[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface,
+	 * java.util.Map, java.lang.Long, java.lang.Long[])
 	 */
 	/**
 	 * @deprecated Use {@link #editData(EntityInterface,Map<AbstractAttributeInterface, ?>,Long,HibernateDAO,List<FileQueryBean>,SessionDataBean,Long...)} instead
@@ -844,8 +882,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 				userId);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData(edu.common.dynamicextensions.domaininterface.EntityInterface, java.util.Map, java.lang.Long, java.lang.Long[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#editData
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface,
+	 * java.util.Map, java.lang.Long, java.lang.Long[])
 	 */
 	public boolean editData(EntityInterface entity, Map<AbstractAttributeInterface, ?> dataValue,
 			Long recordId, HibernateDAO hibernateDao, List<FileQueryBean> fileRecordQueryList,
@@ -1380,8 +1423,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return value;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getRecordById(edu.common.dynamicextensions.domaininterface.EntityInterface,java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getRecordById
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface
+	 * ,java.lang.Long)
 	 */
 	public Map<AbstractAttributeInterface, Object> getRecordById(EntityInterface entity,
 			Long recordId) throws DynamicExtensionsSystemException,
@@ -1468,8 +1516,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return nameValueBeans;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeansByEntityGroupId(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllContainerBeansByEntityGroupId(java.lang.Long)
 	 */
 	public List<NameValueBean> getAllContainerBeansByEntityGroupId(Long entityGroupId)
 			throws DynamicExtensionsSystemException
@@ -1497,8 +1548,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return nameValueBeans;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerInformationObjects()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllContainerInformationObjects()
 	 */
 	public List<ContainerInformationObject> getAllContainerInformationObjects()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -1521,8 +1575,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return contInfObjects;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllContainerBeansMap()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllContainerBeansMap()
 	 */
 	public Map<String, String> getAllContainerBeansMap() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
@@ -1548,8 +1605,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return contBeans;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getChildrenEntities(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getChildrenEntities
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public Collection<EntityInterface> getChildrenEntities(EntityInterface entity)
 			throws DynamicExtensionsSystemException
@@ -1561,8 +1622,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return executeHQL("getChildrenEntities", substParams);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationByIdentifier(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAssociationByIdentifier(java.lang.Long)
 	 */
 	public AssociationInterface getAssociationByIdentifier(Long assoId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -1581,8 +1645,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return (AssociationInterface) assocations.iterator().next();
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getIncomingAssociations(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getIncomingAssociations
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public Collection<AssociationInterface> getIncomingAssociations(EntityInterface entity)
 			throws DynamicExtensionsSystemException
@@ -1597,8 +1665,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return assocations;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getIncomingAssociationIds(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getIncomingAssociationIds
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public Collection<Long> getIncomingAssociationIds(EntityInterface entity)
 			throws DynamicExtensionsSystemException
@@ -1612,8 +1684,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return assocations;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getContainerCaption(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getContainerCaption(java.lang.Long)
 	 */
 	public String getContainerCaption(Long containerId) throws DynamicExtensionsSystemException
 	{
@@ -1626,8 +1701,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return contCaptions.iterator().next().toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getCategoryCaption(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getCategoryCaption(java.lang.Long)
 	 */
 	public String getCategoryCaption(Long categoryId) throws DynamicExtensionsSystemException
 	{
@@ -1704,8 +1782,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entityIds;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#addAssociationColumn(edu.common.dynamicextensions.domaininterface.AssociationInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * addAssociationColumn
+	 * (edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
 	public void addAssociationColumn(AssociationInterface association)
 			throws DynamicExtensionsSystemException
@@ -1727,34 +1809,67 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#associateEntityRecords(edu.common.dynamicextensions.domaininterface.AssociationInterface, java.lang.Long, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * associateEntityRecords
+	 * (edu.common.dynamicextensions.domaininterface.AssociationInterface,
+	 * java.lang.Long, java.lang.Long)
 	 */
-	public void associateEntityRecords(AssociationInterface associationInterface,
-			Long sourceEntityRecordId, Long TargetEntityRecordId, SessionDataBean sessionDataBean)
+	public void associateEntityRecords(AssociationInterface association, Long sourceEntityRecordId,
+			Long TargetEntityRecordId, SessionDataBean sessionDataBean)
 			throws DynamicExtensionsSystemException
 	{
-		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put(WebUIManagerConstants.ASSOCIATION, getTempAssociation(associationInterface));
-		map.put(WebUIManagerConstants.STATIC_OBJECT_ID, sourceEntityRecordId);
-		map.put(WebUIManagerConstants.DYNAMIC_OBJECT_ID, TargetEntityRecordId);
-		map.put(WebUIManagerConstants.PACKAGE_NAME, getPackageName(associationInterface
-				.getTargetEntity(), ""));
-		map.put(WebUIManagerConstants.SESSION_DATA_BEAN, sessionDataBean);
-		DataAssociationClient associationClient = new DataAssociationClient();
+		HibernateDAO hibernateDao = null;
+		String tmpPackageName = getPackageName(association.getTargetEntity(), "");
 		try
 		{
-			associationClient.setServerUrl(new URL(Variables.jbossUrl
-					+ associationInterface.getTargetEntity().getEntityGroup().getName() + "/"));
+			hibernateDao = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+			Object staticEntity = hibernateDao.retrieveById(tmpPackageName
+					+ "."
+					+ association.getEntity().getName().substring(
+							association.getEntity().getName().lastIndexOf(".") + 1),
+					sourceEntityRecordId);
+			Object oldStaticEntity = cloner.clone(staticEntity);
+
+			Object dynamicEntity = hibernateDao.retrieveById(tmpPackageName + "."
+					+ association.getTargetEntity().getName(), TargetEntityRecordId);
+			Object oldDynamicEntity = cloner.clone(dynamicEntity);
+
+			String sourceRoleName = EntityManagerUtil.getHookAssociationSrcRoleName(association
+					.getEntity(), association.getTargetEntity());
+			Set<Object> containedObjects = (Set<Object>) invokeGetterMethod(
+					staticEntity.getClass(),
+					association.getTargetEntity().getName() + "Collection", staticEntity);
+			containedObjects.add(dynamicEntity);
+
+			invokeSetterMethod(staticEntity.getClass(), association.getTargetEntity().getName()
+					+ "Collection", Class.forName("java.util.Collection"), staticEntity,
+					containedObjects);
+
+			invokeSetterMethod(dynamicEntity.getClass(), sourceRoleName, staticEntity.getClass(),
+					dynamicEntity, staticEntity);
+
+			hibernateDao.update(dynamicEntity, oldDynamicEntity);
+			hibernateDao.update(staticEntity, oldStaticEntity);
+			hibernateDao.commit();
+
 		}
-		catch (MalformedURLException e)
+		catch (DAOException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"MalformedURLException: address not correct." + e);
+			throw new DynamicExtensionsSystemException("Error in associating objects", e);
 		}
-		associationClient.setParamaterObjectMap(map);
-		associationClient.execute(null);
+
+		catch (ClassNotFoundException e)
+		{
+			throw new DynamicExtensionsSystemException("Error in associating objects", e);
+		}
+		finally
+		{
+			DynamicExtensionsUtility.closeDAO(hibernateDao);
+		}
 
 	}
 
@@ -1853,8 +1968,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return associationInterface;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityIdByContainerId(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getEntityIdByContainerId(java.lang.Long)
 	 */
 	public Long getEntityIdByContainerId(Long containerId) throws DynamicExtensionsSystemException
 	{
@@ -1875,8 +1993,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return identifier;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityCreatedDateByContainerId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getEntityCreatedDateByContainerId()
 	 */
 	public Map<Long, Date> getEntityCreatedDateByContainerId()
 			throws DynamicExtensionsSystemException
@@ -1902,8 +2023,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return records;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#checkContainerForAbstractEntity(java.lang.Long, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * checkContainerForAbstractEntity(java.lang.Long, boolean)
 	 */
 	public Long checkContainerForAbstractEntity(Long entityId, boolean isAbstarct)
 			throws DynamicExtensionsSystemException
@@ -1926,8 +2050,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return contId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#checkContainerForAbstractCategoryEntity(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * checkContainerForAbstractCategoryEntity(java.lang.Long)
 	 */
 	public Long checkContainerForAbstractCategoryEntity(Long entityId)
 			throws DynamicExtensionsSystemException
@@ -1949,8 +2076,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return contId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityId
+	 * (java.lang.String)
 	 */
 	public Long getEntityId(String entityName) throws DynamicExtensionsSystemException
 	{
@@ -1978,8 +2109,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return getContainerIdFromEntityId(entityId);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getNextIdentifierForEntity(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getNextIdentifierForEntity(java.lang.String)
 	 */
 	public Long getNextIdentifierForEntity(String entityName)
 			throws DynamicExtensionsSystemException
@@ -2054,8 +2188,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return identifier;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAttribute(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAttribute(java.lang.String, java.lang.String)
 	 */
 	public AttributeInterface getAttribute(String entityName, String attributeName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -2126,8 +2263,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entGroupBeans;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllEntityGroupBeans()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllEntityGroupBeans()
 	 */
 	public Collection<NameValueBean> getAllEntityGroupBeans()
 			throws DynamicExtensionsSystemException
@@ -2151,8 +2291,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entGroupBeans;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#validateEntity(edu.common.dynamicextensions.domaininterface.EntityInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * validateEntity
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface)
 	 */
 	public boolean validateEntity(EntityInterface ent)
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException
@@ -2180,8 +2324,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAttributeRecordsCount(java.lang.Long, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAttributeRecordsCount(java.lang.Long, java.lang.Long)
 	 */
 	public Collection<Integer> getAttributeRecordsCount(Long entityId, Long attributeId)
 			throws DynamicExtensionsSystemException
@@ -2227,8 +2374,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return objects;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getContainerByEntityIdentifier(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getContainerByEntityIdentifier(java.lang.Long)
 	 */
 	public ContainerInterface getContainerByEntityIdentifier(Long entityId)
 			throws DynamicExtensionsSystemException
@@ -2248,8 +2398,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return container;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationTree(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAssociationTree(java.lang.Long)
 	 */
 	public Collection<AssociationTreeObject> getAssociationTree(Long entGroupId)
 			throws DynamicExtensionsSystemException
@@ -2299,8 +2452,13 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return assoTreeObject;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getFileAttributeRecordValueByRecordId(edu.common.dynamicextensions.domaininterface.AttributeInterface, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getFileAttributeRecordValueByRecordId
+	 * (edu.common.dynamicextensions.domaininterface.AttributeInterface,
+	 * java.lang.Long)
 	 */
 	public FileAttributeRecordValue getFileAttributeRecordValueByRecordId(
 			AttributeInterface attribute, Long recordId) throws DynamicExtensionsSystemException,
@@ -2345,9 +2503,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return fileRecordValue;
 	}
 
-	/* (non-Javadoc)
-	* @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getCategoriesContainerIdFromHookEntity(java.lang.Long)
-	*/
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getCategoriesContainerIdFromHookEntity(java.lang.Long)
+	 */
 	public Collection<NameValueBean> getCategoriesContainerIdFromHookEntity(Long hookEntityId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsCacheException
 	{
@@ -2387,8 +2548,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return associatedEntities;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getDynamicTableName(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getDynamicTableName(java.lang.Long)
 	 */
 	public String getDynamicTableName(Long containerId) throws DynamicExtensionsSystemException
 	{
@@ -2425,8 +2589,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return containerId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getDynamicEntitiesContainerIdFromHookEntity(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getDynamicEntitiesContainerIdFromHookEntity(java.lang.Long)
 	 */
 	public Collection<ContainerInterface> getDynamicEntitiesContainerIdFromHookEntity(
 			Long hookEntityId) throws DynamicExtensionsSystemException
@@ -2440,8 +2607,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return containers;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#isCategory(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#isCategory
+	 * (java.lang.Long)
 	 */
 	public Long isCategory(Long containerId) throws DynamicExtensionsSystemException
 	{
@@ -2460,8 +2631,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return contIdentifier;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getCategoryRootContainerId(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getCategoryRootContainerId(java.lang.Long)
 	 */
 	public Long getCategoryRootContainerId(Long containerId)
 			throws DynamicExtensionsSystemException
@@ -2508,8 +2682,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return rootEntity;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getColumnNameForAssociation(java.lang.Long, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getColumnNameForAssociation(java.lang.Long, java.lang.Long)
 	 */
 	public String getColumnNameForAssociation(Long hookEntityId, Long containerId)
 			throws DynamicExtensionsSystemException
@@ -2531,8 +2708,14 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return colName;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#persistEntityMetadataForAnnotation(edu.common.dynamicextensions.domaininterface.EntityInterface, boolean, boolean, edu.common.dynamicextensions.domaininterface.AssociationInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * persistEntityMetadataForAnnotation
+	 * (edu.common.dynamicextensions.domaininterface.EntityInterface, boolean,
+	 * boolean,
+	 * edu.common.dynamicextensions.domaininterface.AssociationInterface)
 	 */
 	public EntityInterface persistEntityMetadataForAnnotation(EntityInterface entityObj,
 			boolean isDataTblPresent, boolean cpyDataTblState, AssociationInterface association)
@@ -2631,8 +2814,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entityObj;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getMainContainer(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getMainContainer(java.lang.Long)
 	 */
 	public Collection<NameValueBean> getMainContainer(Long entGroupId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -2644,8 +2830,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return executeHQL("getMainContainers", substParams);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupByName(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getEntityGroupByName(java.lang.String)
 	 */
 	public EntityGroupInterface getEntityGroupByName(String entGroupName)
 			throws DynamicExtensionsSystemException
@@ -2656,8 +2845,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entityGroup;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAllEntitiyGroups()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAllEntitiyGroups()
 	 */
 	public Collection<EntityGroupInterface> getAllEntitiyGroups()
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -2665,8 +2857,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return getAllObjects(EntityGroupInterface.class.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getControlByAbstractAttributeIdentifier(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getControlByAbstractAttributeIdentifier(java.lang.Long)
 	 */
 	public ControlInterface getControlByAbstractAttributeIdentifier(Long abstrAttrId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
@@ -2686,8 +2881,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return control;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#updateAttributeTypeInfo(edu.common.dynamicextensions.domaininterface.AttributeTypeInformationInterface)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * updateAttributeTypeInfo(edu.common.dynamicextensions.domaininterface.
+	 * AttributeTypeInformationInterface)
 	 */
 	public AttributeTypeInformationInterface updateAttributeTypeInfo(
 			AttributeTypeInformationInterface attrTypeInfo) throws DynamicExtensionsSystemException
@@ -2713,8 +2912,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return attrTypeInfo;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityGroupId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getEntityGroupId(java.lang.String)
 	 */
 	public Long getEntityGroupId(String entGroupName) throws DynamicExtensionsSystemException
 	{
@@ -2733,8 +2935,12 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return entGroupId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityId(java.lang.String, java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getEntityId
+	 * (java.lang.String, java.lang.Long)
 	 */
 	public Long getEntityId(String entityName, Long entGroupId)
 			throws DynamicExtensionsSystemException
@@ -2825,8 +3031,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return containerId;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#getAssociationAttributeId(java.lang.Long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * getAssociationAttributeId(java.lang.Long)
 	 */
 	public Long getAssociationAttributeId(Long attrId) throws DynamicExtensionsSystemException
 	{
@@ -3085,8 +3294,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		return name;
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#disableEntityRecords(java.lang.Long, java.util.Stack)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * disableEntityRecords(java.lang.Long, java.util.Stack)
 	 */
 	/**
 	 * @deprecated Use {@link #disableEntityRecords(Long,Stack<ContainerInterface>,SessionDataBean)} instead
@@ -3097,8 +3309,11 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		disableEntityRecords(recordIdentifier, containerStack, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.common.dynamicextensions.entitymanager.EntityManagerInterface#disableEntityRecords(java.lang.Long, java.util.Stack)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeedu.common.dynamicextensions.entitymanager.EntityManagerInterface#
+	 * disableEntityRecords(java.lang.Long, java.util.Stack)
 	 */
 	public void disableEntityRecords(Long recordIdentifier,
 			Stack<ContainerInterface> containerStack, SessionDataBean sessionDataBean)

@@ -24,6 +24,7 @@ public class XMIConstants
 	//tagged values
 	public static final String TAGGED_NAME_PREFIX = "DE_";
 	public static final String TAGGED_NAME_ASSOC_DIRECTION = "direction";
+	public static final String TAGGED_NAME_ASSOC_NCI_EAGER_LOAD = "NCI_EAGER_LOAD";
 	public static final String TAGGED_VALUE_ASSOC_BIDIRECTIONAL = "Bi-Directional";
 	public static final String TAGGED_VALUE_ASSOC_SRC_DEST = "Source -> Destination";
 	public static final String TAGGED_VALUE_ASSOC_DEST_SRC = "Destination -> Source";
@@ -32,6 +33,8 @@ public class XMIConstants
 	public static final String TAGGED_VALUE_CONTAINMENT_UNSPECIFIED = "Unspecified";
 	public static final String TAGGED_VALUE_CONTAINMENT_NOTSPECIFIED = "Not Specified";
 	public static final String TAGGED_VALUE_IMPLEMENTS_ASSOCIATION = "implements-association";
+	public static final String TAGGED_VALUE_INVERSE_OF= "inverse-of";
+	
 	public static final String TAGGED_VALUE_MAPPED_ATTRIBUTES = "mapped-attributes";
 	public static final String TAGGED_VALUE_CORELATION_TABLE = "correlation-table";
 	public static final String TAGGED_VALUE_GEN_TYPE = "gentype";

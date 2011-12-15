@@ -163,12 +163,8 @@ public abstract class AbstractXMIImporter
 			Map<AssociationInterface, String> multiselectMigartionScripts = xmiImportProcessor
 			.getMultiselectMigartionScripts();
 			boolean isEditedXmi = xmiImportProcessor.isEditedXmi;
-			if (isEditedXmi)
-			{
-				lockFroms(xmiImportProcessor.getEntityGroup().getName());
-			}
+			
 			generateLogForProcessXMI(processXMIStartTime, isEditedXmi);
-			long assoWithHEstartTime = System.currentTimeMillis();
 
 			//Step 3: associate with hook entity.
 			metaDataIntegrator.setIntermodelAssociationCollection(intermodelAssociationCollection);
@@ -221,13 +217,6 @@ public abstract class AbstractXMIImporter
 		finally
 		{
 			closeTransaction(fileInput, hibernatedao, jdbcdao);
-		}
-		if (isImportSuccess)
-		{
-			LOGGER.info("updating server cache");
-
-			updateCache(mainContainerList);
-			exportXmiForCacore(mainContainerList);
 		}
 	}
 
@@ -290,32 +279,7 @@ public abstract class AbstractXMIImporter
 		return new URL(url.toString());
 	}
 
-	/**
-	 * Lock froms.
-	 * @param entityGroupName
-	 * @throws DynamicExtensionsApplicationException the dynamic extensions application exception
-	 */
-	private void lockFroms(String entityGroupName)
-			throws DynamicExtensionsApplicationException
-	{
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(WebUIManagerConstants.ENTITY_GROUP, entityGroupName);
-		map.put(WebUIManagerConstants.OPERATION, WebUIManagerConstants.LOCK_FORMS);
-		DEClient client = new DEClient();
-		client.setParamaterObjectMap(map);
-		try
-		{
-			client.setServerUrl(getServerUrl());
-		}
-		catch (MalformedURLException e)
-		{
-			throw new DynamicExtensionsApplicationException(
-					"Error in locking forms on the server cache", e);
-		}
-		client.execute(null);
-
-	}
-
+	
 	/**
 	 * adds the query paths for the given main container list.
 	 * @param mainContainerList containers for which to add paths.

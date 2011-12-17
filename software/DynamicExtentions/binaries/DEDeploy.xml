@@ -1760,7 +1760,10 @@
 			<replacefilter token="@@MODEL_FILE@@" value="${entitygroupname}.xmi" />
 			<replacefilter token="@@APPLICATION_NAME@@" value="${entitygroupname}" />
 			<replacefilter token="@@GENERATOR_CLASS@@" value="increment" />
-
+			<replacetoken><![CDATA[IDENTITY_GENERATOR_TAG=<generator class="assigned"/>]]></replacetoken>
+				<replacevalue>
+					<![CDATA[IDENTITY_GENERATOR_TAG=<generator class="increment"/>]]>
+			</replacevalue>
 			 
 		</replace>
 

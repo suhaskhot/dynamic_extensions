@@ -2835,8 +2835,6 @@ public class XMIExporter
 	 */
 	public static void main(String[] args)
 	{
-
-		args = new String[]{"testModel2","E:/installable/cacoresdk.4.2/example-project/models/testModel.xmi","1.1"};
 		try
 		{
 			final XMIExporter xmiExporter = new XMIExporter();

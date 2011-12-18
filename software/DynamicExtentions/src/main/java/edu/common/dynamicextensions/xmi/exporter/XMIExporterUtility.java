@@ -58,25 +58,58 @@ public class XMIExporterUtility
 		LOGGER.info("mainContainers.size(): " + mainContainers.size());
 		//EntityInterface xmiStaticEntity = null;
 		EntityInterface xmiStaticEntity = getHookEntityDetailsForXMI(staticEntity);
-		entityGroup.addEntity(xmiStaticEntity);
-		xmiStaticEntity.setEntityGroup(entityGroup);
-		for (final ContainerInterface mainContainer : mainContainers)
+//		entityGroup.addEntity(xmiStaticEntity);
+//		xmiStaticEntity.setEntityGroup(entityGroup);
+		Collection<AssociationInterface> assInterfaces = staticEntity.getAssociationCollection();
+		for (AssociationInterface associationInterface : assInterfaces) 
 		{
-			final AssociationInterface association = getHookEntityAssociation(staticEntity,
-					(EntityInterface) mainContainer.getAbstractEntity());
-			if (association == null)
-			{
-				throw new DynamicExtensionsApplicationException(staticEntity.getName()
-						+ " Hook Entity is not associated with the "
-						+ mainContainer.getAbstractEntity());
-			}
-			else
-			{
-				LOGGER.info("Association = " + association);
-				xmiStaticEntity.addAssociation(association);
-			}
+			System.out.println(associationInterface.getTargetEntity());	
+			associationInterface = addAssociationToHookEntity(staticEntity, associationInterface.getTargetEntity(), associationInterface);
+			xmiStaticEntity.addAssociation(associationInterface);
+			
 		}
+//		for (final ContainerInterface mainContainer : mainContainers)
+//		{
+//			final AssociationInterface association = getHookEntityAssociations(staticEntity,
+//					(EntityInterface) mainContainer.getAbstractEntity());
+//			if (association == null)
+//			{
+//				throw new DynamicExtensionsApplicationException(staticEntity.getName()
+//						+ " Hook Entity is not associated with the "
+//						+ mainContainer.getAbstractEntity());
+//			}
+//			else
+//			{
+//				LOGGER.info("Association = " + association);
+//				xmiStaticEntity.addAssociation(association);
+//			}
+//		}
 
+	}
+	
+	public static AssociationInterface addAssociationToHookEntity(final EntityInterface srcEntity,
+			final EntityInterface targetEntity, AssociationInterface associationInterface) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		AssociationInterface association = null;
+//		final Collection<AssociationInterface> associations = srcEntity.getAllAssociations();
+//		for (final AssociationInterface staticAssociation : associations)
+//		{
+//			if (staticAssociation.getTargetEntity().equals(targetEntity))
+//			{
+				final String srcEntityName = EntityManagerUtil.getHookEntityName(srcEntity
+						.getName());
+				//Change name of association
+				associationInterface.setName("Assoc_" + srcEntityName + "_" + targetEntity.getName());
+				associationInterface.getSourceRole().setName(
+						EntityManagerUtil.getHookAssociationSrcRoleName(srcEntity, targetEntity));
+				associationInterface.getTargetRole().setName(targetEntity.getName() + "Collection");
+				association = associationInterface;
+//				break;
+//			}
+//		}
+
+		return association;
 	}
 
 	/**
@@ -85,7 +118,7 @@ public class XMIExporterUtility
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static EntityInterface getHookEntityDetailsForXMI(final EntityInterface srcEntity)
+	public static EntityInterface getHookEntityDetailsForXMI(final EntityInterface srcEntity)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		//For XMI : add only id , name and table properties
@@ -96,7 +129,7 @@ public class XMIExporterUtility
 		xmiEntity.setId(srcEntity.getId());
 		xmiEntity.addAttribute(getIdAttribute(srcEntity));
 		//	xmiEntity.addAssociation(getHookEntityAssociation(srcEntity,targetEntity));
-		return xmiEntity;
+		return srcEntity;
 	}
 
 	/**
@@ -189,8 +222,16 @@ public class XMIExporterUtility
 		final EntityManagerInterface entityManager = EntityManager.getInstance();
 		final List<ContainerInterface> mainContainerList = new ArrayList<ContainerInterface>(
 				entityGroup.getMainContainerCollection());
-		final EntityInterface targetEntity = (EntityInterface) mainContainerList.get(0)
-				.getAbstractEntity();
+		EntityInterface targetEntity = null;
+		if(mainContainerList != null && !mainContainerList.isEmpty())
+		{
+			targetEntity =(EntityInterface) mainContainerList.get(0).getAbstractEntity();	
+		}
+		else
+		{
+			targetEntity = entityGroup.getEntityCollection().iterator().next();
+		}
+		 
 		final Collection<AssociationInterface> associationCollection = entityManager
 				.getIncomingAssociations(targetEntity);
 		EntityInterface hookEntity = null;
@@ -202,6 +243,8 @@ public class XMIExporterUtility
 				break;
 			}
 		}
+//		final Collection<AssociationInterface> associationCollection1 = entityManager
+//		.getIncomingAssociations(hookEntity);
 		return hookEntity;
 	}
 

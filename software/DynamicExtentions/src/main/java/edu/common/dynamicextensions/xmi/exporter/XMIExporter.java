@@ -61,6 +61,7 @@ import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.domain.BooleanAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.EntityGroup;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
 import edu.common.dynamicextensions.domain.NumericAttributeTypeInformation;
@@ -81,6 +82,7 @@ import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPro
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintKeyPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ListBoxInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.TextAreaInterface;
@@ -143,7 +145,7 @@ public class XMIExporter
 	private String groupName;
 	private String filename;
 	private String hookEntityName;
-
+	private String hookEntityPackageName;
 	private EntityGroupInterface entityGroup;
 	private EntityInterface staticEntity;
 	private List<EntityGroupInterface> entityGroupList;
@@ -210,7 +212,7 @@ public class XMIExporter
 	public void exportXMI() throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		addHookEntity(entityGroup);
+		addAssociatedModelsToXMI(entityGroup);
 		exportXMI(entityGroup, null);
 	}
 
@@ -223,12 +225,13 @@ public class XMIExporter
 		try
 		{
 			init();
-			Iterator<EntityGroupInterface> iter = entityGroupList.iterator();
-			while (iter.hasNext())
-			{
-				addHookEntity(iter.next());
-				exportAllXMI(iter.next(), null);
-			}
+			groupName = entityGroup.getName();
+			//1. exporting XMI for group passed by user
+			exportAllXMI(entityGroup, null);
+			//2. Adding associated dummy models to XMI used in cacore process to update the recordEntry n will be ignored afterwards
+			addAssociatedModelsToXMI(entityGroup);
+			//3.Add hook entity classes according to their packages to the same XMI
+			addHookEntityToXMI();
 			writeXMIFile(umlPackage);
 		}
 		catch (final CreationFailedException e)
@@ -245,22 +248,161 @@ public class XMIExporter
 		}
 	}
 
+	private void addHookEntityToXMI() throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException 
+	{
+		String hookPackageName = hookEntityPackageName;
+		staticEntity.setName(EntityManagerUtil.getHookEntityName(staticEntity.getName()));
+		EntityGroup recoredEntryGrp = getDummyGrpForEntity(staticEntity); 
+		
+		EntityInterface parentEntity = staticEntity.getParentEntity();
+		
+		if(parentEntity != null)
+		{
+			String parentPkgName = parentEntity.getName().substring(0,parentEntity.getName().lastIndexOf("."));
+			parentEntity.setName(EntityManagerUtil.getHookEntityName(parentEntity.getName()));
+			
+			EntityGroup parentGrp =getDummyGrpForEntity(parentEntity);
+			packageName = null;
+			//add parent entity to XMI
+			exportAllXMI(parentGrp, parentPkgName);	
+		}
+		
+		packageName = null;
+//		//Add record entry to XMI
+		exportAllXMI(recoredEntryGrp, hookPackageName);
+				
+	}
+
+	private EntityGroup getDummyGrpForEntity(EntityInterface entityInterface) {
+		EntityGroup recoredEntryGrp = new EntityGroup();
+		recoredEntryGrp.setName("staticEntity");
+		recoredEntryGrp.setActivityStatus("Active");
+		recoredEntryGrp.setShortName("staticEntity");
+		recoredEntryGrp.setLongName("staticEntity");
+		entityInterface.setEntityGroup(recoredEntryGrp);
+		recoredEntryGrp.addEntity(entityInterface);
+		return recoredEntryGrp;
+	}
+
+	private EntityGroup createDummyGroupForEntity(EntityInterface entity) {
+		final EntityInterface parentEnity = new Entity();
+		parentEnity.setName(EntityManagerUtil.getHookEntityName(entity.getName()));
+		parentEnity.setDescription(entity.getDescription());
+		parentEnity.setTableProperties(entity.getTableProperties());
+		parentEnity.setId(entity.getId());
+		parentEnity.addAttribute(XMIExporterUtility.getIdAttribute(entity));
+		
+		EntityGroup parentGrp = new EntityGroup();
+		parentGrp.setName("staticEntity");
+		parentGrp.setActivityStatus("Active");
+		parentGrp.setShortName("staticEntity");
+		parentGrp.setLongName("staticEntity");
+		entity.setEntityGroup(parentGrp);
+		parentGrp.addEntity(parentEnity);
+		
+		return parentGrp;
+		//break this method into two methods to support inheritance
+	}
+
 	/**
 	 * @param entityGroup
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	private void addHookEntity(EntityGroupInterface entityGroup)
+	private void addAssociatedModelsToXMI(EntityGroupInterface entityGroup)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (XMIConstants.XMI_VERSION_1_1.equalsIgnoreCase(xmiVersion)
 				&& !XMIConstants.NONE.equalsIgnoreCase(hookEntityName))
 		{
-			staticEntity = XMIExporterUtility.getHookEntityName(entityGroup);
-			XMIExporterUtility.addHookEntitiesToGroup(staticEntity, entityGroup);
+			EntityInterface staticEntity1 = XMIExporterUtility.getHookEntityName(entityGroup);
+			hookEntityPackageName = staticEntity1.getName().substring(0,staticEntity1.getName().lastIndexOf("."));
+			String name = EntityManagerUtil.getHookEntityName(staticEntity1.getName());
+			staticEntity1.setName(name);
+			addHookEntitiesToGroup(staticEntity1, entityGroup);
 		}
 	}
+	
+	public void addHookEntitiesToGroup(EntityInterface staticEntity1,
+			final EntityGroupInterface entGroup) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		final Collection<ContainerInterface> mainContainers = entGroup
+				.getMainContainerCollection();
+		LOGGER.info("mainContainers.size(): " + mainContainers.size());
+		EntityInterface xmiStaticEntity = staticEntity1;
+		Collection<AssociationInterface> assInterfaces = staticEntity1.getAssociationCollection();
+		for (AssociationInterface associationInterface : assInterfaces) 
+		{
+			//Need to comment this line and test, if ti works fine then remove this, otherwise need to fixed in import XMI
+//			xmiStaticEntity.addAssociation(associationInterface);
+			XMIExporterUtility.addAssociationToHookEntity(staticEntity1, associationInterface.getTargetEntity(), associationInterface);
+			String pkgName = null;
+			EntityGroup group = null;
+			if(associationInterface.getTargetEntity().getEntityGroup().getIsSystemGenerated())
+			{
+				pkgName = associationInterface.getTargetEntity().getName().substring(0,associationInterface.getTargetEntity().getName().lastIndexOf("."));
+			}
+			else
+			{
+				final Collection<TaggedValueInterface> tvColl = associationInterface.getTargetEntity().getEntityGroup().getTaggedValueCollection();
+				for (final TaggedValueInterface tv : tvColl)
+				{
+					if (tv.getKey().equalsIgnoreCase(XMIConstants.TAGGED_NAME_PACKAGE_NAME))
+					{
+						String completePackageName = tv.getValue();
+						packageName = completePackageName;
+					}
+				}
 
+				pkgName = packageName;//associationInterface.getTargetEntity().getName();
+				//change the package , to get it from tagged value coll
+			}
+			
+			
+//			group = checkForParentEntity(group);
+			//
+			
+			//This need to b verified with the available prop like sysGenerated or 
+			
+			if(!entityGroup.equals(associationInterface.getTargetEntity().getEntityGroup()))
+			{
+				group = createDummyGroupForEntity(associationInterface.getTargetEntity());
+				packageName = null;
+				exportAllXMI(group, pkgName);
+			}
+			
+		}
+		staticEntity = xmiStaticEntity;
+
+	}
+
+	private EntityGroup checkForParentEntity(EntityGroup group) 
+	{
+		EntityInterface entityInterface = group.getEntityCollection().iterator().next();
+		if(entityInterface.getParentEntity() != null)
+		{
+			group.addEntity(entityInterface.getParentEntity());
+		}
+		return checkForParentEntity(group);
+	}
+
+	public boolean getHookEntityAssociations(final EntityInterface srcEntity,
+			final EntityInterface targetEntity, AssociationInterface associationInterface, Collection<ContainerInterface> mainContainers) throws DynamicExtensionsSystemException,
+			DynamicExtensionsApplicationException
+	{
+		boolean flag = false;
+		AssociationInterface association = null;
+		for (ContainerInterface containerInterface : mainContainers) 
+		{
+			if(associationInterface.getTargetEntity().equals(containerInterface.getAbstractEntity()))
+			{
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
 	/**
 	 * It will retrieve the entity group with the given name using the passed hibernateDao.
 	 * @param hibernateDao hibernateDao used for retrieving the entity group.
@@ -277,7 +419,6 @@ public class XMIExporter
 		ColumnValueBean colValueBean = new ColumnValueBean("name", groupName);
 		List entityGroupList = hibernateDao.retrieve(EntityGroup.class.getName(), colValueBean);
 
-		//List entityGroupList = hibernateDao.retrieve(EntityGroup.class.getName(), "name", groupName);
 
 		if (entityGroupList == null || entityGroupList.isEmpty())
 		{
@@ -322,13 +463,34 @@ public class XMIExporter
 		{
 			init();
 			groupName = entityGroup.getName();
+			EntityGroup group = new EntityGroup();
+			group.setName("staticEntity");
+			group.setActivityStatus("Active");
+			group.setShortName("staticEntity");
+			group.setLongName("staticEntity");
+//			EntityInterface entityInterface = XMIExporterUtility.getHookEntityName(entityGroup);\
+			/////////////
+			final EntityInterface xmiEntity = new Entity();
+			xmiEntity.setName(EntityManagerUtil.getHookEntityName(staticEntity.getName()));
+			xmiEntity.setDescription(staticEntity.getDescription());
+			xmiEntity.setTableProperties(staticEntity.getTableProperties());
+			xmiEntity.setId(staticEntity.getId());
+			xmiEntity.addAttribute(XMIExporterUtility.getIdAttribute(staticEntity));
+			//////////////
+			group.addEntity(staticEntity);
+			
+//			group.
 			//UML Model generation
 			generateUMLModel(entityGroup, modelpackageName);
+			generateDataModel(entityGroup);
+			generateUMLModel(group, modelpackageName);
 
 			//Data Model creation
 			if (XMIConstants.XMI_VERSION_1_1.equalsIgnoreCase(xmiVersion))
 			{
-				generateDataModel(entityGroup);
+				
+				generateDataModel(group);
+//				generateDataModel(staticEntity.getEntityGroup());
 			}
 			writeXMIFile(umlPackage);
 		}
@@ -352,6 +514,7 @@ public class XMIExporter
 			{
 				generateDataModel(entityGroup);
 			}
+			
 		}
 		catch (final/*CreationFailed*/Exception e)
 		{
@@ -595,29 +758,32 @@ public class XMIExporter
 	private void createForeignKeyAttribute(final EntityInterface entity)
 			throws DataTypeFactoryInitializationException
 	{
-		final Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl = entity
-				.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
-		final Classifier foreignKeySQLClass = getSQLClassForEntity(entity.getName());
-		String columnName;
-		for (final ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
+		if(entity.getConstraintProperties() != null)
 		{
-			columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
-			Attribute foreignKeyAttribute = searchAttribute(foreignKeySQLClass, columnName);
-			//Create attribute if does not exist
-			if (foreignKeyAttribute == null)
+			final Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl = entity
+					.getConstraintProperties().getSrcEntityConstraintKeyPropertiesCollection();
+			final Classifier foreignKeySQLClass = getSQLClassForEntity(entity.getName());
+			String columnName;
+			for (final ConstraintKeyPropertiesInterface cnstrKeyProp : cnstKeyPropColl)
 			{
-				//Datatype of foreign key and prmary key will be same
-				//AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
-				final AttributeInterface primaryKeyAttr = cnstrKeyProp.getSrcPrimaryKeyAttribute();
-				foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
-				final String foreignKeyOprName = generateForeignkeyOperationName(entity.getName(),
-						entity.getParentEntity().getName());
-				foreignKeyOperationNameMapping
-						.put(foreignKeyAttribute.getName(), foreignKeyOprName);
-				foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
-				//Add foreign key operation
-				foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
-
+				columnName = cnstrKeyProp.getTgtForiegnKeyColumnProperties().getName();
+				Attribute foreignKeyAttribute = searchAttribute(foreignKeySQLClass, columnName);
+				//Create attribute if does not exist
+				if (foreignKeyAttribute == null)
+				{
+					//Datatype of foreign key and prmary key will be same
+					//AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
+					final AttributeInterface primaryKeyAttr = cnstrKeyProp.getSrcPrimaryKeyAttribute();
+					foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
+					final String foreignKeyOprName = generateForeignkeyOperationName(entity.getName(),
+							entity.getParentEntity().getName());
+					foreignKeyOperationNameMapping
+							.put(foreignKeyAttribute.getName(), foreignKeyOprName);
+					foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
+					//Add foreign key operation
+					foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+	
+				}
 			}
 		}
 	}
@@ -1468,6 +1634,10 @@ public class XMIExporter
 			umlGroupPackage.getTaggedValue().addAll(groupTaggedValues);
 
 		}
+		
+//		staticEntity = XMIExporterUtility.getHookEntityName(entityGroup);
+//		
+//		generateUMLModel(staticEntity.getEntityGroup(), "edu.wustl.catissuecore");
 	}
 
 	/**
@@ -2475,7 +2645,6 @@ public class XMIExporter
 		{
 			packageName = modelPackageName;
 		}
-
 		final org.omg.uml.modelmanagement.UmlPackage leafPackage = getOrCreatePackage(packageName,
 				logicalModel);
 		return leafPackage;
@@ -2833,18 +3002,21 @@ public class XMIExporter
 	 * args[3]=hook entity name
 	 * @param args arguments array
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
+
 		try
 		{
+			int argsLength = args.length;
 			final XMIExporter xmiExporter = new XMIExporter();
 			if (args != null && args.length > 2)
 			{
 				xmiExporter.initilizeInstanceVariables(args);
 				xmiExporter.retrieveEntityGroups();
-				xmiExporter.exportXMI();
+				xmiExporter.exportAllXMI();
+//				xmiExporter.exportXMI();
 			}
-			else
+			else //This else part is for generating a single XMI for all the DE models and will be deprecated
 			{
 				xmiExporter.initilizeInstanceVariablesForExportAll(args);
 				xmiExporter.retrieveAllEntityGroups();
@@ -2859,6 +3031,7 @@ public class XMIExporter
 		}
 		catch (final Exception e)
 		{
+			e.printStackTrace();
 			LOGGER.error("Exception occured while Exporting the XMI ", e);
 		}
 	}

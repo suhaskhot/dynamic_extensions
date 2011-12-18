@@ -281,6 +281,10 @@ public class XMIExporter
 		recoredEntryGrp.setLongName("staticEntity");
 		entityInterface.setEntityGroup(recoredEntryGrp);
 		recoredEntryGrp.addEntity(entityInterface);
+		if(entityInterface.getEntityGroup() != null)
+		{
+			recoredEntryGrp.setIsSystemGenerated(entityInterface.getEntityGroup().getIsSystemGenerated());
+		}
 		return recoredEntryGrp;
 	}
 
@@ -299,6 +303,10 @@ public class XMIExporter
 		parentGrp.setLongName("staticEntity");
 		entity.setEntityGroup(parentGrp);
 		parentGrp.addEntity(parentEnity);
+		if(entity.getEntityGroup() != null)
+		{
+			parentGrp.setIsSystemGenerated(entity.getEntityGroup().getIsSystemGenerated());
+		}
 		
 		return parentGrp;
 		//break this method into two methods to support inheritance
@@ -416,6 +424,7 @@ public class XMIExporter
 			throws DynamicExtensionsApplicationException, DynamicExtensionsSystemException,
 			DAOException
 	{
+		
 		ColumnValueBean colValueBean = new ColumnValueBean("name", groupName);
 		List entityGroupList = hibernateDao.retrieve(EntityGroup.class.getName(), colValueBean);
 
@@ -677,11 +686,11 @@ public class XMIExporter
 	 * @param entityCollection
 	 * @param xmiVersion
 	 * @return
-	 * @throws DataTypeFactoryInitializationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private Collection<Relationship> getSQLRelationShips(
 			final Collection<EntityInterface> entityCollection)
-			throws DataTypeFactoryInitializationException
+			throws DynamicExtensionsSystemException
 	{
 		final ArrayList<Relationship> sqlRelationships = new ArrayList<Relationship>();
 		if (entityCollection != null)
@@ -701,10 +710,10 @@ public class XMIExporter
 	 * @param entity
 	 * @param xmiVersion
 	 * @return
-	 * @throws DataTypeFactoryInitializationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private Collection<Relationship> createSQLRelationships(final EntityInterface entity)
-			throws DataTypeFactoryInitializationException
+			throws DynamicExtensionsSystemException
 	{
 		//Associations
 		final ArrayList<Relationship> entitySQLRelationships = new ArrayList<Relationship>();
@@ -853,11 +862,11 @@ public class XMIExporter
 	/**
 	 * @param association
 	 * @return
-	 * @throws DataTypeFactoryInitializationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	@SuppressWarnings("unchecked")
 	private UmlAssociation createSQLAssociation(final AssociationInterface association)
-			throws DataTypeFactoryInitializationException
+			throws DynamicExtensionsSystemException
 	{
 		UmlAssociation sqlAssociation = null;
 		if ((association != null) && (association.getConstraintProperties() != null))
@@ -885,6 +894,7 @@ public class XMIExporter
 
 					if(associationType.equals(XMIConstants.ASSOC_ONE_MANY))
 					{
+						
 						getForeignKeyAttribute1(association.getTargetEntity(), constraintProperties
 								.getTgtEntityConstraintKeyPropertiesCollection(), association
 								.getSourceRole().getName());
@@ -1020,12 +1030,12 @@ public class XMIExporter
 	 * @param cnstKeyPropColl
 	 * @param implementedAssociationName
 	 * @return null
-	 * @throws DataTypeFactoryInitializationException
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	@SuppressWarnings("unchecked")
 	private Attribute getForeignKeyAttribute1(final EntityInterface foreignKeyEntity,
 			final Collection<ConstraintKeyPropertiesInterface> cnstKeyPropColl,
-			final String implementedAssociationName) throws DataTypeFactoryInitializationException
+			final String implementedAssociationName) throws DynamicExtensionsSystemException
 	{
 		final Classifier foreignKeySQLClass = getSQLClassForEntity(foreignKeyEntity.getName());
 		String columnName;
@@ -1047,6 +1057,7 @@ public class XMIExporter
 				foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
 			}
 			String implementedAssociation;
+			String pkgName = getPkgName(foreignKeyEntity);
 			//TODO  check
 			if (XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
 			{
@@ -1057,7 +1068,10 @@ public class XMIExporter
 			}
 			else
 			{
-				implementedAssociation = packageName + XMIConstants.DOT_SEPARATOR
+				
+				
+				
+				implementedAssociation = pkgName + XMIConstants.DOT_SEPARATOR
 						+ foreignKeyEntity.getName() + XMIConstants.DOT_SEPARATOR
 						+ implementedAssociationName;
 			}
@@ -1073,6 +1087,59 @@ public class XMIExporter
 		}
 
 		return null;
+	}
+
+	private String getPkgName(final EntityInterface foreignKeyEntity) throws DynamicExtensionsSystemException 
+	{
+		final Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
+		String pkgName = packageName;
+		
+		for (final TaggedValueInterface tv : tvColl)
+		{
+			if (tv.getKey().equalsIgnoreCase(XMIConstants.TAGGED_NAME_PACKAGE_NAME))
+			{
+				
+				if(!pkgName.equals(tv.getValue()) && foreignKeyEntity.getEntityGroup().getIsSystemGenerated())
+				{
+					EntityManagerInterface entityManager = EntityManager.getInstance();
+					try
+					{
+						Iterator<ContainerInterface> iterator = foreignKeyEntity.getContainerCollection().iterator();
+						while(iterator.hasNext())
+						{
+							ContainerInterface containerInterface = iterator.next();
+							if(foreignKeyEntity.getName().equals(containerInterface.getCaption()))
+							{
+								String goupName = entityManager.getEntityGroupNameByEntityName(foreignKeyEntity.getName(), containerInterface.getId());
+								EntityGroupInterface group = entityManager.getEntityGroupByName(goupName);
+								final Collection<TaggedValueInterface> tvColl1 = group.getTaggedValueCollection();
+								for (final TaggedValueInterface tv1 : tvColl1)
+								{
+									if (tv1.getKey().equalsIgnoreCase(XMIConstants.TAGGED_NAME_PACKAGE_NAME))
+									{
+										pkgName = tv1.getValue();
+									}
+								}
+							}
+						}
+					//setting UI properties tag values
+					
+					}
+					catch (Exception e) 
+					{
+						throw new DynamicExtensionsSystemException(
+								"Error occured while retrieving the entityGroup.", e);
+					}
+					
+				}
+				else
+				{
+					pkgName = tv.getValue();
+				}
+//						assPackageName = completePackageName;
+			}
+		}
+		return pkgName;
 	}
 	/**
 	 * @param constraintProperties

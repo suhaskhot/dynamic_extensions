@@ -1914,8 +1914,29 @@
 		<!--Merge AbstractRecordEntry.hbm with hookentity.hbm-->
 		<unzip dest="${orm.jar.location}" src="${host.war.temp}/WEB-INF/lib/catissue_cacore-orm.jar"></unzip>
 		<property name="AbstractRecordEntry.hbm" value="${tempOrm}/edu/common/dynamicextensions/domain/integration/AbstractRecordEntry.hbm.xml"></property>
-		<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/deintegration/ParticipantRecordEntry.hbm.xml"></property>
-		
+		<if>
+			<equals arg1="edu.wustl.catissuecore.domain.deintegration.ParticipantRecordEntry" arg2="${hook.entity.name}" casesensitive="false" />
+			<then>
+				<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/deintegration/ParticipantRecordEntry.hbm.xml"></property>
+			</then>
+			<elseif>
+				<equals arg1="edu.wustl.catissuecore.domain.deintegration.SpecimenRecordEntry" arg2="${hook.entity.name}" casesensitive="false" />
+				<then>
+					<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/deintegration/SpecimenRecordEntry.hbm.xml"></property>
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="edu.wustl.catissuecore.domain.deintegration.SCGRecordEntry" arg2="${hook.entity.name}" casesensitive="false" />
+				<then>
+					<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/deintegration/SCGRecordEntry.hbm.xml"></property>
+				</then>
+			</elseif>
+			<else>
+				<echo message="Unhandled hook entity" level="error" />
+			</else>
+		</if>
+
+
 		<java classname="edu.common.dynamicextensions.util.global.MergeRecordEntryHbm" fork="true" maxmemory="1024M">
 			<arg value="${AbstractRecordEntry.hbm}" />
 			<arg value="${hook.entity.hbm}" />

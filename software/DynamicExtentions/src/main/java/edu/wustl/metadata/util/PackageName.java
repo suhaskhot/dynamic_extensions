@@ -13,7 +13,10 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.TaggedValueInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
+import edu.common.dynamicextensions.entitymanager.EntityManager;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.xmi.exporter.XMIExporterUtility;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.common.util.logger.Logger;
 
@@ -36,8 +39,9 @@ public class PackageName
 	/**
 	 * The main method.
 	 * @param args the arguments
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	public static void main(final String[] args)
+	public static void main(final String[] args) throws DynamicExtensionsApplicationException
 	{
 		final PackageName packageName = new PackageName();
 		packageName.getPackageName(args[0], args[1]);
@@ -48,8 +52,9 @@ public class PackageName
 	 * @param directoryPath the directory path.
 	 * @param xmiName the xmi name.
 	 * @return the package name.
+	 * @throws DynamicExtensionsApplicationException 
 	 */
-	private void getPackageName(final String directoryPath, final String xmiName)
+	private void getPackageName(final String directoryPath, final String xmiName) throws DynamicExtensionsApplicationException
 	{
 
 		try
@@ -124,9 +129,11 @@ public class PackageName
 	 * @param packageName the package name.
 	 * @param entityName the entity name.
 	 * @param packageEntityName the package entity name.
+	 * @throws DynamicExtensionsApplicationException 
+	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void writeToFile(final String directoryPath, final String packageName,
-			final String entityName, final String packageEntityName)
+			final String entityName, final String packageEntityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		final File newFile = new File(directoryPath + File.separator + "Package.txt");
 		try
@@ -137,6 +144,9 @@ public class PackageName
 			writer.write("de.package.name=" + getLogicalPackageName(packageName, "/"));
 			writer.newLine();
 			writer.write("cacore.package.name=" + packageEntityName);
+			writer.newLine();
+			writer.write("hook.entity.name=" + XMIExporterUtility.getHookEntityName(EntityManager.getInstance().getEntityGroupByName(entityName)).getName());
+			
 			writer.close();
 			final boolean renameFlag = newFile.renameTo(new File(directoryPath + File.separator
 					+ "Package.properties"));

@@ -3074,7 +3074,6 @@ public class XMIExporter
 
 		try
 		{
-			int argsLength = args.length;
 			final XMIExporter xmiExporter = new XMIExporter();
 			if (args != null && args.length > 2)
 			{

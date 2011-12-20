@@ -58,6 +58,11 @@ public class CacoreDEMetadataAppender {
             final Document deHibCfg = cacoreDEMetadata.getDocumentObjectForXML(deHibCfgFile);
             final NodeList deHibCfgNodes = deHibCfg.getElementsByTagName(SESSION_FACTORY);
             final Node deHibCfgNode = deHibCfgNodes.item(0);
+            
+            if(args.length >2)
+            {
+            	cacoreDEMetadata.setIncludePattern(args[2]);
+            }
 
             // Get the original resource mappings from 'DynamicExtensionsHibernate.cfg.xml' file.
             final List<String> deResrcMappings = cacoreDEMetadata.getOrigDEResourceMappings(deHibCfgNode); // NOPMD by gaurav_sawant on 9/16/10 1:21 PM
@@ -71,7 +76,7 @@ public class CacoreDEMetadataAppender {
             final NodeList cacoreCfgChdNodes = cacoreHibCfgNode.getChildNodes();
             for (int i = 0; i < cacoreCfgChdNodes.getLength(); i++) {
                 final Node node = cacoreCfgChdNodes.item(i);
-                addNodes(deHibCfg, deHibCfgNode, deResrcMappings,
+                cacoreDEMetadata.addNodes(deHibCfg, deHibCfgNode, deResrcMappings,
                         node);
             }
             //printDEResourceMappings(deHibCfgNode);
@@ -85,7 +90,21 @@ public class CacoreDEMetadataAppender {
         }
     }
 
-    /**
+	/**
+	 * Include only mappings starting with the pattern
+	 * This should be the package name of the hbms to be included
+	 * e.g edu/wustl/domain
+	 * only hbm from domain package will be included in the final hbm
+	 */
+	private String includePattern = "";
+
+    private void setIncludePattern(String string)
+	{
+    	includePattern = string;
+		
+	}
+
+	/**
      * Validate args.
      *
      * @param args the args
@@ -94,7 +113,7 @@ public class CacoreDEMetadataAppender {
     private static void validateArgs(final String[] args)
             throws DynamicExtensionsApplicationException
     {
-        if (args.length != 2) {
+        if (args.length < 2) {
             throw new DynamicExtensionsApplicationException(
                     "Please specify paths for hibernate configuration files!");
         }
@@ -108,7 +127,7 @@ public class CacoreDEMetadataAppender {
      * @param deResrcMappings the de resrc mappings
      * @param node the node
      */
-    private static void addNodes(
+    private void addNodes(
             final Document deHibCfg,
             final Node deHibCfgNode, final List<String> deResrcMappings,
             final Node node)
@@ -116,7 +135,7 @@ public class CacoreDEMetadataAppender {
         if (node.hasAttributes()) {
             final Node innerNode = node.getAttributes().item(0);
             String nodeValue = innerNode.getNodeValue();
-            if (MAPPING.equals(node.getNodeName()) && !deResrcMappings.contains(nodeValue)) {
+            if (MAPPING.equals(node.getNodeName()) && !deResrcMappings.contains(nodeValue) && includeMapping(nodeValue)) {
                 final Element mappingNode = deHibCfg.createElement(MAPPING);
                 mappingNode.setAttribute(RESOURCE, nodeValue);
                 deHibCfgNode.appendChild(mappingNode);
@@ -125,6 +144,24 @@ public class CacoreDEMetadataAppender {
     }
 
     /**
+     * if include pattern is provided,mapping starting with the patter will be 
+     * included in the resultant cfg
+     * @param nodeValue
+     * @return
+     */
+    private boolean includeMapping(String nodeValue)
+	{
+    	if("".equals(includePattern))
+    	{
+    		return true;	
+    	}else
+    	{
+    		return nodeValue.startsWith(includePattern);
+    	}
+		
+	}
+
+	/**
      * This method returns the list of original DE mappings.
      *
      * @param node the node

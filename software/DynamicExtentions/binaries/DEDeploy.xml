@@ -1856,8 +1856,6 @@
 
 		<jar destfile="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}-orm.jar" basedir="${tempOrm}" />
 
-		<copy todir="${host.war.temp}/WEB-INF/lib/" file="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}-orm.jar" overwrite="true"/>
-
 		
 		<!-- Update beans jar-->
 		<unzip dest="${tempJar}" src="${caCORE4.2_home}/example-project/target/dist/exploded/output/${entitygroupname}/codegen/target/${entitygroupname}-beans.jar"></unzip>
@@ -1869,8 +1867,6 @@
 
 		<jar destfile="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}-beans.jar" basedir="${tempJar}" />
 		
-		<copy todir="${host.war.temp}/WEB-INF/lib/" file="${caCORE4.2_home}/example-project/target/dist/exploded/output/${entitygroupname}/codegen/target/${entitygroupname}-beans.jar" overwrite="true"/>
-				
 							
 	</target>
 

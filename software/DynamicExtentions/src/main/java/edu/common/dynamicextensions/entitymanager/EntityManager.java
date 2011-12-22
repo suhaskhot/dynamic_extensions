@@ -161,7 +161,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 			preProcess(entity, revQueries, queries);
 			if (entity.getId() == null)
 			{
@@ -203,7 +203,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 			if (entity.getId() == null)
 			{
 				hibernateDAO.insert(entity);
@@ -644,7 +644,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			if (hibernateDAO == null)
 			{
-				hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+				hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
 			}
 			Object newObject = createObject(entity, dataValue, hibernateDAO);
 			identifier = getObjectId(newObject);
@@ -903,7 +903,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		{
 			if (hibernateDAO == null)
 			{
-				hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+				hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
 			}
 
 			Map<AbstractAttributeInterface, Object> dataVal = (Map<AbstractAttributeInterface, Object>) dataValue;
@@ -1826,12 +1826,10 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		String tmpPackageName = getPackageName(association.getTargetEntity(), "");
 		try
 		{
-			hibernateDao = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
-			Object staticEntity = hibernateDao.retrieveById(tmpPackageName
-					+ "."
-					+ association.getEntity().getName().substring(
-							association.getEntity().getName().lastIndexOf(".") + 1),
-					sourceEntityRecordId);
+			hibernateDao = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
+//Changes to get the static entity from its actual location instead of getting it from the dynamic entity package
+			Object staticEntity = hibernateDao.retrieveById(
+					association.getEntity().getName(),sourceEntityRecordId);
 			Object oldStaticEntity = cloner.clone(staticEntity);
 
 			Object dynamicEntity = hibernateDao.retrieveById(tmpPackageName + "."
@@ -1882,7 +1880,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 
 			Object staticEntity = hibernateDAO.retrieveById(tmpPackageName
 					+ "."
@@ -2359,7 +2357,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 			objects = hibernateDAO.executeNamedQuery(queryName, substParams);
 		}
 		catch (DAOException e)
@@ -2725,7 +2723,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 			//Use an overloaded method for update the object
 			this.persistEntityMetadataForAnnotation(entityObj, isDataTblPresent, cpyDataTblState,
 					association, hibernateDAO);
@@ -2894,7 +2892,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 
 			hibernateDAO.update(attrTypeInfo);
 
@@ -3341,7 +3339,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		}
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
 			String className = packageName + "." + entity.getName();
 
 			Object oldObject = hibernateDAO.retrieveById(className, recordIdentifier);

@@ -32,6 +32,19 @@ public final class DynamicExtensionDAO
 	 * Application Name used for getting DAO.
 	 */
 	private String appName;
+	
+	/**
+	 * Host Application Name
+	 */
+	private String hostAppName;
+
+	public String getHostAppName() {
+		return hostAppName;
+	}
+
+	public void setHostAppName(Properties props) {
+		this.hostAppName = props.getProperty("host.app.name");
+	}
 
 	/**
 	 *No argument constructor.
@@ -63,6 +76,7 @@ public final class DynamicExtensionDAO
 			Properties props = new Properties();
 			props.load(stream);
 			setAppName(props);
+			setHostAppName(props);
 			stream.close();
 		}
 		catch (IOException exception)

@@ -2402,6 +2402,31 @@ public class DynamicExtensionsUtility
 		}
 		return hibernateDao;
 	}
+	
+	/**
+	 * @param sessionDataBean
+	 * @return hibernateDao
+	 * @throws DynamicExtensionsSystemException
+	 */
+	public static HibernateDAO getHostAppHibernateDAO(SessionDataBean sessionDataBean)
+			throws DynamicExtensionsSystemException
+	{
+		String appName = DynamicExtensionDAO.getInstance().getHostAppName();
+		HibernateDAO hibernateDao = null;
+		try
+		{
+			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+					.getDAO();
+			hibernateDao.openSession(sessionDataBean);
+		}
+		catch (DAOException e)
+		{
+			throw new DynamicExtensionsSystemException(
+					"Error occured while opening the DAO session", e);
+		}
+		return hibernateDao;
+	}
+	
 
 	/**
 	 * @param jdbcDao DAO object

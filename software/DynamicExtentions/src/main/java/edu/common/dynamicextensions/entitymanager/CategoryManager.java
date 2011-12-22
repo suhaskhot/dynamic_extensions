@@ -173,7 +173,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	public CategoryInterface getCategoryByName(final String name)
 			throws DynamicExtensionsSystemException
 	{
-		HibernateDAO dao = DynamicExtensionsUtility.getHibernateDAO();
+		HibernateDAO dao = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 		Collection<CategoryInterface> categoryColl = null;
 		try
 		{
@@ -234,7 +234,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Stack<String> revQueries = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 			revQueries = persistDynamicExtensionObjectForCategory(category,hibernateDAO);
 			hibernateDAO.commit();
 		}
@@ -363,7 +363,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO();
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
 
 			for (final CategoryEntityInterface categoryEntity : savedCatEntities)
 			{
@@ -665,7 +665,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		List<FileQueryBean> fileAttrQueryList = new ArrayList<FileQueryBean>();
 		try
 		{
-			hibernateDao = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+			hibernateDao = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
 			if (catEntity == null)
 			{
 				throw new DynamicExtensionsSystemException("Input to insert data is null");
@@ -1540,7 +1540,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		try
 		{
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO(sessionDataBean);
-			hibernateDao = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+			hibernateDao = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
 			final Long entityRecId = getRootCategoryEntityRecordId(rootCatEntity, recordId, jdbcDao);
 			final Long identifier = (((userId != null) && (userId.length > 0)) ? userId[0] : null);
 			final List<Long> entityRecIds = new ArrayList<Long>();
@@ -3584,7 +3584,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
+			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
 			for (final CategoryAttributeInterface categoryAttributeInterface : categoryAttributeCollection)
 			{
 				hibernateDAO.update(categoryAttributeInterface);

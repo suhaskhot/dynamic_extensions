@@ -103,7 +103,18 @@ public class XMIExporterUtility
 				associationInterface.setName("Assoc_" + srcEntityName + "_" + targetEntity.getName());
 				associationInterface.getSourceRole().setName(
 						EntityManagerUtil.getHookAssociationSrcRoleName(srcEntity, targetEntity));
-				associationInterface.getTargetRole().setName(targetEntity.getName() + "Collection");
+				if(targetEntity.getEntityGroup().getIsSystemGenerated())
+				{
+					String name = targetEntity.getName();
+					if(name.contains("."))
+						name = name.substring(name.lastIndexOf(".")+1);
+					associationInterface.getTargetRole().setName(name);
+				}
+				else
+				{
+					associationInterface.getTargetRole().setName(targetEntity.getName() + "Collection");
+				}
+				
 				association = associationInterface;
 //				break;
 //			}

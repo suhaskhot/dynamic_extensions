@@ -927,9 +927,11 @@ public class XMIExporter
 				}
 				else if (associationType.equals(XMIConstants.ASSOC_MANY_ONE))
 				{
-					getForeignKeyAttribute(association.getTargetEntity(), constraintProperties
-							.getTgtEntityConstraintKeyPropertiesCollection(), association
-							.getSourceRole().getName());
+					
+					getForeignKeyAttribute1(association.getEntity(), constraintProperties
+							.getSrcEntityConstraintKeyPropertiesCollection(), association
+							.getTargetRole().getName());
+					
 					//Many-One source will have foreign key, target primary key
 					/*sourceRole.setName(getForeignkeyOperationName(constraintProperties
 							.getTgtEntityConstraintKeyProperties()
@@ -945,6 +947,7 @@ public class XMIExporter
 					sqlAssociation.getConnection().add(
 							getAssociationEnd(targetRole, targetSQLClass,
 									XMIConstants.ASSN_TGT_ENTITY));
+
 
 				}
 				else if (associationType.equals(XMIConstants.ASSOC_MANY_MANY))
@@ -1053,9 +1056,12 @@ public class XMIExporter
 				//AttributeInterface primaryKeyAttr = getPrimaryKeyAttribute(primaryKeyEntity);
 				final AttributeInterface primaryKeyAttr = cnstrKeyProp.getSrcPrimaryKeyAttribute();
 				foreignKeyAttribute = createDataAttribute(columnName, primaryKeyAttr.getDataType());
-				foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
-				//Add foreign key operation
-				foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+				if(foreignKeySQLClass != null)
+				{
+					foreignKeySQLClass.getFeature().add(foreignKeyAttribute);
+					//Add foreign key operation
+					foreignKeySQLClass.getFeature().add(createForeignKeyOperation(foreignKeyAttribute));
+				}
 			}
 			String implementedAssociation;
 			String pkgName = getPkgName(foreignKeyEntity);
@@ -2235,7 +2241,8 @@ public class XMIExporter
 	 * @param umlAssociation
 	 * @param association
 	 */
-	private void addEagarLoadingTaggedValue(UmlAssociation umlAssociation, AssociationInterface association) {
+	private void addEagarLoadingTaggedValue(UmlAssociation umlAssociation, AssociationInterface association) 
+	{
 
 
 		TaggedValue 
@@ -2282,8 +2289,11 @@ public class XMIExporter
 	 * @param name
 	 * @return
 	 */
-	private Classifier getUMLClassForEntity(final String entityName)
+	private Classifier getUMLClassForEntity(String entityName)
 	{
+		if(entityName.contains("."))
+			entityName = entityName.substring(entityName.lastIndexOf(".")+1);
+		
 		Classifier umlClass = null;
 		if ((entityUMLClassMappings != null) && (entityName != null))
 		{
@@ -2296,9 +2306,11 @@ public class XMIExporter
 	 * @param entityName
 	 * @return
 	 */
-	private Classifier getSQLClassForEntity(final String entityName)
+	private Classifier getSQLClassForEntity(String entityName)
 	{
 		Classifier sqlClass = null;
+		if(entityName.contains("."))
+			entityName = entityName.substring(entityName.lastIndexOf(".")+1);
 		if ((entityDataClassMappings != null) && (entityName != null))
 		{
 			sqlClass = entityDataClassMappings.get(entityName);
@@ -3110,7 +3122,7 @@ public class XMIExporter
 	}
 
 	/**
-	 * This method will retrive Entity group & static entity required for exporting the xmi.
+	 * This method will retrieve Entity group & static entity required for exporting the xmi.
 	 * it will initialize the global variables foe it.
 	 * @throws DAOException exception.
 	 * @throws DynamicExtensionsApplicationException exception.

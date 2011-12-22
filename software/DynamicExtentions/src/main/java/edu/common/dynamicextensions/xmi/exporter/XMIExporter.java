@@ -96,6 +96,7 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
@@ -2514,8 +2515,14 @@ public class XMIExporter
 				if (attribute.getDataType() != EntityManagerConstantsInterface.FILE_ATTRIBUTE_TYPE
 						|| XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
 				{
-					final Attribute umlAttribute = createUMLAttribute(attribute);
-					umlAttributes.add(umlAttribute);
+				//to avoid adding id attribute in the child
+					if(!XMIConstants.ID_ATTRIBUTE_NAME.equals(attribute.getName())
+							|| attribute.getEntity().getParentEntity() == null)
+					{
+						final Attribute umlAttribute = createUMLAttribute(attribute);
+						umlAttributes.add(umlAttribute);
+					}
+					
 				}
 
 			}

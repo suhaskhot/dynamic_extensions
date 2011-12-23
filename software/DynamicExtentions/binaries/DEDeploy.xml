@@ -1770,7 +1770,7 @@
 
 		<!-- Run caCoreSDK 4.2 for dozer artifacts generation -->
 		<echo message="DEBUG: THIS IS SUPPOSED TO CALL build:all on cacore-sdk-4.2-dozer" />
-		<ant antfile="build.xml" dir="${caCORE4.2_home}/example-project/build" target="dist" />
+		<ant antfile="build.xml" dir="${caCORE4.2_home}/example-project/build" target="build:all" />
 
 		<!--<ant antfile="build.xml" dir="${de.temp.dir}/cacoresdk.4.2/example-project/" target="build:all" />-->
 		<!-- Copy dozer-artifacts to dataservice -->
@@ -1927,8 +1927,15 @@
 					<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/deintegration/SCGRecordEntry.hbm.xml"></property>
 				</then>
 			</elseif>
+			<elseif>
+				<equals arg1="edu.wustl.catissuecore.domain.deintegration.SCGRecordEntry" arg2="${hook.entity.name}" casesensitive="false" />
+				<then>
+					<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/ActionApplicationRecordEntry.hbm.xml"></property>
+				</then>
+			</elseif>
+			
 			<else>
-				<echo message="Unhandled hook entity" level="error" />
+				<echo message="Unhandled hook entity ${hook.entity.hbm}" level="error" />
 			</else>
 		</if>
 

@@ -155,4 +155,6 @@ public class XMIConstants
 	public static final String TAGGED_NAME_IDENTIFYING_XPATH = "IDENTIFYING_XPATH";
 	public static final String TAGGED_NAME_PREDICATE_XPATH = "PREDICATE";
 	public static final String TAGGED_NAME_CONCEPT_LOCATION = "CONCEPT_CODE_LOCATION";
+	public static final String NCI_CASCADE_ASSOCIATION = "NCI_CASCADE_ASSOCIATION";
+	public static final String SAVE_UPDATE = "save-update";
 }

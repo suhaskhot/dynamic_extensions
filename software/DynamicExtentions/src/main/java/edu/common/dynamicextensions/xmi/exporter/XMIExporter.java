@@ -96,7 +96,6 @@ import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DataTypeFactoryInitializationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
@@ -2193,6 +2192,7 @@ public class XMIExporter
 				}
 				
 				addEagarLoadingTaggedValue(umlAssociation,association);
+				addCascadeTag(umlAssociation, association);
 				//If association is many-to-many add "correlation-table" tagged value
 				if (XMIConstants.ASSOC_MANY_MANY.equals(getAssociationType(association))
 						&& (association.getConstraintProperties() != null))
@@ -2255,6 +2255,26 @@ public class XMIExporter
 		
 	}
 
+	/**
+	 * For cascade model settings:
+	 * Create a cascade setting Tag Definition (TD).  The format of the TD is:
+	 * NCI_CASCADE_ASSOCIATION#<<fully qualified rolename>>; e.g., NCI_CASCADE_ASSOCIATION#gov.nih.nci.cacoresdk.domain.manytoone.unidirectional.Chef.restaurant
+	 * tag value, enter the cascade setting; e.g., 'save-update'.
+	 * @param umlAssociation
+	 * @param association
+	 */
+	private void addCascadeTag(UmlAssociation umlAssociation, AssociationInterface association) 
+	{
+
+		TaggedValue 
+			cascadeTag = createTaggedValue(XMIConstants.NCI_CASCADE_ASSOCIATION+
+					'#'+packageName + XMIConstants.DOT_SEPARATOR
+					+ association.getEntity().getName() + XMIConstants.DOT_SEPARATOR
+					+ association.getTargetRole().getName(),
+					XMIConstants.SAVE_UPDATE);
+		umlAssociation.getTaggedValue().add(cascadeTag);
+		
+	}
 	/***
 	 * Creates a tagged value given the specified <code>name</code>.
 	 *
@@ -2812,7 +2832,7 @@ public class XMIExporter
 	 */
 	private void initializeModel()
 	{
-		//Initialize model
+		//Initialise model
 		final ModelManagementPackage modelManagementPackage = umlPackage.getModelManagement();
 
 		//Create Logical Model
@@ -3123,7 +3143,7 @@ public class XMIExporter
 
 	/**
 	 * This method will retrieve Entity group & static entity required for exporting the xmi.
-	 * it will initialize the global variables foe it.
+	 * it will initialise the global variables foe it.
 	 * @throws DAOException exception.
 	 * @throws DynamicExtensionsApplicationException exception.
 	 * @throws DynamicExtensionsSystemException exception.
@@ -3151,7 +3171,7 @@ public class XMIExporter
 
 	/**
 	 * This method will retrive Entity group & static entity required for exporting the xmi.
-	 * it will initialize the global variables foe it.
+	 * it will initialise the global variables foe it.
 	 * @throws DAOException exception.
 	 * @throws DynamicExtensionsApplicationException exception.
 	 * @throws DynamicExtensionsSystemException exception.
@@ -3190,9 +3210,9 @@ public class XMIExporter
 	}
 
 	/**
-	 * It will validate & initialize all the instance variables which are reqiured for
+	 * It will validate & initialise all the instance variables which are reqiured for
 	 * exporting the xmi.
-	 * @param args arguments array from which variables should be initialized.
+	 * @param args arguments array from which variables should be initialised.
 	 * @throws DynamicExtensionsApplicationException exception.
 	 */
 	public void initilizeInstanceVariables(final String[] args)

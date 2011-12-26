@@ -4,7 +4,6 @@ package edu.common.dynamicextensions.processor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +15,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.common.dynamicextensions.client.DataEditClient;
-import edu.common.dynamicextensions.client.DataEntryClient;
 import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domain.FileAttributeRecordValue;
 import edu.common.dynamicextensions.domain.FileAttributeTypeInformation;
@@ -54,11 +51,9 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.actionform.DataEntryForm;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
-import edu.common.dynamicextensions.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.dao.HibernateDAO;

@@ -1331,7 +1331,7 @@
 
 
 		<java classname="edu.common.dynamicextensions.util.DEAuditXMLGenerator" fork="true" maxmemory="1024M">
-			<arg value="${package.name}" />
+			<arg value="${de.package.name}/{cacore.package.name}" />
 			<arg value="${cacore.deployable.dir}/${entity.name}/auditablemetadata.xml" />
 			<arg value="true" />
 			<classpath>
@@ -1732,29 +1732,35 @@
 	</target>
 
 	<!--this propertiy needs to be updated before generating caCORE to the location of unzipped location of SDK-4.2-src-->
-	<property name="caCORE4.2_home" value="E:/caTISSUE_Suite_v2.0_Installable/modules/dynamic_extensions/lib/SDK-4.2-src"></property>
+    <property name="caCORE4.2_home" value="${de.temp.dir}/cacoresdk.4.2" />
 	<target name="unzip_caCORESDK.4.2-dozer">
-		<!--delete dir="${de.temp.dir}/cacoresdk.4.2" />
-		<mkdir dir="${de.temp.dir}/cacoresdk.4.2" /-->
 
-		<!--Step 1: Unzip the default caCoreSDK release--> 
-		<!--unzip src="../../dynamic_extensions/lib/SDK-4.2-src.zip" dest="${de.temp.dir}/cacoresdk.4.2" overwrite="true" /-->
+        <echo message="Re-creating folder ${de.temp.dir}/cacoresdk.4.2" />
+        <delete dir="${de.temp.dir}/cacoresdk.4.2" />
+        <mkdir dir="${de.temp.dir}/cacoresdk.4.2" />
 
-		<!--Step 2: Bring the adjusted files to support dozer artifacts generation--> 
-		<!--unzip src="../../dynamic_extensions/lib/cacore-sdk.4.2-dozer.zip" dest="${de.temp.dir}/cacoresdk.4.2/dozerFiles" overwrite="true" />
-		<copy todir="${de.temp.dir}/cacoresdk.4.2/">
-			<fileset dir="${de.temp.dir}/cacoresdk.4.2/dozerFiles" />
-		</copy-->
-		<!--Step 3: Bring XMI to run the codegen for -->
-		<copy todir="${caCORE4.2_home}/example-project/models" overwrite="true">
-			<fileset dir="${export.dir}">
-				<include name="*.xmi" />
-			</fileset>
-		</copy>
-		<copy file="../../dynamic_extensions/lib/codegen.properties" todir="${caCORE4.2_home}/example-project/build" overwrite="true">
-		</copy>
+        <!--Step 1: Unzip the default caCoreSDK release-->
+        <unzip src="../../dynamic_extensions/lib/SDK-4.2-src.zip" dest="${de.temp.dir}/cacoresdk.4.2" overwrite="true" />
+
+        <!--Step 2: Bring the adjusted files to support dozer artifacts generation-->
+        <unzip src="../../dynamic_extensions/lib/cacore-sdk.4.2-dozer.zip" dest="${de.temp.dir}/cacoresdk.4.2/dozerFiles" overwrite="true" />
+        <copy todir="${de.temp.dir}/cacoresdk.4.2/">
+            <fileset dir="${de.temp.dir}/cacoresdk.4.2/dozerFiles" />
+        </copy>
+
+        <!--Step 3: Bring XMI to run the codegen for -->
+        <copy todir="${caCORE4.2_home}/example-project/models" overwrite="true">
+            <fileset dir="${export.dir}">
+                <include name="*.xmi" />
+            </fileset>
+        </copy>
+
+        <!-- Bring the codegen template -->
+        <!-- This is not needed since the file is already there -->
+        <!-- ToDo On Multiple XMI this file should be brought fresh from ${de.temp.dir}/cacoresdk.4.2/dozerFiles -->
+        <!--<copy file="../../dynamic_extensions/lib/codegen.properties" todir="${caCORE4.2_home}/example-project/build" overwrite="true" />-->
 		
-		<!--Step 4: Replace the properties to match projects configs -->
+        <!--Step 4: Replace the properties to match projects configs -->
 		<echo message="DEBUG: ${entitygroupname}" />
 		<replace dir="${caCORE4.2_home}/example-project/build">
 			<include name="codegen.properties" />
@@ -1765,25 +1771,30 @@
 				<replacevalue>
 					<![CDATA[IDENTITY_GENERATOR_TAG=<generator class="increment"/>]]>
 			</replacevalue>
-			 
 		</replace>
 
-		<!-- Run caCoreSDK 4.2 for dozer artifacts generation -->
+		<!-- Run caCoreSDK 4.2 code generation -->
 		<echo message="DEBUG: THIS IS SUPPOSED TO CALL build:all on cacore-sdk-4.2-dozer" />
-		<ant antfile="build.xml" dir="${caCORE4.2_home}/example-project/build" target="build:all" />
-
-		<!--<ant antfile="build.xml" dir="${de.temp.dir}/cacoresdk.4.2/example-project/" target="build:all" />-->
-		<!-- Copy dozer-artifacts to dataservice -->
-		<available file="${caCORE4.2_home}/example-project/target/dist/exploded/output/${entitygroupname}/codegen/target/${entitygroupname}-dozer-files.zip" property="dozerFilesExists"/>
+		<ant antfile="build.xml" dir="${caCORE4.2_home}/example-project/build" target="build:all" inheritAll="false" />
+		<!-- Copy artifacts to dataservice -->
+		<available file="${caCORE4.2_home}/example-project/target/dist/exploded/output/${entitygroupname}/codegen/target/${entitygroupname}-dozer-files.jar" property="dozerFilesExists"/>
 		<if>
 			<equals arg1="true" arg2="${dozerFilesExists}" />
 			<then>
-				<copy todir="../../caGrid_service/caTissueStaticDataService/de_codegen/artifacts" overwrite="true">
+				<copy todir="../../caGrid_service/caTissueStaticDataService/de_codegen/artifacts" overwrite="true" verbose="true">
 					<fileset dir="${caCORE4.2_home}/example-project/target/dist/exploded/output/${entitygroupname}/codegen/target/">
-						<include name="${entitygroupname}-dozer-files.zip" />
+						<include name="${entitygroupname}-dozer-files.jar" />
+						<include name="${entitygroupname}-beans.jar" />
+						<include name="${entitygroupname}-schema.jar" />
 					</fileset>
 				</copy>
-				<echo message="Dozer files copied for: ${${entitygroupname}}" />
+				<echo message="Dozer files archive copied for: ${entitygroupname}" />
+				<copy todir="../../caGrid_service/caTissueStaticDataService/de_codegen/xmi" overwrite="true" verbose="true">
+                    <fileset dir="${export.dir}">
+                        <include name="${entitygroupname}.xmi" />
+                    </fileset>
+				</copy>
+				<echo message="XMI file copied for: ${entitygroupname}" />
 			</then>
 		</if>
 
@@ -1824,7 +1835,7 @@
 		<java classname="edu.wustl.metadata.util.CacoreDEMetadataAppender" fork="true" maxmemory="1024M">
 			<arg value="${srcHibernateCfgFile}" />
 			<arg value="${caCOREHibernateCfgFile}" />
-			<arg value="${package.name}" />
+			<arg value="${de.package.name}/${cacore.package.name}" />
 						
 			<classpath>
 				<pathelement location="${temp.dir.DE}" />
@@ -1854,8 +1865,6 @@
 		</delete>
 		<mkdir dir="${cacore.deployable.dir}/${entitygroupname}" />
 
-		<jar destfile="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}-orm.jar" basedir="${tempOrm}" />
-
 		
 		<!-- Update beans jar-->
 		<unzip dest="${tempJar}" src="${caCORE4.2_home}/example-project/target/dist/exploded/output/${entitygroupname}/codegen/target/${entitygroupname}-beans.jar"></unzip>
@@ -1865,8 +1874,7 @@
 			<param name="jar.location" value ="${tempJar}"/>
 		</antcall>
 
-		<jar destfile="${cacore.deployable.dir}/${entitygroupname}/${entitygroupname}-beans.jar" basedir="${tempJar}" />
-		
+				
 							
 	</target>
 
@@ -1878,9 +1886,9 @@
 		<propertyregex property="package.name" input="${de.package.name}" regexp="/" replace="." defaultValue="${de.package.name}" />
 						
 		<unzip dest="${domain.jar.location}" src="${host.war.temp}/WEB-INF/lib/catissue_cacore-beans.jar"></unzip>
-		<mkdir dir="${domain.jar.location}/${package.name}"/>
-		<copy todir="${domain.jar.location}/${package.name}" overwrite="true">
-			<fileset dir="${tempJar}/${package.name}">
+		<mkdir dir="${domain.jar.location}/${de.package.name}/${cacore.package.name}"/>
+		<copy todir="${domain.jar.location}/${de.package.name}/${cacore.package.name}" overwrite="true">
+			<fileset dir="${tempJar}/${de.package.name}/${cacore.package.name}">
 			</fileset>
 		</copy>
 
@@ -1901,9 +1909,9 @@
 		<propertyregex property="package.name" input="${de.package.name}" regexp="/" replace="." defaultValue="${de.package.name}" />
 		
 		<!--copy hbms to classes folder-->
-		<mkdir dir="${host.war.temp}/WEB-INF/classes/${package.name}"/>
-		<copy todir="${host.war.temp}/WEB-INF/classes/${package.name}" overwrite="true">
-			<fileset dir="${tempOrm}/${package.name}">
+		<mkdir dir="${host.war.temp}/WEB-INF/classes/${de.package.name}/${cacore.package.name}"/>
+		<copy todir="${host.war.temp}/WEB-INF/classes/${de.package.name}/${cacore.package.name}" overwrite="true">
+			<fileset dir="${tempOrm}/${de.package.name}/${cacore.package.name}">
 			</fileset>
 		</copy>
 

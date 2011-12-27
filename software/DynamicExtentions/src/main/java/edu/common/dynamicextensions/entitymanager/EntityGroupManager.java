@@ -28,6 +28,7 @@ import edu.common.dynamicextensions.xmi.DynamicQueryList;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 import edu.wustl.common.exception.BizLogicException;
+import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
@@ -128,8 +129,8 @@ public class EntityGroupManager extends AbstractMetadataManager
 	 */
 	private EntityGroupInterface addTaggedValue(EntityGroupInterface entityGroup)
 	{
-		addTaggedValue(entityGroup, CAB2B_ENTITY_GROUP, CAB2B_ENTITY_GROUP);
-		addTaggedValue(entityGroup, PACKAGE_NAME, entityGroup.getName());
+		addTaggedValue(entityGroup, CAB2B_ENTITY_GROUP, CAB2B_ENTITY_GROUP); 
+		addTaggedValue(entityGroup, PACKAGE_NAME, ApplicationProperties.getValue("package.name.to.append")+entityGroup.getName());
 		addTaggedValue(entityGroup, METADATA_ENTITY_GROUP, METADATA_ENTITY_GROUP);
 
 		return entityGroup;

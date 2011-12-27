@@ -495,9 +495,9 @@ public class XMIImportValidator
 	public void validatePackageName(String packageName, String domainModelName)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
-		if(packageName !=null && packageName.contains("."))
+		if(packageName !=null && !packageName.contains("."))
 		{
-			errorList.add("Invalid package name. Package name must include '.' in it.");
+			errorList.add(ApplicationProperties.getValue("invalid.pkg.name"));
 		}
 		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
 		substParams.put("0", new NamedQueryParam(DBTypes.STRING, packageName));

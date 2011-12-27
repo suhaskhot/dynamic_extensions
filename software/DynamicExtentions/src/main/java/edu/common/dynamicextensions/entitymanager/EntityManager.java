@@ -2892,7 +2892,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(null);
 
 			hibernateDAO.update(attrTypeInfo);
 

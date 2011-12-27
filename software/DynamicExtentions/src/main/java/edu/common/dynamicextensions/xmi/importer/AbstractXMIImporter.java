@@ -121,6 +121,8 @@ public abstract class AbstractXMIImporter
 	private String domainModelName = "";
 	XMIImportValidator xmiImportValidator= new XMIImportValidator();
 	MetaDataIntegrator metaDataIntegrator= new MetaDataIntegrator();
+
+	private String baseDir = "";
 	private static final String TIME_TAKEN = "  Time taken  = ";
 	private static final String MINUTES = " minutes ";
 	private static final String SECONDS = "  seconds";
@@ -194,12 +196,11 @@ public abstract class AbstractXMIImporter
 			LOGGER.info("Now associating the clinical study to the main Containers");
 			postProcess(isEditedXmi, coRecObjCsvFName, mainContainerList, domainModelName);
 			generateValidationLogs();
-			//import pv offline 
-			//Specify pv file path as -Dpv.file.name
-			//Sanjay Sengupta
+			
 			if(!pvFile.equals(""))
 			{
-				ImportPermissibleValues.main(new String[] {pvFile});
+				ImportPermissibleValues importPVs = new ImportPermissibleValues(pvFile, baseDir, null);
+				importPVs.importValues();
 				
 			}
 		}
@@ -487,6 +488,11 @@ public abstract class AbstractXMIImporter
 		{
 			pvFile = args[8];
 		}
+		if (args.length > 9 && args[9].trim().length() > 0)
+		{
+			baseDir  = args[9];
+		}
+		
 	}
 
 	/**

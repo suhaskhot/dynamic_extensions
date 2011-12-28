@@ -199,6 +199,10 @@ public abstract class AbstractXMIImporter
 			
 			if(!pvFile.equals(""))
 			{
+				if(new File(pvFile).isAbsolute())
+				{
+					baseDir = "";
+				}
 				ImportPermissibleValues importPVs = new ImportPermissibleValues(pvFile, baseDir, null);
 				importPVs.importValues();
 				

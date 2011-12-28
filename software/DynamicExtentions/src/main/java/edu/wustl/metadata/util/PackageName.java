@@ -68,7 +68,7 @@ public class PackageName
 			}
 
 			String packageName = getPackageNameFromTaggedValues(entityName);
-			final int start = packageName.lastIndexOf('.');
+			/*final int start = packageName.lastIndexOf('.');
 			String packageEntityName = packageName; // NOPMD
 			if (start != -1)
 			{
@@ -85,9 +85,9 @@ public class PackageName
 					tempPackageName.append(packageName.substring(0, packageName.indexOf('.')));
 				}
 				packageName = tempPackageName.toString().replace('.', '/');
-			}
+			}*/
 
-			writeToFile(directoryPath, packageName, entityName, packageEntityName);
+			writeToFile(directoryPath, packageName.replace('.', '/'), entityName);
 		}
 		catch (DynamicExtensionsSystemException e)
 		{
@@ -133,7 +133,7 @@ public class PackageName
 	 * @throws DynamicExtensionsSystemException 
 	 */
 	private void writeToFile(final String directoryPath, final String packageName,
-			final String entityName, final String packageEntityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+			final String entityName) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		final File newFile = new File(directoryPath + File.separator + "Package.txt");
 		try
@@ -143,8 +143,7 @@ public class PackageName
 			writer.newLine();
 			writer.write("de.package.name=" + getLogicalPackageName(packageName, "/"));
 			writer.newLine();
-			writer.write("cacore.package.name=" + packageEntityName);
-			writer.newLine();
+			
 			writer.write("hook.entity.name=" + XMIExporterUtility.getHookEntityName(EntityManager.getInstance().getEntityGroupByName(entityName)).getName());
 			
 			writer.close();

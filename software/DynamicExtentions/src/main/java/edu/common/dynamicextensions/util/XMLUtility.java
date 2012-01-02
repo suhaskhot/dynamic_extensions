@@ -43,6 +43,13 @@ public class XMLUtility
 			String packageName, String xsdFileName) throws DynamicExtensionsSystemException,
 			SAXException
 	{
+		final FileReader fileReader = new FileReader(xmlFileName, fileDirectory);
+		return getJavaObjectForXML(packageName, xsdFileName, fileReader.getFilePath());
+	}
+
+	public static Object getJavaObjectForXML(String packageName, String xsdFileName,
+			String filePath) throws SAXException, DynamicExtensionsSystemException
+	{
 		try
 		{
 			// Creates URL of the XSD specified.
@@ -53,10 +60,10 @@ public class XMLUtility
 			XMLToObjectConverter converter = new XMLToObjectConverter(packageName, xsdFileUrl);
 
 			// Read the XML file and create fileReader object
-			final FileReader fileReader = new FileReader(xmlFileName, fileDirectory);
+			
 
 			// Parse the XML and create Permissible Values POJO
-			return converter.getJavaObject(new FileInputStream(fileReader.getFilePath()));
+			return converter.getJavaObject(new FileInputStream(filePath));
 		}
 		catch (JAXBException e)
 		{

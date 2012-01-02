@@ -126,6 +126,7 @@ import edu.wustl.common.util.CVSTagReader;
 import edu.wustl.common.util.Utility;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.global.CommonServiceLocator;
+import edu.wustl.common.util.global.Validator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.DAO;
 import edu.wustl.dao.HibernateDAO;
@@ -2415,8 +2416,16 @@ public class DynamicExtensionsUtility
 		HibernateDAO hibernateDao = null;
 		try
 		{
-			hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
+			if(Validator.isEmpty(appName))
+			{
+				hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory()
+				.getDAO();
+			}
+			else
+			{
+				hibernateDao = (HibernateDAO) DAOConfigFactory.getInstance().getDAOFactory(appName)
 					.getDAO();
+			}
 			hibernateDao.openSession(sessionDataBean);
 		}
 		catch (DAOException e)

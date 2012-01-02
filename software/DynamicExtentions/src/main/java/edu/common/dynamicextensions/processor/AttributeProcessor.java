@@ -143,53 +143,19 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 			else
 			{
 				String attributeType = attributeUIBeanInformationIntf.getDataType();
-				if (attributeType != null)
+				if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
 				{
-					if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
-					{
-						attribute = domainObjectFactory.createStringAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
-					{
-						attribute = domainObjectFactory.createDateAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
-					{
-						attribute = domainObjectFactory.createBooleanAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
-					{
-						attribute = domainObjectFactory.createByteArrayAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FILE))
-					{
-						attribute = domainObjectFactory.createFileAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_NUMBER))
-					{
-						int noOfDecimals = DynamicExtensionsUtility
-								.convertStringToInt(attributeUIBeanInformationIntf
-										.getAttributeDecimalPlaces());
-						attribute = createAttributeForNumericDataType(noOfDecimals);
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_INTEGER))
-					{
-						attribute = domainObjectFactory.createIntegerAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_LONG))
-					{
-						attribute = domainObjectFactory.createLongAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FLOAT))
-					{
-						attribute = domainObjectFactory.createFloatAttribute();
-					}
-					else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DOUBLE))
-					{
-						attribute = domainObjectFactory.createDoubleAttribute();
-					}
+					int noOfDecimals = DynamicExtensionsUtility
+							.convertStringToInt(attributeUIBeanInformationIntf
+									.getAttributeDecimalPlaces());
+					attribute = createAttributeForNumericDataType(noOfDecimals);
+				}else
+				{
+					attribute = domainObjectFactory.createAttribute(attributeType);	
 				}
+				
 			}
+				
 		}
 
 		return attribute;

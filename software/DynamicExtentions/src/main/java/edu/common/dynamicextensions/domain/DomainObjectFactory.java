@@ -88,6 +88,8 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ViewInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterface;
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
@@ -1005,12 +1007,58 @@ public class DomainObjectFactory
 			AssociationDirection assonDirectn, String assoName, RoleInterface sourceRole,
 			RoleInterface targetRole) throws DynamicExtensionsSystemException
 	{
-		AssociationInterface association = DomainObjectFactory.getInstance().createAssociation();
+		AssociationInterface association = getInstance().createAssociation();
 		association.setTargetEntity(targetEntity);
 		association.setAssociationDirection(assonDirectn);
 		association.setName(assoName);
 		association.setSourceRole(sourceRole);
 		association.setTargetRole(targetRole);
 		return association;
+	}
+	
+	public AttributeInterface createAttribute(String attributeType)
+	{
+		AttributeInterface attribute =  null;
+		if (attributeType != null)
+		{
+			if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
+			{
+				attribute = createStringAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
+			{
+				attribute = createDateAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
+			{
+				attribute = createBooleanAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BYTEARRAY))
+			{
+				attribute = createByteArrayAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FILE))
+			{
+				attribute = createFileAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_INTEGER))
+			{
+				attribute = createIntegerAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_LONG))
+			{
+				attribute = createLongAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FLOAT))
+			{
+				attribute = createFloatAttribute();
+			}
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DOUBLE))
+			{
+				attribute = createDoubleAttribute();
+			}
+		}
+		return attribute;
+		
 	}
 }

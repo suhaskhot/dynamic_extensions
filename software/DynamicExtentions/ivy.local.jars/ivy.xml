@@ -37,7 +37,7 @@
       <artifact name="codegen" ext="jar" type="jar"/>
       <artifact name="cog-jglobus" ext="jar" type="jar"/>
       <artifact name="commonpackage-1.2.7" ext="jar" type="jar"/>
-      <artifact name="commons-beanutils" ext="jar" type="jar"/>
+      <artifact name="commons-beanutils-core-1.8.3" ext="jar" type="jar"/>
       <artifact name="commons-collections-2.1.1" ext="jar" type="jar"/>
       <artifact name="commons-digester" ext="jar" type="jar"/>
       <artifact name="commons-discovery" ext="jar" type="jar"/>

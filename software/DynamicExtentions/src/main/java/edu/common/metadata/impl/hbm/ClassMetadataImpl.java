@@ -1,6 +1,7 @@
 package edu.common.metadata.impl.hbm;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -64,8 +65,8 @@ public class ClassMetadataImpl implements ClassMetadata {
         return entityMetamodel.getSuperclass();
     }
     
-    public Set<PropertyMetadata> getPropertiesMetadata() {
-        return (Set<PropertyMetadata>) propertiesMetadata.values();
+    public Collection<PropertyMetadata> getPropertiesMetadata() {
+        return propertiesMetadata.values();
     }
         
     private void initialiazePropertiesMetadata() {

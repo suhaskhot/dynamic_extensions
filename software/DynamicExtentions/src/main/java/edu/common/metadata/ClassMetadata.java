@@ -1,5 +1,6 @@
 package edu.common.metadata;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -19,7 +20,7 @@ public interface ClassMetadata {
     
     public String getParentClassName();
     
-    public Set<PropertyMetadata> getPropertiesMetadata();
+    public Collection<PropertyMetadata> getPropertiesMetadata();
     
     public PropertyMetadata getProperty(String name);
 }

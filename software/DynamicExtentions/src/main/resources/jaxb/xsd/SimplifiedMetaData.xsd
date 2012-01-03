@@ -6,10 +6,10 @@
 		<xsd:sequence>
 		
 			<!--updated/added classes  -->
-			<xsd:element maxOccurs="unbounded" name="entityCollection" type="entity" />
+			<xsd:element maxOccurs="unbounded" name="entity" type="entity" />
 			
 			<!--updated/added associations -->
-			<xsd:element minOccurs="0" maxOccurs="unbounded" name="associationCollection"
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="association"
 				type="association" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -25,7 +25,7 @@
 	<xsd:complexType name="entity">
 		<xsd:sequence>
 			<xsd:element name="name" type="xsd:string" />
-			<xsd:element minOccurs="0" maxOccurs="unbounded" name="attributeCollection"
+			<xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute"
 				type="attribute" />
 		</xsd:sequence>
 	</xsd:complexType>

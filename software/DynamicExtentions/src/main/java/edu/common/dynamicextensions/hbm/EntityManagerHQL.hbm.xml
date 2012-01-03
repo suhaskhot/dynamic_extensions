@@ -100,6 +100,12 @@
 			   from EntityGroup entityGroup
 			   		where entityGroup.isSystemGenerated = false AND entityGroup.name not like 'deprecated%'  and size(entityGroup.entityCollection) > 0
 	</query>
+	
+	<query name="getAllconditionalGroupBeans">
+		select entityGroup.name,entityGroup.id
+			   from EntityGroup entityGroup
+			   		where entityGroup.isSystemGenerated = false AND entityGroup.iscaCOREGenerated = ? AND entityGroup.name not like 'deprecated%'  and size(entityGroup.entityCollection) > 0
+	</query>
 
 	<query name="getAllEntityGroups">
 		from EntityGroup entityGroup

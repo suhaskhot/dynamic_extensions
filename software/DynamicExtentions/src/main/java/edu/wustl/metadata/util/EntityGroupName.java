@@ -7,7 +7,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -17,6 +19,8 @@ import edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.common.beans.NameValueBean;
+import edu.wustl.dao.query.generator.DBTypes;
+import edu.wustl.dao.util.NamedQueryParam;
 
 /**
  * @author Gaurav_mehta
@@ -42,24 +46,30 @@ public class EntityGroupName
      *
      * @param directoryPath
      *            the directory path
+     * @param args 
      * @param tobeRemovedEntityGroups
      *            the tobe removed entity groups
      * @param includeEntityGroups
      *            the to be included entity groups
      * @return the all entity group bean
      */
-    public final void getAllEntityGroupBean(final String directoryPath,
-            final String tobeRemovedEntityGroups, // NOPMD
-            final String includeEntityGroups) // NOPMD
+    public final void getAllEntityGroupBean(final String directoryPath, String args)
     {
         try
         {
-            final Collection<NameValueBean> allEntityNames = entityManager
-                    .getAllEntityGroupBeans();
-            final String removeEntityGroups = tobeRemovedEntityGroups.trim(); // NOPMD
-            final String includeEntityGrps = includeEntityGroups.trim();
-            final List<String> allEntGrpNames = filterEntityGroups(
-                    removeEntityGroups, includeEntityGrps, allEntityNames);
+        	Collection<NameValueBean> allEntityNames;
+        	if(Boolean.valueOf(args))
+        	{
+        		allEntityNames = entityManager.getAllEntityGroupBeans();
+        	}
+        	else
+        	{
+        		Map<String, NamedQueryParam> substParams = new HashMap<String, NamedQueryParam>();
+        		substParams.put("0", new NamedQueryParam(DBTypes.BOOLEAN, Boolean.valueOf(args)));
+        		allEntityNames = entityManager
+                .getAllConditionalEntityGroupBeans(substParams);
+        	}
+            final List<String> allEntGrpNames = filterEntityGroups(allEntityNames);
             writeToFile(allEntGrpNames, directoryPath);
         } catch (DynamicExtensionsSystemException e)
         {
@@ -77,8 +87,7 @@ public class EntityGroupName
 	 *
 	 * @return the list< string>
 	 */
-	private List<String> filterEntityGroups(final String tobeRemovedEntityGroups, // NOPMD
-			final String includeEntityGroups, final Collection<NameValueBean> allEntityNames) // NOPMD
+	private List<String> filterEntityGroups(final Collection<NameValueBean> allEntityNames) // NOPMD
 	{
 		List<String> allEntGrpNames = new ArrayList<String>();
 
@@ -87,8 +96,8 @@ public class EntityGroupName
 			allEntGrpNames.add(nameValueBean.getName());
 		}
 
-		filterEntityGroupsToBeRemoved(tobeRemovedEntityGroups, allEntGrpNames);
-		allEntGrpNames = addOnlySpecificEntityGroups(includeEntityGroups, allEntGrpNames);
+//		filterEntityGroupsToBeRemoved(tobeRemovedEntityGroups, allEntGrpNames);
+//		allEntGrpNames = addOnlySpecificEntityGroups(includeEntityGroups, allEntGrpNames);
 
 		return allEntGrpNames;
 	}
@@ -228,7 +237,7 @@ public class EntityGroupName
 	public static void main(final String[] args)
 	{
 		final EntityGroupName entityGroupName = new EntityGroupName();
-		entityGroupName.getAllEntityGroupBean(args[0], args[1], args[2]);
+		entityGroupName.getAllEntityGroupBean(args[0],args[1]);
 	}
 
 }

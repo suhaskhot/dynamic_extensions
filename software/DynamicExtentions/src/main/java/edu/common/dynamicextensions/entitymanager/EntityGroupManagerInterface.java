@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.entitymanager;
 
 import java.util.Collection;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
@@ -10,6 +11,7 @@ import edu.common.dynamicextensions.util.AssociationTreeObject;
 import edu.common.dynamicextensions.xmi.DynamicQueryList;
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.dao.HibernateDAO;
+import edu.wustl.dao.util.NamedQueryParam;
 
 /**
 *
@@ -76,6 +78,8 @@ public interface EntityGroupManagerInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	Collection<NameValueBean> getAllEntityGroupBeans() throws DynamicExtensionsSystemException;
+	
+	Collection<NameValueBean> getAllConditionalEntityGroupBeans(Map<String, NamedQueryParam> substParams) throws DynamicExtensionsSystemException;
 
 	/**
 	*

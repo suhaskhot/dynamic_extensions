@@ -265,7 +265,7 @@ public class XMIImportProcessor
 
 		//Static models of caTissue and Clinportal are system generated entity groups
 		entityGroup.setIsSystemGenerated(xmiConfigurationObject.isEntityGroupSystemGenerated());
-
+		entityGroup.setIscaCOREGenerated(Boolean.FALSE);
 		addTaggedValue(packageName);
 		final int noOfClasses = umlClassColl.size();
 		umlClassIdVsEntity = new HashMap<String, EntityInterface>(noOfClasses);

@@ -39,6 +39,24 @@ public class EntityGroup extends AbstractMetadata implements EntityGroupInterfac
 	protected String version;
 
 	/**
+	 * iscaCOREGenerated
+	 */
+	protected Boolean iscaCOREGenerated = Boolean.FALSE;
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.EntityGroupInterface#getIscaCOREGenerated()
+	 */
+	public Boolean getIscaCOREGenerated() {
+		return iscaCOREGenerated;
+	}
+
+	/* (non-Javadoc)
+	 * @see edu.common.dynamicextensions.domaininterface.EntityGroupInterface#setIscaCOREGenerated(java.lang.Boolean)
+	 */
+	public void setIscaCOREGenerated(Boolean iscaCOREGenerated) {
+		this.iscaCOREGenerated = iscaCOREGenerated;
+	}
+
+	/**
 	 * isSystemGenerated.
 	 */
 	protected Boolean isSystemGenerated = Boolean.TRUE;

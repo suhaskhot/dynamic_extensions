@@ -203,6 +203,14 @@
             insert="true"
             column="IS_SYSTEM_GENERATED"
         />
+        
+        <property
+            name="iscaCOREGenerated"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="IS_CACORE_GENERATED"
+        />
 
         </joined-subclass>
         <joined-subclass

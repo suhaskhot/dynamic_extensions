@@ -98,5 +98,15 @@ public interface EntityGroupInterface extends AbstractMetadataInterface
 	 * @return
 	 */
 	EntityInterface getEntityByName(String entityName);
+	
+	/**
+	 * @return
+	 */
+	Boolean getIscaCOREGenerated();
+	
+	/**
+	 * @param iscaCOREGenerated
+	 */
+	void setIscaCOREGenerated(Boolean iscaCOREGenerated);
 
 }

@@ -282,6 +282,28 @@ public class EntityGroupManager extends AbstractMetadataManager
 
 		return entGroupBeans;
 	}
+	
+	public Collection<NameValueBean> getAllConditionalEntityGroupBeans(Map<String, NamedQueryParam> substParams)
+	throws DynamicExtensionsSystemException
+	{
+		final Collection<NameValueBean> entGroupBeans = new ArrayList<NameValueBean>();
+		Object[] objectArray;
+		
+		final Collection<NameValueBean> groupBeans = executeHQL("getAllconditionalGroupBeans", substParams);
+		Iterator grpBeansIter = groupBeans.iterator();
+		while (grpBeansIter.hasNext())
+		{
+			objectArray = (Object[]) grpBeansIter.next();
+		
+			NameValueBean nameValueBean = new NameValueBean();
+			nameValueBean.setName(objectArray[0]);
+			nameValueBean.setValue(objectArray[1]);
+		
+			entGroupBeans.add(nameValueBean);
+		}
+		
+		return entGroupBeans;
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.common.dynamicextensions.entitymanager.EntityGroupManagerInterface#getAssociationTree()

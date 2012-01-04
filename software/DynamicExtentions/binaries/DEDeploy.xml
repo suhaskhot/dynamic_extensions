@@ -2039,7 +2039,7 @@
 				</then>
 			</elseif>
 			<elseif>
-				<equals arg1="edu.wustl.catissuecore.domain.processingprocedure.SpecimenProcessingProcedure" arg2="${hook.entity.name}" casesensitive="false" />
+				<equals arg1="edu.wustl.catissuecore.domain.deintegration.ActionApplicationRecordEntry" arg2="${hook.entity.name}" casesensitive="false" />
 				<then>
 					<property name="hook.entity.hbm" value="${host.war.temp}/WEB-INF/classes/edu/wustl/catissuecore/hbm/ActionApplicationRecordEntry.hbm.xml"></property>
 				</then>

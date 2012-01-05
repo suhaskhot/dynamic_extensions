@@ -23,10 +23,10 @@
 			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' >
 				<tr>
 		 			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.ListBoxType"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:radio  property="attributeMultiSelect" value="<%=ProcessorConstants.LIST_TYPE_SINGLE_SELECT%>" onclick="listTypeChanged(this)" >
 							<bean:message key="eav.att.ListBoxSingleTitle"/>
 						</html:radio>
@@ -36,20 +36,20 @@
 					</td>
 				</tr>
 				<tr id="rowForDisplayHeight">
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="2%">&nbsp;</td>
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.ListBoxDisplayLines"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:text styleClass="formFieldSized5" maxlength="100" size="60" styleId = 'attributeNoOfRows'  property="attributeNoOfRows" />
 					</td>
 				</tr>
 				<tr>
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="2%">&nbsp;</td>
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.ListBoxOptionTypes"></bean:message> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:radio styleId="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" property="displayChoice" onclick="changeSourceForValues(this)"  value="<%=ProcessorConstants.DISPLAY_CHOICE_USER_DEFINED%>" >
 							<bean:message key="eav.att.OptionsUserDefined"/>
 						</html:radio>

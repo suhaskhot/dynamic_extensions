@@ -1614,3 +1614,26 @@ padding: 0;
    padding-top:0.0;
       padding-bottom:1.0;
 }
+.black_ar {
+	font-family: verdana;
+	font-size: 11px;
+	color: #171717;
+	vertical-align:middle;
+	margin:0px;
+}
+
+.black_ar_hb{
+	font-family: verdana;
+	font-size: 0.9em;
+	color: #171717;
+	vertical-align:middle;
+	margin:0px;
+	font-weight:bold;
+}
+
+.blue_ar_b {
+	font-family: verdana;
+	font-size: 12px;
+	color: #074180;
+	font-weight: bold;
+}

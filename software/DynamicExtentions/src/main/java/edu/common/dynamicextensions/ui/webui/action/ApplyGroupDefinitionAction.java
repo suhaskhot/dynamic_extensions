@@ -37,10 +37,14 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
+			{
 		ActionForward actionForward = null;
 
 		GroupForm groupForm = (GroupForm) form;
+		if(groupForm.getGroupName()!=null)
+		{
+			groupForm.setGroupNameText(edu.wustl.cab2b.common.util.Utility.modifyStringToCamelCase(groupForm.getGroupNameText()));
+		}
 		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor
 				.getInstance();
 
@@ -98,7 +102,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 			actionForward = getNextPage(groupForm.getGroupOperation(), mapping, isCallbackURL);
 		}
 		return actionForward;
-	}
+			}
 
 	/**
 	 * @param operationPerformed : Operation performed
@@ -135,7 +139,7 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 	 */
 	private boolean redirectCallbackURL(HttpServletRequest request, HttpServletResponse response,
 			String webUIManagerConstant) throws IOException
-	{
+			{
 		boolean isCallbackURL = false;
 		String calllbackURL = (String) CacheManager.getObjectFromCache(request,
 				DEConstants.CALLBACK_URL);
@@ -151,5 +155,5 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 			isCallbackURL = true;
 		}
 		return isCallbackURL;
-	}
+			}
 }

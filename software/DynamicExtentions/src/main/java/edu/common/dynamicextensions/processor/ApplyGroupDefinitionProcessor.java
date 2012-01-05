@@ -6,6 +6,9 @@
 
 package edu.common.dynamicextensions.processor;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -202,6 +205,17 @@ public final class ApplyGroupDefinitionProcessor extends BaseDynamicExtensionsPr
 			{
 				//Save to DB
 				EntityManager.getInstance().persistEntity(entity);
+			}
+			if ((groupOperation != null) && (groupOperation.equals(ProcessorConstants.SHOW_NEXT_PAGE)))
+			{
+				Collection<EntityInterface> entityCollection=entityGroup.getEntityCollection();
+				Iterator<EntityInterface> entityIter=entityCollection.iterator();
+				while(entityIter.hasNext())
+				{
+					entity=entityIter.next();
+					entity.setName(edu.wustl.cab2b.common.util.Utility.getFormattedString(entity.getName()));
+				}
+				
 			}
 		}
 	}

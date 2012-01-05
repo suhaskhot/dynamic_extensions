@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.ui.webui.actionform.GroupForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
+import edu.wustl.cab2b.common.util.Utility;
 
 /**
  * @author preeti_munot
@@ -60,6 +61,7 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 		{
 			container = DynamicExtensionsUtility.getContainerByIdentifier(containerIdentifier);
 			CacheManager.addObjectToCache(request, DEConstants.CONTAINER_INTERFACE, container);
+			container.setCaption(Utility.getFormattedString(container.getCaption()));
 			if (container != null)
 			{
 				CacheManager.addObjectToCache(request, DEConstants.CURRENT_CONTAINER_NAME,

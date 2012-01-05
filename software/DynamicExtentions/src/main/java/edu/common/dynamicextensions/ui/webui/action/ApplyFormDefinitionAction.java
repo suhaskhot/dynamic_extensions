@@ -407,6 +407,7 @@ public class ApplyFormDefinitionAction extends BaseDynamicExtensionsAction
 		ApplyFormDefinitionProcessor applyFormDefinitionProcessor = ApplyFormDefinitionProcessor
 				.getInstance();
 
+		formDefinitionForm.setFormName(edu.wustl.cab2b.common.util.Utility.modifyStringToCamelCase(formDefinitionForm.getFormName()));
 		DynamicExtensionsUtility.checkIfEntityPreExists(entityGroup, container, formDefinitionForm
 				.getFormName());
 

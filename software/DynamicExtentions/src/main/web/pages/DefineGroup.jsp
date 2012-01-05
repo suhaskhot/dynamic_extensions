@@ -66,27 +66,32 @@
 							</tr>
 							<tr height="100%" valign="top" >
 								<td height='100%' colspan="7">
-									<table valign="top" cellspacing="0" cellpadding="4" align="left" width="100%" height='100%' class="tbBordersAllbordersBlack">
+									<table valign="top" border="0" cellspacing="0" cellpadding="4" align="left" width="100%" height='100%' class="tbBordersAllbordersBlack">
 										<tr valign="top">
-											<td class="formMessage" colspan="3">
-												<bean:message key="app.requiredMessage"/>
+											<td class="black_ar" colspan="3">
+								<input type="image"  src="<%=request.getContextPath()%>/images/de/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
+						  	<bean:message key="app.requiredMessage"/>
 											</td>
 										</tr>
 										<tr valign="top">
-											<td class="formMessage" colspan="3">
+											<td class="black_ar" colspan="3">
 												<font color="red" ><html:errors/></font>
 											</td>
 										</tr>
 										<tr valign="top">
-											<td class="formMessage" colspan="3">&nbsp;</td>
+											<td class="black_ar" colspan="3">&nbsp;</td>
 										</tr>
 
 										<tr valign="top" class="rowWithBottomPadding">
-											<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-											<td class="formRequiredLabelWithoutBorder" width="12%">
+											 <td width="2%" align="center" class="black_ar">
+							<span class="blue_ar_b">
+								<input type="image" src="<%=request.getContextPath()%>/images/de/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
+							</span>
+						  </td>
+											<td class="black_ar" width="12%">
 												<bean:message key="eav.att.GroupType"/> :
 											</td>
-											<td class="formFieldWithoutBorder" align="left">
+											<td class="black_ar" align="left">
 												<html:radio styleId="createGroupAs" property="createGroupAs" value="NewGroup" onclick="changeGroupSource(this)">
 													<bean:message key="eav.att.NewGroup"/>
 												</html:radio>
@@ -117,15 +122,15 @@
 							</tr>
 							<tr height='100%' valign="top">
 								<td height='100%' colspan="2" align="left">
-									<html:button styleClass="actionButton" property="saveButton" onclick="saveGroup()" onkeydown="saveGroupOnKeyDown(event)">
+									<html:button styleClass="blue_ar_b" property="saveButton" onclick="saveGroup()" onkeydown="saveGroupOnKeyDown(event)">
 										<bean:message key="buttons.save" />
 	 								</html:button>
-									<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateGroup()">
+									<html:button styleClass="blue_ar_b" property="cancelButton" onclick="showHomePageFromCreateGroup()">
 										<bean:message key="buttons.cancel" />
 	 								</html:button>
 								</td>
 								<td height='100%' colspan="5" align="right">
-									<html:button styleClass="actionButton" property="nextButton" onclick="showDefineFormJSP()" >
+									<html:button styleClass="blue_ar_b" property="nextButton" onclick="showDefineFormJSP()" >
 										<bean:message  key="buttons.next" />
 	 								</html:button>
 								</td>
@@ -135,10 +140,12 @@
 				</tr>
 			</table>
 			<div id="NewGroupDiv" style="display:none">
-				<table valign="top" cellspacing="0" cellpadding="4" width="100%" height='100%' border="0">
+				<table valign="top" cellspacing="0" cellpadding="4" width="100%" height='100%' border="0" cellpadding="4">
 					<tr valign="top" class="rowWithBottomPadding">
-						<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-						<td class="formRequiredLabelWithoutBorder" width="12%">
+							 <td width="1%" align="center" class="black_ar">
+								<input type="image" src="<%=request.getContextPath()%>/images/de/star.gif" alt="Mandatory" width="5" height="6" hspace="0" vspace="0" />
+						  </td>
+						<td class="black_ar" width="12%">
 							<label for="groupName">
 								<bean:message key="eav.att.GroupTitle"/> :
 							</label>
@@ -149,11 +156,11 @@
 					</tr>
 
 					<tr valign="top" class="rowWithBottomPadding">
-						<td valign="top" class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-						<td valign="top" class="formRequiredLabelWithoutBorder" width="12%">&nbsp;</td>
+						<td valign="top" class="black_ar" width="2%" >&nbsp;</td>
+						<td valign="top" class="black_ar" width="12%">&nbsp;</td>
 						<td valign="top">
 								<font class="validationmessageblack"><bean:message key="group.title"/></font>&nbsp;
-								<font class="validationmessageblue"><bean:message key="errors.group.validation"/></font>
+								<font class="validationmessageblue"><bean:message key="errors.special.character.validation"/></font>
 						</td>
 
 					</tr>
@@ -161,8 +168,8 @@
 
 
 					<tr valign="bottom" class="rowWithBottomPadding">
-						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-						<td class="formRequiredLabelWithoutBorder" width="12%">
+						<td class="black_ar" width="2%" >&nbsp;</td>
+						<td class="black_ar" width="12%">
 							<label for="groupDescription">
 								<bean:message key="eav.att.Description"/> :
 							</label>
@@ -176,8 +183,8 @@
 			<div id="ExistingGroupDiv" style="display:none">
 				<table valign="top" cellspacing="0" cellpadding="4" align="left" width="100%" height='100%'>
 					<tr valign = "top"  class="rowWithBottomPadding">
-						<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-						<td class="formRequiredLabelWithoutBorder" width="12%">
+						<td class="black_ar" width="2%">&nbsp;</td>
+						<td class="black_ar" width="12%">
 							<label for="groupName">
 								<bean:message key="eav.att.GroupTitle"/> :
 							</label>
@@ -189,8 +196,8 @@
 						</td>
 					</tr>
 					<tr valign="top" class="rowWithBottomPadding">
-						<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-						<td class="formRequiredLabelWithoutBorder" width="12%">
+						<td class="black_ar" width="2%" >&nbsp;</td>
+						<td class="black_ar" width="12%">
 							<label for="groupDescription">
 								<bean:message key="eav.att.Description"/> :
 							</label>

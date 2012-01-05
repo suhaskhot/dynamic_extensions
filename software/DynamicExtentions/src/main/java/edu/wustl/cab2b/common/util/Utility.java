@@ -9,11 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -294,7 +297,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 */
 	public static Collection<PermissibleValueInterface> getPermissibleValues(
 			AttributeInterface attribute)
-	{
+			{
 		if (isEnumerated(attribute))
 		{
 			UserDefinedDEInterface userDefinedDE = (UserDefinedDEInterface) attribute
@@ -302,7 +305,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 			return userDefinedDE.getPermissibleValueCollection();
 		}
 		return new ArrayList<PermissibleValueInterface>(0);
-	}
+			}
 
 	/**
 	 * Returns the display name if present as tagged value. Else returns the
@@ -485,11 +488,11 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 */
 	public static List<AttributeInterface> getAttributeList(
 			Set<AttributeInterface> inputAttributeSet)
-	{
+			{
 		List<AttributeInterface> attributes = new ArrayList<AttributeInterface>(inputAttributeSet);
 		Collections.sort(attributes, new AttributeInterfaceComparator());
 		return attributes;
-	}
+			}
 
 	/**
 	 * This method converts stack trace to the string representation
@@ -544,7 +547,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 */
 	public static Collection<?> executeHQL(String queryName, List<Object> values)
 			throws HibernateException, DynamicExtensionsSystemException
-	{
+			{
 		Collection objects = null;
 		HibernateDAO hibernateDAO = null;
 		try
@@ -563,7 +566,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		}
 
 		return objects;
-	}
+			}
 
 	/**
 	 * @param queryName
@@ -572,7 +575,7 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static Collection<?> executeHQL(String queryName) throws HibernateException,
-			DynamicExtensionsSystemException
+	DynamicExtensionsSystemException
 	{
 		return executeHQL(queryName, null);
 	}
@@ -699,6 +702,53 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		return returner.toString();
 	}
 
+	public static String modifyStringToCamelCase(String stringToTrim)
+	{
+		String trimmedString = "";
+		if (stringToTrim != null)
+		{
+			StringTokenizer tokens = new StringTokenizer(stringToTrim, " ");
+			while (tokens.hasMoreElements())
+			{
+				String name = tokens.nextToken();
+				char firstChar = name.charAt(0);
+				trimmedString = trimmedString
+						+ name.replaceFirst(Character.toString(firstChar),
+								Character.toString(firstChar).toUpperCase());
+			}
+		}
+		return trimmedString;
+	}
+
+	public static String modifyStringToLowerCamelCase(String stringToTrim)
+	{
+		String trimmedString = "";
+		if (stringToTrim != null)
+		{
+			StringTokenizer tokens = new StringTokenizer(stringToTrim, " ");
+			boolean firstWord=true;
+			while (tokens.hasMoreElements())
+			{
+				String name = tokens.nextToken();
+				char firstChar = name.charAt(0);
+				if(firstWord)
+				{
+					trimmedString = trimmedString
+							+ name.replaceFirst(Character.toString(firstChar),
+									Character.toString(firstChar).toLowerCase());
+					firstWord=false;
+				}
+				else
+				{
+					trimmedString = trimmedString
+							+ name.replaceFirst(Character.toString(firstChar),
+									Character.toString(firstChar).toUpperCase());
+				}
+			}
+		}
+		return trimmedString;
+	}
+
 	/**
 	 * Utility method to count upper case characters in the String
 	 */
@@ -727,8 +777,8 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 					&& Character.isLowerCase(nextCharacter) && i != chars.length - 1)
 					|| (Character.isUpperCase(character) && Character.isLowerCase(prevCharacter) && Character
 							.isUpperCase(nextCharacter))
-					|| (Character.isUpperCase(character) && Character.isLowerCase(prevCharacter) && Character
-							.isLowerCase(nextCharacter)))
+							|| (Character.isUpperCase(character) && Character.isLowerCase(prevCharacter) && Character
+									.isLowerCase(nextCharacter)))
 			{
 
 				countOfCapitalLetters++;

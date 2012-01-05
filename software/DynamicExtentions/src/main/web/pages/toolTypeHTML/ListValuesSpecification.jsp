@@ -169,25 +169,25 @@
 		<tr>
 			<td width="100%">
 				<html:file styleId="tempcsvFile" property="tempcsvFile"/>&nbsp;
-				<html:button styleClass="formButton" property="uploadFile" onclick="uploadValues()">
+				<html:button styleClass="blue_ar_b" property="uploadFile" onclick="uploadValues()">
 					<bean:message key="buttons.upload"/>
 				</html:button>
 			</td>
 		</tr>
 		<tr id="optionsListRow">
 			<td width="100%">
-				<div id="tempoptiongrid" width="100%" height="250px" style="overflow:hidden"></div>
+				<div id="tempoptiongrid" width="100%" height="250px" style="background-color:#d7d7d7;overflow:hidden"></div>
 			</td>
 		</tr>
 		<tr>
 			<td width="100%">
-				<html:button styleClass="formButton" property="addPermisibleValue" onclick="addOptionRow()">
+				<html:button styleClass="blue_ar_b" property="addPermisibleValue" onclick="addOptionRow()">
 					<bean:message key="buttons.add.permissible.value"/>
 				</html:button>&nbsp;
-				<html:button styleClass="formButton" property="deletePermissibleValue" onclick="deleteSelectedOptions()">
+				<html:button styleClass="blue_ar_b" property="deletePermissibleValue" onclick="deleteSelectedOptions()">
 					<bean:message key="buttons.delete"/>
 				</html:button>&nbsp;
-				<html:button styleClass="formButton" property="makeDefault" onclick="setDefaultValue()">
+				<html:button styleClass="blue_ar_b" property="makeDefault" onclick="setDefaultValue()">
 					<bean:message key="buttons.makeDefault"/>
 				</html:button>&nbsp;
 			</td>
@@ -203,7 +203,7 @@
 	<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 		<tr>
 			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="30%">
 				<bean:message  key="eav.att.CDEPublicDomainId" /> :
 			</td>
 			<td class="formFieldWithoutBorder">
@@ -219,7 +219,7 @@
 	<table summary="" valign="top" cellpadding="3" cellspacing="0" align = 'center' width='100%'>
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="30%">
 				<bean:message  key="eav.att.LookupFormTypeSelection" /> :
 			</td>
 			<td class="formFieldWithoutBorder">
@@ -234,7 +234,7 @@
 
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="30%">
 				<bean:message  key="eav.att.Group" /> :
 			</td>
 			<td>
@@ -246,7 +246,7 @@
 		</tr>
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="30%">
 				<bean:message  key="eav.att.Form" /> :
 			</td>
 			<td  >

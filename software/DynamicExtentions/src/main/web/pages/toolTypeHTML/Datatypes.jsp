@@ -15,7 +15,7 @@
 	<table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' >
 		<tr valign="top" >
  			<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
- 			<td class="formRequiredLabelWithoutBorder" width="30%">
+ 			<td class="black_ar" width="30%">
  				<bean:message key="eav.control.type"/> :
  			</td>
  			<td class="formFieldWithoutBorder">
@@ -32,19 +32,19 @@
  				&nbsp; 
  		 	</td>
 
-			<td class="formRequiredLabelWithoutBorder" id="noOfLines" width="30%">
+			<td class="black_ar" id="noOfLines" width="30%">
 				<bean:message key="eav.text.noOfLines"/> :
 			</td>
-			<td class="formFieldWithoutBorder">
+			<td class="black_ar">
 				<html:text styleClass="formFieldSized5" maxlength="3" size="60"  styleId ='attributeNoOfRows' property="attributeNoOfRows" />
 			</td>
 		</tr>
        	<tr valign="top">
        		<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="30%">
 				<bean:message key="eav.att.MaxCharacters"/> :
 			</td>
-			<td class="formFieldWithoutBorder">
+			<td class="black_ar">
 				<html:text styleClass="formFieldSized5" maxlength="3" size="60" styleId = 'attributeSize' property="attributeSize" />
 			</td>
 		</tr>
@@ -55,11 +55,11 @@
 <div id="NumberDataType" style="display:none">
 	<table summary="" cellpadding="3" cellspacing="0"  align = 'center'  width='100%'>
 		<tr>
-			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="2%">&nbsp;</td>
+			<td class="black_ar" width="30%">
 				<bean:message key="eav.att.AttributeDecimalPlaces"/> :
 			</td>
-			<td class="formFieldWithoutBorder">
+			<td class="black_ar">
 				<html:text styleClass="formFieldSized5" maxlength="2" size="60" styleId='attributeDecimalPlaces' property="attributeDecimalPlaces" />
 			</td>
 		</tr>	
@@ -70,7 +70,7 @@
 <table  summary="" cellpadding="3" cellspacing="0" align = 'center' width='100%' >
 		<tr valign="top">
 			<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-			<td class="formRequiredLabelWithoutBorder" width="30%">
+			<td class="black_ar" width="30%">
 				<bean:message key="eav.att.DefaultValue"/> :
 			</td>
 			<td class="formFieldWithoutBorder">

@@ -43,7 +43,7 @@
 			%>
 					<tr align="top">
 				        <td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp</td>
-			 		 	<td class="formRequiredLabelWithoutBorder" width="30%">
+			 		 	<td class="black_ar" width="30%">
 			 		 	<%
 							if (isFirst)
 							{
@@ -53,7 +53,7 @@
 							}
 						%>&nbsp;
 						</td>
-			 			<td class="formFieldWithoutBorder">
+			 			<td class="black_ar">
 			 			<%
 							if (!ruleName.equals("unique"))
 							{
@@ -82,9 +82,9 @@
 						{
 					%>
 							<tr>
-								<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-								<td class="formRequiredNoticeWithoutBorder" width="30%">&nbsp;</td>
-								<td class="formFieldWithoutBorder">
+								<td class="black_ar" width="2%">&nbsp;</td>
+								<td class="black_ar" width="30%">&nbsp;</td>
+								<td class="black_ar">
 								<%
 									int i=1;
 									Iterator paramsIter = params.iterator();

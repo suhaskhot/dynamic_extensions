@@ -149,7 +149,7 @@
 		        <tr valign="top" height="95%">
 					<td class="tbBordersAllbordersNone">&nbsp;</td>
 		     		<td class="tbBordersAllbordersNone" valign="top">
-					  	<table valign="top" summary="" align='left' width='100%' height="100%" cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
+					  	<table valign="top" summary=""  align='left' width='100%' height="100%" cellspacing="0" cellpadding="3" class="tbBordersAllbordersBlack" >
 							<!-- tabs start -->
 							<tr valign="top" >
 								<td class="tabMenuItem" >
@@ -179,7 +179,7 @@
 									<table width="100%" height='100%' cellspacing="0" cellpadding="0" valign="top">
 										<tr valign="top" height='100%'>
 											<td valign = "top" valign="top" width="75%">
-												<table class="tbBordersAllbordersBlack" height="100%" width="100%" cellspacing="0" cellpadding="0">
+												<table class="tbBordersAllbordersBlack" border="0" height="100%" width="100%" cellspacing="0" cellpadding="0">
 													<thead>
 														<tr>
 															<c:choose>
@@ -214,7 +214,7 @@
 																			</tr>
 																			<tr height='4%' width='100%' valign="bottom" style="background-color:#F4F4F5;">
 																				<td align="center" width="100%">
-																					<html:button styleClass="formButton" property="addSubFormBtn" onclick="addSubForm()">
+																					<html:button styleClass="blue_ar_b" property="addSubFormBtn" onclick="addSubForm()">
 																						<bean:message key="eav.caption.AddSubFormControl"/>
 																					</html:button>
 																				</td>
@@ -284,18 +284,18 @@
 									<table width="100%" height='100%' valign="top">
 										<tr valign="top" height='100%'>
 											<td align="right" valign="top" width="75%">
-												<html:button styleClass="formButton" property="cancelControlOperation" onclick="initCancelOperation()">
+												<html:button styleClass="blue_ar_b" property="cancelControlOperation" onclick="initCancelOperation()">
 													<bean:message  key="buttons.cancel"/>
 												</html:button>
-												<html:button styleClass="formButton" property="addControlToFormButton" onclick="addControlToFormTree()">
+												<html:button styleClass="blue_ar_b" property="addControlToblue_ar_b" onclick="addControlToFormTree()">
 													<bean:message  key="buttons.addControlToForm"/>
 												</html:button>
 											</td>
 											<td width="2%">&nbsp;</td>
 											<td valign="top" height="100%">
-												<input type="button" class="groupButton" name="upButton" value="Up" onclick="moveControlsUp()"/>
-												<input type="button" class="formButton" name="downButton" value="Down" onclick="moveControlsDown()"/>
-												<input type="button" class="formButton" name="deleteButton" value="Remove" onclick="deleteControl()"/>
+												<input type="button" class="blue_ar_b" name="upButton" value="Up" onclick="moveControlsUp()"/>
+												<input type="button" class="blue_ar_b" name="downButton" value="Down" onclick="moveControlsDown()"/>
+												<input type="button" class="blue_ar_b" name="deleteButton" value="Remove" onclick="deleteControl()"/>
 											</td>
 										</tr>
 									</table>
@@ -304,20 +304,20 @@
 
 							<tr>
 								<td colspan="2" align="left" class="formLabelBorderless">
-									<html:button styleClass="groupButtonMainForm" property="saveButton" onclick="saveEntity()" onkeydown="saveEntityOnKeyDown(event)">
+									<html:button styleClass="blue_ar_b" property="saveButton" onclick="saveEntity()" onkeydown="saveEntityOnKeyDown(event)">
 										<bean:message key="buttons.save"/>
 									</html:button>
 									&nbsp;
-									<html:reset styleClass="groupButtonMainForm" property="cancelButton" onclick='showHomePageFromBuildForm()'>
+									<html:reset styleClass="blue_ar_b" property="cancelButton" onclick='showHomePageFromBuildForm()'>
 										<bean:message key="buttons.cancel"/>
 									</html:reset>
 								</td>
 								<td colspan="5" align="right" class="formLabelBorderless">
-									<html:button styleClass="groupButtonMainForm" property="prevButton" onclick="showNextActionConfirmDialog()">
+									<html:button styleClass="blue_ar_b" property="prevButton" onclick="showNextActionConfirmDialog()">
 										<bean:message key="buttons.prev"/>
 									</html:button>
 									&nbsp;
-									<html:button styleClass="groupButtonMainForm" property="showPreviewButton" onclick="showFormPreview()">
+									<html:button styleClass="blue_ar_b" property="showPreviewButton" onclick="showFormPreview()">
 										<bean:message key="buttons.next"/>
 									</html:button>
 								</td>

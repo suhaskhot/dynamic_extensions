@@ -16,16 +16,16 @@
   			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%'>
 			   	<tr>
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.TextFieldWidth"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:text styleClass="formFieldSized5"  maxlength="100" size="60"  styleId = 'attributenoOfCols' property="attributenoOfCols" />
 					</td>
 				</tr>
 				<tr>
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="2%">&nbsp;</td>
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.FileFormatsList"/> :
 					</td>
 					<td >
@@ -38,20 +38,20 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="2%">&nbsp;</td>
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.FileFormat"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:text styleClass="formFieldSized5"  maxlength="100" size="60" styleId = 'format' property="format" />
 					</td>
 				</tr>
 				<tr>
-					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="2%">&nbsp;</td>
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.MaximumFileSize"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:text styleClass="formFieldSized5"  maxlength="100" size="60" styleId='attributeSize' property="attributeSize" />
 						<bean:message key="app.maxFileSizeUnit"/>
 					</td>

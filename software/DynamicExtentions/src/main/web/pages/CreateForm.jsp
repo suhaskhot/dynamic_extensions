@@ -117,53 +117,56 @@
 											<td width="20%" valign="top" height='100%'>
 												<table width="100%" height='100%' class="tbBordersAllbordersBlack">
 													<tr valign="top" width="100%" height='5%'>
-														<td align="left" class="formLabelLeftBorderless">
+														<td align="left" class="blue_ar_b">
 															<input  type="button" value="Add Form" disabled>
 														</td>
 													</tr>
 													<tr height='80%'>
 														<td>
 															<!-- Changes For Bug 21143 -->
-															<label class="formMessage"><%=groupName%></label>
+															<label class="black_ar"><%=groupName%></label>
 															<div style="border:solid 0px; padding:1px; width:250px; height:90%; overflow:auto; overflow-x:auto;overflow-y:auto;" id="currentEntityTreeDiv" />
 														</td>
 													</tr>
 												</table>
 											</td>
 											<td width="80%" height='100%'>
-												<table cellspacing="0" cellpadding="3" align="left" width="100%" height='100%' class="tbBordersAllbordersBlack">
+												<table cellspacing="0" border="0" cellpadding="3" align="left" width="100%" height='100%' class="tbBordersAllbordersBlack">
 													<tr valign="top" height='3%'>
 														<c:choose>
 															<c:when test='${formDefinitionForm.operationMode == "AddSubForm"}'>
-																<td class="formFieldWithNoTopBorder" colspan="3">
+																<td class="black_ar_hb" colspan="3">
 																	<bean:message key="app.CreateSubFormTitle"/>
 																</td>
 															</c:when>
 															<c:otherwise>
-																<td class="formFieldWithNoTopBorder" colspan="3">
+																<td class="black_ar_hb" colspan="3">
 																	<bean:message key="app.CreateFormTitle"/>
 																</td>
 															</c:otherwise>
 														</c:choose>
 													</tr>
 													<tr valign="top" height='3%'>
-														<td class="formMessage" colspan="3">
+														<td class="black_ar" colspan="3">
+														<input type="image" src="<%=request.getContextPath()%>/images/de/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
 															<bean:message key="app.requiredMessage"/>
 														</td>
 													</tr>
 
 
 													<tr valign="top" height='2%'>
-														<td class="formMessage" colspan="3">
+														<td class="black_ar" colspan="3">
 															<font color="red" ><html:errors/></font>
 														</td>
 													</tr>
 													<tr valign="top" height='4%'>
-														<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-														<td class="formRequiredLabelWithoutBorder" width="20%">
+													 <td width="1%" align="center" class="black_ar">
+								<input type="image" src="<%=request.getContextPath()%>/images/de/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
+						  </td>
+														<td class="black_ar" width="20%">
 															<bean:message key="eav.form.title"/> :
 														</td>
-														<td class="formFieldWithoutBorder" >
+														<td class="black_ar" >
 															<html:text styleClass="formDateSized"  maxlength="100" size="60"  styleId= 'formName' property="formName" />
 
 														&nbsp;
@@ -172,51 +175,51 @@
 													</tr>
 
 													<tr valign="top" height="4%">
-														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-															<td class="formRequiredLabelWithoutBorder" width="20%">&nbsp;
+														<td class="black_ar" width="2%">&nbsp;</td>
+															<td class="black_ar" width="20%">&nbsp;
 															</td>
 														<td align="left">
 
 															<font class="validationmessageblack"><bean:message key="form.title"/></font>
-															&nbsp;<font class="validationmessageblue"><bean:message key="errors.entity.validation"/></font>
+															&nbsp;<font class="validationmessageblue"><bean:message key="errors.special.character.validation"/></font>
 
 														</td>
 													</tr>
 
 
 													<tr valign="top" height='4%'>
-														<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-														<td class="formRequiredLabelWithoutBorder" width="20%">
+														<td class="black_ar" width="2%" >&nbsp;</td>
+														<td class="black_ar" width="20%">
 															<bean:message key="eav.form.conceptCode"/> :
 														</td>
-														<td class="formFieldWithoutBorder">
+														<td class="black_ar">
 															<html:text styleClass="formDateSized" size="40" styleId='conceptCode' property="conceptCode" />
 														</td>
 													</tr>
 													<tr valign="top" height='10%'>
-														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-														<td class="formRequiredLabelWithoutBorder" width="20%">
+														<td class="black_ar" width="2%">&nbsp;</td>
+														<td class="black_ar" width="20%">
 															<bean:message key="eav.form.description"/> :
 														</td>
 														<td>
-															<html:textarea styleClass="formFieldSmallSized"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
+															<html:textarea styleClass="black_ar"  rows = "3" cols="28"  styleId = 'formDescription' property="formDescription" />
 														</td>
 													</tr>
 													<tr valign="top" height='4%'>
-														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
+														<td class="black_ar" width="2%">&nbsp;</td>
 														<td width="20%"></td>
-														<td class="formMessage"  valign="top">
-															<html:checkbox property="isAbstract" styleId="isAbstract" value="true"/>
+														<td class="black_ar"  valign="top">
+															<html:checkbox property="isAbstract" styleId="black_ar" value="true"/>
 															<bean:message key="eav.form.abstract"/>
 														</td>
 													</tr>
 													<tr valign="top" height='4%'>
-														<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-														<td class="formRequiredLabelWithoutBorder" width="20%">
+														<td class="black_ar" width="2%">&nbsp;</td>
+														<td class="black_ar" width="20%">
 															<bean:message key="eav.form.inheritform"/>
 														</td>
 														<td>
-															<html:select styleId="parentForm" styleClass="formFieldSmallSized" property="parentForm" disabled="<%=isDataEntered%>">
+															<html:select styleId="parentForm" styleClass="black_ar" property="parentForm" disabled="<%=isDataEntered%>">
 																<html:options collection="formList" labelProperty="name" property="value" />
 															</html:select>
 														</td>
@@ -225,23 +228,25 @@
 
 													<c:if test='${formDefinitionForm.operationMode != "EditSubForm"}'>
 														<tr valign = "top" height='5%'>
-															<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-															<td class="formRequiredLabelWithoutBorder" width="20%">
+															 <td width="1%" align="center" class="black_ar">
+								<input type="image" src="<%=request.getContextPath()%>/images/de/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
+						  </td>
+															<td class="black_ar" width="20%">
 																<bean:message key="eav.form.createAs"/> :
 															</td>
-															<td class="formFieldWithoutBorder">
+															<td class="black_ar">
 																<table border='0'>
-																	<tr class="formMessage">
+																	<tr class="black_ar">
 																		<td>
 
 																<c:choose>
 																		<c:when test='${formDefinitionForm.operationMode=="EditForm"}'>
-																			<html:radio styleId= 'createAsNew' property="createAs"  value="NewForm" disabled="true" onclick="createFormAsChanged()">
+																			<html:radio styleClass="black_ar" property="createAs"  value="NewForm" disabled="true" onclick="createFormAsChanged()">
 																				<bean:message key="eav.createnewentity.title"/>
 																			</html:radio>
 																		</c:when>
 																		<c:otherwise>
-																			<html:radio styleId= 'createAsNew' property="createAs" value="NewForm" onclick="createFormAsChanged()">
+																			<html:radio styleClass="black_ar" property="createAs" value="NewForm" onclick="createFormAsChanged()">
 																				<bean:message key="eav.createnewentity.title"/>
 																			</html:radio>
 																		</c:otherwise>
@@ -251,12 +256,12 @@
 
 																			<c:choose>
 																				<c:when test='${formDefinitionForm.operationMode=="AddSubForm"}'>
-																					<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >
+																					<html:radio styleClass="black_ar" property="createAs" value="ExistingForm" onclick="createFormAsChanged()" >
 																						<bean:message key="eav.existingentity.title"/>
 																					</html:radio>
 																				</c:when>
 																				<c:otherwise>
-																					<html:radio styleId = 'createAsExisting' property="createAs" value="ExistingForm" disabled="true" onclick="createFormAsChanged()">
+																					<html:radio styleClass="black_ar" property="createAs" value="ExistingForm" disabled="true" onclick="createFormAsChanged()">
 																						<bean:message key="eav.existingentity.title"/>
 																					</html:radio>
 																				</c:otherwise>
@@ -268,8 +273,8 @@
 														</tr>
 													</c:if>
 													<tr valign = "top" id="rowForExistingFormDetails" style="display:none;">
-														<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-														<td class="formRequiredLabelWithoutBorder" width="20%">&nbsp;</td>
+														<td class="black_ar" width="2%" >&nbsp;</td>
+														<td class="black_ar" width="20%">&nbsp;</td>
 														<td>
 															<div style="border:solid 1px; padding:1px; width:250px; height:100px; overflow:auto;" id="definedEntitiesTreeDiv"/>
 														</td>
@@ -277,11 +282,11 @@
 													<c:choose>
 														<c:when test='${formDefinitionForm.operationMode == "EditSubForm" || formDefinitionForm.operationMode == "AddSubForm"}'>
 															<tr valign = "top" height="5%" >
-																<td class="formRequiredNoticeWithoutBorder" width="2%" >&nbsp;</td>
-																<td class="formRequiredLabelWithoutBorder"  width="20%">
+																<td class="black_ar" width="2%" >&nbsp;</td>
+																<td class="black_ar"  width="20%">
 																		<bean:message key="eav.form.viewAs"/> :
 																</td>
-																<td class="formFieldWithoutBorder">
+																<td class="black_ar">
 																	<html:radio styleId='viewAs'property="viewAs" value="Form" >
 																		<bean:message key="eav.viewAs.formTitle"/>
 																	</html:radio>
@@ -300,16 +305,16 @@
 										</tr>
 										<tr height="5%" valign="top">
 											<td align="left" >
-												<html:button styleClass="actionButton" property="saveButton" onclick="saveFormDetails()" onkeydown="saveFormDetailsOnKeyDown(event)">
+												<html:button styleClass="blue_ar_b" property="saveButton" onclick="saveFormDetails()" onkeydown="saveFormDetailsOnKeyDown(event)">
 													<bean:message key="buttons.save" />
 												</html:button>
-												<html:button styleClass="actionButton" property="cancelButton" onclick="showHomePageFromCreateForm()">
+												<html:button styleClass="blue_ar_b" property="cancelButton" onclick="showHomePageFromCreateForm()">
 													<bean:message  key="buttons.cancel" />
 												</html:button>
 											</td>
 
 											<td align="right">
-												<html:button styleClass="actionButton" property="nextButton" onclick="showBuildFormJSP()" >
+												<html:button styleClass="blue_ar_b" property="nextButton" onclick="showBuildFormJSP()" >
 													<bean:message  key="buttons.next" />
 												</html:button>
 											</td>

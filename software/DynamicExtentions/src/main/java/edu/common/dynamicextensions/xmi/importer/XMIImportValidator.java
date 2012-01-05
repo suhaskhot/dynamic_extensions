@@ -397,11 +397,11 @@ public class XMIImportValidator
 		}
 		else
 		{
-			if (!name.matches(ApplicationProperties.getValue("regEx.StartWIthTwoLowerCaseLetters")))
+			/*if (!name.matches(ApplicationProperties.getValue("regEx.StartWIthTwoLowerCaseLetters")))
 			{
 				errorList.add(artifact + " name does not have first two letters in lower case."
 						+ artifactDetails);
-			}
+			}*/
 			validateNameForSpecialCharacterAndNumericStart(name, artifact, artifactDetails);
 		}
 	}
@@ -414,12 +414,12 @@ public class XMIImportValidator
 	public void validateClassName(String name, String entityName)
 	{
 		String artifactDetails = " [Entity:" + entityName + "]";
-		if (!name.matches(ApplicationProperties.getValue("regEx.StartWIthUpperCase")))
+		/*if (!name.matches(ApplicationProperties.getValue("regEx.StartWIthUpperCase")))
 		{
 			errorList
 					.add("Class name does not start with upper case character." + artifactDetails);
 		}
-
+*/
 		validateNameForSpecialCharacterAndNumericStart(name, "Class", artifactDetails);
 	}
 

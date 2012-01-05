@@ -15,19 +15,19 @@
 			<table summary="" cellpadding="3" cellspacing="0"  align = 'center' width='100%' border='0'>
 				<tr valign="top">
 					<td class="formRequiredNoticeWithoutBorder" width="2%">&nbsp;</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.TextFieldWidth"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<html:text styleClass="formFieldSized5" maxlength="3" size="60" styleId='attributenoOfCols' property="attributenoOfCols" />
 					</td>
 				</tr>
 				<tr valign="top" >
 					<td class="formRequiredNoticeWithoutBorder" width="2%">*</td>
-					<td class="formRequiredLabelWithoutBorder" width="30%">
+					<td class="black_ar" width="30%">
 						<bean:message key="eav.att.DataInput"/> :
 					</td>
-					<td class="formFieldWithoutBorder">
+					<td class="black_ar">
 						<c:forEach items="${dataTypeList}" var="dataTypeObj">
 						<jsp:useBean id="dataTypeObj" type="edu.wustl.common.beans.NameValueBean" />
 							<c:set var="dataTypeValue" value="${dataTypeObj.value}" />

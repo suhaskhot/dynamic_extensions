@@ -77,7 +77,8 @@ public class ApplyFormControlsProcessor extends BaseDynamicExtensionsProcessor
 					controlUIBean.getControlsSequenceNumbers());
 			//Set Name of the attribute in controlsForm.
 			//It is not accepted from UI. It has to be derived from caption
-			String attributeName = deriveAttributeNameFromCaption(controlUIBean.getCaption());
+			//String attributeName = deriveAttributeNameFromCaption(controlUIBean.getCaption());
+			String attributeName = edu.wustl.cab2b.common.util.Utility.modifyStringToLowerCamelCase(controlUIBean.getCaption());
 			//Add new control
 			if (controlOperation.equalsIgnoreCase(ProcessorConstants.OPERATION_ADD))
 			{

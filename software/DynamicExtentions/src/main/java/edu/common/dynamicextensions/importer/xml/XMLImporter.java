@@ -15,7 +15,6 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.importer.jaxb.Association;
 import edu.common.dynamicextensions.importer.jaxb.Entity;
 import edu.common.dynamicextensions.importer.jaxb.StaticMetaData;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.XMLUtility;
 import edu.common.metadata.ClassMetadataMap;
 import edu.common.metadata.impl.hbm.ClassMetadataMapImpl;
@@ -36,8 +35,11 @@ public class XMLImporter
 		JAXBElement jAXBElement;
 		try
 		{
-			jAXBElement = (JAXBElement) XMLUtility.getJavaObjectForXML(packageName,
-					"SimplifiedMetaData.xsd", filePath);
+			jAXBElement = (JAXBElement) XMLUtility
+					.getJavaObjectForXML(
+							packageName,
+							"SimplifiedMetaData.xsd",
+							filePath);
 			staticMetaData = (StaticMetaData) jAXBElement.getValue();
 			entityGroup = EntityGroupManager.getInstance().getEntityGroupByName(entityGroupName);
 
@@ -63,7 +65,7 @@ public class XMLImporter
 		return list;
 	}
 
-	public void processXml()
+	public void processXml() throws DynamicExtensionsSystemException
 	{
 		EntityTypeProcessor entityTypeProcessor = new EntityTypeProcessor(classMetadataMap,
 				entityGroup);

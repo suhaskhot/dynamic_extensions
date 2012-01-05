@@ -23,4 +23,6 @@ public interface ClassMetadata {
     public Collection<PropertyMetadata> getPropertiesMetadata();
     
     public PropertyMetadata getProperty(String name);
+
+	PropertyMetadata getAssociation(String targetEntityName);
 }

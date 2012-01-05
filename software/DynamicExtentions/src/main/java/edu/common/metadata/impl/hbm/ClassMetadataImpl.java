@@ -29,6 +29,8 @@ public class ClassMetadataImpl implements ClassMetadata {
     
     private Map<String, PropertyMetadata> propertiesMetadata = new HashMap<String, PropertyMetadata>();
     
+    private Map<String, PropertyMetadata> associationMetadata = new HashMap<String, PropertyMetadata>();
+    
     public ClassMetadataImpl(AbstractEntityPersister persister) {
         try {
             this.persister = persister;   
@@ -72,7 +74,12 @@ public class ClassMetadataImpl implements ClassMetadata {
     private void initialiazePropertiesMetadata() {
         idMetadata = new PropertyMetadataImpl(this, persister.getIdentifierPropertyName(), persister, true);
         for (String propertyName : persister.getPropertyNames()) {
-            propertiesMetadata.put(propertyName,new PropertyMetadataImpl(this, propertyName, persister));
+        	PropertyMetadataImpl propertyMetadataImpl =new PropertyMetadataImpl(this, propertyName, persister); 
+            propertiesMetadata.put(propertyName,propertyMetadataImpl);
+            if(propertyMetadataImpl.isAssociation())
+            {
+            	associationMetadata.put(propertyMetadataImpl.getAssociatedClassType(), propertyMetadataImpl);
+            }
         }
     }
     
@@ -97,5 +104,11 @@ public class ClassMetadataImpl implements ClassMetadata {
 	public PropertyMetadata getProperty(String name)
 	{
 		return propertiesMetadata.get(name);
+	}
+	
+	@Override
+	public PropertyMetadata getAssociation(String targetEntityName)
+	{
+		return propertiesMetadata.get(targetEntityName);
 	}
 }

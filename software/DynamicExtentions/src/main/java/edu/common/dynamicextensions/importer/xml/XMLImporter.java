@@ -12,7 +12,6 @@ import org.xml.sax.SAXException;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.importer.jaxb.Association;
 import edu.common.dynamicextensions.importer.jaxb.Entity;
 import edu.common.dynamicextensions.importer.jaxb.StaticMetaData;
 import edu.common.dynamicextensions.util.XMLUtility;
@@ -67,17 +66,16 @@ public class XMLImporter
 
 	public void processXml() throws DynamicExtensionsSystemException
 	{
+		//Process EntityList
 		EntityTypeProcessor entityTypeProcessor = new EntityTypeProcessor(classMetadataMap,
 				entityGroup);
-
 		entityTypeProcessor.process(staticMetaData.getEntity());
 
-		List<Association> associationsList = staticMetaData.getAssociation();
 
+		//Process AssociationList
 		AssociationTypeProcessor associationProcessor = new AssociationTypeProcessor(
 				classMetadataMap, entityGroup);
-
-		associationProcessor.process(associationsList);
+		associationProcessor.process(staticMetaData.getAssociation());
 
 	}
 

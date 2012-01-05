@@ -149,4 +149,17 @@ public class PropertyMetadataImpl implements PropertyMetadata {
         }
         return joinType;
     }
+    
+    @Override
+    public String getRHSUniqueKeyPropertyName() {
+        Type type = persister.getPropertyType(propertyName);
+        String refPropertyName = null;
+        if (type.isAssociationType()) {
+            AssociationType associationType = (AssociationType)type;
+            refPropertyName = associationType.getRHSUniqueKeyPropertyName();
+        }
+        
+        return refPropertyName;
+    }
+    
 }

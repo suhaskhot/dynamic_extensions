@@ -109,6 +109,6 @@ public class ClassMetadataImpl implements ClassMetadata {
 	@Override
 	public PropertyMetadata getAssociation(String targetEntityName)
 	{
-		return propertiesMetadata.get(targetEntityName);
+		return associationMetadata.get(targetEntityName);
 	}
 }

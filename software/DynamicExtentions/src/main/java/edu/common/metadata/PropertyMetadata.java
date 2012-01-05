@@ -32,4 +32,11 @@ public interface PropertyMetadata {
     public String getElementColumnName();    
         
     public String getJoinType();
+
+    /**
+     * The name of a unique property of the associated entity 
+     * that provides the join key (null if the identifier of
+     * an entity, or key of a collection)
+     */
+	public String getRHSUniqueKeyPropertyName();
 }

@@ -8,13 +8,14 @@ import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
+import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.importer.jaxb.Association;
 import edu.common.dynamicextensions.ui.util.Constants;
+import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
-import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.metadata.ClassMetadata;
 import edu.common.metadata.ClassMetadataMap;
 import edu.common.metadata.PropertyMetadata;
@@ -46,18 +47,19 @@ public class AssociationTypeProcessor
 			//Step 2: Create association object
 			AssociationInterface associationInterface = DomainObjectFactory.getInstance()
 					.createAssociation();
-			
+
 			//Step 3: populate association
 			associationInterface.setName(associationMetadata.getPropertyName());
 			processDirection(association, associationMetadata, associationInterface);
-			processConstrainProperties(associationMetadata, associationInterface);
-			
+
+			ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
+					.getConstraintPropertiesForAssociation(associationInterface);
+			associationInterface.setConstraintProperties(constraintProperties);
+
 			setDefault(associationInterface);
 
 		}
 	}
-
-	
 
 	private RoleInterface getRole(AssociationType associationType, String name,
 			Cardinality minCard, Cardinality maxCard)
@@ -74,38 +76,45 @@ public class AssociationTypeProcessor
 			AssociationInterface associationInterface)
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void processDirection(Association association, PropertyMetadata associationMetadata,
 			AssociationInterface associationInterface) throws DynamicExtensionsSystemException
 	{
+		associationInterface.setEntity(entityGroup.getEntityByName(association
+				.getSourceEntityName()));
+		associationInterface.setTargetEntity(entityGroup.getEntityByName(association
+				.getTargetEntityName()));
 
 		if ("ManyToOne".equals(associationMetadata.getJoinType()))
 		{
 			associationInterface.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			associationInterface.setTargetEntity(entityGroup.getEntityByName(association
-					.getSourceEntityName()));
-			associationInterface.setEntity(entityGroup.getEntityByName(association
-					.getTargetEntityName()));
-			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT, associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.MANY));
-		}
-		if ("ManyToMany".equals(associationMetadata.getJoinType()))
-		{
-			associationInterface.setAssociationDirection(AssociationDirection.BI_DIRECTIONAL);
-			associationInterface.setEntity(entityGroup.getEntityByName(association
-					.getSourceEntityName()));
-			associationInterface.setTargetEntity(entityGroup.getEntityByName(association
-					.getTargetEntityName()));
-		}
-		else
+
+			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT,
+					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.MANY));
+			associationInterface.setTargetRole(getRole(AssociationType.CONTAINTMENT,
+					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.ONE));
+
+		}else if("OneToMany".equals(associationMetadata.getJoinType()))
 		{
 			associationInterface.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
-			associationInterface.setEntity(entityGroup.getEntityByName(association
-					.getSourceEntityName()));
-			associationInterface.setTargetEntity(entityGroup.getEntityByName(association
-					.getTargetEntityName()));
+
+			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT,
+					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.ONE));
+			associationInterface.setTargetRole(getRole(AssociationType.CONTAINTMENT,
+					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.MANY));
+		}if("OneToOne".equals(associationMetadata.getJoinType()))
+		{
+			associationInterface.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
+
+			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT,
+					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.ONE));
+
+			associationInterface.setTargetRole(getRole(AssociationType.CONTAINTMENT,
+					associationMetadata.getRHSUniqueKeyPropertyName(), Cardinality.ONE, Cardinality.ONE));
 		}
+		
 	}
 
 	private void setDefault(AssociationInterface associationInterface)

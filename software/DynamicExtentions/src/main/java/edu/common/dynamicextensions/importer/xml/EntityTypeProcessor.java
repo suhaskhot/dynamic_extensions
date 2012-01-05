@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.importer.xml;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
@@ -10,6 +11,7 @@ import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
 import edu.common.dynamicextensions.importer.jaxb.Attribute;
 import edu.common.dynamicextensions.importer.jaxb.Entity;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.metadata.ClassMetadataMap;
 
 /**
@@ -36,7 +38,9 @@ public class EntityTypeProcessor
 		{
 			//Step 1: create if entity with same name does not exist.
 			EntityInterface entity = getEntity(entityType.getName());
-
+			entityGroup.addEntity(entity);
+			entity.setEntityGroup(entityGroup);
+			
 			//Step 2: Set default values 
 			setDefaultValues(entity);
 
@@ -66,6 +70,8 @@ public class EntityTypeProcessor
 	private void setDefaultValues(EntityInterface entity)
 	{
 		/*entity.setInheritanceStrategy(InheritanceStrategy.)*/
+		entity.setActivityStatus(Constants.ACTIVE);
+		entity.setCreatedDate(new Date());
 	}
 
 	private void processTableProperties(EntityInterface entity)

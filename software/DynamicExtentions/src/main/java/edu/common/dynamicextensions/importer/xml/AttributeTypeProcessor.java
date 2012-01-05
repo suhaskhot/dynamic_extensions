@@ -1,11 +1,14 @@
 
 package edu.common.dynamicextensions.importer.xml;
 
+import java.util.Date;
+
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
 import edu.common.dynamicextensions.importer.jaxb.Attribute;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.metadata.ClassMetadata;
 
 /**
@@ -46,7 +49,7 @@ public class AttributeTypeProcessor
 		attributeInterface.setName(attribute.getName());
 
 		//Step 4: Set default values if any, these values are note provided in the xml
-		setDefault();
+		setDefault(attributeInterface);
 
 		//Step 5: Set all the primitive attributes of the Attribute class
 		setPrimitiveAttributes(attributeInterface);
@@ -71,10 +74,10 @@ public class AttributeTypeProcessor
 				classMetadata.getIdMetadata().getPropertyName()));
 	}
 
-	private void setDefault()
+	private void setDefault(AttributeInterface attributeInterface)
 	{
-		// TODO Auto-generated method stub
-
+		attributeInterface.setActivityStatus(Constants.ACTIVE);
+		attributeInterface.setCreatedDate(new Date());
 	}
 
 }

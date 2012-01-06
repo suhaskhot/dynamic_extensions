@@ -3584,7 +3584,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(sessionDataBean);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(sessionDataBean);
 			for (final CategoryAttributeInterface categoryAttributeInterface : categoryAttributeCollection)
 			{
 				hibernateDAO.update(categoryAttributeInterface);

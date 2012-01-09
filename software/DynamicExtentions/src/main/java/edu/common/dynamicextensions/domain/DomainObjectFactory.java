@@ -89,7 +89,6 @@ import edu.common.dynamicextensions.domaininterface.validationrules.RuleInterfac
 import edu.common.dynamicextensions.domaininterface.validationrules.RuleParameterInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationDirection;
@@ -1021,15 +1020,15 @@ public class DomainObjectFactory
 		AttributeInterface attribute =  null;
 		if (attributeType != null)
 		{
-			if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING))
+			if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_STRING) || attributeType.equalsIgnoreCase(String.class.getName()))
 			{
 				attribute = createStringAttribute();
 			}
-			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE))
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DATE)|| attributeType.equalsIgnoreCase(Date.class.getName()))
 			{
 				attribute = createDateAttribute();
 			}
-			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN))
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_BOOLEAN)|| attributeType.equalsIgnoreCase(Boolean.class.getName()))
 			{
 				attribute = createBooleanAttribute();
 			}
@@ -1041,19 +1040,19 @@ public class DomainObjectFactory
 			{
 				attribute = createFileAttribute();
 			}
-			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_INTEGER))
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_INTEGER)|| attributeType.equalsIgnoreCase(Integer.class.getName()))
 			{
 				attribute = createIntegerAttribute();
 			}
-			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_LONG))
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_LONG)||attributeType.equalsIgnoreCase(Long.class.getName()))
 			{
 				attribute = createLongAttribute();
 			}
-			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FLOAT))
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_FLOAT)||attributeType.equalsIgnoreCase(Long.class.getName()))
 			{
 				attribute = createFloatAttribute();
 			}
-			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DOUBLE))
+			else if (attributeType.equalsIgnoreCase(ProcessorConstants.DATATYPE_DOUBLE)||attributeType.equalsIgnoreCase(Double.class.getName()))
 			{
 				attribute = createDoubleAttribute();
 			}

@@ -566,7 +566,7 @@ public class AnnotationUtil
 	 * @param isEntGrpSysGenrtd
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private static void insertNewPaths(Long maxPathId, Long staticEntityId,
+	public static void insertNewPaths(Long maxPathId, Long staticEntityId,
 			EntityInterface dynamicEntity, Long deAssociationID, boolean isEntGrpSysGenrtd,
 			JDBCDAO jdbcdao) throws DynamicExtensionsSystemException, DAOException
 	{

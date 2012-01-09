@@ -8,7 +8,7 @@ import java.util.List;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.TablePropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.importer.jaxb.Attribute;
 import edu.common.dynamicextensions.importer.jaxb.Entity;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -32,7 +32,7 @@ public class EntityTypeProcessor
 
 	}
 
-	public void process(Collection<Entity> entities)
+	public void process(Collection<Entity> entities) throws DynamicExtensionsApplicationException
 	{
 		for (Entity entityType : entities)
 		{
@@ -72,15 +72,13 @@ public class EntityTypeProcessor
 		/*entity.setInheritanceStrategy(InheritanceStrategy.)*/
 		entity.setActivityStatus(Constants.ACTIVE);
 		entity.setCreatedDate(new Date());
+		entity.setParentEntity(entityGroup.getEntityByName(classMetadataMap.getClassMetadata(entity.getName()).getParentClassName()));
 	}
 
 	private void processTableProperties(EntityInterface entity)
 	{
-		TablePropertiesInterface tableProperties = DomainObjectFactory.getInstance()
-				.createTableProperties();
 
-		tableProperties.setName(classMetadataMap.getClassMetadata(entity.getName()).getTableName());
-		entity.setTableProperties(tableProperties);
+		entity.getTableProperties().setName(classMetadataMap.getClassMetadata(entity.getName()).getTableName());
 
 	}
 
@@ -90,7 +88,7 @@ public class EntityTypeProcessor
 
 	}
 
-	private void processAttributes(EntityInterface entity, List<Attribute> attributeList)
+	private void processAttributes(EntityInterface entity, List<Attribute> attributeList) throws DynamicExtensionsApplicationException
 	{
 		AttributeTypeProcessor attributeTypeProcessor = new AttributeTypeProcessor(entity,
 				classMetadataMap.getClassMetadata(entity.getName()));

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.importer.xml;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import edu.common.dynamicextensions.domaininterface.AssociationInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.RoleInterface;
 import edu.common.dynamicextensions.domaininterface.databaseproperties.ConstraintPropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.importer.jaxb.Association;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -33,9 +35,10 @@ public class AssociationTypeProcessor
 		this.classMetadataMap = classMetadataMap;
 	}
 
-	public void process(List<Association> associationsList) throws DynamicExtensionsSystemException
+	public List<AssociationInterface> process(List<Association> associationsList) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 
+		List<AssociationInterface> processedAssociations = new ArrayList<AssociationInterface>();
 		for (Association association : associationsList)
 		{
 			// Step 1: Get the require objects
@@ -43,22 +46,44 @@ public class AssociationTypeProcessor
 					.getSourceEntityName());
 			PropertyMetadata associationMetadata = classMetadataImpl.getAssociation(association
 					.getTargetEntityName());
+			if(associationMetadata == null)
+			{
+				throw new DynamicExtensionsApplicationException("Missing association form "+association
+						.getSourceEntityName()+" to "+association
+						.getTargetEntityName()+", check the hbm files.");
+			}
 
 			//Step 2: Create association object
-			AssociationInterface associationInterface = DomainObjectFactory.getInstance()
-					.createAssociation();
+			AssociationInterface associationInterface = getAssocition(association);
 
-			//Step 3: populate association
-			associationInterface.setName(associationMetadata.getPropertyName());
-			processDirection(association, associationMetadata, associationInterface);
+			processedAssociations.add(associationInterface);
+			if(associationInterface.getId() == null)
+			{
+				//Step 3: populate association
+				associationInterface.setName(associationMetadata.getPropertyName());
+				processDirection(association, associationMetadata, associationInterface);
 
-			ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-					.getConstraintPropertiesForAssociation(associationInterface);
-			associationInterface.setConstraintProperties(constraintProperties);
+				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
+						.getConstraintPropertiesForAssociation(associationInterface);
+				associationInterface.setConstraintProperties(constraintProperties);
+				setDefault(associationInterface);
 
-			setDefault(associationInterface);
-
+			}
 		}
+		return processedAssociations;
+	}
+
+	private AssociationInterface getAssocition(Association association)
+	{
+		for(AssociationInterface associationInterface: entityGroup.getEntityByName(association.getSourceEntityName()).getAssociationCollection())
+		{
+			if(associationInterface.getTargetEntity().equals(entityGroup.getEntityByName(association.getTargetEntityName())))
+			{
+				return associationInterface;
+			}
+		}
+		return DomainObjectFactory.getInstance()
+		.createAssociation();
 	}
 
 	private RoleInterface getRole(AssociationType associationType, String name,
@@ -72,16 +97,13 @@ public class AssociationTypeProcessor
 		return role;
 	}
 
-	private void processConstrainProperties(PropertyMetadata associationMetadata,
-			AssociationInterface associationInterface)
-	{
-		// TODO Auto-generated method stub
 
-	}
 
 	private void processDirection(Association association, PropertyMetadata associationMetadata,
 			AssociationInterface associationInterface) throws DynamicExtensionsSystemException
 	{
+		entityGroup.getEntityByName(association
+				.getSourceEntityName()).addAssociation(associationInterface);
 		associationInterface.setEntity(entityGroup.getEntityByName(association
 				.getSourceEntityName()));
 		associationInterface.setTargetEntity(entityGroup.getEntityByName(association

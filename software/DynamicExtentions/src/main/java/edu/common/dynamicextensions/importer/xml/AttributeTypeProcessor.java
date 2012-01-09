@@ -6,7 +6,7 @@ import java.util.Date;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domaininterface.AttributeInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.databaseproperties.ColumnPropertiesInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.importer.jaxb.Attribute;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.metadata.ClassMetadata;
@@ -35,11 +35,10 @@ public class AttributeTypeProcessor
 		this.classMetadata = classMetadata;
 	}
 
-	public void process(Attribute attribute)
+	public void process(Attribute attribute) throws DynamicExtensionsApplicationException
 	{
 		//Step 1: Creates if attribute with name is not found in the entity
-		AttributeInterface attributeInterface = DomainObjectFactory.getInstance().createAttribute(
-				classMetadata.getProperty(attribute.getName()).getPropertyType());
+		AttributeInterface attributeInterface = getAttribute(attribute);
 
 		//Step 2: Update entity references
 		entity.addAttribute(attributeInterface);
@@ -59,13 +58,32 @@ public class AttributeTypeProcessor
 
 	}
 
+	private AttributeInterface getAttribute(Attribute attribute)
+			throws DynamicExtensionsApplicationException
+	{
+		AttributeInterface attributeInterface = null;
+		if (classMetadata.getProperty(attribute.getName()) != null )
+		{
+			attributeInterface = entity.getAttributeByName(attribute.getName());
+			if(attributeInterface == null)
+			{
+				DomainObjectFactory.getInstance().createAttribute(
+						classMetadata.getProperty(attribute.getName()).getPropertyType());
+			}
+			
+		}
+		else
+		{
+			throw new DynamicExtensionsApplicationException("Attribute " + attribute.getName()
+					+ " does not exist in hbm.");
+		}
+		return attributeInterface;
+	}
+
 	private void setColumnProperties(AttributeInterface attributeInterface)
 	{
-
-		ColumnPropertiesInterface column = DomainObjectFactory.getInstance()
-				.createColumnProperties();
-		attributeInterface.setColumnProperties(column);
-
+		attributeInterface.getColumnProperties().setName(
+				classMetadata.getProperty(attributeInterface.getName()).getColumnName());
 	}
 
 	private void setPrimitiveAttributes(AttributeInterface attributeInterface)

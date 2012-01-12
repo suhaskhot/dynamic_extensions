@@ -424,7 +424,7 @@ jQuery(document).ready(
 		
 		<!--Check to calculate default attribute values.
 		This check is added bec-->
-		<c:if test="${requestScope.showCalculateDefaultValue != 'false' || requestScope.showCalculateDefaultValue != false}">
+		<c:if test="${param.showCalculateDefaultValue != 'false' || param.showCalculateDefaultValue != false}">
 		<iframe style="display:none" src="about:blank" id="skipLogicIframe" name="skipLogicIframe" onload=""></iframe>
 		<script type="text/javascript" defer="defer">
 			calculateDefaultAttributesValue();

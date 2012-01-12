@@ -10,6 +10,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.importer.jaxb.Attribute;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.metadata.ClassMetadata;
+import edu.common.metadata.PropertyMetadata;
 
 /**
  * @author Kunal
@@ -23,6 +24,10 @@ public class AttributeTypeProcessor
 	 * DE entity used for persisting metadata 
 	 */
 	private EntityInterface entity;
+	
+	private AttributeInterface attributeInterface;
+	
+	private PropertyMetadata propertyMetadata;
 
 	/**
 	 * Hibernate metadata of the class
@@ -38,7 +43,8 @@ public class AttributeTypeProcessor
 	public void process(Attribute attribute) throws DynamicExtensionsApplicationException
 	{
 		//Step 1: Creates if attribute with name is not found in the entity
-		AttributeInterface attributeInterface = getAttribute(attribute);
+		AttributeInterface attributeInterface = createAttribute(attribute);
+
 
 		//Step 2: Update entity references
 		entity.addAttribute(attributeInterface);
@@ -48,51 +54,74 @@ public class AttributeTypeProcessor
 		attributeInterface.setName(attribute.getName());
 
 		//Step 4: Set default values if any, these values are note provided in the xml
-		setDefault(attributeInterface);
+		setDefault();
 
 		//Step 5: Set all the primitive attributes of the Attribute class
-		setPrimitiveAttributes(attributeInterface);
+		setPrimitiveAttributes();
 
 		//Step 6: Set the column name.
-		setColumnProperties(attributeInterface);
+		setColumnProperties();
 
+	}
+
+	private AttributeInterface createAttribute(Attribute attribute)
+			throws DynamicExtensionsApplicationException
+	{
+		propertyMetadata = classMetadata.getIdMetadata();
+		if(propertyMetadata.getPropertyName() != attribute.getName())
+		{
+			attributeInterface = getAttribute(attribute);
+			
+			if(attributeInterface.getId() !=null)
+			{
+				if(!attributeInterface.getEntity().getPrimaryKeyAttributeCollection().contains(attributeInterface))
+				{
+					entity.addPrimaryKeyAttribute(attributeInterface);
+					attributeInterface.setIsPrimaryKey(true);
+				}
+			}
+		}else
+		{
+		
+			propertyMetadata =classMetadata.getProperty(attribute.getName()) ; 
+			if (propertyMetadata!= null )
+			{
+				attributeInterface = getAttribute(attribute);
+			}
+			else 
+			{
+				throw new DynamicExtensionsApplicationException("Attribute " + attribute.getName()
+						+ " does not exist in hbm.");
+			}
+		}
+		return attributeInterface;
 	}
 
 	private AttributeInterface getAttribute(Attribute attribute)
 			throws DynamicExtensionsApplicationException
 	{
-		AttributeInterface attributeInterface = null;
-		if (classMetadata.getProperty(attribute.getName()) != null )
+		AttributeInterface attributeInterface = entity.getAttributeByName(attribute.getName());
+		if(attributeInterface == null)
 		{
-			attributeInterface = entity.getAttributeByName(attribute.getName());
-			if(attributeInterface == null)
-			{
-				DomainObjectFactory.getInstance().createAttribute(
-						classMetadata.getProperty(attribute.getName()).getPropertyType());
-			}
-			
+			attributeInterface = DomainObjectFactory.getInstance().createAttribute(
+					propertyMetadata.getPropertyType());
 		}
-		else
-		{
-			throw new DynamicExtensionsApplicationException("Attribute " + attribute.getName()
-					+ " does not exist in hbm.");
-		}
+		
 		return attributeInterface;
 	}
 
-	private void setColumnProperties(AttributeInterface attributeInterface)
+	private void setColumnProperties()
 	{
 		attributeInterface.getColumnProperties().setName(
-				classMetadata.getProperty(attributeInterface.getName()).getColumnName());
+				propertyMetadata.getColumnName());
 	}
 
-	private void setPrimitiveAttributes(AttributeInterface attributeInterface)
+	private void setPrimitiveAttributes()
 	{
-		attributeInterface.setIsPrimaryKey(attributeInterface.getName().equals(
-				classMetadata.getIdMetadata().getPropertyName()));
+		
 	}
 
-	private void setDefault(AttributeInterface attributeInterface)
+	private void setDefault()
 	{
 		attributeInterface.setActivityStatus(Constants.ACTIVE);
 		attributeInterface.setCreatedDate(new Date());

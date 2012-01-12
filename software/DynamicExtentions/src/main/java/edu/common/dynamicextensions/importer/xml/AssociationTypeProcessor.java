@@ -44,6 +44,13 @@ public class AssociationTypeProcessor
 			// Step 1: Get the require objects
 			ClassMetadata classMetadataImpl = classMetadataMap.getClassMetadata(association
 					.getSourceEntityName());
+			if(classMetadataImpl == null)
+			{
+				throw new DynamicExtensionsApplicationException("Missing association form "+association
+						.getSourceEntityName()+" to "+association
+						.getTargetEntityName()+", check the hbm files.");
+			}
+			
 			PropertyMetadata associationMetadata = classMetadataImpl.getAssociation(association
 					.getTargetEntityName());
 			if(associationMetadata == null)

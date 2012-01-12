@@ -81,10 +81,6 @@ public class ClassMetadataImpl implements ClassMetadata {
             	associationMetadata.put(propertyMetadataImpl.getAssociatedClassType(), propertyMetadataImpl);
             }
         }
-        if(idMetadata != null)
-        {
-        	propertiesMetadata.put(idMetadata.getPropertyName(), idMetadata);
-        }
     }
     
     private EntityMetamodel getEntityMetamodel(AbstractEntityPersister persister) {

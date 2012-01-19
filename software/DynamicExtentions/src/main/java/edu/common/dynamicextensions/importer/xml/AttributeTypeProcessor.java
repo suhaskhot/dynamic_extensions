@@ -24,9 +24,9 @@ public class AttributeTypeProcessor
 	 * DE entity used for persisting metadata 
 	 */
 	private EntityInterface entity;
-	
+
 	private AttributeInterface attributeInterface;
-	
+
 	private PropertyMetadata propertyMetadata;
 
 	/**
@@ -44,7 +44,6 @@ public class AttributeTypeProcessor
 	{
 		//Step 1: Creates if attribute with name is not found in the entity
 		AttributeInterface attributeInterface = createAttribute(attribute);
-
 
 		//Step 2: Update entity references
 		entity.addAttribute(attributeInterface);
@@ -68,27 +67,23 @@ public class AttributeTypeProcessor
 			throws DynamicExtensionsApplicationException
 	{
 		propertyMetadata = classMetadata.getIdMetadata();
-		if(propertyMetadata.getPropertyName() != attribute.getName())
+		if (propertyMetadata.getPropertyName().equals(attribute.getName()))
 		{
 			attributeInterface = getAttribute(attribute);
-			
-			if(attributeInterface.getId() !=null)
-			{
-				if(!attributeInterface.getEntity().getPrimaryKeyAttributeCollection().contains(attributeInterface))
-				{
-					entity.addPrimaryKeyAttribute(attributeInterface);
-					attributeInterface.setIsPrimaryKey(true);
-				}
-			}
-		}else
+			entity.getPrimaryKeyAttributeCollection().clear();
+			entity.addPrimaryKeyAttribute(attributeInterface);
+			attributeInterface.setIsNullable(Boolean.FALSE);
+			attributeInterface.setIsPrimaryKey(true);
+		}
+		else
 		{
-		
-			propertyMetadata =classMetadata.getProperty(attribute.getName()) ; 
-			if (propertyMetadata!= null )
+
+			propertyMetadata = classMetadata.getProperty(attribute.getName());
+			if (propertyMetadata != null)
 			{
 				attributeInterface = getAttribute(attribute);
 			}
-			else 
+			else
 			{
 				throw new DynamicExtensionsApplicationException("Attribute " + attribute.getName()
 						+ " does not exist in hbm.");
@@ -101,24 +96,23 @@ public class AttributeTypeProcessor
 			throws DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = entity.getAttributeByName(attribute.getName());
-		if(attributeInterface == null)
+		if (attributeInterface == null)
 		{
 			attributeInterface = DomainObjectFactory.getInstance().createAttribute(
 					propertyMetadata.getPropertyType());
 		}
-		
+
 		return attributeInterface;
 	}
 
 	private void setColumnProperties()
 	{
-		attributeInterface.getColumnProperties().setName(
-				propertyMetadata.getColumnName());
+		attributeInterface.getColumnProperties().setName(propertyMetadata.getColumnName());
 	}
 
 	private void setPrimitiveAttributes()
 	{
-		
+
 	}
 
 	private void setDefault()

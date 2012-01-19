@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.entitymanager.EntityGroupManager;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.importer.jaxb.Association;
 import edu.common.dynamicextensions.importer.jaxb.Entity;
 import edu.common.dynamicextensions.importer.jaxb.StaticMetaData;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -46,13 +47,13 @@ public class XMLImporter
 			jAXBElement = (JAXBElement) XMLUtility
 					.getJavaObjectForXML(
 							packageName,
-							"SimplifiedMetaData.xsd",
+							"E:/installable/DynamicExtensionsTrunk/software/DynamicExtentions/src/main/resources/jaxb/xsd/SimplifiedMetaData.xsd",
 							filePath);
 			staticMetaData = (StaticMetaData) jAXBElement.getValue();
 			entityGroup = EntityGroupManager.getInstance().getEntityGroupByName(entityGroupName);
 
 			classMetadataMap = ClassMetadataMapImpl.createClassMetadataMap(HibernateDaoHelper
-					.getSessionFactory(dao), getClassNames(staticMetaData.getEntity()));
+					.getSessionFactory(dao), getClassNames(staticMetaData.getEntity(),staticMetaData.getAssociation()));
 		}
 		catch (SAXException e)
 		{
@@ -62,12 +63,17 @@ public class XMLImporter
 
 	}
 
-	private Collection<String> getClassNames(List<Entity> entityCollection)
+	private Collection<String> getClassNames(List<Entity> entityCollection,List<Association> associationCollection)
 	{
 		List<String> list = new ArrayList<String>();
 		for (Entity entity : entityCollection)
 		{
 			list.add(entity.getName());
+		}
+		for (Association association: associationCollection)
+		{
+			list.add(association.getSourceEntityName());
+			list.add(association.getTargetEntityName());
 		}
 		return list;
 	}
@@ -91,7 +97,6 @@ public class XMLImporter
 		//Step4: Add query paths
 		handleQueryPaths(associationList);
 	}
-
 	private void handleQueryPaths(List<AssociationInterface> associationList) throws DynamicExtensionsSystemException
 	{
 		JDBCDAO jdbcdao = DynamicExtensionsUtility.getJDBCDAO(null);

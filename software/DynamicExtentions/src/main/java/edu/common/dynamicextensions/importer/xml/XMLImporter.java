@@ -62,7 +62,7 @@ public class XMLImporter
 			jAXBElement = (JAXBElement) XMLUtility
 					.getJavaObjectForXML(
 							packageName,
-							"SimplifiedMetaData.xsd",
+							"StaticMetaData.xsd",
 							filePath);
 			staticMetaData = (StaticMetaData) jAXBElement.getValue();
 			entityGroup = EntityGroupManager.getInstance().getEntityGroupByName(entityGroupName);

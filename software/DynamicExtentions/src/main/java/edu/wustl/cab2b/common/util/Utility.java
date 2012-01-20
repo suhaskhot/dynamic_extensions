@@ -9,16 +9,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -54,6 +53,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.errorcodes.ErrorCodeConstants;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.queryengine.ICab2bQuery;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.querysuite.metadata.associations.IAssociation;
 import edu.wustl.common.querysuite.metadata.path.IPath;
 import edu.wustl.common.querysuite.queryobject.DataType;
@@ -719,7 +719,37 @@ public class Utility implements EntityManagerExceptionConstantsInterface
 		}
 		return trimmedString;
 	}
+	
+	public static String formatGroupName(String groupName)
+	{
+		groupName=groupName.replaceAll(" ", "_");
+		return groupName.toLowerCase();
+	}
+	
+	public static String convertGroupNameForDisplay(String groupName)
+	{
+		String uiGroupName="";
+		String[] words=groupName.split("_"); 
+		for(int i=0;i<words.length;i++)
+		{
+			uiGroupName=uiGroupName+capitalizeFirstCharacter(words[i])+" ";
+		}
+		return uiGroupName;
+	}
 
+	public static Collection<NameValueBean> convertGroupNameForDisplay(Collection<NameValueBean> groupNameCollection)
+	{
+		Collection<NameValueBean> formattedGroupNameColl= new ArrayList<NameValueBean>();
+		Iterator<NameValueBean> iter= groupNameCollection.iterator();
+		while(iter.hasNext())
+		{
+			NameValueBean nvb=iter.next();
+			nvb.setName(convertGroupNameForDisplay(nvb.getName()));
+			formattedGroupNameColl.add(nvb);
+		}
+		
+		return formattedGroupNameColl;
+	}
 	public static String modifyStringToLowerCamelCase(String stringToTrim)
 	{
 		String trimmedString = "";

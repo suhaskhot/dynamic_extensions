@@ -44,6 +44,7 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.global.DEConstants.AssociationType;
 import edu.wustl.common.actionForm.AbstractActionForm;
+import edu.wustl.common.util.global.ApplicationProperties;
 
 /**
  * @author sujay_narkar, chetan_patil, suhas_khot
@@ -70,6 +71,10 @@ public class LoadDataEntryFormAction extends BaseDynamicExtensionsAction
 		{
 			cacheCallBackURL(request);
 			final ContainerInterface containerInterface = getContainerInterface(request);
+			if(!containerInterface.getAbstractEntity().getEntityGroup().getIscaCOREGenerated())
+			{
+				throw new DynamicExtensionsCacheException(ApplicationProperties.getValue("cacore.not.generated"));
+			}
 
 			String recordId = request.getParameter("recordIdentifier");
 			if (recordId != null && !recordId.equals(""))

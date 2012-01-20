@@ -80,7 +80,7 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
 		Collection entityGroupCollection = entityManagerInterface
 				.getAllEntityGroupBeans();
-		List<NameValueBean> groupList = new ArrayList<NameValueBean>(entityGroupCollection);
+		List<NameValueBean> groupList = new ArrayList<NameValueBean>(edu.wustl.cab2b.common.util.Utility.convertGroupNameForDisplay(entityGroupCollection));
 
 		//		Iterator entityGroupIterator = entityGroupCollection.iterator();
 		//		EntityGroupInterface entityGroupInterface;

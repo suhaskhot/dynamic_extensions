@@ -7,6 +7,7 @@
 package edu.common.dynamicextensions.ui.webui.action;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import edu.common.dynamicextensions.domain.Entity;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
@@ -71,9 +73,18 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction {
 			EntityGroupInterface entityGroupInterface = ((EntityInterface) containerInterface
 					.getAbstractEntity()).getEntityGroup();
 			List<EntityInterface> newEntities = new ArrayList<EntityInterface>();
+			updateFormNames(entityGroupInterface);
 			getNewEntitiesName(newEntities, entityGroupInterface);
+			if(null==entityGroupInterface.getLongName() 
+					|| "".equalsIgnoreCase(entityGroupInterface.getLongName())
+					|| " ".equalsIgnoreCase(entityGroupInterface.getLongName()))
+			{
+				entityGroupInterface.setLongName(entityGroupInterface.getName());
+				entityGroupInterface.setShortName(entityGroupInterface.getName());
+			}
 			((EntityInterface) containerInterface.getAbstractEntity())
 					.getEntityGroup().addMainContainer(containerInterface);
+			entityGroupInterface.setIscaCOREGenerated(false);
 			EntityGroupManager.getInstance().persistEntityGroup(
 					entityGroupInterface);
 			EntityCache.getInstance().updateEntityGroup(entityGroupInterface);
@@ -116,6 +127,16 @@ public class SaveEntityAction extends BaseDynamicExtensionsAction {
 			actionForward = mapping.findForward(actionForwardString);
 		}
 		return actionForward;
+	}
+
+	private void updateFormNames(EntityGroupInterface entityGroupInterface)
+	{
+		Iterator iter=entityGroupInterface.getEntityCollection().iterator();
+		while(iter.hasNext())
+		{
+			Entity entity=(Entity) iter.next();
+			entity.setName(edu.wustl.cab2b.common.util.Utility.modifyStringToCamelCase(entity.getName().trim()));
+		}
 	}
 
 	/**

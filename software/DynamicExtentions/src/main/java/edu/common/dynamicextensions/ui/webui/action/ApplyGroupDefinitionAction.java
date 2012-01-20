@@ -41,9 +41,9 @@ public class ApplyGroupDefinitionAction extends BaseDynamicExtensionsAction
 		ActionForward actionForward = null;
 
 		GroupForm groupForm = (GroupForm) form;
-		if(groupForm.getGroupName()!=null)
+		if(groupForm.getGroupNameText()!=null)
 		{
-			groupForm.setGroupNameText(edu.wustl.cab2b.common.util.Utility.modifyStringToCamelCase(groupForm.getGroupNameText()));
+			groupForm.setGroupNameText(edu.wustl.cab2b.common.util.Utility.formatGroupName(groupForm.getGroupNameText()));
 		}
 		ApplyGroupDefinitionProcessor applyGroupDefinitionProcessor = ApplyGroupDefinitionProcessor
 				.getInstance();

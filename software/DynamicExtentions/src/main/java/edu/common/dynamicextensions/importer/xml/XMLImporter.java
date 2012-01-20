@@ -36,8 +36,23 @@ public class XMLImporter
 	protected EntityGroupInterface entityGroup;
 	protected StaticMetaData staticMetaData;
 	private ClassMetadataMap classMetadataMap;
+	
+	public static void main(String[] args) throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
+	{
+		validate(args);
+		XMLImporter importer = new XMLImporter(args[0], args[1], null);
+		importer.processXml();
+	}
 
-	public XMLImporter(String filePath, String entityGroupName, HibernateDAO dao)
+	private static void validate(String[] args) throws DynamicExtensionsApplicationException
+	{
+		if(args.length > 2)
+		{
+			throw new DynamicExtensionsApplicationException("Infufficient parametres");
+		}
+	}
+
+	public XMLImporter(String filePath, String entityGroupName, HibernateDAO hostApplicationDAO)
 			throws DynamicExtensionsSystemException
 	{
 		final String packageName = StaticMetaData.class.getPackage().getName();
@@ -47,13 +62,17 @@ public class XMLImporter
 			jAXBElement = (JAXBElement) XMLUtility
 					.getJavaObjectForXML(
 							packageName,
-							"E:/installable/DynamicExtensionsTrunk/software/DynamicExtentions/src/main/resources/jaxb/xsd/SimplifiedMetaData.xsd",
+							"SimplifiedMetaData.xsd",
 							filePath);
 			staticMetaData = (StaticMetaData) jAXBElement.getValue();
 			entityGroup = EntityGroupManager.getInstance().getEntityGroupByName(entityGroupName);
 
+			if(hostApplicationDAO == null)
+			{
+				hostApplicationDAO =DynamicExtensionsUtility.getHostAppHibernateDAO(null); 
+			}
 			classMetadataMap = ClassMetadataMapImpl.createClassMetadataMap(HibernateDaoHelper
-					.getSessionFactory(dao), getClassNames(staticMetaData.getEntity(),staticMetaData.getAssociation()));
+					.getSessionFactory(hostApplicationDAO), getClassNames(staticMetaData.getEntity(),staticMetaData.getAssociation()));
 		}
 		catch (SAXException e)
 		{

@@ -53,7 +53,7 @@ public class XMLImporter
 	}
 
 	public XMLImporter(String filePath, String entityGroupName, HibernateDAO hostApplicationDAO)
-			throws DynamicExtensionsSystemException
+			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		final String packageName = StaticMetaData.class.getPackage().getName();
 		JAXBElement jAXBElement;

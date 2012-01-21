@@ -32,12 +32,12 @@ public class ClassMetadataImpl implements ClassMetadata {
     private Map<String, PropertyMetadata> associationMetadata = new HashMap<String, PropertyMetadata>();
     
     public ClassMetadataImpl(AbstractEntityPersister persister) {
-        try {
-            this.persister = persister;   
-            
-            isAbstract = ReflectionUtil.isAbstract(persister.getEntityName());
-            entityMetamodel = getEntityMetamodel(persister);
-            initialiazePropertiesMetadata();            
+		try
+		{
+			this.persister = persister;
+			isAbstract = ReflectionUtil.isAbstract(persister.getEntityName());
+			entityMetamodel = getEntityMetamodel(persister);
+			initialiazePropertiesMetadata();       
         } catch (Exception e) {
             throw new RuntimeException(e);
         }        

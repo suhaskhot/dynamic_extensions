@@ -10,6 +10,7 @@ import java.util.Set;
 import org.hibernate.SessionFactory;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 
+import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.metadata.ClassMetadata;
 import edu.common.metadata.ClassMetadataMap;
 import edu.common.metadata.PropertyMetadata;
@@ -30,18 +31,22 @@ public class ClassMetadataMapImpl implements ClassMetadataMap
 		initialize(factory);
 	}
 
-	public ClassMetadataMapImpl(SessionFactory factory, Collection<String> classNames)
+	public ClassMetadataMapImpl(SessionFactory factory, Collection<String> classNames) throws DynamicExtensionsApplicationException
 	{
 		initialize(factory, classNames);
 	}
 
-	private void initialize(SessionFactory factory, Collection<String> classNames)
+	private void initialize(SessionFactory factory, Collection<String> classNames) throws DynamicExtensionsApplicationException
 	{
 
 		for (String className : classNames)
 		{
 			AbstractEntityPersister persister = (AbstractEntityPersister) factory
 					.getClassMetadata(className);
+			if(persister == null)
+			{
+				throw new DynamicExtensionsApplicationException("Missing metadata for class" + className);
+			}
 			updateClassMetadataMap(persister);
 		}
 	}
@@ -52,7 +57,7 @@ public class ClassMetadataMapImpl implements ClassMetadataMap
 	}
 
 	public static ClassMetadataMap createClassMetadataMap(SessionFactory factory,
-			Collection<String> classNames)
+			Collection<String> classNames) throws DynamicExtensionsApplicationException
 	{
 		return new ClassMetadataMapImpl(factory, classNames);
 	}

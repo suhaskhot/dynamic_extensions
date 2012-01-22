@@ -96,7 +96,7 @@ public class AttributeTypeProcessor
 			throws DynamicExtensionsApplicationException
 	{
 		AttributeInterface attributeInterface = entity.getAttributeByName(attribute.getName());
-		if (attributeInterface == null)
+		if (attributeInterface == null || !attributeInterface.getEntity().equals(entity))
 		{
 			attributeInterface = DomainObjectFactory.getInstance().createAttribute(
 					propertyMetadata.getPropertyType());

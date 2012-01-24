@@ -1554,7 +1554,7 @@
 		<!-- The comma is explicitly given so that if value is empty still it is passed as parameter to java class -->
 		<java failonerror="true" classname="edu.wustl.metadata.util.EntityGroupName" fork="yes" maxmemory="1024m">
 			<arg value="${base.dir}/temp_deaudit_related_files/temp_exported_xmi/" />
-			<arg value="${ignore.status}" />
+			<arg value="true" />
 			<classpath>
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${de.zip.location}/lib">
@@ -1852,12 +1852,14 @@
 
         <!--Step 2: Bring the adjusted files to support dozer artifacts generation-->
         <unzip src="../../dynamic_extensions/lib/cacore-sdk.4.2-dozer.zip" dest="${de.temp.dir}/cacoresdk.4.2/dozerFiles" overwrite="true" />
-        <copy todir="${de.temp.dir}/cacoresdk.4.2/">
+        <echo message="DEBUG: Bringing Dozer related files into caCoreSDK..." />
+        <copy todir="${de.temp.dir}/cacoresdk.4.2/" verbose="true" overwrite="true">
             <fileset dir="${de.temp.dir}/cacoresdk.4.2/dozerFiles" />
         </copy>
 
         <!--Step 3: Bring XMI to run the codegen for -->
-        <copy todir="${caCORE4.2_home}/example-project/models" overwrite="true">
+        <echo message="DEBUG: Bringing XMI files into caCoreSDK..." />
+        <copy todir="${caCORE4.2_home}/example-project/models" overwrite="true" verbose="true">
             <fileset dir="${export.dir}">
                 <include name="*.xmi" />
             </fileset>
@@ -1870,7 +1872,7 @@
 		
         <!--Step 4: Replace the properties to match projects configs -->
 		<echo message="DEBUG: ${entitygroupname}" />
-		<replace dir="${caCORE4.2_home}/example-project/build">
+		<replace dir="${caCORE4.2_home}/example-project/build" summary="true">
 			<include name="codegen.properties" />
 			<replacefilter token="@@MODEL_FILE@@" value="${entitygroupname}.xmi" />
 			<replacefilter token="@@APPLICATION_NAME@@" value="${entitygroupname}" />
@@ -1896,7 +1898,7 @@
 						<include name="${entitygroupname}-schema.jar" />
 					</fileset>
 				</copy>
-				<echo message="Dozer files archive copied for: ${entitygroupname}" />
+				<echo message="DEBUG: Dozer files archive copied for: ${entitygroupname}" />
 				<copy todir="../../caGrid_service/caTissueStaticDataService/de_codegen/xmi" overwrite="true" verbose="true">
                     <fileset dir="${export.dir}">
                         <include name="${entitygroupname}.xmi" />
@@ -1923,7 +1925,7 @@
 		</unzip>
 
 		<!--update one to many mapping in the hbm file. fk column is required to be a nullable-->
-		<replace dir="${tempOrm}">
+		<replace dir="${tempOrm}" summary="true">
 			<include name="*.hbm.xml" />
 			<include name="**/**/*.hbm.xml" />
 			<replacetoken><![CDATA[not-null="true" cascade="none"]]></replacetoken>
@@ -2075,7 +2077,7 @@
 		<delete dir="${orm.jar.location}"></delete>
 	
 	</target>
-	
+
 	<target name="unzip_caCORESDKzip" description="unzip caCore SDK zip">
 		<delete dir="${cacoresdk.dir}" failonerror="false" />
 		<mkdir dir="${cacoresdk.dir}" />

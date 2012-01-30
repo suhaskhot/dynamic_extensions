@@ -63,4 +63,5 @@ public class Constants
 	public static final String ENCOUNTER_DATE="encounterDate";
 	public static final String PV_With_Nearest_Past_Date="PVWithNearestPastDate";
 	public static final String ACTIVE = "Active";
+	public static final String DISABLED = "Disabled";
 }

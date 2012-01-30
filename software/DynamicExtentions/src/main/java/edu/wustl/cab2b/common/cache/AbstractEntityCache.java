@@ -37,6 +37,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.skiplogic.SkipLogic;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.cab2b.common.beans.MatchedClass;
 import edu.wustl.cab2b.common.beans.MatchedClassEntry;
@@ -351,7 +352,11 @@ public abstract class AbstractEntityCache implements IEntityCache
 
 			for (final EntityInterface entity : entityGroup.getEntityCollection())
 			{
-				addEntityToCache(entity);
+				if(!Constants.DISABLED.equals(entity.getActivityStatus()))
+				{
+					addEntityToCache(entity);	
+				}
+				
 			}
 		}
 	}
@@ -523,7 +528,14 @@ public abstract class AbstractEntityCache implements IEntityCache
 		for (final AttributeInterface attribute : entity
 				.getAttributeCollectionWithInheritedAttributes())
 		{
-			idVsAttribute.put(attribute.getId(), attribute);
+			if(!Constants.DISABLED.equals(attribute.getActivityStatus()))
+			{
+				idVsAttribute.put(attribute.getId(), attribute);	
+			}else
+			{
+				entity.removeAttribute(attribute);
+			}
+			
 		}
 	}
 
@@ -808,7 +820,11 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 
 		LOGGER.info("create Entity Cache for............." + entity);
-		idVsEntity.put(entity.getId(), entity);
+		if(!Constants.DISABLED.equals(entity.getActivityStatus()))
+		{
+			idVsEntity.put(entity.getId(), entity);	
+		}
+		
 		createAttributeCache(entity);
 		createAssociationCache(entity);
 		createPermissibleValueCache(entity);

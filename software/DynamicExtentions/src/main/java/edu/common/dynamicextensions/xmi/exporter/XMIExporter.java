@@ -2548,8 +2548,8 @@ public class XMIExporter
 						|| XMIConstants.XMI_VERSION_1_2.equals(xmiVersion))
 				{
 				//to avoid adding id attribute in the child
-					if(!XMIConstants.ID_ATTRIBUTE_NAME.equals(attribute.getName())
-							|| attribute.getEntity().getParentEntity() == null)
+					if(!(XMIConstants.ID_ATTRIBUTE_NAME.equals(attribute.getName())
+							&& attribute.getEntity().getParentEntity() != null))
 					{
 						final Attribute umlAttribute = createUMLAttribute(attribute);
 						umlAttributes.add(umlAttribute);

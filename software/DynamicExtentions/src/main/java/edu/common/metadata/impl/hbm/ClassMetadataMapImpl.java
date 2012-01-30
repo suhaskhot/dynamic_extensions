@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationExcept
 import edu.common.metadata.ClassMetadata;
 import edu.common.metadata.ClassMetadataMap;
 import edu.common.metadata.PropertyMetadata;
+import edu.wustl.common.util.logger.Logger;
 
 /**
  *
@@ -22,6 +23,8 @@ import edu.common.metadata.PropertyMetadata;
 public class ClassMetadataMapImpl implements ClassMetadataMap
 {
 
+	private static final Logger LOGGER = Logger.getCommonLogger(ClassMetadataMapImpl.class);
+	
 	private Map<String, ClassMetadata> classMetadataMap = new HashMap<String, ClassMetadata>();
 
 	private Set<String> tableNames = new HashSet<String>();
@@ -36,7 +39,7 @@ public class ClassMetadataMapImpl implements ClassMetadataMap
 		initialize(factory, classNames);
 	}
 
-	private void initialize(SessionFactory factory, Collection<String> classNames) throws DynamicExtensionsApplicationException
+	private void initialize(SessionFactory factory, Collection<String> classNames)
 	{
 
 		for (String className : classNames)
@@ -45,7 +48,7 @@ public class ClassMetadataMapImpl implements ClassMetadataMap
 					.getClassMetadata(className);
 			if(persister == null)
 			{
-				throw new DynamicExtensionsApplicationException("Missing metadata for class" + className);
+				LOGGER.warn("Missing metadata for class" + className);
 			}
 			updateClassMetadataMap(persister);
 		}

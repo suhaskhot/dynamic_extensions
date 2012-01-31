@@ -23,6 +23,7 @@
 	
 	<xsd:complexType name="entity">
 		<xsd:sequence>
+			<xsd:element name="activityStatus"  minOccurs="0" type="xsd:string" />
 			<xsd:element name="name" type="xsd:string" />
 			<xsd:element minOccurs="0" maxOccurs="unbounded" name="attribute"
 				type="attribute" />
@@ -31,6 +32,7 @@
 	
 	<xsd:complexType name="attribute">
 		<xsd:sequence>
+			<xsd:element name="activityStatus" minOccurs="0"  type="xsd:string" />
 			<xsd:element name="name" type="xsd:string" />
 		</xsd:sequence>
 	</xsd:complexType>

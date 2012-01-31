@@ -38,12 +38,18 @@ public class EntityTypeProcessor
 		{
 			//Step 1: create if entity with same name does not exist.
 			EntityInterface entity = getEntity(entityType.getName());
+			if(Constants.DISABLED.equals(entity.getActivityStatus()))
+			{
+				processDisabledEntity(entityType, entity);
+				return;
+			}
+			
 			entityGroup.addEntity(entity);
 			entity.setEntityGroup(entityGroup);
 			
 			//Step 2: Set default values 
 			setDefaultValues(entity);
-
+			
 			//Step 3: Set primitive property of the 
 			processPrimitiveProperties(entity);
 
@@ -52,6 +58,17 @@ public class EntityTypeProcessor
 
 			//Step 5: Process Attribute collection
 			processAttributes(entity, entityType.getAttribute());
+		}
+	}
+
+	private void processDisabledEntity(Entity entityType, EntityInterface entity)
+	{
+		if(entityGroup.getIsSystemGenerated())
+		{
+			entity.setActivityStatus(entityType.getActivityStatus());	
+		}else
+		{
+			entity.setActivityStatus(Constants.ACTIVE);	
 		}
 	}
 
@@ -70,7 +87,7 @@ public class EntityTypeProcessor
 	private void setDefaultValues(EntityInterface entity)
 	{
 		/*entity.setInheritanceStrategy(InheritanceStrategy.)*/
-		entity.setActivityStatus(Constants.ACTIVE);
+		
 		entity.setCreatedDate(new Date());
 		entity.setParentEntity(entityGroup.getEntityByName(classMetadataMap.getClassMetadata(entity.getName()).getParentClassName()));
 	}

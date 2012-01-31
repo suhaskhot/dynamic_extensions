@@ -43,7 +43,14 @@ public class AttributeTypeProcessor
 	public void process(Attribute attribute) throws DynamicExtensionsApplicationException
 	{
 		//Step 1: Creates if attribute with name is not found in the entity
-		AttributeInterface attributeInterface = createAttribute(attribute);
+		if(Constants.DISABLED.equals(attribute.getActivityStatus()))
+		{
+			attributeInterface = getAttribute(attribute);
+			return;
+		}else
+		{
+			attributeInterface = createAttribute(attribute);	
+		}
 
 		//Step 2: Update entity references
 		entity.addAttribute(attributeInterface);
@@ -53,7 +60,7 @@ public class AttributeTypeProcessor
 		attributeInterface.setName(attribute.getName());
 
 		//Step 4: Set default values if any, these values are note provided in the xml
-		setDefault();
+		setDefault(attribute);
 
 		//Step 5: Set all the primitive attributes of the Attribute class
 		setPrimitiveAttributes();
@@ -100,6 +107,15 @@ public class AttributeTypeProcessor
 		{
 			attributeInterface = DomainObjectFactory.getInstance().createAttribute(
 					propertyMetadata.getPropertyType());
+		}else
+		{
+			if(entity.getEntityGroup().getIsSystemGenerated())
+			{
+				attributeInterface.setActivityStatus(attribute.getActivityStatus());
+			}else
+			{
+				attributeInterface.setActivityStatus(Constants.ACTIVE);	
+			}
 		}
 
 		return attributeInterface;
@@ -115,9 +131,8 @@ public class AttributeTypeProcessor
 
 	}
 
-	private void setDefault()
+	private void setDefault(Attribute attribute)
 	{
-		attributeInterface.setActivityStatus(Constants.ACTIVE);
 		attributeInterface.setCreatedDate(new Date());
 	}
 

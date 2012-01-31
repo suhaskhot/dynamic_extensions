@@ -49,6 +49,7 @@ public class ClassMetadataMapImpl implements ClassMetadataMap
 			if(persister == null)
 			{
 				LOGGER.warn("Missing metadata for class" + className);
+				continue;
 			}
 			updateClassMetadataMap(persister);
 		}

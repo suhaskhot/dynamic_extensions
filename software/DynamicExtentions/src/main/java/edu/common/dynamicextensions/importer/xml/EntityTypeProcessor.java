@@ -38,7 +38,7 @@ public class EntityTypeProcessor
 		{
 			//Step 1: create if entity with same name does not exist.
 			EntityInterface entity = getEntity(entityType.getName());
-			if(Constants.DISABLED.equals(entity.getActivityStatus()))
+			if(Constants.DISABLED.equals(entityType.getActivityStatus()))
 			{
 				processDisabledEntity(entityType, entity);
 				return;

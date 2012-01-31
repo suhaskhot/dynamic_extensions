@@ -81,7 +81,8 @@ public class RadioButton extends SelectControl implements RadioButtonInterface
 							+ "\""
 							+ "class='font_bl_nor' "
 							+ "name='"
-							+ htmlComponentName+ "' id='" + optionName + "' checked "
+							+ htmlComponentName+ "' value='"+
+							optionValue + "' id='" + optionName + "' checked "
 							+ disabled + "  " + "/>" + "<label for=\"" + htmlComponentName + "\" onClick=\"selectRadioButton('"+getHTMLComponentName() +"','"+optionValue+"')\">"
 							+ optionName
 							+ "</label> <img src='images/de/spacer.gif' width='2' height='2'>";

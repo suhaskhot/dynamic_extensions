@@ -8,11 +8,13 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.global.DEConstants;
@@ -43,6 +45,11 @@ public class DisplayContainerAction extends BaseDynamicExtensionsAction
 		{
 			 actionForward.append("EditForm&containerIdentifier=").append(identifier);
 		}
+		HttpSession session=request.getSession();
+		String staticEntityId=(String) session.getAttribute(Constants.SELECTED_STATIC_ENTITYID);
+		
+		actionForward.append(Constants.AMPERSAND).append(Constants.SELECTED_STATIC_ENTITYID)
+				.append(Constants.EQUAL).append(staticEntityId);
 		CacheManager.addObjectToCache(request, DEConstants.CALLBACK_URL, callbackUrl);
 		CacheManager.addObjectToCache(request, WebUIManagerConstants.USER_ID, userId);
 		return new ActionForward(actionForward.toString());

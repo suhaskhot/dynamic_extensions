@@ -8,6 +8,7 @@ package edu.common.dynamicextensions.ui.webui.action;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -20,6 +21,7 @@ import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInter
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.processor.LoadGroupDefinitionProcessor;
+import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.webui.actionform.GroupForm;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -89,7 +91,9 @@ public class LoadGroupDefinitionAction extends BaseDynamicExtensionsAction
 
 		LoadGroupDefinitionProcessor loadGroupDefinitionProcessor = LoadGroupDefinitionProcessor
 				.getInstance();
-		loadGroupDefinitionProcessor.loadGroupDetails(entityGroup, groupForm);
+		HttpSession session=request.getSession();
+		Long staticEntityId=Long.valueOf((String) session.getAttribute(Constants.SELECTED_STATIC_ENTITYID));
+		loadGroupDefinitionProcessor.loadGroupDetails(entityGroup, groupForm,staticEntityId);
 	}
 
 }

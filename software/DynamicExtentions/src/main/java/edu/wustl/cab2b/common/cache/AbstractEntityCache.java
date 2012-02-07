@@ -44,6 +44,7 @@ import edu.wustl.cab2b.common.beans.MatchedClassEntry;
 import edu.wustl.cab2b.common.exception.RuntimeException;
 import edu.wustl.cab2b.common.util.Utility;
 import edu.wustl.cab2b.server.util.DynamicExtensionUtility;
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
@@ -1183,5 +1184,22 @@ public abstract class AbstractEntityCache implements IEntityCache
 	{
 		ContainerInterface container= getContainerById(id);
 		return container.getAbstractEntity().getEntityGroup().getIscaCOREGenerated();
+	}
+	
+	public Collection<NameValueBean> getEntityGroupsByEntity(EntityInterface hookEntity)
+	{
+		Collection<NameValueBean> entityGroups = new HashSet<NameValueBean>();
+		
+		for (AssociationInterface association : hookEntity.getAssociationCollection())
+		{
+			if (!association.getTargetEntity().getEntityGroup().getIsSystemGenerated())
+			{
+				NameValueBean nvb = new NameValueBean();
+				nvb.setName(association.getTargetEntity().getEntityGroup().getName());
+				nvb.setValue(association.getTargetEntity().getEntityGroup().getId());
+				entityGroups.add(nvb);
+			}
+		}
+		return entityGroups;
 	}
 }

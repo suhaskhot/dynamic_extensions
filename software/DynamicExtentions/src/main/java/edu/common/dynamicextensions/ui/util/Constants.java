@@ -64,4 +64,11 @@ public class Constants
 	public static final String PV_With_Nearest_Past_Date="PVWithNearestPastDate";
 	public static final String ACTIVE = "Active";
 	public static final String DISABLED = "Disabled";
+	/**
+	 * selectedStaticEntityId.
+	 */
+	public static final String SELECTED_STATIC_ENTITYID = "selectedStaticEntityId";
+	
+	public static final String AMPERSAND="&";
+	public static final String EQUAL="=";
 }

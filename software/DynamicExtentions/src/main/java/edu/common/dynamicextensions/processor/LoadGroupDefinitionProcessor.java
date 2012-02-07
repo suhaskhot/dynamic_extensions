@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
-import edu.common.dynamicextensions.entitymanager.EntityManager;
-import edu.common.dynamicextensions.entitymanager.EntityManagerInterface;
+import edu.common.dynamicextensions.domaininterface.EntityInterface;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.ui.interfaces.GroupUIBeanInterface;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.NameValueBean;
 
 /**
@@ -44,7 +44,7 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsApplicationException
 	 * @throws DynamicExtensionsSystemException
 	 */
-	public void loadGroupDetails(EntityGroupInterface entityGroup, GroupUIBeanInterface groupUIBean)
+	public void loadGroupDetails(EntityGroupInterface entityGroup, GroupUIBeanInterface groupUIBean,Long staticEntityId)
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException
 	{
 		if (groupUIBean != null)
@@ -64,7 +64,7 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 			{
 				groupUIBean.setCreateGroupAs(ProcessorConstants.DEFAULT_GROUP_CREATEAS);
 			}
-			groupUIBean.setGroupList(populateGroupList());
+			groupUIBean.setGroupList(populateGroupList(staticEntityId));
 		}
 	}
 
@@ -74,24 +74,14 @@ public class LoadGroupDefinitionProcessor extends BaseDynamicExtensionsProcessor
 	 * @throws DynamicExtensionsSystemException
 	 * @throws DynamicExtensionsApplicationException
 	 */
-	public List populateGroupList() throws DynamicExtensionsSystemException,
+	public List populateGroupList(Long staticEntityId) throws DynamicExtensionsSystemException,
 			DynamicExtensionsApplicationException
 	{
-		EntityManagerInterface entityManagerInterface = EntityManager.getInstance();
-		Collection entityGroupCollection = entityManagerInterface
-				.getAllEntityGroupBeans();
-		List<NameValueBean> groupList = new ArrayList<NameValueBean>(edu.wustl.cab2b.common.util.Utility.convertGroupNameForDisplay(entityGroupCollection));
-
-		//		Iterator entityGroupIterator = entityGroupCollection.iterator();
-		//		EntityGroupInterface entityGroupInterface;
-		//		NameValueBean nameValueBean;
-		//		while (entityGroupIterator.hasNext())
-		//		{
-		//			entityGroupInterface = (EntityGroupInterface) entityGroupIterator.next();
-		//			nameValueBean = new NameValueBean(entityGroupInterface.getName(), entityGroupInterface
-		//					.getId());
-		//			groupList.add(nameValueBean);
-		//		}
+		
+		EntityCache entityCache=EntityCache.getInstance();
+		EntityInterface hookEntity=entityCache.getEntityById(staticEntityId);
+		Collection<NameValueBean> entityGroups=entityCache.getEntityGroupsByEntity(hookEntity);
+		List<NameValueBean> groupList = new ArrayList<NameValueBean>(edu.wustl.cab2b.common.util.Utility.convertGroupNameForDisplay(entityGroups));
 		DynamicExtensionsUtility.sortNameValueBeanListByName(groupList);
 		return groupList;
 	}

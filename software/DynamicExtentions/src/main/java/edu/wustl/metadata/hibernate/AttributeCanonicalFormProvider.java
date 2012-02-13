@@ -1,6 +1,7 @@
 package edu.wustl.metadata.hibernate;
 
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
+import edu.common.dynamicextensions.exception.DynamicExtensionsCacheException;
 import edu.wustl.cab2b.server.cache.EntityCache;
 
 public class AttributeCanonicalFormProvider
@@ -14,7 +15,7 @@ public class AttributeCanonicalFormProvider
     }
 
     @Override
-	protected AbstractAttributeInterface getObjectFromEntityCache(Long identifier)
+	protected AbstractAttributeInterface getObjectFromEntityCache(Long identifier) throws DynamicExtensionsCacheException
 	{
 		AbstractAttributeInterface abstractAttributeInterface = null;
 		try

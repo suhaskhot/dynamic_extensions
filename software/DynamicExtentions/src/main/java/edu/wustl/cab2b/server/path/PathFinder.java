@@ -700,14 +700,23 @@ public class PathFinder
 				con);
 		Map<Long, IAssociation> idVsIassociation = new HashMap<Long, IAssociation>(
 				intraModelRecords.length + interModelRecords.length);
+		
 		deIdVsAssociationId = new HashMap<Long, Long>(intraModelRecords.length);
 
+		try{
 			for (String[] intraModelRecord : intraModelRecords)
 			{
 				Long identifier = Long.parseLong(intraModelRecord[0]);
 				Long deAssociationId = Long.parseLong(intraModelRecord[1]);
 				LOGGER.info("Get association for Id:............"+deAssociationId);
-				AssociationInterface association = getCache().getAssociationById(deAssociationId);
+				AssociationInterface association ;
+				try
+				{
+				association = getCache().getAssociationById(deAssociationId);
+				}catch (DynamicExtensionsCacheException e) {
+					LOGGER.warn(e.getMessage());
+					continue;
+				}
 				LOGGER.info("association for Id:............"+deAssociationId+"is"+association);
 				idVsIassociation.put(identifier, new IntraModelAssociation(association));
 				deIdVsAssociationId.put(deAssociationId, identifier);
@@ -738,6 +747,13 @@ public class PathFinder
 			list.add(association);
 		}
 		LOGGER.info("PathFinder.cacheAssociationTypes()---end" + idVsIassociation.size());
+		}
+		catch(Exception exception)
+		{
+		
+			exception.printStackTrace();
+			throw new RuntimeException(exception);
+		}
 		return idVsIassociation;
 	}
 

@@ -782,13 +782,14 @@ public abstract class AbstractEntityCache implements IEntityCache
 	 *
 	 * @param identifier Id of the Association
 	 * @return Actual Association for given id.
+	 * @throws DynamicExtensionsCacheException 
 	 */
-	public AssociationInterface getAssociationById(final Long identifier)
+	public AssociationInterface getAssociationById(final Long identifier) throws DynamicExtensionsCacheException
 	{
 		final AssociationInterface association = idVsAssociation.get(identifier);
 		if (association == null)
 		{
-			throw new RuntimeException("Association with given id is not present in cache : "
+			throw new DynamicExtensionsCacheException("Association with given id is not present in cache : "
 					+ identifier);
 		}
 		return association;

@@ -421,9 +421,10 @@ public class DyExtnObjectCloner extends ObjectCloner
 		 * Gets the orig object.
 		 *
 		 * @return the orig object
+		 * @throws DynamicExtensionsCacheException 
 		 * @see edu.wustl.metadata.util.DyExtnObjectCloner.Replacement#getOrigObject()
 		 */
-		public AssociationInterface getOrigObject()
+		public AssociationInterface getOrigObject() throws DynamicExtensionsCacheException
 		{
 			return EntityCache.getInstance().getAssociationById(identifier);
 		}

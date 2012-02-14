@@ -103,6 +103,7 @@ import edu.common.dynamicextensions.util.global.DEConstants.Cardinality;
 import edu.common.dynamicextensions.xmi.XMIConstants;
 import edu.common.dynamicextensions.xmi.XMIUtilities;
 import edu.common.dynamicextensions.xmi.transformer.XMITransformerCaCORE42;
+import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 import edu.wustl.dao.HibernateDAO;
@@ -275,16 +276,18 @@ public class XMIExporter
 
 	private EntityGroup getDummyGrpForEntity(EntityInterface entityInterface) {
 		EntityGroup recoredEntryGrp = new EntityGroup();
+		if(entityInterface.getEntityGroup() != null)
+		{
+			recoredEntryGrp.setIsSystemGenerated(entityInterface.getEntityGroup().getIsSystemGenerated());
+			recoredEntryGrp.setId(entityInterface.getEntityGroup().getId());
+		}
 		recoredEntryGrp.setName("staticEntity");
 		recoredEntryGrp.setActivityStatus("Active");
 		recoredEntryGrp.setShortName("staticEntity");
 		recoredEntryGrp.setLongName("staticEntity");
 		entityInterface.setEntityGroup(recoredEntryGrp);
 		recoredEntryGrp.addEntity(entityInterface);
-		if(entityInterface.getEntityGroup() != null)
-		{
-			recoredEntryGrp.setIsSystemGenerated(entityInterface.getEntityGroup().getIsSystemGenerated());
-		}
+		
 		return recoredEntryGrp;
 	}
 
@@ -297,16 +300,18 @@ public class XMIExporter
 		parentEnity.addAttribute(XMIExporterUtility.getIdAttribute(entity));
 		
 		EntityGroup parentGrp = new EntityGroup();
+		if(entity.getEntityGroup() != null)
+		{
+			parentGrp.setIsSystemGenerated(entity.getEntityGroup().getIsSystemGenerated());
+			parentGrp.setId(entity.getEntityGroup().getId());
+		}
 		parentGrp.setName("staticEntity");
 		parentGrp.setActivityStatus("Active");
 		parentGrp.setShortName("staticEntity");
 		parentGrp.setLongName("staticEntity");
 		entity.setEntityGroup(parentGrp);
 		parentGrp.addEntity(parentEnity);
-		if(entity.getEntityGroup() != null)
-		{
-			parentGrp.setIsSystemGenerated(entity.getEntityGroup().getIsSystemGenerated());
-		}
+		
 		
 		return parentGrp;
 		//break this method into two methods to support inheritance
@@ -1097,7 +1102,7 @@ public class XMIExporter
 
 	private String getPkgName(final EntityInterface foreignKeyEntity) throws DynamicExtensionsSystemException 
 	{
-		final Collection<TaggedValueInterface> tvColl = entityGroup.getTaggedValueCollection();
+		final Collection<TaggedValueInterface> tvColl = EntityCache.getInstance().getEntityGroupById(foreignKeyEntity.getEntityGroup().getId()).getTaggedValueCollection();
 		String pkgName = packageName;
 		
 		for (final TaggedValueInterface tv : tvColl)

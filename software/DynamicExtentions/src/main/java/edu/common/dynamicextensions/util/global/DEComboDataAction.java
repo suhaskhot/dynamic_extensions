@@ -101,7 +101,7 @@ public class DEComboDataAction extends BaseDynamicExtensionsAction
 
 		List<NameValueBean> nameValueBeans = null;
 
-		for (ControlInterface control : container.getControlCollection())
+		for (ControlInterface control : container.getAllControls())
 		{
 			if (Long.parseLong(controlId) == control.getId())
 			{

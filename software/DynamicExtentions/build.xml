@@ -321,6 +321,7 @@
 				<include name="log4j.properties.template" />
 				<include name="DynamicExtensionsAuditMetadata.xml" />
 				<include name="metadataQuery.xml" />
+				<include name="codegen.properties" />
 			</fileset>
 			<fileset dir="${basedir}/src/main/resources/jaxb/xsd">
 			    <include name="*.xsd"/>

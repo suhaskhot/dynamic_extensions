@@ -311,7 +311,7 @@ public class AnnotationUtil
 			PathObject pathObject = new PathObject();
 			pathObject.setSourceEntity(staticEntity);
 			pathObject.setTargetEntity(dynamicEntity);
-
+			pathObject.setAssoc_id(associationId);
 			if (processedPathList.contains(pathObject))
 			{
 				return;
@@ -321,7 +321,7 @@ public class AnnotationUtil
 				processedPathList.add(pathObject);
 			}
 
-			boolean ispathAdded = isDirectPathAdded(staticEntity.getId(), dynamicEntity.getId(),
+			boolean ispathAdded = isDirectPathAdded(staticEntity.getId(), dynamicEntity.getId(),associationId,
 					jdbcdao);
 			if (!ispathAdded)
 			{
@@ -410,23 +410,26 @@ public class AnnotationUtil
 	 * if intermediate paths does not concatenated then it will return true
 	 * @param staticEntityId
 	 * @param dynamicEntityId
+	 * @param associationId 
 	 * @param jdbcdao
 	 * @return
 	 * @throws DynamicExtensionsSystemException
 	 */
 	public static boolean isDirectPathAdded(Long staticEntityId, Long dynamicEntityId,
-			JDBCDAO jdbcdao) throws DynamicExtensionsSystemException
+			Long associationId, JDBCDAO jdbcdao) throws DynamicExtensionsSystemException
 	{
 		boolean ispathAdded = false; // NOPMD - DD anomaly
 		try
 		{
-			String checkForPathQuery = "select path_id from path where "
-					+ "FIRST_ENTITY_ID = ? and LAST_ENTITY_ID = ? "
-					+ "and intermediate_path  NOT like ?";
+			
+			String checkForPathQuery = "select path_id from path where INTERMEDIATE_PATH in ("
+					+"select ASSOCIATION_ID from intra_model_association where DE_ASSOCIATION_ID = ?) and "
+					+"FIRST_ENTITY_ID = ? and LAST_ENTITY_ID = ? ";
 			LinkedList<ColumnValueBean> queryDataList = new LinkedList<ColumnValueBean>();
+			queryDataList.add(new ColumnValueBean("DE_ASSOCIATION_ID", associationId));
 			queryDataList.add(new ColumnValueBean(FIRST_ENTITY_ID, staticEntityId));
 			queryDataList.add(new ColumnValueBean(LAST_ENTITY_ID, dynamicEntityId));
-			queryDataList.add(new ColumnValueBean("intermediate_path", "%\\_%"));
+			
 			ispathAdded = isQueryReturnsResults(jdbcdao, checkForPathQuery, queryDataList);
 		}
 		catch (SQLException e)
@@ -602,8 +605,8 @@ public class AnnotationUtil
 		//adding paths for derived entities of static entity
 		maxPathId = addChildPathsStaticEntity(maxPathId, staticEntityId, dynamicEntity.getId(),
 				intraModAssonId.toString(), queryList, jdbcdao);
-
-		//adding paths for derived entities of dynamic entity
+//
+//		//adding paths for derived entities of dynamic entity
 		maxPathId = addChildPathsDynamicEntity(maxPathId, staticEntityId, dynamicEntity.getId(),
 				intraModAssonId.toString(), queryList, jdbcdao);
 
@@ -611,8 +614,8 @@ public class AnnotationUtil
 		maxPathId += 1;
 		if (!isEntGrpSysGenrtd)
 		{
-			maxPathId = addIndirectPaths(maxPathId, staticEntityId, dynamicEntity.getId(),
-					intraModAssonId, jdbcdao);
+//			maxPathId = addIndirectPaths(maxPathId, staticEntityId, dynamicEntity.getId(),
+//					intraModAssonId, jdbcdao);
 		}
 
 		addInheritancePaths(maxPathId, dynamicEntity);

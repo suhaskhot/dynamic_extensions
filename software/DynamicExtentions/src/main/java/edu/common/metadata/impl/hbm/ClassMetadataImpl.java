@@ -1,8 +1,10 @@
 package edu.common.metadata.impl.hbm;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +31,7 @@ public class ClassMetadataImpl implements ClassMetadata {
     
     private Map<String, PropertyMetadata> propertiesMetadata = new HashMap<String, PropertyMetadata>();
     
-    private Map<String, PropertyMetadata> associationMetadata = new HashMap<String, PropertyMetadata>();
+    private Map<String, List<PropertyMetadata>> associationMetadata = new HashMap<String, List<PropertyMetadata>>();
     
     public ClassMetadataImpl(AbstractEntityPersister persister) {
 		try
@@ -78,10 +80,21 @@ public class ClassMetadataImpl implements ClassMetadata {
             propertiesMetadata.put(propertyName,propertyMetadataImpl);
             if(propertyMetadataImpl.isAssociation())
             {
-            	associationMetadata.put(propertyMetadataImpl.getAssociatedClassType(), propertyMetadataImpl);
+            	associationMetadata.put(propertyMetadataImpl.getAssociatedClassType(), getPropMetadata(propertyMetadataImpl));
             }
         }
     }
+
+	private List<PropertyMetadata> getPropMetadata(
+			PropertyMetadataImpl propertyMetadataImpl) {
+		List<PropertyMetadata> impls = new ArrayList<PropertyMetadata>();
+		if(associationMetadata.get(propertyMetadataImpl.getAssociatedClassType()) != null)
+		{
+			impls = associationMetadata.get(propertyMetadataImpl.getAssociatedClassType());
+		}
+		impls.add(propertyMetadataImpl);
+		return impls;
+	}
     
     private EntityMetamodel getEntityMetamodel(AbstractEntityPersister persister) {
         Class klass = persister.getClass();
@@ -107,7 +120,7 @@ public class ClassMetadataImpl implements ClassMetadata {
 	}
 	
 	@Override
-	public PropertyMetadata getAssociation(String targetEntityName)
+	public List<PropertyMetadata> getAssociations(String targetEntityName)
 	{
 		return associationMetadata.get(targetEntityName);
 	}

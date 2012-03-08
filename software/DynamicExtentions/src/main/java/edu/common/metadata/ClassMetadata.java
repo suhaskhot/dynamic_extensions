@@ -1,6 +1,7 @@
 package edu.common.metadata;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,5 +25,5 @@ public interface ClassMetadata {
     
     public PropertyMetadata getProperty(String name);
 
-	PropertyMetadata getAssociation(String targetEntityName);
+	List<PropertyMetadata> getAssociations(String targetEntityName);
 }

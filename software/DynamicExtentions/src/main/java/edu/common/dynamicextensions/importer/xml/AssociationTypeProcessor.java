@@ -51,40 +51,63 @@ public class AssociationTypeProcessor
 						.getTargetEntityName()+", check the hbm files.");
 			}
 			
-			PropertyMetadata associationMetadata = classMetadataImpl.getAssociation(association
+			List<PropertyMetadata> associationMetadataList = classMetadataImpl.getAssociations(association
 					.getTargetEntityName());
-			if(associationMetadata == null)
+			if(associationMetadataList == null)
 			{
 				throw new DynamicExtensionsApplicationException("Missing association form "+association
 						.getSourceEntityName()+" to "+association
 						.getTargetEntityName()+", check the hbm files.");
 			}
-
-			//Step 2: Create association object
-			AssociationInterface associationInterface = getAssocition(association);
-
-			processedAssociations.add(associationInterface);
-			if(associationInterface.getId() == null)
+			
+			for (PropertyMetadata associationMetadata : associationMetadataList) 
 			{
-				//Step 3: populate association
-				associationInterface.setName(associationMetadata.getPropertyName());
-				processDirection(association, associationMetadata, associationInterface);
+				
 
-				ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
-						.getConstraintPropertiesForAssociation(associationInterface);
-				associationInterface.setConstraintProperties(constraintProperties);
-				setDefault(associationInterface);
-
+				//Step 2: Create association object
+				AssociationInterface associationInterface = getAssocition(association,associationMetadata.getPropertyName());
+	
+				processedAssociations.add(associationInterface);
+				if(associationInterface.getId() == null)
+				{
+					//Step 3: populate association
+					associationInterface.setName(associationMetadata.getPropertyName());
+					processDirection(association, associationMetadata, associationInterface);
+					updateConstraintProperties(associationInterface,associationMetadata);
+//					ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
+//					.getConstraintPropertiesForAssociation(associationInterface);
+//					associationInterface.setConstraintProperties(constraintProperties);
+					setDefault(associationInterface);
+	
+				}
 			}
 		}
 		return processedAssociations;
 	}
+	
+	private void updateConstraintProperties(AssociationInterface associationInterface, PropertyMetadata associationMetadata)
+	throws DynamicExtensionsSystemException
+	{
+		ConstraintPropertiesInterface constraintProperties = DynamicExtensionsUtility
+		.getConstraintPropertiesForAssociation(associationInterface);
+		associationInterface.setConstraintProperties(constraintProperties);
+	
+		if(constraintProperties.getSrcEntityConstraintKeyProperties() != null)
+		{
+			constraintProperties.getSrcEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().setName(associationMetadata.getColumnName());
+		}
+		else
+		{
+			constraintProperties.getTgtEntityConstraintKeyProperties().getTgtForiegnKeyColumnProperties().setName(associationMetadata.getJoinColumnName());
+		}
+	}
 
-	private AssociationInterface getAssocition(Association association)
+	private AssociationInterface getAssocition(Association association, String propName)
 	{
 		for(AssociationInterface associationInterface: entityGroup.getEntityByName(association.getSourceEntityName()).getAssociationCollection())
 		{
-			if(associationInterface.getTargetEntity().equals(entityGroup.getEntityByName(association.getTargetEntityName())))
+			if(associationInterface.getTargetEntity().equals(entityGroup.getEntityByName(association.getTargetEntityName()))
+					&& propName.equals(associationInterface.getName()))
 			{
 				return associationInterface;
 			}

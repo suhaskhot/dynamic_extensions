@@ -21,6 +21,7 @@ public class PathObject implements Serializable
 	private static final long serialVersionUID = 1L;
 	private EntityInterface sourceEntity;
 	private EntityInterface targetEntity;
+	private Long assoc_id;
 
 	/**
 	 * This method overrides the equals method of the Object Class.
@@ -41,7 +42,8 @@ public class PathObject implements Serializable
 					&& targetEntity != null && sourceEntity.getId() != null
 					&& targetEntity.getId() != null
 					&& (sourceEntity.getId().compareTo(pathObject.getSourceEntity().getId()) == 0)
-					&& (targetEntity.getId().compareTo(pathObject.getTargetEntity().getId()) == 0))
+					&& (targetEntity.getId().compareTo(pathObject.getTargetEntity().getId()) == 0)
+					&& (pathObject.getAssoc_id() == null || pathObject.getAssoc_id().equals(assoc_id)))
 			{
 
 				equals = true;
@@ -49,6 +51,14 @@ public class PathObject implements Serializable
 			}
 		}
 		return equals;
+	}
+
+	public Long getAssoc_id() {
+		return assoc_id;
+	}
+
+	public void setAssoc_id(Long assoc_id) {
+		this.assoc_id = assoc_id;
 	}
 
 	/**

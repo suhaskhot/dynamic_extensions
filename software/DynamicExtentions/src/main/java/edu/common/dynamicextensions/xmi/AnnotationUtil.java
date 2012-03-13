@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import edu.wustl.dao.MySQLDAOImpl;
 import edu.common.dynamicextensions.domain.Attribute;
 import edu.common.dynamicextensions.domain.DomainObjectFactory;
 import edu.common.dynamicextensions.domain.Entity;
@@ -421,10 +421,19 @@ public class AnnotationUtil
 		boolean ispathAdded = false; // NOPMD - DD anomaly
 		try
 		{
-			
-			String checkForPathQuery = "select path_id from path where INTERMEDIATE_PATH in ("
-					+"select ASSOCIATION_ID from intra_model_association where DE_ASSOCIATION_ID = ?) and "
+			String checkForPathQuery;
+			if(jdbcdao instanceof MySQLDAOImpl)
+			{
+				 checkForPathQuery = "select path_id from path where INTERMEDIATE_PATH in ("
+						+"select ASSOCIATION_ID from intra_model_association where DE_ASSOCIATION_ID = ?) and "
+						+"FIRST_ENTITY_ID = ? and LAST_ENTITY_ID = ? ";
+			}
+			else
+			{
+				 checkForPathQuery = "select path_id from path where INTERMEDIATE_PATH in ("
+					+"select cast( ASSOCIATION_ID as varchar2(1000)) from intra_model_association where DE_ASSOCIATION_ID = ?) and "
 					+"FIRST_ENTITY_ID = ? and LAST_ENTITY_ID = ? ";
+			}
 			LinkedList<ColumnValueBean> queryDataList = new LinkedList<ColumnValueBean>();
 			queryDataList.add(new ColumnValueBean("DE_ASSOCIATION_ID", associationId));
 			queryDataList.add(new ColumnValueBean(FIRST_ENTITY_ID, staticEntityId));

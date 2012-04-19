@@ -2431,9 +2431,15 @@
 		<if>
 			<equals arg1="mysql" arg2="${database.type}" casesensitive="false" />
 			<then>
-				<antcall target="execute_file_db_mysql">
-					<param name="sql.file.name" value="${mysql.dbupgrade.sql.dir.DE}/Upgrade_DE_Metadata_DE_1.5.0_to_DE_1.5.1.sql" />
-				</antcall>
+				<sql driver="${mysql.driver.string.DE}" url="jdbc:mysql://${database.host}:${database.port}/${database.name}" userid="${database.username}" password="${database.password}" onerror="continue" delimiter="/" delimitertype="row" keepformat="yes" rdbms="mysql">
+					<transaction src="${mysql.dbupgrade.sql.dir.DE}/fixDuplicateClassNames.sql" />
+					<transaction>commit;</transaction>
+					<classpath>
+						<fileset dir="${lib.dir.DE}">
+							<include name="*.jar" />
+						</fileset>
+					</classpath>
+				</sql>
 			</then>
 			<elseif>
 				<equals arg1="oracle" arg2="${database.type}" casesensitive="false" />

@@ -1,6 +1,4 @@
-DELIMITER $$;
 
-DROP PROCEDURE IF EXISTS `curdemo`$$
 CREATE  PROCEDURE `curdemo`()
 Begin  
    
@@ -63,6 +61,5 @@ having count(meta2.name)>1)temp1  on meta11.name like 'edu.wustl.catissuecore.do
     END LOOP;
     close cur1;  
  
-end$$
+end;
 
-DELIMITER ;$$

@@ -2432,6 +2432,7 @@
 			<equals arg1="mysql" arg2="${database.type}" casesensitive="false" />
 			<then>
 				<sql driver="${mysql.driver.string.DE}" url="jdbc:mysql://${database.host}:${database.port}/${database.name}" userid="${database.username}" password="${database.password}" onerror="continue" delimiter="/" delimitertype="row" keepformat="yes" rdbms="mysql">
+					<transaction>DROP PROCEDURE IF EXISTS `curdemo`;</transaction>
 					<transaction src="${mysql.dbupgrade.sql.dir.DE}/fixDuplicateClassNames.sql" />
 					<transaction>commit;</transaction>
 					<classpath>

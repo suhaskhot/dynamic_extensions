@@ -1070,8 +1070,12 @@ public class AttributeProcessor extends BaseDynamicExtensionsProcessor
 		{
 			stringValue = DomainObjectFactory.getInstance().createStringValue();
 		}
-		stringValue.setValue(attributeUIBeanInformationIntf.getAttributeDefaultValue());
-		stringAttributeIntf.setDefaultValue(stringValue);
+		if(attributeUIBeanInformationIntf.getAttributeDefaultValue()!=null && !"".equals(attributeUIBeanInformationIntf.getAttributeDefaultValue()))
+		{
+			stringValue.setValue(attributeUIBeanInformationIntf.getAttributeDefaultValue());
+			stringAttributeIntf.setDefaultValue(stringValue);
+		}
+		
 
 		//Size for string attribute
 		Integer size = null;

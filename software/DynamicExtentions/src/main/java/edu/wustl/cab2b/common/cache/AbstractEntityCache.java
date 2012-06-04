@@ -353,10 +353,10 @@ public abstract class AbstractEntityCache implements IEntityCache
 
 			for (final EntityInterface entity : entityGroup.getEntityCollection())
 			{
-				if(!Constants.DISABLED.equals(entity.getActivityStatus()))
-				{
+//				if(!Constants.DISABLED.equals(entity.getActivityStatus()))
+				//{
 					addEntityToCache(entity);	
-				}
+				//}
 				
 			}
 		}

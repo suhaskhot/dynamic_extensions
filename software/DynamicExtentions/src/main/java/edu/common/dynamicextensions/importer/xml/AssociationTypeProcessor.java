@@ -143,27 +143,27 @@ public class AssociationTypeProcessor
 		{
 			associationInterface.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT,
+			associationInterface.setSourceRole(getRole(AssociationType.ASSOCIATION,
 					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.MANY));
-			associationInterface.setTargetRole(getRole(AssociationType.CONTAINTMENT,
+			associationInterface.setTargetRole(getRole(AssociationType.ASSOCIATION,
 					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.ONE));
 
 		}else if("OneToMany".equals(associationMetadata.getJoinType()))
 		{
 			associationInterface.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT,
+			associationInterface.setSourceRole(getRole(AssociationType.ASSOCIATION,
 					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.ONE));
-			associationInterface.setTargetRole(getRole(AssociationType.CONTAINTMENT,
+			associationInterface.setTargetRole(getRole(AssociationType.ASSOCIATION,
 					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.MANY));
 		}if("OneToOne".equals(associationMetadata.getJoinType()))
 		{
 			associationInterface.setAssociationDirection(AssociationDirection.SRC_DESTINATION);
 
-			associationInterface.setSourceRole(getRole(AssociationType.CONTAINTMENT,
+			associationInterface.setSourceRole(getRole(AssociationType.ASSOCIATION,
 					associationMetadata.getPropertyName(), Cardinality.ONE, Cardinality.ONE));
 
-			associationInterface.setTargetRole(getRole(AssociationType.CONTAINTMENT,
+			associationInterface.setTargetRole(getRole(AssociationType.ASSOCIATION,
 					associationMetadata.getRHSUniqueKeyPropertyName(), Cardinality.ONE, Cardinality.ONE));
 		}
 		

@@ -41,23 +41,24 @@ public class EntityTypeProcessor
 			if(Constants.DISABLED.equals(entityType.getActivityStatus()))
 			{
 				processDisabledEntity(entityType, entity);
-				return;
 			}
 			
 			entityGroup.addEntity(entity);
 			entity.setEntityGroup(entityGroup);
-			
-			//Step 2: Set default values 
-			setDefaultValues(entity);
-			
-			//Step 3: Set primitive property of the 
-			processPrimitiveProperties(entity);
-
-			//Step 4: Set the table properties, from hbm file
-			processTableProperties(entity);
-
-			//Step 5: Process Attribute collection
-			processAttributes(entity, entityType.getAttribute());
+			if(classMetadataMap.getClassMetadata(entity.getName())!=null)
+			{
+				//Step 2: Set default values 
+				setDefaultValues(entity);
+				
+				//Step 3: Set primitive property of the 
+				processPrimitiveProperties(entity);
+	
+				//Step 4: Set the table properties, from hbm file
+				processTableProperties(entity);
+	
+				//Step 5: Process Attribute collection
+				processAttributes(entity, entityType.getAttribute());
+			}
 		}
 	}
 

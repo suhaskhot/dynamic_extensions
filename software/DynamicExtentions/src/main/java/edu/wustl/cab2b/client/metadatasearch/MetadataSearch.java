@@ -157,7 +157,10 @@ public class MetadataSearch
 	{
 		for (MatchedClassEntry matchedClassEntry : matchClass.getMatchedClassEntries())
 		{
-			resultClass.addMatchedClassEntry(matchedClassEntry);
+			if(!"Disabled".equals(matchedClassEntry.getMatchedEntity().getActivityStatus()))
+			{
+				resultClass.addMatchedClassEntry(matchedClassEntry);
+			}
 		}
 		return resultClass;
 	}

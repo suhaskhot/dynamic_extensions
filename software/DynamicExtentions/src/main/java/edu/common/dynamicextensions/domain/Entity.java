@@ -341,7 +341,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 	public AttributeInterface getAttributeByIdentifier(Long identifier)
 	{
 		AttributeInterface attribute = null;
-		Collection<AttributeInterface> attributeCollection = getAttributeCollection();
+		Collection<AttributeInterface> attributeCollection = getAttributeCollectionWithInheritedAttributes();
 
 		for (AttributeInterface attributeIterator : attributeCollection)
 		{
@@ -628,21 +628,42 @@ public class Entity extends AbstractEntity implements EntityInterface
 	 */
 	public AttributeInterface getAttributeByName(String attributeName)
 	{
-		return searchAttributeByNameInCollection(this.getAllAbstractAttributes(), attributeName);
+		AbstractAttributeInterface  attributeInterface = null;
+		AttributeInterface attribute = null;
+		for(AbstractAttributeInterface attributeInterface2:getAbstractAttributeCollection())
+		{
+			if (attributeInterface2.getName().trim().equals(attributeName))
+			{
+				attributeInterface = attributeInterface2;
+				break;
+			}
+		}
+		if(attributeInterface == null && parentEntity != null)
+		{
+			attributeInterface = parentEntity.getAttributeByName(attributeName);
+		}
+		
+		if (attributeInterface instanceof AssociationInterface)
+		{
+			AssociationInterface association = (AssociationInterface) attributeInterface;
+			if (association.getIsCollection())
+			{
+				Collection<AbstractAttributeInterface> attributeCollection = association
+						.getTargetEntity().getAllAbstractAttributes();
+				Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
+						.filterSystemAttributes(attributeCollection);
+				List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
+						filteredAttributeCollection);
+				attribute = (AttributeInterface) attributesList.get(0);
+			}
+		}
+		else
+		{
+			attribute = (AttributeInterface) attributeInterface;
+		}
+		return attribute;
 	}
 
-	/**
-	 * It will search the attribute in the entity attributes with including inherited attributes
-	 * which are its own local attributes. 
-	 * if not found will search the attribute in the parent entity & so on
-	 * @param attributeName
-	 * @return attribute found else null
-	 */
-	public AttributeInterface getAttributeByNameIncludingInheritedAttribute(String attributeName)
-	{
-		return searchAttributeByNameInCollection(this
-				.getAllAbstractAttributesIncludingInheritedAttributes(), attributeName);
-	}
 
 	/**
 	 * It will return the collection of abstract attributes of the entity including inheritedAttributes
@@ -678,61 +699,7 @@ public class Entity extends AbstractEntity implements EntityInterface
 		return attributeCollection;
 	}
 
-	/**
-	 * It will retrieve the Attribute with the given name in the All attributes of entity including its inherited Attributes
-	 * Will return the matched attribute which is present in the same entity or null. 
-	 * @param attributeName
-	 * @return
-	 */
-	public AttributeInterface getEntityAttributeByName(String attributeName)
-	{
 
-		Collection<AbstractAttributeInterface> abstractAttributeCollection = new ArrayList<AbstractAttributeInterface>();
-		abstractAttributeCollection
-				.addAll(getAbstractAttributeCollectionIncludingInheritedAttribute());
-		return searchAttributeByNameInCollection(abstractAttributeCollection, attributeName);
-	}
-
-	/**
-	 * It will search the attribute in the given given abstractAttributeCollection parameter which is having the same name given in the 
-	 * second attribute name parameter.
-	 * @param abstractAttributeCollection
-	 * @param attributeName
-	 * @return
-	 */
-	private AttributeInterface searchAttributeByNameInCollection(
-			Collection<AbstractAttributeInterface> abstractAttributeCollection, String attributeName)
-	{
-		AttributeInterface attribute = null;
-		AbstractAttributeInterface abstractAttribute = null;
-		for (AbstractAttributeInterface attr : abstractAttributeCollection)
-		{
-			if (attr.getName().trim().equals(attributeName))
-			{
-				abstractAttribute = attr;
-				break;
-			}
-		}
-		if (abstractAttribute instanceof AssociationInterface)
-		{
-			AssociationInterface association = (AssociationInterface) abstractAttribute;
-			if (association.getIsCollection())
-			{
-				Collection<AbstractAttributeInterface> attributeCollection = association
-						.getTargetEntity().getAllAbstractAttributes();
-				Collection<AbstractAttributeInterface> filteredAttributeCollection = EntityManagerUtil
-						.filterSystemAttributes(attributeCollection);
-				List<AbstractAttributeInterface> attributesList = new ArrayList<AbstractAttributeInterface>(
-						filteredAttributeCollection);
-				attribute = (AttributeInterface) attributesList.get(0);
-			}
-		}
-		else
-		{
-			attribute = (AttributeInterface) abstractAttribute;
-		}
-		return attribute;
-	}
 
 	/**
 	 * This method return the Collection of Attributes including all its inherited attributes

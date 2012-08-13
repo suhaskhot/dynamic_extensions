@@ -253,13 +253,6 @@ public interface EntityInterface extends AbstractEntityInterface
 	 */
 	void setPrimaryKeyAttributeCollection(List<AttributeInterface> primaryKeyAttributeCollection);
 
-	/**
-	 * It will retrieve the Attribute with the given name in the All attributes of entity including its inherited Attributes
-	 * If not found will search in its parent attributes also 
-	 * @param attributeName
-	 * @return
-	 */
-	AttributeInterface getEntityAttributeByName(String attributeName);
 
 	/**
 	 * This method return the Collection of Attributes including the new Attributes which are 
@@ -268,15 +261,7 @@ public interface EntityInterface extends AbstractEntityInterface
 	 */
 	Collection<AttributeInterface> getAttributeCollectionWithInheritedAttributes();
 	
-	/**
-	 * It will search the attribute in the entity attributes with including 
-	 * inherited attributes which are its own local attributes. 
-	 * if not found will search the attribute in the parent entity & so on
-	 * @param attributeName
-	 * @return attribute found else null
-	 */
-	AttributeInterface getAttributeByNameIncludingInheritedAttribute(String attributeName);
-		
+	
 	/**
 	 * It will return the collection of abstract attributes of the entity including inheritedAttributes 
 	 * which are its own local attributes as well as of its parent & so on.

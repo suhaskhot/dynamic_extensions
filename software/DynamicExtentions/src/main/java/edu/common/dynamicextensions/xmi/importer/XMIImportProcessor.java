@@ -387,7 +387,6 @@ public class XMIImportProcessor
 		for (final UmlClass umlClass : umlClassColl)
 		{
 			final EntityInterface entity = umlClassIdVsEntity.get(umlClass.refMofId());
-
 			// check if entity has duplicate association names
 			xmiImportValidator.validateDuplicateAssociationName(entity);
 			//In memory operation
@@ -535,7 +534,7 @@ public class XMIImportProcessor
 				{
 					final String attributeName = getNextToken(tokenizer);
 					final AttributeInterface attribute = targetEntity
-							.getEntityAttributeByName(attributeName);
+							.getAttributeByName(attributeName);
 					if (attribute != null)
 					{
 						entity.addPrimaryKeyAttribute(attribute);
@@ -629,7 +628,7 @@ public class XMIImportProcessor
 				{
 					final String attribute = getNextToken(tokenizer);
 					AttributeInterface primaryAttribute = entity
-							.getEntityAttributeByName(attribute);
+							.getAttributeByName(attribute);
 					if (primaryAttribute == null)
 					{
 						throw new DynamicExtensionsSystemException("primary key attribute "
@@ -1090,7 +1089,7 @@ public class XMIImportProcessor
 		if (dataType != null)
 		{//Temporary solution for unsupported datatypes. Not adding attributes having unsupported datatypes.
 
-			originalAttribute = entity.getAttributeByNameIncludingInheritedAttribute(umlAttribute
+			originalAttribute = entity.getAttributeByName(umlAttribute
 					.getName());
 			if (originalAttribute == null)
 			{//New attribute has been created

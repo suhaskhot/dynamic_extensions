@@ -161,7 +161,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(null);
 			preProcess(entity, revQueries, queries);
 			if (entity.getId() == null)
 			{
@@ -203,7 +203,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(null);
 			if (entity.getId() == null)
 			{
 				hibernateDAO.insert(entity);
@@ -2724,7 +2724,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(null);
 			//Use an overloaded method for update the object
 			this.persistEntityMetadataForAnnotation(entityObj, isDataTblPresent, cpyDataTblState,
 					association, hibernateDAO);

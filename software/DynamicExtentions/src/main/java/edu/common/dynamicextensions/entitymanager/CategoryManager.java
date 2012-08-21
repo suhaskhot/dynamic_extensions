@@ -173,7 +173,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 	public CategoryInterface getCategoryByName(final String name)
 			throws DynamicExtensionsSystemException
 	{
-		HibernateDAO dao = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+		HibernateDAO dao = DynamicExtensionsUtility.getHibernateDAO();
 		Collection<CategoryInterface> categoryColl = null;
 		try
 		{
@@ -234,7 +234,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		Stack<String> revQueries = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(null);
 			revQueries = persistDynamicExtensionObjectForCategory(category,hibernateDAO);
 			hibernateDAO.commit();
 		}
@@ -363,7 +363,7 @@ public class CategoryManager extends AbstractMetadataManager implements Category
 		HibernateDAO hibernateDAO = null;
 		try
 		{
-			hibernateDAO = DynamicExtensionsUtility.getHostAppHibernateDAO(null);
+			hibernateDAO = DynamicExtensionsUtility.getHibernateDAO(null);
 
 			for (final CategoryEntityInterface categoryEntity : savedCatEntities)
 			{

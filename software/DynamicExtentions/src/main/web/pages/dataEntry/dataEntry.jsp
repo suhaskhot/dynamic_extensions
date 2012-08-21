@@ -374,12 +374,7 @@ jQuery(document).ready(
 																<input type="button" id="btnDECancel" style="border: 0px; background-image: url(<%=request.getContextPath()%>/images/de/b_cancel.gif); height: 21px; width: 62px;" align="middle" onClick="cancelInsertData()"/>
 															</td>
 														</c:if>
-														<c:if test='${(recordIdentifier123 != "") && (recordIdentifier123 != "null") && (isTopLevelEntity == "true") }'>
-														 <td><input type="button" id="btnDEDelete" style="border: 0px; background-image: url(<%=request.getContextPath()%>/images/de/b_delete2.gif); height: 21px; width: 62px;" align="middle" onClick="return deleteRecordEntry()"/></td>
-
-
-														</c:if>
-
+														
 													</c:otherwise>
 												</c:choose>
 										</tr>

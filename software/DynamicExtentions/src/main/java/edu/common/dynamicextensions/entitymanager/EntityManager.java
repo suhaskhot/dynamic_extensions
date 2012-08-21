@@ -1286,6 +1286,7 @@ public class EntityManager extends AbstractMetadataManager implements EntityMana
 								IDENTIFIER).append(EQUAL).append(QUESTION_MARK);
 				LinkedList<ColumnValueBean> queryDataList = new LinkedList<ColumnValueBean>();
 				queryDataList.add(new ColumnValueBean(IDENTIFIER, recordId));
+				recordValues.put(new edu.common.dynamicextensions.domain.EntityRecord(), recordId);
 				recordValues.putAll(getAttributeValues(selColNames, query.toString(),
 						queryDataList, colNames, dao));
 			}

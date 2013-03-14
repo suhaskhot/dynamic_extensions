@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false" package="edu.common.dynamicextensions.skiplogic">
+	<class name="SkipLogic" lazy="false" table="DYEXTN_SKIP_LOGIC">
+
+		<id name="identifier" column="SKIPLOGIC_ID" type="long" length="30" unsaved-value="null">
+			<generator class="native" >
+				<param name="sequence">autoIncrementPrimaryKey</param>
+			</generator>
+		</id>
+
+		<property name="containerIdentifier" type="long" update="true" insert="true" column="CONTAINER_IDENTIFIER" />
+
+		<list name="listOfconditionStatements" lazy="false" cascade="all-delete-orphan">
+			<cache usage="read-write" />
+            <key column="SKIP_LOGIC_ID" />
+			<list-index column="INSERTION_ORDER"/>
+           	<one-to-many class="ConditionStatements" />
+		</list>
+		
+		
+		
+	</class>
+
+	<class name="ConditionStatements" lazy="false" table="DYEXTN_CONDITION_STMT">
+
+		<id name="identifier" column="CONDITION_STATEMENT_ID" type="long" length="30" unsaved-value="null">
+			<generator class="native" >
+				<param name="sequence">autoIncrementPrimaryKey</param>
+			</generator>
+		</id>
+
+		<property name="controlIdentifier" type="long" update="true" insert="true" column="CONTROL_ID" />
+
+		<set name="listOfConditions" lazy="false" cascade="all-delete-orphan" inverse="false">
+			<cache usage="read-write" />
+
+			<key column="COND_STMT_ID" />
+
+			<one-to-many class="Condition"/>
+		</set>
+
+	</class>
+
+	<class name="Condition" lazy="false" table="DYEXTN_CONDITION">
+
+		<id name="identifier" column="CONDITION_ID" type="long" length="30" unsaved-value="null">
+			<generator class="native" >
+				<param name="sequence">autoIncrementPrimaryKey</param>
+			</generator>
+		</id>
+
+		<many-to-one name="action" class="Action" cascade="all,delete" outer-join="auto"
+				update="true" insert="true" column="ACTION_ID" not-null="false" />
+
+		<joined-subclass abstract="false" name="GroupCondition" table="DYEXTN_GROUP_CONDITION"
+					dynamic-update="false" dynamic-insert="false" extends="Condition" >
+
+			<key column="CONDITION_ID" />
+
+			<property name="logicalOperator" column="LOGICAL_OPERATOR">
+				<type name="edu.wustl.common.hibernate.EnumType">
+					<param name="enum-name">
+						edu.common.dynamicextensions.skiplogic.LogicalOperator
+					</param>
+				</type>
+			</property>
+
+			<set name="listOfConditions" lazy="false" inverse="false" cascade="all-delete-orphan" >
+            	<cache usage="read-write" />
+
+            	<key column="CHILD_CONDITION_ID" />
+
+            	<one-to-many class="Condition" />
+
+			</set>
+
+		</joined-subclass>
+
+		<joined-subclass abstract="false" name="PrimitiveCondition" table="DYEXTN_PRIMITIVE_CONDITION"
+						dynamic-update="false" dynamic-insert="false" extends="Condition" >
+
+			<key column="CONDITION_ID" />
+
+			<many-to-one name="categoryAttribute" class="edu.common.dynamicextensions.domain.CategoryAttribute" cascade="none" outer-join="auto"
+					update="true" insert="true" column="CATEGORY_ATTRIBUTE" not-null="false" />
+
+			<property name="objectValue" type="java.sql.Blob" update="true" insert="true" column="CONDITION_VALUE" />
+
+			<property name="relationalOperator" column="CONDITION_OPERATOR">
+				<type name="edu.wustl.common.hibernate.EnumType">
+					<param name="enum-name">
+						edu.common.dynamicextensions.skiplogic.RelationalOperator
+					</param>
+				</type>
+			</property>
+
+
+		</joined-subclass>
+
+	</class>
+
+	<class name="Action" lazy="false" table="DYEXTN_ACTION">
+
+		<id name="identifier" column="ACTION_ID" type="long" length="30" unsaved-value="null">
+			<generator class="native" >
+				<param name="sequence">autoIncrementPrimaryKey</param>
+			</generator>
+		</id>
+
+		<many-to-one name="control" class="edu.common.dynamicextensions.domain.userinterface.Control" cascade="none" outer-join="auto"
+					update="true" insert="true" column="CONTROL" not-null="false" />
+
+
+		<many-to-one name="defaultSkipLogicValue" class="edu.common.dynamicextensions.domain.PermissibleValue" cascade="save-update" outer-join="auto"
+					update="true" insert="true" column="SKIP_LOGIC_DEFAULT_VALUE" not-null="false" />
+
+
+		<joined-subclass abstract="false" name="HideAction" table="DYEXTN_HIDE_ACTION"
+					dynamic-update="false" dynamic-insert="false" extends="Action" >
+
+			<key column="ACTION_ID" />
+
+		</joined-subclass>
+
+		<joined-subclass abstract="false" name="ShowAction" table="DYEXTN_SHOW_ACTION"
+					dynamic-update="false" dynamic-insert="false" extends="Action" >
+
+			<key column="ACTION_ID" />
+
+		</joined-subclass>
+
+		<joined-subclass abstract="false" name="EnableAction" table="DYEXTN_ENABLE_ACTION"
+					dynamic-update="false" dynamic-insert="false" extends="Action" >
+
+			<key column="ACTION_ID" />
+
+		</joined-subclass>
+
+		<joined-subclass abstract="false" name="DisableAction" table="DYEXTN_DISABLE_ACTION"
+					dynamic-update="false" dynamic-insert="false" extends="Action" >
+
+			<key column="ACTION_ID" />
+
+		</joined-subclass>
+
+		<joined-subclass abstract="false" name="PermissibleValueAction" table="DYEXTN_PERMISSIBLEVALUE_ACTION"
+					dynamic-update="false" dynamic-insert="false" extends="Action" >
+
+			<key column="ACTION_ID" />
+
+			<set name="listOfPermissibleValues" table="DYEXTN_PV_ACTION_MAPPING" lazy="false" inverse="false" cascade="none" >
+
+            	<cache usage="read-write" />
+
+            	<key column="ACTION_ID" />
+
+            	<many-to-many class="edu.common.dynamicextensions.domain.PermissibleValue" column="PERMISSIBLE_VALUE_ID"/>
+
+			</set>
+
+		</joined-subclass>
+	</class>
+
+</hibernate-mapping>

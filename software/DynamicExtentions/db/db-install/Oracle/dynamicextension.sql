@@ -176,7 +176,7 @@ create table DYEXTN_DATE_TYPE_INFO (IDENTIFIER number(19,0) not null, FORMAT var
 create table DYEXTN_DOUBLE_CONCEPT_VALUE (IDENTIFIER number(19,0) not null, VALUE double precision, primary key (IDENTIFIER));
 create table DYEXTN_DOUBLE_TYPE_INFO (IDENTIFIER number(19,0) not null, primary key (IDENTIFIER));
 create table DYEXTN_ENTITY (IDENTIFIER number(19,0) not null, DATA_TABLE_STATE number(10,0), ENTITY_GROUP_ID number(19,0), IS_ABSTRACT number(1,0), PARENT_ENTITY_ID number(19,0), INHERITANCE_STRATEGY number(10,0), DISCRIMINATOR_COLUMN_NAME varchar2(255 char), DISCRIMINATOR_VALUE varchar2(255 char), primary key (IDENTIFIER));
-create table DYEXTN_ENTITY_GROUP (IDENTIFIER number(19,0) not null, LONG_NAME varchar2(255 char), SHORT_NAME varchar2(255 char), VERSION varchar2(255 char), IS_SYSTEM_GENERATED number(1,0), IS_CACORE_GENERATED number(1,0), primary key (IDENTIFIER));
+create table DYEXTN_ENTITY_GROUP (IDENTIFIER number(19,0) not null, LONG_NAME varchar2(255 char), SHORT_NAME varchar2(255 char), VERSION varchar2(255 char), IS_SYSTEM_GENERATED number(1,0), primary key (IDENTIFIER));
 create table DYEXTN_ENTIY_COMPOSITE_KEY_REL (ENTITY_ID number(19,0) not null, ATTRIBUTE_ID number(19,0) not null, INSERTION_ORDER number(10,0) not null, primary key (ENTITY_ID, INSERTION_ORDER));
 create table DYEXTN_FILE_EXTENSIONS (IDENTIFIER number(19,0) not null, FILE_EXTENSION varchar2(255 char), ATTRIBUTE_ID number(19,0), primary key (IDENTIFIER));
 create table DYEXTN_FILE_TYPE_INFO (IDENTIFIER number(19,0) not null, MAX_FILE_SIZE float, primary key (IDENTIFIER));

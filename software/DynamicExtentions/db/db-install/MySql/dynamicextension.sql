@@ -288,7 +288,7 @@ create table DYEXTN_DATE_TYPE_INFO (IDENTIFIER bigint not null, FORMAT varchar(2
 create table DYEXTN_DOUBLE_CONCEPT_VALUE (IDENTIFIER bigint not null, VALUE double precision, primary key (IDENTIFIER));
 create table DYEXTN_DOUBLE_TYPE_INFO (IDENTIFIER bigint not null, primary key (IDENTIFIER));
 create table DYEXTN_ENTITY (IDENTIFIER bigint not null, DATA_TABLE_STATE integer, ENTITY_GROUP_ID bigint, IS_ABSTRACT bit, PARENT_ENTITY_ID bigint, INHERITANCE_STRATEGY integer, DISCRIMINATOR_COLUMN_NAME varchar(255), DISCRIMINATOR_VALUE varchar(255), primary key (IDENTIFIER));
-create table DYEXTN_ENTITY_GROUP (IDENTIFIER bigint not null, LONG_NAME varchar(255), SHORT_NAME varchar(255), VERSION varchar(255), IS_SYSTEM_GENERATED bit, IS_CACORE_GENERATED bit, primary key (IDENTIFIER));
+create table DYEXTN_ENTITY_GROUP (IDENTIFIER bigint not null, LONG_NAME varchar(255), SHORT_NAME varchar(255), VERSION varchar(255), IS_SYSTEM_GENERATED bit, primary key (IDENTIFIER));
 create table DYEXTN_ENTIY_COMPOSITE_KEY_REL (ENTITY_ID bigint not null, ATTRIBUTE_ID bigint not null, INSERTION_ORDER integer not null, primary key (ENTITY_ID, INSERTION_ORDER));
 create table DYEXTN_FILE_EXTENSIONS (IDENTIFIER bigint not null auto_increment, FILE_EXTENSION varchar(255), ATTRIBUTE_ID bigint, primary key (IDENTIFIER));
 create table DYEXTN_FILE_TYPE_INFO (IDENTIFIER bigint not null, MAX_FILE_SIZE float, primary key (IDENTIFIER));

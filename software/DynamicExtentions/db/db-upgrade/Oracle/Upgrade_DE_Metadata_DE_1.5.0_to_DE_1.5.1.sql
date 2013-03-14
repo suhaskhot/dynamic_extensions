@@ -7,6 +7,4 @@ select TARGET_ROLE_ID from DYEXTN_ASSOCIATION where IS_COLLECTION =1);
 update DYEXTN_ROLE set ASSOCIATION_TYPE='CONTAINTMENT' where IDENTIFIER in (
 select SOURCE_ROLE_ID from DYEXTN_ASSOCIATION where IS_COLLECTION =1);
 
-create sequence autoIncrementPrimaryKey start with 1 increment by 1;
-
 commit;

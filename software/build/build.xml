@@ -133,18 +133,11 @@
 		</fileset>
 	</path>
 	<!-- Task definitions -->
-	<!--<taskdef name="xmlconfig" classname="com.xmlconfig.anttask.XmlConfig" classpathref="bda-utils.classpath" />-->
-
-    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="bda-utils.classpath" />
-    <taskdef resource="net/sf/antcontrib/antlib.xml">
-        <classpath>
-            <pathelement location="${bda-utils.dir}/ant-contrib-1.0nci.jar" />
-        </classpath>
-    </taskdef>
-
+	<taskdef name="xmlconfig" classname="com.xmlconfig.anttask.XmlConfig" classpathref="bda-utils.classpath" />
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.classpath" />
 	<taskdef name="for" classname="net.sf.antcontrib.logic.ForTask">
 		<classpath>
-			<pathelement location="${bda-utils.dir}/ant-contrib-1.0nci.jar" />
+			<pathelement location="${bda-utils.dir}/ant-contrib-1.0b3.jar" />
 		</classpath>
 	</taskdef>
 	<!-- Includes- include BDA marcos -->
@@ -264,7 +257,8 @@
 		-->
 	</target>
 	<target name="validate:pre:build">
-		<validate-pre-build />
+		<validate-pre-build
+			/>
 	</target>
 	<target name="build:all" description="Builds all the sub projects, putting artifacts in the project level target directory, used by distribution targets to make distributions" depends="
 		validate:pre:build,
@@ -284,8 +278,8 @@
 	</target>
 	<target name="build:DynamicExtentions-webapp" depends="init, build:DynamicExtentions-api" description="Call webapp sub-projects build target to produce artifiacts">
 		<!-- setting the property in the ant call overrides the property in the sub-project allowing the artifact to be produced where needed -->
-		<ant inheritAll="false" inheritRefs="false" antfile="../DynamicExtentions/build.xml" target="${DynamicExtentions-webapp.build.target}" dir="${DynamicExtentions-webapp.base.dir}">
-			<!--<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />-->
+		<ant inheritAll="false" inheritRefs="false" antfile="${DynamicExtentions-webapp.build.file}" target="${DynamicExtentions-webapp.build.target}" dir="${DynamicExtentions-webapp.base.dir}">
+			<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />
 			<property name="env.GLOBUS_LOCATION" value="${env.GLOBUS_LOCATION}"/>
 		</ant>
 	</target>
@@ -554,7 +548,7 @@
 	</target>
 	<target name="test:DynamicExtentions-webapp" depends="init" description="Calls test target for sub-project">
 		<ant inheritAll="false" inheritRefs="false" antfile="${DynamicExtentions-webapp.test.file}" target="test" dir="${DynamicExtentions-webapp.base.dir}">
-			<!--<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />-->
+			<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />
 		</ant>
 	</target>
 	<target name="static-analysis:all" description="Runs static-analysis target for all sub-projects" depends="
@@ -574,8 +568,8 @@
 		-->
 	</target>
 	<target name="static-analysis:DynamicExtentions-webapp" depends="init" description="Calls static-analysis target for sub-project">
-		<ant inheritAll="false" inheritRefs="false" antfile="../DynamicExtentions/build.xml" target="static-analysis" dir="${DynamicExtentions-webapp.base.dir}">
-			<!--<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />-->
+		<ant inheritAll="false" inheritRefs="false" antfile="${DynamicExtentions-webapp.build.file}" target="static-analysis" dir="${DynamicExtentions-webapp.base.dir}">
+			<property name="dist.dir" value="${DynamicExtentions-webapp.dist.dir}" />
 		</ant>
 	</target>
 	<target name="continuous-integration" description="calls wrapper targets for continuous integration build" depends="
@@ -664,7 +658,7 @@
 	<target name="deploy:hot:jsp" description="Copies all current JSP code to the deployed application for quick update">
 		<for param="toDir">
 			<path>
-				<dirset dir="${jboss.deploy.dir}/../tmp/deploy" includes="tmp*${DynamicExtentions-webapp.name`}*" />
+				<dirset dir="${jboss.deploy.dir}/../tmp/deploy" includes="tmp*${DynamicExtentions-webapp.name}*" />
 			</path>
 			<sequential>
 				<copy todir="@{toDir}" overwrite="true">

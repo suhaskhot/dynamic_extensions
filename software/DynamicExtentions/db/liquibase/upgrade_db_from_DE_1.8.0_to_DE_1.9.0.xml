@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+	http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+	<property name="int.type" value="bigint(20)" dbms="mysql"/>
+	<property name="int.type" value="number(19,0)" dbms="oracle"/>
+	<property name="text.type" value="varchar(1000)" dbms="mysql"/>
+	<property name="text.type" value="varchar2(1000)" dbms="oracle"/>
+	<property name="clob.type" value="clob" dbms="oracle"/>
+	<property name="clob.type" value="longtext" dbms="mysql"/>
+	<property name="string.type" value="varchar" dbms="mysql" />
+	<property name="string.type" value="varchar2" dbms="oracle" />
+
+
+	<changeSet id="1" author="DE">
+		<createTable tableName="DYEXTN_CATEGORY_RECORDS">
+			<column name="IDENTIFIER" type="${int.type}">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			<column name="CATEGORY_ENTITY_ID" type="${int.type}">
+				<constraints nullable="false"/>
+			</column>
+			<column name="RECORD_ID" type="${int.type}">
+				<constraints nullable="false"/>
+			</column>
+			<column name="ACTIVITY_STATUS" type="${string.type}(20)">
+				<constraints nullable="false"/>
+			</column>
+			<column name="PARENT_CATEGORY_RECORD_ID" type="${int.type}"/>
+		</createTable>
+
+		<addForeignKeyConstraint constraintName="FK_CAT_RECORDS_CAT_ENTITY_ID"
+			baseTableName="DYEXTN_CATEGORY_RECORDS" baseColumnNames="CATEGORY_ENTITY_ID"
+			referencedTableName="DYEXTN_ABSTRACT_ENTITY" referencedColumnNames="ID"/>
+		<addForeignKeyConstraint constraintName="FK_CAT_RECORDS_PARENT_REC_ID"
+			baseTableName="DYEXTN_CATEGORY_RECORDS" baseColumnNames="PARENT_CATEGORY_RECORD_ID"
+			referencedTableName="DYEXTN_CATEGORY_RECORDS" referencedColumnNames="IDENTIFIER"/>
+
+		<createIndex tableName="DYEXTN_CATEGORY_RECORDS" indexName="REC_CAT_ENTITY_IDX">
+    		<column name="RECORD_ID"/>
+    		<column name="CATEGORY_ENTITY_ID"/>
+		</createIndex>
+
+
+	</changeSet>
+</databaseChangeLog>

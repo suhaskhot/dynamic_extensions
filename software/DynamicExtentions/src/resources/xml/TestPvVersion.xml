@@ -1,0 +1,59 @@
+<pvVersion>
+	<xmlCategory name="Test Category_Lab Information">
+		<class-name name="LabTest">
+		<!-- instance id can have a numeric value or can have 'ALL' for all instances-->
+			<instance id="1">
+				<xmlAttribute name="testName">
+					<pvSet>
+						<properties>
+							<option>
+								<key>isOrdered</key>
+								<value>true</value>
+							</option>
+							<option>
+								<key>activationDate</key>
+								<value>10/10/2004</value>
+							</option>
+						<!--	 Optional. To be specified if activation date has to be changed.
+							Then 'activationDate' represents new Date and 'currentActivationDate' is the old one -->
+							<option>
+								<key>currentActivationDate</key>
+								<value>03/30/2009</value>
+							</option>
+						</properties>
+						<default-value>Allergan Test</default-value>
+						<xmlPermissible-values>
+							<value>Allergan Test</value>
+							<value>Blood Culture Test</value>
+							<value>Complete Blood Count Test</value>
+						</xmlPermissible-values>
+					</pvSet>
+				</xmlAttribute>
+			</instance>
+			<instance id="2">
+				<xmlAttribute name="testName">
+					<pvSet>
+						<properties>
+							<option>
+								<key>isOrdered</key>
+								<value>false</value>
+							</option>
+							<option>
+								<key>activationDate</key>
+								<value>10/12/2009</value>
+							</option>
+						</properties>
+						<default-value>Blood Culture Test</default-value>
+						<xmlPermissible-values>
+							<value>Allergan Test</value>
+							<value>Blood Culture Test</value>
+							<value>Complete Blood Count Test</value>
+							<value>Immune Response Test</value>
+							<value>Molecular Pathology</value>
+						</xmlPermissible-values>
+					</pvSet>
+				</xmlAttribute>
+			</instance>
+		</class-name>
+	</xmlCategory>
+</pvVersion>

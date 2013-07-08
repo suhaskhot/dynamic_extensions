@@ -1,0 +1,65 @@
+/*#########################################################################
+####### CSD Design Mode Custom Grid Skin
+#########################################################################*/
+div.gridbox_kspl_csdDesignMode{
+    border:1px solid lightgrey;
+}
+div.gridbox_kspl_csdDesignMode .dhx_sub_row
+{
+    background-color:solid;
+}
+div.gridbox_kspl_csdDesignMode .xhdr{
+    display:none;
+}
+div.gridbox_kspl_csdDesignMode .xhdr_last{
+    border:0px;
+    border-left: 1px solid lightgrey;
+}
+div.gridbox_kspl_csdDesignMode table.hdr td {
+   /* color:#616161;*/
+    border:0px;
+	height:0px;
+    border-left: 1px solid lightgrey;
+    text-align: center;
+    margin:0px;
+    /*background-image:url('imgs/header_bg.gif');*/
+    padding: 0px 0px 0px 0px;
+    -moz-user-select:none;
+    -moz-user-select:-moz-none;   
+    overflow:hidden;
+	
+    }
+div.gridbox_kspl_csdDesignMode table.hdr td div.hdrcell{
+    
+    white-space : nowrap;
+    font-family:Verdana;
+    font-size:12px;
+}
+div.gridbox_kspl_csdDesignMode table.obj td {
+	border: 1px solid #CCCCCC;
+	border-width:0px 1px 1px 0px !important;
+    border-right: 0px solid lightgrey;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:11px;
+    -moz-user-select:none;
+    -moz-user-select:-moz-none;   
+    overflow:hidden;
+    padding-top:5px;
+	padding-left:5px;
+    padding-bottom:5px;
+    }
+div.gridbox_kspl_csdDesignMode table.obj tr.rowselected td{
+    background-color:#FFFFFF;
+    color:black;
+    }
+div.gridbox_kspl_csdDesignMode table.obj tr.rowselected td.cellselected, div.gridbox table.obj td.cellselected {
+    background-color:#FFFFFF;
+    }
+	div.gridbox_kspl_csdDesignMode table.obj tr.rowselected :hover{
+	background-color:#FFFFFF;
+	}
+div.gridbox_kspl_csdDesignMode table.row20px tr  td{
+    height:50px;
+    white-space: nowrap;
+    padding:1px;
+}

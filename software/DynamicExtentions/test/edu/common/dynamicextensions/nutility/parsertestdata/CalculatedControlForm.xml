@@ -1,0 +1,44 @@
+<!-- Used by unit test: ContainerParserTest.testParseContainerWithCalculatedControl -->
+<form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+
+		<row>
+			<textField>
+				<name>firstName</name>         		
+				<caption>First Name</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>  
+				<width>15</width>
+				<toolTip>Enter your given name as it appears on passport</toolTip>
+			</textField>
+
+			<textField>
+				<name>lastName</name> 
+				<caption>Last Name</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>  
+				<width>15</width>
+				<toolTip>Enter your surname as it appears on passport</toolTip>              
+			</textField>
+		</row>
+
+		<row>
+			<numberField>
+				<name>income</name>
+				<caption>Annual Income</caption>
+				<minValue>100000</minValue>
+				<maxValue>10000000</maxValue>				
+			</numberField>
+		</row>
+		
+		<row>
+			<numberField> 
+				<name>loanAmount</name>
+				<caption>Eligible Loan Amount</caption>
+				<formula>income * 5</formula>
+			</numberField>
+		</row>
+	</view>
+</form>

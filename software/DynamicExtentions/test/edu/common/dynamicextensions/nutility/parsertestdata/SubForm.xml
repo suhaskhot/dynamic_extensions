@@ -1,0 +1,78 @@
+<!-- Used by unit test: ContainerParserTest.testParseContainerWithSubForm -->
+<form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+
+		<row>
+			<label>
+				<name>FormHeading</name>
+				<heading>Fill in correct personal details for loan processing</heading>	
+			</label>		
+		</row>
+		
+		<row>
+			<textField>
+				<name>firstName</name>         		
+				<caption>First Name</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>  
+				<width>15</width>
+				<toolTip>Enter your given name as it appears on passport</toolTip>
+			</textField>
+
+			<textField>
+				<name>lastName</name> 
+				<caption>Last Name</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>  
+				<width>15</width>
+				<toolTip>Enter your surname as it appears on passport</toolTip>              
+			</textField>
+		</row>
+		<row>
+			<checkBox>
+				<name>sourcesOfIncome</name>
+				<caption>Sources of Income</caption>
+				<options>
+					<option>Salary</option>
+					<option>Agriculture</option>
+					<option>Gambling</option>
+					<option>Organized Sector Business</option>
+					<option>Others</option>
+				</options>
+			</checkBox>
+		</row>		
+		
+		<row>
+			<subForm>			
+				<name>address</name>
+				<caption>Address</caption>
+				<maxEntries>0</maxEntries>
+				<showAddMoreLink>true</showAddMoreLink>
+               			<row>
+					<dropdown>
+						<name>city</name>
+						<caption>City</caption>
+						<mandatory>true</mandatory>
+						<options>
+							<optionsFile>listOfIndianCities.csv</optionsFile>
+						</options>
+					</dropdown>  
+				</row> 
+
+				<row>
+					<textField>
+						<name>Company</name> 
+						<caption>Company</caption>
+						<phi>true</phi>
+						<mandatory>true</mandatory>  
+						<width>15</width>
+						<toolTip>Enter your Company Name</toolTip>              
+					</textField>
+				</row>	             
+			</subForm>
+		</row>
+	</view>
+</form>
+

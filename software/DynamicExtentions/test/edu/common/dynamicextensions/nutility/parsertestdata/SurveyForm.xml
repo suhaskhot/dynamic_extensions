@@ -1,0 +1,46 @@
+<!-- Used by unit test: ContainerParserTest.testParseSimpleContainer -->
+
+<survey-form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+		<page>
+			<name>nameDetails</name>         		
+			<caption>Name Details</caption>
+			<row>
+				<textField>
+					<name>firstName</name>         		
+					<caption>First Name</caption>
+					<phi>true</phi>
+					<mandatory>true</mandatory>  
+					<width>15</width>
+					<toolTip>Enter your given name as it appears on passport</toolTip>
+				</textField>
+	
+				<textField>
+					<name>lastName</name> 
+					<caption>Last Name</caption>
+					<phi>true</phi>
+					<mandatory>true</mandatory>  
+					<width>15</width>
+					<toolTip>Enter your surname as it appears on passport</toolTip>              
+				</textField>
+			</row>
+		</page>
+		<page>
+			<name>personalDetails</name>         		
+			<caption>Personal Details</caption>
+			<row>
+				<datePicker>
+					<name>dateOfBirth</name>
+					<caption>Date Of Birth</caption>
+					<phi>true</phi>
+					<mandatory>true</mandatory>
+					<format>MM-dd-yyyy</format>
+					<default>current_date</default>
+				</datePicker>
+			</row>
+		</page>
+		
+	</view>
+</survey-form>

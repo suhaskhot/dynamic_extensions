@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-lazy="false">
+    <class
+        name="edu.common.dynamicextensions.domain.AutoLoadXpath"
+        table="DYEXTN_AUTO_LOADXPATH"
+        dynamic-update="false"
+        dynamic-insert="false"
+    >
+        <cache usage="read-write" />
+
+        <id
+            name="identifier"
+            column="IDENTIFIER"
+            type="long"
+            length="30"
+            unsaved-value="null"
+        >
+            <generator class="increment">
+            </generator>
+        </id>
+
+        <property
+            name="xpath"
+            type="string"
+            update="true"
+            insert="true"
+            column="XPATH"
+            length="4000"
+        />
+
+        <set
+            name="conceptCodeCollection"
+            table="DYEXTN_CAT_XPATH_CONCEPTCODE"
+            lazy="false"
+            sort="unsorted"
+            inverse="false"
+            cascade="all-delete-orphan"
+        >
+            <cache
+                usage="read-write"
+             />
+
+              <key
+                  column="AUTO_LOAD_XPATH_ID"
+              />
+
+              <element
+                  column="CONCEPT_CODE"
+                  type="string"
+                  not-null="false"
+                  unique="false"
+              />
+
+        </set>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-AutoLoadXpath.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

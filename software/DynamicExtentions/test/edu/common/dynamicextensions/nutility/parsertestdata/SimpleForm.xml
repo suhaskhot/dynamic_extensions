@@ -1,0 +1,52 @@
+<!-- Used by unit test: ContainerParserTest.testParseSimpleContainer -->
+
+<form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+		<row>
+			<label>
+				<name>FormHeading</name>
+				<heading>Fill in correct personal details for loan processing</heading>	
+			</label>		
+		</row>
+		
+		<row>
+			<textField>
+				<name>firstName</name>         		
+				<caption>First Name</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>  
+				<width>15</width>
+				<toolTip>Enter your given name as it appears on passport</toolTip>
+			</textField>
+
+			<textField>
+				<name>lastName</name> 
+				<caption>Last Name</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>  
+				<width>15</width>
+				<toolTip>Enter your surname as it appears on passport</toolTip>              
+			</textField>
+		</row>
+
+		<row>
+			<datePicker>
+				<name>dateOfBirth</name>
+				<caption>Date Of Birth</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>
+				<format>MM-dd-yyyy</format>
+				<default>current_date</default>
+			</datePicker>
+		</row>
+
+		<row>
+			<label>
+				<name>FormNote</name>
+				<note>Information filled here may be used for marketing purpose</note>	
+			</label>
+		</row>
+	</view>
+</form>

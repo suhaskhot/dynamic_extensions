@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validator-rules>
+  <validation-rule display-label="eav.rule.required" rule-name="required" rule-class="edu.common.dynamicextensions.nvalidator.RequiredValidator">
+    <error-key name="eav.nvalidator.required" />
+  </validation-rule>
+
+  <validation-rule display-label="dynExtn.rule.characterSet" rule-name="characterSet" rule-class="edu.common.dynamicextensions.nvalidator.CharacterSetValidator">
+  	<error-key name="dynExtn.nvalidator.characterSet" />
+  </validation-rule>
+
+  <validation-rule display-label="eav.rule.range" rule-name="range" rule-class="edu.common.dynamicextensions.nvalidator.RangeValidator">
+    <error-key name="eav.nvalidator.range" />
+    <param param-name="min" param-label="Min. Value" />
+    <param param-name="max" param-label="Max. Value" />
+  </validation-rule>
+
+  <validation-rule display-label="eav.rule.number" rule-name="number" rule-class="edu.common.dynamicextensions.nvalidator.NumberValidator">
+    <error-key name="eav.nvalidator.number" />
+  </validation-rule>
+
+  <validation-rule display-label="eav.rule.date" rule-name="allowPastAndPresentDateOnly" rule-class="edu.common.dynamicextensions.nvalidator.PastAndPresentDateValidator">
+    <error-key name="eav.nvalidator.date" />
+  </validation-rule>
+  
+  <validation-rule display-label="eav.rule.validdate" rule-name="date" rule-class="edu.common.dynamicextensions.nvalidator.DateValidator">
+    <error-key name="eav.nvalidator.validdate" />
+  </validation-rule>
+  	
+  <validation-rule display-label="eav.rule.allowfuturedate" rule-name="allowfuturedate" rule-class="edu.common.dynamicextensions.nvalidator.FutureDateValidator">
+    <error-key name="eav.nvalidator.allowfuturedate" />
+  </validation-rule>
+
+
+  <validation-rule display-label="eav.rule.daterange" rule-name="dateRange" rule-class="edu.common.dynamicextensions.nvalidator.DateRangeValidator">
+    <error-key name="eav.nvalidator.dateRange" />
+    <param param-name="min" param-label="Min. Date" />
+    <param param-name="max" param-label="Max. Date" />
+  </validation-rule>
+  
+  <validation-rule display-label="eav.rule.textlength" rule-name="textLength" rule-class="edu.common.dynamicextensions.nvalidator.TextLengthValidator">
+  	<error-key name="eav.validation.textLength" />
+  	<param param-name="maxLength" param-label="Max Length" />
+  	<param param-name="minLength" param-label="Min Length" />
+  </validation-rule>
+  
+</validator-rules>

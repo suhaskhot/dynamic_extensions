@@ -1,0 +1,54 @@
+<!-- Used by unit test: ContainerParserTest.testParseContainerWithSelectCtrlsAndFilePvs -->
+<form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+
+		<row>
+			<label>
+				<name>FormHeading</name>
+				<heading>Fill in correct personal details for loan processing</heading>	
+			</label>		
+		</row>
+		
+		<row>
+			<radioButton>
+				<name>gender</name>
+				<caption>Gender</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>
+				<options> 
+					<option>Male</option>
+					<option>Female</option>
+					<option>Unknown</option>
+				</options>
+			</radioButton>
+		</row>
+		
+		<row>
+			<checkBox>
+				<name>sourcesOfIncome</name>
+				<caption>Sources of Income</caption>
+				<options>
+					<option>Salary</option>
+					<option>Agriculture</option>
+					<option>Gambling</option>
+					<option>Organized Sector Business</option>
+					<option>Others</option>
+				</options>
+			</checkBox>
+		</row>		
+		
+		<row>
+			<listBox>
+				<name>bankAccounts</name>
+				<caption>Select banks where you have maintained savings account</caption>
+				<mandatory>true</mandatory>
+				<multiSelect>true</multiSelect>				
+				<options>
+					<optionsFile>listOfNationalisedBanks.csv</optionsFile>
+				</options>
+			</listBox>
+		</row>		
+	</view>
+</form>

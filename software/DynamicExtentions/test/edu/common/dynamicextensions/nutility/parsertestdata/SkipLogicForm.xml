@@ -1,0 +1,103 @@
+<!-- Used by unit test: ContainerParserTest.testParseContainerWithSkipLogic -->
+<form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+
+		<row>
+			<label>
+				<name>FormHeading</name>
+				<heading>Fill in correct personal details for loan processing</heading>	
+			</label>		
+		</row>
+		
+		<row>
+			<radioButton>
+				<name>gender</name>
+				<caption>Gender</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>
+				<options> 
+					<option>Male</option>
+					<option>Female</option>
+					<option>Unknown</option>
+				</options>
+			</radioButton>
+		</row>
+		
+		<row>
+			<checkBox>
+				<name>sourcesOfIncome</name>
+				<caption>Sources of Income</caption>
+				<options>
+					<option>Salary</option>
+					<option>Agriculture</option>
+					<option>Gambling</option>
+					<option>Organized Sector Business</option>
+					<option>Others</option>
+				</options>
+			</checkBox>
+		</row>		
+
+		<row>
+			<datePicker>
+				<name>dateOfBirth</name>
+				<caption>Date Of Birth</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>
+				<format>MM-dd-yyyy</format>
+				<default>current_date</default>
+			</datePicker>
+		</row>
+		<row>
+			<subForm>			
+				<name>address</name>
+				<caption>Address</caption>
+				<maxEntries>0</maxEntries>
+				<showAddMoreLink>true</showAddMoreLink>
+               			<row>
+					<dropdown>
+						<name>city</name>
+						<caption>City</caption>
+						<mandatory>true</mandatory>
+						<options>
+							<optionsFile>listOfIndianCities.csv</optionsFile>
+						</options>
+					</dropdown>  
+				</row> 
+
+				<row>
+					<textField>
+						<name>Company</name> 
+						<caption>Company</caption>
+						<phi>true</phi>
+						<mandatory>true</mandatory>  
+						<width>15</width>
+						<toolTip>Enter your Company Name</toolTip>              
+					</textField>
+				</row>	             
+			</subForm>
+		</row>
+	</view>
+
+	<skipRules>
+		<skipRule>
+			<oneOf>
+				<condition field="gender" op="EQ" value="Male"/>
+			</oneOf>
+			
+			<actions>
+				<hide field="sourcesOfIncome"/>
+				<showPv field="address.city">
+					<!-- For permissible values from the csv file, use <optionFile></optionFile> -->
+					<options>
+		                        	<option>Paris</option>
+		                        	<option>Rome</option>
+		                        	<option>New York</option>
+		                  	</options>
+				</showPv>
+			</actions>
+		</skipRule>
+	</skipRules>
+</form>
+

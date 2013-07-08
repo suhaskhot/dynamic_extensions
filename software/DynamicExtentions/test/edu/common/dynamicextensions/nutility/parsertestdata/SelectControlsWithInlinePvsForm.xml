@@ -1,0 +1,43 @@
+<!-- Used by unit test: ContainerParserTest.testParseContainerWithSelectCtrlsAndInlinePvs -->
+
+<form>
+	<view>
+		<name>PersonProfile</name>         		
+		<caption>Person Profile</caption>       	
+
+		<row>
+			<radioButton>
+				<name>gender</name>
+				<caption>Gender</caption>
+				<phi>true</phi>
+				<mandatory>true</mandatory>
+				<options> 
+					<option>Male</option>
+					<option>Female</option>
+					<option>Unknown</option>
+				</options>
+			</radioButton>
+		</row>
+		
+		<row>
+			<checkBox>
+				<name>sourcesOfIncome</name>
+				<caption>Sources of Income</caption>
+				<options>
+					<option>Salary</option>
+					<option>Agriculture</option>
+					<option>Gambling</option>
+					<option>Organized Sector Business</option>
+					<option>Others</option>
+				</options>
+			</checkBox>
+		</row>		
+		
+		<row>
+			<booleanCheckBox>
+				<name>consent</name>
+				<caption>I agree to terms and conditions</caption>				
+			</booleanCheckBox>
+		</row>
+	</view>
+</form>

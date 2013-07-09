@@ -1,8 +1,6 @@
 
 package edu.common.dynamicextensions.util;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,8 +22,6 @@ import net.sf.ehcache.CacheException;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.DEIntegration.DEIntegration;
-import edu.common.dynamicextensions.bizlogic.BizLogicFactory;
-import edu.common.dynamicextensions.bizlogic.RecordEntryBizLogic;
 import edu.common.dynamicextensions.domain.Association;
 import edu.common.dynamicextensions.domain.CategoryEntityRecord;
 import edu.common.dynamicextensions.domain.DateAttributeTypeInformation;
@@ -47,8 +43,6 @@ import edu.common.dynamicextensions.entitymanager.CategoryManagerInterface;
 import edu.common.dynamicextensions.entitymanager.EntityManagerUtil;
 import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ndao.JdbcDao;
-import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.common.beans.SessionDataBean;
 import edu.wustl.dao.exception.DAOException;
@@ -62,6 +56,7 @@ import edu.wustl.dao.exception.DAOException;
  * @author pathik_sheth
  *
  */
+@Deprecated
 public final class DataValueMapUtility
 {
 
@@ -739,7 +734,7 @@ public final class DataValueMapUtility
 			throws DynamicExtensionsSystemException, DynamicExtensionsApplicationException,
 			CacheException
 	{
-		JdbcDao dao = new JdbcDao();
+		/*JdbcDao dao = new JdbcDao();
 		RecordEntryBizLogic recordEntryBizLogic = (RecordEntryBizLogic) BizLogicFactory
 				.getBizLogic(RecordEntryBizLogic.class.getName());
 
@@ -756,7 +751,7 @@ public final class DataValueMapUtility
 				Collection<Long> map = deItegration.getDynamicRecordFromStaticId(recordEntryIdValue
 						.toString(), containerId, hookEntityId.toString());
 				Long dynamicRecEntryId = null;
- 
+		
 				if (!map.isEmpty())
 				{
 					dynamicRecEntryId=map.iterator().next();
@@ -779,7 +774,7 @@ public final class DataValueMapUtility
 		} finally {
 			dao.close(recordEntryIds);
 		}
-	}
+		*/}
 
 	/**
 	 * This method returns

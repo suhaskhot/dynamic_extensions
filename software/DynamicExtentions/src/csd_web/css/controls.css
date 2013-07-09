@@ -1,56 +1,94 @@
 .textBox {
-      font-size: 12px;
-      padding: 7px;
-
-   	  border:1px solid #c0c0c0;
-   	  color:#000000;
-   	  background-color:#ffffff;
+	font-size: 12px;
+	padding: 7px;
+	border: 1px solid #c0c0c0;
+	color: #000000;
+	background-color: #ffffff;
 }
 
 .button {
-      font-size: 12px;
-      padding: 10px;
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 12px; 
-      font-weight: bold; 
-      color: #505050 
+	font-size: 12px;
+	padding: 10px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #505050
+}
+
+.btn {
+	font-size: 12px;
+	padding: 1px;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #505050
 }
 
 .text_normal {
- 			font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: #505050
- }
- 
- .text_bold {
- 			font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: bold; color: #505050
- }
- 
- .text_note {
- 			font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #707070 ;
- }
- 
- .text_error {
- 			font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: bold; color: red;
- }
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	color: #505050
+}
+
+.text_grid_header {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	color: #505050;
+	font-weight: normal;
+}
+
+.text_bold {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #505050
+}
+
+.text_note {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 10px;
+	color: #707070;
+}
+
+.text_error {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	color: red;
+}
 
 .text_success {
- 			font-family: Helvetica, Arial, sans-serif; font-size: 12px; font-weight: bold; color: green;
- }
- 
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	color: green;
+}
+
 .link {
-    background-color: white;
-    border: 0px; 
-    text-decoration: none !important;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 10px;
-    color: #303030  ;
-    float: left;
-    width: 100px;
+	background-color: white;
+	border: 0px;
+	text-decoration: none !important;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 10px;
+	color: #303030;
+	float: left;
+	width: 100px;
 }
 
 .iconBorder {
-	border:1px solid #c0c0c0;
+	border: 1px solid #c0c0c0;
 	padding: 2px;
 	margin: 5px;
-	 
+}
 
+.evenGridRow {
+	background-color: #FFF;
+}
+
+.unevenGridRow {
+	background-color: #F0F0F0;
+}
+
+.controlHeaders {
+	background-color: #F0F0F0;
+	margin: 3px;
+	padding: 3px;
 }

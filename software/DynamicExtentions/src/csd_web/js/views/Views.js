@@ -21,6 +21,64 @@ var Views = {
 
 				},
 				saveModel : function(event) {
+
+					// Save Model
+					// alert(JSON.stringify(this.model.toJSON()));
+					this.populateControlsInForm();
+					$("#formWaitingImage").show();
+					this.model
+							.save(
+									{
+										save : "yes"
+									},
+									{
+										wait : true,
+										success : function(model, response) {
+											if (model.get("status") == "saved") {
+												Routers
+														.updateCachedFormMethod(model);
+												$("#formWaitingImage").hide();
+												var message = model
+														.get('caption')
+														+ " was saved successfully.";
+												$("#popupMessageText").html(
+														message);
+												$("#dialog-message").dialog(
+														'open');
+											} else {
+												$("#formWaitingImage").hide();
+												$("#popupMessageText")
+														.html(
+																"Could not save theform successfully.");
+												$("#dialog-message").dialog(
+														'open');
+											}
+										},
+										error : function(model, response) {
+											$("#formWaitingImage").hide();
+											$("#popupMessageText")
+													.html(
+															"Could not save theform successfully.");
+											$("#dialog-message").dialog('open');
+										}
+
+									});
+				},
+
+				loadModelInSessionForPreview : function() {
+					$("#formWaitingImage").show();
+					this.populateControlsInForm();
+					this.model.save({
+						save : "no"
+					}, {
+						wait : true,
+						success : function(model, response) {
+							Routers.loadPreview();
+						}
+					});
+				},
+
+				populateControlsInForm : function() {
 					this.model.set({
 						caption : $('#formCaption').val(),
 						controlCollection : new Array()
@@ -30,21 +88,30 @@ var Views = {
 							controlObjectCollection : new Array()
 						});
 					}
+
 					// Set controls
 					for ( var key in this.model.get('controlObjectCollection')) {
-						this.model.get('controlCollection').push(
+						var control = this.model.get('controlObjectCollection')[key];
+
+						if (control.get('subForm') != undefined) {
+							this.model.get('controlObjectCollection')[key].get(
+									'subForm').set({
+								controlCollection : new Array()
+							});
+							for ( var subKey in control.get('subForm').get(
+									'controlObjectCollection')) {
+								var subControl = control.get('subForm').get(
+										'controlObjectCollection')[subKey];
 								this.model.get('controlObjectCollection')[key]
-										.toJSON());
-					}
-					// Save Model
-					alert(JSON.stringify(this.model.toJSON()));
-					this.model.save({}, {
-						wait : true,
-						success : function(model, response) {
-							Routers.updateCachedFormMethod(model);
-							alert(model.get('status'));
+										.get('subForm')
+										.get('controlCollection').push(
+												subControl.toJSON());
+							}
 						}
-					});
+						this.model.get('controlCollection').push(
+								control.toJSON());
+					}
+
 				},
 				setTreeCaption : function(event) {
 					Main.treeView.getTree().setItemText(1,
@@ -58,6 +125,18 @@ var Views = {
 					this.$el.html(Mustache.to_html(
 							Templates.templateList['formTemplate'], this.model
 									.toJSON()));
+					$("#formWaitingImage").hide();
+					// init dialog box
+					$("#dialog-message").dialog({
+						modal : true,
+						autoOpen : false,
+						buttons : {
+							Ok : function() {
+								$(this).dialog("close");
+							}
+						}
+					}).css("font-size", "10px");
+
 				}
 			}),
 
@@ -78,67 +157,298 @@ var Views = {
 	/*
 	 * Field View
 	 */
-	FieldView : Backbone.View.extend({
+	FieldView : Backbone.View
+			.extend({
 
-		initialize : function() {
-			_.bindAll(this, 'render');
-			this.render();// self-rendering
-		},
-		events : {
-			"click #createControlButtonid" : "updateModel",
-			"keyup #controlCaption" : "setControlName"
-		},
+				pvGrid : null,
+				messageSpace : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 
-		destroy : function() {
-			this.undelegateEvents();
-			this.$el.empty();
-			this.stopListening();
+				initialize : function() {
+					_.bindAll(this, 'render');
+					this.render();// self-rendering
+				},
+				events : {
+					"click #createControlButtonid" : "updateModel",
+					"click #addPv" : "addPv"
+				},
 
-		},
-		updateModel : function(event) {
-			this.model.set({
-				caption : $('#controlCaption').val(),
-				defaultValue : $('#defaultValue').val(),
-				controlName : $('#controlName').val(),
-				conceptDefinitionSource : $('#conceptDefinitionSource').val(),
-				conceptCode : $('#conceptCode').val(),
-				conceptDefinition : $('#conceptDefinition').val(),
-				conceptPreferredName : $('#conceptPreferredName').val(),
-				noOfDigits : $('#noOfDigits').val(),
-				noOfDigitsAfterDecimal : $('#noOfDigitsAfterDecimal').val(),
-				maximumValue : $('#maximumValue').val(),
-				minimumValue : $('#minimumValue').val(),
-				width : $('#width').val(),
-				numberOfCharacters : $('#numberOfCharacters').val(),
-				noOfDigits : $('#noOfDigits').val(),
-				pvs : $('#pvs').val()
-			});
+				destroy : function() {
+					this.undelegateEvents();
+					this.$el.empty();
+					this.stopListening();
 
-			Routers.formEventsRouterPointer.navigate("createCachedControl/"
-					+ $('#controlName').val(), true);
+				},
+				updateModel : function(event) {
 
-			Routers.updateCachedControl(this.model);
+					this.model
+							.set({
+								caption : $('#controlCaption').val(),
+								defaultValue : $('#defaultValue').val(),
+								controlName : $('#controlName').val(),
+								conceptDefinitionSource : $(
+										'#conceptDefinitionSource').val(),
+								conceptCode : $('#conceptCode').val(),
+								conceptDefinition : $('#conceptDefinition')
+										.val(),
+								conceptPreferredName : $(
+										'#conceptPreferredName').val(),
+								noOfDigits : $('#noOfDigits').val(),
+								noOfDigitsAfterDecimal : $(
+										'#noOfDigitsAfterDecimal').val(),
+								maximumValue : $('#maximumValue').val(),
+								minimumValue : $('#minimumValue').val(),
+								width : $('#width').val(),
+								dataType : $('#dataType').val(),
+								format : $('#format').val(),
+								isPHI : $('#isPHI').is(":checked"),
+								isMandatory : $('#isMandatory').is(":checked"),
+								isAutoCalculate : $('#autoCalculate').is(
+										":checked"),
+								toolTip : $('#toolTip').val(),
+								subFormName : $('#subFormName').val()
+							});
+					this.model = Routers.updatePVs(this.model);
 
-		},
+					this.showMessages(this.model.validate(this.model.toJSON()));
 
-		render : function() {
-			this.$el.html(Mustache.to_html(this.model.get('template'),
-					this.model.toJSON()));
-			$("#dataType").val(this.model.get('dataType')).prop('selected',
-					true);
-			if (this.model.get('status') == "saved") {
-				$('#controlName').prop('readonly', 'readonly');
-			}
+				},
 
-		},
+				showMessages : function(validationMessages) {
 
-		setControlName : function() {
-			if (this.model.get('status') == "new") {
-				$('#controlName').val(
-						Utility.toCamelCase($('#controlCaption').val()));
-			}
-		}
-	}),
+					if (validationMessages.length == 0) {
+
+						var displayLabel = $('#controlCaption').val() + " ("
+								+ $('#controlName').val() + ")";
+						var url = "createCachedControl/" + displayLabel
+								+ "/control" + $('#controlName').val();
+
+						Routers.createControlNode(displayLabel, $(
+								'#controlName').val());
+
+						var status = Routers.updateCachedControl(this.model);
+						if (status == "save" || status == "update") {
+							this.setSuccessMessageHeader();
+							$("#messagesDiv").append(
+									this.messageSpace
+											+ this.model.get('caption')
+											+ " was saved successfully.");
+							$('#createControlButtonid').attr("disabled", true);
+						}
+
+					} else {
+						this.setErrorMessageHeader();
+						for ( var key in validationMessages) {
+							$("#messagesDiv").append(
+									this.messageSpace + "! "
+											+ validationMessages[key].message
+											+ "<br>");
+						}
+					}
+				},
+
+				setSuccessMessageHeader : function() {
+					$("#messagesDiv").html("");
+					$("#messagesDiv").removeClass('error');
+					$("#messagesDiv").addClass('success');
+					$("#messagesDiv").append(
+							this.messageSpace + "<b>Successful</b><br>");
+				},
+
+				setErrorMessageHeader : function() {
+					$("#messagesDiv").html("");
+					$("#messagesDiv").removeClass('success');
+					$("#messagesDiv").addClass('error');
+					$("#messagesDiv").append(
+							this.messageSpace + "<b>Error(s)</b><br>");
+				},
+
+				render : function() {
+					this.$el.html(Mustache.to_html(this.model.get('template'),
+							this.model.toJSON()));
+
+					$('#isPHI').prop('checked', this.model.get('isPHI'));
+					$('#isMandatory').prop('checked',
+							this.model.get('isMandatory'));
+					$('#autoCalculate').prop('checked',
+							this.model.get('isAutoCalculate'));
+
+					// data type
+					$("#dataType").val(this.model.get('dataType')).prop(
+							'selected', true);
+					// format
+					$("#format").val(this.model.get('format')).prop('selected',
+							true);
+					// make short code readonly
+					$('#controlName').prop('readonly', 'readonly');
+
+					switch ((this.model.get('type'))) {
+					case "radioButton":
+
+					case "listBox":
+
+					case "multiselectBox":
+
+					case "multiselectCheckBox":
+						this.renderPvUI();
+						break;
+					default:
+					}
+
+				},
+
+				renderPvUI : function() {
+					$('#permissibleValuesForm')
+							.ajaxForm(
+									{
+										/*
+										 * beforeSend: function() {
+										 * status.empty(); var percentVal =
+										 * '0%'; bar.width(percentVal)
+										 * percent.html(percentVal); },
+										 * uploadProgress: function(event,
+										 * position, total, percentComplete) {
+										 * var percentVal = percentComplete +
+										 * '%'; bar.width(percentVal)
+										 * percent.html(percentVal); }, success:
+										 * function() { var percentVal = '100%';
+										 * bar.width(percentVal)
+										 * percent.html(percentVal); },
+										 */
+										beforeSend : function() {
+											$("#pvFileWaitingImage").show();
+										},
+										complete : function(xhr) {
+											var receivedData = $
+													.parseJSON(xhr.responseText);
+											$("#pvFileWaitingImage").hide();
+											alert(xhr.responseText);
+											if (receivedData.status == "saved") {
+												Routers
+														.addUploadedPvFileNameToCurrentModel(receivedData.file);
+											} else {
+												var trail = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+												Main.currentFieldView
+														.setErrorMessageHeader();
+												$("#messagesDiv")
+														.append(
+																trail
+																		+ "Could not upload file");
+											}
+										}
+									});
+					$("#pvFileWaitingImage").hide();
+
+					this.pvGrid = new dhtmlXGridObject('pvGrid');
+					this.pvGrid
+							.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
+					this.pvGrid
+							.setHeader("<span id = 'header1'>Value</span>,<span id='header2'>Numeric Code</span>,"
+									+ "<span id='header3'>Definition</span>,<span id='header4'>Definition Source</span>,"
+									+ "<span id='header5'>Concept Code</span>,status");
+					this.pvGrid.setInitWidths("100,100,150,130,*,0");
+					// this.pvGrid.setColAlign("right,left");
+					this.pvGrid.setColTypes("ed,ed,ed,ed,ed,ro");
+					// this.pvGrid.setColSorting("str,str");
+					this.pvGrid.setSkin("clear");
+					this.pvGrid.selMultiRows = true;
+					this.pvGrid.enablePaging(true, 10, 3, "recinfoArea");
+					this.pvGrid.setPagingSkin("bricks");
+					this.pvGrid.enableAlterCss("evenGridRow", "unevenGridRow");
+					this.pvGrid
+							.attachEvent(
+									"onCellChanged",
+									function(rId, cInd, nValue) {
+										// alert(rId + ' ' + cInd + ' ' +
+										// nValue);
+										if (Main.currentFieldView.getModel()
+												.get('pvs')[rId] == undefined) {
+											// not decided
+										} else {
+											Main.currentFieldView.getModel()
+													.get('pvs')[rId] = Main.currentFieldView
+													.setpvPropertyBasedOnIndex(
+															cInd,
+															Main.currentFieldView
+																	.getModel()
+																	.get('pvs')[rId],
+															nValue);
+										}
+
+									});
+					this.pvGrid.init();
+
+					for ( var i = 1; i < 6; i++) {
+						$('#header' + i).addClass("text_grid_header");
+					}
+
+				},
+
+				setpvPropertyBasedOnIndex : function(index, pv, propertyValue) {
+					var updatedPv = pv;
+					switch (index) {
+					case 0:
+						updatedPv.value = propertyValue;
+						break;
+					case 1:
+						updatedPv.numericCode = propertyValue;
+						break;
+					case 2:
+						updatedPv.definition = propertyValue;
+						break;
+					case 3:
+						updatedPv.definitionSource = propertyValue;
+						break;
+					case 4:
+						updatedPv.conceptCode = propertyValue;
+						break;
+					default:
+						// do not do anything
+					}
+					return updatedPv;
+				},
+
+				getPvGrid : function() {
+					return this.pvGrid;
+				},
+
+				addPv : function() {
+					this.pvGrid.addRow(this.model.get('controlName')
+							+ Main.pvCounter, ",,,,,new");
+					this.model.get('pvs')[this.model.get('controlName')
+							+ Main.pvCounter] = this.generatePvFromGridData('',
+							'', '', '', '', "add");
+					Main.pvCounter++;
+
+				},
+
+				generatePvFromGridData : function(pvValue, pvNumericCode,
+						pvDefinition, pvDefinitionSource, pvConceptCode,
+						pvStatus) {
+					return {
+						value : pvValue,
+						numericCode : pvNumericCode,
+						definition : pvDefinition,
+						definitionSource : pvDefinitionSource,
+						conceptCode : pvConceptCode,
+						status : pvStatus
+					};
+				},
+
+				setControlName : function() {
+					if (this.model.get('status') == "new") {
+						$('#controlName')
+								.val(
+										Utility
+												.toCamelCase($(
+														'#controlCaption')
+														.val()));
+					}
+				},
+
+				getModel : function() {
+					return this.model;
+				}
+			}),
 
 	/*
 	 * Tree View
@@ -157,7 +467,7 @@ var Views = {
 			tree.setSkin('dhx_terrace');
 			tree.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxTree/"
 					+ "codebase/imgs/csh_dhx_terrace/");
-			tree.enableDragAndDrop(true);
+			tree.enableDragAndDrop(false);
 			tree.enableTreeImages(false);
 			tree.deleteChildItems(0);
 			var xml = "<?xml version='1.0' encoding='utf-8'?>"
@@ -180,6 +490,7 @@ var Views = {
 	TabBarView : Backbone.View
 			.extend({
 
+				tab : null,
 				initialize : function() {
 					_.bindAll(this, 'render'); // fixes loss of context for
 					// 'this' within methods
@@ -188,48 +499,88 @@ var Views = {
 
 				render : function() {
 
-					/*var tabbar = new K_Tabbar(
-							{
-								container : this.el,
-								allignment : 'top',
-								skin : 'dhx_terrace',
-								imagesPath : 'csd_web/dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/',
-								tabsConfiguration : [ {
-									id : 'a11',
-									label : 'Summary',
-									labelWidth : '150px',
-									data : 'summary'
-								} ]
-							}, 'dhtmlx');*/
+					/*
+					 * var tabbar = new K_Tabbar( { container : this.el,
+					 * allignment : 'top', skin : 'dhx_terrace', imagesPath :
+					 * 'csd_web/dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/',
+					 * tabsConfiguration : [ { id : 'a11', label : 'Summary',
+					 * labelWidth : '150px', data : 'summary' } ] }, 'dhtmlx');
+					 */
 
-					var tabbar1 = new dhtmlXTabBar(this.el, "top");
-					tabbar1.setSkin('dhx_terrace');
-					tabbar1
+					this.tab = new dhtmlXTabBar(this.el, "top");
+					this.tab.setSkin('dhx_terrace');
+					// this.tab.setHrefMode("iframes-on-demand");
+					this.tab
 							.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/");
-					tabbar1.addTab("a11", "Summary", "150px");
-					tabbar1.addTab("a21", "Add/Edit Control", "150px");
-					tabbar1.addTab("a31", "Design", "150px");
-					tabbar1.addTab("a41", "Preview", "150px");
-					tabbar1.setContent("a11", "summary");
-					tabbar1.setContent("a21", "control");
-					tabbar1.setContent("a31", "design");
-					tabbar1.setContent("a41", "preview");
-					tabbar1.setTabActive("a11");
-					tabbar1.attachEvent("onSelect", function(id, last_id) {
-						if (id == "a31") {
-							var designMode = new Views.DesignMode({
-								el : $("#design")
-							});
-						}
+					this.tab.addTab("summaryTab", "Summary", "150px");
+					this.tab.addTab("controlTab", "Add/Edit Control", "150px");
+					this.tab.addTab("advancedControlPropertiesTab",
+							"Advanced Options", "150px");
+					this.tab.addTab("designMode", "Design", "150px");
+					this.tab.addTab("previewTab", "Preview", "150px");
+					this.tab.setContent("summaryTab", "summary");
+					this.tab.setContent("controlTab", "control");
+					this.tab.setContent("designMode", "design");
+					this.tab.setContent("previewTab", "preview");
+					// this.tab.setContentHref("previewTab",
+					// "csd_web/pages/preview.html");
+					this.tab.setContent("advancedControlPropertiesTab",
+							"advancedControlProperties");
+
+					this.tab.setTabActive("summaryTab");
+					this.tab.attachEvent("onSelect", function(id, last_id) {
+						Routers.csdControlsTabSelectHandler(id);
 						return true;
 					});
-
 				},
 
 				getTabBar : function() {
 					return this.tab;
 				}
 			}),
+
+	/*
+	 * Advanced Properties Tab View
+	 */
+	AdvancedPropertiesTabView : Backbone.View
+			.extend({
+				initialize : function() {
+					_.bindAll(this, 'render');
+					this.render();
+				},
+
+				formulaField : null,
+
+				render : function() {
+					this.$el
+							.html(Templates.templateList['advancedPropertiesTemplate']);
+					// Render JQuery Toggle Buttons
+					$("#advancedControlsRadio").buttonset();
+					// Hide Skip logic tab
+					$('#skipLogicTab').hide();
+					$('#calculatedAttributeTab').show();
+					// toggle between tabs.
+					$("input:radio").click(function() {
+						$('#skipLogicTab').toggle();
+						$('#calculatedAttributeTab').toggle();
+					});
+					// Render the custom formula field
+					this.formulaField = new K_AutoComplete({
+						inputElementId : "formulaField",
+						data : Routers.getListOfCurrentControls()
+					});
+				},
+
+				events : {
+					"click a" : "createControl"
+				},
+
+				createControl : function(event) {
+					Routers.createControl(event.target.id);
+				}
+
+			}),
+
 	/*
 	 * ControlTab View
 	 */
@@ -286,11 +637,9 @@ var Views = {
 	 */
 	DesignMode : Backbone.View.extend({
 		layoutGrid : undefined,
-		columnsInDataView : 3,
-		rowInDataView : 1,
-		dataViewMatrix : new Array(),
-
 		initialize : function() {
+			$(this.el).unbind("click");// will avoid calling the click event
+			// multiple time on single click
 			_.bindAll(this, 'render');
 			this.render();
 		},
@@ -299,8 +648,9 @@ var Views = {
 			var template = _.template($("#designModeView").html(), {});
 			this.$el.html(template);
 			this.initLayoutGrid();
-			this.populateLayoutGrid();
+
 		},
+
 		events : {
 			"click #addRow" : "addRow",
 			"click #addColumn" : "addColumn",
@@ -310,118 +660,39 @@ var Views = {
 			layoutGrid = new dhtmlXGridObject("layoutGrid");
 			layoutGrid
 					.setImagePath("dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
-			layoutGrid.setHeader(" , , ");
-			layoutGrid.setInitWidths("300,300,300");
-			layoutGrid.setColAlign("center,center,center");
-			layoutGrid.setColSorting(",connector");
+			layoutGrid.setHeader(" ");
+			layoutGrid.setInitWidths("300");
+			layoutGrid.setColAlign("center");
+			// layoutGrid.setColSorting(",connector");
 			layoutGrid.setSkin("kspl_csdDesignMode");
-			layoutGrid.setColTypes("ro,ro,ro");
+			layoutGrid.setColTypes("ro");
 			layoutGrid._drag_validate = true;
 			layoutGrid.enableDragAndDrop(true);
-			layoutGrid.enableAutoWidth(true);
-
+			layoutGrid.enableAutoWidth(true, 900, 300);
 			layoutGrid.init();
-
-			layoutGrid.attachEvent("onBeforeDrag", function(sId, sInd) {
-				layoutGrid.rowToDragElement = function(id) {
-					var text = layoutGrid.cells(sId, sInd).getValue();// prepare
-					// a
-					// text
-					// string
-					if (text == "") {
-						text = "Empty";
-					}
-					return text;
-				}
-				return true;
-			});
-
-			layoutGrid.attachEvent("onDrag",
-					function(sId, tId, sObj, tObj, sInd, tInd) {
-						try {
-							var sourceCell = layoutGrid.cells(sId, sInd);
-							var targetCell = layoutGrid.cells(tId, tInd);
-
-							var targetValue = targetCell.getValue();
-							targetCell.setValue(sourceCell.getValue());
-							sourceCell.setValue(targetValue);
-
-							var seqNumber = layoutGrid.getRowIndex(tId) + 1;
-							var xPosition = tInd + 1;
-
-							layoutGrid.rowToDragElement = function(id) {// sets
-								// the
-								// cell
-								// text
-								// of
-								// the
-								// drag
-								// element
-								var text = layoutGrid.cells(sId, sInd)
-										.getValue();
-								return text;
-							}
-
-							// alert("value = "+targetCell.getValue() + "
-							// xPosition =" + xPosition +" seqNumber = " +
-							// seqNumber);
-							Main.formView.getFormModel().get(
-									'controlObjectCollection')[targetCell
-									.getValue()].set({
-								xPos : xPosition,
-								sequenceNumber : seqNumber
-							});
-							/*
-							 * Main.formView.getFormModel().get(
-							 * 'controlObjectCollection')[targetCell
-							 * .getValue()].save({}, { url :
-							 * 'csdApi/form/control/' + targetCell.getValue(),
-							 * wait : true, success : function(model, response) { //
-							 * alert(model.get('status')) } });
-							 */
-						} catch (e) {
-						}
-					});
 		},
 
-		populateLayoutGrid : function() {
-			if (Main.formView.getFormModel()
-					&& Main.formView.getFormModel().get(
-							'controlObjectCollection') != null) {
-				for ( var index in Main.formView.getFormModel().get(
-						'controlObjectCollection')) {
-					var xPos = Main.formView.getFormModel().get(
-							'controlObjectCollection')[index].get("xPos");
-					var seqNumber = Main.formView.getFormModel().get(
-							'controlObjectCollection')[index]
-							.get("sequenceNumber");
-					var name = Main.formView.getFormModel().get(
-							'controlObjectCollection')[index]
-							.get("controlName");
-					// alert("xpos= " + xPos + " seqNumber = " + seqNumber + "
-					// name= " + name + " gridRows = " +
-					// layoutGrid.getRowsNum());
-
-					if (layoutGrid.getRowsNum() < seqNumber) {
-						while (layoutGrid.getRowsNum() <= seqNumber - 1) {
-							var newId = (new Date()).valueOf();
-							layoutGrid.addRow(newId, "");
-						}
-						layoutGrid.cellByIndex(seqNumber - 1, xPos - 1)
-								.setValue(name);
-					}
-					layoutGrid.cellByIndex(seqNumber - 1, xPos - 1).setValue(
-							name);
-				}
-			}
+		updateControlObjectCollection : function(name, xPosition, seqNumber) {
+			Main.formView.getFormModel().get('controlObjectCollection')[name]
+					.set({
+						xPos : xPosition,
+						sequenceNumber : seqNumber
+					});
 		},
 
 		addRow : function() {
 			var newId = (new Date()).valueOf();
-			layoutGrid.addRow(newId, "");
+			Main.designModeViewPointer.getGridObject().addRow(newId, "");
 		},
 		addColumn : function() {
-			layoutGrid.insertColumn(0, '', 'ro', '300');
+			var colNum = Main.designModeViewPointer.getGridObject()
+					.getColumnsNum();
+			Main.designModeViewPointer.getGridObject().insertColumn(colNum, '',
+					'ro', '300', '', 'center');
+		},
+
+		getGridObject : function() {
+			return layoutGrid;
 		}
 	})
 

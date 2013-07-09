@@ -4,12 +4,14 @@
 
 var Main = {
 
-	nodeCounter : 1,
+	nodeCounter : 2,
 	sequenceNumCntr : 0,
 	treeView : null,
 	formView : null,
 	mainTabBarView : null,
 	currentFieldView : null,
+	designModeViewPointer : null,
+	pvCounter : 0,
 
 	renderUI : function() {
 		Templates.loadTemplateList();
@@ -23,26 +25,18 @@ var Main = {
 			model : null
 		});
 
-		this.treeView.getTree().attachEvent(
-				"onDblClick",
-				function(id) {
-					if (Main.currentFieldView != null) {
-						Main.currentFieldView.destroy();
-					}
-					var fieldModel = Main.formView.getFormModel().get(
-							'controlObjectCollection')[Main.treeView.getTree()
-							.getItemText(id)];
-					Main.currentFieldView = Views.showControl(
-							'controlContainer', fieldModel);
-
-					return true;
-				});
+		this.treeView.getTree().attachEvent("onDblClick",
+				Routers.formTreeNodeClickHandler);
 
 		this.mainTabBarView = new Views.TabBarView({
 			el : $('#rightTab'),
 			model : null
 		});
 		Views.showControlTab('control');
+		$('#slider1').tinycarousel();
+
+		
+
 	}
 }
 

@@ -69,16 +69,53 @@ var Templates = {
 			async : false
 		}).responseText;
 		this.templateList['multiSelectDropdownTemplate'] = result;
-		//textAreaTemplate
+		
 		result = $.ajax({
 			url : "csd_web/pages/templates/multiSelectCheckBox.html",
 			async : false
 		}).responseText;
 		this.templateList['multiSelectCheckBoxTemplate'] = result;
+		
 		result = $.ajax({
 			url : "csd_web/pages/templates/textArea.html",
 			async : false
 		}).responseText;
 		this.templateList['textAreaTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/datePicker.html",
+			async : false
+		}).responseText;
+		this.templateList['datePickerTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/fileUpload.html",
+			async : false
+		}).responseText;
+		this.templateList['fileUploadTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/pvTemplate.html",
+			async : false
+		}).responseText;
+		this.templateList['pvTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/submitButtonTemplate.html",
+			async : false
+		}).responseText;
+		this.templateList['submitButtonTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/subForm.html",
+			async : false
+		}).responseText;
+		this.templateList['subFormTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/advancedPropertiesTemplate.html",
+			async : false
+		}).responseText;
+		this.templateList['advancedPropertiesTemplate'] = result;
 	}
 }

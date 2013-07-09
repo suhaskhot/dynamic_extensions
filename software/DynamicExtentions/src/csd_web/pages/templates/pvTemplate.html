@@ -1,0 +1,19 @@
+<br><br><br>
+<div class = "controlHeaders"><label class = 'text_bold'>Permissible Values</label></div>
+	<div style = 'width: 82%; padding: 3px; margin: 3px;' align = "right">
+		<div id = 'pvGrid' style = 'width : 85%; height : 200px'>
+		</div>
+		<div id="recinfoArea"></div>
+	</div>
+	<div align = "right" style = 'width: 53%'>
+			<input type = 'button' value = 'Add Permissible Value' class = 'btn' id = 'addPv'>
+			<input type = 'button' value = 'Delete Permissible Value' class = 'btn' id = 'deletePv'> 
+	</div>
+	<div style = 'width: 52%; padding: 3px; margin: 3px; float: left' align = 'right'>
+		<form action="csdApi/form/permissibleValues" method="post" enctype="multipart/form-data" id = 'permissibleValuesForm'>
+		   <label class = 'text_normal'>Select a File</label>
+		   <input type="file" name="file" id = 'fileID' size = '51'/>
+		   <input type="submit" value="Upload" class = 'btn'/>&nbsp;&nbsp;&nbsp;<img src = "csd_web/icons/loader.gif" id = "pvFileWaitingImage">
+	   	</form>
+	</div>
+	

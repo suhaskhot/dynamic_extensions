@@ -4,8 +4,7 @@ package edu.wustl.dynamicextensions.formdesigner.mapper;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
-public abstract class DefaultControlMapper
-{
+public abstract class DefaultControlMapper {
 
 	/**
 	 * @param controlProps
@@ -24,29 +23,68 @@ public abstract class DefaultControlMapper
 	 * @param controlProps
 	 * @param control
 	 */
-	protected void setCommonProperties(Properties controlProps, Control control)
-	{
-		control.setCaption(controlProps.getString(CSDConstants.CONTROL_CAPTION));
-		control.setName(controlProps.getString(CSDConstants.CONTROL_NAME));
+	protected void setCommonProperties(Properties controlProps, Control control) {
+
+		String controlCaption = controlProps.getString(CSDConstants.CONTROL_CAPTION);
+		if (controlCaption != null) {
+			control.setCaption(controlCaption);
+		}
+
+		String controlName = controlProps.getString(CSDConstants.CONTROL_NAME);
+		if (controlName != null) {
+			control.setName(controlName);
+		}
+
 		control.setPhi(controlProps.getBoolean("isPHI"));
 		control.setMandatory(controlProps.getBoolean("isMandatory"));
-		control.setCalculatedSourceControl(controlProps.getBoolean("calculatedSourceControl"));
-		control.setConceptDefinitionSource(controlProps.getString("conceptDefinitionSource"));
-		control.setConceptCode(controlProps.getString("conceptCode"));
-		control.setConceptDefinition(controlProps.getString("conceptDefinition"));
-		control.setConceptPreferredName(controlProps.getString("conceptPreferredName"));
-		control.setCustomLabel(controlProps.getString("customLabel"));
-		control.setxPos(controlProps.getInteger("xPos"));
-		control.setSequenceNumber(controlProps.getInteger("sequenceNumber"));
-		control.setToolTip(controlProps.getString("toolTip"));
+
+		String conceptDefinitionSource = controlProps.getString("conceptDefinitionSource");
+		if (conceptDefinitionSource != null) {
+			control.setConceptDefinitionSource(conceptDefinitionSource);
+		}
+
+		String conceptCode = controlProps.getString("conceptCode");
+		if (conceptCode != null) {
+			control.setConceptCode(conceptCode);
+		}
+
+		String conceptDefinition = controlProps.getString("conceptDefinition");
+		if (conceptDefinition != null) {
+			control.setConceptDefinition(conceptDefinition);
+		}
+
+		String conceptPreferredName = controlProps.getString("conceptPreferredName");
+		if (conceptPreferredName != null) {
+			control.setConceptPreferredName(conceptPreferredName);
+		}
+
+		String customLabel = controlProps.getString("customLabel");
+		if (customLabel != null) {
+			control.setCustomLabel(customLabel);
+		}
+
+		Integer xPos = controlProps.getInteger("xPos");
+		if (xPos != null) {
+			control.setxPos(xPos);
+		}
+
+		Integer sequenceNumber = controlProps.getInteger("sequenceNumber");
+		if (sequenceNumber != null) {
+			control.setSequenceNumber(sequenceNumber);
+		}
+
+		String toolTip = controlProps.getString("toolTip");
+		if (toolTip != null) {
+			control.setToolTip(toolTip);
+		}
+
 	}
 
 	/**
 	 * @param controlProps
 	 * @param control
 	 */
-	protected void getCommonProperties(Properties controlProps, Control control)
-	{
+	protected void getCommonProperties(Properties controlProps, Control control) {
 		controlProps.setProperty(CSDConstants.CONTROL_CAPTION, control.getCaption());
 		controlProps.setProperty(CSDConstants.CONTROL_NAME, control.getName());
 		controlProps.setProperty("id", control.getId());
@@ -55,8 +93,8 @@ public abstract class DefaultControlMapper
 		controlProps.setProperty("calculatedSourceControl", control.isCalculatedSourceControl());
 		controlProps.setProperty("conceptDefinitionSource", control.getConceptDefinitionSource());
 		controlProps.setProperty("conceptCode", control.getConceptCode());
-		controlProps.setProperty("conceptDefinition",control.getConceptDefinition());
-		controlProps.setProperty("conceptPreferredName",control.getConceptPreferredName());
+		controlProps.setProperty("conceptDefinition", control.getConceptDefinition());
+		controlProps.setProperty("conceptPreferredName", control.getConceptPreferredName());
 		controlProps.setProperty("xPos", control.getxPos());
 		controlProps.setProperty("sequenceNumber", control.getSequenceNumber());
 		controlProps.setProperty("customLabel", control.getCustomLabel());

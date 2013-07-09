@@ -7,189 +7,115 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class Properties
-{
+public class Properties {
 
 	private Map<String, Object> properties;
 
-	public Properties()
-	{
+	public Properties() {
 		properties = new HashMap<String, Object>();
 	}
 
-	public Properties(Map<String, Object> properties)
-	{
+	public Properties(Map<String, Object> properties) {
 		this.properties = properties;
 	}
 
-	public void setProperty(String name, Object value)
-	{
+	public void setProperty(String name, Object value) {
 		this.properties.put(name, value);
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public String getString(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
+	public String getString(String key) {
+		if (this.properties.containsKey(key) && this.properties.get(key) != null) {
 			return this.properties.get(key).toString();
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public Integer getInteger(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
-			return Integer.parseInt(this.properties.get(key).toString());
+	public Integer getInteger(String key) {
+		Integer integer = null;
+		if (this.properties.containsKey(key)) {
+			Object number = this.properties.get(key);
+			if (number != null) {
+				if (isNumber(number.toString())) {
+					integer = Integer.parseInt(number.toString().trim());
+				}
+			}
 		}
-		else
-		{
-			return null;
-		}
+		return integer;
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public Long getLong(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
-			return Long.parseLong(this.properties.get(key).toString());
+	public Long getLong(String key) {
+		Long _long = null;
+		if (this.properties.containsKey(key)) {
+			Object number = this.properties.get(key);
+			if (number != null) {
+				if (isNumber(number.toString())) {
+					_long = Long.parseLong(number.toString().trim());
+				}
+			}
 		}
-		else
-		{
-			return null;
-		}
+		return _long;
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getMap(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
+	public Map<String, Object> getMap(String key) {
+		if (this.properties.containsKey(key) && this.properties.get(key) != null) {
 			return (Map<String, Object>) this.properties.get(key);
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
-	public Collection<Map<String, Object>> getListOfMap(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
+	public Collection<Map<String, Object>> getListOfMap(String key) {
+		if (this.properties.containsKey(key) && this.properties.get(key) != null) {
 			return (Collection<Map<String, Object>>) this.properties.get(key);
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	/**
-	 * @return
-	 */
-	public Map<String, Object> getAllProperties()
-	{
+	public Map<String, Object> getAllProperties() {
 		return this.properties;
 	}
 
-	public Boolean getBoolean(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
+	public Boolean getBoolean(String key) {
+		if (this.properties.containsKey(key) && this.properties.get(key) != null) {
 			return (Boolean) this.properties.get(key);
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public boolean contains(String key)
-	{
-		return this.properties.containsKey(key) && this.properties.get(key) != null;
-	}
-
-	/**
-	 * @param key
-	 * @return
-	 */
-	public Object get(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
+	public Object get(String key) {
+		if (this.properties.containsKey(key) && this.properties.get(key) != null) {
 			return this.properties.get(key);
-		}
-		else
-		{
+		} else {
 			return null;
 		}
 	}
 
-	/**
-	 * @param key
-	 * @return
-	 */
-	public DataType getDataType(String key)
-	{
-		if (this.properties.containsKey(key) && this.properties.get(key) != null)
-		{
-			if (((String) this.properties.get(key)).equalsIgnoreCase("STRING"))
-			{
+	public DataType getDataType(String key) {
+		if (this.properties.containsKey(key) && this.properties.get(key) != null) {
+			if (((String) this.properties.get(key)).equalsIgnoreCase("STRING")) {
 				return DataType.STRING;
-			}
-			else if (((String) this.properties.get(key)).equalsIgnoreCase("INTEGER"))
-			{
+			} else if (((String) this.properties.get(key)).equalsIgnoreCase("INTEGER")) {
 				return DataType.INTEGER;
-			}
-			else if (((String) this.properties.get(key)).equalsIgnoreCase("FLOAT"))
-			{
+			} else if (((String) this.properties.get(key)).equalsIgnoreCase("FLOAT")) {
 				return DataType.FLOAT;
-			}
-			else if (((String) this.properties.get(key)).equalsIgnoreCase("DATE"))
-			{
+			} else if (((String) this.properties.get(key)).equalsIgnoreCase("DATE")) {
 				return DataType.DATE;
-			}
-			else if (((String) this.properties.get(key)).equalsIgnoreCase("BOOLEAN"))
-			{
+			} else if (((String) this.properties.get(key)).equalsIgnoreCase("BOOLEAN")) {
 				return DataType.BOOLEAN;
-			}
-			else
-			{
+			} else {
 				return null;
 			}
-		}
-		else
-		{
+		} else {
 			return null;
 		}
+	}
+
+	private boolean isNumber(String number) {
+		return number.trim().matches("[0-9]+");
 	}
 }

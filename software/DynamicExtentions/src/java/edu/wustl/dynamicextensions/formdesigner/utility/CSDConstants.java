@@ -1,8 +1,7 @@
 
 package edu.wustl.dynamicextensions.formdesigner.utility;
 
-public class CSDConstants
-{
+public class CSDConstants {
 
 	public static final String CONTROL_TYPE = "type";
 	public static final String CONTROL_CAPTION = "caption";
@@ -16,6 +15,11 @@ public class CSDConstants
 	public static final String MULTISELECT_BOX = "multiselectBox";
 	public static final String MULTISELECT_CHECK_BOX = "multiselectCheckBox";
 	public static final String DATE_PICKER = "datePicker";
+	public static final String FILE_UPLOAD = "fileUpload";
+	public static final String NOTE = "note";
+	public static final String HEADING = "heading";
+	public static final String LABEL = "label";
+	public static final String SUB_FORM = "subForm";
 	public static final String STATUS_SAVED = "saved";
 	public static final String STATUS_NEW = "new";
 	public static final String STATUS_ERROR = "error";

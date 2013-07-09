@@ -2,6 +2,7 @@
 package edu.wustl.dynamicextensions.formdesigner.mapper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,21 +14,39 @@ import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 public class ContainerMapper
 {
 
-	public Container propertiesToContainer(Properties properties) throws Exception
+	private static ControlMapper controlMapper = new ControlMapper();
+
+	public Container propertiesToContainer(Properties properties, boolean editControls)
+			throws Exception
 	{
 		Container container = new Container();
-		propertiesToContainer(properties, container);
+		propertiesToContainer(properties, container, editControls);
 		return container;
 	}
 
-	public void propertiesToContainer(Properties formProperties, Container container) throws Exception
+	public void propertiesToContainer(Properties formProperties, Container container,
+			boolean editControls) throws Exception
 	{
 		container.setName(formProperties.getString("formName"));
 		container.setCaption(formProperties.getString("caption"));
-		for (Map<String, Object> controlPropertiesMap : formProperties
-				.getListOfMap("controlCollection"))
+		container.setId(formProperties.getLong("id"));
+		Collection<Map<String, Object>> controlCollection = formProperties
+				.getListOfMap("controlCollection");
+
+		if (controlCollection != null)
 		{
-			addEditControl(container, new Properties(controlPropertiesMap));
+			for (Map<String, Object> controlPropertiesMap : controlCollection)
+			{
+				if (editControls)
+				{
+					addEditControl(container, new Properties(controlPropertiesMap));
+				}
+				else
+				{
+					container.addControl(controlMapper.propertiesToControl(new Properties(
+							controlPropertiesMap)));
+				}
+			}
 		}
 	}
 
@@ -38,15 +57,22 @@ public class ContainerMapper
 	 */
 	private void addEditControl(Container container, Properties controlProperties) throws Exception
 	{
-		ControlMapper controlMapper = new ControlMapper();
-		if (controlProperties.contains("id"))
+		if (controlProperties.get("id") != null)
 		{
 			container.editControl(controlProperties.getString(CSDConstants.CONTROL_NAME),
 					controlMapper.propertiesToControl(controlProperties));
 		}
 		else
 		{
-			container.addControl(controlMapper.propertiesToControl(controlProperties));
+			if (container.getControl(controlProperties.getString(CSDConstants.CONTROL_NAME)) == null)
+			{
+				container.addControl(controlMapper.propertiesToControl(controlProperties));
+			}
+			else
+			{
+				container.editControl(controlProperties.getString(CSDConstants.CONTROL_NAME),
+						controlMapper.propertiesToControl(controlProperties));
+			}
 		}
 	}
 

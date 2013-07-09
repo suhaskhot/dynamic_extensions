@@ -5,14 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.CheckBox;
+import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
+import edu.common.dynamicextensions.domain.nui.FileUploadControl;
+import edu.common.dynamicextensions.domain.nui.Label;
 import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
+import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.domain.nui.TextField;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
@@ -21,11 +25,9 @@ import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
  * @author Sanjay
  *
  */
-public class ControlMapper
-{
+public class ControlMapper {
 
-	private final Map<String, DefaultControlMapper> CONTROL_MAPPER_MAP = new HashMap<String, DefaultControlMapper>()
-	{
+	private final Map<String, DefaultControlMapper> CONTROL_MAPPER_MAP = new HashMap<String, DefaultControlMapper>() {
 
 		private static final long serialVersionUID = 1252410916139427174L;
 
@@ -39,82 +41,81 @@ public class ControlMapper
 			put(CSDConstants.MULTISELECT_BOX, new MultiSelectBoxMapper());
 			put(CSDConstants.MULTISELECT_CHECK_BOX, new MultiSelectCheckBoxMapper());
 			put(CSDConstants.DATE_PICKER, new DatePickerMapper());
+			put(CSDConstants.FILE_UPLOAD, new FileUploadMapper());
+			put(CSDConstants.NOTE, new NoteMapper());
+			put(CSDConstants.HEADING, new HeadingMapper());
+			put(CSDConstants.SUB_FORM, new SubFormMapper());
+			put(CSDConstants.LABEL, new LabelMapper());
 		}
 	};
 
 	/**
+	 * derives the type of control from the instance
 	 * @param control
 	 * @return
 	 */
-	private String getControlType(Control control)
-	{
+	private String getControlType(Control control) {
 		String type = "";
-		if (control instanceof StringTextField)
-		{
+		if (control instanceof StringTextField) {
 			type = CSDConstants.STRING_TEXT_FIELD;
-		}
-		else if (control instanceof NumberField)
-		{
+		} else if (control instanceof NumberField) {
 			type = CSDConstants.NUMERIC_FIELD;
-		}
-		else if (control instanceof DatePicker)
-		{
+		} else if (control instanceof DatePicker) {
 			type = CSDConstants.DATE_PICKER;
-		}
-		else if (control instanceof TextArea)
-		{
+		} else if (control instanceof TextArea) {
 			type = CSDConstants.TEXT_AREA;
-		}
-		else if (control instanceof RadioButton)
-		{
+		} else if (control instanceof RadioButton) {
 			type = CSDConstants.RADIO_BUTTON;
-		}
-		else if (control instanceof CheckBox)
-		{
+		} else if (control instanceof CheckBox) {
 			type = CSDConstants.CHECK_BOX;
-		}
-		else if (control instanceof ListBox)
-		{
+		} else if (control instanceof ListBox) {
 			type = CSDConstants.LIST_BOX;
-		}
-		else if (control instanceof MultiSelectListBox)
-		{
+		} else if (control instanceof MultiSelectListBox) {
 			type = CSDConstants.MULTISELECT_BOX;
-		}
-		else if (control instanceof MultiSelectCheckBox)
-		{
+		} else if (control instanceof MultiSelectCheckBox) {
 			type = CSDConstants.MULTISELECT_CHECK_BOX;
+		} else if (control instanceof FileUploadControl) {
+			type = CSDConstants.FILE_UPLOAD;
+		} else if (control instanceof FileUploadControl) {
+			type = CSDConstants.FILE_UPLOAD;
+		} else if (control instanceof Label) {
+			if (((Label) control).isHeading()) {
+				type = CSDConstants.HEADING;
+			} else if (((Label) control).isNote()) {
+				type = CSDConstants.NOTE;
+			} else {
+				type = CSDConstants.LABEL;
+			}
+		} else if (control instanceof SubFormControl) {
+			type = CSDConstants.SUB_FORM;
 		}
 		return type;
 	}
 
-	public Control propertiesToControl(Properties controlProps) throws Exception
-	{
+	public Control propertiesToControl(Properties controlProps) throws Exception {
 
 		String type = controlProps.getString(CSDConstants.CONTROL_TYPE);
-		return ((DefaultControlMapper) CONTROL_MAPPER_MAP.get(type))
-				.propertiesToControl(controlProps);
+		return ((DefaultControlMapper) CONTROL_MAPPER_MAP.get(type)).propertiesToControl(controlProps);
 	}
 
-	public Properties controlToProperties(Control control)
-	{
+	public Properties controlToProperties(Control control) {
 		return CONTROL_MAPPER_MAP.get(getControlType(control)).controlToProperties(control);
 	}
 
-	private class StringTextFieldMapper extends TextFieldControlMapper
-	{
+	/**
+	 * Mapper for String Text Field
+	 */
+	private class StringTextFieldMapper extends TextFieldControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps)
-		{
+		public Control propertiesToControl(Properties controlProps) {
 			StringTextField control = new StringTextField();
 			setTextFieldProperties(controlProps, control);
 			return control;
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.STRING_TEXT_FIELD);
 			getTextFieldProperties(controlProps, (TextField) control);
@@ -122,73 +123,70 @@ public class ControlMapper
 		}
 	}
 
-	private class NumericFieldMapper extends TextFieldControlMapper
-	{
+	/**
+	 * Mapper for Numeric field
+	 *
+	 */
+	private class NumericFieldMapper extends TextFieldControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps)
-		{
+		public Control propertiesToControl(Properties controlProps) {
 			NumberField control = new NumberField();
 			setTextFieldProperties(controlProps, control);
-			if (controlProps.contains("noOfDigits"))
-			{
-				control.setNoOfDigits(controlProps.getInteger("noOfDigits"));
+			Integer noOfDigits = controlProps.getInteger("noOfDigits");
+			if (noOfDigits != null) {
+				control.setNoOfDigits(noOfDigits);
 			}
-			if (controlProps.contains("noOfDigitsAfterDecimal"))
-			{
-				control.setNoOfDigitsAfterDecimal(controlProps.getInteger("noOfDigitsAfterDecimal"));
+			Integer noOfDigitsAfterDecimal = controlProps.getInteger("noOfDigitsAfterDecimal");
+			if (noOfDigitsAfterDecimal != null) {
+				control.setNoOfDigitsAfterDecimal(noOfDigitsAfterDecimal);
 			}
-			if (controlProps.contains("minimumValue"))
-			{
-				control.setMinValue(controlProps.getString("minimumValue"));
+			String minimumValue = controlProps.getString("minimumValue");
+			if (minimumValue != null) {
+				control.setMinValue(minimumValue);
 			}
-			if (controlProps.contains("maximumValue"))
-			{
-				control.setMaxValue(controlProps.getString("maximumValue"));
+			String maximumValue = controlProps.getString("maximumValue");
+			if (maximumValue != null) {
+				control.setMaxValue(maximumValue);
 			}
-			control.setCalculated(controlProps.getBoolean("isCalculated"));
+			control.setCalculated(controlProps.getBoolean("isAutoCalculate"));
 
 			return control;
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.NUMERIC_FIELD);
 			getTextFieldProperties(controlProps, (TextField) control);
 			controlProps.setProperty("noOfDigits", ((NumberField) control).getNoOfDigits());
-			controlProps.setProperty("noOfDigitsAfterDecimal",
-					((NumberField) control).getNoOfDigitsAfterDecimal());
-			/*controlProps.setProperty("minimumValue",
-					((NumberField) control).get);
-			controlProps.setProperty("maximumValue",
-					((NumberField) control).getNoOfDigitsAfterDecimal());*/
-			controlProps.setProperty("isCalculated", ((NumberField) control).isCalculated());
+			controlProps.setProperty("noOfDigitsAfterDecimal", ((NumberField) control).getNoOfDigitsAfterDecimal());
+			controlProps.setProperty("isAutoCalculate", ((NumberField) control).isCalculated());
 
 			return controlProps;
 		}
 	}
 
-	private class TextAreaMapper extends TextFieldControlMapper
-	{
+	/**
+	 * Mapper for Text area
+	 *
+	 */
+	private class TextAreaMapper extends TextFieldControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps)
-		{
+		public Control propertiesToControl(Properties controlProps) {
 			TextArea control = new TextArea();
 			setTextFieldProperties(controlProps, (TextField) control);
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.TEXT_AREA);
-			if (controlProps.contains("noOfRows"))
-			{
-				control.setNoOfRows(controlProps.getInteger("noOfRows"));
+			Integer noOfRows = controlProps.getInteger("noOfRows");
+			if (noOfRows != null) {
+				control.setNoOfRows(noOfRows);
 			}
 			return control;
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.TEXT_AREA);
 			getCommonProperties(controlProps, control);
@@ -196,12 +194,14 @@ public class ControlMapper
 		}
 	}
 
-	private class RadioButtonMapper extends DefaultControlMapper
-	{
+	/**
+	 * Mapper for Radio Button Control
+	 *
+	 */
+	private class RadioButtonMapper extends DefaultControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps) throws Exception
-		{
+		public Control propertiesToControl(Properties controlProps) throws Exception {
 			RadioButton control = new RadioButton();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
@@ -209,31 +209,30 @@ public class ControlMapper
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.RADIO_BUTTON);
 			getCommonProperties(controlProps, control);
-			PvMapper.pVDataSourcetoProperties(((RadioButton) control).getPvDataSource(),
-					controlProps);
+			PvMapper.pVDataSourcetoProperties(((RadioButton) control).getPvDataSource(), controlProps);
 			return controlProps;
 		}
 	}
 
-	private class CheckBoxMapper extends DefaultControlMapper
-	{
+	/**
+	 * Mapper for check box control
+	 *
+	 */
+	private class CheckBoxMapper extends DefaultControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps)
-		{
+		public Control propertiesToControl(Properties controlProps) {
 			CheckBox control = new CheckBox();
 			setCommonProperties(controlProps, control);
 			return control;
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.CHECK_BOX);
 			getCommonProperties(controlProps, control);
@@ -241,12 +240,14 @@ public class ControlMapper
 		}
 	}
 
-	private class ListBoxMapper extends DefaultControlMapper
-	{
+	/**
+	 * Mapper for list box
+	 *
+	 */
+	private class ListBoxMapper extends DefaultControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps) throws Exception
-		{
+		public Control propertiesToControl(Properties controlProps) throws Exception {
 			ListBox control = new ListBox();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
@@ -254,8 +255,7 @@ public class ControlMapper
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LIST_BOX);
 			getCommonProperties(controlProps, control);
@@ -264,12 +264,14 @@ public class ControlMapper
 		}
 	}
 
-	private class MultiSelectBoxMapper extends DefaultControlMapper
-	{
+	/**
+	 * Mapper for multi select box
+	 *
+	 */
+	private class MultiSelectBoxMapper extends DefaultControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps) throws Exception
-		{
+		public Control propertiesToControl(Properties controlProps) throws Exception {
 			MultiSelectListBox control = new MultiSelectListBox();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
@@ -277,23 +279,23 @@ public class ControlMapper
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.MULTISELECT_BOX);
 			getCommonProperties(controlProps, control);
-			PvMapper.pVDataSourcetoProperties(((MultiSelectListBox) control).getPvDataSource(),
-					controlProps);
+			PvMapper.pVDataSourcetoProperties(((MultiSelectListBox) control).getPvDataSource(), controlProps);
 			return controlProps;
 		}
 	}
 
-	private class MultiSelectCheckBoxMapper extends DefaultControlMapper
-	{
+	/**
+	 * Mapper for multi select check box
+	 *
+	 */
+	private class MultiSelectCheckBoxMapper extends DefaultControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps) throws Exception
-		{
+		public Control propertiesToControl(Properties controlProps) throws Exception {
 			MultiSelectCheckBox control = new MultiSelectCheckBox();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
@@ -301,34 +303,202 @@ public class ControlMapper
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.MULTISELECT_CHECK_BOX);
 			getCommonProperties(controlProps, control);
-			PvMapper.pVDataSourcetoProperties(((MultiSelectCheckBox) control).getPvDataSource(),
-					controlProps);
+			PvMapper.pVDataSourcetoProperties(((MultiSelectCheckBox) control).getPvDataSource(), controlProps);
 			return controlProps;
 		}
 	}
 
-	private class DatePickerMapper extends DefaultControlMapper
-	{
+	/**
+	 * Mapper for date picker
+	 *
+	 */
+	private class DatePickerMapper extends DefaultControlMapper {
 
 		@Override
-		public Control propertiesToControl(Properties controlProps)
-		{
+		public Control propertiesToControl(Properties controlProps) {
 			DatePicker control = new DatePicker();
 			setCommonProperties(controlProps, control);
-			control.setFormat(controlProps.getString("format"));
+			String format = controlProps.getString("format");
+			if (format != null) {
+				control.setFormat(displayFormatToActualFormat(format));
+			}
 			return control;
 		}
 
 		@Override
-		public Properties controlToProperties(Control control)
-		{
+		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.DATE_PICKER);
+			controlProps.setProperty("format", actualFormatToDisplayFormat(((DatePicker) control).getFormat()));
+			getCommonProperties(controlProps, control);
+			return controlProps;
+		}
+
+		/**
+		 * @param actualFormat
+		 * @return
+		 */
+		private String displayFormatToActualFormat(String displayFormat) {
+			String format = "";
+			if (displayFormat.equalsIgnoreCase("DATE")) {
+				format = "mm/dd/yyyy";
+				// get from locale
+			} else if (displayFormat.equalsIgnoreCase("DATE AND TIME")) {
+				format = "mm/dd/yyyy hh:mm:ss";
+			} else if (displayFormat.equalsIgnoreCase("MONTH AND YEAR")) {
+				format = "mm/yyyy";
+			} else if (displayFormat.equalsIgnoreCase("YEAR ONLY")) {
+				format = "yyyy";
+			}
+
+			return format;
+		}
+
+		/**
+		 * @param displayFormat
+		 * @return
+		 */
+		private String actualFormatToDisplayFormat(String actualFormat) {
+			String format = "";
+			if (actualFormat.equalsIgnoreCase("mm/dd/yyyy")) {
+				format = "DATE";
+			} else if (actualFormat.equalsIgnoreCase("mm/dd/yyyy hh:mm:ss")) {
+				format = "DATE AND TIME";
+			} else if (actualFormat.equalsIgnoreCase("mm/yyyy")) {
+				format = "MONTH AND YEAR";
+			} else if (actualFormat.equalsIgnoreCase("yyyy")) {
+				format = "YEAR ONLY";
+			}
+
+			return format;
+		}
+	}
+
+	/**
+	 * Mapper for file upload control
+	 *
+	 */
+	private class FileUploadMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) {
+			FileUploadControl control = new FileUploadControl();
+			setCommonProperties(controlProps, control);
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.FILE_UPLOAD);
+			getCommonProperties(controlProps, control);
+			return controlProps;
+		}
+	}
+
+	/**
+	 * Mapper for Note control
+	 *
+	 */
+	private class NoteMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) throws Exception {
+			Label control = new Label();
+			setCommonProperties(controlProps, control);
+			control.setNote(true);
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.NOTE);
+			getCommonProperties(controlProps, control);
+			return controlProps;
+		}
+	}
+
+	/**
+	 * Mapper for heading control
+	 *
+	 */
+	private class HeadingMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) throws Exception {
+			Label control = new Label();
+			setCommonProperties(controlProps, control);
+			control.setHeading(true);
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.HEADING);
+			getCommonProperties(controlProps, control);
+			return controlProps;
+		}
+	}
+
+	/**
+	 * Mapper for Sub Form control
+	 *
+	 */
+	private class SubFormMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) throws Exception {
+			SubFormControl control = new SubFormControl();
+			control.setNoOfEntries(-1);
+			setCommonProperties(controlProps, control);
+			//populate sub container.
+			Map<String, Object> subForm = controlProps.getMap("subForm");
+			subForm.put("formName", controlProps.getString(CSDConstants.CONTROL_NAME));
+			subForm.put("caption", controlProps.getString(CSDConstants.CONTROL_CAPTION));
+			if (subForm != null) {
+				Container subContainer = new ContainerMapper().propertiesToContainer(new Properties(subForm), false);
+				control.setSubContainer(subContainer);
+			}
+
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.SUB_FORM);
+			getCommonProperties(controlProps, control);
+			Container subContainer = ((SubFormControl) control).getSubContainer();
+			controlProps.setProperty("subFormName", subContainer.getName());
+			controlProps.setProperty("subForm", new ContainerMapper().containerToProperties(subContainer)
+					.getAllProperties());
+			return controlProps;
+		}
+	}
+
+	/**
+	 * Mapper for Label control
+	 *
+	 */
+	private class LabelMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) throws Exception {
+			Label control = new Label();
+			setCommonProperties(controlProps, control);
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LABEL);
 			getCommonProperties(controlProps, control);
 			return controlProps;
 		}

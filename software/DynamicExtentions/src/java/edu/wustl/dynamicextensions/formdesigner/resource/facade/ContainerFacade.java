@@ -7,8 +7,7 @@ import edu.wustl.dynamicextensions.formdesigner.mapper.ContainerMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ControlMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 
-public class ContainerFacade
-{
+public class ContainerFacade {
 
 	private Container container = null;
 	private static ContainerMapper containerMapper = new ContainerMapper();
@@ -16,8 +15,7 @@ public class ContainerFacade
 	/**
 	 * @param container
 	 */
-	private ContainerFacade(Container container)
-	{
+	private ContainerFacade(Container container) {
 		this.container = container;
 	}
 
@@ -26,22 +24,19 @@ public class ContainerFacade
 	 * @return
 	 * @throws Exception 
 	 */
-	public static ContainerFacade createContainer(Properties containerProps) throws Exception
-	{
-		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps));
+	public static ContainerFacade createContainer(Properties containerProps) throws Exception {
+		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, true));
 	}
 
-	public void updateContainer(Properties containerProps) throws Exception
-	{
-		containerMapper.propertiesToContainer(containerProps, container);
+	public void updateContainer(Properties containerProps) throws Exception {
+		containerMapper.propertiesToContainer(containerProps, container, true);
 	}
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public static ContainerFacade loadContainer(Long id)
-	{
+	public static ContainerFacade loadContainer(Long id) {
 		Container newContainer = Container.getContainer(id);
 
 		return new ContainerFacade(newContainer);
@@ -51,8 +46,7 @@ public class ContainerFacade
 	 * @param controlProps
 	 * @throws Exception 
 	 */
-	public void createControl(Properties controlProps) throws Exception
-	{
+	public void createControl(Properties controlProps) throws Exception {
 		Control control = new ControlMapper().propertiesToControl(controlProps);
 		container.addControl(control);
 	}
@@ -60,24 +54,28 @@ public class ContainerFacade
 	/**
 	 * @param control
 	 */
-	public void deleteControl(String controlName)
-	{
+	public void deleteControl(String controlName) {
 		container.deleteControl(controlName);
 	}
 
 	/**
 	 * 
 	 */
-	public void persistContainer()
-	{
+	public void persistContainer() {
 		container.save(null);
 	}
 
 	/**
 	 * @return
 	 */
-	public Properties getProperties()
-	{
+	public String getHTML() {
+		return container.render();
+	}
+
+	/**
+	 * @return
+	 */
+	public Properties getProperties() {
 		return containerMapper.containerToProperties(container);
 	}
 

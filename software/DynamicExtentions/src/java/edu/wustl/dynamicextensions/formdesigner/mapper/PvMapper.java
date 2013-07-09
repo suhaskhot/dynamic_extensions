@@ -1,13 +1,16 @@
 
 package edu.wustl.dynamicextensions.formdesigner.mapper;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import au.com.bytecode.opencsv.CSVReader;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
@@ -15,35 +18,42 @@ import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.PvDataSource.Ordering;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
 
-public class PvMapper
-{
+public class PvMapper {
 
-	@SuppressWarnings("unchecked")
-	public static PvDataSource propertiesToPvDataSource(Properties controlProperties)
-			throws IOException
-	{
+	public static PvDataSource propertiesToPvDataSource(Properties controlProperties) throws IOException {
 		PvDataSource pvDataSource = new PvDataSource();
-		if (controlProperties.contains("dataType"))
-		{
-			pvDataSource.setDataType(controlProperties.getDataType("dataType"));
-		}
-		else
-		{
+
+		DataType dataType = controlProperties.getDataType("dataType");
+		if (dataType != null) {
+			pvDataSource.setDataType(dataType);
+		} else {
 			pvDataSource.setDataType(DataType.STRING);
 		}
+
 		pvDataSource.setOrdering(Ordering.ASC);
 		PvVersion pvVersion = new PvVersion();
 		List<PermissibleValue> pvList = new ArrayList<PermissibleValue>();
-		if (controlProperties.contains("pvs"))
-		{
-			CSVReader csvReader = new CSVReader(
-					new StringReader(controlProperties.getString("pvs")));
-			List<String[]> pvData = csvReader.readAll();
-			for (String[] pv : pvData)
-			{
-				getPermissibleValueFromArray(pvList, pv);
+
+		// process permissible values from grid.
+		Collection<Map<String, Object>> pvs = controlProperties.getListOfMap("pvs");
+		if (pvs != null) {
+
+			for (Map<String, Object> pvProperties : pvs) {
+				Properties properties = new Properties(pvProperties);
+				pvList.add(propertiesToPv(properties));
 			}
 		}
+
+		// process permissible values from uploaded file.
+		String pvFile = controlProperties.getString("pvFile");
+		if (pvFile != null) {
+			CSVReader csvReader = new CSVReader(new FileReader(new File(pvFile)));
+			String[] csvData;
+			while ((csvData = csvReader.readNext()) != null) {
+				pvList.add(getPvFromFileData(csvData));
+			}
+		}
+
 		pvVersion.setActivationDate(new Date());
 		pvVersion.setPermissibleValues(pvList);
 		pvDataSource.setPvVersions(Arrays.asList(pvVersion));
@@ -51,44 +61,72 @@ public class PvMapper
 	}
 
 	/**
+	 * @param csvData
+	 * @return
+	 * @throws NumberFormatException
+	 */
+	private static PermissibleValue getPvFromFileData(String[] csvData) throws NumberFormatException {
+		PermissibleValue pv = new PermissibleValue();
+		if (!csvData[0].isEmpty()) {
+			pv.setValue(csvData[0]);
+		}
+		// add validation check for is a number
+		if (!csvData[1].isEmpty()) {
+			pv.setNumericCode(Long.parseLong(csvData[1]));
+		}
+		if (!csvData[2].isEmpty()) {
+			pv.setOptionName(csvData[2]);
+		}
+		if (!csvData[3].isEmpty()) {
+			pv.setDefinitionSource(csvData[3]);
+		}
+		if (!csvData[4].isEmpty()) {
+			pv.setConceptCode(csvData[4]);
+		}
+		return pv;
+	}
+
+	/**
+	 * @param properties
+	 * @return
+	 */
+	private static PermissibleValue propertiesToPv(Properties properties) {
+		PermissibleValue pv = new PermissibleValue();
+		pv.setConceptCode(properties.getString("conceptCode"));
+		pv.setDefinitionSource(properties.getString("definitionSource"));
+		pv.setNumericCode(properties.getLong("numericCode"));
+		pv.setOptionName(properties.getString("definition"));
+		pv.setValue(properties.getString("value"));
+		return pv;
+	}
+
+	/**
 	 * @param pvDataSource
 	 * @return
 	 */
-	public static void pVDataSourcetoProperties(PvDataSource pvDataSource, Properties controlProps)
-	{
-
-		StringBuilder pvData = new StringBuilder("");
-		for (PvVersion pvVer : pvDataSource.getPvVersions())
-		{
-			for (PermissibleValue pv : pvVer.getPermissibleValues())
-			{
-				pvData.append(",").append(pv.getOptionName());
+	public static void pVDataSourcetoProperties(PvDataSource pvDataSource, Properties controlProps) {
+		List<Map<String, Object>> pvList = new ArrayList<Map<String, Object>>();
+		for (PvVersion pvVer : pvDataSource.getPvVersions()) {
+			for (PermissibleValue pv : pvVer.getPermissibleValues()) {
+				pvList.add(pvToProperties(pv));
 			}
 		}
-		pvData = new StringBuilder(pvData.toString().replaceFirst(",", ""));
-		controlProps.setProperty("pvs", pvData.toString());
+		controlProps.setProperty("pvs", pvList);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}
 
 	/**
-	 * @param pvList
 	 * @param pv
-	 * @throws NumberFormatException
+	 * @return
 	 */
-	private static void getPermissibleValueFromArray(List<PermissibleValue> pvList, String[] pv)
-			throws NumberFormatException
-	{
-		for (String value : pv)
-		{
-			value = value.trim();
-			if (!value.equalsIgnoreCase(""))
-			{
-				PermissibleValue permissibleValue = new PermissibleValue();
-				permissibleValue.setValue(value);
-				permissibleValue.setOptionName(value);
-				pvList.add(permissibleValue);
-			}
-		}
+	private static Map<String, Object> pvToProperties(PermissibleValue pv) {
+		Map<String, Object> pvProperties = new HashMap<String, Object>();
+		pvProperties.put("value", pv.getValue());
+		pvProperties.put("numericCode", pv.getNumericCode());
+		pvProperties.put("conceptCode", pv.getConceptCode());
+		pvProperties.put("definitionSource", pv.getDefinitionSource());
+		pvProperties.put("definition", pv.getOptionName());
+		return pvProperties;
 	}
 
 }

@@ -1,8 +1,10 @@
 
 package edu.wustl.dynamicextensions.formdesigner.resource;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +18,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.dao.HibernateDAO;
@@ -28,6 +32,7 @@ import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 import edu.wustl.dynamicextensions.formdesigner.resource.facade.ContainerFacade;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
+import edu.wustl.dynamicextensions.formdesigner.utility.Utility;
 
 @Path("/form")
 public class Form
@@ -54,43 +59,46 @@ public class Form
 	public String createForm(String formJson, final @Context HttpServletRequest request,
 			@Context HttpServletResponse response) throws JSONException
 	{
-		System.out.println(formJson);
+
 		JSONObject formJSON = new JSONObject();
 		String jsonResponseString = "";
+
 		try
 		{
 			Properties formProps = new Properties(new ObjectMapper().readValue(formJson,
 					HashMap.class));
+			ContainerFacade containerFacade = ContainerFacade.createContainer(formProps);
+			request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
+			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, containerFacade);
+			String save = formProps.getString("save");
 
-			if (request.getSession().getAttribute(CONTAINER_SESSION_ATTR) == null)
+			if (save.equalsIgnoreCase("yes"))
 			{
-				ContainerFacade form = ContainerFacade.createContainer(formProps);
-				request.getSession().setAttribute(CONTAINER_SESSION_ATTR, form);
-				/*formJSON.put("status", "success");
-				jsonResponseString = formJSON.toString();*/
+				intializeDao();
+				containerFacade.persistContainer();
+				commitDao();
 			}
-			/*else
-			{*/
-			intializeDao();
-			ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
-					CONTAINER_SESSION_ATTR);
-			containerFacade.persistContainer();
-			commitDao();
+
 			formProps = containerFacade.getProperties();
 			formProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
 			Writer strWriter = new StringWriter();
 			new ObjectMapper().writeValue(strWriter, formProps.getAllProperties());
 			jsonResponseString = strWriter.toString();
-			//}
+
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
 			formJSON.put("status", "error");
 			jsonResponseString = formJSON.toString();
+		}
+		finally
+		{
 			closeDao();
 		}
+
 		return jsonResponseString;
+
 	}
 
 	/**
@@ -133,6 +141,36 @@ public class Form
 	}
 
 	/**
+	 * Renders preview
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws JSONException
+	 */
+	@Path("/preview")
+	@GET
+	@Produces(MediaType.TEXT_HTML)
+	public String getPreview(final @Context HttpServletRequest request,
+			@Context HttpServletResponse response) throws JSONException
+	{
+		try
+		{
+			ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
+					CONTAINER_SESSION_ATTR);
+			return containerFacade.getHTML();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			return "Error";
+		}
+		finally
+		{
+			//request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
+		}
+	}
+
+	/**
 	 * Edit a Form
 	 * @param formJson
 	 * @param request
@@ -148,15 +186,18 @@ public class Form
 	{
 		try
 		{
-			intializeDao();
 			Properties formProps = new Properties(new ObjectMapper().readValue(formJson,
 					HashMap.class));
+			String save = formProps.getString("save");
 			((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
 					.updateContainer(formProps);
-			((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
-					.persistContainer();
-			commitDao();
-
+			if (save.equalsIgnoreCase("yes"))
+			{
+				intializeDao();
+				((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
+						.persistContainer();
+				commitDao();
+			}
 			Writer strWriter = new StringWriter();
 			new ObjectMapper().writeValue(strWriter, ((ContainerFacade) request.getSession()
 					.getAttribute(CONTAINER_SESSION_ATTR)).getProperties().getAllProperties());
@@ -193,6 +234,40 @@ public class Form
 	}
 
 	/**
+	 * upload permissible values
+	 * @param uploadedInputStream
+	 * @param fileDetail
+	 * @return
+	 */
+	@POST
+	@Path("/permissibleValues")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail)
+	{
+		String output = "{\"status\" : \"error\"}";
+		try
+		{
+			// get temp location programatically.
+			if (fileDetail.getFileName() != null)
+			{
+				String uploadedFileLocation = "/tmp/" + new Date().getTime()
+						+ fileDetail.getFileName();
+				Utility.saveStreamToFileInTemp(uploadedInputStream, uploadedFileLocation);
+				output = "{\"status\": \"saved\", \"file\" : \"" + uploadedFileLocation + "\"}";
+			}
+		}
+		catch (Exception ex)
+		{
+			return output;
+		}
+
+		return output;
+
+	}
+
+	/**
 	 * @throws DAOException
 	 */
 	private void commitDao() throws DAOException
@@ -226,103 +301,4 @@ public class Form
 		jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 		hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
 	}
-
-	/*
-	@SuppressWarnings("unchecked")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/control")
-	public String createControl(String controlJson, @Context HttpServletRequest request)
-			throws JSONException
-	{
-		JSONObject controlJSON = new JSONObject();
-		try
-		{
-			Map<String, Object> controlProps = new ObjectMapper().readValue(controlJson,
-					HashMap.class);
-
-			if (request.getSession().getAttribute(CONTAINER_SESSION_ATTR) == null)
-			{
-				controlJSON.put("status", "failed");
-				return controlJSON.toString();
-			}
-			else
-			{
-				((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
-						.createControl(controlProps);
-			}
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-			controlJSON.put("status", "failed");
-			return controlJSON.toString();
-		}
-
-		controlJSON.put("status", "success");
-		return controlJSON.toString();
-	}
-
-	@GET
-	@Path("/control/{name}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getControl(@PathParam("name") String name,
-			final @Context HttpServletRequest request, @Context HttpServletResponse response)
-	{
-		System.out.println("findByName " + name);
-		try
-		{
-			if (request.getSession().getAttribute(CONTAINER_SESSION_ATTR) == null)
-			{
-				return "{'status' : 'error'}";
-			}
-			else
-			{
-				Map<String, Object> propsMap = ((ContainerFacade) request.getSession()
-						.getAttribute(CONTAINER_SESSION_ATTR)).getControlProperties(name,
-						CSDConstants.STRING_TEXT_FIELD);
-				propsMap.put("status", "success");
-				Writer strWriter = new StringWriter();
-				new ObjectMapper().writeValue(strWriter, propsMap);
-				return strWriter.toString();
-			}
-		}
-		catch (Exception ex)
-		{
-			return "{'status' : 'error'}";
-		}
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@PUT
-	@Path("/control/{name}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String editControl(String controlJson, @PathParam("name") String name,
-			final @Context HttpServletRequest request, @Context HttpServletResponse response)
-	{
-		System.out.println("findByName " + name);
-		try
-		{
-			Map<String, Object> controlProps = new ObjectMapper().readValue(controlJson,
-					HashMap.class);
-			((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
-					.editControl(name, controlProps);
-			controlProps.put("status", "success");
-
-			Writer strWriter = new StringWriter();
-			new ObjectMapper().writeValue(strWriter, ((ContainerFacade) request.getSession()
-					.getAttribute(CONTAINER_SESSION_ATTR)).getControlProperties(name,
-					CSDConstants.STRING_TEXT_FIELD));
-			return strWriter.toString();
-
-		}
-		catch (Exception ex)
-		{
-			return "{'status' : 'error'}";
-		}
-
-	}*/
 }

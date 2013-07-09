@@ -2364,15 +2364,7 @@
 					<url-pattern>/ImportPVAction.de</url-pattern>
 				</servlet-mapping>
 
-				<servlet>
-					<servlet-name>LoadDisplayFormDataInGrid</servlet-name>
-					<servlet-class>edu.common.dynamicextensions.action.core.LoadDisplayFormDataInGridAction</servlet-class>
-				</servlet>
-				<servlet-mapping>
-					<servlet-name>LoadDisplayFormDataInGrid</servlet-name>
-					<url-pattern>/LoadDisplayFormDataInGrid.de</url-pattern>
-				</servlet-mapping>
-
+				
 				<servlet>
 					<servlet-name>UploadFile</servlet-name>
 					<servlet-class>edu.common.dynamicextensions.action.core.UploadFile</servlet-class>
@@ -2452,14 +2444,6 @@
 					<url-pattern>/UpdateServerStateAction</url-pattern>
 				</servlet-mapping>
 				
-				<servlet>
-					<servlet-name>DisplayFormDataInGrid</servlet-name>
-					<servlet-class>edu.common.dynamicextensions.action.core.DisplayFormDataInGridAction</servlet-class>
-				</servlet>
-				<servlet-mapping>
-					<servlet-name>DisplayFormDataInGrid</servlet-name>
-					<url-pattern>/DisplayFormDataInGrid</url-pattern>
-				</servlet-mapping>
 
 				<servlet>
 					<servlet-name>DeleteRecordEntryAction</servlet-name>

@@ -10,7 +10,6 @@
 package edu.common.dynamicextensions.bizlogic;
 
 import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
-import edu.wustl.common.bizlogic.AbstractBizLogic;
 import edu.wustl.common.bizlogic.DefaultBizLogic;
 
 /**
@@ -49,28 +48,4 @@ public class BizLogicFactory
 	{
 		return new DefaultBizLogic(DynamicExtensionDAO.getInstance().getAppName());
 	}
-
-	/**
-	 * Returns DAO instance according to the fully qualified class name.
-	 * @param className The name of the class.
-	 * @return An AbstractDAO object.
-	 */
-	public static AbstractBizLogic getBizLogic(String className)
-	{
-		AbstractBizLogic bizLogic;
-		if("edu.common.dynamicextensions.bizlogic.RecordEntryBizLogic".equals(className))
-		{
-			bizLogic = new RecordEntryBizLogic();
-		}
-		else if("edu.common.dynamicextensions.bizlogic.FormObjectGridDataBizLogic".equals(className))
-		{
-			bizLogic = new FormObjectGridDataBizLogic();
-		}
-		else
-		{
-			bizLogic = getDefaultBizLogic();
-		}
-		return bizLogic;
-	}
-
 }

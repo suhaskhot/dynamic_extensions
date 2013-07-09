@@ -5,7 +5,7 @@ package edu.common.dynamicextensions.domain.nui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -567,7 +567,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	 * @return container HTML
 	 */
 	public String render() {
-		Map<ContextParameter, String> contextParameter = Collections.emptyMap();
+		Map<ContextParameter, String> contextParameter = new HashMap<ContextParameter, String>();
+		contextParameter.put(ContextParameter.MODE,
+				WebUIManagerConstants.EDIT_MODE);
 		return render(contextParameter, new FormData(this));
 	}
 

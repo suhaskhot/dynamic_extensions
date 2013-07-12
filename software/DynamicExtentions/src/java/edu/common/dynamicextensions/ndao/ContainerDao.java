@@ -37,7 +37,7 @@ public class ContainerDao {
 	
 	private static final String GET_CONTAINER_INFO_BY_CREATOR_SQL = 
 			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
-			"WHERE CREATED_BY = ?";
+			"FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ?";
 	
 	private JdbcDao jdbcDao = null;
 	

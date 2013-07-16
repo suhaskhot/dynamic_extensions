@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
@@ -145,7 +147,11 @@ public class Page extends DynamicExtensionBaseDomainObject {
 
 	public String render(FormData formData, Map<ContextParameter, String> contextParamater) {
 
-		String pageTitle = String.format(PAGE_TITLE, caption);
+		String pageTitle = StringUtils.EMPTY;
+
+		if (caption != null) {
+			pageTitle = String.format(PAGE_TITLE, caption);
+		}
 
 		StringBuilder html = new StringBuilder();
 

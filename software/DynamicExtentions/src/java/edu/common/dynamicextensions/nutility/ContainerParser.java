@@ -593,6 +593,7 @@ public class ContainerParser {
 		ctrl.setShowInGrid(getBooleanValue(ctrlEle, "showInGrid"));
 		ctrl.setShowLabel(getBooleanValue(ctrlEle, "showLabel", true));
 		ctrl.setSequenceNumber(currentRow);
+		ctrl.setConceptCode(getTextValue(ctrlEle, "conceptCode", null));
 		ctrl.setxPos(i);
 	}
 

@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 
@@ -155,5 +157,34 @@ public abstract class SelectControl extends Control {
 			permissibleValues = getPvDataSource().getPermissibleValues(encounterDate);
 		}
 		return permissibleValues;
+	}
+
+	@Override
+	public Set<String> getAllConceptCodes() {
+		Set<String> conceptCodeCollection = new HashSet<String>();
+		for (PermissibleValue permissibleValue : getPvs()) {
+				conceptCodeCollection.add(permissibleValue.getConceptCode());
+		}
+		return conceptCodeCollection;
+	}
+
+	public String getPvAsStringByConceptCode(String conceptCode) {
+		return getPvAsStringByConceptCode(conceptCode, Calendar.getInstance().getTime());
+
+	}
+
+	public String getPvAsStringByConceptCode(String conceptCode, Date activationDate) {
+
+		String pvString = null;
+
+		for (PermissibleValue permissibleValue : getPvs(activationDate)) {
+
+			if (conceptCode.equals(permissibleValue.getConceptCode())) {
+				pvString = permissibleValue.getValue();
+				break;
+			}
+		}
+		return pvString;
+
 	}
 }

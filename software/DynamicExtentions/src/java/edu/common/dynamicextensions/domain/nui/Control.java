@@ -543,6 +543,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	}
 
 	public List<String> validate(ControlValue controlValue) {
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
+	}
+
+	public Set<String> getAllConceptCodes() {
+		if (conceptCode != null && !conceptCode.isEmpty()) {
+			return Collections.singleton(conceptCode);
+		}
+		return Collections.emptySet();
 	}
 }

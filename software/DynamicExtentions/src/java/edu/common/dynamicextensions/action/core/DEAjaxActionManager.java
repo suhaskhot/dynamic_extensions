@@ -218,10 +218,10 @@ public class DEAjaxActionManager
 	public String generateRowHTML(HttpServletRequest request) {
 		Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request,
 				DEConstants.FORM_DATA_STACK);
-		Long subformId = Long.valueOf(request.getParameter(WebUIManagerConstants.CONTAINER_IDENTIFIER));
+		String subformName = request.getParameter(WebUIManagerConstants.CONTAINER_IDENTIFIER);
 
 		FormData mainFormData = formDataStack.peek();
-		SubFormControl addMore = mainFormData.getContainer().getSubFormControl(subformId);
+		SubFormControl addMore = mainFormData.getContainer().getSubFormControl(subformName);
 
 		Map<ContextParameter, String> contextParameter = (Map<ContextParameter, String>) CacheManager
 				.getObjectFromCache(request, FormRenderer.CONTEXT_INFO);
@@ -231,6 +231,10 @@ public class DEAjaxActionManager
 		FormData subFormData = new FormData(subForm);
 
 		List<FormData> subformValue = (List<FormData>) mainFormData.getFieldValue(addMore.getName()).getValue();
+
+		if (subformValue == null) {
+			subformValue = new ArrayList<FormData>();
+		}
 		subformValue.add(subFormData);
 		return subForm.getContainerHTMLAsARow(rowId, subFormData, contextParameter);
 

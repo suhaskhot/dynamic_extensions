@@ -765,9 +765,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			boolean isPasteEnable, boolean showCaption) {
 		StringBuffer htmlForGrid = new StringBuffer(1404);
 		htmlForGrid.append("<input type='hidden' name='");
-		htmlForGrid.append(id);
+		htmlForGrid.append(name);
 		htmlForGrid.append("_rowCount' id= '");
-		htmlForGrid.append(id);
+		htmlForGrid.append(name);
 		htmlForGrid.append("_rowCount' value='");
 		htmlForGrid.append((formDataList != null ? formDataList.size() : 0));
 		htmlForGrid.append("'/>");
@@ -785,9 +785,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		if (isPasteEnable && WebUIManagerConstants.EDIT_MODE.equals(dataEntryOperation)) {
 			htmlForGrid.append("<tr> <td width='59'><input type='button' " + "style='border: 0px; background-image: "
 							+ "url(images/de/b_paste.gif);height: 20px; width: 59px;'" + "align='middle'  id='paste_")
-					.append(id)
+					.append(name)
 					.append("' onclick='pasteData(\"")
-					.append(id)
+					.append(name)
 					.append("\",\"many\")'/> </td><td class='formField_withoutBorder'"
 					+ " style='background-color:#E3E2E7;' width='100%'>&nbsp;</td>"
 					+ "</tr> <tr width='100%'><td colspan='3' width='100%'>");
@@ -804,7 +804,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 		htmlForGrid
 				.append("<table id='")
-				.append(id)
+				.append(name)
 				.append("_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'><tr width='100%' class='formLabel_withoutBorder'><th width='1%'>&nbsp;</th>");
 
 		//4: update table headings 
@@ -840,19 +840,19 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			}
 		}
 
-		htmlForGrid.append("</table> <div id='wrapper_div_").append(id).append("' > &nbsp;</div>");
+		htmlForGrid.append("</table> <div id='wrapper_div_").append(name).append("' > &nbsp;</div>");
 
 		//6: add buttons to the grid
 		if (dataEntryOperation.equals("edit")) {
 			htmlForGrid
 					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'>"
 							+ "<input type='button' style='border: 0px; background-image: url(images/de/b_delete.gif); height: 20px; width: 59px;' align='middle' onClick=\"removeCheckedRow('")
-					.append(id)
+					.append(name)
 					.append("');" + "\" id='btnDelete")
-					.append(id)
+					.append(name)
 					.append("'/></td><td align='right'>"
 							+ "<input type='button' style='border: 0px; background-image: url(images/de/b_add_more.gif); height: 20px; width: 76px;' align='middle' onClick=\"addRow('")
-					.append(id).append("')\" id='btnAddMore").append(id).append("'/>" + "</td></tr></table>");
+					.append(name).append("')\" id='btnAddMore").append(name).append("'/>" + "</td></tr></table>");
 
 		}
 
@@ -1000,7 +1000,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return ctrl;
 	}
 
-	public SubFormControl getSubFormControl(Long subformId) {
+	public SubFormControl getSubFormControl(String name) {
 
 		SubFormControl subFormControl = null;
 		for (Control control : getControls()) {
@@ -1008,7 +1008,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				continue;
 			}
 			SubFormControl sfCtl = (SubFormControl) control;
-			if (subformId.equals(sfCtl.getSubContainer().getId())) {
+			if (name.equals(sfCtl.getSubContainer().getName())) {
 				subFormControl = sfCtl;
 				break;
 			}
@@ -1016,6 +1016,5 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		return subFormControl;
 	}
-	
 	
 }

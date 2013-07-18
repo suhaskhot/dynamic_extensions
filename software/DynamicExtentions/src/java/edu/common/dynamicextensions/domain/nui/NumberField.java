@@ -215,7 +215,7 @@ public class NumberField extends TextField {
 		}
 		BigDecimal numberValue = (BigDecimal) value;
 		numberValue = numberValue.setScale(noOfDigitsAfterDecimal, RoundingMode.HALF_UP).stripTrailingZeros();
-		return numberValue.toString();
+		return numberValue.toPlainString();
 	}
 
 }

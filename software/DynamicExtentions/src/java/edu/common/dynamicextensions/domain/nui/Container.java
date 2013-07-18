@@ -877,7 +877,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		contHtmlAsARow.append("<tr width='100%' class='").append(rowClass).append("'><td width='1%'>");
 
-		if (WebUIManagerConstants.EDIT_MODE.equals(contextParameter.get(ContextParameter.MODE))) {
+		if (contextParameter != null
+				&& WebUIManagerConstants.EDIT_MODE.equals(contextParameter.get(ContextParameter.MODE))) {
 			contHtmlAsARow.append("<input type='checkbox' name='deleteRow' value='' " + "id='checkBox_")
 					.append(getId()).append('_').append(rowId).append("'/>");
 		} else {

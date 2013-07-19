@@ -139,8 +139,8 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 	}
 
 	@Override
-	public int getRowCount(Long containerId) {
-		String parameterString = containerId + ROW_COUNT;
+	public int getRowCount(String containerName) {
+		String parameterString = containerName + ROW_COUNT;
 		String rowCountString = request.getParameter(parameterString);
 		int rowCount = 0;
 		if (rowCountString != null) {

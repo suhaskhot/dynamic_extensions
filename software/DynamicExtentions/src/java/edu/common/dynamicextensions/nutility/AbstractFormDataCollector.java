@@ -38,7 +38,7 @@ public abstract class AbstractFormDataCollector implements FormDataCollector {
 						: (List<FormData>) controlValue);
 				if (subformControl.isCardinalityOneToMany()) {
 
-					for (int i = 1; i <= getRowCount(subformControl.getSubContainer().getId()); i++) {
+					for (int i = 1; i <= getRowCount(subformControl.getSubContainer().getName()); i++) {
 						FormData subformData = null;
 						if (subformDataList.size() < i) {
 							subformData = new FormData(subformControl.getSubContainer());
@@ -79,10 +79,10 @@ public abstract class AbstractFormDataCollector implements FormDataCollector {
 	}
 
 	/**
-	 * @param containerId
+	 * @param string
 	 * @return total number of rows for a given containerId of a sub form
 	 */
-	abstract int getRowCount(Long containerId);
+	abstract int getRowCount(String string);
 
 	protected abstract void collectControlValue(FormData formData, Control control, Integer rowId);
 }

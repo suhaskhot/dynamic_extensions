@@ -2,7 +2,7 @@ package edu.common.dynamicextensions.napi;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class FormData {
 	
 	private Long recordId;
 	
-	private Map<String, ControlValue> fieldValues = new HashMap<String, ControlValue>();
+	private Map<String, ControlValue> fieldValues = new LinkedHashMap<String, ControlValue>();
 
 	public FormData(Container container) {
 		this.container = container;

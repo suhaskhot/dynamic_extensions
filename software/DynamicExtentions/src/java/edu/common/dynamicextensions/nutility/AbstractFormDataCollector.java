@@ -25,7 +25,11 @@ public abstract class AbstractFormDataCollector implements FormDataCollector {
 	protected void collectFormData(FormData formData, Integer rowId, boolean collectsubformData) {
 
 		for (Control control : formData.getContainer().getControls()) {
-			if (control instanceof SubFormControl && collectsubformData) {
+			if (control instanceof SubFormControl) {
+				
+				if (!collectsubformData) {
+					continue;
+				}
 				SubFormControl subformControl = (SubFormControl) control;
 
 				Object controlValue = formData.getFieldValue(subformControl.getName()).getValue();

@@ -34,7 +34,7 @@
 </style>
 
 <script src="<%=request.getContextPath()%>/javascripts/de/prototype.js"></script>
-<script src="<%=request.getContextPath()%>/javascripts/de/jquery-1.3.2.js"></script>
+<script src="<%=request.getContextPath()%>/javascripts/de/jquery-1.8.3.min.js"></script>
 <script src="<%=request.getContextPath()%>/javascripts/de/calendarComponent.js"></script>
 <script src="<%=request.getContextPath()%>/javascripts/de/script.js"></script>
 <script src="<%=request.getContextPath()%>/javascripts/de/form_plugin.js"></script>
@@ -104,7 +104,6 @@
 					<input type="hidden" value="${param.pageId}" id="pageId"/>				
 				</c:if>	
 				<input type="hidden" id="isDraft" name="isDraft" value="false"/>
-				<input type="hidden" id="dataEntryOperation" name="dataEntryOperation" value="insertChildData"/>
 				<input type="hidden" id="containerIdentifier" name="containerIdentifier" value="${param.containerIdentifier}"/>
 				<input type="hidden" id="formLabel" name="formLabel" value="${param.formLabel}"/>
 				<input type="hidden" id="updateResponse" name="updateResponse" value="${param.updateResponse}"/>

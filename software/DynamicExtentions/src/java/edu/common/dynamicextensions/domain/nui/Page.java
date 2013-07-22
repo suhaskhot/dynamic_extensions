@@ -4,8 +4,11 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -155,7 +158,10 @@ public class Page extends DynamicExtensionBaseDomainObject {
 
 		StringBuilder html = new StringBuilder();
 
-		for (Control control : getControls()) {
+		List<Control> controls = new ArrayList<Control>(getControls());
+		Collections.sort(controls);
+
+		for (Control control : controls) {
 			ControlValue fieldValue = formData.getFieldValue(control.getName());
 			html.append(getControlHTML(control, fieldValue, contextParamater));
 		}

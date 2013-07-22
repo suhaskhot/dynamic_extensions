@@ -8,9 +8,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
-import edu.common.dynamicextensions.domain.nui.Label;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
-import edu.wustl.cab2b.common.exception.RuntimeException;
 
 public class FormData {
 	private Container container;
@@ -179,33 +177,4 @@ public class FormData {
 		return fieldValue;
 
 	}
-
-	public int getEmptyControlCount() {
-		int countrolCount = 0;
-
-		for (Control control : getContainer().getControls()) {
-			ControlValue fieldValue = getFieldValue(control.getName());
-			if (control instanceof Label) {
-				continue;
-			}
-			if (!fieldValue.isHidden() && !fieldValue.isReadOnly() && fieldValue.isEmpty() == true) {
-				countrolCount++;
-			}
-		}
-		return countrolCount;
-	}
-
-	public int getFilledControlCount() {
-		int countrolCount = 0;
-		
-		for (Control control : getContainer().getControls()) {
-			ControlValue fieldValue = getFieldValue(control.getName());
-
-			if (!fieldValue.isHidden() && !fieldValue.isReadOnly()) {
-				countrolCount++;
-			}
-		}
-		return countrolCount;
-	}
-
 }

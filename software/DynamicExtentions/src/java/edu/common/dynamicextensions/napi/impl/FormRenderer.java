@@ -9,13 +9,13 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.nui.Container;
-import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.LayoutRenderer;
+import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -61,45 +61,11 @@ public class FormRenderer implements LayoutRenderer {
 	@Override
 	public String render() {
 
-		evaluateSkipLogic(container, formDataStack.peek(), formDataStack.peek(), true);
+		FormDataUtility.evaluateSkipLogic(formDataStack.peek());
 		return container.render(contextParameter, formDataStack.peek());
 
 	}
 
-	/**
-	 * Evaluates skip logic for all the controls 
-	 * @param container
-	 * @param tgtCtlFormData containing target control value
-	 * @param srcCtlFormData containing source control value
-	 * @param evaulateSubform to decide whether next level subform skip logic is to be evaluated or not
-	 */
-	private void evaluateSkipLogic(Container container, FormData tgtCtlFormData, FormData srcCtlFormData,
-			boolean evaulateSubform) {
-		for (Control control : container.getControls()) {
-			ControlValue controlValue = tgtCtlFormData.getFieldValue(control.getName());
-			if (control.isSkipLogicTargetControl()) {
-				control.evaluateSkipLogic(controlValue, srcCtlFormData);
-			}
-			if (control instanceof SubFormControl && evaulateSubform) {
-				evaluateSubformSkipLogic((SubFormControl) control, controlValue);
-			}
-		}
-
-	}
-
-	private void evaluateSubformSkipLogic(SubFormControl subFormControl, ControlValue controlValue) {
-		if (controlValue.getValue() != null && ((List<FormData>) controlValue.getValue()).size() > 0) {
-			List<FormData> formDatas = (List<FormData>) controlValue.getValue();
-			if (subFormControl.isCardinalityOneToMany()) {
-				for (FormData data : formDatas) {
-					evaluateSkipLogic(subFormControl.getSubContainer(), data, data, false);
-				}
-			} else {
-				evaluateSkipLogic(subFormControl.getSubContainer(), formDatas.get(0), formDataStack.peek(), false);
-			}
-
-		}
-	}
 	/**
 	 * Initialises the sate of the form depending on the record Id and whether a main form or a subform is opened 
 	 */

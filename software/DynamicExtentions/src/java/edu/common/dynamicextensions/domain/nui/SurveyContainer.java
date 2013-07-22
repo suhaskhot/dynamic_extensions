@@ -7,6 +7,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
+import edu.common.dynamicextensions.nutility.FormDataUtility;
 
 public class SurveyContainer extends Container {
 
@@ -88,8 +89,8 @@ public class SurveyContainer extends Container {
 	private String renderHiddenInputs(FormData formData) throws NumberFormatException {
 		String containerIdentifier = String.format(CONTAINER_ID, getId());
 		String formCaption = String.format(FORM_CAPTION, getCaption());
-		String controlsCount = String.format(CONTROL_COUNT, formData.getFilledControlCount());
-		String emptyControlsCount = String.format(EMPTY_CONTROL_COUNT, formData.getEmptyControlCount());
+		String controlsCount = String.format(CONTROL_COUNT, FormDataUtility.getFilledControlCount(formData));
+		String emptyControlsCount = String.format(EMPTY_CONTROL_COUNT, FormDataUtility.getEmptyControlCount(formData));
 		String displayPage = String.format(DISPLAY_PAGE, getFirstEmptyPage(formData));
 
 		StringBuilder results = new StringBuilder();

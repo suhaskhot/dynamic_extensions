@@ -8,6 +8,7 @@ import java.util.Map;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
+import edu.common.dynamicextensions.nutility.FormDataUtility;
 
 public abstract class AbstractSummaryDataManager {
 
@@ -79,6 +80,7 @@ public abstract class AbstractSummaryDataManager {
 		populateHeaderList();
 		filterHeader();
 		int rowCounter = 1;
+		FormDataUtility.evaluateSkipLogic(formData);
 
 		for (ControlValue controlValue : formData.getFieldValues()) {
 

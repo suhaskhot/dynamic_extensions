@@ -1,6 +1,8 @@
 
 package edu.wustl.dynamicextensions.formdesigner.resource;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -19,11 +21,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+
+import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.dao.HibernateDAO;
@@ -31,12 +36,12 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 import edu.wustl.dynamicextensions.formdesigner.resource.facade.ContainerFacade;
+import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 import edu.wustl.dynamicextensions.formdesigner.utility.Utility;
 
 @Path("/form")
-public class Form
-{
+public class Form {
 
 	private static final String CONTAINER_SESSION_ATTR = "sessionContainer";
 
@@ -57,25 +62,22 @@ public class Form
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createForm(String formJson, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) throws JSONException
-	{
+			@Context HttpServletResponse response) throws JSONException {
 
 		JSONObject formJSON = new JSONObject();
 		String jsonResponseString = "";
 
-		try
-		{
-			Properties formProps = new Properties(new ObjectMapper().readValue(formJson,
-					HashMap.class));
+		try {
+			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
+			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
 			ContainerFacade containerFacade = ContainerFacade.createContainer(formProps);
 			request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, containerFacade);
 			String save = formProps.getString("save");
 
-			if (save.equalsIgnoreCase("yes"))
-			{
+			if (save.equalsIgnoreCase("yes")) {
 				intializeDao();
-				containerFacade.persistContainer();
+				containerFacade.persistContainer(userData);
 				commitDao();
 			}
 
@@ -85,15 +87,11 @@ public class Form
 			new ObjectMapper().writeValue(strWriter, formProps.getAllProperties());
 			jsonResponseString = strWriter.toString();
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			formJSON.put("status", "error");
 			jsonResponseString = formJSON.toString();
-		}
-		finally
-		{
+		} finally {
 			closeDao();
 		}
 
@@ -113,11 +111,9 @@ public class Form
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getForm(@PathParam("id") String id, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) throws JSONException
-	{
+			@Context HttpServletResponse response) throws JSONException {
 		System.out.println(id);
-		try
-		{
+		try {
 			intializeDao();
 			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id));
 
@@ -127,14 +123,10 @@ public class Form
 			Writer strWriter = new StringWriter();
 			new ObjectMapper().writeValue(strWriter, containerProps.getAllProperties());
 			return strWriter.toString();
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "{'status' : 'error'}";
-		}
-		finally
-		{
+		} finally {
 			closeDao();
 		}
 
@@ -150,22 +142,25 @@ public class Form
 	@Path("/preview")
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String getPreview(final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) throws JSONException
-	{
-		try
-		{
+	public String getPreview(final @Context HttpServletRequest request, @Context HttpServletResponse response)
+			throws JSONException {
+		try {
 			ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
 					CONTAINER_SESSION_ATTR);
-			return containerFacade.getHTML();
-		}
-		catch (Exception ex)
-		{
+
+			File previewFile = new File(request.getSession().getServletContext().getRealPath(File.separator)
+					+ "csd_web" + File.separator + "pages" + File.separator + "preview.html");
+
+			FileInputStream previewFileInputStream = new FileInputStream(previewFile);
+
+			String previewString = IOUtils.toString(previewFileInputStream, "UTF-8");
+
+			return previewString.replace("{{content}}",
+					containerFacade.getHTML(request).replaceAll("images/de/", "../../images/de/"));
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Error";
-		}
-		finally
-		{
+		} finally {
 			//request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
 		}
 	}
@@ -182,34 +177,25 @@ public class Form
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String editForm(String formJson, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response)
-	{
-		try
-		{
-			Properties formProps = new Properties(new ObjectMapper().readValue(formJson,
-					HashMap.class));
+			@Context HttpServletResponse response) {
+		try {
+			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
 			String save = formProps.getString("save");
-			((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
-					.updateContainer(formProps);
-			if (save.equalsIgnoreCase("yes"))
-			{
+			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
+			ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
+			container.updateContainer(formProps);
+			if (save.equalsIgnoreCase("yes")) {
 				intializeDao();
-				((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
-						.persistContainer();
+				container.persistContainer(userData);
 				commitDao();
 			}
 			Writer strWriter = new StringWriter();
-			new ObjectMapper().writeValue(strWriter, ((ContainerFacade) request.getSession()
-					.getAttribute(CONTAINER_SESSION_ATTR)).getProperties().getAllProperties());
+			new ObjectMapper().writeValue(strWriter, container.getProperties().getAllProperties());
 			return strWriter.toString();
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "{'status' : 'error'}";
-		}
-		finally
-		{
+		} finally {
 			closeDao();
 		}
 
@@ -225,11 +211,9 @@ public class Form
 	@Path("/control/{name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@DELETE
-	public String deleteControl(@PathParam("name") String name,
-			final @Context HttpServletRequest request, @Context HttpServletResponse response)
-	{
-		((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR))
-				.deleteControl(name);
+	public String deleteControl(@PathParam("name") String name, final @Context HttpServletRequest request,
+			@Context HttpServletResponse response) {
+		((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR)).deleteControl(name);
 		return "{'status' : 'deleted'}";
 	}
 
@@ -244,22 +228,16 @@ public class Form
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail)
-	{
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 		String output = "{\"status\" : \"error\"}";
-		try
-		{
+		try {
 			// get temp location programatically.
-			if (fileDetail.getFileName() != null)
-			{
-				String uploadedFileLocation = "/tmp/" + new Date().getTime()
-						+ fileDetail.getFileName();
+			if (fileDetail.getFileName() != null) {
+				String uploadedFileLocation = "/tmp/" + new Date().getTime() + fileDetail.getFileName();
 				Utility.saveStreamToFileInTemp(uploadedInputStream, uploadedFileLocation);
 				output = "{\"status\": \"saved\", \"file\" : \"" + uploadedFileLocation + "\"}";
 			}
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			return output;
 		}
 
@@ -270,15 +248,11 @@ public class Form
 	/**
 	 * @throws DAOException
 	 */
-	private void commitDao() throws DAOException
-	{
-		try
-		{
+	private void commitDao() throws DAOException {
+		try {
 			jdbcDao.commit();
 			hibernateDao.commit();
-		}
-		finally
-		{
+		} finally {
 			closeDao();
 		}
 	}
@@ -286,8 +260,7 @@ public class Form
 	/**
 	 * 
 	 */
-	private void closeDao()
-	{
+	private void closeDao() {
 		DynamicExtensionsUtility.closeDAO(jdbcDao, false);
 		DynamicExtensionsUtility.closeDAO(hibernateDao, false);
 	}
@@ -296,8 +269,7 @@ public class Form
 	 * @throws DynamicExtensionsSystemException
 	 */
 	@SuppressWarnings("deprecation")
-	private void intializeDao() throws DynamicExtensionsSystemException
-	{
+	private void intializeDao() throws DynamicExtensionsSystemException {
 		jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 		hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
 	}

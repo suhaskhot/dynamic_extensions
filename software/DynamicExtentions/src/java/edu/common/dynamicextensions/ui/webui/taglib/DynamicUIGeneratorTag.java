@@ -2,12 +2,18 @@
 package edu.common.dynamicextensions.ui.webui.taglib;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer;
+import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.util.logger.Logger;
 
 public class DynamicUIGeneratorTag extends TagSupport
@@ -42,7 +48,15 @@ public class DynamicUIGeneratorTag extends TagSupport
 	{
 
 		final JspWriter out = pageContext.getOut();
-		FormRenderer renderer  = new FormRenderer((HttpServletRequest) pageContext.getRequest());
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+
+		Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request,
+				DEConstants.FORM_DATA_STACK);
+
+		Map<ContextParameter, String> contextParameter = (Map<ContextParameter, String>) CacheManager
+				.getObjectFromCache(request, FormRenderer.CONTEXT_INFO);
+		FormRenderer renderer = new FormRenderer(formDataStack, contextParameter);
+
 		try {
 			out.println(renderer.render());
 		} catch (IOException e) {

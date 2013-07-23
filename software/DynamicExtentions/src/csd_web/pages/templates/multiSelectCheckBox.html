@@ -1,18 +1,22 @@
-
+<div class = "controlHeaders"><label class = 'text_bold'>Field Properties</label></div>
+	<div style = 'width: 100%; '>
+		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right >
+			<label class = 'text_normal'>Display Label</label>
+			<input id = 'controlCaption' type = 'text' value = '{{caption}}' class = 'textBox'>
+		</div>
+		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right>
+			<label class = 'text_normal'>Attribute Name</label>
+			<input id = 'controlName' type = 'text' value = '{{controlName}}' class = 'textBox'>		
+		</div>
+	</div>
 <div>
-	<br><br><br><br><br><br><br>
-	<div class = "controlHeaders"><label class = 'text_bold'>Options</label></div>
-	<div style = 'width: 100%; height: 100%'>
+	<div style = 'width: 100%; '>
 		<div style = 'width: 40%; padding: 3px; margin: 3px;' align = right >
 			<label class = 'text_normal'>PHI</label>
 			<input id = 'isPHI' type = 'checkbox'>
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			<label class = 'text_normal'>Required</label>
 			<input id = 'isMandatory' type = 'checkbox'>		
-		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left' align = right >
-			<label class = 'text_normal'>Tool Tip</label>
-			<input id = 'toolTip' type = 'text' value = '{{toolTip}}' class = 'textBox'>
 		</div>
 		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left' align = right >
 			<label class = 'text_normal'>Data Type</label>
@@ -23,6 +27,10 @@
 				  <option value="BOOLEAN">Boolean</option>
 				  <option value="DATE">Date</option>
 			</select>
+		</div>
+		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left' align = right >
+			<label class = 'text_normal'>Tool Tip</label>
+			<input id = 'toolTip' type = 'text' value = '{{toolTip}}' class = 'textBox'>
 		</div>
 	</div>
 </div>

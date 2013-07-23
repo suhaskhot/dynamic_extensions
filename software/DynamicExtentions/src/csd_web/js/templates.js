@@ -117,5 +117,23 @@ var Templates = {
 			async : false
 		}).responseText;
 		this.templateList['advancedPropertiesTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/note.html",
+			async : false
+		}).responseText;
+		this.templateList['noteTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/label.html",
+			async : false
+		}).responseText;
+		this.templateList['labelTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/heading.html",
+			async : false
+		}).responseText;
+		this.templateList['headingTemplate'] = result;
 	}
 }

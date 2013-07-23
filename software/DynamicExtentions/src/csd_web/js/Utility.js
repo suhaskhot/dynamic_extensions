@@ -9,71 +9,148 @@ var Utility = {
 		return baseURL;
 	},
 
+	resetCarouselControlSelect : function() {
+		var controlTypes = [ "stringTextField", "numericField", "textArea",
+				"radioButton", "checkBox", "listBox", "multiselectBox",
+				"multiselectCheckBox", "datePicker", "fileUpload", "note",
+				"heading", "subForm", "label" ];
+
+		for ( var cntr = 0; cntr < controlTypes.length; cntr++) {
+			$('#' + controlTypes[cntr]).css('background-color', '#FFFFFF ');
+		}
+
+	},
+
+	getControlIndexForCarousel : function(controlType) {
+
+		switch (controlType) {
+
+		case "stringTextField":
+			return 1;
+			break;
+
+		case "numericField":
+			return 2;
+			break;
+
+		case "textArea":
+			return 3;
+			break;
+
+		case "radioButton":
+			return 4;
+			break;
+
+		case "checkBox":
+			return 5;
+			break;
+
+		case "listBox":
+			return 6;
+			break;
+
+		case "multiselectBox":
+			return 7;
+			break;
+
+		case "multiselectCheckBox":
+			return 8;
+			break;
+
+		case "datePicker":
+			return 9;
+			break;
+
+		case "fileUpload":
+			return 10;
+			break;
+
+		case "note":
+			return 11;
+			break;
+
+		case "heading":
+			return 12;
+			break;
+
+		case "subForm":
+			return 13;
+			break;
+
+		case "label":
+			return 14;
+			break;
+
+		default:
+			return 1;
+		}
+	},
+
 	getShortCode : function(type) {
-		var shortCode = Main.nodeCounter;
+		var shortCode = GlobalMemory.nodeCounter;
 
 		switch (type) {
 
 		case "stringTextField":
-			shortCode = "ST_" + Main.nodeCounter;
+			shortCode = "ST_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "numericField":
-			shortCode = "NT_" + Main.nodeCounter;
+			shortCode = "NT_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "textArea":
-			shortCode = "TA_" + Main.nodeCounter;
+			shortCode = "TA_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "radioButton":
-			shortCode = "RB_" + Main.nodeCounter;
+			shortCode = "RB_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "checkBox":
-			shortCode = "CB_" + Main.nodeCounter;
+			shortCode = "CB_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "listBox":
-			shortCode = "LB_" + Main.nodeCounter;
+			shortCode = "LB_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "multiselectBox":
-			shortCode = "MLB_" + Main.nodeCounter;
+			shortCode = "MLB_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "multiselectCheckBox":
-			shortCode = "MCB_" + Main.nodeCounter;
+			shortCode = "MCB_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "datePicker":
-			shortCode = "DP_" + Main.nodeCounter;
+			shortCode = "DP_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "fileUpload":
-			shortCode = "FU_" + Main.nodeCounter;
+			shortCode = "FU_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "note":
-			shortCode = "N_" + Main.nodeCounter;
+			shortCode = "N_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "heading":
-			shortCode = "H_" + Main.nodeCounter;
+			shortCode = "H_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "label":
-			shortCode = "L_" + Main.nodeCounter;
+			shortCode = "L_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "subForm":
-			shortCode = "SF_" + Main.nodeCounter;
+			shortCode = "SF_" + GlobalMemory.nodeCounter;
 			break;
 
 		default:
 
 		}
-		Main.nodeCounter++;
+		GlobalMemory.nodeCounter++;
 		return shortCode;
 	},
 
@@ -101,8 +178,8 @@ var Utility = {
 
 	addStringTextField : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['stringTextFieldTemplate']
+			template : Templates.templateList['stringTextFieldTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -114,8 +191,8 @@ var Utility = {
 
 	addNumericField : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['numericFieldTemplate']
+			template : Templates.templateList['numericFieldTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -127,8 +204,8 @@ var Utility = {
 
 	addTextArea : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['textAreaTemplate']
+			template : Templates.templateList['textAreaTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -140,8 +217,8 @@ var Utility = {
 
 	addRadioButton : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['radioButtonTemplate']
+			template : Templates.templateList['radioButtonTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['pvTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
@@ -154,8 +231,8 @@ var Utility = {
 
 	addCheckBox : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['checkBoxTemplate']
+			template : Templates.templateList['checkBoxTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -167,8 +244,8 @@ var Utility = {
 
 	addDropDown : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['singleSelectDropdownTemplate']
+			template : Templates.templateList['singleSelectDropdownTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['pvTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
@@ -181,8 +258,8 @@ var Utility = {
 
 	addMultiselectDropDown : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['multiSelectDropdownTemplate']
+			template : Templates.templateList['multiSelectDropdownTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['pvTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
@@ -195,8 +272,8 @@ var Utility = {
 
 	addMultiselectCheckBox : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['multiSelectCheckBoxTemplate']
+			template : Templates.templateList['multiSelectCheckBoxTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['pvTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
@@ -209,8 +286,8 @@ var Utility = {
 
 	addDatePicker : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['datePickerTemplate']
+			template : Templates.templateList['datePickerTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -222,8 +299,8 @@ var Utility = {
 
 	addFileUpload : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['fileUploadTemplate']
+			template : Templates.templateList['fileUploadTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -235,7 +312,8 @@ var Utility = {
 
 	addNote : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
+			template : Templates.templateList['noteTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -247,7 +325,8 @@ var Utility = {
 
 	addHeading : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
+			template : Templates.templateList['headingTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -259,7 +338,8 @@ var Utility = {
 
 	addLabel : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
+			template : Templates.templateList['labelTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate']
 		});
 
@@ -271,8 +351,8 @@ var Utility = {
 
 	addSubForm : function(controlModel, show, container) {
 		controlModel.set({
-			template : Templates.templateList['commonControlPropsTemplate']
-					+ Templates.templateList['subFormTemplate']
+			template : Templates.templateList['subFormTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate'],
 			subForm : new Models.Form()
 		});

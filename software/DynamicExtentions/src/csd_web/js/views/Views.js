@@ -85,7 +85,7 @@ var Views = {
 					});
 					if (this.model.get('controlObjectCollection') == null) {
 						this.model.set({
-							controlObjectCollection : new Array()
+							controlObjectCollection : {}
 						});
 					}
 
@@ -137,6 +137,11 @@ var Views = {
 						}
 					}).css("font-size", "10px");
 
+					$("#general-dialog").dialog({
+						modal : true,
+						autoOpen : false
+					}).css("font-size", "10px");
+
 				}
 			}),
 
@@ -144,7 +149,7 @@ var Views = {
 	 * Body View
 	 */
 	BodyView : Backbone.View.extend({
-		el : 'body',
+		el : '#csd_body',
 		initialize : function() {
 			_.bindAll(this, 'render');
 			this.render();
@@ -169,7 +174,9 @@ var Views = {
 				},
 				events : {
 					"click #createControlButtonid" : "updateModel",
-					"click #addPv" : "addPv"
+					"click #addPv" : "addPv",
+					"click #deletePv" : "deletePv",
+					"click #deleteControlButtonid" : "deleteControl"
 				},
 
 				destroy : function() {
@@ -178,6 +185,41 @@ var Views = {
 					this.stopListening();
 
 				},
+
+				deleteControl : function(event) {
+					GlobalMemory.currentBufferControlModel = this.model;
+					$('#dialogMessageText').html(
+							'Do you wish to delete this Control?');
+					$("#general-dialog")
+							.dialog(
+									{
+										buttons : {
+											Yes : function() {
+												$('#deleteControlButtonid')
+														.prop("disabled", true);
+												$('#createControlButtonid')
+														.prop("disabled", true);
+												$('#addPv').prop("disabled",
+														true);
+												$('#deletePv').prop("disabled",
+														true);
+												Routers
+														.deleteControl(GlobalMemory.currentBufferControlModel);
+												$(this).dialog("close");
+											},
+											No : function() {
+												$(this).dialog("close");
+											}
+										}
+									});
+					$("#general-dialog").dialog("open");
+
+				},
+
+				enableDeleteButton : function() {
+					$('#deleteControlButtonid').prop("disabled", false);
+				},
+
 				updateModel : function(event) {
 
 					this.model
@@ -233,6 +275,8 @@ var Views = {
 											+ this.model.get('caption')
 											+ " was saved successfully.");
 							$('#createControlButtonid').attr("disabled", true);
+							$('#addPv').prop("disabled", true);
+							$('#deletePv').prop("disabled", true);
 						}
 
 					} else {
@@ -265,7 +309,10 @@ var Views = {
 				render : function() {
 					this.$el.html(Mustache.to_html(this.model.get('template'),
 							this.model.toJSON()));
-
+					// clear messages div
+					$("#messagesDiv").html("");
+					$("#messagesDiv").removeClass('success');
+					$("#messagesDiv").removeClass('error');
 					$('#isPHI').prop('checked', this.model.get('isPHI'));
 					$('#isMandatory').prop('checked',
 							this.model.get('isMandatory'));
@@ -321,7 +368,6 @@ var Views = {
 											var receivedData = $
 													.parseJSON(xhr.responseText);
 											$("#pvFileWaitingImage").hide();
-											alert(xhr.responseText);
 											if (receivedData.status == "saved") {
 												Routers
 														.addUploadedPvFileNameToCurrentModel(receivedData.file);
@@ -348,6 +394,7 @@ var Views = {
 					this.pvGrid.setInitWidths("100,100,150,130,*,0");
 					// this.pvGrid.setColAlign("right,left");
 					this.pvGrid.setColTypes("ed,ed,ed,ed,ed,ro");
+					this.pvGrid.enableMultiselect(true);
 					// this.pvGrid.setColSorting("str,str");
 					this.pvGrid.setSkin("clear");
 					this.pvGrid.selMultiRows = true;
@@ -413,11 +460,47 @@ var Views = {
 
 				addPv : function() {
 					this.pvGrid.addRow(this.model.get('controlName')
-							+ Main.pvCounter, ",,,,,new");
+							+ GlobalMemory.pvCounter, ",,,,,new");
 					this.model.get('pvs')[this.model.get('controlName')
-							+ Main.pvCounter] = this.generatePvFromGridData('',
-							'', '', '', '', "add");
-					Main.pvCounter++;
+							+ GlobalMemory.pvCounter] = this
+							.generatePvFromGridData('', '', '', '', '', "add");
+					this.pvGrid.selectRowById(this.model.get('controlName')
+							+ GlobalMemory.pvCounter);
+					GlobalMemory.pvCounter++;
+
+				},
+
+				deletePVs : function() {
+					var pvIds = this.pvGrid.getSelectedRowId().split(",");
+
+					if (pvIds.length == 1) {
+						delete this.model.get('pvs')[pvIds[0]];
+						this.pvGrid.deleteRow(pvIds[0]);
+					} else if (pvIds.length > 1) {
+						for ( var key in pvIds) {
+							delete this.model.get('pvs')[pvIds[key]];
+							this.pvGrid.deleteRow(pvIds[key]);
+						}
+					}
+
+				},
+
+				deletePv : function() {
+
+					$('#dialogMessageText').html(
+							'Do you wish to delete the Permissible Value(s)?');
+					$("#general-dialog").dialog({
+						buttons : {
+							Yes : function() {
+								Main.currentFieldView.deletePVs();
+								$(this).dialog("close");
+							},
+							No : function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+					$("#general-dialog").dialog("open");
 
 				},
 
@@ -550,6 +633,7 @@ var Views = {
 				},
 
 				formulaField : null,
+				formulaRowCounter : 1,
 
 				render : function() {
 					this.$el
@@ -572,12 +656,106 @@ var Views = {
 				},
 
 				events : {
-					"click a" : "createControl"
+					"click #addFormulaBtn" : "addFormula"
 				},
 
-				createControl : function(event) {
-					Routers.createControl(event.target.id);
-				}
+				refreshFormulaField : function() {
+					this.formulaField = new K_AutoComplete({
+						inputElementId : "formulaField",
+						data : Routers.getListOfCurrentControls()
+					});
+				},
+
+				correctFormulaTableCSS : function() {
+					GlobalMemory.formulaCounter = 0;
+					$('#formulaTable tr').each(function() {
+						$(this).removeClass('formulaTableRowEven');
+						$(this).removeClass('formulaTableRowOdd');
+						if (GlobalMemory.formulaCounter % 2 == 0) {
+							$(this).addClass('formulaTableRowEven');
+						} else {
+							$(this).addClass('formulaTableRowOdd');
+						}
+						GlobalMemory.formulaCounter++;
+					});
+				},
+
+				doesFormulaForControlExist : function(controlName) {
+					GlobalMemory.generalFlag = false;
+					GlobalMemory.controlName = controlName;
+					$('#formulaTable tr').each(function() {
+						var presentName = $(this).find('td').eq(0).text();
+						if (GlobalMemory.controlName == presentName) {
+							GlobalMemory.generalFlag = true;
+							// break;
+						}
+					});
+					return GlobalMemory.generalFlag;
+				},
+
+				addFormula : function(event) {
+					var controlName = $('#availableFields1').val();
+					if (controlName != null && controlName != undefined) {
+						if (this.doesFormulaForControlExist(controlName)) {
+							$("#popupMessageText").html(
+									"A formula exists for the given control");
+							$("#dialog-message").dialog('open');
+
+						} else {
+							var _tr_element_start = "<tr id = '" + controlName
+									+ "'>";
+							var _tr_element_end = "</tr>";
+							var _td_element_start = "<td class = 'text_normal ";
+							var _td_element_end = "</td>";
+
+							if (this.formulaRowCounter % 2 == 0) {
+								_td_element_start += "formulaTableRowEven'>";
+							} else {
+								_td_element_start += "formulaTableRowOdd'>";
+							}
+
+							var _formula = $('#formulaField').val();
+							var _table_row = _tr_element_start
+									+ _td_element_start
+									+ controlName
+									+ _td_element_end
+									+ _td_element_start
+									+ _formula
+									+ _td_element_end
+									+ _td_element_start
+									+ "<a title = 'edit' href = '#calculatedAttribute/"
+									+ controlName
+									+ "/edit'\"><span class = 'ui-icon ui-icon-pencil' style= 'float : left;'/></a>"
+									+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+									+ "<a title = 'delete' href = '#calculatedAttribute/"
+									+ controlName
+									+ "/delete'\"><span class = 'ui-icon ui-icon-trash' style= 'float : left;'/></a>"
+									+ _td_element_end + _tr_element_end;
+
+							$("#formulaTableHeader").eq(0).after(_table_row);
+
+							// add formula and set calculated
+							Routers.setFormulaForCalculatedAttirbute(
+									controlName, true, _formula);
+							// remove from drop down
+							/*
+							 * $( "#availableFields1 option[value='" +
+							 * controlName + "']").remove();
+							 */
+							$('#formulaField').val("");
+							this.formulaRowCounter++;
+							this.correctFormulaTableCSS();
+
+						}
+					}
+
+				},
+
+				removeFormula : function(id) {
+					Routers.setFormulaForCalculatedAttirbute(id, false, null);
+					$('#' + id).remove();
+					this.formulaRowCounter--;
+				},
 
 			}),
 
@@ -599,7 +777,13 @@ var Views = {
 		},
 
 		createControl : function(event) {
+
 			Routers.createControl(event.target.id);
+			Utility.resetCarouselControlSelect();
+			var pos = Utility.getControlIndexForCarousel(event.target.id);
+			Main.carousel.tinycarousel_move(pos > 8 ? (pos % 8) + 1 : pos);
+			$('#' + Main.currentFieldView.getModel().get('type')).css(
+					'background-color', '#F0F0F0 ');
 		}
 
 	}),

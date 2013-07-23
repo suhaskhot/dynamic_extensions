@@ -27,7 +27,7 @@ var Routers = {
 
 		if (Main.formView.getFormModel().get('controlObjectCollection') == undefined) {
 			Main.formView.getFormModel().set({
-				controlObjectCollection : new Array()
+				controlObjectCollection : {}
 			});
 		}
 
@@ -65,6 +65,45 @@ var Routers = {
 
 		return isUpdate;
 
+	},
+
+	deleteControl : function(model) {
+		var selectedItemId = Main.treeView.getTree().getSelectedItemId();
+		var parentItemId = Main.treeView.getTree().getParentId(selectedItemId);
+
+		// get selected item.
+		if (parentItemId == 1) {
+
+			// mark the form's attribute as deleted
+			if (Main.formView.getFormModel().get('controlObjectCollection')[model
+					.get('controlName')] != undefined) {
+				Main.formView.getFormModel().get('controlObjectCollection')[model
+						.get('controlName')].set({
+					status : "delete"
+				});
+				if (model.get('type') == "subForm") {
+					Main.treeView.getTree().deleteChildItems(selectedItemId);
+				}
+			}
+		} else {
+			// it is a sub form's control.
+			var subFormControlName = Main.treeView.getTree().getUserData(
+					parentItemId, "controlName");
+
+			if (Main.formView.getFormModel().get('controlObjectCollection')[subFormControlName]
+					.get('subForm').get('controlObjectCollection')[model
+					.get('controlName')] != undefined) {
+				Main.formView.getFormModel().get('controlObjectCollection')[subFormControlName]
+						.get('subForm').get('controlObjectCollection')[model
+						.get('controlName')].set({
+					status : "delete"
+				});
+			}
+		}
+
+		var selectedItemName = Main.treeView.getTree().getUserData(
+				selectedItemId, "controlName");
+		Main.treeView.getTree().deleteItem(selectedItemId, true);
 	},
 
 	/*
@@ -108,26 +147,32 @@ var Routers = {
 	},
 
 	loadPreview : function() {
-		$.ajax({
-			url : "csdApi/form/preview"
-		}).done(
-				function(data) {
-					// alert(data);
-					var div = $('#previewFrame').contents().find(
-							'#csd_preview_content');
-					div.html(data);
-					$("#formWaitingImage").hide();
-
-				});
+		$("#formWaitingImage").hide();
+		$('#previewFrame').prop('src', "csd_web/pages/preview.jsp");
 	},
 
 	getListOfCurrentControls : function() {
 		var controls = new Array();
 		for ( var key in Main.formView.getFormModel().get(
 				'controlObjectCollection')) {
-			var controlName = Main.formView.getFormModel().get(
-					'controlObjectCollection')[key].get('controlName');
-			controls.push(controlName);
+			var control = Main.formView.getFormModel().get(
+					'controlObjectCollection')[key];
+			if (control.get('type') == "numericField") {
+				controls.push(control.get('controlName'));
+			}
+
+			if (control.get('type') == "subForm") {
+				for ( var subKey in control.get('subForm').get(
+						'controlObjectCollection')) {
+					var subControl = control.get('subForm').get(
+							'controlObjectCollection')[subKey];
+					var subControlName = subControl.get('controlName');
+					if (subControl.get('type') == "numericField") {
+						controls.push(control.get('controlName') + "."
+								+ subControlName);
+					}
+				}
+			}
 		}
 		return controls;
 	},
@@ -136,7 +181,7 @@ var Routers = {
 	populateSelectBoxWithControlNames : function(selectTagId) {
 		$("#" + selectTagId).empty();
 		var controls = this.getListOfCurrentControls();
-		for ( var key in controls) {
+		for ( var key = 0; key < controls.length; key++) {
 			var controlName = controls[key];
 			$("#" + selectTagId).append($("<option/>", {
 				value : controlName,
@@ -168,12 +213,37 @@ var Routers = {
 		}
 
 		else if (id == "advancedControlPropertiesTab") {
-			var advancedProperties = new Views.AdvancedPropertiesTabView({
-				el : $('#advancedControlProperties'),
-				model : null
-			});
-			Routers.refreshListsWithControls();
 
+			Routers.refreshListsWithControls();
+			Main.advancedControlsView.refreshFormulaField();
+
+		}
+	},
+
+	/*
+	 * Set Formula for calculated attributes
+	 */
+	setFormulaForCalculatedAttirbute : function(selectionName, isCalc,
+			calcFormula) {
+		var controlNames = selectionName.split(".");
+		if (controlNames.length == 1) {
+			if (Main.formView.getFormModel().get('controlObjectCollection')[selectionName] != undefined) {
+				Main.formView.getFormModel().get('controlObjectCollection')[selectionName]
+						.set({
+							isCalculated : isCalc,
+							formula : calcFormula
+						});
+			}
+		} else {
+			if (Main.formView.getFormModel().get('controlObjectCollection')[controlNames[0]]
+					.get('subForm').get('controlObjectCollection')[controlNames[1]] != undefined) {
+				Main.formView.getFormModel().get('controlObjectCollection')[controlNames[0]]
+						.get('subForm').get('controlObjectCollection')[controlNames[1]]
+						.set({
+							isCalculated : isCalc,
+							formula : calcFormula
+						});
+			}
 		}
 	},
 
@@ -181,6 +251,9 @@ var Routers = {
 	 * Handler for form tree node click
 	 */
 	formTreeNodeClickHandler : function(id) {
+		// De select selected control
+		Utility.resetCarouselControlSelect();
+
 		if (Main.currentFieldView != null) {
 			// Erase the existing view
 			Main.currentFieldView.destroy();
@@ -221,6 +294,13 @@ var Routers = {
 		if (Main.mainTabBarView.getTabBar().getActiveTab() != 'controlTab') {
 			Main.mainTabBarView.getTabBar().setTabActive('controlTab');
 		}
+		// Select the carousel's control #FFFFFF
+		var pos = Utility.getControlIndexForCarousel(Main.currentFieldView
+				.getModel().get('type'));
+		Main.carousel.tinycarousel_move(pos > 8 ? (pos % 8) + 1 : pos);
+		$('#' + Main.currentFieldView.getModel().get('type')).css(
+				'background-color', '#F0F0F0 ');
+
 		// Populate pv grid
 		// reset the pv counter
 
@@ -232,7 +312,7 @@ var Routers = {
 		case "multiselectBox":
 
 		case "multiselectCheckBox":
-			Main.pvCounter = 0;
+			GlobalMemory.pvCounter = 0;
 			// iterate through the pv list
 			for ( var cntr = 0; cntr < Main.currentFieldView.getModel().get(
 					'pvs').length; cntr++) {
@@ -240,19 +320,20 @@ var Routers = {
 				var pv = Main.currentFieldView.getModel().get('pvs')[cntr];
 				// add the i'th pv
 				var rowId = Main.currentFieldView.getModel().get('controlName')
-						+ Main.pvCounter;
+						+ GlobalMemory.pvCounter;
 				Main.currentFieldView.getPvGrid().addRow(
 						rowId,
 						pv.value + ',' + pv.numericCode + ',' + pv.definition
 								+ ',' + pv.definitionSource + ','
 								+ pv.conceptCode + ',' + "saved");
 				// increment the pv counter
-				Main.pvCounter++;
+				GlobalMemory.pvCounter++;
 			}
 			break;
 		default:
 		}
-
+		// enable delete button of the selected control.
+		Main.currentFieldView.enableDeleteButton();
 		return true;
 	},
 
@@ -293,7 +374,7 @@ var Routers = {
 			sequenceNumber : this.getNextSequenceNumber(),
 			controlName : Utility.getShortCode(controlType)
 		});
-		Main.sequenceNumCntr++;
+		GlobalMemory.sequenceNumCntr++;
 
 		Main.currentFieldView = Utility.addFieldHandlerMap[controlType](
 				controlModel, true, 'controlContainer');
@@ -314,12 +395,61 @@ var Routers = {
 	 */
 	ControlRouter : Backbone.Router.extend({
 		routes : {
-			"createCachedControl/:name/control:controlName" : "create"
+			"clear" : "dummy"
 		},
-		create : function() {
-			alert("Domo");
+		dummy : function() {
 		}
 
+	}),
+
+	deleteFormula : function(id) {
+		Routers.setFormulaForCalculatedAttirbute(id, false, null);
+		$('#' + id).remove();
+		// set the attribute back to the drop down
+		/*
+		 * $("#availableFields1").append( "<option value='" + id + "'>" + id + "</option>");
+		 */
+		// Main.advancedControlsView.formulaRowCounter--;
+	},
+
+	/*
+	 * AdvancedPropertiesRouter. Used to perform actions initiated a Control's
+	 * User Interface
+	 */
+	AdvancedPropertiesRouter : Backbone.Router.extend({
+		routes : {
+			"calculatedAttribute/:id/:operation" : "setCalculatedAttrib"
+		},
+		setCalculatedAttrib : function(id, operation) {
+			// just remove for now
+			if (operation == "delete") {
+				$('#dialogMessageText').html(
+						'Do you wish to delete this formula?');
+				$('#tempData').val(id);
+				GlobalMemory.formulaCounter = 0;
+				$("#general-dialog").dialog({
+					buttons : {
+						Yes : function() {
+							Routers.deleteFormula($('#tempData').val());
+							Main.advancedControlsView.correctFormulaTableCSS();
+							$(this).dialog("close");
+						},
+						No : function() {
+							$(this).dialog("close");
+						}
+					}
+				});
+				$("#general-dialog").dialog("open");
+				Routers.controlEventsRouterPointer.navigate('clear', {
+					trigger : true
+				});
+			} else if (operation == "edit") {
+				var _formula = $('#' + id).find('td').eq(1).text();
+				Routers.deleteFormula(id);
+				$("#availableFields1").val(id);
+				$('#formulaField').val(_formula);
+			}
+		}
 	}),
 
 	/*
@@ -334,7 +464,7 @@ var Routers = {
 		// node
 		if (Main.formView.getFormModel().get('controlObjectCollection') == undefined) {
 			Main.formView.getFormModel().set({
-				controlObjectCollection : new Array()
+				controlObjectCollection : {}
 			});
 		}
 		var selectedControl = Main.formView.getFormModel().get(
@@ -357,7 +487,7 @@ var Routers = {
 						Main.formView.getFormModel().get(
 								'controlObjectCollection')[selectedNodeText]
 								.get('subForm').set({
-									controlObjectCollection : new Array()
+									controlObjectCollection : {}
 								});
 					}
 					// see if the control exists
@@ -373,9 +503,11 @@ var Routers = {
 							if (parentId == 1) {
 								var trail = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 								Main.currentFieldView.setErrorMessageHeader();
-								var message = trail
-										+ "Cannot add a sub form within another sub form";
-								$("#messagesDiv").append(message);
+								$("#messagesDiv")
+										.append(
+												trail
+														+ "Cannot add a sub form within another sub form");
+
 							} else {
 
 								this.createTreeNode(name, true, controlName);
@@ -411,18 +543,18 @@ var Routers = {
 	},
 
 	createTreeNode : function(name, isMainForm, controlName) {
-		var id = 10 + Main.nodeCounter;
+		var id = 10 + GlobalMemory.nodeCounter;
 
 		if (isMainForm) {
 			Main.treeView.getTree().insertNewChild(1, id, name, 0, 0, 0, 0,
-					"TOP,CHILD,CHECKED");
+					"CHILD,CHECKED");
 		} else {
 			Main.treeView.getTree().insertNewChild(
 					Main.treeView.getTree().getSelectedItemId(), id, name, 0,
-					0, 0, 0, "TOP,CHILD,CHECKED");
+					0, 0, 0, "CHILD,CHECKED");
 		}
 		Main.treeView.getTree().setUserData(id, "controlName", controlName);
-		Main.nodeCounter++;
+		GlobalMemory.nodeCounter++;
 	},
 
 	/*
@@ -467,7 +599,7 @@ var Routers = {
 				updateFormUI : function(model) {
 					Main.formView.render();
 					Main.formView.getFormModel().set({
-						controlObjectCollection : new Array()
+						controlObjectCollection : {}
 					});
 				},
 
@@ -500,11 +632,11 @@ var Routers = {
 								+ control.get('controlName') + ")";
 						this.populateTreeWithControlNodes(control
 								.get('controlName'), displayLbl);
-						var parentId = Main.nodeCounter - 1;
+						var parentId = GlobalMemory.nodeCounter - 1;
 						if (control.get('type') == "subForm") {
 							var subFrm = new Models.Form(control.get('subForm'));
 							subFrm.set({
-								controlObjectCollection : new Array()
+								controlObjectCollection : {}
 							});
 							for ( var subCntr = 0; subCntr < subFrm
 									.get('controlCollection').length; subCntr++) {
@@ -523,13 +655,14 @@ var Routers = {
 										+ ")";
 
 								Main.treeView.getTree().insertNewChild(
-										parentId, Main.nodeCounter,
+										parentId, GlobalMemory.nodeCounter,
 										displayLabel, 0, 0, 0, 0,
-										"SELECT,CALL,TOP,CHILD,CHECKED");
+										"SELECT,CALL,CHILD,CHECKED");
 								Main.treeView.getTree().setUserData(
-										Main.nodeCounter, "controlName",
+										GlobalMemory.nodeCounter,
+										"controlName",
 										subControl.get('controlName'));
-								Main.nodeCounter++;
+								GlobalMemory.nodeCounter++;
 
 							}
 							// control.set({
@@ -557,13 +690,14 @@ var Routers = {
 
 				populateTreeWithControlNodes : function(controlName,
 						displayLabel) {
-					Main.treeView.getTree().insertNewChild(1, Main.nodeCounter,
-							displayLabel, 0, 0, 0, 0,
-							"SELECT,CALL,TOP,CHILD,CHECKED");
-					Main.treeView.getTree().setUserData(Main.nodeCounter,
-							"controlName", controlName);
+					Main.treeView.getTree().insertNewChild(1,
+							GlobalMemory.nodeCounter, displayLabel, 0, 0, 0, 0,
+							"SELECT,CALL,CHILD,CHECKED");
+					Main.treeView.getTree().setUserData(
+							GlobalMemory.nodeCounter, "controlName",
+							controlName);
 
-					Main.nodeCounter++;
+					GlobalMemory.nodeCounter++;
 				}
 			}),
 
@@ -573,6 +707,7 @@ var Routers = {
 	initializeRouters : function() {
 		this.controlEventsRouterPointer = new this.ControlRouter;
 		this.formEventsRouterPointer = new this.FormRouter;
+		var advancedControlPropsRouter = new this.AdvancedPropertiesRouter;
 		Backbone.history.start();
 	},
 

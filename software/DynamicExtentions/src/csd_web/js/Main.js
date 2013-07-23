@@ -4,14 +4,13 @@
 
 var Main = {
 
-	nodeCounter : 2,
-	sequenceNumCntr : 0,
 	treeView : null,
 	formView : null,
 	mainTabBarView : null,
 	currentFieldView : null,
 	designModeViewPointer : null,
-	pvCounter : 0,
+	carousel: null,
+	advancedControlsView : null,
 
 	renderUI : function() {
 		Templates.loadTemplateList();
@@ -33,7 +32,12 @@ var Main = {
 			model : null
 		});
 		Views.showControlTab('control');
-		$('#slider1').tinycarousel();
+		this.carousel = $('#slider1');
+		this.carousel.tinycarousel();
+		this.advancedControlsView = new Views.AdvancedPropertiesTabView({
+			el : $('#advancedControlProperties'),
+			model : null
+		});
 
 		
 

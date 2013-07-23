@@ -16,7 +16,7 @@ var Models = {
 		initialize : function() {
 			console.log("Form Model created");
 			this.controlCollection = new Array();
-			this.controlObjectCollection = new Array();
+			this.controlObjectCollection = {};
 		}
 
 	}),

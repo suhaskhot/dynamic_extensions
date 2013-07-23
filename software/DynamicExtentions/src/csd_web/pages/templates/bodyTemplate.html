@@ -4,7 +4,7 @@
 		<div style = 'padding: 2px;'>
 			<div id = 'formTab' style = 'border:1px solid #c0c0c0; height: 120px; padding: 5px; margin : 2px;'>
 			</div>
-			<div id = 'leftSide' style = 'border:1px solid #c0c0c0; height: 695px; padding: 2px; margin: 2px;'>
+			<div id = 'leftSide' style = 'border:1px solid #c0c0c0; height: 745px; padding: 2px; margin: 2px;'>
 				<div id = 'leftTab' style = 'width: 100%; height: 100%;'>
 				</div>
 			</div>
@@ -12,14 +12,14 @@
 	</div>
 	<div id="content" style="height:870px;width:70%;float:left;">
 		<div style = 'padding: 2px;'>
-			<div id = 'rightSide' style = 'border:1px solid #c0c0c0;height: 830px; padding : 2px; overflow-y: auto'>
+			<div id = 'rightSide' style = 'border:1px solid #c0c0c0;height: 880px; padding : 2px; overflow-y: auto'>
 				<div id = 'rightTab' style = 'height:100%'>
 					<div id ='summary'></div>
 					<div id ='control'></div>
 					<div id ='advancedControlProperties'></div>
 					<div id = 'design'></div>
-					<div id = 'preview' style = "padding : 10px; height : 700px">
-						<iframe src = "csd_web/pages/preview.html" id = "previewFrame" style = "width : 100%; height : 100%; border : none;"></iframe>
+					<div id = 'preview' style = "padding : 10px; height : 730px">
+						<iframe src = "" id = "previewFrame" style = "width : 100%; height : 100%; border : none;"></iframe>
 					</div>
 				</div>
 			</div>
@@ -30,6 +30,13 @@
 				<p>
 					<span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 50px 0;"></span>
 					<div id = "popupMessageText"></div>
+				</p>
+		</div>
+		<div id="general-dialog" title="Message">
+				<p>
+					<span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 50px 0;"></span>
+					<div id = "dialogMessageText"></div>
+					<input type = "hidden" id = "tempData"/>
 				</p>
 		</div>
 

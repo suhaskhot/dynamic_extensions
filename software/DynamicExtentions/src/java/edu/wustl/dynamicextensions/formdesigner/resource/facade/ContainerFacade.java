@@ -1,8 +1,16 @@
 
 package edu.wustl.dynamicextensions.formdesigner.resource.facade;
 
+import java.util.Stack;
+
+import javax.servlet.http.HttpServletRequest;
+
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.UserContext;
+import edu.common.dynamicextensions.napi.FormData;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ContainerMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ControlMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
@@ -58,23 +66,21 @@ public class ContainerFacade {
 		container.deleteControl(controlName);
 	}
 
-	/**
-	 * 
-	 */
-	public void persistContainer() {
-		container.save(null);
+	
+	public void persistContainer(UserContext userContext) {
+		container.save(userContext);
 	}
 
-	/**
-	 * @return
-	 */
-	public String getHTML() {
+	
+	public String getHTML(HttpServletRequest request) {
+
+		Stack<FormData> formDataStack = new Stack<FormData>();
+		CacheManager.addObjectToCache(request, DEConstants.FORM_DATA_STACK, formDataStack);
+		formDataStack.push(new FormData(container));
 		return container.render();
 	}
 
-	/**
-	 * @return
-	 */
+	
 	public Properties getProperties() {
 		return containerMapper.containerToProperties(container);
 	}

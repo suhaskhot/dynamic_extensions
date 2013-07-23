@@ -92,11 +92,26 @@ public class PvMapper {
 	 */
 	private static PermissibleValue propertiesToPv(Properties properties) {
 		PermissibleValue pv = new PermissibleValue();
-		pv.setConceptCode(properties.getString("conceptCode"));
-		pv.setDefinitionSource(properties.getString("definitionSource"));
-		pv.setNumericCode(properties.getLong("numericCode"));
-		pv.setOptionName(properties.getString("definition"));
-		pv.setValue(properties.getString("value"));
+		String conceptCode = properties.getString("conceptCode");
+		if (conceptCode != null) {
+			pv.setConceptCode(conceptCode);
+		}
+		String definitionSource = properties.getString("definitionSource");
+		if (definitionSource != null) {
+			pv.setDefinitionSource(definitionSource);
+		}
+		Long numericCode = properties.getLong("numericCode");
+		if (numericCode != null) {
+			pv.setNumericCode(numericCode);
+		}
+		String definition = properties.getString("definition");
+		if (definition != null) {
+			pv.setOptionName(definition);
+		}
+		String value = properties.getString("value");
+		if (value != null) {
+			pv.setValue(value);
+		}
 		return pv;
 	}
 
@@ -121,11 +136,11 @@ public class PvMapper {
 	 */
 	private static Map<String, Object> pvToProperties(PermissibleValue pv) {
 		Map<String, Object> pvProperties = new HashMap<String, Object>();
-		pvProperties.put("value", pv.getValue());
-		pvProperties.put("numericCode", pv.getNumericCode());
-		pvProperties.put("conceptCode", pv.getConceptCode());
-		pvProperties.put("definitionSource", pv.getDefinitionSource());
-		pvProperties.put("definition", pv.getOptionName());
+		pvProperties.put("value", pv.getValue() == null ? "" : pv.getValue());
+		pvProperties.put("numericCode", pv.getNumericCode() == null ? "" : pv.getNumericCode());
+		pvProperties.put("conceptCode", pv.getConceptCode() == null ? "" : pv.getConceptCode());
+		pvProperties.put("definitionSource", pv.getDefinitionSource() == null ? "" : pv.getDefinitionSource());
+		pvProperties.put("definition", pv.getOptionName() == null ? "" : pv.getOptionName());
 		return pvProperties;
 	}
 

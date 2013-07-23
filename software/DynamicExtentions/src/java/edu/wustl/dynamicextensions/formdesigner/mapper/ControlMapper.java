@@ -19,6 +19,7 @@ import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.domain.nui.TextField;
+import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 /**
@@ -133,23 +134,35 @@ public class ControlMapper {
 		public Control propertiesToControl(Properties controlProps) {
 			NumberField control = new NumberField();
 			setTextFieldProperties(controlProps, control);
+
 			Integer noOfDigits = controlProps.getInteger("noOfDigits");
 			if (noOfDigits != null) {
 				control.setNoOfDigits(noOfDigits);
 			}
+
 			Integer noOfDigitsAfterDecimal = controlProps.getInteger("noOfDigitsAfterDecimal");
 			if (noOfDigitsAfterDecimal != null) {
 				control.setNoOfDigitsAfterDecimal(noOfDigitsAfterDecimal);
 			}
+
 			String minimumValue = controlProps.getString("minimumValue");
 			if (minimumValue != null) {
 				control.setMinValue(minimumValue);
 			}
+
 			String maximumValue = controlProps.getString("maximumValue");
 			if (maximumValue != null) {
 				control.setMaxValue(maximumValue);
 			}
-			control.setCalculated(controlProps.getBoolean("isAutoCalculate"));
+
+			control.setCalculated(controlProps.getBoolean("isCalculated"));
+
+			if (controlProps.getBoolean("isCalculated")) {
+				String formula = controlProps.getString("formula");
+				if (formula != null) {
+					control.setFormula(formula);
+				}
+			}
 
 			return control;
 		}
@@ -161,7 +174,10 @@ public class ControlMapper {
 			getTextFieldProperties(controlProps, (TextField) control);
 			controlProps.setProperty("noOfDigits", ((NumberField) control).getNoOfDigits());
 			controlProps.setProperty("noOfDigitsAfterDecimal", ((NumberField) control).getNoOfDigitsAfterDecimal());
-			controlProps.setProperty("isAutoCalculate", ((NumberField) control).isCalculated());
+			controlProps.setProperty("isCalculated", ((NumberField) control).isCalculated());
+			if (((NumberField) control).isCalculated()) {
+				controlProps.setProperty("formula", ((NumberField) control).getFormula());
+			}
 
 			return controlProps;
 		}
@@ -345,14 +361,13 @@ public class ControlMapper {
 		private String displayFormatToActualFormat(String displayFormat) {
 			String format = "";
 			if (displayFormat.equalsIgnoreCase("DATE")) {
-				format = "mm/dd/yyyy";
-				// get from locale
+				format = ProcessorConstants.DATE_ONLY_FORMAT;
 			} else if (displayFormat.equalsIgnoreCase("DATE AND TIME")) {
-				format = "mm/dd/yyyy hh:mm:ss";
+				format = ProcessorConstants.DATE_TIME_FORMAT;
 			} else if (displayFormat.equalsIgnoreCase("MONTH AND YEAR")) {
-				format = "mm/yyyy";
+				format = ProcessorConstants.MONTH_YEAR_FORMAT;
 			} else if (displayFormat.equalsIgnoreCase("YEAR ONLY")) {
-				format = "yyyy";
+				format = ProcessorConstants.YEAR_ONLY_FORMAT;
 			}
 
 			return format;
@@ -364,13 +379,13 @@ public class ControlMapper {
 		 */
 		private String actualFormatToDisplayFormat(String actualFormat) {
 			String format = "";
-			if (actualFormat.equalsIgnoreCase("mm/dd/yyyy")) {
+			if (actualFormat.equalsIgnoreCase(ProcessorConstants.DATE_ONLY_FORMAT)) {
 				format = "DATE";
-			} else if (actualFormat.equalsIgnoreCase("mm/dd/yyyy hh:mm:ss")) {
+			} else if (actualFormat.equalsIgnoreCase(ProcessorConstants.DATE_TIME_FORMAT)) {
 				format = "DATE AND TIME";
-			} else if (actualFormat.equalsIgnoreCase("mm/yyyy")) {
+			} else if (actualFormat.equalsIgnoreCase(ProcessorConstants.MONTH_YEAR_FORMAT)) {
 				format = "MONTH AND YEAR";
-			} else if (actualFormat.equalsIgnoreCase("yyyy")) {
+			} else if (actualFormat.equalsIgnoreCase(ProcessorConstants.YEAR_ONLY_FORMAT)) {
 				format = "YEAR ONLY";
 			}
 

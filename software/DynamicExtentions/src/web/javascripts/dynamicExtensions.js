@@ -1,4 +1,4 @@
-var DeAjaxHandler = "AjaxcodeHandlerAction.de";
+var DeAjaxHandler = "/clinportal/AjaxcodeHandlerAction.de";
 if (typeof DE_AJAX_HANDLER != "undefined") {
 	DeAjaxHandler = DE_AJAX_HANDLER;
 }
@@ -1197,11 +1197,11 @@ function createFormAsChanged() {
 }
 
 function addRow(containerId) {
-	document.getElementById("btnAddMore"+containerId).disabled = true;
+	//document.getElementById("btnAddMore"+containerId).disabled = true;
 	tableId = containerId + "_table";
 	var table = document.getElementById(tableId);
 	var newRowId = table.rows.length;
-	new Ajax.Request('AjaxcodeHandlerAction.de',{
+	new Ajax.Request('/clinportal/AjaxcodeHandlerAction.de',{
 		parameters:{ajaxOperation:'generateRowHTML',rowId:newRowId,containerIdentifier:containerId},	
 		onFailure: function(){
 			alert("Error occurred on server. Please try again.");

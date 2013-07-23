@@ -1,3 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="edu.wustl.dynamicextensions.formdesigner.resource.facade.ContainerFacade" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -27,12 +31,13 @@
 <script>
 	var imgsrc="../..images/de/";
 </script>
-
+<title>CSD Preview</title>
 </head>
 <body style = "font-size : 20px;">
-	<div id = "csd_preview_content">
-		{{content}}
-	</div>
+	<%
+	ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
+			"sessionContainer");
+	%>
+	<%=containerFacade.getHTML(request).replaceAll("images/de/", "../../images/de/") %>
 </body>
-
 </html>

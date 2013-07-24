@@ -65,15 +65,19 @@ public class FormData {
 
 	public ControlValue getFieldValue(Control control, Integer rowNumber) {
 		ControlValue fieldValue = null;
+		
 		if (getContainer().getId().equals(control.getContainer().getId())) {
 			fieldValue = getFieldValue(control.getName());
 		} else {
+			
 			for (Control ctl : getContainer().getControls()) {
-				ControlValue controlValue = getFieldValue(ctl.getName());
+			
 				if (ctl instanceof SubFormControl) {
-					Object value = controlValue.getValue();
+					Object value = getFieldValue(ctl.getName()).getValue();
+					
 					if (value != null && ((List<FormData>) value).size() > 0) {
 						FormData subFormData = ((List<FormData>) value).get((rowNumber == null ? 0 : rowNumber));
+				
 						if (subFormData.getContainer().getId().equals(control.getContainer().getId())) {
 							fieldValue = subFormData.getFieldValue(control.getName());
 							break;

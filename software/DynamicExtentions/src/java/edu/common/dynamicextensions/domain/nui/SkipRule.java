@@ -42,11 +42,11 @@ public class SkipRule {
 		this.action = action;
 	}	
 
-	public void evaluate(FormData data, ControlValue targetControl) {
+	public void evaluate(FormData data, ControlValue targetControl, Integer rowNumber) {
 		boolean validate = false;
 
 		for (SkipCondition condition : conditions) {
-			ControlValue fieldValue = data.getFieldValue(condition.getSourceControl(), null);
+			ControlValue fieldValue = data.getFieldValue(condition.getSourceControl(), rowNumber);
 			validate = condition.evaluate(fieldValue);
 
 			if (validate && logicalOp == LogicalOp.OR) {

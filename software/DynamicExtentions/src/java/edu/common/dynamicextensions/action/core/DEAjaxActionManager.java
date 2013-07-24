@@ -42,6 +42,7 @@ import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
+import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.nutility.HTTPFormDataCollector;
 import edu.common.dynamicextensions.nvalidator.DraftValidatorUtil;
 import edu.common.dynamicextensions.processor.GroupProcessor;
@@ -236,6 +237,7 @@ public class DEAjaxActionManager
 			subformValue = new ArrayList<FormData>();
 		}
 		subformValue.add(subFormData);
+		FormDataUtility.evaluateSkipLogic(mainFormData);
 		return subForm.getContainerHTMLAsARow(rowId, subFormData, contextParameter);
 
 	}

@@ -534,10 +534,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		return result;
 	}
 
-	public void evaluateSkipLogic(ControlValue fieldValue, FormData formData) {
+	public void evaluateSkipLogic(ControlValue fieldValue, FormData formData, Integer rowNumber) {
 
 		for (SkipRule rule : skipRules) {
-			rule.evaluate(formData, fieldValue);
+			rule.evaluate(formData, fieldValue, rowNumber);
 		}
 	}
 

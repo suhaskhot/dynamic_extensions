@@ -12,7 +12,7 @@ import edu.common.dynamicextensions.napi.FormData;
 public class FormDataUtility {
 
 	public static void evaluateSkipLogic(FormData formData) {
-		evaluateSkipLogic(formData, formData, true);
+		evaluateSkipLogic(formData, formData, null, true);
 	}
 
 	/**
@@ -21,12 +21,13 @@ public class FormDataUtility {
 	 * @param srcCtlFormData containing source control value
 	 * @param evaulateSubform to decide whether next level subform skip logic is to be evaluated or not
 	 */
-	private static void evaluateSkipLogic(FormData tgtCtlFormData, FormData srcCtlFormData, boolean evaulateSubform) {
+	private static void evaluateSkipLogic(FormData tgtCtlFormData, FormData srcCtlFormData, Integer rowNumber,
+			boolean evaulateSubform) {
 		for (Control control : tgtCtlFormData.getContainer().getControls()) {
 			ControlValue controlValue = tgtCtlFormData.getFieldValue(control.getName());
 
 			if (control.isSkipLogicTargetControl()) {
-				control.evaluateSkipLogic(controlValue, srcCtlFormData);
+				control.evaluateSkipLogic(controlValue, srcCtlFormData, rowNumber);
 			}
 
 			if (control instanceof SubFormControl && evaulateSubform) {
@@ -42,12 +43,12 @@ public class FormDataUtility {
 			List<FormData> formDatas = (List<FormData>) controlValue.getValue();
 
 			if (subFormControl.isCardinalityOneToMany()) {
-
+				int i = 0;
 				for (FormData data : formDatas) {
-					evaluateSkipLogic(data, data, false);
+					evaluateSkipLogic(data, srcCtlFormData, i++, false);
 				}
 			} else {
-				evaluateSkipLogic(formDatas.get(0), srcCtlFormData, false);
+				evaluateSkipLogic(formDatas.get(0), srcCtlFormData, null, false);
 			}
 
 		}

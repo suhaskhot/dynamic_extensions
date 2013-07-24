@@ -458,13 +458,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			controlHTML.append("<td title='").append(toolTip).append("'><table><tr>");
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);
 			controlHTML.append("<td class='formRequiredLabel_withoutBorder'><div class='control_caption'>");
-		} else if (getSequenceNumber() > 0) {
+		} else if (getxPos() == 1) {
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);
-			controlHTML.append("<td class='formRequiredLabel_withoutBorder' title='").append(toolTip)
+			controlHTML.append("<td class='formRequiredLabel_withoutBorder' width='40%'  title='").append(toolTip)
 					.append("'><div class='control_caption'>");
 		} else {
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);
-			controlHTML.append("<td class='formRequiredLabel_withoutBorder'  width='40%' title='").append(toolTip)
+			controlHTML.append("<td class='formRequiredLabel_withoutBorder'  title='").append(toolTip)
 					.append("'><div class='control_caption'>");
 		}
 
@@ -486,7 +486,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		if (getxPos() <= 1) {
 			controlHTML.append("<td><table><tr>");
 		}
-		controlHTML.append("<td class='formRequiredLabel_withoutBorder'>").append(htmlString).append("</td>");
+		controlHTML.append("<td class='formRequiredLabel_withoutBorder' id='").append(getControlName())
+				.append("_tbody' >").append(htmlString).append("</td>");
+
+
 		if (LabelPosition.TOP == labelPosition) {
 			controlHTML.append("</td></td></tr></table>");
 		}

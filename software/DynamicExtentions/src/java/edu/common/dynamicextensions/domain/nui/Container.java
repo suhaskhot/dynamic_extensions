@@ -655,13 +655,12 @@ public class Container extends DynamicExtensionBaseDomainObject {
 					rowHTML.append(" style='display:row'");
 				}
 				rowHTML.append('>');
-				
-				if (control.isDynamic()) {
-					rowHTML.append("<input type='hidden' name='dynamicControl'  value = '").append(controlName)
-							.append("_tbody' />");
-				}
 			}
 
+			if (control.isDynamic()) {
+				rowHTML.append("<input type='hidden' name='dynamicControl'  value = '").append(controlName)
+						.append("_tbody' />");
+			}
 			String controlHTML;
 			
 			//TODO: needs a better way to handle for restricting form display up to two levels
@@ -783,36 +782,31 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		//3: configure paste button depending on flag
 		String dataEntryOperation = contextParameter.get(ContextParameter.MODE);
 		if (isPasteEnable && WebUIManagerConstants.EDIT_MODE.equals(dataEntryOperation)) {
-			htmlForGrid.append("<tr> <td width='59'><input type='button' " + "style='border: 0px; background-image: "
-							+ "url(images/de/b_paste.gif);height: 20px; width: 59px;'" + "align='middle'  id='paste_")
-					.append(name)
-					.append("' onclick='pasteData(\"")
-					.append(name)
-					.append("\",\"many\")'/> </td><td class='formField_withoutBorder'"
-					+ " style='background-color:#E3E2E7;' width='100%'>&nbsp;</td>"
-					+ "</tr> <tr width='100%'><td colspan='3' width='100%'>");
-		} else {
-			htmlForGrid.append("<tr> <td width='59'></td><td class='formField_withoutBorder'"
-					+ " style='background-color:#E3E2E7;' width='100%'>&nbsp;</td>"
-					+ "</tr> <tr width='100%'><td colspan='3' width='100%'>");
+			htmlForGrid
+					.append("<tr><td colspan='3' width='100%' style='background-color:#E3E2E7;'><input type='button' ")
+					.append("style='border: 0px; background-image: url(images/de/b_paste.gif);height: 20px; ")
+					.append("width: 59px;' align='middle'  id='paste_").append(name).append("' onclick='pasteData(\"")
+					.append(name).append("\",\"many\")'/> </td>")
+					.append("</tr>");
 		}
 
-		//FIXME headings and notes handling in grid
-		// For category attribute controls, if heading and/or notes are specified, then
-		// render the UI that displays heading followed by notes for particular
-		// category attribute controls.
+		List<Control> labels = new ArrayList<Control>();
+		List<Control> dataControls = new ArrayList<Control>();
+		segregateControls(dataControls, labels);
 
+		for (Control label : labels) {
+			htmlForGrid.append(" <tr width='100%'>").append(label.render(null, contextParameter))
+					.append("</table></tr>");
+		}
 		htmlForGrid
-				.append("<table id='")
+				.append(" <tr width='100%'><td colspan='3' width='100%'><table id='")
 				.append(name)
 				.append("_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'><tr width='100%' class='formLabel_withoutBorder'><th width='1%'>&nbsp;</th>");
 
 		//4: update table headings 
-		for (Control control : getOrderedControlList()) {
-			/*FIXME for label control
-			 * if(control.getBaseAbstractAttribute() != null)
-			{*/
+		for (Control control : dataControls) {
 			htmlForGrid.append("<th>");
+
 			if (control.isMandatory()) {
 
 				htmlForGrid.append("<span class='font_red'>");
@@ -835,7 +829,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		if (formDataList != null) {
 			int index = 1;
 			for (FormData rowValueMap : formDataList) {
-				htmlForGrid.append(getContainerHTMLAsARow(index, rowValueMap, contextParameter));
+				htmlForGrid.append(getContainerHTMLAsARow(dataControls, index, rowValueMap, contextParameter));
 				index++;
 			}
 		}
@@ -860,7 +854,13 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 		return htmlForGrid.toString();
 	}
-
+	
+	/**
+	 * This is used for UI rendering
+	 */
+	public String getContainerHTMLAsARow(int rowId, FormData formData, Map<ContextParameter, String> contextParameter) {
+		return getContainerHTMLAsARow(getDataControls(), rowId, formData, contextParameter);
+	}
 
 	/**
 	 * @param rowId
@@ -868,7 +868,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	 * @param contextParameter
 	 * @return
 	 */
-	public String getContainerHTMLAsARow(int rowId, FormData formData, Map<ContextParameter, String> contextParameter) {
+	public String getContainerHTMLAsARow(List<Control> controlList, int rowId, FormData formData,
+			Map<ContextParameter, String> contextParameter) {
 		StringBuffer contHtmlAsARow = new StringBuffer(96);
 
 		String rowClass = "formField_withoutBorder";
@@ -886,7 +887,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 
 		contHtmlAsARow.append("</td>");
-		for (Control control : getOrderedControlList()) {
+		for (Control control : controlList) {
 			generateHTMLforControl(rowId, contHtmlAsARow, formData, control, contextParameter);
 		}
 
@@ -914,6 +915,36 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			contHtmlAsARow.append("<td valign='middle' NOWRAP='true'>")
 				.append(controlHTML.replaceAll("style='float:left'", "")).append("</td>");
 		}
+	}
+
+	/**
+	 * This is used for UI rendering
+	 */
+	private void segregateControls(List<Control> dataControls, List<Control> labels) {
+
+		for (Control control : getOrderedControlList()) {
+
+			if (control instanceof Label) {
+				labels.add(control);
+			} else {
+				dataControls.add(control);
+			}
+		}
+	}
+
+	/**
+	 * This is used for UI rendering
+	 */
+	private List<Control> getDataControls() {
+		List<Control> dataControls = new ArrayList<Control>();
+
+		for (Control control : getOrderedControlList()) {
+
+			if (!(control instanceof Label)) {
+				dataControls.add(control);
+			}
+		}
+		return dataControls;
 	}
 
 	private void initLogs() {

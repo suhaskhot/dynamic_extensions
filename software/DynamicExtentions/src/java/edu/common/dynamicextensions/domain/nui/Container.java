@@ -31,6 +31,14 @@ import edu.common.dynamicextensions.util.IdGeneratorUtil;
 
 public class Container extends DynamicExtensionBaseDomainObject {
 	
+	private static final String EMPTY_ROW_HTML = "<tr><td height='7'></td></tr>";
+
+	private static final String CLOSE_ROW_HTML = "</table></td></tr></tbody>";
+
+	private static final String TBODY_TAG = "<tbody id='%s_tbody'>";
+
+	private static final String CONTROL_ROW_HTML_START_TAG = "<tr valign='center' style='%s'/>";
+
 	private static final long serialVersionUID = 449976852456002554L;
 		
 	private String name;
@@ -54,6 +62,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private transient List<Control> editLog = new ArrayList<Control>();
 	
 	private transient List<Control> delLog = new ArrayList<Control>();
+
 		
 	@Override
 	public Long getId() {
@@ -635,49 +644,60 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		final List<Object> values = new ArrayList<Object>();
 		final List<Control> controls = getOrderedControlList();
 		int lastRow = 0;
-		int cntr = 0;
+		Control lastControl = null;
 		addCaptionHTML(rowHTML, caption, values, addCaption, formData);
 
 		for (final Control control : controls) {
 			ControlValue fieldValue = formData.getFieldValue(control.getName());
 			String controlName = control.getControlName();
+			String controlHTML;
 
-			
-			if (lastRow != control.getSequenceNumber()) {
-				if (cntr != 0) {
-					rowHTML.append("</table></td></tr></tbody><tr><td height='7'></td></tr>");
-				}
-				rowHTML.append("<tbody id='").append(controlName).append("_tbody'>").append("<tr valign='center' ");
-
-				if (fieldValue != null && fieldValue.isHidden()) {
-					rowHTML.append(" style='display:none'");
-				} else {
-					rowHTML.append(" style='display:row'");
-				}
-				rowHTML.append('>');
+			//TODO: needs a better way to handle for restricting form display up to two levels
+			if (control instanceof SubFormControl) {
+				controlHTML = ((SubFormControl) control).render(controlName, fieldValue, contextParameter,
+						generateSubformHTML);
+			} else {
+				controlHTML = control.render(fieldValue, contextParameter);
 			}
+
+			if (lastRow < control.getSequenceNumber()) {
+				//Do not add row close tag before first row.
+				if (lastControl != null) {
+					rowHTML.append(CLOSE_ROW_HTML);
+				}
+
+				//No extra space should be added between control and a Note above it.
+				if (!fieldValue.isHidden() && !(lastControl instanceof Label)) {
+					rowHTML.append(EMPTY_ROW_HTML);
+				}
+
+				rowHTML.append(String.format(TBODY_TAG, controlName)).append(
+						String.format(CONTROL_ROW_HTML_START_TAG, getRowDisplay(fieldValue)));
+			} 
+			rowHTML.append(controlHTML);
 
 			if (control.isDynamic()) {
 				rowHTML.append("<input type='hidden' name='dynamicControl'  value = '").append(controlName)
 						.append("_tbody' />");
 			}
-			String controlHTML;
-			
-			//TODO: needs a better way to handle for restricting form display up to two levels
-			if (control instanceof SubFormControl) {
-				controlHTML = ((SubFormControl) control).render(controlName, fieldValue,
-						contextParameter, generateSubformHTML);
-			} else {
-				controlHTML = control.render(fieldValue, contextParameter);
-			}
-			rowHTML.append(controlHTML);
-			
-			cntr++;
+			lastControl = control;
 			lastRow = control.getSequenceNumber();
 		}
 		rowHTML.append("</td></tr>");
 
 		return rowHTML.toString();
+	}
+
+	/**
+	 * This method is used for UI rendering
+	 */
+	private String getRowDisplay(ControlValue fieldValue) {
+		String rowDisplay = "display:row";
+
+		if (fieldValue != null && fieldValue.isHidden()) {
+			rowDisplay = "display:none";
+		}
+		return rowDisplay;
 	}
 
 	private List<Control> getOrderedControlList() {

@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +19,7 @@ import edu.common.dynamicextensions.domain.nui.PvVersion;
 
 public class PvMapper {
 
+	@SuppressWarnings("unchecked")
 	public static PvDataSource propertiesToPvDataSource(Properties controlProperties) throws IOException {
 		PvDataSource pvDataSource = new PvDataSource();
 
@@ -35,10 +35,11 @@ public class PvMapper {
 		List<PermissibleValue> pvList = new ArrayList<PermissibleValue>();
 
 		// process permissible values from grid.
-		Collection<Map<String, Object>> pvs = controlProperties.getListOfMap("pvs");
+		Map<String, Object> pvs = controlProperties.getMap("pvs");
 		if (pvs != null) {
 
-			for (Map<String, Object> pvProperties : pvs) {
+			for (String key : pvs.keySet()) {
+				Map<String, Object> pvProperties = (Map<String, Object>) pvs.get(key);
 				Properties properties = new Properties(pvProperties);
 				pvList.add(propertiesToPv(properties));
 			}
@@ -120,13 +121,17 @@ public class PvMapper {
 	 * @return
 	 */
 	public static void pVDataSourcetoProperties(PvDataSource pvDataSource, Properties controlProps) {
-		List<Map<String, Object>> pvList = new ArrayList<Map<String, Object>>();
+		Map<String, Object> pvMap = new HashMap<String, Object>();
+		String pvKey = "pv_";
+		Integer pvKeyNum = 0;
 		for (PvVersion pvVer : pvDataSource.getPvVersions()) {
 			for (PermissibleValue pv : pvVer.getPermissibleValues()) {
-				pvList.add(pvToProperties(pv));
+
+				pvMap.put(pvKey + pvKeyNum, pvToProperties(pv));
+				pvKeyNum++;
 			}
 		}
-		controlProps.setProperty("pvs", pvList);
+		controlProps.setProperty("pvs", pvMap);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}
 

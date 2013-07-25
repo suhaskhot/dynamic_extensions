@@ -1,11 +1,11 @@
 /* Carousel CSS */
-#slider1 {
+#controlTypesSlider {
 	height: 1%;
 	overflow: hidden;
 	padding: 0 0 5px;
 }
 
-#slider1 .viewport {
+#controlTypesSlider .viewport {
 	float: left;
 	width: 820px;
 	height: 80px;
@@ -13,7 +13,7 @@
 	position: relative;
 }
 
-#slider1 .buttons {
+#controlTypesSlider .buttons {
 	background: url("../icons/buttons.png") no-repeat scroll 0 0
 		transparent;
 	display: block;
@@ -27,16 +27,16 @@
 	position: relative;
 }
 
-#slider1 .next {
+#controlTypesSlider .next {
 	background-position: 0 0;
 	margin: 22px 0 0 10px;
 }
 
-#slider1 .disable {
+#controlTypesSlider .disable {
 	visibility: hidden;
 }
 
-#slider1 .overview {
+#controlTypesSlider .overview {
 	list-style: none;
 	position: absolute;
 	padding: 0;
@@ -45,7 +45,7 @@
 	left: 0 top:  0;
 }
 
-#slider1 .overview li {
+#controlTypesSlider .overview li {
 	float: left;
 	margin: 0 5px 0 0;
 	padding: 1px;

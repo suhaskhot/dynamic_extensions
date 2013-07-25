@@ -63,14 +63,13 @@
 }
 
 a:link,a:visited,a:hover,a:active {
-	background-color: white;
+	/*background-color: white;*/
 	border: 0px;
 	text-decoration: none !important;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 10px;
 	color: #303030;
 	float: left;
-	width: 100px;
 }
 
 .iconBorder {

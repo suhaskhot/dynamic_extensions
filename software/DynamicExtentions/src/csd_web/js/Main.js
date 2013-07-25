@@ -9,7 +9,7 @@ var Main = {
 	mainTabBarView : null,
 	currentFieldView : null,
 	designModeViewPointer : null,
-	carousel: null,
+	carousel : null,
 	advancedControlsView : null,
 
 	renderUI : function() {
@@ -18,9 +18,9 @@ var Main = {
 		Views.showBody();
 		Routers.initializeRouters();
 		var form = new Models.Form();
-		this.formView = Views.showForm('formTab', form);
+		this.formView = Views.showForm('formDetailsDiv', form);
 		this.treeView = new Views.TreeView({
-			el : $('#leftTab'),
+			el : $('#controlsTreeDiv'),
 			model : null
 		});
 
@@ -28,18 +28,16 @@ var Main = {
 				Routers.formTreeNodeClickHandler);
 
 		this.mainTabBarView = new Views.TabBarView({
-			el : $('#rightTab'),
+			el : $('#csdOperationsContainer'),
 			model : null
 		});
 		Views.showControlTab('control');
-		this.carousel = $('#slider1');
+		this.carousel = $('#controlTypesSlider');
 		this.carousel.tinycarousel();
 		this.advancedControlsView = new Views.AdvancedPropertiesTabView({
 			el : $('#advancedControlProperties'),
 			model : null
 		});
-
-		
 
 	}
 }

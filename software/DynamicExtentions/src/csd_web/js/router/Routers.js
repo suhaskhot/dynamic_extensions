@@ -10,12 +10,13 @@ var Routers = {
 		var currPvs = Main.currentFieldView.getModel().get('pvs');
 		var pvFileLocation = Main.currentFieldView.getModel().get('pvFile');
 		updatedModel.set({
-			pvs : new Array(),
+			pvs : {},
 			pvFile : pvFileLocation
 		});
-
+		var cntr = 0;
 		for ( var key in currPvs) {
-			updatedModel.get('pvs').push(currPvs[key]);
+			updatedModel.get('pvs')[cntr] = currPvs[key];
+			cntr++;
 		}
 		return updatedModel;
 	},
@@ -147,18 +148,25 @@ var Routers = {
 	},
 
 	loadPreview : function() {
-		$("#formWaitingImage").hide();
 		$('#previewFrame').prop('src', "csd_web/pages/preview.jsp");
+		$("#formWaitingImage").hide();
 	},
 
-	getListOfCurrentControls : function() {
+	getListOfCurrentControls : function(isNameCaptionPair) {
 		var controls = new Array();
 		for ( var key in Main.formView.getFormModel().get(
 				'controlObjectCollection')) {
 			var control = Main.formView.getFormModel().get(
 					'controlObjectCollection')[key];
 			if (control.get('type') == "numericField") {
-				controls.push(control.get('controlName'));
+				if (isNameCaptionPair) {
+					controls.push({
+						'name' : control.get('controlName'),
+						'caption' : control.get('caption')
+					});
+				} else {
+					controls.push(control.get('controlName'));
+				}
 			}
 
 			if (control.get('type') == "subForm") {
@@ -168,8 +176,16 @@ var Routers = {
 							'controlObjectCollection')[subKey];
 					var subControlName = subControl.get('controlName');
 					if (subControl.get('type') == "numericField") {
-						controls.push(control.get('controlName') + "."
-								+ subControlName);
+						if (isNameCaptionPair) {
+							controls.push({
+								'name' : control.get('controlName') + "."
+										+ subControlName,
+								'caption' : control.get('caption')
+							});
+						} else {
+							controls.push(control.get('controlName') + "."
+									+ subControlName);
+						}
 					}
 				}
 			}
@@ -180,12 +196,13 @@ var Routers = {
 	// Populate the given select box with the latest control names
 	populateSelectBoxWithControlNames : function(selectTagId) {
 		$("#" + selectTagId).empty();
-		var controls = this.getListOfCurrentControls();
+		var controls = this.getListOfCurrentControls(true);
 		for ( var key = 0; key < controls.length; key++) {
-			var controlName = controls[key];
+			var control = controls[key];
 			$("#" + selectTagId).append($("<option/>", {
-				value : controlName,
-				text : controlName
+				value : control.name,
+				text : control.name,
+				title : control.caption
 			}));
 		}
 	},
@@ -194,6 +211,27 @@ var Routers = {
 
 	refreshListsWithControls : function() {
 		this.populateSelectBoxWithControlNames("availableFields1");
+	},
+
+	getCaptionFromControlName : function(controlName) {
+		if(controlName!=undefined && controlName!=null && controlName!=""){
+			var controlNames = controlName.split(".");
+			if (controlNames.length == 1) {
+				if (Main.formView.getFormModel().get('controlObjectCollection')[controlName] != undefined) {
+					return Main.formView.getFormModel().get(
+							'controlObjectCollection')[controlName]
+							.get('caption');
+				}
+			} else {
+				if (Main.formView.getFormModel().get('controlObjectCollection')[controlNames[0]]
+						.get('subForm').get('controlObjectCollection')[controlNames[1]] != undefined) {
+					return Main.formView.getFormModel().get(
+							'controlObjectCollection')[controlNames[0]].get(
+							'subForm').get('controlObjectCollection')[controlNames[1]]
+							.get('caption');
+				}
+			}
+		}
 	},
 
 	/*
@@ -216,6 +254,10 @@ var Routers = {
 
 			Routers.refreshListsWithControls();
 			Main.advancedControlsView.refreshFormulaField();
+			$('#availableFields1').prop(
+					'title',
+					Routers.getCaptionFromControlName($('#availableFields1')
+							.val()));
 
 		}
 	},
@@ -314,8 +356,7 @@ var Routers = {
 		case "multiselectCheckBox":
 			GlobalMemory.pvCounter = 0;
 			// iterate through the pv list
-			for ( var cntr = 0; cntr < Main.currentFieldView.getModel().get(
-					'pvs').length; cntr++) {
+			for ( var cntr in Main.currentFieldView.getModel().get('pvs')) {
 				// get the i'th pv
 				var pv = Main.currentFieldView.getModel().get('pvs')[cntr];
 				// add the i'th pv
@@ -370,7 +411,7 @@ var Routers = {
 
 		var controlModel = new Models.Field({
 			type : controlType,
-			pvs : new Array(),
+			pvs : {},
 			sequenceNumber : this.getNextSequenceNumber(),
 			controlName : Utility.getShortCode(controlType)
 		});
@@ -617,8 +658,33 @@ var Routers = {
 							.loadControlsInModelAndTree(model);
 				},
 
+				loadFormulae : function(model, subFormName) {
+					for ( var key in model.get('controlObjectCollection')) {
+						var control = model.get('controlObjectCollection')[key];
+						if (control.get('type') == "numericField") {
+							if (control.get('isCalculated') != undefined
+									&& control.get('isCalculated')) {
+								var controlName = control.get('controlName');
+								if (subFormName != "") {
+									controlName = subFormName + "."
+											+ controlName;
+								}
+								Main.advancedControlsView.addFormulaToTable(
+										controlName, control.get('formula'));
+							}
+						}
+						if (control.get('type') == "subForm") {
+							this.loadFormulae(control.get('subForm'), control
+									.get('controlName'));
+						}
+					}
+				},
+
 				loadFormSuccessHandler : function(model, response) {
 					Routers.formEventsRouterPointer.updateFormAndUI(model);
+					Routers.formEventsRouterPointer.loadFormulae(Main.formView
+							.getFormModel(), "");
+					Main.advancedControlsView.correctFormulaTableCSS();
 					$("#formWaitingImage").hide();
 				},
 

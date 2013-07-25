@@ -13,7 +13,7 @@
 <link href="../../stylesheets/de/calanderComponent.css" type=text/css rel=stylesheet />
 <link rel="stylesheet" type="text/css" href="../../stylesheets/de/xtheme-gray.css" />
 <script src="../../javascripts/de/script.js" type="text/javascript"></script>
-<script src="../../javascripts/de/jquery-1.3.2.js" type="text/javascript"></script>
+<script src="../../javascripts/de/jquery-1.8.3.min.js" type="text/javascript"></script>
 <script>jQuery.noConflict();</script>
 <script src="../../javascripts/de/form_plugin.js" type="text/javascript"></script>
 <script src="../../javascripts/de/dynamicExtensions.js" type="text/javascript"></script>

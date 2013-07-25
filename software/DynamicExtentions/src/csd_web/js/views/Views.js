@@ -49,7 +49,7 @@ var Views = {
 												$("#formWaitingImage").hide();
 												$("#popupMessageText")
 														.html(
-																"Could not save theform successfully.");
+																"Could not save the form successfully.");
 												$("#dialog-message").dialog(
 														'open');
 											}
@@ -58,7 +58,7 @@ var Views = {
 											$("#formWaitingImage").hide();
 											$("#popupMessageText")
 													.html(
-															"Could not save theform successfully.");
+															"Could not save the form successfully.");
 											$("#dialog-message").dialog('open');
 										}
 
@@ -270,10 +270,11 @@ var Views = {
 						var status = Routers.updateCachedControl(this.model);
 						if (status == "save" || status == "update") {
 							this.setSuccessMessageHeader();
-							$("#messagesDiv").append(
-									this.messageSpace
-											+ this.model.get('caption')
-											+ " was saved successfully.");
+							$("#messagesDiv")
+									.append(
+											this.messageSpace
+													+ this.model.get('caption')
+													+ " added to the form successfully.");
 							$('#createControlButtonid').attr("disabled", true);
 							$('#addPv').prop("disabled", true);
 							$('#deletePv').prop("disabled", true);
@@ -638,6 +639,15 @@ var Views = {
 				render : function() {
 					this.$el
 							.html(Templates.templateList['advancedPropertiesTemplate']);
+
+					$('#availableFields1').change(
+							function() {
+								$('#availableFields1').prop(
+										'title',
+										Routers.getCaptionFromControlName($(
+												'#availableFields1').val()));
+							});
+
 					// Render JQuery Toggle Buttons
 					$("#advancedControlsRadio").buttonset();
 					// Hide Skip logic tab
@@ -651,8 +661,9 @@ var Views = {
 					// Render the custom formula field
 					this.formulaField = new K_AutoComplete({
 						inputElementId : "formulaField",
-						data : Routers.getListOfCurrentControls()
+						data : Routers.getListOfCurrentControls(false)
 					});
+
 				},
 
 				events : {
@@ -662,7 +673,7 @@ var Views = {
 				refreshFormulaField : function() {
 					this.formulaField = new K_AutoComplete({
 						inputElementId : "formulaField",
-						data : Routers.getListOfCurrentControls()
+						data : Routers.getListOfCurrentControls(false)
 					});
 				},
 
@@ -695,6 +706,7 @@ var Views = {
 
 				addFormula : function(event) {
 					var controlName = $('#availableFields1').val();
+					var _formula = $('#formulaField').val();
 					if (controlName != null && controlName != undefined) {
 						if (this.doesFormulaForControlExist(controlName)) {
 							$("#popupMessageText").html(
@@ -702,60 +714,57 @@ var Views = {
 							$("#dialog-message").dialog('open');
 
 						} else {
-							var _tr_element_start = "<tr id = '" + controlName
-									+ "'>";
-							var _tr_element_end = "</tr>";
-							var _td_element_start = "<td class = 'text_normal ";
-							var _td_element_end = "</td>";
-
-							if (this.formulaRowCounter % 2 == 0) {
-								_td_element_start += "formulaTableRowEven'>";
-							} else {
-								_td_element_start += "formulaTableRowOdd'>";
-							}
-
-							var _formula = $('#formulaField').val();
-							var _table_row = _tr_element_start
-									+ _td_element_start
-									+ controlName
-									+ _td_element_end
-									+ _td_element_start
-									+ _formula
-									+ _td_element_end
-									+ _td_element_start
-									+ "<a title = 'edit' href = '#calculatedAttribute/"
-									+ controlName
-									+ "/edit'\"><span class = 'ui-icon ui-icon-pencil' style= 'float : left;'/></a>"
-									+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-									+ "<a title = 'delete' href = '#calculatedAttribute/"
-									+ controlName
-									+ "/delete'\"><span class = 'ui-icon ui-icon-trash' style= 'float : left;'/></a>"
-									+ _td_element_end + _tr_element_end;
-
-							$("#formulaTableHeader").eq(0).after(_table_row);
-
-							// add formula and set calculated
-							Routers.setFormulaForCalculatedAttirbute(
-									controlName, true, _formula);
-							// remove from drop down
-							/*
-							 * $( "#availableFields1 option[value='" +
-							 * controlName + "']").remove();
-							 */
-							$('#formulaField').val("");
-							this.formulaRowCounter++;
-							this.correctFormulaTableCSS();
-
+							this.addFormulaToTable(controlName, _formula);
 						}
 					}
 
+				},
+
+				addFormulaToTable : function(controlName, _formula) {
+					var _tr_element_start = "<tr id = '" + controlName + "'>";
+					var _tr_element_end = "</tr>";
+					var _td_element_start = "<td class = 'text_normal ";
+					var _td_element_end = "</td>";
+
+					if (this.formulaRowCounter % 2 == 0) {
+						_td_element_start += "formulaTableRowEven'>";
+					} else {
+						_td_element_start += "formulaTableRowOdd'>";
+					}
+
+					var _table_row = _tr_element_start
+							+ _td_element_start
+							+ "<a title = 'edit' href = '#calculatedAttribute/"
+							+ controlName
+							+ "/edit'\"><span class = 'ui-icon ui-icon-pencil' style= 'float : left;'/></a>"
+							+ "<span style= 'float : left;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+							+ "<a title = 'delete' href = '#calculatedAttribute/"
+							+ controlName
+							+ "/delete'\"><span class = 'ui-icon ui-icon-trash' style= 'float : left;'/></a>"
+							+ _td_element_end + _td_element_start + controlName
+							+ _td_element_end + _td_element_start + _formula
+							+ _td_element_end + _tr_element_end;
+
+					$("#formulaTableHeader").eq(0).after(_table_row);
+
+					// add formula and set calculated
+					Routers.setFormulaForCalculatedAttirbute(controlName, true,
+							_formula);
+					// remove from drop down
+					/*
+					 * $( "#availableFields1 option[value='" + controlName +
+					 * "']").remove();
+					 */
+					$('#formulaField').val("");
+					this.formulaRowCounter++;
+					this.correctFormulaTableCSS();
 				},
 
 				removeFormula : function(id) {
 					Routers.setFormulaForCalculatedAttirbute(id, false, null);
 					$('#' + id).remove();
 					this.formulaRowCounter--;
-				},
+				}
 
 			}),
 

@@ -62,20 +62,12 @@
 	color: green;
 }
 
-a:link,a:visited,a:hover,a:active {
-	/*background-color: white;*/
-	border: 0px;
-	text-decoration: none !important;
-	font-family: Helvetica, Arial, sans-serif;
-	font-size: 10px;
-	color: #303030;
-	float: left;
-}
-
 .iconBorder {
 	border: 1px solid #c0c0c0;
 	padding: 2px;
 	margin: 5px;
+	color: #303030;
+	font-color : #303030;
 }
 
 .evenGridRow {
@@ -114,4 +106,11 @@ a:link,a:visited,a:hover,a:active {
 
 .link {
 	width: 100px;
+	border: 0px;
+	text-decoration: none !important;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 10px;
+	color: #303030;
+	font-color : #303030;
+	float: left;
 }

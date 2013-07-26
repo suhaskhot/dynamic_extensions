@@ -37,9 +37,12 @@ public class CreateFormClient extends AbstractClient {
 			DirOperationsUtility.validateFolderSizeForUpload(args[1], halfGB);
 			this.zipFile = ZipUtility.zipFolder(args[1], "forms.zip");
 
-			String url = HTTPSConnection.getCorrectedApplicationURL(args[0]) +	WebUIManagerConstants.CREATE_FORM_ACTION;
-			this.serverUrl = new URL(url);
+			String url = HTTPSConnection.getCorrectedApplicationURL(args[0]) +	WebUIManagerConstants.CREATE_FORM_ACTION;			
+			if (args.length > 2 && args[2].equals("false")) {
+				url = url + "?create_tables=false";
+			}
 			
+			this.serverUrl = new URL(url);			
 			logger.info("Invoking create form action @ " + serverUrl);
 		} catch (MalformedURLException e) {
 			throw new DynamicExtensionsSystemException("Please provide correct application URL", e);
@@ -54,9 +57,9 @@ public class CreateFormClient extends AbstractClient {
 	 */
 	protected void validate(String[] args) 
 	throws DynamicExtensionsSystemException	{		
-		if (args.length != 2 || args[1] == null || args[1].trim().isEmpty()) {
+		if (args.length < 2 || args.length > 3 || args[1] == null || args[1].trim().isEmpty()) {
 			throw new DynamicExtensionsSystemException(
-					"Please specify folder containing form definitions");
+					"Wrong number of arguments to command");
 		}
 	}
 

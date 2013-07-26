@@ -18,7 +18,15 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 	private String tableName;
 	
 	private int optionsPerRow = 3;
-
+	
+	private String parentKeyColumn  = "IDENTIFIER";
+	
+	private String foreignKeyColumn = "RECORD_ID";
+	
+	public MultiSelectCheckBox() {
+		setDbColumnName("VALUE");
+	}
+	
 	public int getOptionsPerRow() {
 		return optionsPerRow;
 	}
@@ -40,10 +48,30 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
-		columnDefs.add(ColumnDef.get("VALUE", getDbType()));
-		columnDefs.add(ColumnDef.get("RECORD_ID", "NUMBER"));
+		columnDefs.add(ColumnDef.get(getDbColumnName(), getDbType()));
+		columnDefs.add(ColumnDef.get(foreignKeyColumn, "NUMBER"));
 
 		return columnDefs;
+	}
+	
+	@Override
+	public String getParentKey() {
+		return parentKeyColumn;
+	}
+
+	@Override
+	public void setParentKey(String parentKeyColumn) {
+		this.parentKeyColumn = parentKeyColumn;		
+	}
+	
+	@Override
+	public String getForeignKey() {
+		return foreignKeyColumn;
+	}
+
+	@Override
+	public void setForeignKey(String foreignKeyColumn) {
+		this.foreignKeyColumn = foreignKeyColumn;		
 	}
 
 	@Override
@@ -167,5 +195,4 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 		}
 		return isPVSelected;
 	}
-
 }

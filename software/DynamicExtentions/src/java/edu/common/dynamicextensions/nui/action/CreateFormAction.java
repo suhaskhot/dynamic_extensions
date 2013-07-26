@@ -37,6 +37,11 @@ public class CreateFormAction extends HttpServlet {
 		try	{			
 			DownloadUtility.downloadZipFile(httpReq, tmpDirName, "forms.zip");
 			logger.info("Download input forms zip file to " + tmpDirName);
+			String createTablesParam = httpReq.getParameter("create_tables");
+			boolean createTables = true;
+			if (createTablesParam != null && createTablesParam.equals("false")) {
+				createTables = false;
+			}
 
 			//
 			// Once the zip is extracted, following will be directory layout
@@ -64,7 +69,7 @@ public class CreateFormAction extends HttpServlet {
 				for(String formFile : formFileNames) {
 					logger.info("Create form using definition in " + formFile);
 					String formFilePath = new StringBuilder(formDirPath).append(formFile).toString(); 
-					Long containerId = Container.createContainer(formFilePath, pvDirPath);
+					Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
 					logger.info("Form for definition in " + formFile + " created. Id = " + containerId);
 				}				
 			}

@@ -207,10 +207,10 @@ public class ContainerParser {
 	}
 
 	private void setContainerProps(Container container, Element viewElement) {
+		Long id = getLongValue(viewElement, "id");
+		container.setId(id);
+
 		String name = getTextValue(viewElement, "name");
-		if (name == null) {
-			throw new RuntimeException("Form name can't be null");
-		}
 		container.setName(name);
 		
 		String caption = getTextValue(viewElement, "caption");
@@ -218,6 +218,11 @@ public class ContainerParser {
 			throw new RuntimeException("Form caption can't be null");
 		}
 		container.setCaption(caption);		
+		
+		String table = getTextValue(viewElement, "table");
+		if (table != null) {
+			container.setDbTableName(table);
+		}
 	}
 	
 	private List<Control> parseFormRow(Node row, int currentRow) {
@@ -278,6 +283,8 @@ public class ContainerParser {
 		
 		subForm.setShowAddMoreLink(getBooleanValue(subFormEle, "showAddMoreLink"));
 		subForm.setPasteButtonEnabled(getBooleanValue(subFormEle, "pasteButtonEnabled"));
+		subForm.setParentKey(getTextValue(subFormEle, "parentKey"));
+		subForm.setForeignKey(getTextValue(subFormEle, "foreignKey"));
 
 		Container subContainer = parseContainer(subFormEle);
 		subForm.setSubContainer(subContainer);
@@ -304,6 +311,10 @@ public class ContainerParser {
 			msCheckBox.setOptionsPerRow(optionsPerRow);
 		}
 		
+		msCheckBox.setParentKey(getTextValue(msCbEle, "parentKey"));
+		msCheckBox.setForeignKey(getTextValue(msCbEle, "foreignKey"));
+		msCheckBox.setTableName(getTextValue(msCbEle, "table"));
+		
 		return msCheckBox;
 	}
 
@@ -318,7 +329,11 @@ public class ContainerParser {
 		}
 		
 		if (isMultiSelect) {
-			listBox = new MultiSelectListBox();
+			MultiSelectListBox msLb = new MultiSelectListBox();						
+			msLb.setTableName(getTextValue(listEle, "table"));
+			msLb.setParentKey(getTextValue(listEle, "parentKey"));
+			msLb.setForeignKey(getTextValue(listEle, "foreignKey"));
+			listBox = msLb;
 		} else {
 			listBox = new ListBox();
 		}
@@ -595,8 +610,18 @@ public class ContainerParser {
 		ctrl.setSequenceNumber(currentRow);
 		ctrl.setConceptCode(getTextValue(ctrlEle, "conceptCode", null));
 		ctrl.setxPos(i);
+		ctrl.setDbColumnName(getTextValue(ctrlEle, "column"));
 	}
 
+	private Long getLongValue(Element element, String name) {
+		String value = getTextValue(element, name);
+		if (value == null || value.trim().isEmpty()) {
+			return null;
+		} else {
+			return Long.parseLong(value);
+		}
+	}
+	
 	private Integer getIntValue(Element element, String name, Integer defValue) {
 		Integer value = getIntValue(element, name);
 

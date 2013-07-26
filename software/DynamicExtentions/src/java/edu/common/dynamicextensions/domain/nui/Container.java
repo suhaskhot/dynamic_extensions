@@ -177,7 +177,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				
 		addLog.add(control);
 		control.setId(++ctrlId);
-		control.setDbColumnName(String.format(columnNameFmt, ctrlId)); // set db name here
+		
+		if (control.getDbColumnName() == null) {
+			control.setDbColumnName(String.format(columnNameFmt, ctrlId)); // set db name here
+		}		
 		controlsMap.put(control.getName(), control);
 		control.setContainer(this);
 	}
@@ -263,22 +266,32 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	public Long save(UserContext userCtxt) {
+		return save(userCtxt, true);
+	}
+	
+	public Long save(UserContext userCtxt, boolean createTables) {
 		JdbcDao jdbcDao = null;
 		
 		try {
 			jdbcDao = new JdbcDao();
-			return save(userCtxt, jdbcDao);
+			return save(userCtxt, jdbcDao, createTables);
 		} finally {
 			if (jdbcDao != null) {
 				jdbcDao.close();
 			}
-		}		
+		}				
 	}
 	
 	public Long save(UserContext userCtxt, JdbcDao jdbcDao) {
+		return save(userCtxt, jdbcDao, true);
+	}
+	
+	public Long save(UserContext userCtxt, JdbcDao jdbcDao, boolean createTables) { 
 		try {
-			executeDDLWithoutTxn(jdbcDao);
-
+			if (createTables) {
+				executeDDLWithoutTxn(jdbcDao);
+			}
+			
 			boolean insert = (id == null);			
 			int numIds = 0;
 			List<Container> subContainers = getAllSubContainers();
@@ -354,19 +367,27 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	public static Long createContainer(String formXml, String pvDir) 
-	throws Exception { 
+	throws Exception {
+		return createContainer(formXml, pvDir, true);
+	}
+	
+	public static Long createContainer(String formXml, String pvDir, boolean createTables)
+	throws Exception {
 		ContainerParser parser = new ContainerParser(formXml, pvDir);
 		Container newContainer = parser.parse();
-		
-		ContainerDao dao = new ContainerDao(new JdbcDao());
-		Container existingContainer = dao.getByName(newContainer.getName());
 
+		Container existingContainer = null;		
+		if (newContainer.getId() != null) {
+			ContainerDao dao = new ContainerDao(new JdbcDao());
+			existingContainer = dao.getById(newContainer.getId());
+		}
+		
 		if (existingContainer != null) {
 			existingContainer.editContainer(newContainer);
 			newContainer = existingContainer;
 		}
 		
-		return newContainer.save(null);
+		return newContainer.save(null, createTables);
 	} 
 			
 	protected void editContainer(Container newContainer) {
@@ -383,10 +404,16 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 	protected void deleteRemovedControls(Container newContainer) {
 		Collection<Control> existingCtrls = getControls();
+		Collection<String> removedCtrls = new ArrayList<String>();
 		for (Control ctrl : existingCtrls) {
 			if (newContainer.getControl(ctrl.getName()) == null) {
-				deleteControl(ctrl.getName());
+				//deleteControl(ctrl.getName());
+				removedCtrls.add(ctrl.getName());
 			}			
+		}
+		
+		for (String removedCtrl : removedCtrls) {
+			deleteControl(removedCtrl);
 		}
 	}
 	

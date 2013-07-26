@@ -13,7 +13,15 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 	private static final long serialVersionUID = 3003089628345200684L;
 
 	private String tableName;
-
+	
+	private String parentKeyColumn  = "IDENTIFIER";
+	
+	private String foreignKeyColumn = "RECORD_ID";
+	
+	public MultiSelectListBox() {
+		setDbColumnName("VALUE");
+	}
+	
 	@Override
 	public String getTableName() {
 		return tableName;
@@ -27,10 +35,30 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
-		columnDefs.add(ColumnDef.get("VALUE", getDbType()));
-		columnDefs.add(ColumnDef.get("RECORD_ID", "NUMBER"));
+		columnDefs.add(ColumnDef.get(getDbColumnName(), getDbType()));
+		columnDefs.add(ColumnDef.get(foreignKeyColumn, "NUMBER"));
 
 		return columnDefs;
+	}
+	
+	@Override
+	public String getParentKey() {
+		return parentKeyColumn;
+	}
+
+	@Override
+	public void setParentKey(String parentKeyColumn) {
+		this.parentKeyColumn = parentKeyColumn;		
+	}
+	
+	@Override
+	public String getForeignKey() {
+		return foreignKeyColumn;
+	}
+
+	@Override
+	public void setForeignKey(String foreignKeyColumn) {
+		this.foreignKeyColumn = foreignKeyColumn;		
 	}
 
 	@Override
@@ -54,8 +82,6 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 
 	@Override
 	protected String getMultiselectString() {
-
 		return "MULTIPLE";
 	}
-
 }

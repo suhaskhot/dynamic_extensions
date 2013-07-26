@@ -32,6 +32,10 @@ public class SubFormControl extends Control {
 	private boolean pasteButtonEnabled;
 
 	private String tableName;
+	
+	private String parentKeyColumn  = "IDENTIFIER";
+	
+	private String foreignKeyColumn = "PARENT_RECORD_ID";
 
 	public Container getSubContainer() {
 		return subContainer;
@@ -79,6 +83,22 @@ public class SubFormControl extends Control {
 
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	public String getParentKey() {
+		return parentKeyColumn;
+	}
+
+	public void setParentKey(String parentKeyColumn) {
+		this.parentKeyColumn = parentKeyColumn;
+	}
+	
+	public String getForeignKey() {
+		return foreignKeyColumn;
+	}
+
+	public void setForeignKey(String foreignKeyColumn) {
+		this.foreignKeyColumn = foreignKeyColumn;
 	}
 
 	/**

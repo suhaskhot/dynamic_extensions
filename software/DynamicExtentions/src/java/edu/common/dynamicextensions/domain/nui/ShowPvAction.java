@@ -5,7 +5,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 
-public class ShowPvAction extends Action {
+public class ShowPvAction extends SkipAction {
 
 	private static final long serialVersionUID = -3930481754067679419L;
 	

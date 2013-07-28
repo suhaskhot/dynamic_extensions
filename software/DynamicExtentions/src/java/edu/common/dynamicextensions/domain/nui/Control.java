@@ -54,6 +54,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	private boolean calculatedSourceControl;
 	
+	private boolean skipLogicTargetControl;
+	
 	private boolean showInGrid;
 
 	private String conceptCode;
@@ -68,7 +70,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	private Set<ValidationRule> validationRules = new HashSet<ValidationRule>();
 
-	private Set<SkipRule> skipRules = new HashSet<SkipRule>();
+	//private Set<SkipRule> skipRules = new HashSet<SkipRule>();
 
 	private Container container;
 	
@@ -185,7 +187,15 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public void setCalculatedSourceControl(boolean calculatedSourceControl) {
 		this.calculatedSourceControl = calculatedSourceControl;
 	}
+	
+	public boolean isSkipLogicTargetControl() {
+		return skipLogicTargetControl;
+	}
 
+	public void setSkipLogicTargetControl(boolean skipLogicTargetControl) {
+		this.skipLogicTargetControl = skipLogicTargetControl;
+	}
+	
 	public boolean showInGrid() {
 		return showInGrid;
 	}
@@ -250,24 +260,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		this.validationRules = validationRules;
 	}
 	
-	public Set<SkipRule> getSkipRules() {
-		return skipRules;
-	}
-
-	public void setSkipRules(Set<SkipRule> skipRules) {
-		this.skipRules = skipRules;
-	}
-
 	public Container getContainer() {
 		return container;
 	}
 
 	public void setContainer(Container container) {
 		this.container = container;
-	}
-
-	public boolean isSkipLogicTargetControl() {
-		return skipRules != null && !skipRules.isEmpty();
 	}
 
 	public void addValidationRule(String ruleName, Map<String, String> ruleParams) {
@@ -532,13 +530,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		}
 
 		return result;
-	}
-
-	public void evaluateSkipLogic(ControlValue fieldValue, FormData formData, Integer rowNumber) {
-
-		for (SkipRule rule : skipRules) {
-			rule.evaluate(formData, fieldValue, rowNumber);
-		}
 	}
 
 	public boolean isDynamic() {

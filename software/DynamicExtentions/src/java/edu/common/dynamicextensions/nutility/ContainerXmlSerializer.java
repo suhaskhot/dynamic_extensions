@@ -24,7 +24,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import edu.common.dynamicextensions.domain.nui.Action;
+import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -92,7 +92,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			emitViewEnd();
 	
 			emitSkipRulesStart();
-			serializeSkipRules(container);
+			serializeSkipRules(container.getSkipRules());
 			emitSkipRulesEnd();
 	
 			emitContainerEnd();
@@ -509,104 +509,38 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		writeElementEnd(writer, "skipRules");
 	}
 	
-	private class ControlAction {
-		Control control;
-		Action action;
-	}
-	
-	private void serializeSkipRules(Container container) {
-		Map<String, List<ControlAction>> orCondActionMap = new HashMap<String, List<ControlAction>>();
-		Map<String, List<ControlAction>> andCondActionMap = new HashMap<String, List<ControlAction>>();
-
-		populateConditionActionMap(container, orCondActionMap, andCondActionMap);		
-		serializeSkipRules(orCondActionMap,  LogicalOp.OR);
-		serializeSkipRules(andCondActionMap, LogicalOp.AND);
-	}
-	
-	private void populateConditionActionMap(
-			Container container, Map<String, List<ControlAction>> orCondActionMap,
-			Map<String, List<ControlAction>> andCondActionMap) {
-		
-		for (Control ctrl :  container.getControls()) {
-			if (ctrl instanceof SubFormControl) {
-				SubFormControl sfCtrl = (SubFormControl)ctrl;
-				populateConditionActionMap(sfCtrl.getSubContainer(), orCondActionMap, andCondActionMap);
-			} else {
-				for (SkipRule rule : ctrl.getSkipRules()) {
-					if (rule.getLogicalOp().equals(LogicalOp.OR)) {
-						populateConditionActionMap(ctrl, rule, orCondActionMap);
-					} else {
-						populateConditionActionMap(ctrl, rule, andCondActionMap);
-					}
-				}
-			}
-		}		
-	}
-
-	private void populateConditionActionMap(
-			Control ctrl, SkipRule rule, 
-			Map<String, List<ControlAction>> condActionMap) {
-
-		StringBuilder condKey = new StringBuilder();
-		for(SkipCondition condition : rule.getConditions()) {
-			String op = condition.getRelationalOp().name();
-			String field = container.getControlCanonicalName(condition.getSourceControl());
-			String value = condition.getValue();
-			condKey.append(field).append(":")
-				.append(op).append(":")
-				.append(value).append("#");
-		}
-		
-		//
-		// Check whether action exists for the same set of Conditions
-		// Edition the ConditionActionMap
-		//
-		ControlAction controlAction = new ControlAction();
-		controlAction.action = rule.getAction();
-		controlAction.control = ctrl;
-		
-		List<ControlAction> controlActions = condActionMap.get(condKey.toString());
-		if (controlActions == null) {
-			controlActions = new ArrayList<ControlAction>();
-			condActionMap.put(condKey.toString(), controlActions);
-		}
-		
-		controlActions.add(controlAction);
-	}
-
-	private void serializeSkipRules(Map<String, List<ControlAction>> conditionActionMap, LogicalOp logicalOp) {
-		
-		for(Entry<String, List<ControlAction>> entry : conditionActionMap.entrySet()){
+	private void serializeSkipRules(List<SkipRule> skipRules) {		
+		for (SkipRule skipRule : skipRules) {
 			writeElementStart(writer, "skipRule");
 			
-			writeElementStart(writer, getLogicalOp(logicalOp));
-			for(String condition : entry.getKey().split("#")) {
+			String logicalOp = getLogicalOp(skipRule.getLogicalOp());
+			writeElementStart(writer, logicalOp);
+			for (SkipCondition condition : skipRule.getConditions()) {
 				writeCondition(condition);  
-			}
-			writeElementEnd(writer, getLogicalOp(logicalOp));
+			}			
+			writeElementEnd(writer, logicalOp);
 			
 			
 			writeElementStart(writer, "actions");
-			for(ControlAction ctrlAction : entry.getValue()){
-				String action = actionNameMap.get(ctrlAction.action.getClass());
-				String field = container.getControlCanonicalName(ctrlAction.control);
+			for (SkipAction action : skipRule.getActions()) {
+				String actionName = actionNameMap.get(action.getClass());
+				String field = container.getControlCanonicalName(action.getTargetCtrl());
+				
 				Map<String, String> actionAttrs = Collections.singletonMap("field", field);
-				
-				if(action.equals("showPv")){
-					ShowPvAction pvAction = (ShowPvAction) ctrlAction.action;
+				if (action instanceof ShowPvAction) {
+					ShowPvAction pvAction = (ShowPvAction)action;
+					writeElementStart(writer, actionName, actionAttrs);
 					
-					writeElementStart(writer, action, actionAttrs);
 					writeElementStart(writer, "options");
-				
-					writePvValues(pvAction.getListOfPvs(), field.concat("-skipLogic"));
-					
+					writePvValues(pvAction.getListOfPvs(), field.concat("-skipLogic"));					
 					writeElementEnd(writer, "options");
-					writeElementEnd(writer, action);
+					
+					writeElementEnd(writer, actionName);					
 				} else {
-					writeElement(writer, action, null, actionAttrs);
+					writeElement(writer, actionName, null, actionAttrs);
 				}
 			}
-			
+						
 			writeElementEnd(writer, "actions");
 			writeElementEnd(writer, "skipRule");
 		}		
@@ -622,14 +556,16 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		}
 	}
 
-	private void writeCondition(String condition) {
-		String[] condParts = condition.split(":"); // [ <source_field> <op> <value> ]
+	private void writeCondition(SkipCondition condition) {
+		String fieldName = container.getControlCanonicalName(condition.getSourceControl());
+		if (fieldName == null) {
+			throw new RuntimeException("Invalid field in skip condition. Invalid container state");
+		}
 		
 		Map<String,String> attrs = new HashMap<String, String>();
-		attrs.put("field",  condParts[0]);
-		attrs.put("op", 	condParts[1]);
-		attrs.put("value",  condParts[2]);
-		
+		attrs.put("field",  fieldName);
+		attrs.put("op",     condition.getRelationalOp().name());
+		attrs.put("value",  condition.getValue());		
 		writeElement(writer, "condition", null, attrs);
 	}
 

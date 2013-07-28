@@ -178,38 +178,14 @@ public class ContainerParserTest {
 		//    -> hide sourcesOfIncome
 		//    -> show selected pvs for city                         
 		//
-		SkipCondition cond1 = new SkipCondition();
-		cond1.setSourceControl(gender);
-		cond1.setRelationalOp(RelationalOp.EQ);		
-		cond1.setValue("Male");
-		gender.setSkipLogicSourceControl(true);
-					
-		Set<SkipCondition> conds = new HashSet<SkipCondition>();
-		conds.add(cond1);
-		
-		SkipRule rule = new SkipRule();
-		rule.setConditions(conds);
-		rule.setLogicalOp(LogicalOp.OR);
-		rule.setAction(new HideAction());
-		
-		Set<SkipRule> skipRules = new HashSet<SkipRule>();
-		skipRules.add(rule);
-		sourcesOfIncome.setSkipRules(skipRules);
-		
-		
-	
-		ShowPvAction showPvAction = new ShowPvAction();
-		showPvAction.setListOfPvs(getPvs("Paris", "Rome", "New York"));
-
-		rule = new SkipRule();
-		rule.setConditions(conds);
-		rule.setLogicalOp(LogicalOp.OR);
-		rule.setAction(showPvAction);
-		
-		skipRules = new HashSet<SkipRule>();
-		skipRules.add(rule);
-		city.setSkipRules(skipRules);
-	
+		SkipRule rule = personProfile.newSkipRule()
+			.when().anyOf()
+			.eq(gender.getName(), "Male")
+			.then().perform()
+			.hide("sourcesOfIncome")
+			.subsetPv("city", getPvs("Paris", "Rome", "New York"), null)
+			.then().get();
+		personProfile.addSkipRule(rule);	
 	}
 
 	protected void setUpFormControls() {

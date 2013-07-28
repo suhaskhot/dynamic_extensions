@@ -1,7 +1,9 @@
 package edu.common.dynamicextensions.napi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,40 @@ public class FormData {
 	}
 	
 
+	//
+	// For sake of simplicity, DE supports only one level of sub-form
+	// Supporting multi-level sub-forms needs thorough thinking
+	//
+	public List<ControlValue> getFieldValue(Control tgtCtrl) {
+		if (container == tgtCtrl.getContainer()) {
+			return Collections.singletonList(getFieldValue(tgtCtrl.getName()));
+		} 
+		
+		List<ControlValue> ret = new ArrayList<ControlValue>();		
+		for (Control ctrl : container.getControls()) {
+			if (!(ctrl instanceof SubFormControl)) {
+				continue;
+			}
+			
+			SubFormControl sfCtrl = (SubFormControl)ctrl;			
+			if (sfCtrl.getSubContainer() != tgtCtrl.getContainer()) {
+				continue;
+			}
+			
+			ControlValue cv = getFieldValue(sfCtrl.getName());
+			List<FormData> subFormDataList = (List<FormData>)cv.getValue();
+			if (subFormDataList != null) {
+				for (FormData subFormData : subFormDataList) {
+					ret.add(subFormData.getFieldValue(tgtCtrl.getName()));
+				}
+			}
+						
+			break;
+		}
+		
+		return ret;		
+	}
+	
 	public ControlValue getFieldValue(Control control, Integer rowNumber) {
 		ControlValue fieldValue = null;
 		

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import edu.common.dynamicextensions.domain.nui.Action;
+import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -32,6 +32,9 @@ import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.util.DynamicExtensionsBaseTestCase;
 
+//
+// TODO: Need to review utility of this test class
+//
 public class TestContainerDao extends DynamicExtensionsBaseTestCase {
 
 	private static final Logger logger = Logger.getLogger(ContainerDao.class);
@@ -128,23 +131,23 @@ public class TestContainerDao extends DynamicExtensionsBaseTestCase {
 
 	}
 
-	private void addSkipLogic(Control sourceControl, Control targetControl, Action action, String conditionValue) {
-		SkipRule rule1 = new SkipRule();
-		Set<SkipCondition> conditions = new HashSet<SkipCondition>();
-
-		SkipCondition condition = new SkipCondition();
-		condition.setRelationalOp(RelationalOp.EQ);
-		condition.setValue(conditionValue);
-		condition.setSourceControl(sourceControl);
-		conditions.add(condition);
-		rule1.setConditions(conditions);
-
-		rule1.setAction(action);
-		rule1.setLogicalOp(LogicalOp.OR);
-		Set<SkipRule> rules = new HashSet<SkipRule>();
-		rules.add(rule1);
-		targetControl.setSkipRules(rules);
-		sourceControl.setSkipLogicSourceControl(true);
+	private void addSkipLogic(Control sourceControl, Control targetControl, SkipAction action, String conditionValue) {
+//		SkipRule rule1 = new SkipRule();
+//		Set<SkipCondition> conditions = new HashSet<SkipCondition>();
+//
+//		SkipCondition condition = new SkipCondition();
+//		condition.setRelationalOp(RelationalOp.EQ);
+//		condition.setValue(conditionValue);
+//		condition.setSourceControl(sourceControl);
+//		conditions.add(condition);
+//		rule1.setConditions(conditions);
+//
+//		rule1.setAction(action);
+//		rule1.setLogicalOp(LogicalOp.OR);
+//		Set<SkipRule> rules = new HashSet<SkipRule>();
+//		rules.add(rule1);
+//		targetControl.setSkipRules(rules);
+//		sourceControl.setSkipLogicSourceControl(true);
 	}
 
 	private List<Control> getControls() {

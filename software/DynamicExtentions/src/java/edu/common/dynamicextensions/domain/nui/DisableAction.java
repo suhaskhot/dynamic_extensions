@@ -2,7 +2,7 @@ package edu.common.dynamicextensions.domain.nui;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 
-public class DisableAction extends Action {
+public class DisableAction extends SkipAction {
 
 	private static final long serialVersionUID = -7211808180412341154L;
 

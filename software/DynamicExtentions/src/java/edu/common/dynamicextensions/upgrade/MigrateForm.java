@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import edu.common.dynamicextensions.domain.nui.Action;
+import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -233,7 +233,7 @@ public class MigrateForm {
 			formMigrationCtxt = getNewFormDefinition0(oldForm);
 		}
 		
-		populateSkipRules(oldForm, formMigrationCtxt.fieldMap);
+		populateSkipRules(oldForm, formMigrationCtxt.newForm, formMigrationCtxt.fieldMap);
 		populateCalculatedControls(oldForm, formMigrationCtxt.fieldMap);
 		return formMigrationCtxt;
 	}
@@ -957,19 +957,19 @@ public class MigrateForm {
 	//
 	/////////////////////////////////////////////////////////////////////////////////////////
 	private void populateSkipRules(
-			ContainerInterface oldContainer, 
+			ContainerInterface oldContainer, Container newContainer,
 			Map<BaseAbstractAttributeInterface, Object> fieldMap)
 	throws Exception {		
 		List<ContainerInterface> containers = getAllChildAndSubContainers(oldContainer);
 		containers.add(0, oldContainer);
 		
 		for (ContainerInterface container : containers) {
-			populateContainerSkipRules(container, fieldMap);
+			populateContainerSkipRules(container, newContainer, fieldMap);
 		}
 	}
 	
 	private void populateContainerSkipRules(
-			ContainerInterface oldContainer, 
+			ContainerInterface oldContainer, Container newContainer,
 			Map<BaseAbstractAttributeInterface, Object> fieldMap)
 	throws Exception {
 		
@@ -997,16 +997,16 @@ public class MigrateForm {
 					
 				edu.common.dynamicextensions.skiplogic.Action action = primitiveCond.getAction();					
 				BaseAbstractAttributeInterface targetAttr = action.getControl().getBaseAbstractAttribute(); 
-				Control targetCtrl = getControl(fieldMap, targetAttr);
 					
-				Action skipAction = getSkipAction(action);
+				SkipAction skipAction = getSkipAction(action);
+				skipAction.setTargetCtrl(getControl(fieldMap, targetAttr));
 					
 				SkipRule skipRule = new SkipRule();
-				skipRule.setAction(skipAction);
 				skipRule.setLogicalOp(LogicalOp.AND);
 				skipRule.getConditions().add(skipCondition);
-					
-				targetCtrl.getSkipRules().add(skipRule);					
+				skipRule.getActions().add(skipAction);
+				
+				newContainer.addSkipRule(skipRule);
 			}
 		}
 	}
@@ -1031,8 +1031,8 @@ public class MigrateForm {
 		return skipCondition;
 	}
 	
-	private Action getSkipAction(edu.common.dynamicextensions.skiplogic.Action oldAction) {
-		Action newAction = null;
+	private SkipAction getSkipAction(edu.common.dynamicextensions.skiplogic.Action oldAction) {
+		SkipAction newAction = null;
 		
 		if (oldAction instanceof edu.common.dynamicextensions.skiplogic.DisableAction) {
 			newAction = new DisableAction();
@@ -1052,7 +1052,7 @@ public class MigrateForm {
 		return newAction;
 	}
 	
-	private Action getShowPvAction(edu.common.dynamicextensions.skiplogic.PermissibleValueAction oldPvAction) {
+	private SkipAction getShowPvAction(edu.common.dynamicextensions.skiplogic.PermissibleValueAction oldPvAction) {
 		ShowPvAction newPvAction = new ShowPvAction();
 		
 		if (oldPvAction.getDefaultValue() != null) {

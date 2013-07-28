@@ -5,9 +5,7 @@ import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +16,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import au.com.bytecode.opencsv.CSVReader;
-import edu.common.dynamicextensions.domain.nui.Action;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -27,10 +24,7 @@ import edu.common.dynamicextensions.domain.nui.Control.LabelPosition;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.DatePicker.DefaultDateType;
-import edu.common.dynamicextensions.domain.nui.DisableAction;
-import edu.common.dynamicextensions.domain.nui.EnableAction;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
-import edu.common.dynamicextensions.domain.nui.HideAction;
 import edu.common.dynamicextensions.domain.nui.Label;
 import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
@@ -42,12 +36,10 @@ import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
-import edu.common.dynamicextensions.domain.nui.ShowAction;
-import edu.common.dynamicextensions.domain.nui.ShowPvAction;
-import edu.common.dynamicextensions.domain.nui.SkipCondition;
-import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
-import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
+import edu.common.dynamicextensions.domain.nui.SkipRuleBuilder;
+import edu.common.dynamicextensions.domain.nui.SkipRuleBuilder.ActionBuilder;
+import edu.common.dynamicextensions.domain.nui.SkipRuleBuilder.ConditionBuilder;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.SurveyContainer;
@@ -700,66 +692,63 @@ public class ContainerParser {
 			if (node.getNodeType() != Node.ELEMENT_NODE) {
 				continue;
 			}
-			addSkipRuleToControls(container, (Element)node);
+			
+			SkipRule rule = createSkipRule(container, (Element)node);
+			container.addSkipRule(rule);
 		}
 	}
-
-	private void addSkipRuleToControls(Container container, Element skipRuleEle) {
-		LogicalOp logicalOp = LogicalOp.OR;
+		
+	private SkipRule createSkipRule(Container container, Element skipRuleEle) {
+		SkipRuleBuilder ruleBuilder = container.newSkipRule();
+		ConditionBuilder condBuilder = null;
+		
 		NodeList exprs = skipRuleEle.getElementsByTagName("oneOf");
 		if (exprs == null || exprs.getLength() == 0) {
-			logicalOp = LogicalOp.AND;
 			exprs = skipRuleEle.getElementsByTagName("all");
-						
-			if (exprs == null || exprs.getLength() != 1) {
-				throw new RuntimeException("More than one expression in skip rule");
-			}			
+			condBuilder = ruleBuilder.when().allOf();
+		} else {
+			condBuilder = ruleBuilder.when().anyOf();
 		}
-				
-		Set<SkipCondition> skipConditions = getSkipConditions(container, (Element)exprs.item(0));
 		
+		if (exprs == null || exprs.getLength() != 1) {
+			throw new RuntimeException("More than one expression in skip rule");
+		}			
+
+		createSkipConditions(condBuilder, (Element)exprs.item(0));
+		
+		
+		ActionBuilder actionBuilder = condBuilder.then().perform();
 		Element actionsEle = (Element)skipRuleEle.getElementsByTagName("actions").item(0);
 		NodeList actionList = actionsEle.getChildNodes();
 		for (int i = 0; i < actionList.getLength(); ++i) {
 			if (actionList.item(i).getNodeType() != Node.ELEMENT_NODE) {
 				continue;
 			}
-			
-			Element actionEle = (Element)actionList.item(i);			
-			Action action = null;			
+						
+			Element actionEle = (Element)actionList.item(i);
+			String ctrlName = actionEle.getAttribute("field");
+					
 			if (actionEle.getNodeName().equals("hide")) {
-				action = new HideAction();
+				actionBuilder.hide(ctrlName);
 			} else if (actionEle.getNodeName().equals("showPv")) {
 				//
 				// TODO: Handle default pv
-				//
-				ShowPvAction pvAction = new ShowPvAction();
+				//				
 				List<PermissibleValue> pvs = getPemissibleValues(actionEle);
-				pvAction.setListOfPvs(pvs);				
-				action = pvAction;
+				actionBuilder.subsetPv(ctrlName, pvs, null);
 			} else if (actionEle.getNodeName().equals("show")) {
-				action = new ShowAction();
+				actionBuilder.show(ctrlName);
 			} else if (actionEle.getNodeName().equals("enable")) {
-				action = new EnableAction();
+				actionBuilder.enable(ctrlName);
 			} else if (actionEle.getNodeName().equals("disable")) {
-				action = new DisableAction();
-			}	
-			
-			String ctrlName = actionEle.getAttribute("field");
-			Control ctrl = container.getControl(ctrlName,"\\.");
-			
-			SkipRule rule = new SkipRule();
-			rule.setAction(action);
-			rule.setConditions(skipConditions);
-			rule.setLogicalOp(logicalOp);
-			
-			ctrl.getSkipRules().add(rule);			
+				actionBuilder.disable(ctrlName);
+			}				
 		}
+		
+		return ruleBuilder.get();		
 	}
 	
-	private Set<SkipCondition> getSkipConditions(Container container, Element expressionEle) {
-		Set<SkipCondition> skipConditions = new HashSet<SkipCondition>();
-		
+	private void createSkipConditions(ConditionBuilder conditionBuilder, Element expressionEle) {	
 		NodeList conditionEls = expressionEle.getElementsByTagName("condition");
 		for (int i = 0; i < conditionEls.getLength(); ++i) {
 			if (conditionEls.item(i).getNodeType() != Node.ELEMENT_NODE) {
@@ -771,30 +760,17 @@ public class ContainerParser {
 			String value = conditionEl.getAttribute("value");
 			String ctrlName = conditionEl.getAttribute("field");
 			
-			RelationalOp relOp = RelationalOp.EQ;
 			if (op.equals("eq")) {
-				relOp = RelationalOp.EQ;
+				conditionBuilder.eq(ctrlName, value);
 			} else if (op.equals("lt")) {
-				relOp = RelationalOp.LT;
+				conditionBuilder.lt(ctrlName, value);
 			} else if (op.equals("le")) {
-				relOp = RelationalOp.LE;
+				conditionBuilder.le(ctrlName, value);
 			} else if (op.equals("gt")) {
-				relOp = RelationalOp.GT;
+				conditionBuilder.gt(ctrlName, value);
 			} else if (op.equals("ge")) {
-				relOp = RelationalOp.GE;
-			}
-			
-			Control ctrl = container.getControl(ctrlName,"\\.");
-			SkipCondition skipCondition = new SkipCondition();
-			skipCondition.setRelationalOp(relOp);
-			skipCondition.setValue(value);
-			skipCondition.setSourceControl(ctrl);
-			
-			skipConditions.add(skipCondition);
-			ctrl.setSkipLogicSourceControl(true);
+				conditionBuilder.ge(ctrlName, value);
+			}			
 		}
-		
-		return skipConditions;
 	}
-	
 }

@@ -53,6 +53,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	
 	private Map<String, Control> controlsMap = new LinkedHashMap<String, Control>();
 	
+	private List<SkipRule> skipRules = new ArrayList<SkipRule>();
+	
 	private static final String tableNameFmt = "DE_E_%d";
 	
 	private static final String columnNameFmt = "DE_A_%d";
@@ -62,6 +64,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private transient List<Control> editLog = new ArrayList<Control>();
 	
 	private transient List<Control> delLog = new ArrayList<Control>();
+	
 
 		
 	@Override
@@ -125,6 +128,26 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 	}
 	
+	public List<SkipRule> getSkipRules() {
+		return skipRules;
+	}
+	
+	public SkipRuleBuilder newSkipRule() {
+		return new SkipRuleBuilder(this);
+	}
+	
+	public void addSkipRule(SkipRule rule) {
+		skipRules.add(rule);
+	}
+	
+	public void removeSkipRule(int i) {
+		if (i < 0 || i > skipRules.size()) {
+			throw new RuntimeException("SkipRule index out of bounds: " + i + " : " + skipRules.size());
+		}
+		
+		skipRules.remove(i);
+	}
+		
 	public List<Container> getSubContainers() {
 		List<Container> containers = new ArrayList<Container>();
 		
@@ -259,6 +282,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			add(delLog, existingControl);
 			remove(editLog, existingControl);		
 		}
+		
+		//
+		// TODO: Remove skip rules of deleted controls
+		//
 	}
 	
 	public Control getControl(String name) {
@@ -324,6 +351,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				}
 			}		
 
+			setSkipControlFlags();
+			
 			if (insert) {
 				dao.insert(userCtxt, this);
 			} else {
@@ -398,8 +427,16 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				editControl(ctrl.getName(), ctrl, true);				
 			}			
 		}
+		
 		deleteRemovedControls(newContainer);
 		
+		//
+		// TODO: Simply copying skip rules of new container.
+		// Check whether this is correct way to handle?
+		// Probably check for skip rules referring to non-existing fields
+		//
+		this.skipRules.clear();
+		this.skipRules.addAll(newContainer.getSkipRules());
 	}
 
 	protected void deleteRemovedControls(Container newContainer) {
@@ -466,6 +503,18 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		addLog.clear();
 		delLog.clear();
 		editLog.clear();		
+	}
+	
+	private void setSkipControlFlags() {
+		for (SkipRule rule : skipRules) {
+			for (SkipCondition cond : rule.getConditions()) {
+				cond.getSourceControl().setSkipLogicSourceControl(true);
+			}
+			
+			for (SkipAction action : rule.getActions()) {
+				action.getTargetCtrl().setSkipLogicTargetControl(true);
+			}
+		}
 	}
 	
 	private void createTable(JdbcDao jdbcDao, String tableName, List<ColumnDef> columnDefs, boolean crtIdColumn) { 
@@ -1019,36 +1068,30 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	// on which this method is invoked
 	//
 	public String getControlCanonicalName(Control ctrl) {
-		StringBuilder ctrlName = new StringBuilder();
-		getControlCanonicalName(this, ctrl, ctrlName);
-		
-		return ctrlName.toString();
-	}
-	
-	public void getControlCanonicalName(Container container, Control ctrl, StringBuilder ctrlName) {
-		for (Control c : container.getControls()) {
-			if (c == ctrl) {
-				ctrlName.append(c.getName());
-				return;
-			}
+		if (ctrl.getName() == null) {
+			throw new RuntimeException("Control name is null. Invalid control state");
 		}
 		
-		for (Control c : container.getControls()) {
+		Control formCtrl = controlsMap.get(ctrl.getName());
+		if (formCtrl != null) {
+			return formCtrl.getName();
+		}
+		
+		for (Control c : getControls()) {
 			if (!(c instanceof SubFormControl)) {
 				continue;
 			}
 			
 			SubFormControl sfCtrl = (SubFormControl)c;
-			StringBuilder suffix = new StringBuilder();
-			getControlCanonicalName(sfCtrl.getSubContainer(), ctrl, suffix);
-			
-			if (suffix.length() > 0) {
-				ctrlName.append(sfCtrl.getName()).append(".").append(suffix);
-				return;
+			String name = sfCtrl.getContainer().getControlCanonicalName(ctrl);
+			if (name != null) {
+				return new StringBuilder(sfCtrl.getName()).append(".").append(name).toString();
 			}
 		}
+		
+		return null;		
 	}
-	
+		
 	public Control getControl(String controlName, String separator) {
 		Container container = this;
 		Control ctrl = container.getControl(controlName);

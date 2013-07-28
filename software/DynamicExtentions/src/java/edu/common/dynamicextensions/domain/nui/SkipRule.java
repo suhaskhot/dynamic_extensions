@@ -1,7 +1,7 @@
 package edu.common.dynamicextensions.domain.nui;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
@@ -12,17 +12,17 @@ public class SkipRule {
 		AND, OR
 	}
 	
-	private Set<SkipCondition> conditions = new LinkedHashSet<SkipCondition>();
+	private List<SkipCondition> conditions = new ArrayList<SkipCondition>();
 	
 	private LogicalOp logicalOp = LogicalOp.AND;
 	
-	private Action action;
-		
-	public Set<SkipCondition> getConditions() {
+	private List<SkipAction> actions = new ArrayList<SkipAction>();
+	
+	public List<SkipCondition> getConditions() {
 		return conditions;
 	}
 
-	public void setConditions(Set<SkipCondition> conditions) {
+	public void setConditions(List<SkipCondition> conditions) {
 		this.conditions = conditions;
 	}
 
@@ -34,33 +34,41 @@ public class SkipRule {
 		this.logicalOp = logicalOp;
 	}
 
-	public Action getAction() {
-		return action;
+	public List<SkipAction> getActions() {
+		return actions;
 	}
 
-	public void setAction(Action action) {
-		this.action = action;
+	public void setActions(List<SkipAction> actions) {
+		this.actions = actions;
 	}	
 
-	public void evaluate(FormData data, ControlValue targetControl, Integer rowNumber) {
-		boolean validate = false;
-
+	public void evaluate(FormData data) {
+		boolean result = false;
+		
 		for (SkipCondition condition : conditions) {
-			ControlValue fieldValue = data.getFieldValue(condition.getSourceControl(), rowNumber);
-			validate = condition.evaluate(fieldValue);
-
-			if (validate && logicalOp == LogicalOp.OR) {
+			ControlValue fieldValue = data.getFieldValue(condition.getSourceControl().getName());
+			result = condition.evaluate(fieldValue);
+			
+			if (result && logicalOp == LogicalOp.OR) {
 				break;
-			} else if (!validate && logicalOp == logicalOp.AND) {
+			} else if (!result && logicalOp == LogicalOp.AND) {
 				break;
+			}			
+		}
+		
+		for (SkipAction action : actions) {
+			List<ControlValue> fieldValues = data.getFieldValue(action.getTargetCtrl());
+			if (fieldValues == null) {
+				continue;
+			}
+				
+			for (ControlValue fieldValue : fieldValues) {
+				if (result) {
+					action.perform(fieldValue);
+				} else {
+					action.reset(fieldValue);
+				}				
 			}
 		}
-
-		if (validate) {
-			action.perform(targetControl);
-		} else {
-			action.reset(targetControl);
-		}
 	}
-
 }

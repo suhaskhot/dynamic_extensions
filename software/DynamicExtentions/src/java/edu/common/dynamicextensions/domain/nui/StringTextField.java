@@ -91,16 +91,14 @@ public class StringTextField extends TextField {
 		}
 		StringBuilder htmlString = new StringBuilder("");
 
-		if (url && !value.isEmpty())
-		{
-			htmlString
-					.append("<a href='javascript:void(0)' onclick=\"window.open('")
-					.append(value)
-					.append("','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">")
-					.append(value).append("</a>");
-		}
-		else
-		{
+		if (url && !value.isEmpty()) {
+			htmlString.append("<a href='javascript:void(0)' onclick=\"window.open('").append(value)
+					.append("','','width=800,height=600,toolbar=yes,location=yes,directories=yes,status=yes,")
+					.append("menubar=yes,scrollbars=yes,copyhistory=yes,resizable=yes')\">").append(value)
+					.append("</a>").append("<INPUT  name='").append(controlName).append("' ").append("id='")
+					.append(controlName).append("' value='")
+					.append(DynamicExtensionsUtility.getEscapedStringValue(value)).append("' type='hidden'/> ");
+		} else {
 			htmlString.append("<INPUT  name='").append(controlName).append("' ").append("id='").append(controlName)
 					.append("' onchange=\"").append(getOnchangeServerCall(controlName)).append(";\" value='")
 					.append(DynamicExtensionsUtility.getEscapedStringValue(value)).append("' ");

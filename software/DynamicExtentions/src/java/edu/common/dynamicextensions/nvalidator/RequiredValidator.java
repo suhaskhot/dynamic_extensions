@@ -28,9 +28,7 @@ public class RequiredValidator implements RuleValidator {
 				throw new DynamicExtensionsValidationException("Validation failed", null,
 						"dynExtn.validation.RequiredValidator", controlCaption);
 			}
-		}
-
-		if (((String) controlValue.getValue()).trim().isEmpty()) {
+		} else if (((String) controlValue.getValue()).trim().isEmpty()) {
 			throw new DynamicExtensionsValidationException("Validation failed", null,
 					"dynExtn.validation.RequiredValidator", controlCaption);
 		}

@@ -31,7 +31,8 @@ public class TextLengthValidator implements RuleValidator {
 			paramValue = parameterMap.get("min");
 			paramIntVal = (paramValue != null ? Integer.valueOf(paramValue) : null);
 
-			if (paramIntVal != null && value.length() < paramIntVal) {
+			if (value.length() > 0 && paramIntVal != null
+					&& value.length() < paramIntVal) {
 				ValidatorUtil.reportInvalidInput(caption, paramValue, "dynExtn.validation.TextLength.min");
 			}
 		}

@@ -15,7 +15,7 @@ public class RangeValidator implements RuleValidator {
 
 	public void validate(ControlValue controlValue, Map<String, String> parameterMap)
 			throws DynamicExtensionsValidationException {
-		String valueString = controlValue.toString();
+		String valueString = (String) controlValue.getValue();
 
 		if (valueString == null || valueString.isEmpty()) {
 			return;

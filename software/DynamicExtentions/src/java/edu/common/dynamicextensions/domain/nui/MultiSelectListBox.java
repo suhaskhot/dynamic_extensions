@@ -48,6 +48,10 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 
 	@Override
 	public void setParentKey(String parentKeyColumn) {
+		if (parentKeyColumn == null) {
+			parentKeyColumn = "IDENTIFIER";
+		}
+		
 		this.parentKeyColumn = parentKeyColumn;		
 	}
 	
@@ -58,6 +62,10 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 
 	@Override
 	public void setForeignKey(String foreignKeyColumn) {
+		if (foreignKeyColumn == null) {
+			foreignKeyColumn = "RECORD_ID";
+		}
+		
 		this.foreignKeyColumn = foreignKeyColumn;		
 	}
 

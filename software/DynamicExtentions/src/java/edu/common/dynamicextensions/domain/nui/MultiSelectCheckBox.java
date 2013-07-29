@@ -61,6 +61,10 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 
 	@Override
 	public void setParentKey(String parentKeyColumn) {
+		if (parentKeyColumn == null) {
+			parentKeyColumn = "IDENTIFIER";
+		}
+		
 		this.parentKeyColumn = parentKeyColumn;		
 	}
 	
@@ -71,6 +75,10 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 
 	@Override
 	public void setForeignKey(String foreignKeyColumn) {
+		if (foreignKeyColumn == null) {
+			foreignKeyColumn = "RECORD_ID";
+		}
+		
 		this.foreignKeyColumn = foreignKeyColumn;		
 	}
 

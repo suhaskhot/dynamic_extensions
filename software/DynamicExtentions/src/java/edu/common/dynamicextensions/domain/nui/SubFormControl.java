@@ -90,6 +90,10 @@ public class SubFormControl extends Control {
 	}
 
 	public void setParentKey(String parentKeyColumn) {
+		if (parentKeyColumn == null) {
+			parentKeyColumn  = "IDENTIFIER";
+		}
+		
 		this.parentKeyColumn = parentKeyColumn;
 	}
 	
@@ -98,6 +102,10 @@ public class SubFormControl extends Control {
 	}
 
 	public void setForeignKey(String foreignKeyColumn) {
+		if (foreignKeyColumn == null) {
+			foreignKeyColumn = "PARENT_RECORD_ID";
+		}
+		
 		this.foreignKeyColumn = foreignKeyColumn;
 	}
 

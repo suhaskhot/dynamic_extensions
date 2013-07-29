@@ -100,7 +100,9 @@ public class DatePicker extends Control {
 				fmt = DEFAULT_FORMAT;
 			}
 			
-			return new SimpleDateFormat(fmt).parse(value);			
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fmt);
+			simpleDateFormat.setLenient(false);
+			return simpleDateFormat.parse(value);
 		} catch (Exception e) {
 			throw new RuntimeException("Error creating date object from [" + value + "]", e);
 		}

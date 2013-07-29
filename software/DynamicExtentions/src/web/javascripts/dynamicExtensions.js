@@ -2547,11 +2547,6 @@ function updateServerState(controlName) {
 	request.onreadystatechange = function() {
 
 		if (request.readyState == 4 && request.status == 200) {
-			if(vRecentControl.type != 'text')
-			{
-				return;
-			}	
-
 			// Live Validation Code below only for non-enumerated attributes.
 			var vMessage = request.responseText;
 			if (vMessage != '' && vMessage.length > 0) {

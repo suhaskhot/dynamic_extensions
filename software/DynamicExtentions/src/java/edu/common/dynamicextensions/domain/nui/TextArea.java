@@ -76,7 +76,12 @@ public class TextArea extends TextField {
 
 
 		htmlString.append("<textarea ").append(" name='").append(conrolName).append("' ").append("id='")
-				.append(conrolName).append("' ");
+				.append(conrolName)
+				.append("' onchange=\"")
+				.append(getOnchangeServerCall(conrolName))
+				.append(";")
+				.append((this.isCalculatedSourceControl() ? "updateHTML();\" "
+						: "\" "));
 
 		//If control is defined as read only through category CSV file,make it Disabled
 

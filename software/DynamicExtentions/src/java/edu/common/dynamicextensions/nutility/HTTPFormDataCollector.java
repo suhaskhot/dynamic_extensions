@@ -49,6 +49,7 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 	@Override
 	public void collectControlValue(FormData formData, Control control, Integer rowId) {
 		String controlName;
+		ControlValue controlValue = null;
 		if (rowId != null) {
 			controlName = control.getControlName(rowId);
 		} else {
@@ -56,13 +57,14 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 
 		}
 		if (control instanceof MultiSelectListBox || control instanceof MultiSelectCheckBox) {
-			formData.addFieldValue(new ControlValue(control, request.getParameterValues(controlName)));
+			controlValue = new ControlValue(control,
+					request.getParameterValues(controlName));
 		} else if (control instanceof FileUploadControl) {
-			collectFileData(formData, control, controlName);
+			controlValue = getFileControlValue(formData, control, controlName);
 
 		} else if (control instanceof ComboBox) {
 			String value = getValueForComboBox(controlName);
-			formData.addFieldValue(new ControlValue(control, value));
+			controlValue = new ControlValue(control, value);
 
 		} else {
 			String value = request.getParameter(controlName);
@@ -82,10 +84,10 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 			if (control instanceof CheckBox) {
 				value = getValueForCheckbox(value);
 			}
-			ControlValue controlValue = new ControlValue(control, value);
-			formData.addFieldValue(controlValue);
-			validatorUtil.validate(controlValue, errorList);
+			controlValue = new ControlValue(control, value);
 		}
+		formData.addFieldValue(controlValue);
+		validatorUtil.validate(controlValue, errorList);
 
 	}
 
@@ -115,27 +117,38 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 	 * @param controlName
 	 * @throws DynamicExtensionsSystemException
 	 */
-	private void collectFileData(FormData formData, Control control, String controlName) {
+	private ControlValue getFileControlValue(FormData formData,
+			Control control, String controlName) {
 		String fileName = request.getParameter(controlName + HIDDEN);
-		String contentType = null;
-		String fileId = request.getParameter(controlName);
-		if (fileId != null && !fileId.isEmpty()) {
-			contentType = request.getParameter(controlName + CONTENT_TYPE);
-			boolean isValidExtension = true;
-			/*isValidExtension = checkValidFormat(control, fileName, errorList);*/
-			if (isValidExtension && ((fileName != null) && !fileName.isEmpty())) {
-				FileControlValue fileAttributeRecordValue = new FileControlValue();
-
-				fileAttributeRecordValue.setFilePath(fileId);
-				fileAttributeRecordValue.setFileName(fileName);
-				fileAttributeRecordValue.setContentType(contentType);
-				formData.addFieldValue(new ControlValue(control, fileAttributeRecordValue));
-			}
-		}
+		ControlValue controlValue = null;
 
 		if (fileName == null) {
-			formData.addFieldValue(new ControlValue(control, null));
+			controlValue = new ControlValue(control, null);
+		} else {
+			String contentType = null;
+			String fileId = request.getParameter(controlName);
+
+			if (fileId != null && !fileId.isEmpty()) {
+				contentType = request.getParameter(controlName + CONTENT_TYPE);
+				boolean isValidExtension = true;
+				/*
+				 * isValidExtension = checkValidFormat(control, fileName,
+				 * errorList);
+				 */
+				if (isValidExtension
+						&& ((fileName != null) && !fileName.isEmpty())) {
+					FileControlValue fileAttributeRecordValue = new FileControlValue();
+
+					fileAttributeRecordValue.setFilePath(fileId);
+					fileAttributeRecordValue.setFileName(fileName);
+					fileAttributeRecordValue.setContentType(contentType);
+					controlValue = new ControlValue(control,
+							fileAttributeRecordValue);
+				}
+			}
 		}
+		return controlValue;
+
 	}
 
 	@Override

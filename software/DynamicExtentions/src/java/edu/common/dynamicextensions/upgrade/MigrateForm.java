@@ -1066,8 +1066,10 @@ public class MigrateForm {
 			newPvAction.setDefaultPv(getPv(oldPvAction.getDefaultValue()));
 		}
 		
-		for (PermissibleValueInterface oldPv : oldPvAction.getListOfPermissibleValues()) {
-			newPvAction.getListOfPvs().add(getPv(oldPv));
+		if (oldPvAction.getListOfPermissibleValues() != null) {
+			for (PermissibleValueInterface oldPv : oldPvAction.getListOfPermissibleValues()) {
+				newPvAction.getListOfPvs().add(getPv(oldPv));
+			}			
 		}
 		
 		return newPvAction;

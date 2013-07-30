@@ -31,6 +31,7 @@ import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.Page;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
+import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.PvDataSource.Ordering;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
@@ -132,6 +133,8 @@ public class MigrateForm {
 	
 	private boolean verticalCtrlAlignment = false;
 	
+	private UserContext usrCtx = null;
+	
 	static {
 		entityCache = EntityCache.getInstance();
 		entityCache.cacheSkipLogic();
@@ -145,6 +148,10 @@ public class MigrateForm {
 		datePatternMap.put("DateAndTime", "MM-dd-yyyy HH:mm");
 		datePatternMap.put("MonthAndYear", "MM-yyyy");
 		datePatternMap.put("YearOnly", "yyyy");		
+	}
+	
+	public MigrateForm(UserContext usrCtx) {
+		this.usrCtx = usrCtx;
 	}
 
 	public void migrateForm(Long containerId, String formCtxtTbl, Long recEntityId) 
@@ -1204,7 +1211,7 @@ public class MigrateForm {
 		Long newFormId = null;
 		try {
 			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			newFormId = container.save(null, new JdbcDao(jdbcDao));
+			newFormId = container.save(usrCtx, new JdbcDao(jdbcDao));
 			logger.info("Saved container: " + newFormId + ", name: " + container.getName());
 			jdbcDao.commit();
 		} catch (Exception e) {
@@ -1414,7 +1421,7 @@ public class MigrateForm {
 	
 	public static void main(String[] args) 
 	throws Exception {
-		MigrateForm migrateForm = new MigrateForm();
+		MigrateForm migrateForm = new MigrateForm(null);
 		migrateForm.migrateForm(Long.parseLong(args[0]), "CATISSUE_BASE_FORM_CONTEXT", 22L);		
 	}
 }

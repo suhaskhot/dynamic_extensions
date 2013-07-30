@@ -59,8 +59,10 @@ public class FormDataUtility {
 				List<SkipRule> formRules = getFormRules(sfCtrl.getSubContainer(), form.getSkipRules());
 				
 				List<FormData> subFormDataList = (List<FormData>)cv.getValue();
-				for (FormData subFormData : subFormDataList) {
-					evaluateSkipLogic(subFormData, formRules);
+				if (subFormDataList != null) {
+					for (FormData subFormData : subFormDataList) {
+						evaluateSkipLogic(subFormData, formRules);
+					}					
 				}
 			}
 		}

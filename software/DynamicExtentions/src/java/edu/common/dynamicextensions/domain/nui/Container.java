@@ -1083,7 +1083,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			}
 			
 			SubFormControl sfCtrl = (SubFormControl)c;
-			String name = sfCtrl.getContainer().getControlCanonicalName(ctrl);
+			String name = sfCtrl.getSubContainer().getControlCanonicalName(ctrl);
 			if (name != null) {
 				return new StringBuilder(sfCtrl.getName()).append(".").append(name).toString();
 			}

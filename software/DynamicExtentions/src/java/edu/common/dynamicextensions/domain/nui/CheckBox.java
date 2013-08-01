@@ -36,11 +36,12 @@ public class CheckBox extends Control {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Boolean fromString(String value) {
-		if (value == null) {
-			return null;
-		}
-
-		return value.equals("1") || value.equalsIgnoreCase("true");
+		return (value != null) && (value.equals("1") || value.equalsIgnoreCase("true"));
+	}
+	
+	@Override
+	public String toString(Object value) {
+		return (value == null || value.toString().equals("false") || value.toString().equals("0")) ? "0" : "1";
 	}
 
 	@Override

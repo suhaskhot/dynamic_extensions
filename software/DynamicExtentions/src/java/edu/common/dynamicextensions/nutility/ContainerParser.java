@@ -241,7 +241,7 @@ public class ContainerParser {
 				ctrl = parseNumberField(ctrlEle, currentRow, xpos);
 			} else if (ctrlName.equals("booleanCheckBox")) {
 				ctrl = parseBooleanCheckBox(ctrlEle, currentRow, xpos);
-			} else if (ctrlName.equals("dropdown")) {
+			} else if (ctrlName.equals("dropDown")) {
 				ctrl = parseComboBox(ctrlEle, currentRow, xpos); 
 			} else if (ctrlName.equals("datePicker")) {
 				ctrl = parseDatePicker(ctrlEle, currentRow, xpos);

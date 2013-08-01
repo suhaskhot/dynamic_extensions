@@ -182,6 +182,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		serializerMap.put(RadioButton.class,         new RadioButtonXmlSerializer());
 		serializerMap.put(FileUploadControl.class,   new FileUploadSerializer());
 		serializerMap.put(MultiSelectListBox.class,  new ListBoxSerializer());
+		serializerMap.put(ListBox.class,  			 new ListBoxSerializer());
 		serializerMap.put(SubFormControl.class,      new SubFormControlSerializer());
 	}
 	
@@ -348,7 +349,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 	
 	private class DatePickerSerializer extends ControlSerializer {
 		public void serialize(Control ctrl) {
-			DatePicker datePicker = new DatePicker();
+			DatePicker datePicker = (DatePicker) ctrl;
 			
 			writeElementStart(writer, "datePicker");
 			serializeControlProps(datePicker);

@@ -49,7 +49,9 @@ public class IoUtil {
 	}
 	
 	public static void delete(String file) {
-		new File(file).delete();
+		if (file != null) {
+			new File(file).delete();
+		}
 	}
 	
 	public static void copy(InputStream in, OutputStream out) 

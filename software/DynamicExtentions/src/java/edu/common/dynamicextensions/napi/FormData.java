@@ -66,6 +66,11 @@ public class FormData {
 	
 
 	//
+	// Below this is everything needed for UI layer. This will be removed
+	// once new UI is in place
+	//
+	
+	//
 	// For sake of simplicity, DE supports only one level of sub-form
 	// Supporting multi-level sub-forms needs thorough thinking
 	//
@@ -216,5 +221,5 @@ public class FormData {
 		
 		return fieldValue;
 
-	}
+	}	
 }

@@ -1,15 +1,7 @@
-
 package edu.common.dynamicextensions.nutility;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.Label;
-import edu.common.dynamicextensions.domain.nui.SkipCondition;
-import edu.common.dynamicextensions.domain.nui.SkipRule;
-import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 
@@ -44,56 +36,10 @@ public class FormDataUtility {
 		return countrolCount;
 	}
 	
-	
-	//
-	// TODO: Optimization
-	//
 	public static void evaluateSkipLogic(FormData formData) {
-		Container form = formData.getContainer();
-				
-		evaluateSkipLogic(formData, getFormRules(form, form.getSkipRules()));
-		
-		for (ControlValue cv : formData.getFieldValues()) {
-			if (cv.getControl() instanceof SubFormControl) {
-				SubFormControl sfCtrl = (SubFormControl)cv.getControl();
-				List<SkipRule> formRules = getFormRules(sfCtrl.getSubContainer(), form.getSkipRules());
-				
-				List<FormData> subFormDataList = (List<FormData>)cv.getValue();
-				if (subFormDataList != null) {
-					for (FormData subFormData : subFormDataList) {
-						evaluateSkipLogic(subFormData, formRules);
-					}					
-				}
-			}
-		}
+		SkipRulesEvaluator evaluator = new SkipRulesEvaluator();
+		evaluator.evaluate(formData);
 	}
-	
-	private static void evaluateSkipLogic(FormData formData, List<SkipRule> rules) {
-		for (SkipRule rule : rules) {
-			rule.evaluate(formData);
-		}		
-	}
-	
-	private static List<SkipRule> getFormRules(Container form, List<SkipRule> rules) {
-		List<SkipRule> currentFormRules = new ArrayList<SkipRule>();
-		
-		for (SkipRule rule : rules) {
-			boolean add = true;
-			for (SkipCondition cond : rule.getConditions()) {
-				if (form != cond.getSourceControl().getContainer()) {					
-					add = false;
-					break;
-				} 
-			}
-			
-			if (add) {
-				currentFormRules.add(rule);
-			} 
-		}
-		
-		return currentFormRules;		
-	}
-	
 	
 //	public static void evaluateSkipLogic(FormData formData) {
 //		evaluateSkipLogic(formData, formData, null, true);

@@ -23,23 +23,24 @@ public class SkipRulesEvaluator {
 		evaluateSkipRules(formData, getFormRules(form, form.getSkipRules()));
 		
 		for (ControlValue cv : formData.getFieldValues()) {
-			if (cv.getControl() instanceof SubFormControl) {
-				SubFormControl sfCtrl = (SubFormControl)cv.getControl();
-				List<SkipRule> formRules = getFormRules(sfCtrl.getSubContainer(), form.getSkipRules());
+			if (!(cv.getControl() instanceof SubFormControl)) {
+				continue;
+			}
+			
+			SubFormControl sfCtrl = (SubFormControl)cv.getControl();
+			List<SkipRule> formRules = getFormRules(sfCtrl.getSubContainer(), form.getSkipRules());
 				
-				List<FormData> subFormDataList = (List<FormData>)cv.getValue();
-				if (subFormDataList != null) {
-					for (FormData subFormData : subFormDataList) {
-						evaluateSkipRules(subFormData, formRules);
-					}					
-				}
+			List<FormData> subFormDataList = (List<FormData>)cv.getValue();
+			if (subFormDataList != null) {
+				for (FormData subFormData : subFormDataList) {
+					evaluateSkipRules(subFormData, formRules);
+				}					
 			}
 		}
 	}
 	
 	private void evaluateSkipRules(FormData formData, List<SkipRule> rules) {
 		for (SkipRule rule : rules) {
-			System.err.println("Evaluating skip logic for container: " + formData.getContainer().getId());
 			evaluateSkipRule(formData, rule);
 		}		
 	}
@@ -58,7 +59,6 @@ public class SkipRulesEvaluator {
 			}			
 		}
 		
-		System.err.println("Result of evaluation is: " + result);
 		for (SkipAction action : rule.getActions()) {
 			if (evaluatedTgtCtrls.containsKey(action.getTargetCtrl())) { 
 				// one of the skip rule evaluated to true for this target control
@@ -70,10 +70,7 @@ public class SkipRulesEvaluator {
 				continue;
 			}
 				
-			System.err.println("Fields obtained are: " + fieldValues.size());
 			for (ControlValue fieldValue : fieldValues) {
-				System.err.println("Field is: " + fieldValue.getControl().getCaption());
-				System.err.println("Action is: " + action.getClass().getName());
 				if (result) {
 					action.perform(fieldValue);
 					evaluatedTgtCtrls.put(action.getTargetCtrl(), true);
@@ -102,6 +99,5 @@ public class SkipRulesEvaluator {
 		}
 		
 		return currentFormRules;		
-	}
-	
+	}	
 }

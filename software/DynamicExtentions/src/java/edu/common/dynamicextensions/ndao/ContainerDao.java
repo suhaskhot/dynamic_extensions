@@ -26,9 +26,11 @@ public class ContainerDao {
 			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = empty_blob() " +
 			"WHERE IDENTIFIER = ?";
 	
-	private static final String GET_CONTAINER_XML_BY_ID_SQL = "SELECT XML FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+	private static final String GET_CONTAINER_XML_BY_ID_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
+			+ " FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
 	
-	private static final String GET_CONTAINER_XML_BY_NAME_SQL = "SELECT XML FROM DYEXTN_CONTAINERS WHERE NAME = ?";
+	private static final String GET_CONTAINER_XML_BY_NAME_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
+			+ " FROM DYEXTN_CONTAINERS WHERE NAME = ?";
 	
 	private static final String GET_CONTAINER_IDS_SQL =  
 			"SELECT DYEXTN_CONTAINERS_SEQ.NEXTVAL " +
@@ -108,14 +110,19 @@ public class ContainerDao {
 					xml = new String(xmlBlob.getBytes(1L, length));
 				}
 			}			
+
+			if (xml != null) {
+				Container container = Container.fromXml(xml);
+				container.setCreatedBy(rs.getLong("CREATED_BY"));
+				container.setCreationTime(rs.getDate("CREATE_TIME"));
+				container.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
+				container.setLastUpdatedTime(rs.getDate("LAST_MODIFY_TIME"));
+				return container;
+			}
 		} finally {
 			jdbcDao.close(rs);
 		}
 
-		if (xml != null) {
-			return Container.fromXml(xml);
-		}
-		
 		return null;
 	}
 	
@@ -208,14 +215,21 @@ public class ContainerDao {
 					int length = (int) xmlBlob.length();
 					xml = new String(xmlBlob.getBytes(1L, length));
 				}
-			}			
+			}
+
+			if (xml != null) {
+				Container container = Container.fromXml(xml);
+				container.setCreatedBy(rs.getLong("CREATED_BY"));
+				container.setCreationTime(rs.getDate("CREATE_TIME"));
+				container.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
+				container.setLastUpdatedTime(rs.getDate("LAST_MODIFY_TIME"));
+				return container;
+			}
 		} finally {
 			jdbcDao.close(rs);
 		}
 		
-		if(xml != null) {
-			return Container.fromXml(xml);
-		}		
+
 		return null;
 	}
 }

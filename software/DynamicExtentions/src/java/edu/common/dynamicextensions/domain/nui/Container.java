@@ -5,6 +5,7 @@ package edu.common.dynamicextensions.domain.nui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,7 +66,13 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	
 	private transient List<Control> delLog = new ArrayList<Control>();
 	
+	private transient Long createdBy;
 
+	private transient Long lastUpdatedBy;
+
+	private transient Date creationTime;
+
+	private transient Date lastUpdatedTime;
 		
 	@Override
 	public Long getId() {
@@ -121,6 +128,38 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		this.controlsMap = controlsMap;
 	}
 	
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Long getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+
+	public void setLastUpdatedBy(Long lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
+	}
+
+	public Date getCreationTime() {
+		return creationTime;
+	}
+
+	public void setCreationTime(Date creationTime) {
+		this.creationTime = creationTime;
+	}
+
+	public Date getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+	public void setLastUpdatedTime(Date lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
+	}
+
 	public void setControls(Set<Control> controls) {
 		controlsMap.clear();
 		for (Control control : controls) {

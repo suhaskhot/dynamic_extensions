@@ -150,7 +150,7 @@ public class ReadOnlyFormRenderer {
 	private Map<Integer, List<Control>> divideControlsInRows(Container container) {
 		Map<Integer, List<Control>> controlsPerRowMap = new LinkedHashMap<Integer, List<Control>>();
 
-		List<Control> allControls = container.getAllControls();
+		List<Control> allControls = new ArrayList<Control>(container.getControls());
 		Collections.sort(allControls);
 		for (Control control : allControls) {
 			List<Control> row = controlsPerRowMap.get(control.getSequenceNumber());
@@ -170,7 +170,7 @@ public class ReadOnlyFormRenderer {
 		StringBuilder containerHtml = new StringBuilder();
 		containerHtml.append(String.format(FORM_HEADER, subContainer.getCaption()));
 
-		List<Control> allControls = subContainer.getAllControls();
+		List<Control> allControls = new ArrayList<Control>(subContainer.getControls());
 		Collections.sort(allControls);
 		for (Control control : allControls) {
 

@@ -7,7 +7,6 @@
 <script language="JavaScript" type="text/javascript" src="<%=request.getContextPath()%>/javascripts/de/prototype.js"></script>
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/stylesheets/de/styleSheet.css" />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/stylesheets/de/de_style.css" />
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/stylesheets/de/ext-all.css" />
 <link href="<%=request.getContextPath()%>/stylesheets/de/calanderComponent.css" type=text/css rel=stylesheet />
 <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/stylesheets/de/xtheme-gray.css" />
 
@@ -58,8 +57,7 @@ can not be clubbed together with style class specified for the print media --%>
 <c:forEach var="url" items="${fn:split(param.formUrl, ':')}" varStatus="status">
     	<dynamicExtensions:dynamicUIGeneratorFromId
 		containerId="${fn:split(url,',')[0]}"
-		formRecordId="${fn:split(url,',')[1]}"
-		mode="view"/>
+		formRecordId="${fn:split(url,',')[1]}"/>
 	<c:if test="${not status.last}"><div style="page-break-before: always">&nbsp;</div></c:if>
 
 </c:forEach>

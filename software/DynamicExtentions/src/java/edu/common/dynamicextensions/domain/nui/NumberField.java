@@ -214,7 +214,12 @@ public class NumberField extends TextField {
 			return null;
 		}
 		BigDecimal numberValue = (BigDecimal) value;
-		numberValue = numberValue.setScale(noOfDigitsAfterDecimal, RoundingMode.HALF_UP).stripTrailingZeros();
+
+		if (BigDecimal.ZERO.compareTo(numberValue) == 0) {
+			numberValue = BigDecimal.ZERO;
+		} else {
+			numberValue = numberValue.setScale(noOfDigitsAfterDecimal, RoundingMode.HALF_UP).stripTrailingZeros();
+		}
 		return numberValue.toPlainString();
 	}
 

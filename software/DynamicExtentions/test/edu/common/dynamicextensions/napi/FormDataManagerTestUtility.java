@@ -19,7 +19,10 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 
 public class FormDataManagerTestUtility {
-	public static ResultSet mockEmptyResultSet(JdbcDao mockJdbcDao, String query)
+	
+	protected static JdbcDao mockJdbcDao;
+	
+	public static ResultSet mockEmptyResultSet(String query)
 	throws SQLException {
 		ResultSet emptyRs = createMock(ResultSet.class);
 		expect(emptyRs.next()).andReturn(false);
@@ -28,15 +31,15 @@ public class FormDataManagerTestUtility {
 		return emptyRs;
 	}
 	
-	public static ResultSet mockQueryResultSet(JdbcDao mockJdbcDao, String query, List<String> columnNames, List[] rows)
+	public static ResultSet mockQueryResultSet(String query, List<String> columnNames, List[] rows)
 	throws SQLException {
-		ResultSet rs = mockResultSet(mockJdbcDao, columnNames, rows);
+		ResultSet rs = mockResultSet(columnNames, rows);
 		expect(mockJdbcDao.getResultSet(eq(query), anyObject(List.class))).andReturn(rs);
 		mockJdbcDao.close(rs);
 		return rs;
 	}
 	
-	public static ResultSet mockResultSet(JdbcDao mockJdbcDao, List<String> columnNames, List... rows)
+	public static ResultSet mockResultSet(List<String> columnNames, List... rows)
 	throws SQLException {
 		ResultSet rs = createMock(ResultSet.class);
 		
@@ -63,12 +66,12 @@ public class FormDataManagerTestUtility {
 		return rs;
 	}
 		
-	public static void mockUpdate(JdbcDao mockJdbcDao, String updateSql, int numTimes) {
+	public static void mockUpdate(String updateSql, int numTimes) {
 		mockJdbcDao.executeUpdate(eq(updateSql), anyObject(List.class));
 		expectLastCall().times(numTimes);
 	}
 	
-	public static void mockIdGeneration(JdbcDao mockJdbcDao, String tableName, Long id) {
+	public static void mockIdGeneration(String tableName, Long id) {
 		expect(mockJdbcDao.getNextId(eq(tableName))).andReturn(id);
 	}
 	

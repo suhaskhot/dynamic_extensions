@@ -4,6 +4,9 @@ package edu.common.dynamicextensions.nutility;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -19,8 +22,25 @@ import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ContainerParser.class, Container.class})
-public class SurveyContainerParserTest extends ContainerParserTest {
+public class SurveyContainerParserTest {
 
+	
+	protected String path;
+
+	protected String pvDir;
+		
+	@Before
+	public void setUp() {
+		setUpFormControls();
+		
+		Class<?> klass = getClass();
+		String pkg = klass.getPackage().getName().replaceAll("\\.", File.separator);
+		path = klass.getClassLoader().getResource(pkg).getPath().concat(File.separator);
+		path = path.replaceAll("%20", " ").concat("parsertestdata").concat(File.separator);
+		pvDir = path + "pvs";
+	}
+	
+	
 	@Test
 	public void testParseSimpleContainer() throws Exception {
 		personProfile.addPage(nameDetails);
@@ -47,6 +67,7 @@ public class SurveyContainerParserTest extends ContainerParserTest {
 
 	protected void setUpFormControls() {
 		personProfile = new SurveyContainer();
+		personProfile.setSequenceNo(-2);
 		personProfile.setName("PersonProfile");
 		personProfile.setCaption("Person Profile");
 
@@ -56,6 +77,7 @@ public class SurveyContainerParserTest extends ContainerParserTest {
 		firstName.setPhi(true);
 		firstName.setMandatory(true);
 		firstName.setNoOfColumns(15);
+		firstName.setLabelPosition(Control.LabelPosition.TOP);
 		firstName.setToolTip("Enter your given name as it appears on passport");
 
 		lastName = new StringTextField();
@@ -64,6 +86,7 @@ public class SurveyContainerParserTest extends ContainerParserTest {
 		lastName.setPhi(true);
 		lastName.setMandatory(true);
 		lastName.setNoOfColumns(15);
+		lastName.setLabelPosition(Control.LabelPosition.TOP);
 		lastName.setToolTip("Enter your surname as it appears on passport");
 
 		dateOfBirth = new DatePicker();
@@ -73,6 +96,7 @@ public class SurveyContainerParserTest extends ContainerParserTest {
 		dateOfBirth.setMandatory(true);
 		dateOfBirth.setFormat("MM-dd-yyyy");
 		dateOfBirth.setDefaultDateType(DefaultDateType.CURRENT_DATE);
+		dateOfBirth.setLabelPosition(Control.LabelPosition.TOP);
 
 		nameDetails = new Page("nameDetails", "Name Details");
 		personalDetails = new Page("personalDetails", "Personal Details");

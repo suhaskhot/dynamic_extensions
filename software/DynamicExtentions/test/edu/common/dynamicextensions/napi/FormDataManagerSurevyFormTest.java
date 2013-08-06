@@ -1,9 +1,6 @@
 package edu.common.dynamicextensions.napi;
 
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockIdGeneration;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockQueryResultSet;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockUpdate;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.nullifyId;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.powermock.api.easymock.PowerMock.createMock;
@@ -12,13 +9,16 @@ import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.Page;
@@ -26,8 +26,10 @@ import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.ndao.JdbcDao;
-@PrepareForTest({JdbcDao.class})
-public class FormDataManagerSurevyFormTest extends FormDataManagerTest {
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({FormDataManagerImpl.class, JdbcDao.class, ResultSet.class})
+public class FormDataManagerSurevyFormTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -61,7 +63,7 @@ public class FormDataManagerSurevyFormTest extends FormDataManagerTest {
 	 */
 	@Test
 	public void testGetFormData() throws Exception {
-		mockQueryResultSet(mockJdbcDao, userTableQuery, userTabColumnNames, userTabRows);
+		mockQueryResultSet(userTableQuery, userTabColumnNames, userTabRows);
 		mockJdbcDao.close();
 
 		replayAll();
@@ -81,8 +83,8 @@ public class FormDataManagerSurevyFormTest extends FormDataManagerTest {
 	 */
 	@Test
 	public void testSaveData() throws Exception {
-		mockIdGeneration(mockJdbcDao, "USER_PROFILES", 9933L);
-		mockUpdate(mockJdbcDao, userTableInsertSql, 1);
+		mockIdGeneration("USER_PROFILES", 9933L);
+		mockUpdate(userTableInsertSql, 1);
 		mockJdbcDao.close();
 		nullifyId(formData);
 
@@ -104,7 +106,7 @@ public class FormDataManagerSurevyFormTest extends FormDataManagerTest {
 	 */
 	@Test
 	public void testUpdateFormData() {
-		mockUpdate(mockJdbcDao, userTableUpdateSql, 1);
+		mockUpdate(userTableUpdateSql, 1);
 		mockJdbcDao.close();
 		replayAll();
 
@@ -182,6 +184,10 @@ public class FormDataManagerSurevyFormTest extends FormDataManagerTest {
 	//
 	// All uninteresting declarations go here
 	//
+
+	protected FormData formData;
+	
+	protected FormDataManager formDataMgr;
 
 	private SurveyContainer userProfile;
 

@@ -243,7 +243,7 @@
 	</target>
 
 	<!-- Creates the Dynamic Extensions zip of the application -->
-	<target name="create_dynamic_extensions_zip" depends="build:jar:core,version_info,init_zip">
+	<target name="create_dynamic_extensions_zip" depends="createTestCoverageReport,build:jar:core,version_info,init_zip">
 		<delete file="binaries/dynamicextensions.zip" />
 		<zip destfile="binaries/dynamicextensions.zip">
 			<fileset dir="${temp.dir}">
@@ -1526,5 +1526,115 @@
 				</manifest>
 			</jar>
 		</target>
+	
 
-	</project>
+		<!-- Creates the Cobertura report -->
+		<target name="createTestCoverageReport" depends="runTest">
+		  	<delete dir="cobertura/report"/>
+		   	<mkdir dir="cobertura/report"/>
+			
+		    <cobertura-report srcdir="cobertura.ser" destdir="cobertura/report">
+		        <fileset dir="${src.dir}">
+		            <include name="**/*.java" />
+		        </fileset>
+		    </cobertura-report>
+			<delete file="cobertura.ser" />
+		</target>
+		
+		<!-- Run the JUnit test -->
+		<target name="runTest" depends="instrumentClasses" >
+			<copy tofile="cobertura.ser" file="cobertura/cobertura.ser" failonerror="false"/>
+			<junit fork="yes" printsummary="yes" haltonfailure="no">
+				<classpath>
+			    	<pathelement location="${target.dir}"/>
+					<pathelement location="${lib.dir}/xstream-1.4.4.jar"/>
+					<pathelement location="${lib.dir}/xerces.jar"/>
+			 		<fileset dir="${client.lib.dir}">
+	    				<include name="*.jar"/>
+	    			</fileset>
+					<fileset dir="${lib.dir}">
+	    				<include name="*.jar"/>
+		    		</fileset>
+					<fileset dir="${extra_lib.dir}">
+	    				<include name="*.jar"/>
+		    		</fileset>
+			    </classpath>
+			    <formatter type="plain"/>
+
+				<batchtest haltonfailure="no">
+		            <fileset dir="${target.dir}" includes="**/*Test.class" />
+		        </batchtest>
+			</junit>
+		    <delete file="transaction.log" />
+		</target>
+		
+		<target name="instrumentClasses" depends="compile_source,compile_test">
+			<!-- Remove the coverage data file and any old instrumentation-->
+			<delete dir="./cobertura"/>
+		  	<mkdir dir="./cobertura"/>
+
+			    <!-- Instrument the application classes -->
+			    <cobertura-instrument datafile="./cobertura/cobertura.ser" todir="./cobertura/instrumented">
+
+			    	<!--ignore any source line containing a reference to log4j -->
+				    <ignore regex="org.apache.log4j.*"/>
+				
+				    <fileset dir="${target.dir}">
+				    	<include name="**/domain/nui/*.class" />
+			        	<include name="**/napi/*.class" />
+			        	<include name="**/napi/impl/*.class" />
+			        	<include name="**/ndao/*.class" />
+		            	<include name="**/nutility/*.class" />
+				  		<exclude name="**/*Test*.class"/>
+				    </fileset>
+			   	</cobertura-instrument>
+			  	
+			  	 <copy todir="./binaries/classes" overwrite="true">
+					<fileset dir="./cobertura/instrumented">
+						<include name="**/*.class" />
+					</fileset>
+				</copy>
+		</target>
+
+	<target name="compile_source">
+		<!-- Create the fresh target directory for which will be used for instrumentation -->
+		<delete dir="${target.dir}" />
+		<mkdir dir="${target.dir}" />
+		
+		<javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true" source="1.6" target="1.6">
+			<src path="${src.dir}" />
+			<classpath refid="app.classpath" />
+		</javac>
+
+		<copy todir="${target.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+				<include name="**/*.xsl" />
+				<include name="**/*.hbm.xml" />
+				<include name="**/*.ser" />
+			</fileset>
+			<fileset dir="${test.dir}">
+				<include name="**/*.hbm.xml" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile_test">
+		<javac destdir="${target.dir}" includes="**/*.*" includeAntRuntime="false" debug="true">
+			<src path="${test.dir}"/>
+			<classpath refid="app.classpath" />
+		</javac>
+		<copy file="${target.dir}/TestHibernate.cfg.xml" tofile="${target.dir}/DynamicExtensionsHibernate.cfg.xml" overwrite="true" />
+		<copy file="${base.dir}/src/conf/DynamicExtensions.properties" tofile="${target.dir}/DynamicExtensions.properties" overwrite="true" />
+		<copy file="${test.dir}/mapping.xml" tofile="${target.dir}/mapping.xml" overwrite="true" failonerror="false" />
+		<copy file="${test.dir}/sampleAuditablemetadata.xml" tofile="${target.dir}/sampleAuditablemetadata.xml" overwrite="true" failonerror="false" />
+		<copy todir="${target.dir}">
+			<fileset dir="${test.dir}">
+				<include name="**/*.xml"/>
+				<include name="**/*.csv"/>
+			</fileset>
+		</copy>
+	</target>
+
+</project>

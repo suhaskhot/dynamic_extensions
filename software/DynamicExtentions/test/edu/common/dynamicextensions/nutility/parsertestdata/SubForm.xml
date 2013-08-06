@@ -51,14 +51,14 @@
 				<maxEntries>0</maxEntries>
 				<showAddMoreLink>true</showAddMoreLink>
                			<row>
-					<dropdown>
+					<dropDown>
 						<name>city</name>
 						<caption>City</caption>
 						<mandatory>true</mandatory>
 						<options>
 							<optionsFile>listOfIndianCities.csv</optionsFile>
 						</options>
-					</dropdown>  
+					</dropDown>  
 				</row> 
 
 				<row>

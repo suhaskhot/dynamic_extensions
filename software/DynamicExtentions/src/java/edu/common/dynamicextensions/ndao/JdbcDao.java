@@ -8,7 +8,6 @@ import java.util.Stack;
 
 import javax.transaction.Transaction;
 
-import edu.common.dynamicextensions.dao.impl.DynamicExtensionDAO;
 import edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder;
 import edu.common.dynamicextensions.entitymanager.QueryBuilderFactory;
 import edu.common.dynamicextensions.entitymanager.persister.IdGenerator;
@@ -22,8 +21,6 @@ public class JdbcDao {
 	private JDBCDAO dao;
 	
 	private Transaction suspendedTxn = null;
-	
-	private static final String appName = DynamicExtensionDAO.getInstance().getAppName();
 	
 	public JdbcDao() {
 		try {

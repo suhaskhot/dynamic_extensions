@@ -22,13 +22,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IdGeneratorUtil.class, Container.class, JdbcDao.class, ResultSet.class, Blob.class})
-public class TestSurveyContainer extends ContainerTest {
+public class SurveyContainerTest {
 
 	private SurveyContainer userProfile;
 
+	protected UserContext userCtxt;
+	
 
 	@Before
 	public void setUp() throws Exception {
@@ -100,10 +103,11 @@ public class TestSurveyContainer extends ContainerTest {
 		userProfile.setId(5L);
 		userProfile.setDbTableName("DE_E_3");
 		
-		String expectedGetSql = "SELECT XML FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+		String expectedGetSql = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
 		Blob mockedBlob = mockBlobForRead(userProfile.toXml());
 
-		mockQueryResultSet(expectedGetSql, Arrays.asList("XML"), new List[]{Arrays.asList(mockedBlob)});
+		mockQueryResultSet(expectedGetSql, Arrays.asList("XML","CREATED_BY","CREATE_TIME","LAST_MODIFIED_BY","LAST_MODIFY_TIME"), 
+				new List[] { Arrays.asList(mockedBlob, 0L, null, 0L, null) });
 		mockJdbcDao.close();
 
 		replayAll();

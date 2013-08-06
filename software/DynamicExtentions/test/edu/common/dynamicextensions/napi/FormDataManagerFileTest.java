@@ -1,6 +1,12 @@
 
 package edu.common.dynamicextensions.napi;
 
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.assertFormDataEquals;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockIdGeneration;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockJdbcDao;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockQueryResultSet;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockUpdate;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.nullifyId;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
@@ -34,11 +40,9 @@ import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.*;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FormDataManagerImpl.class, JdbcDao.class, ResultSet.class})
-public class FormDataManagerFileTest { //extends FormDataManagerTest {
+public class FormDataManagerFileTest {
 
 	@Before
 	public void setUp() throws Exception {
@@ -78,7 +82,7 @@ public class FormDataManagerFileTest { //extends FormDataManagerTest {
 	 */
 	@Test
 	public void testGetFormDataWithFileControl() throws Exception {
-		mockQueryResultSet(mockJdbcDao, userTableQuery, userTabColumnNames, userTabRows);
+		mockQueryResultSet(userTableQuery, userTabColumnNames, userTabRows);
 		mockJdbcDao.close();
 
 		replayAll();
@@ -121,8 +125,8 @@ public class FormDataManagerFileTest { //extends FormDataManagerTest {
 	 */
 	@Test
 	public void testSaveFormWithFileData() throws Exception {
-		mockIdGeneration(mockJdbcDao, "USER_PROFILES", 9933L);
-		mockUpdate(mockJdbcDao, userTableInsertSql, 1);
+		mockIdGeneration("USER_PROFILES", 9933L);
+		mockUpdate(userTableInsertSql, 1);
 		mockJdbcDao.close();
 		nullifyId(formData);
 		mockFileStream.close();
@@ -145,7 +149,7 @@ public class FormDataManagerFileTest { //extends FormDataManagerTest {
 	 */
 	@Test
 	public void testUpdateFormWithFileData() throws IOException {
-		mockUpdate(mockJdbcDao, userTableUpdateSql, 1);
+		mockUpdate(userTableUpdateSql, 1);
 		mockJdbcDao.close();
 		mockFileStream.close();
 		replayAll();
@@ -232,8 +236,6 @@ public class FormDataManagerFileTest { //extends FormDataManagerTest {
 	private List[] userTabRows;
 	
 	protected FormDataManager formDataMgr;
-
-	protected JdbcDao mockJdbcDao;
 
 	protected FileInputStream mockFileStream;
 }

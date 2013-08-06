@@ -3,7 +3,8 @@
 <survey-form>
 	<view>
 		<name>PersonProfile</name>         		
-		<caption>Person Profile</caption>       	
+		<caption>Person Profile</caption>     
+		  	
 		<page>
 			<name>nameDetails</name>         		
 			<caption>Name Details</caption>

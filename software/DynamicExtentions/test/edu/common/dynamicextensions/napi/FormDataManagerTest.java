@@ -1,11 +1,7 @@
 
 package edu.common.dynamicextensions.napi;
 
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockEmptyResultSet;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockIdGeneration;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockQueryResultSet;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockUpdate;
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.nullifyId;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.*;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -64,6 +60,9 @@ public class FormDataManagerTest {
 		//
 		// Mock JDBC DAO
 		//
+		
+//		System.err.println(" JdbcDao.class :: "+JdbcDao.class);
+//		System.err.println(" JdbcDao.class name :: "+JdbcDao.class.getName());
 		mockJdbcDao = createMock(JdbcDao.class);
 		expectNew(JdbcDao.class).andReturn(mockJdbcDao);
 		
@@ -87,7 +86,7 @@ public class FormDataManagerTest {
 	@Test
 	public void testGetFormDataForNonExistingRecord() 
 	throws Exception {
-		mockEmptyResultSet(mockJdbcDao, userTableQuery);
+		mockEmptyResultSet(userTableQuery);
 		mockJdbcDao.close();
 		
 		replayAll();
@@ -108,9 +107,9 @@ public class FormDataManagerTest {
 	@Test
 	public void testGetFormDataWithFileControl()
 	throws Exception {		
-		mockQueryResultSet(mockJdbcDao, userTableQuery, userTabColumnNames, userTabRows);		
-		mockQueryResultSet(mockJdbcDao, hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
-		mockEmptyResultSet(mockJdbcDao, addressTableQuery);		
+		mockQueryResultSet(userTableQuery, userTabColumnNames, userTabRows);		
+		mockQueryResultSet(hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
+		mockEmptyResultSet(addressTableQuery);		
 		mockJdbcDao.close();		
 		
 		replayAll();
@@ -134,11 +133,11 @@ public class FormDataManagerTest {
 	@Test
 	public void testGetFormDataForSubForms()
 	throws Exception {
-		mockQueryResultSet(mockJdbcDao, userTableQuery, userTabColumnNames, userTabRows);
-		mockQueryResultSet(mockJdbcDao, addressTableQuery, addressTabColumnNames, addressTabRows);
-		mockQueryResultSet(mockJdbcDao, hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
-		mockQueryResultSet(mockJdbcDao, parkingFacilitiesTableQuery, parkingFacilitiesColumnNames, parkingFacilitiesTabRows);
-		mockEmptyResultSet(mockJdbcDao, parkingFacilitiesTableQuery);
+		mockQueryResultSet(userTableQuery, userTabColumnNames, userTabRows);
+		mockQueryResultSet(addressTableQuery, addressTabColumnNames, addressTabRows);
+		mockQueryResultSet(hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
+		mockQueryResultSet(parkingFacilitiesTableQuery, parkingFacilitiesColumnNames, parkingFacilitiesTabRows);
+		mockEmptyResultSet(parkingFacilitiesTableQuery);
 		mockJdbcDao.close();		
 		
 		replayAll();
@@ -163,11 +162,11 @@ public class FormDataManagerTest {
 		expectNew(ContainerDao.class, new Class[] { JdbcDao.class }, mockJdbcDao).andReturn(containerDao);
 		expect(containerDao.getById(111L)).andReturn(userProfile);
 		
-		mockQueryResultSet(mockJdbcDao, userTableQuery, userTabColumnNames, userTabRows);
-		mockQueryResultSet(mockJdbcDao, addressTableQuery, addressTabColumnNames, addressTabRows);
-		mockQueryResultSet(mockJdbcDao, hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
-		mockQueryResultSet(mockJdbcDao, parkingFacilitiesTableQuery, parkingFacilitiesColumnNames, parkingFacilitiesTabRows);
-		mockEmptyResultSet(mockJdbcDao, parkingFacilitiesTableQuery);
+		mockQueryResultSet(userTableQuery, userTabColumnNames, userTabRows);
+		mockQueryResultSet(addressTableQuery, addressTabColumnNames, addressTabRows);
+		mockQueryResultSet(hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
+		mockQueryResultSet(parkingFacilitiesTableQuery, parkingFacilitiesColumnNames, parkingFacilitiesTabRows);
+		mockEmptyResultSet(parkingFacilitiesTableQuery);
 		mockJdbcDao.close();		
 		
 		replayAll();
@@ -187,16 +186,16 @@ public class FormDataManagerTest {
 	 */
 	@Test
 	public void testSaveFormData() {
-		mockIdGeneration(mockJdbcDao, "USER_PROFILES", 9933L);
-		mockUpdate(mockJdbcDao, userTableInsertSql, 1);
-		mockUpdate(mockJdbcDao, hobbiesTableDeleteSql, 1);
-		mockUpdate(mockJdbcDao, hobbiesTableInsertSql, 2);
+		mockIdGeneration("USER_PROFILES", 9933L);
+		mockUpdate(userTableInsertSql, 1);
+		mockUpdate(hobbiesTableDeleteSql, 1);
+		mockUpdate(hobbiesTableInsertSql, 2);
 				
-		mockIdGeneration(mockJdbcDao, "USER_ADDRESSES", 11L);
-		mockIdGeneration(mockJdbcDao, "USER_ADDRESSES", 12L);
-		mockUpdate(mockJdbcDao, addressTableInsertSql, 2);
-		mockUpdate(mockJdbcDao, parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
-		mockUpdate(mockJdbcDao, parkingFacilitiesTableInsertSql, 3);		
+		mockIdGeneration("USER_ADDRESSES", 11L);
+		mockIdGeneration("USER_ADDRESSES", 12L);
+		mockUpdate(addressTableInsertSql, 2);
+		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
+		mockUpdate(parkingFacilitiesTableInsertSql, 3);		
 	    mockJdbcDao.close();
 	    
 	    nullifyId(formData);
@@ -227,15 +226,15 @@ public class FormDataManagerTest {
 	 */
 	@Test
 	public void testUpdateParentFormData() {	
-		mockUpdate(mockJdbcDao, userTableUpdateSql, 1);
-		mockUpdate(mockJdbcDao, hobbiesTableDeleteSql, 1);
-		mockUpdate(mockJdbcDao, hobbiesTableInsertSql, 2);
+		mockUpdate(userTableUpdateSql, 1);
+		mockUpdate(hobbiesTableDeleteSql, 1);
+		mockUpdate(hobbiesTableInsertSql, 2);
 				
-		mockIdGeneration(mockJdbcDao, "USER_ADDRESSES", 11L);
-		mockIdGeneration(mockJdbcDao, "USER_ADDRESSES", 12L);
-		mockUpdate(mockJdbcDao, addressTableInsertSql, 2);
-		mockUpdate(mockJdbcDao, parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
-		mockUpdate(mockJdbcDao, parkingFacilitiesTableInsertSql, 3);		
+		mockIdGeneration("USER_ADDRESSES", 11L);
+		mockIdGeneration("USER_ADDRESSES", 12L);
+		mockUpdate(addressTableInsertSql, 2);
+		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
+		mockUpdate(parkingFacilitiesTableInsertSql, 3);		
 	    mockJdbcDao.close();
 	    
 	    nullifyId(formData);
@@ -267,13 +266,13 @@ public class FormDataManagerTest {
 	 */
 	@Test
 	public void testUpdateFormData() {	
-		mockUpdate(mockJdbcDao, userTableUpdateSql, 1);
-		mockUpdate(mockJdbcDao, hobbiesTableDeleteSql, 1);
-		mockUpdate(mockJdbcDao, hobbiesTableInsertSql, 2);
+		mockUpdate(userTableUpdateSql, 1);
+		mockUpdate(hobbiesTableDeleteSql, 1);
+		mockUpdate(hobbiesTableInsertSql, 2);
 				
-		mockUpdate(mockJdbcDao, addressTableUpdateSql, 2);
-		mockUpdate(mockJdbcDao, parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
-		mockUpdate(mockJdbcDao, parkingFacilitiesTableInsertSql, 3);		
+		mockUpdate(addressTableUpdateSql, 2);
+		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
+		mockUpdate(parkingFacilitiesTableInsertSql, 3);		
 	    mockJdbcDao.close();
 	    
 	    replayAll();
@@ -510,8 +509,6 @@ public class FormDataManagerTest {
 	//
 	private String userTableUpdateSql;
 	private String addressTableUpdateSql;
-	private String hobbiesTableUpdateSql;
-	private String parkingFacilitiesTableUpdateSql;
 	
 	private String hobbiesTableDeleteSql;
 	private String parkingFacilitiesTableDeleteSql;
@@ -520,6 +517,8 @@ public class FormDataManagerTest {
 	// test form data for insert, update and get
 	//
 	protected FormData formData;
+	
+	protected FormDataManager formDataMgr;
 	
 	private List<String> userTabColumnNames;
 	
@@ -536,10 +535,6 @@ public class FormDataManagerTest {
 	private List<String> parkingFacilitiesColumnNames;
 	
 	private List[] parkingFacilitiesTabRows;
-
-	protected FormDataManager formDataMgr;
-	
-	protected JdbcDao mockJdbcDao;
 
 
 }

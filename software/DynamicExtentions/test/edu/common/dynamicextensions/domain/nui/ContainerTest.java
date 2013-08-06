@@ -1,7 +1,5 @@
 package edu.common.dynamicextensions.domain.nui;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.assertEquals;
@@ -12,10 +10,8 @@ import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IdGeneratorUtil.class, Container.class, JdbcDao.class, ResultSet.class, Blob.class})
@@ -34,8 +31,6 @@ public class ContainerTest {
 	private Container userProfile;
 	
 	private Container address;
-
-	protected JdbcDao mockJdbcDao;
 
 	protected UserContext userCtxt;
 
@@ -410,10 +405,11 @@ public class ContainerTest {
 		userProfile.setId(5L);
 		userProfile.setDbTableName("DE_E_3");
 		
-		String expectedGetSql = "SELECT XML FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+		String expectedGetSql = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
 		Blob mockedBlob = mockBlobForRead(userProfile.toXml());
 		
-		mockQueryResultSet(expectedGetSql, Arrays.asList("XML"), new List[] { Arrays.asList(mockedBlob) });
+		mockQueryResultSet(expectedGetSql, Arrays.asList("XML","CREATED_BY","CREATE_TIME","LAST_MODIFIED_BY","LAST_MODIFY_TIME"), 
+				new List[] { Arrays.asList(mockedBlob, 0L, null, 0L, null) });
 		mockJdbcDao.close();
 		
 		replayAll();
@@ -427,8 +423,8 @@ public class ContainerTest {
 	throws Exception {
 		Long containerId = 5L;
 		
-		String expectedGetSql = "SELECT XML FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
-		mockQueryResultSet(expectedGetSql, Arrays.asList("XML"), new List[0]);
+		String expectedGetSql = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+		mockQueryResultSet(expectedGetSql,Arrays.asList("XML","CREATED_BY","CREATE_TIME","LAST_MODIFIED_BY","LAST_MODIFY_TIME"), new List[0]);
 		mockJdbcDao.close();
 		
 		replayAll();
@@ -437,7 +433,7 @@ public class ContainerTest {
 		assertNull(actual);
 	}
 	
-	@Test(expected=RuntimeException.class)
+	@Test(expected=AssertionError.class)
 	public void testGetContainerException()
 	throws Exception {
 		Long containerId = 5L;
@@ -454,107 +450,6 @@ public class ContainerTest {
 		
 		Container actual = Container.getContainer(containerId);		
 	}
-	
-	protected ResultSet mockQueryResultSet(String query, List<String> columnNames, List[] rows)
-	throws SQLException {
-		ResultSet rs = mockResultSet(columnNames, rows);
-		expect(mockJdbcDao.getResultSet(eq(query), anyObject(List.class))).andReturn(rs);
-		mockJdbcDao.close(rs);
-		return rs;
-	}
-	
-	private ResultSet mockResultSet(List<String> columnNames, List ... rows) 
-	throws SQLException {
-		ResultSet rs = createMock(ResultSet.class);
-		
-		if (rows != null) {
-			for (List<Object> row : rows) {
-				expect(rs.next()).andReturn(true);				
-				for (int i = 0; i < columnNames.size(); ++i) {
-					String columnName = columnNames.get(i);					
-					if (columnName.equals("IDENTIFIER") || columnName.equals("NEXTVAL")) {
-						expect(rs.getLong(columnName)).andReturn((Long)row.get(i));
-					} else if (columnName.endsWith("_NAME") || columnName.endsWith("_TYPE")){
-						expect(rs.getString(columnName)).andReturn(row.get(i).toString());
-					} else if (columnName.equals("RECORD_ID")) {
-						continue; // we do not expect call to retrieve record_id as rows are selected based on record_id 
-					} else if (columnName.equals("XML")) {
-						expect(rs.getBlob("XML")).andReturn((Blob)row.get(i));
-					} else {
-						expect(rs.getObject(columnName)).andReturn(row.get(i));
-					} 
-				}
-			}			
-		}
-		expect(rs.next()).andReturn(false);		
-		return rs;
-	}
-	
-	
-	protected void mockContainerIdGen(Long... ids)
-	throws SQLException {
-		String expectedIdSql = "SELECT DYEXTN_CONTAINERS_SEQ.NEXTVAL FROM (SELECT LEVEL FROM DUAL CONNECT BY LEVEL <= 1)";
-		
-		List[] rows = new List[ids.length];
-		for (int i = 0; i < ids.length; ++i) {
-			rows[i] = Arrays.asList(ids[i]);
-		}
-		
-		mockQueryResultSet(expectedIdSql, Arrays.asList("NEXTVAL"), rows);		
-	}
-	
-	protected ByteArrayOutputStream mockContainerInsert()
-	throws Exception {
-		mockUpdate("INSERT INTO DYEXTN_CONTAINERS (IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, XML) VALUES(?, ?, ?, ?, ?, empty_blob())", 1);
-		ByteArrayOutputStream outstream = mockContainerXmlWrite();
-		return outstream;		
-	}
-	
-	protected ByteArrayOutputStream mockContainerUpdate()
-	throws Exception {
-		mockUpdate("UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ? WHERE IDENTIFIER = ?", 1);
-		ByteArrayOutputStream outstream = mockContainerXmlWrite();
-		return outstream;
-	}
-
-	private ByteArrayOutputStream mockContainerXmlWrite() 
-	throws Exception {
-		String selectBlobForUpdate = "SELECT XML FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ? FOR UPDATE";
-		ByteArrayOutputStream outstream = new ByteArrayOutputStream();
-		Blob blob = mockBlobForWrite(outstream);
-		mockQueryResultSet(selectBlobForUpdate, Arrays.asList("XML"), new List[] { Arrays.asList(blob) });
-		mockJdbcDao.close();
-		
-		return outstream;
-	}
-	
-	private Blob mockBlobForWrite(OutputStream out) 
-	throws Exception {
-		Blob blob = createMock(Blob.class);
-		expect(blob.setBinaryStream(0L)).andReturn(out);
-		return blob;
-	}
-	
-	public Blob mockBlobForRead(String xml) 
-	throws Exception {
-		Blob blob = createMock(Blob.class);
-		expect(blob.length()).andReturn((long)xml.getBytes().length);
-		expect(blob.getBytes(1L, xml.getBytes().length)).andReturn(xml.getBytes());
-		return blob;
-	}
-	
-	public Blob mockBlobForReadException(String xml) 
-	throws Exception {
-		Blob blob = createMock(Blob.class);
-		expect(blob.length()).andReturn((long)xml.getBytes().length);
-		expect(blob.getBytes(1L, xml.getBytes().length)).andThrow(new SQLException("Error getting blob bytes"));
-		return blob;
-	}	
-	
-	private void mockUpdate(String updateSql, int numTimes) {
-		mockJdbcDao.executeUpdate(eq(updateSql), anyObject(List.class));
-		expectLastCall().times(numTimes);
-	}	
 	
 	private void setUpForm() {
 		//
@@ -620,25 +515,5 @@ public class ContainerTest {
 		parkingTypes.setDataType(DataType.STRING);		
 		parkingFacilities.setPvDataSource(parkingTypes);
 		address.addControl(parkingFacilities);		
-	}
-	
-	protected UserContext createUserContext() {
-		return new UserContext() {
-			
-			@Override
-			public String getUserName() {
-				return "de-unit-tester";
-			}
-			
-			@Override
-			public Long getUserId() {
-				return 7L;
-			}
-			
-			@Override
-			public String getIpAddress() {
-				return "192.168.1.2";
-			}
-		}; 
 	}
 }

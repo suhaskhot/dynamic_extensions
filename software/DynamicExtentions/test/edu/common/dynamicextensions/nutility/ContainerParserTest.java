@@ -5,9 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +20,6 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.DatePicker.DefaultDateType;
-import edu.common.dynamicextensions.domain.nui.HideAction;
 import edu.common.dynamicextensions.domain.nui.Label;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
@@ -31,11 +28,7 @@ import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
-import edu.common.dynamicextensions.domain.nui.ShowPvAction;
-import edu.common.dynamicextensions.domain.nui.SkipCondition;
-import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
-import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.TextArea;
@@ -54,6 +47,7 @@ public class ContainerParserTest {
 		
 		Class<?> klass = getClass();
 		String pkg = klass.getPackage().getName().replaceAll("\\.", File.separator);
+
 		path = klass.getClassLoader().getResource(pkg).getPath().concat(File.separator);
 		path = path.replaceAll("%20", " ").concat("parsertestdata").concat(File.separator);
 		pvDir = path + "pvs";
@@ -153,8 +147,7 @@ public class ContainerParserTest {
 	@Test
 	public void testParseContainerWithSkipLogic() 
 	throws Exception {
-		addSkipLogicProps();
-
+		
 		addControl(personProfile, formHeading,     1, 1);
 		addControl(personProfile, gender,          2, 1);
 		addControl(personProfile, sourcesOfIncome, 3, 1);
@@ -163,6 +156,8 @@ public class ContainerParserTest {
 		addControl(address,       city,            1, 1);
 		addControl(address,       company,         2, 1);
 		
+		addSkipLogicProps();
+
 		String formXml = path + "SkipLogicForm.xml";
 		ContainerParser parser = new ContainerParser(formXml, pvDir);
 		Container actualContainer = parser.parse();
@@ -183,7 +178,7 @@ public class ContainerParserTest {
 			.eq(gender.getName(), "Male")
 			.then().perform()
 			.hide("sourcesOfIncome")
-			.subsetPv("city", getPvs("Paris", "Rome", "New York"), null)
+			.subsetPv("address.city", getPvs("Paris", "Rome", "New York"), null)
 			.then().get();
 		personProfile.addSkipRule(rule);	
 	}
@@ -227,12 +222,14 @@ public class ContainerParserTest {
 		income.setCaption("Annual Income");
 		income.setMinValue("100000");
 		income.setMaxValue("10000000");
+		income.setNoOfDigits(19);
 	
 		loanAmount = new NumberField();
 		loanAmount.setName("loanAmount");
 		loanAmount.setCaption("Eligible Loan Amount");
 		loanAmount.setFormula("income * 5");
-				
+		loanAmount.setNoOfDigits(19);
+	
 		sourcesOfIncome = new MultiSelectCheckBox();
 		sourcesOfIncome.setName("sourcesOfIncome");
 		sourcesOfIncome.setCaption("Sources of Income");
@@ -329,6 +326,7 @@ public class ContainerParserTest {
 	protected void addControl(Container container, Control ctrl, int seqNo, int xPos) {
 		ctrl.setSequenceNumber(seqNo);
 		ctrl.setxPos(xPos);
+		ctrl.setDbColumnName(null);
 		container.addControl(ctrl);		
 	}
 	

@@ -1208,12 +1208,17 @@ function addRow(containerId) {
 			document.getElementById("btnAddMore"+containerId).disabled = false;
 		},
 		onSuccess: function(rowHTML) {
-			$(tableId).insert({bottom:rowHTML.responseText});
+			var newRow = $(tableId).insert({bottom:rowHTML.responseText});
 
 			var currentRowCounter = $(containerId + "_rowCount").value;
 			$(containerId + "_rowCount").setValue(parseInt(currentRowCounter) + 1);
 			document.getElementById('isDirty').value = true;
 			document.getElementById("btnAddMore"+containerId).disabled = false;
+			
+			jQuery('input:file', $(newRow)).each(function(){
+				setJQueryParameters(this.id,this.getAttribute("onclick"));
+			});
+			
 			}	
 			
 	});

@@ -50,7 +50,13 @@ public class IoUtil {
 	
 	public static void delete(String file) {
 		if (file != null) {
-			new File(file).delete();
+			delete(new File(file));
+		}
+	}
+	
+	public static void delete(File file) {
+		if (file != null) {
+			file.delete();
 		}
 	}
 	
@@ -64,6 +70,11 @@ public class IoUtil {
 		}
 		
 		out.flush();		
+	}
+	
+	public static InputStream getDeleteOnCloseFileInputStream(String file) 
+	throws IOException {
+		return new DeleteOnCloseFileInputStream(file);
 	}
 	
 	public static void zipFiles(String inputDir, String outFilePath) {

@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.napi;
 
+import java.io.InputStream;
+
 public class FileControlValue
 {
 
@@ -17,6 +19,8 @@ public class FileControlValue
 	private Long recordId;
 	
 	private String filePath;
+	
+	private InputStream in;
 
 	public FileControlValue() {
 		
@@ -74,4 +78,11 @@ public class FileControlValue
 		this.filePath = filePath;
 	}
 
+	public InputStream getIn() {
+		return in;
+	}
+
+	public void setIn(InputStream in) {
+		this.in = in;
+	}
 }

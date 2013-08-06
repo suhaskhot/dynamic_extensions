@@ -1,5 +1,9 @@
 package edu.common.dynamicextensions.upgrade;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.sql.Blob;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +14,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import edu.common.dynamicextensions.domain.CategoryEntityRecord;
 import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
@@ -95,6 +100,8 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.nutility.DeleteOnCloseFileInputStream;
+import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.skiplogic.Condition;
 import edu.common.dynamicextensions.skiplogic.ConditionStatements;
@@ -831,21 +838,16 @@ public class MigrateForm {
 			}
 			
 			UserDefinedDEInterface userDataElement = (UserDefinedDEInterface)dataElement;
-			System.err.println("User Data Element is: " + userDataElement.getId());
 			List<PermissibleValue> pvs = getPvs(userDataElement);
-			System.err.println("Pvs: " + pvs);
 				
 			PvVersion pvVersion = new PvVersion();
 			pvVersion.setActivationDate(userDataElement.getActivationDate());
 			pvVersion.setPermissibleValues(pvs);
 				
 			Collection<PermissibleValueInterface> defPvs = userDataElement.getDefaultPermissibleValues();
-			System.err.println("Default Pvs: " + defPvs);
 			if (defPvs != null) {				
-				System.err.println("Default Pv: " + defPvs.size());
 				if (defPvs.size() > 0) {
 					pvVersion.setDefaultValue(getPv(defPvs.iterator().next()));
-					System.err.println("After set pv: " + pvVersion.getDefaultValue());
 				}								
 			}
 				
@@ -1202,11 +1204,7 @@ public class MigrateForm {
 		return catAttr.getCategoryEntity().getEntity().getName().equals(entity) &&
 				catAttr.getAbstractAttribute().getName().equals(attrName);				
 	}
-	
-	
-	//
-	// TODO: Pass user name
-	//
+		
 	private Long saveForm(Container container) 
 	throws Exception {
 		JDBCDAO jdbcDao = null;
@@ -1319,7 +1317,7 @@ public class MigrateForm {
 			dao = DynamicExtensionsUtility.getJDBCDAO();
 			JdbcDao jdbcDao = new JdbcDao(dao);
 			
-			FormData newRecord = getFormData(formMigrationCtxt, oldForm, oldRecord);
+			FormData newRecord = getFormData(jdbcDao, formMigrationCtxt, oldForm, oldRecord);
 			FormDataManager formDataMgr = new FormDataManagerImpl();
 			Long newRecordId = formDataMgr.saveOrUpdateFormData(null, newRecord, jdbcDao);
 
@@ -1337,6 +1335,7 @@ public class MigrateForm {
 	
 	
 	private FormData getFormData(
+			JdbcDao jdbcDao,
 			FormMigrationCtxt formMigrationCtxt,
 			ContainerInterface oldForm,
 			Map<BaseAbstractAttributeInterface, Object> oldFormData) {
@@ -1356,11 +1355,11 @@ public class MigrateForm {
 				if (oldValue instanceof List) {
 					newValue = getMultiSelectValues((List<Map<BaseAbstractAttributeInterface, Object>>)oldValue); 
 				} else if (oldCtrl instanceof FileUploadInterface){
-					newValue = new FileControlValue((String)oldValue, null, null);
+					newValue = getNewFileControlValue(jdbcDao, oldFormData, (CategoryAttributeInterface)oldAttr);
 				} else {
 					newValue = oldValue;
 				}
-				
+
 				ControlValue cv = new ControlValue(newControl, newValue);
 				formData.addFieldValue(cv);				
 			} else if (oldAttr instanceof CategoryAssociationInterface) {
@@ -1372,7 +1371,7 @@ public class MigrateForm {
 				
 				AbstractContainmentControlInterface oldSfCtrl = (AbstractContainmentControlInterface)oldCtrl;
 				for (Map<BaseAbstractAttributeInterface, Object> oldSfRec : oldSfRecs) {
-					newSfData.add(getFormData(sfMigrationCtxt, oldSfCtrl.getContainer(), oldSfRec));
+					newSfData.add(getFormData(jdbcDao, sfMigrationCtxt, oldSfCtrl.getContainer(), oldSfRec));
 				}
 				
 				ControlValue cv = new ControlValue(newSfCtrl, newSfData);
@@ -1381,6 +1380,75 @@ public class MigrateForm {
 		}
 		
 		return formData;
+	}
+	
+	private FileControlValue getNewFileControlValue(
+			JdbcDao jdbcDao, 
+			Map<BaseAbstractAttributeInterface, Object> oldFormData, 
+			CategoryAttributeInterface catAttr) {
+		
+		CategoryEntityInterface catEntity = catAttr.getCategoryEntity();
+		CategoryEntityRecord catEntityRecord = new CategoryEntityRecord(catEntity.getId(), catEntity.getName());
+		
+		Long recordId = (Long)oldFormData.get(catEntityRecord);
+		if (recordId == null) {
+			logger.error("Could not obtain record id in " + oldFormData);
+			logger.error("Key used was: " + catEntity.getId() + ":" + catEntity.getName());
+			return null;
+		}
+		
+		AttributeInterface attr = (AttributeInterface)catAttr.getAbstractAttribute();
+		String tableName = attr.getEntity().getTableProperties().getName();
+		String columnName = attr.getColumnProperties().getName();
+		
+		ResultSet rs = null;
+		FileControlValue fcv = null;
+		File blobFile = null;
+		try {
+			String sql = String.format(GET_FILE_CONTENT, columnName, columnName, columnName, tableName);
+			rs = jdbcDao.getResultSet(sql, Collections.singletonList(recordId));
+			if (rs.next()) {
+				Blob fileContent   = rs.getBlob(1);
+				String fileName    = rs.getString(2);
+				String contentType = rs.getString(3);
+				
+				fcv = new FileControlValue();
+				if (fileContent != null) {
+					blobFile = copyBlobToTempFile(fileContent); 
+					fcv.setIn(new DeleteOnCloseFileInputStream(blobFile));
+				}
+				
+				fcv.setFileName(fileName);
+				fcv.setContentType(contentType);				
+			}
+		} catch (Exception e) {
+			IoUtil.delete(blobFile);
+			logger.error(
+					"Error obtaining file content from: " + 
+					tableName + "." + columnName + ", identifier = " + recordId, e);						
+		} finally {
+			jdbcDao.close(rs);
+		}
+		
+		return fcv;
+	}
+	
+	private File copyBlobToTempFile(Blob blob) {
+		File file = null;
+		FileOutputStream fout = null;
+		
+		try {
+			file = File.createTempFile("form-migrate", ".dat");
+			fout = new FileOutputStream(file);
+			IoUtil.copy(blob.getBinaryStream(), fout);			
+		} catch (Exception e) {
+			IoUtil.delete(file);			
+			throw new RuntimeException("Error copying blob data to file", e);
+		} finally {
+			IoUtil.close(fout);
+		}
+		
+		return file;
 	}
 	
 	private String[] getMultiSelectValues(List<Map<BaseAbstractAttributeInterface, Object>> msValuesMap) {
@@ -1420,6 +1488,9 @@ public class MigrateForm {
 	
 	private static final String UPDATE_RECORD_ID = 
 			"update DYEXTN_ABSTRACT_RECORD_ENTRY set RECORD_ID = ? where IDENTIFIER = ?";
+	
+	private static final String GET_FILE_CONTENT = 
+			"select %s, %s_file_name, %s_content_type from %s where IDENTIFIER = ?";
 	
 	public static void main(String[] args) 
 	throws Exception {

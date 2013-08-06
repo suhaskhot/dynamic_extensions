@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.napi.impl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.common.beans.SessionDataBean;
 
 public class FormDataManagerImpl implements FormDataManager {
@@ -104,7 +106,7 @@ public class FormDataManagerImpl implements FormDataManager {
 
 	@Override
 	public Long saveOrUpdateFormData(UserContext userCtxt, FormData formData, JdbcDao jdbcDao) {
-		try {			
+		try {
 			Long recordId = saveOrUpdateFormData(jdbcDao, formData, null);
 			formData.setRecordId(recordId);
 			return recordId;
@@ -247,7 +249,7 @@ public class FormDataManagerImpl implements FormDataManager {
 		
 		Container container = formData.getContainer();
 		Long recordId = formData.getRecordId();
-		List<FileInputStream> inputStreams = new ArrayList<FileInputStream>();
+		List<InputStream> inputStreams = new ArrayList<InputStream>();
 		
 		segregateControls(container, simpleCtrls, multiSelectCtrls, subFormCtrls);
 		removeUnchangedFileControls(formData, simpleCtrls);
@@ -260,7 +262,6 @@ public class FormDataManagerImpl implements FormDataManager {
 
 				if (ctrl instanceof FileUploadControl) {
 					FileControlValue fcv = (FileControlValue) ctrlValue.getValue();
-
 					if (fcv == null) {
 						params.add(null);
 						params.add(null);
@@ -268,9 +269,17 @@ public class FormDataManagerImpl implements FormDataManager {
 					} else {
 						params.add(fcv.getFileName());
 						params.add(fcv.getContentType());
-						FileInputStream file = new FileInputStream(fcv.getFilePath());
-						params.add(file);
-						inputStreams.add(file);
+						
+						if (fcv.getIn() != null) {
+							params.add(fcv.getIn());
+							inputStreams.add(fcv.getIn());
+						} else if (fcv.getFilePath() != null) {
+							InputStream fileIn = new FileInputStream(fcv.getFilePath());
+							params.add(fileIn);
+							inputStreams.add(fileIn);
+						} else {
+							params.add(null);
+						}
 					}
 				} else {
 					if (ctrlValue.getValue() == null || ctrlValue.getValue().toString().trim().isEmpty()) {
@@ -321,23 +330,22 @@ public class FormDataManagerImpl implements FormDataManager {
 				}
 			}
 		} finally {
-			for (FileInputStream fileInputStream : inputStreams) {
-				try {
-					fileInputStream.close();
-				} catch (IOException e) {
-					logger.warn("failed to close FileInputStream");
-				}
+			for (InputStream inputStream : inputStreams) {
+				IoUtil.close(inputStream);
 			}
 		}
 		return recordId;		
 	}
-	
+
+	//
+	// Note: This hack has been added for the old UI to work. Otherwise this is plain wrong
+	//
 	private void removeUnchangedFileControls(FormData formData, List<Control> simpleCtrls) {
 		for (ControlValue ctrlValue : formData.getFieldValues()) {
 			if (ctrlValue.getControl() instanceof FileUploadControl) {
 				FileControlValue controlValue = (FileControlValue) ctrlValue.getValue();
 				//If there has been no change in file value, do not include control in either insert or update query
-				if (controlValue != null && controlValue.getFilePath() == null) {
+				if (controlValue != null && controlValue.getFilePath() == null && controlValue.getIn() == null) {
 					simpleCtrls.remove(ctrlValue.getControl());
 				}
 			}

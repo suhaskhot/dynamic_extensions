@@ -79,13 +79,15 @@ public class ListBox extends SelectControl {
 
 			if (pvList != null && !pvList.isEmpty()) {
 				for (PermissibleValue pv : pvList) {
+					String pvValue = pv.getValue();
+					
 					if (isPVSelected(controlValue, pv)) {
-						htmlString.append("<OPTION title='").append(pv.getValue()).append("' value='")
-								.append(pv.getValue()).append("' selected>")
-								.append(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()));
+						htmlString.append("<OPTION title='").append(pvValue).append("' value='").append(pvValue)
+								.append("' selected>")
+								.append(DynamicExtensionsUtility.getUnEscapedStringValue(pvValue));
 					} else {
-						htmlString.append("<OPTION value='").append(pv.getValue()).append("'>")
-								.append(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()));
+						htmlString.append("<OPTION value='").append(pvValue).append("'>")
+								.append(DynamicExtensionsUtility.getUnEscapedStringValue(pvValue));
 					}
 				}
 			}
@@ -144,14 +146,17 @@ public class ListBox extends SelectControl {
 						.append("\" size=\"4\" multiple=\"true\" style=\"width:170px\">");
 
 				if (controlValue.getValue() != null) {
+					
 					for (String pv : (String[]) controlValue.getValue()) {
-						multSelWithAutoCmpltHTML.append("<OPTION title='").append(pv).append("' value='").append(pv)
-								.append("' selected>").append(pv);
+						String encodedPvString = DynamicExtensionsUtility.getEscapedStringValue(pv);
+						multSelWithAutoCmpltHTML.append("<OPTION title='").append(encodedPvString).append("' value='")
+								.append(encodedPvString).append("' selected>").append(pv);
 					}
 				} else if (getDefaultValue() != null) {
 					String pv = getDefaultValue().getValue();
-					multSelWithAutoCmpltHTML.append("<OPTION title='").append(pv).append("' value='").append(pv)
-							.append("' selected>").append(pv);
+					String encodedPvString = DynamicExtensionsUtility.getEscapedStringValue(pv);
+					multSelWithAutoCmpltHTML.append("<OPTION title='").append(encodedPvString).append("' value='")
+							.append(encodedPvString).append("' selected>").append(encodedPvString);
 				}
 
 				multSelWithAutoCmpltHTML.append("</SELECT>\n \t\t</td>\n \t</tr>\n </table>");

@@ -1478,7 +1478,7 @@ public class MigrateForm {
 	
 	
 	private static final String UPDATE_FORM_CTXT_SQL = 
-			"update DYEXTN_ABSTRACT_FORM_CONTEXT set CONTAINER_ID = ? where CONTAINER_ID = ?";
+			"update DYEXTN_ABSTRACT_FORM_CONTEXT set CONTAINER_ID = ? where OLD_CONTAINER_ID = ?";
 	
 	private static final String GET_RECORD_IDS_SQL =
 			"select re.IDENTIFIER from DYEXTN_ABSTRACT_RECORD_ENTRY re " +

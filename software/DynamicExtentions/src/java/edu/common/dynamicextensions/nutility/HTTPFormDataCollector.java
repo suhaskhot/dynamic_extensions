@@ -7,6 +7,8 @@ import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Control;
@@ -122,31 +124,29 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 		String fileName = request.getParameter(controlName + HIDDEN);
 		ControlValue controlValue = null;
 
-		if (fileName == null) {
-			controlValue = new ControlValue(control, null);
-		} else {
-			String contentType = null;
-			String fileId = request.getParameter(controlName);
-
-			if (fileId != null && !fileId.isEmpty()) {
-				contentType = request.getParameter(controlName + CONTENT_TYPE);
-				boolean isValidExtension = true;
-				/*
-				 * isValidExtension = checkValidFormat(control, fileName,
-				 * errorList);
-				 */
-				if (isValidExtension
-						&& ((fileName != null) && !fileName.isEmpty())) {
-					FileControlValue fileAttributeRecordValue = new FileControlValue();
-
-					fileAttributeRecordValue.setFilePath(fileId);
-					fileAttributeRecordValue.setFileName(fileName);
-					fileAttributeRecordValue.setContentType(contentType);
-					controlValue = new ControlValue(control,
-							fileAttributeRecordValue);
-				}
-			}
+		if (StringUtils.isEmpty(fileName)) {
+			return new ControlValue(control, null);
 		}
+		String fileId = request.getParameter(controlName);
+
+		if (StringUtils.isEmpty(fileId)) {
+			return formData.getFieldValue(control.getName());
+		}
+		String contentType  = request.getParameter(controlName + CONTENT_TYPE);
+		boolean isValidExtension = true;
+		/*
+		 * isValidExtension = checkValidFormat(control, fileName,
+		 * errorList);
+		 */
+		if (isValidExtension && ((fileName != null) && !fileName.isEmpty())) {
+			FileControlValue fileAttributeRecordValue = new FileControlValue();
+
+			fileAttributeRecordValue.setFilePath(fileId);
+			fileAttributeRecordValue.setFileName(fileName);
+			fileAttributeRecordValue.setContentType(contentType);
+			controlValue = new ControlValue(control, fileAttributeRecordValue);
+		}
+
 		return controlValue;
 
 	}

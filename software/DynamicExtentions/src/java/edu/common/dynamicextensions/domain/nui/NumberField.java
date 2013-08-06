@@ -74,7 +74,7 @@ public class NumberField extends TextField {
 	}
 
 	public void setMinValue(String minValue) {
-		if (minValue == null) {
+		if (StringUtils.isBlank(minValue)) {
 			return;
 		}
 
@@ -82,7 +82,7 @@ public class NumberField extends TextField {
 	}
 
 	public void setMaxValue(String maxValue) {
-		if (maxValue == null) {
+		if (StringUtils.isBlank(maxValue)) {
 			return;
 		}
 

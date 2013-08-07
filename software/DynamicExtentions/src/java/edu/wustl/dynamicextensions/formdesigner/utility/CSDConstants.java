@@ -24,4 +24,7 @@ public class CSDConstants {
 	public static final String STATUS_NEW = "new";
 	public static final String STATUS_ERROR = "error";
 	public static final String STATUS = "status";
+
+	public static final String[] PV_HEADERS = {"Value", "Numeric Code", "Option Name", "Definition Source",
+			"Concept Code"};
 }

@@ -3,6 +3,7 @@ package edu.wustl.dynamicextensions.formdesigner.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -11,7 +12,6 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -20,10 +20,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -202,22 +205,6 @@ public class Form {
 	}
 
 	/**
-	 * Delete a control in a form
-	 * @param name
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@Path("/control/{name}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@DELETE
-	public String deleteControl(@PathParam("name") String name, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
-		((ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR)).deleteControl(name);
-		return "{'status' : 'deleted'}";
-	}
-
-	/**
 	 * upload permissible values
 	 * @param uploadedInputStream
 	 * @param fileDetail
@@ -242,6 +229,25 @@ public class Form {
 		}
 
 		return output;
+
+	}
+
+	@GET
+	@Path("/permissibleValues/{controlName}")
+	@Produces("text/plain")
+	public Response getPermissibleValues(@PathParam("controlName") String controlName,
+			@Context HttpServletRequest request, @Context HttpServletResponse response) throws IOException {
+
+		ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
+		File pvFile = container.getPvFile(controlName);
+		if(pvFile==null){
+			return Response.serverError().build();
+		}else
+		{
+			ResponseBuilder fileResponse = Response.ok((Object)pvFile);
+			fileResponse.header("Content-Disposition", "attachment; filename=\""+pvFile.getName()+"\"");
+			return fileResponse.build();
+		}
 
 	}
 

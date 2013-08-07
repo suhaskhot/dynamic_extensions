@@ -54,4 +54,35 @@ public class PermissibleValue {
 	public String toString() {
 		return value;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		int hashCodeValue;
+		if (value != null)
+		{
+			hashCodeValue = value.hashCode();
+		}
+		else
+		{
+			hashCodeValue = 0;
+		}
+		return hashCodeValue;
+	}
+
+	 @Override
+	    public boolean equals(Object obj) {
+	        if (obj == this) {
+	            return true;
+	        }
+	        if (obj == null || obj.getClass() != this.getClass()) {
+	            return false;
+	        }
+
+	        PermissibleValue guest = (PermissibleValue) obj;
+	        return value.equals(guest.value);
+	               
+	    }
+
+
 }

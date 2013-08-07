@@ -2,7 +2,9 @@
 package edu.wustl.dynamicextensions.formdesigner.mapper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,11 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.PvDataSource.Ordering;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
+import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public class PvMapper {
 
@@ -45,8 +49,25 @@ public class PvMapper {
 			}
 		}
 
+		pvList.addAll(getPvsFromFile(controlProperties.getString("pvFile")));
+		pvVersion.setActivationDate(new Date());
+		pvVersion.setPermissibleValues(pvList);
+		pvDataSource.setPvVersions(Arrays.asList(pvVersion));
+		return pvDataSource;
+	}
+
+	/**
+	 * @param controlProperties
+	 * @param pvList
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws NumberFormatException
+	 */
+	public static List<PermissibleValue> getPvsFromFile(String pvFile) throws FileNotFoundException, IOException,
+			NumberFormatException {
 		// process permissible values from uploaded file.
-		String pvFile = controlProperties.getString("pvFile");
+		//String pvFile = controlProperties.getString("pvFile");
+		List<PermissibleValue> pvList = new ArrayList<PermissibleValue>();
 		if (pvFile != null) {
 			CSVReader csvReader = new CSVReader(new FileReader(new File(pvFile)));
 			String[] csvData;
@@ -54,11 +75,22 @@ public class PvMapper {
 				pvList.add(getPvFromFileData(csvData));
 			}
 		}
+		return pvList;
+	}
 
-		pvVersion.setActivationDate(new Date());
-		pvVersion.setPermissibleValues(pvList);
-		pvDataSource.setPvVersions(Arrays.asList(pvVersion));
-		return pvDataSource;
+	public static File getPvFile(String fileName, List<PermissibleValue> pvs) throws IOException {
+		File file = new File(fileName);
+
+		CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
+		
+		csvWriter.writeNext(CSDConstants.PV_HEADERS);
+		for (PermissibleValue pv : pvs) {
+			csvWriter.writeNext(getPvTuple(pv));
+		}
+		csvWriter.flush();
+		csvWriter.close();
+
+		return file;
 	}
 
 	/**
@@ -85,6 +117,43 @@ public class PvMapper {
 			pv.setConceptCode(csvData[4]);
 		}
 		return pv;
+	}
+
+	private static String[] getPvTuple(PermissibleValue pv) throws NumberFormatException {
+
+		String[] csvData = new String[5];
+
+		if (pv.getValue() == null) {
+			csvData[0] = "";
+		} else {
+			csvData[0] = pv.getValue();
+
+		}
+		// add validation check for is a number
+		if (pv.getNumericCode() == null) {
+			csvData[1] = "";
+		} else {
+			csvData[1] = pv.getNumericCode().toString();
+		}
+
+		if (pv.getOptionName() == null) {
+			csvData[2] = "";
+		} else {
+			csvData[2] = pv.getOptionName();
+		}
+
+		if (pv.getDefinitionSource() == null) {
+			csvData[3] = "";
+		} else {
+			csvData[3] = pv.getDefinitionSource();
+		}
+
+		if (pv.getConceptCode() == null) {
+			csvData[4] = "";
+		} else {
+			csvData[4] = pv.getConceptCode();
+		}
+		return csvData;
 	}
 
 	/**
@@ -124,13 +193,13 @@ public class PvMapper {
 		Map<String, Object> pvMap = new HashMap<String, Object>();
 		String pvKey = "pv_";
 		Integer pvKeyNum = 0;
-		for (PvVersion pvVer : pvDataSource.getPvVersions()) {
-			for (PermissibleValue pv : pvVer.getPermissibleValues()) {
+		List<PermissibleValue> pvs = pvDataSource.getPermissibleValues(new Date());
+		for (PermissibleValue pv : pvs) {
 
-				pvMap.put(pvKey + pvKeyNum, pvToProperties(pv));
-				pvKeyNum++;
-			}
+			pvMap.put(pvKey + pvKeyNum, pvToProperties(pv));
+			pvKeyNum++;
 		}
+
 		controlProps.setProperty("pvs", pvMap);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}

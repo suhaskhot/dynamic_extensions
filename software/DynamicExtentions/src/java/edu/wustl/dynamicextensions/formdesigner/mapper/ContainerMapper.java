@@ -6,9 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public class ContainerMapper {
@@ -35,7 +37,7 @@ public class ContainerMapper {
 				if (status != null && status.trim().equalsIgnoreCase("delete")) {
 					// delete control
 					String controlName = controlProps.getString("controlName");
-					if(container.getControl(controlName)!=null){
+					if (container.getControl(controlName) != null) {
 						container.deleteControl(controlName);
 					}
 				} else {
@@ -47,6 +49,24 @@ public class ContainerMapper {
 					}
 				}
 			}
+
+			// process skip rules
+			Properties skipRulesPropertiesList = new Properties(formProperties.getMap("skipRules"));
+			Set<String> keySet = skipRulesPropertiesList.getAllProperties().keySet();
+			SkipRuleMapper skipRuleMapper = new SkipRuleMapper(container);
+
+			List<SkipRule> skipRules = container.getSkipRules();
+
+			if (skipRules != null) {
+				for (int skipRuleCntr = 0; skipRuleCntr < skipRules.size(); skipRuleCntr++) {
+					container.removeSkipRule(skipRuleCntr);
+				}
+			}
+
+			for (String key : keySet) {
+				Properties skipRuleProperties = new Properties(skipRulesPropertiesList.getMap(key));
+				container.addSkipRule(skipRuleMapper.propertiesToSkipRule(skipRuleProperties));
+			}
 		}
 	}
 
@@ -56,15 +76,15 @@ public class ContainerMapper {
 	 * @throws Exception 
 	 */
 	private void addEditControl(Container container, Properties controlProperties) throws Exception {
+		Control control = controlMapper.propertiesToControl(controlProperties);
+		control.setContainer(container);
 		if (controlProperties.get("id") != null) {
-			container.editControl(controlProperties.getString(CSDConstants.CONTROL_NAME),
-					controlMapper.propertiesToControl(controlProperties));
+			container.editControl(control.getName(), control);
 		} else {
-			if (container.getControl(controlProperties.getString(CSDConstants.CONTROL_NAME)) == null) {
-				container.addControl(controlMapper.propertiesToControl(controlProperties));
+			if (container.getControl(control.getName()) == null) {
+				container.addControl(control);
 			} else {
-				container.editControl(controlProperties.getString(CSDConstants.CONTROL_NAME),
-						controlMapper.propertiesToControl(controlProperties));
+				container.editControl(control.getName(), control);
 			}
 		}
 	}
@@ -85,6 +105,17 @@ public class ContainerMapper {
 			controlPropertiesCollection.add(controlMapper.controlToProperties(control).getAllProperties());
 		}
 		propertiesMap.put("controlCollection", controlPropertiesCollection);
+
+		Map<String, Object> skipRuleMap = new HashMap<String, Object>();
+		String skipRuleKey = "skipRule_";
+		Integer skipRuleKeyNum = 0;
+		SkipRuleMapper skipRuleMApper = new SkipRuleMapper(container);
+		for (SkipRule skipRule : container.getSkipRules()) {
+			skipRuleMap.put(skipRuleKey + skipRuleKeyNum, skipRuleMApper.skipRuleToProperties(skipRule)
+					.getAllProperties());
+			skipRuleKeyNum++;
+		}
+		propertiesMap.put("skipRules", skipRuleMap);
 		return new Properties(propertiesMap);
 	}
 }

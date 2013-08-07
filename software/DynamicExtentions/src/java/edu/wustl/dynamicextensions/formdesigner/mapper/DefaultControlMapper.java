@@ -24,6 +24,11 @@ public abstract class DefaultControlMapper {
 	 * @param control
 	 */
 	protected void setCommonProperties(Properties controlProps, Control control) {
+		
+		Long id = controlProps.getLong("id");
+		if(id!=null){
+			control.setId(id);
+		}
 
 		String controlCaption = controlProps.getString(CSDConstants.CONTROL_CAPTION);
 		if (controlCaption != null) {

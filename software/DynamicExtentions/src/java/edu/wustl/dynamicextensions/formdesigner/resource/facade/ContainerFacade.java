@@ -1,12 +1,16 @@
 
 package edu.wustl.dynamicextensions.formdesigner.resource.facade;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -14,6 +18,7 @@ import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ContainerMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ControlMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
+import edu.wustl.dynamicextensions.formdesigner.mapper.PvMapper;
 
 public class ContainerFacade {
 
@@ -59,19 +64,10 @@ public class ContainerFacade {
 		container.addControl(control);
 	}
 
-	/**
-	 * @param control
-	 */
-	public void deleteControl(String controlName) {
-		container.deleteControl(controlName);
-	}
-
-	
 	public void persistContainer(UserContext userContext) {
 		container.save(userContext);
 	}
 
-	
 	public String getHTML(HttpServletRequest request) {
 
 		Stack<FormData> formDataStack = new Stack<FormData>();
@@ -80,9 +76,19 @@ public class ContainerFacade {
 		return container.render();
 	}
 
-	
 	public Properties getProperties() {
 		return containerMapper.containerToProperties(container);
+	}
+
+	public File getPvFile(String controlName) throws IOException {
+
+		Control control = container.getControl(controlName,"\\.");
+		File pvFile = null;
+		if (control instanceof SelectControl) {
+			String uploadedFileLocation = "/tmp/" + new Date().getTime() + "_Permissible_Values.csv";
+			pvFile = PvMapper.getPvFile(uploadedFileLocation, ((SelectControl) control).getPvs());
+		}
+		return pvFile;
 	}
 
 }

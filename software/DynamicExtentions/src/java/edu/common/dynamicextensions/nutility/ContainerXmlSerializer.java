@@ -22,9 +22,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
-
-import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -44,6 +41,7 @@ import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.ShowAction;
 import edu.common.dynamicextensions.domain.nui.ShowPvAction;
+import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.SkipCondition;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
@@ -552,7 +550,15 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			writePvsToFile(pvs, fileName);
 		} else {
 			for (PermissibleValue pv : pvs){
-				writeElement(writer, "option", pv.getValue());
+				writeElementStart(writer, "option");
+				
+				writeElement(writer, "value", pv.getValue());
+				writeElement(writer, "numericCode", pv.getNumericCode());
+				writeElement(writer, "conceptCode", pv.getConceptCode());
+				writeElement(writer, "definitionSource", pv.getDefinitionSource());
+
+				writeElementEnd(writer,"option");
+
 			}
 		}
 	}
@@ -595,9 +601,26 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			
 			csvFile =  new StringBuilder(pvDir).append(File.separator).append(fileName).append(".csv");
 			csvWriter = new PrintWriter(new FileWriter(csvFile.toString()));
-			 
+			
+			String csvHeader = new StringBuilder().append("Value").append(",")
+					.append("Numeric Code").append(",")
+					.append("Concept Code").append(",")
+					.append("Definition Source").toString();
+			
+			csvWriter.println(csvHeader);
+			
 			for(PermissibleValue pv : permissibleValues) {
-				csvWriter.println(pv.getValue());
+				String val = pv.getValue() != null ? pv.getValue() : "";
+				String numericCode = pv.getNumericCode() != null ? pv.getNumericCode().toString() : "";
+				String conceptCode = pv.getConceptCode() != null ? pv.getConceptCode() : "";
+				String defSrc = pv.getDefinitionSource() != null ? pv.getDefinitionSource() : "";
+
+				String pvDetails = new StringBuilder().append(val).append(",")
+							.append(numericCode).append(",")
+							.append(conceptCode).append(",")
+							.append(defSrc).toString();
+				
+				csvWriter.println(pvDetails);
 			}
 		} catch(IOException e){
 			throw new RuntimeException("Error occured while creating .csv file" + csvFile.toString());

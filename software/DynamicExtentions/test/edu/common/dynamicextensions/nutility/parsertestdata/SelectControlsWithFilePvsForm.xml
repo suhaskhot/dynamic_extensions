@@ -18,9 +18,15 @@
 				<phi>true</phi>
 				<mandatory>true</mandatory>
 				<options> 
-					<option>Male</option>
-					<option>Female</option>
-					<option>Unknown</option>
+					<option>
+						<value>Male</value>
+					</option>
+					<option>
+						<value>Female</value>
+					</option>
+					<option>
+						<value>Unknown</value>
+					</option>
 				</options>
 			</radioButton>
 		</row>
@@ -30,11 +36,22 @@
 				<name>sourcesOfIncome</name>
 				<caption>Sources of Income</caption>
 				<options>
-					<option>Salary</option>
-					<option>Agriculture</option>
-					<option>Gambling</option>
-					<option>Organized Sector Business</option>
-					<option>Others</option>
+					<option>
+						<value>Salary</value>
+					</option>
+						
+					<option>
+						<value>Agriculture</value>
+					</option>
+					<option>
+						<value>Gambling</value>
+					</option>
+					<option>
+						<value>Organized Sector Business</value>
+					</option>
+					<option>
+						<value>Others</value>
+					</option>				
 				</options>
 			</checkBox>
 		</row>		

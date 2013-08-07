@@ -59,10 +59,9 @@ public class SurveyContainerParserTest {
 	}
 
 	private void addControl(SurveyContainer container, Page page, Control control, int sequenceNumber, int xPos) {
-		page.addControl(control);
 		control.setSequenceNumber(sequenceNumber);
 		control.setxPos(xPos);
-
+		page.addControl(control);
 	}
 
 	protected void setUpFormControls() {

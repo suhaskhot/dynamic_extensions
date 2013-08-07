@@ -82,6 +82,7 @@ public class XmlUtil {
 	private static void write(Writer writer, String value) {
 		try {
 			writer.write(value);
+			writer.write("\n");
 		} catch (Exception e) {
 			throw new RuntimeException("Error writing value " + value, e);
 		}

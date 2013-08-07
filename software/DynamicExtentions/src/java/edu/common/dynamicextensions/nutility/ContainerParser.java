@@ -525,15 +525,26 @@ public class ContainerParser {
 		} else { // inline options
 			NodeList optionList = options.getElementsByTagName("option");
 			pvs = new ArrayList<PermissibleValue>();
+
 			for (int i = 0; i < optionList.getLength(); ++i) {
+				Node option = optionList.item(i);
+				Element optionEle = (Element)option;
+				
 				String optionVal = optionList.item(i).getFirstChild().getNodeValue();
 				if (optionVal == null) {
 					continue;
 				}
 				
 				PermissibleValue pv = new PermissibleValue();
-				pv.setOptionName(optionVal);
-				pv.setValue(optionVal);
+				pv.setValue(getTextValue(optionEle, "value"));
+				pv.setNumericCode(getLongValue(optionEle, "numericCode"));
+				pv.setConceptCode(getTextValue(optionEle, "conceptCode"));
+				pv.setDefinitionSource(getTextValue(optionEle, "definitionSource"));
+
+				// TODO :: Need to check the validity of optionName 
+				// Now optionName = value
+				pv.setOptionName(pv.getValue());
+				
 				pvs.add(pv);
 			}
 		}
@@ -553,17 +564,25 @@ public class ContainerParser {
 			    .append(File.separator).append(optionsFile).toString();			
 			reader = new FileReader(filePath);			
 			csvReader = new CSVReader(reader);
-						
-			List<String[]> allOptions = csvReader.readAll();
-			for (String[] options : allOptions) {
-				for (String option : options) {
-					PermissibleValue pv = new PermissibleValue();
-					pv.setOptionName(option);
-					pv.setValue(option);
-					pvs.add(pv);
-				}
-			}
+			String[] option = null;
+
+			// Escape the header Row
+			csvReader.readNext();
 			
+			while ((option = csvReader.readNext()) != null) {
+				PermissibleValue pv = new PermissibleValue();
+				pv.setValue(option[0].isEmpty() ? null : option[0]);
+				pv.setNumericCode(option[1].isEmpty() ? null : Long.parseLong(option[1]));
+				pv.setConceptCode(option[2].isEmpty() ? null : option[2]);
+				pv.setDefinitionSource(option[3].isEmpty() ? null : option[3]);
+			
+				// TODO :: Need to check the validity of optionName 
+				// Now optionName = value
+				pv.setOptionName(pv.getValue());
+				
+				
+				pvs.add(pv);
+			}
 			return pvs;
 		} catch (Exception e) {
 			throw new RuntimeException ("Error reading options file: " + optionsFile, e);

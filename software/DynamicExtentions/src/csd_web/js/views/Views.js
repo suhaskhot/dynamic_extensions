@@ -73,9 +73,23 @@ var Views = {
 					}, {
 						wait : true,
 						success : function(model, response) {
-							Routers.loadPreview();
+							FormBizLogic.loadPreview();
 						}
 					});
+				},
+
+				loadModelInSession : function() {
+					$("#formWaitingImage").show();
+					this.populateControlsInForm();
+					this.model.save({
+						save : "no"
+					}, {
+						wait : true,
+						success : function(model, response) {
+							$("#formWaitingImage").hide();
+						}
+					});
+
 				},
 
 				populateControlsInForm : function() {
@@ -166,7 +180,6 @@ var Views = {
 			.extend({
 
 				pvGrid : null,
-				messageSpace : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 
 				initialize : function() {
 					_.bindAll(this, 'render');
@@ -203,7 +216,7 @@ var Views = {
 														true);
 												$('#deletePv').prop("disabled",
 														true);
-												Routers
+												ControlBizLogic
 														.deleteControl(GlobalMemory.currentBufferControlModel);
 												$(this).dialog("close");
 											},
@@ -249,7 +262,7 @@ var Views = {
 								toolTip : $('#toolTip').val(),
 								subFormName : $('#subFormName').val()
 							});
-					this.model = Routers.updatePVs(this.model);
+					this.model = ControlBizLogic.updatePVs(this.model);
 
 					this.showMessages(this.model.validate(this.model.toJSON()));
 
@@ -264,15 +277,16 @@ var Views = {
 						var url = "createCachedControl/" + displayLabel
 								+ "/control" + $('#controlName').val();
 
-						Routers.createControlNode(displayLabel, $(
+						ControlBizLogic.createControlNode(displayLabel, $(
 								'#controlName').val());
 
-						var status = Routers.updateCachedControl(this.model);
+						var status = ControlBizLogic
+								.updateCachedControl(this.model);
 						if (status == "save" || status == "update") {
 							this.setSuccessMessageHeader();
 							$("#messagesDiv")
 									.append(
-											this.messageSpace
+											Utility.messageSpace
 													+ this.model.get('caption')
 													+ " added to the form successfully.");
 							$('#createControlButtonid').attr("disabled", true);
@@ -282,9 +296,9 @@ var Views = {
 
 					} else {
 						this.setErrorMessageHeader();
-						for ( var key in validationMessages) {
+						for ( var key = 0; key < validationMessages.length; key++) {
 							$("#messagesDiv").append(
-									this.messageSpace + "! "
+									Utility.messageSpace + "! "
 											+ validationMessages[key].message
 											+ "<br>");
 						}
@@ -296,7 +310,7 @@ var Views = {
 					$("#messagesDiv").removeClass('error');
 					$("#messagesDiv").addClass('success');
 					$("#messagesDiv").append(
-							this.messageSpace + "<b>Successful</b><br>");
+							Utility.messageSpace + "<b>Successful</b><br>");
 				},
 
 				setErrorMessageHeader : function() {
@@ -304,7 +318,7 @@ var Views = {
 					$("#messagesDiv").removeClass('success');
 					$("#messagesDiv").addClass('error');
 					$("#messagesDiv").append(
-							this.messageSpace + "<b>Error(s)</b><br>");
+							Utility.messageSpace + "<b>Error(s)</b><br>");
 				},
 
 				render : function() {
@@ -348,20 +362,6 @@ var Views = {
 					$('#permissibleValuesForm')
 							.ajaxForm(
 									{
-										/*
-										 * beforeSend: function() {
-										 * status.empty(); var percentVal =
-										 * '0%'; bar.width(percentVal)
-										 * percent.html(percentVal); },
-										 * uploadProgress: function(event,
-										 * position, total, percentComplete) {
-										 * var percentVal = percentComplete +
-										 * '%'; bar.width(percentVal)
-										 * percent.html(percentVal); }, success:
-										 * function() { var percentVal = '100%';
-										 * bar.width(percentVal)
-										 * percent.html(percentVal); },
-										 */
 										beforeSend : function() {
 											$("#pvFileWaitingImage").show();
 										},
@@ -370,7 +370,7 @@ var Views = {
 													.parseJSON(xhr.responseText);
 											$("#pvFileWaitingImage").hide();
 											if (receivedData.status == "saved") {
-												Routers
+												ControlBizLogic
 														.addUploadedPvFileNameToCurrentModel(receivedData.file);
 											} else {
 												var trail = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -613,7 +613,7 @@ var Views = {
 
 					this.tab.setTabActive("summaryTab");
 					this.tab.attachEvent("onSelect", function(id, last_id) {
-						Routers.csdControlsTabSelectHandler(id);
+						ControlBizLogic.csdControlsTabSelectHandler(id);
 						return true;
 					});
 				},
@@ -644,42 +644,205 @@ var Views = {
 							function() {
 								$('#availableFields1').prop(
 										'title',
-										Routers.getCaptionFromControlName($(
-												'#availableFields1').val()));
+										ControlBizLogic
+												.getCaptionFromControlName($(
+														'#availableFields1')
+														.val()));
 							});
+
+					$('#pvSubSetDiv').hide();
+
+					$('#controllingField')
+							.change(
+									function() {
+										// based on control type show hide pvs
+										var control = ControlBizLogic
+												.getControlFromControlName($(
+														'#controllingField')
+														.val());
+										// clear the messages
+										Main.advancedControlsView
+												.clearMessage();
+
+										switch (control.get('type')) {
+										case "radioButton":
+
+										case "listBox":
+
+										case "multiselectBox":
+
+										case "multiselectCheckBox":
+											$('#controllingValuesDiv').hide();
+											$('#pvDiv').show();
+											AdvancedControlPropertiesBizLogic
+													.populatePvSelectBoxWithControlNames(
+															'pvs', control);
+											$("#pvs").trigger("liszt:updated");
+											break;
+										case "numericField":
+											$('#pvDiv').hide();
+											$('#controllingValuesDiv').show();
+											break;
+										default:
+											$('#pvDiv').hide();
+											$('#controllingValuesDiv').hide();
+										}
+									});
+
+					$('#controlledField').change(
+							function() {
+								if ($('#controlledField').val() != null) {
+									Main.advancedControlsView
+											.populatePvSubSetDropDown();
+								}
+							});
+					// init multi selects
+
+					$("#controlledField").chosen();
+					$("#pvs").chosen();
 
 					// Render JQuery Toggle Buttons
 					$("#advancedControlsRadio").buttonset();
+
+					$("#skipLogicOperations").buttonset();
+					$("#anyOrAll").buttonset();
+
 					// Hide Skip logic tab
+					$('#pvSubSetFileWaitingImage').hide();
 					$('#skipLogicTab').hide();
+					$('#pvDiv').hide();
+					$('#controllingValuesDiv').hide();
 					$('#calculatedAttributeTab').show();
 					// toggle between tabs.
-					$("input:radio").click(function() {
-						$('#skipLogicTab').toggle();
-						$('#calculatedAttributeTab').toggle();
+					$("#skipLogic").click(function() {
+						$('#calculatedAttributeTab').hide();
+						$('#skipLogicTab').show();
+						$("#controlledField").trigger("liszt:updated");
+						// populate skip logic
+
 					});
+
+					$("#calculatedAttribute").click(function() {
+						$('#skipLogicTab').hide();
+						$('#calculatedAttributeTab').show();
+						// populate calculated attribute
+					});
+
 					// Render the custom formula field
 					this.formulaField = new K_AutoComplete({
 						inputElementId : "formulaField",
-						data : Routers.getListOfCurrentControls(false)
+						data : ControlBizLogic
+								.getListOfCurrentNumericControls(false)
 					});
 
 				},
 
 				events : {
-					"click #addFormulaBtn" : "addFormula"
+					"click #addFormulaBtn" : "addFormula",
+					"click #addSkipLogicBtn" : "addSkipRule",
+					"click #pvSubSet" : "showPvSubSetDiv",
+					"click #enable" : "hidePvSubSetDiv",
+					"click #show" : "hidePvSubSetDiv",
+					"click #downloadPVs" : "downloadPvFile"
+				},
+
+				downloadPvFile : function(event) {
+					if ($('#controlledField').val().length == 1) {
+						var control = ControlBizLogic
+								.getControlFromControlName($('#controlledField')
+										.val()
+										+ "");
+						location.href = "/csdApi/form/permissibleValues/"
+								+ control.get('controlName');
+					}
 				},
 
 				refreshFormulaField : function() {
 					this.formulaField = new K_AutoComplete({
 						inputElementId : "formulaField",
-						data : Routers.getListOfCurrentControls(false)
+						data : ControlBizLogic
+								.getListOfCurrentNumericControls(false)
 					});
 				},
 
-				correctFormulaTableCSS : function() {
+				populatePvSubSetDropDown : function() {
+
+					var control = ControlBizLogic.getControlFromControlName($(
+							'#controlledField').val()
+							+ "");
+
+					// clear the messages
+					Main.advancedControlsView.clearMessage();
+					if ($('#controlledField').val().length == 1) {
+						switch (control.get('type')) {
+						case "radioButton":
+
+						case "listBox":
+
+						case "multiselectBox":
+
+						case "multiselectCheckBox":
+
+							AdvancedControlPropertiesBizLogic
+									.populatePvSelectBoxWithControlNames(
+											'subsetPvs', control);
+							AdvancedControlPropertiesBizLogic
+									.populatePvSelectBoxWithControlNames(
+											'defaultPv', control);
+
+							$("#subsetPvs").trigger("liszt:updated");
+
+							break;
+
+						default:
+
+						}
+					}
+
+				},
+
+				showPvSubSetDiv : function(event) {
+					$('#pvSubSetDiv').show();
+					$('#subsetPvs').chosen();
+					$('#subsetPvs').trigger("liszt:updated");
+					$('#subsetPermissibleValuesForm')
+							.ajaxForm(
+									{
+										beforeSend : function() {
+											$("#pvSubSetFileWaitingImage")
+													.show();
+										},
+										complete : function(xhr) {
+											var receivedData = $
+													.parseJSON(xhr.responseText);
+											$("#pvSubSetFileWaitingImage")
+													.hide();
+											if (receivedData.status == "saved") {
+												$('#pvSubsetFile').val(
+														receivedData.file);
+											} else {
+
+												Main.advancedControlsView
+														.setErrorMessageHeader();
+												$(
+														"#advancedPropertiesmessagesDiv")
+														.append(
+																Utility.messageSpace
+																		+ "Could not upload file");
+											}
+										}
+									});
+					Main.advancedControlsView.populatePvSubSetDropDown();
+
+				},
+
+				hidePvSubSetDiv : function(event) {
+					$('#pvSubSetDiv').hide();
+				},
+
+				setTableCss : function(tableId) {
 					GlobalMemory.formulaCounter = 0;
-					$('#formulaTable tr').each(function() {
+					$('#' + tableId + ' tr').each(function() {
 						$(this).removeClass('formulaTableRowEven');
 						$(this).removeClass('formulaTableRowOdd');
 						if (GlobalMemory.formulaCounter % 2 == 0) {
@@ -720,6 +883,191 @@ var Views = {
 
 				},
 
+				addSkipRule : function(event) {
+					// Use display label in the drop down. Display label (Short
+					// Code)
+
+					var controlName = $('#controllingField').val();
+					var action = $(
+							'input[name=skipLogicOperations]:radio:checked')
+							.prop('id');
+					var allAny = $(
+							'input[name=anyOrAll]:radio:checked')
+							.prop('id');
+					var controlledAttributes = $('#controlledField').val();
+					var pvs = $('#pvs').val();
+					var controllingConditon = $('#controllingValuesCondition')
+							.val();
+					var controllingValues = $('#controllingValues').val();
+					var pvSubsetFile = $('#pvSubsetFile').val();
+					var pvSubSet = $('#subsetPvs').val();
+					var defaultPv = $('#defaultPv').val();
+
+					// validate
+
+					var skipRule = this.generateSkipRuleFromData(
+							controlledAttributes, controlName, pvs,
+							controllingConditon, controllingValues, action,
+							defaultPv, pvSubSet, pvSubsetFile, allAny);
+					var validationMessages = this.validateSkipRule(skipRule);
+
+					if (validationMessages.length == 0) {
+						this.addSkipRuleToTable(skipRule,
+								GlobalMemory.skipRulesCounter);
+						AdvancedControlPropertiesBizLogic
+								.setSkipRuleForAttirbute(controlName, skipRule);
+						// clear components
+						$("select option").prop("selected", false);
+						$("#pvs").trigger("liszt:updated");
+						$("#controlledField").trigger("liszt:updated");
+						$("#subsetPvs").trigger("liszt:updated");
+						$("#controllingValues").val("");
+
+						this.setSuccessMessageHeader();
+						$("#advancedPropertiesmessagesDiv").append(
+								Utility.messageSpace
+										+ "Skip Rule added successfully"
+										+ "<br>");
+						// set success message
+
+					} else {
+
+						this.setErrorMessageHeader();
+						for ( var key = 0; key < validationMessages.length; key++) {
+							$("#advancedPropertiesmessagesDiv").append(
+									Utility.messageSpace + "! "
+											+ validationMessages[key].message
+											+ "<br>");
+						}
+					}
+
+				},
+
+				validateSkipRule : function(skipRule) {
+					var errors = new Array();
+					var controllingAttribute = null;
+					var controlledAttributes = null;
+
+					if ((skipRule.controllingAttributes == null)
+							|| (skipRule.controllingAttributes == undefined)
+							|| (skipRule.controllingAttributes == "")) {
+						errors.push({
+							name : '',
+							message : "Select controlling field."
+						});
+					} else {
+
+						controllingAttribute = skipRule.controllingAttributes;
+					}
+
+					if ((skipRule.controlledAttributes == null)
+							|| (skipRule.controlledAttributes == undefined)
+							|| (skipRule.controlledAttributes == "")) {
+						errors.push({
+							name : '',
+							message : "Select controlled field(s)."
+						});
+					} else {
+
+						controlledAttributes = skipRule.controlledAttributes;
+					}
+
+					if (controlledAttributes != null
+							&& controllingAttribute != null) {
+						var isSubFormControl = false;
+						if (controllingAttribute.split(".").length > 1) {
+							isSubFormControl = true;
+						}
+						for ( var key = 0; key < controlledAttributes.length; key++) {
+							if (isSubFormControl
+									&& controlledAttributes[key].split(".").length == 1) {
+								errors
+										.push({
+											name : '',
+											message : "Controlling attribute and controlled attribute(s) should belong to the same form or same sub form."
+										});
+							} else if (!isSubFormControl
+									&& controlledAttributes[key].split(".").length > 1) {
+								errors
+										.push({
+											name : '',
+											message : "Controlling attribute and controlled attribute(s) should belong to the same form or same sub form."
+										});
+							}
+						}
+					}
+
+					if ((skipRule.controllingPvs == null)
+							|| (skipRule.controllingPvs == undefined)
+							|| (skipRule.controllingPvs == "")) {
+
+						if ((skipRule.controllingValues == null)
+								|| (skipRule.controllingValues == undefined)
+								|| (skipRule.controllingValues == "")) {
+							errors
+									.push({
+										name : '',
+										message : "Select controlling permissible vlaue(s)."
+									});
+						}
+					}
+
+					if ((skipRule.controllingValues == null)
+							|| (skipRule.controllingValues == undefined)
+							|| (skipRule.controllingValues == "")) {
+
+						if ((skipRule.controllingPvs == null)
+								|| (skipRule.controllingPvs == undefined)
+								|| (skipRule.controllingPvs == "")) {
+							errors.push({
+								name : '',
+								message : "Select controlling vlaue(s)."
+							});
+						}
+					}
+
+					if (skipRule.controlledAttributes == skipRule.controllingAttributes
+							|| skipRule.controlledAttributes
+									.indexOf(skipRule.controllingAttributes) > 0) {
+						errors
+								.push({
+									name : '',
+									message : "A controlling field cannot be part of the controlled fields in the same skip rule."
+								});
+					}
+
+					if (skipRule.action == "subSetPv") {
+						if (skipRule.controlledAttributes.length > 1) {
+							errors.push({
+								name : '',
+								message : "Select only one controlled field."
+							});
+						}
+					}
+
+					return errors;
+
+				},
+
+				generateSkipRuleFromData : function(slControlledAttributes,
+						slControllingAttributes, slControllingPvs,
+						slControllingCondition, slControllingValues, slAction,
+						slPvDefaultValue, slPvSubset, slPvFileName, slAllAny) {
+					return {
+						controlledAttributes : slControlledAttributes,
+						controllingAttributes : slControllingAttributes,
+						controllingPvs : slControllingPvs,
+						controllingCondition : slControllingCondition,
+						controllingValues : slControllingValues,
+						action : slAction,
+						defaultPv : slPvDefaultValue,
+						pvSubSet : slPvSubset,
+						pvSubSetFile : slPvFileName,
+						allAny : slAllAny
+
+					};
+				},
+
 				addFormulaToTable : function(controlName, _formula) {
 					var _tr_element_start = "<tr id = '" + controlName + "'>";
 					var _tr_element_end = "</tr>";
@@ -748,22 +1096,87 @@ var Views = {
 					$("#formulaTableHeader").eq(0).after(_table_row);
 
 					// add formula and set calculated
-					Routers.setFormulaForCalculatedAttirbute(controlName, true,
-							_formula);
-					// remove from drop down
-					/*
-					 * $( "#availableFields1 option[value='" + controlName +
-					 * "']").remove();
-					 */
+					AdvancedControlPropertiesBizLogic
+							.setFormulaForCalculatedAttirbute(controlName,
+									true, _formula);
+
 					$('#formulaField').val("");
 					this.formulaRowCounter++;
-					this.correctFormulaTableCSS();
+					this.setTableCss('formulaTable');
+				},
+
+				addSkipRuleToTable : function(skipRule, id) {
+					var _tr_element_start = "<tr id = '" + id + "'>";
+					var _tr_element_end = "</tr>";
+					var _td_element_start = "<td class = 'text_normal ";
+					var _td_element_end = "</td>";
+
+					if (this.formulaRowCounter % 2 == 0) {
+						_td_element_start += "formulaTableRowEven'>";
+					} else {
+						_td_element_start += "formulaTableRowOdd'>";
+					}
+					var controlledAttribsString = "";
+					var skipRuleControlledAttribs = skipRule.controlledAttributes
+							+ "";
+					var controlAttribs = skipRuleControlledAttribs.split(",");
+					for ( var cntr = 0; cntr < controlAttribs.length; cntr++) {
+						controlledAttribsString += (ControlBizLogic
+								.getCaptionFromControlName(controlAttribs[cntr]) + ",");
+					}
+					controlledAttribsString = controlledAttribsString.substr(0,
+							controlledAttribsString.length - 1);
+					var _table_row = _tr_element_start
+							+ _td_element_start
+							+ "<a title = 'edit' href = '#skipRules/"
+							+ id
+							+ "/edit'\"><span class = 'ui-icon ui-icon-pencil' style= 'float : left;'/></a>"
+							+ "<span style= 'float : left;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+							+ "<a title = 'delete' href = '#skipRules/"
+							+ id
+							+ "/delete'\"><span class = 'ui-icon ui-icon-trash' style= 'float : left;'/></a>"
+							+ _td_element_end
+							+ _td_element_start
+							+ ControlBizLogic
+									.getCaptionFromControlName(skipRule.controllingAttributes)
+							+ _td_element_end + _td_element_start
+							+ controlledAttribsString + _td_element_end
+							+ _td_element_start + skipRule.action
+							+ "<input type = 'hidden' value =" + skipRule
+							+ " id =skipRule_" + id + ">" + _td_element_end
+							+ _tr_element_end;
+
+					$("#skipRulesTableHeader").eq(0).after(_table_row);
+
 				},
 
 				removeFormula : function(id) {
-					Routers.setFormulaForCalculatedAttirbute(id, false, null);
+					AdvancedControlPropertiesBizLogic
+							.setFormulaForCalculatedAttirbute(id, false, null);
 					$('#' + id).remove();
 					this.formulaRowCounter--;
+				},
+
+				setSuccessMessageHeader : function() {
+					$("#advancedPropertiesmessagesDiv").html("");
+					$("#advancedPropertiesmessagesDiv").removeClass('error');
+					$("#advancedPropertiesmessagesDiv").addClass('success');
+					$("#advancedPropertiesmessagesDiv").append(
+							Utility.messageSpace + "<b>Successful</b><br>");
+				},
+
+				setErrorMessageHeader : function() {
+					$("#advancedPropertiesmessagesDiv").html("");
+					$("#advancedPropertiesmessagesDiv").removeClass('success');
+					$("#advancedPropertiesmessagesDiv").addClass('error');
+					$("#advancedPropertiesmessagesDiv").append(
+							Utility.messageSpace + "<b>Error(s)</b><br>");
+				},
+
+				clearMessage : function() {
+					$("#advancedPropertiesmessagesDiv").html("");
+					$("#advancedPropertiesmessagesDiv").removeClass('success');
+					$("#advancedPropertiesmessagesDiv").removeClass('error');
 				}
 
 			}),
@@ -787,7 +1200,7 @@ var Views = {
 
 		createControl : function(event) {
 
-			Routers.createControl(event.target.id);
+			ControlBizLogic.createControl(event.target.id);
 			Utility.resetCarouselControlSelect();
 			var pos = Utility.getControlIndexForCarousel(event.target.id);
 			Main.carousel.tinycarousel_move(pos > 8 ? (pos % 8) + 1 : pos);

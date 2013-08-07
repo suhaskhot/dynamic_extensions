@@ -1,9 +1,103 @@
 <div id="advancedProperties" style="width: 100%; height: 100%; font-size : 10px; padding: 10px">
+<div id = 'advancedPropertiesmessagesDiv' style = "width : 97%; padding-left : 10px" ></div>
 		<div id="advancedControlsRadio">
 			<input type="radio" id="skipLogic" name="advancedControlsRadio" /><label for="skipLogic">Skip Logic</label>
 			<input type="radio" id="calculatedAttribute" name="advancedControlsRadio" checked="checked" /><label for="calculatedAttribute">Calculated Attribute</label>
 		</div>
 		<div id="skipLogicTab">
+		
+			
+			<div align = right style = 'padding : 15px; width : 80%; float : left;'>
+				<label class = 'text_normal' style = "">Select Field to Apply Skip Logic</label>
+				<select data-placeholder="Select Field(s)" id = 'controlledField'  style = 'width : 60%;' title = " " multiple="multiple">
+				</select>
+			</div>
+			
+			
+			<div align = right style = 'padding : 15px;width : 80%; float : left;'>
+				<label class = 'text_normal'>Controlling Field</label>
+				<select id = 'controllingField' class = 'textBox' style = 'width : 59%;' title = " ">
+				</select>
+			</div>
+			
+			<div id = "pvDiv" align = right style = 'padding : 15px; width : 80%; float : left;'>
+				<label class = 'text_normal' style = "">Controlling Permissible Value(s)</label>
+				<select data-placeholder="Select Permissible Value(s)" id = 'pvs' style = 'width : 60%;' title = " " multiple="multiple">
+				</select>
+			</div>
+			<div id = "controllingValuesDiv" align = right style = 'padding : 15px; width : 80%; float : left;'>
+				<label class = 'text_normal' style = "">Controlling Value(s)</label>
+				<select id = 'controllingValuesCondition' style = 'width : 24%;' title = " " class = 'textBox'>
+					<option value = "greaterThan">Greater than</option>
+					<option value = "lessThan">Less than</option>
+					<option value = "equalTo">Equal to</option>
+					<option value = "between">Between</option>
+					<option value = "lessThanEqualTo">Less than equal to</option>
+					<option value = "greaterThanEqualTo">Greater than equal to</option>
+				</select>
+				<input id = "controllingValues" type = 'text' class = 'textBox' style = 'width : 35%;'>
+			</div>
+			
+			<div align = right id="anyOrAll" style = 'padding : 15px; width : 41%; float : left;'>
+				<label class = 'text_normal'>Any Condition or All Conditions</label>
+				<input type="radio" id="any" name="anyOrAll" checked="checked" />
+				<label for="any">Any</label>
+				<input type="radio" id="all" name="anyOrAll"/>
+				<label for="all">All</label>
+			</div>
+			
+			<div align = right id="skipLogicOperations" style = 'padding : 15px; width : 60%; float : left;'>
+				<label class = 'text_normal'>Action to be Performed</label>
+				<input type="radio" id="enable" name="skipLogicOperations" />
+				<label for="enable">Enable</label>
+				<input type="radio" id="show" name="skipLogicOperations" checked="checked" />
+				<label for="show">Show</label>
+				<input type="radio" id="pvSubSet" name="skipLogicOperations"/>
+				<label for="pvSubSet">Permissible Value Subset</label>
+			</div>
+			
+			<div id = "pvSubSetDiv" align = right style = 'width : 80%; padding: 15px; float : left;'>
+				<div align = right style = "float:left; width : 100%;">
+					<label class = 'text_normal' style = "">Permissible Value(s) Subset</label>
+				<select data-placeholder="Select Permissible Value(s)" id = 'subsetPvs' style = 'width : 60%;' title = " " multiple="multiple">
+				</select>
+				</div>
+				
+				
+			<div align = right style = "float:left; width : 100%;">
+					<form action="csdApi/form/permissibleValues" method="post" enctype="multipart/form-data" id = 'subsetPermissibleValuesForm'>
+					<br>
+				   <input type = "hidden" id = "pvSubsetFile"/>
+				   <label class = 'text_normal'>Upload PV Subset File</label>
+				   <input type="file" name="file" id = 'fileID'/>
+				   <img src = "csd_web/icons/loader.gif" id = "pvSubSetFileWaitingImage">
+				   <input type = "submit" value = "Upload"/>
+				   <input type = "button" value = "Download PV(s)" id = "downloadPvsButton">
+			   	</form>
+			</div>
+			<div align = right style = "float:left; width : 100%;">
+					<label class = 'text_normal'>Default Permissible Value</label>
+				<select id = 'defaultPv' class = 'textBox' style = 'width : 60%;' title = " ">
+				</select>
+				</div>
+			</div>
+			
+			<div id = "addSkipLogicBtnDiv" align = left style = 'padding : 15px; width : 80%; float : left;'>
+				<div align = right style = 'width : 40%'>
+					<input type = 'button' value = 'Add Skip Logic' class = 'button' style = 'width : 70%' id = "addSkipLogicBtn">
+				</div>
+			</div>
+			<div id = "skipLogicTableDiv" align = right style = 'padding : 15px; width : 80%; float : left;'>
+				<table id = "skipRulesTable" style = "width: 100%;">
+					<tr id = "skipRulesTableHeader">
+						<td class = "formulaTableHeader text_bold">Operations</td>
+						<td class = "formulaTableHeader text_bold" >Controlling Field</td>
+						<td class = "formulaTableHeader text_bold" style = "width: 60%">Skip Logic Field(s)</td>
+						<td class = "formulaTableHeader text_bold" >Action</td>
+					</tr>
+				</table>
+			</div>
+			
 			
 		</div>
 		<div id="calculatedAttributeTab" style = 'padding : 15px; width : 80%'>
@@ -22,11 +116,11 @@
 				
 			</div>
 			<br>
-			<div align = right style = 'width : 40%'>
+			<div align = right style = 'width : 40%'float : left;>
 				<input type = 'button' value = 'Add Formula' class = 'button' style = 'width : 70%' id = "addFormulaBtn">
 			</div>
-			<div align = right style = 'width: 100%'><br><br><br></div>
-			<div align = right style = 'width: 100%'>
+			<div align = right style = 'width: 100%' float : left;><br><br><br></div>
+			<div align = right style = 'width: 100%' float : left;>
 				<table id = "formulaTable" style = "width: 100%;">
 					<tr id = "formulaTableHeader">
 						<td class = "formulaTableHeader text_bold">Operations</td>
@@ -37,4 +131,4 @@
 			</div>
 			
 		</div>
-</div>
+</div>	

@@ -4,15 +4,18 @@
 		</div>
 		<div id="recinfoArea"></div>
 	</div>
-	<div align = "right" style = 'width: 53%'>
-			<input type = 'button' value = 'Add Permissible Value' class = 'btn' id = 'addPv'>
-			<input type = 'button' value = 'Delete Permissible Value' class = 'btn' id = 'deletePv'> 
+	<div align = "right" style = 'width: 80%; float: left'>
+		<div style = 'width: 35%; float: left'>
+			<input type = 'button' value = 'Add PV' class = 'btn' id = 'addPv'>
+			<input type = 'button' value = 'Delete PV' class = 'btn' id = 'deletePv'> 
+		</div>
+		<div style = 'width: 65%; float: left'>	
+			<form action="csdApi/form/permissibleValues" method="post" enctype="multipart/form-data" id = 'permissibleValuesForm'>
+			   <label class = 'text_normal'>Select a File</label>
+			   <input type="file" name="file" id = 'fileID'/>
+			   <input type="submit" value="Upload" class = 'btn'/><img src = "csd_web/icons/loader.gif" id = "pvFileWaitingImage">
+		   	</form>
+		</div>
 	</div>
-	<div style = 'width: 52%; padding: 3px; margin: 3px; float: left' align = 'right'>
-		<form action="csdApi/form/permissibleValues" method="post" enctype="multipart/form-data" id = 'permissibleValuesForm'>
-		   <label class = 'text_normal'>Select a File</label>
-		   <input type="file" name="file" id = 'fileID' size = '51'/>
-		   <input type="submit" value="Upload" class = 'btn'/>&nbsp;&nbsp;&nbsp;<img src = "csd_web/icons/loader.gif" id = "pvFileWaitingImage">
-	   	</form>
-	</div>
+	
 	

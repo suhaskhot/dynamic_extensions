@@ -8,7 +8,8 @@ var Models = {
 			formName : "newForm",
 			status : "new",
 			save : "yes",
-			id : null
+			id : null,
+			skipRules : {}
 		},
 		url : function() {
 			return "csdApi/form";
@@ -113,7 +114,7 @@ var Models = {
 
 					case "multiselectCheckBox":
 
-						if (attrs.pvs.length == 0 && !attrs.pvFile) {
+						if (Object.keys(attrs.pvs).length == 0 && !attrs.pvFile) {
 							errors.push({
 								name : 'pvs',
 								message : 'Permissible values are required.'

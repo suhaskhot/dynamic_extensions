@@ -25,7 +25,7 @@ var Main = {
 		});
 
 		this.treeView.getTree().attachEvent("onDblClick",
-				Routers.formTreeNodeClickHandler);
+				ControlBizLogic.formTreeNodeClickHandler);
 
 		this.mainTabBarView = new Views.TabBarView({
 			el : $('#csdOperationsContainer'),

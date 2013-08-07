@@ -16,5 +16,6 @@ var GlobalMemory = {
 	formulaCounter : 0,
 	currentBufferControlModel : null,
 	generalFlag : false,
-	controlName : null
+	controlName : null,
+	skipRulesCounter : 0
 }

@@ -20,6 +20,8 @@ var Utility = {
 		}
 
 	},
+	
+	messageSpace : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 
 	getControlIndexForCarousel : function(controlType) {
 

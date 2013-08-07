@@ -113,6 +113,7 @@ public class ContainerParser {
 		Container container = new Container();
 		int currentRow = 0;
 		
+		container.useAsDto();
 		setContainerProps(container, viewElement);
 		
 		NodeList viewNodes = viewElement.getChildNodes();
@@ -135,8 +136,11 @@ public class ContainerParser {
 
 	private Container parseSurveyContainer(Element viewElement) {
 		SurveyContainer surveyContainer = new SurveyContainer();
+		
+		surveyContainer.useAsDto();
+		setContainerProps(surveyContainer, viewElement);
+		
 		NodeList viewNodes = viewElement.getChildNodes();
-
 		for (int i = 0; i < viewNodes.getLength(); ++i) {
 
 			if (viewNodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
@@ -153,8 +157,7 @@ public class ContainerParser {
 				parsePage(page, (Element) pageElement);
 
 			}
-		}
-		setContainerProps(surveyContainer, viewElement);
+		}		
 		return surveyContainer;
 	}
 

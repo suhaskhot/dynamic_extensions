@@ -59,6 +59,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private static final String tableNameFmt = "DE_E_%d";
 	
 	private static final String columnNameFmt = "DE_A_%d";
+	
+	private transient boolean isDto;
 		
 	private transient List<Control> addLog = new ArrayList<Control>();
 	
@@ -73,7 +75,11 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private transient Date creationTime;
 
 	private transient Date lastUpdatedTime;
-		
+	
+	public void useAsDto() {
+		this.isDto = true;
+	}
+	
 	@Override
 	public Long getId() {
 		return id;
@@ -225,7 +231,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	//
 	// Behavioral API
 	//
-	public void addControl(Control control) {
+	public void addControl(Control control) {		
 		if (controlsMap.containsKey(control.getName())) {
 			// change this exception to status code
 			throw new RuntimeException("Control with same name already exists: " + control.getName());
@@ -238,20 +244,26 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 				
 		addLog.add(control);
-		control.setId(++ctrlId);
 		
-		if (control.getDbColumnName() == null) {
-			control.setDbColumnName(String.format(columnNameFmt, ctrlId)); // set db name here
-		}		
+		if (!isDto) {
+			control.setId(++ctrlId);		
+			if (control.getDbColumnName() == null) {
+				control.setDbColumnName(String.format(columnNameFmt, ctrlId)); // set db name here
+			}			
+		}
+		
 		controlsMap.put(control.getName(), control);
 		control.setContainer(this);
 	}
 	
 	public void editControl(String name, Control control) {
+		throwExceptionIfDto();
 		editControl(name, control, false);
 	}
 	
 	public void editControl(String name, Control control, boolean bulkEdit) {
+		throwExceptionIfDto();
+		
 		Control existingControl = controlsMap.remove(name);
 		if (existingControl == null) {
 			// change this exception to status code
@@ -311,6 +323,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	public void deleteControl(String name) {
+		throwExceptionIfDto();
+		
 		Control existingControl = controlsMap.remove(name);
 		if (existingControl == null) {
 			// change this exception to status code
@@ -336,8 +350,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	public Long save(UserContext userCtxt, boolean createTables) {
-		JdbcDao jdbcDao = null;
-		
+		JdbcDao jdbcDao = null;		
 		try {
 			jdbcDao = new JdbcDao();
 			return save(userCtxt, jdbcDao, createTables);
@@ -352,7 +365,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return save(userCtxt, jdbcDao, true);
 	}
 	
-	public Long save(UserContext userCtxt, JdbcDao jdbcDao, boolean createTables) { 
+	public Long save(UserContext userCtxt, JdbcDao jdbcDao, boolean createTables) {
+		throwExceptionIfDto();
+		
 		try {
 			if (createTables) {
 				executeDDLWithoutTxn(jdbcDao);
@@ -442,20 +457,29 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	public static Long createContainer(String formXml, String pvDir, boolean createTables)
 	throws Exception {
 		ContainerParser parser = new ContainerParser(formXml, pvDir);
-		Container newContainer = parser.parse();
+		Container parsedContainer = parser.parse();
 
 		Container existingContainer = null;		
-		if (newContainer.getId() != null) {
+		if (parsedContainer.getId() != null) {
 			ContainerDao dao = new ContainerDao(new JdbcDao());
-			existingContainer = dao.getById(newContainer.getId());
+			existingContainer = dao.getById(parsedContainer.getId());
 		}
 		
+		Container container = null;
 		if (existingContainer != null) {
-			existingContainer.editContainer(newContainer);
-			newContainer = existingContainer;
+			existingContainer.editContainer(parsedContainer);
+			container = existingContainer;
+		} else if (parsedContainer.isDto) {
+			container = new Container();
+			container.setName(parsedContainer.getName());
+			container.setCaption(parsedContainer.getCaption());
+
+			for (Control ctrl : parsedContainer.addLog) {
+				container.addControl(ctrl);
+			}
 		}
 		
-		return newContainer.save(null, createTables);
+		return container.save(null, createTables);
 	} 
 			
 	protected void editContainer(Container newContainer) {
@@ -603,6 +627,12 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		
 		return removed;
+	}
+	
+	private void throwExceptionIfDto() {
+		if (isDto) {
+			throw new RuntimeException("Cannot invoke this operation on DTO");
+		}
 	}
 	
 	protected void clearLogs() {

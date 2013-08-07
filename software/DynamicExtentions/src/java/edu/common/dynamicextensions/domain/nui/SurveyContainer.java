@@ -58,7 +58,6 @@ public class SurveyContainer extends Container {
 	}
 
 	public void deletePage(String pageName) {
-
 		Page page = pages.remove(pageName);
 
 		if (page == null) {
@@ -68,7 +67,6 @@ public class SurveyContainer extends Container {
 		for (Control control : page.getControls()) {
 			page.deleteControl(control.getName());
 		}
-
 	}
 
 	@Override

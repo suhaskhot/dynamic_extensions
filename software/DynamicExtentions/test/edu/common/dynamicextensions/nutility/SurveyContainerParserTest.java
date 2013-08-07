@@ -70,6 +70,7 @@ public class SurveyContainerParserTest {
 		personProfile.setSequenceNo(-2);
 		personProfile.setName("PersonProfile");
 		personProfile.setCaption("Person Profile");
+		personProfile.useAsDto();
 
 		firstName = new StringTextField();
 		firstName.setName("firstName");

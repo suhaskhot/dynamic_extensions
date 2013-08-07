@@ -185,6 +185,7 @@ public class ContainerParserTest {
 
 	protected void setUpFormControls() {
 		personProfile = new Container();
+		personProfile.useAsDto();																																																																																																																																																																																																																																																																																																																																																																																																																																								
 		personProfile.setName("PersonProfile");
 		personProfile.setCaption("Person Profile");
 		
@@ -270,6 +271,7 @@ public class ContainerParserTest {
 		address = new Container();
 		address.setName("address");
 		address.setCaption("Address");
+		address.useAsDto();
 		
 		addressSf = new SubFormControl();
 		addressSf.setName("address");

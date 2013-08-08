@@ -250,6 +250,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			if (control.getDbColumnName() == null) {
 				control.setDbColumnName(String.format(columnNameFmt, ctrlId)); // set db name here
 			}			
+						
+			if (control instanceof SubFormControl) {
+				SubFormControl sfCtrl = (SubFormControl)control;
+				Container sfContainer = sfCtrl.getSubContainer();
+				if (sfContainer.isDto) {
+					sfCtrl.setContainer(fromDto(sfContainer));
+				}
+			}
 		}
 		
 		controlsMap.put(control.getName(), control);
@@ -470,18 +478,12 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			existingContainer.editContainer(parsedContainer);
 			container = existingContainer;
 		} else if (parsedContainer.isDto) {
-			container = new Container();
-			container.setName(parsedContainer.getName());
-			container.setCaption(parsedContainer.getCaption());
-
-			for (Control ctrl : parsedContainer.addLog) {
-				container.addControl(ctrl);
-			}
+			container = fromDto(parsedContainer);
 		}
 		
 		return container.save(null, createTables);
-	} 
-			
+	}
+				
 	protected void editContainer(Container newContainer) {
 		for (Control  ctrl : newContainer.getControls()) {
 			if (getControl(ctrl.getName()) == null) {
@@ -660,6 +662,18 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return container;
 	}
 	
+	private static Container fromDto(Container dtoContainer) {
+		Container container = new Container();
+		container.setName(dtoContainer.getName());
+		container.setCaption(dtoContainer.getCaption());
+		
+		for (Control ctrl : dtoContainer.addLog) {
+			container.addControl(ctrl);
+		}		
+		
+		return container;
+	}
+		
 	private static void setUpAliases(XStream xstream) {
 		xstream.alias("container", Container.class);
 		xstream.alias("datePicker", DatePicker.class);

@@ -1544,7 +1544,7 @@
 		<!-- Run the JUnit test -->
 		<target name="runTest" depends="instrumentClasses" >
 			<copy tofile="cobertura.ser" file="cobertura/cobertura.ser" failonerror="false"/>
-			<junit fork="yes" printsummary="yes" haltonfailure="no">
+			<junit fork="yes" printsummary="yes" haltonfailure="yes" haltonerror = "yes">
 				<classpath>
 			    	<pathelement location="${target.dir}"/>
 					<pathelement location="${lib.dir}/xstream-1.4.4.jar"/>

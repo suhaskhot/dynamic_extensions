@@ -325,10 +325,85 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		return value.toString();
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((caption == null) ? 0 : caption.hashCode());
+		result = prime * result	+ ((customLabel == null) ? 0 : customLabel.hashCode());
+		result = prime * result	+ ((labelPosition == null) ? 0 : labelPosition.hashCode());
+		result = prime * result + ((toolTip == null) ? 0 : toolTip.hashCode());
+		result = prime * result	+ ((dbColumnName == null) ? 0 : dbColumnName.hashCode());
+		result = prime * result + (phi ? 1231 : 1237);
+		result = prime * result + sequenceNumber;
+		result = prime * result + xPos;
+		result = prime * result + (showLabel ? 1231 : 1237);
+		result = prime * result + (skipLogicSourceControl ? 1231 : 1237);
+		result = prime * result + (calculatedSourceControl ? 1231 : 1237);
+		result = prime * result + (skipLogicTargetControl ? 1231 : 1237);
+		result = prime * result + (showInGrid ? 1231 : 1237);
+		result = prime * result + ((conceptCode == null) ? 0 : conceptCode.hashCode());
+		result = prime * result	+ ((conceptPreferredName == null) ? 0 : conceptPreferredName.hashCode());
+		result = prime * result	+ ((conceptDefinitionSource == null) ? 0 : conceptDefinitionSource.hashCode());
+		result = prime * result	+ ((conceptDefinition == null) ? 0 : conceptDefinition.hashCode());		
+		result = prime * result + ((activityStatus == null) ? 0 : activityStatus.hashCode());
+		result = prime * result	+ ((validationRules == null) ? 0 : validationRules.hashCode());		
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		
+		if (getClass() != other.getClass()) {
+			return false;
+		}
+		
+		if (this == other) {
+			return true;
+		}
+		
+		Control ctrl = (Control)other;
+		if (!StringUtils.equals(name, ctrl.name) ||
+			!StringUtils.equals(caption, ctrl.caption) ||
+			!StringUtils.equals(customLabel, ctrl.customLabel) ||
+			labelPosition != ctrl.labelPosition ||
+			!StringUtils.equals(toolTip, ctrl.toolTip) ||
+			!StringUtils.equals(dbColumnName, ctrl.dbColumnName) ||
+			phi != ctrl.phi ||
+			sequenceNumber != ctrl.sequenceNumber ||
+			xPos != ctrl.xPos ||
+			showLabel != ctrl.showLabel ||
+			skipLogicSourceControl != ctrl.skipLogicSourceControl ||
+			calculatedSourceControl != ctrl.calculatedSourceControl ||
+			skipLogicTargetControl != ctrl.skipLogicTargetControl ||
+			showInGrid != ctrl.showInGrid ||
+			!StringUtils.equals(conceptCode, ctrl.conceptCode) ||
+			!StringUtils.equals(conceptPreferredName, ctrl.conceptPreferredName) ||
+			!StringUtils.equals(conceptDefinitionSource, ctrl.conceptDefinitionSource) ||
+			!StringUtils.equals(conceptDefinition, ctrl.conceptDefinition) ||
+			!StringUtils.equals(activityStatus, ctrl.activityStatus)) {
+			return false;
+		}
+		
+		if (validationRules == null && ctrl.validationRules == null) {
+			return true;
+		}
+		
+		if (validationRules.size() != ctrl.validationRules.size()) {
+			return false;
+		}
+		
+		return validationRules.containsAll(ctrl.validationRules);
+	}	
+	
+	
 	//
 	// Below is all rendering mess - should go away in v40
 	//
-
 	/**
 	 * Format for the control name
 	 */

@@ -1,7 +1,10 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 public class ValidationRule {	
 	private String name;
@@ -22,5 +25,40 @@ public class ValidationRule {
 	
 	public void setParams(Map<String, String> params) {
 		this.params = params;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((params == null) ? 0 : params.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
+		if (this == obj) {
+			return true;
+		}
+				
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		ValidationRule other = (ValidationRule) obj;
+		if (!StringUtils.equals(name, other.name)) {
+			return false;
+		}
+		
+		if (params == null && other.params != null) {
+			return false;
+		}
+		
+		return params.equals(other.params);
 	}	
 }

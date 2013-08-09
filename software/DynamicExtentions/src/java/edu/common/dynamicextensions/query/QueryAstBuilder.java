@@ -31,15 +31,15 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
 
     public Node visitCond(@NotNull AQLParser.CondContext ctx) {
         String fieldName = ctx.FIELD().getText();
-        String inputSymbol = null;
+        String inputSymbol = ctx.OP().getText();
         String inputValue = null;
         
-        if(ctx.SOP() != null) {
-            inputSymbol = ctx.SOP().getText();
-            inputValue = ctx.SLITERAL().getText();
-        } else if (ctx.NOP() != null) {
-            inputSymbol = ctx.NOP().getText();
-            inputValue = ctx.INT() == null ? ctx.FLOAT().getText() : ctx.INT().getText();
+        if (ctx.SLITERAL() != null) {
+        	inputValue = ctx.SLITERAL().getText();
+        } else if (ctx.FLOAT() != null) {
+        	inputValue = ctx.FLOAT().getText();
+        } else if (ctx.INT() != null) {
+        	inputValue = ctx.INT().getText();
         }
         
         Filter filter = new Filter();

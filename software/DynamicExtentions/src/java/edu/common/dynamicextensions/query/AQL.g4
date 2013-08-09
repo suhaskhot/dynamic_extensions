@@ -10,9 +10,9 @@ expr : expr AND expr       #AndExpr
      | cond                #CondExpr
      ;
      
-cond : FIELD SOP SLITERAL
-     | FIELD NOP INT
-     | FIELD NOP FLOAT
+cond : FIELD OP SLITERAL
+     | FIELD OP INT
+     | FIELD OP FLOAT
      ;
      
 
@@ -30,8 +30,7 @@ FLOAT: '-'? ('0'..'9')+ '.' ('0'..'9')+;
 SLITERAL: '"' SGUTS '"';
 ESC: '\\' ('\\' | '"');
 ID: ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
-NOP: ('>'|'<'|'>='|'<='|'='|'!=');
-SOP: ('='|'!='|'like');
+OP: ('>'|'<'|'>='|'<='|'='|'!='|'like');
 
 fragment
 SGUTS: (ESC | ~('\\' | '"'))*;

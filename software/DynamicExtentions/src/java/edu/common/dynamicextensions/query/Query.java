@@ -60,13 +60,13 @@ public class Query {
         
         JdbcDao jdbcDao = null;
         ResultSet rs = null;
-        QueryResultData queryresultdata = null;
+        QueryResultData queryResultdata = null;
         
         try {
             jdbcDao = new JdbcDao();
             rs = jdbcDao.getResultSet(dataSql, null);
-            queryresultdata = getQueryResultData(rs);
-            return queryresultdata;
+            queryResultdata = getQueryResultData(rs);
+            return queryResultdata;
         } catch(Exception e) {
             throw new RuntimeException("Error executing data query: " + dataSql, e);
         } finally {

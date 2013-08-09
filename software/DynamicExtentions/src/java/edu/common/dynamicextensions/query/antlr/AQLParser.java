@@ -16,10 +16,10 @@ public class AQLParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		WS=1, OR=2, AND=3, NOT=4, LP=5, RP=6, FIELD=7, INT=8, FLOAT=9, SLITERAL=10, 
-		ESC=11, ID=12, NOP=13, SOP=14, QUOTE=15;
+		ESC=11, ID=12, OP=13, QUOTE=14;
 	public static final String[] tokenNames = {
 		"<INVALID>", "WS", "'or'", "'and'", "'not'", "'('", "')'", "FIELD", "INT", 
-		"FLOAT", "SLITERAL", "ESC", "ID", "NOP", "SOP", "'\"'"
+		"FLOAT", "SLITERAL", "ESC", "ID", "OP", "'\"'"
 	};
 	public static final int
 		RULE_query = 0, RULE_expr = 1, RULE_cond = 2;
@@ -305,11 +305,10 @@ public class AQLParser extends Parser {
 	}
 
 	public static class CondContext extends ParserRuleContext {
+		public TerminalNode OP() { return getToken(AQLParser.OP, 0); }
 		public TerminalNode SLITERAL() { return getToken(AQLParser.SLITERAL, 0); }
 		public TerminalNode FLOAT() { return getToken(AQLParser.FLOAT, 0); }
 		public TerminalNode INT() { return getToken(AQLParser.INT, 0); }
-		public TerminalNode SOP() { return getToken(AQLParser.SOP, 0); }
-		public TerminalNode NOP() { return getToken(AQLParser.NOP, 0); }
 		public TerminalNode FIELD() { return getToken(AQLParser.FIELD, 0); }
 		public CondContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -340,7 +339,7 @@ public class AQLParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(29); match(FIELD);
-				setState(30); match(SOP);
+				setState(30); match(OP);
 				setState(31); match(SLITERAL);
 				}
 				break;
@@ -349,7 +348,7 @@ public class AQLParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(32); match(FIELD);
-				setState(33); match(NOP);
+				setState(33); match(OP);
 				setState(34); match(INT);
 				}
 				break;
@@ -358,7 +357,7 @@ public class AQLParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(35); match(FIELD);
-				setState(36); match(NOP);
+				setState(36); match(OP);
 				setState(37); match(FLOAT);
 				}
 				break;
@@ -391,7 +390,7 @@ public class AQLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3\21+\4\2\t\2\4\3\t"+
+		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3\20+\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\23\n\3\3\3\3\3"+
 		"\3\3\3\3\3\3\3\3\7\3\33\n\3\f\3\16\3\36\13\3\3\4\3\4\3\4\3\4\3\4\3\4\3"+
 		"\4\3\4\3\4\5\4)\n\4\3\4\2\5\2\4\6\2\2-\2\b\3\2\2\2\4\22\3\2\2\2\6(\3\2"+
@@ -400,7 +399,7 @@ public class AQLParser extends Parser {
 		"\n\3\2\2\2\22\r\3\2\2\2\22\21\3\2\2\2\23\34\3\2\2\2\24\25\6\3\2\3\25\26"+
 		"\7\5\2\2\26\33\5\4\3\2\27\30\6\3\3\3\30\31\7\4\2\2\31\33\5\4\3\2\32\24"+
 		"\3\2\2\2\32\27\3\2\2\2\33\36\3\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\5"+
-		"\3\2\2\2\36\34\3\2\2\2\37 \7\t\2\2 !\7\20\2\2!)\7\f\2\2\"#\7\t\2\2#$\7"+
+		"\3\2\2\2\36\34\3\2\2\2\37 \7\t\2\2 !\7\17\2\2!)\7\f\2\2\"#\7\t\2\2#$\7"+
 		"\17\2\2$)\7\n\2\2%&\7\t\2\2&\'\7\17\2\2\')\7\13\2\2(\37\3\2\2\2(\"\3\2"+
 		"\2\2(%\3\2\2\2)\7\3\2\2\2\6\22\32\34(";
 	public static final ATN _ATN =

@@ -240,7 +240,7 @@
 
 		<copy todir="${temp.dir}/lib">
 			<fileset dir="${base.dir}/lib">
-				<include name="**/*" />
+				<include name="server/*" />
 			</fileset>
 		</copy>
 

@@ -666,11 +666,13 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		Container container = new Container();
 		container.setName(dtoContainer.getName());
 		container.setCaption(dtoContainer.getCaption());
+		container.setDbTableName(dtoContainer.getDbTableName());
 		
 		for (Control ctrl : dtoContainer.addLog) {
 			container.addControl(ctrl);
 		}		
 		
+		container.skipRules.addAll(dtoContainer.getSkipRules());
 		return container;
 	}
 		

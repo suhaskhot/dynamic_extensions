@@ -18,25 +18,25 @@ public class VersionedContainer {
 		
 	}
 	
-	// TODO:
 	public Container getContainer(Long formId) {
-		return null;
+		return getContainer(formId, Calendar.getInstance().getTime());
 	}
 	
 	// TODO:
+	// Get the container with max activationDate that is less than input activationDate
 	public Container getContainer(Long formId, Date activationDate) {
 		return null;
 	}
 	
 	// TODO:
+	// Get the container with draft status
 	public Container getDraftContainer(Long formId) {
 		return null;
 	}
 	
-	// TODO:
 	public void publishRetrospective(UserContext usrCtx, Long formId) {
 		Container draftContainer = getDraftContainer(formId);
-		Container latestContainer = getContainer(formId, Calendar.getInstance().getTime());
+		Container latestContainer = getContainer(formId);
 		
 		ContainerChangeLog changeLog = ContainerUtility.getChangeLog(latestContainer, draftContainer);
 		if (!changeLog.anyChanges()) {

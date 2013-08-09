@@ -1,7 +1,9 @@
 package edu.common.dynamicextensions.nutility;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 
@@ -11,6 +13,8 @@ public class ContainerChangeLog {
 	private List<Control> deletedCtrls = new ArrayList<Control>();
 	
 	private List<Control> editedCtrls = new ArrayList<Control>();
+	
+	private Map<String, ContainerChangeLog> editedSubCtrls = new HashMap<String, ContainerChangeLog>(); 
 
 	public List<Control> getAddedCtrls() {
 		return addedCtrls;
@@ -36,7 +40,15 @@ public class ContainerChangeLog {
 		this.editedCtrls = editedCtrls;
 	}
 	
+	public Map<String, ContainerChangeLog> getEditedSubCtrls() {
+		return editedSubCtrls;
+	}
+
+	public void setEditedSubCtrls(Map<String, ContainerChangeLog> editedSubCtrls) {
+		this.editedSubCtrls = editedSubCtrls;
+	}
+
 	public boolean anyChanges() {
-		return !addedCtrls.isEmpty() || !editedCtrls.isEmpty() ||  !deletedCtrls.isEmpty();
+		return !addedCtrls.isEmpty() || !editedCtrls.isEmpty() ||  !deletedCtrls.isEmpty() || !editedSubCtrls.isEmpty();
 	}
 }

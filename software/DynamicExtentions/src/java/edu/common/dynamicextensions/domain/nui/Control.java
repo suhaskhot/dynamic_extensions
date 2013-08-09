@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.napi.ControlValue;
-import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.nui.ValidationRuleNames;
 import edu.common.dynamicextensions.ui.util.Constants;
@@ -21,9 +20,6 @@ import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.Variables;
 
 public abstract class Control extends DynamicExtensionBaseDomainObject implements Comparable<Control> {
-
-
-
 	public static enum LabelPosition {
 		LEFT_SIDE, TOP
 	};
@@ -69,8 +65,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	private String activityStatus = Constants.ACTIVE;
 
 	private Set<ValidationRule> validationRules = new HashSet<ValidationRule>();
-
-	//private Set<SkipRule> skipRules = new HashSet<SkipRule>();
 
 	private Container container;
 	
@@ -330,6 +324,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 		return value.toString();
 	}
+	
+	//
+	// Below is all rendering mess - should go away in v40
+	//
 
 	/**
 	 * Format for the control name

@@ -4,8 +4,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.Container;
+import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.nutility.ContainerChangeLog;
 import edu.common.dynamicextensions.nutility.ContainerUtility;
@@ -80,8 +83,28 @@ public class VersionedContainer {
 		container.save(usrCtx, false);
 	}
 	
-	// TODO:
 	private void applyChange(Container container, ContainerChangeLog changeLog) {
+		for (Control newCtrl : changeLog.getAddedCtrls()) {
+			container.addControl(newCtrl);
+		}		
 		
+		for (Control deletedCtrl : changeLog.getDeletedCtrls()) {
+			if (container.getControl(deletedCtrl.getName()) != null) {				
+				container.deleteControl(deletedCtrl.getName());
+			}			
+		}
+		
+		for (Control editedCtrl : changeLog.getEditedCtrls()) {
+			if (container.getControl(editedCtrl.getName()) != null) {
+				container.editControl(editedCtrl.getName(), editedCtrl);
+			}
+		}
+		
+		for (Map.Entry<String, ContainerChangeLog> editedSf : changeLog.getEditedSubCtrls().entrySet()) {
+			SubFormControl sfCtrl = (SubFormControl)container.getControl(editedSf.getKey());
+			if (sfCtrl != null) {
+				applyChange(sfCtrl.getSubContainer(), editedSf.getValue());
+			}
+		}
 	}
 }

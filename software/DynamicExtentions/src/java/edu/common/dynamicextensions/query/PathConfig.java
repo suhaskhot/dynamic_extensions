@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.query;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ public class PathConfig {
         	Digester digester = loader.newDigester();
             List<Path> paths = (List<Path>)digester.parse(in);
 
+            this.paths = new HashMap<String, Path>();
             for (Path path : paths) {
             	this.paths.put(getPathStr(path.getStartForm(), path.getEndForm()), path);
             }

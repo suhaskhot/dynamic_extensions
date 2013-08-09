@@ -91,9 +91,6 @@
 		</classpath>
 	</taskdef>
 	
-	<taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
-           classpath="${extra_lib.dir}/compiler.jar"/>
-
 
 	<!-- sub tasks -->
 	<target name="init">
@@ -148,37 +145,6 @@
 				<include name="**/*.csv"/>
 			</fileset>
 		</copy>
-	</target>
-
-
-	<target name="merge_js">
-		<jscomp 
-			compilationLevel="simple" 
-			debug="false"
-			output="${js.dir}/all_de.js">
-			
-			<sources dir="${dhtmlx.js.dir}">
-				<file name="dhtmlxcommon.js"/>
-				<file name="dhtmlxcalendar.js"/>
-			</sources>
-			<sources dir="${js.dir}">
-				<file name="prototype.js"/>
-				<file name="jquery-1.3.2.js"/>
-				<file name="calendarComponent.js"/>
-				<file name="script.js"/>
-				<file name="form_plugin.js"/>
-				<file name="dynamicExtensions.js"/>
-				<file name="overlib_mini.js"/>
-				<file name="calender.js"/>
-				<file name="ajax.js"/>
-				<file name="scr.js"/>
-				<file name="ext-base.js"/>
-				<file name="ext-all.js"/>
-				<file name="combos.js"/>
-				<file name="ajaxupload.js"/>
-				<file name="de.js"/>
-			</sources>
-		</jscomp>
 	</target>
 
 
@@ -307,10 +273,6 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${temp.dir}/dem.war">
-			<fileset dir="${base.dir}/src/conf/dem.war">
-			</fileset>
-		</copy>
 		<copy todir="${temp.dir}/db">
 			<fileset dir="${base.dir}/db">
 				<include name="**/*" />

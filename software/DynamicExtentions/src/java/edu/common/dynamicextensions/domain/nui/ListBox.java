@@ -50,6 +50,36 @@ public class ListBox extends SelectControl {
 	}
 
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + noOfRows;
+		result = prime * result + (autoCompleteDropdownEnabled ? 1231 : 1237);
+		result = prime * result + minQueryChar;		
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		ListBox other = (ListBox) obj;
+		if (noOfRows != other.noOfRows ||
+			autoCompleteDropdownEnabled != other.autoCompleteDropdownEnabled ||
+			minQueryChar != other.minQueryChar) {		
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	protected String render(String controlName, ControlValue controlValue,
 			Map<ContextParameter, String> contextParameter) {
 		StringBuilder htmlString = new StringBuilder(193);

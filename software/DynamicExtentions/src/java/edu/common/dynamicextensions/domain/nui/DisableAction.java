@@ -3,7 +3,6 @@ package edu.common.dynamicextensions.domain.nui;
 import edu.common.dynamicextensions.napi.ControlValue;
 
 public class DisableAction extends SkipAction {
-
 	private static final long serialVersionUID = -7211808180412341154L;
 
 	@Override
@@ -15,5 +14,4 @@ public class DisableAction extends SkipAction {
 	public void reset(ControlValue fieldValue) {
 		fieldValue.setReadOnly(false);
 	}
-
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 public class PvDataSource {
 	public static enum Ordering {
 		ASC, DESC
@@ -79,6 +81,42 @@ public class PvDataSource {
 		return getPvVersion(activationDate).getDefaultValue();
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		
+		result = prime * result	+ ((pvVersions == null) ? 0 : pvVersions.hashCode());
+		result = prime * result	+ ((dataType == null) ? 0 : dataType.hashCode());
+		result = prime * result + ((dateFormat == null) ? 0 : dateFormat.hashCode());
+		result = prime * result	+ ((ordering == null) ? 0 : ordering.hashCode());		
+		result = prime * result + ((sql == null) ? 0 : sql.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {		
+		if (this == obj) {
+			return true;
+		}
+
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+						
+		PvDataSource other = (PvDataSource) obj;
+		if ((pvVersions == null && other.pvVersions != null) ||
+			!pvVersions.equals(other.pvVersions) ||
+			dataType != other.dataType ||
+			!StringUtils.equals(dateFormat, other.dateFormat) ||
+			ordering != other.ordering ||
+			!StringUtils.equals(sql, other.sql)) {
+			return false;
+		} 
+		
+		return true;
+	}
+
 	private PvVersion getPvVersion(Date activationDate) {
 		PvVersion result = null;
 
@@ -87,11 +125,11 @@ public class PvDataSource {
 			if (result == null) {
 				result = pvVersion;
 			} else if (result.getActivationDate() == null || versionDate == null ||
-					result.getActivationDate().before(versionDate) && versionDate.before(activationDate)) {
+				result.getActivationDate().before(versionDate) && versionDate.before(activationDate)) {
 				result = pvVersion;
 			}
 		}
 				
 		return result;		
-	}
+	}	
 }

@@ -43,6 +43,32 @@ public class CheckBox extends Control {
 	public String toString(Object value) {
 		return (value == null || value.toString().equals("false") || value.toString().equals("0")) ? "0" : "1";
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (defaultValueChecked ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		CheckBox other = (CheckBox) obj;
+		if (defaultValueChecked != other.defaultValueChecked) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	@Override
 	protected String render(String controlName, ControlValue controlValue,

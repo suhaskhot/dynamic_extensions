@@ -67,6 +67,7 @@ public class NumberField extends TextField {
 	public void setFormula(String formula) {
 		this.formula = formula;
 	}
+	
 
 	@Override
 	public boolean isDynamic() {
@@ -117,6 +118,40 @@ public class NumberField extends TextField {
 		return new BigDecimal(value);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + noOfDigits;
+		result = prime * result + noOfDigitsAfterDecimal;		
+		result = prime * result + (calculated ? 1231 : 1237);
+		result = prime * result + ((formula == null) ? 0 : formula.hashCode());
+		result = prime * result	+ ((measurementUnits == null) ? 0 : measurementUnits.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		NumberField other = (NumberField) obj;
+		if (noOfDigits != other.noOfDigits ||
+			noOfDigitsAfterDecimal != other.noOfDigitsAfterDecimal ||
+			calculated != other.calculated ||
+			!StringUtils.equals(formula, other.formula) ||
+			!StringUtils.equals(measurementUnits, other.measurementUnits)) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	@Override
 	protected String render(String controlName, ControlValue controlValue,
 			Map<ContextParameter, String> contextParameter) {
@@ -222,5 +257,4 @@ public class NumberField extends TextField {
 		}
 		return numberValue.toPlainString();
 	}
-
 }

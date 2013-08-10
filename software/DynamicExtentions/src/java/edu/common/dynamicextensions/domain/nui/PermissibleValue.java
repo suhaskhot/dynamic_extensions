@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import org.apache.commons.lang.StringUtils;
+
 public class PermissibleValue {
 	private String optionName;
 	
@@ -54,35 +56,39 @@ public class PermissibleValue {
 	public String toString() {
 		return value;
 	}
-	
+
 	@Override
-	public int hashCode()
-	{
-		int hashCodeValue;
-		if (value != null)
-		{
-			hashCodeValue = value.hashCode();
-		}
-		else
-		{
-			hashCodeValue = 0;
-		}
-		return hashCodeValue;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result	+ ((optionName == null) ? 0 : optionName.hashCode());
+		result = prime * result	+ ((numericCode == null) ? 0 : numericCode.hashCode());
+		result = prime * result	+ ((definitionSource == null) ? 0 : definitionSource.hashCode());
+		result = prime * result	+ ((conceptCode == null) ? 0 : conceptCode.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
 	}
 
-	 @Override
-	    public boolean equals(Object obj) {
-	        if (obj == this) {
-	            return true;
-	        }
-	        if (obj == null || obj.getClass() != this.getClass()) {
-	            return false;
-	        }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		PermissibleValue other = (PermissibleValue) obj;
+		if (!StringUtils.equals(optionName, other.optionName) ||
+			(numericCode == null && other.numericCode != null) ||
+			!numericCode.equals(other.numericCode) ||
+			!StringUtils.equals(definitionSource, other.definitionSource) ||
+			!StringUtils.equals(conceptCode, other.conceptCode) ||
+			!StringUtils.equals(value, other.value)) {
+			return false;
+		}
 
-	        PermissibleValue guest = (PermissibleValue) obj;
-	        return value.equals(guest.value);
-	               
-	    }
-
-
+		return true;
+	}
 }

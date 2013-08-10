@@ -80,6 +80,33 @@ public class StringTextField extends TextField {
 	public String fromString(String value) {
 		return value;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (url ? 1231 : 1237);
+		result = prime * result + (password ? 1231 : 1237);		
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		StringTextField other = (StringTextField) obj;
+		if (url != other.url || password != other.password) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	@Override
 	protected String render(String controlName, ControlValue controlValue, Map<ContextParameter, String> contextParameter)

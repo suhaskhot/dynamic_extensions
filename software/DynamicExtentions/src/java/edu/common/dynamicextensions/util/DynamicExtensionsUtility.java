@@ -2907,11 +2907,11 @@ public class DynamicExtensionsUtility
 		}
 
 		String expiry = props.getProperty("de.file.upload.expiry.limit");
-		if (expiry.trim().isEmpty() || "${de.file.upload.expiry.limit}".equals(expiry.trim())) {
+		//if (expiry.trim().isEmpty() || "${de.file.upload.expiry.limit}".equals(expiry.trim())) {
 			fileUploadExpiryLimit = 7;
-		} else {
-			fileUploadExpiryLimit = Integer.valueOf(expiry);
-		}
+		//} else {
+		//	fileUploadExpiryLimit = Integer.valueOf(expiry);
+		//}
 
 		LOGGER.info(Variables.jbossUrl);
 	}

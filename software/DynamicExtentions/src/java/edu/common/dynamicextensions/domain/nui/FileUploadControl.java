@@ -35,7 +35,17 @@ public class FileUploadControl extends Control {
 	public DataType getDataType() {
 		return null;
 	}
-
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		return super.equals(other);
+	}
+	
 	@Override
 	protected String render(String controlname, ControlValue controlValue,
 			Map<ContextParameter, String> contextParameter) {

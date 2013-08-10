@@ -6,7 +6,6 @@ import java.util.List;
 import edu.common.dynamicextensions.napi.ControlValue;
 
 public class ShowPvAction extends SkipAction {
-
 	private static final long serialVersionUID = -3930481754067679419L;
 	
 	private List<PermissibleValue> listOfPvs = new ArrayList<PermissibleValue>();
@@ -27,6 +26,36 @@ public class ShowPvAction extends SkipAction {
 
 	public void setDefaultPv(PermissibleValue defaultPv) {
 		this.defaultPv = defaultPv;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result	+ ((defaultPv == null) ? 0 : defaultPv.hashCode());
+		result = prime * result + ((listOfPvs == null) ? 0 : listOfPvs.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		ShowPvAction other = (ShowPvAction) obj;
+		if ((defaultPv == null && other.defaultPv != null) ||
+			!defaultPv.equals(other.defaultPv) ||
+			(listOfPvs == null && other.listOfPvs != null) ||
+			!listOfPvs.equals(other.listOfPvs)) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override

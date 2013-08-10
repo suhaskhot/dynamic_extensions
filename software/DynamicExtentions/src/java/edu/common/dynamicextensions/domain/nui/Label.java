@@ -42,7 +42,33 @@ public class Label extends Control {
 	public DataType getDataType() {
 		return DataType.STRING;
 	}
-	
+		
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (heading ? 1231 : 1237);
+		result = prime * result + (note ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		Label other = (Label) obj;
+		if (heading != other.heading || note != other.note) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	@Override
 	protected String render(String controlName, ControlValue controlValue,

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
@@ -67,6 +69,36 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 		}
 		
 		this.foreignKeyColumn = foreignKeyColumn;		
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result	+ ((tableName == null) ? 0 : tableName.hashCode());
+		result = prime * result	+ ((parentKeyColumn == null) ? 0 : parentKeyColumn.hashCode());
+		result = prime * result	+ ((foreignKeyColumn == null) ? 0 : foreignKeyColumn.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		MultiSelectListBox other = (MultiSelectListBox) obj;
+		if (!StringUtils.equals(tableName, other.tableName) ||
+			!StringUtils.equals(parentKeyColumn, other.parentKeyColumn) ||
+			!StringUtils.equals(foreignKeyColumn, other.foreignKeyColumn)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

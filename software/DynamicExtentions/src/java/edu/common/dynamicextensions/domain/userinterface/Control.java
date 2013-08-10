@@ -73,6 +73,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * whether this attribute should be displayed on screen.
+	 * NOTES: Modified by skip logic hide/show action
+	 * The value is either 0 or null. No use of storing this in DB.
 	 */
 	protected Boolean isHidden = null;
 
@@ -83,46 +85,55 @@ public abstract class Control extends DynamicExtensionBaseDomainObject
 
 	/**
 	 * Decides whether the control should be disabled or not
+	 * NOTES: Legacy
 	 */
 	protected Boolean isSkipLogicReadOnly = false;
 
 	/**
 	 * Decides whether the control should be disabled or not
+	 * NOTES: Legacy - get rid of this
 	 */
 	protected Boolean isSelectiveReadOnly = false;
 
 	/**
 	 * Decides whether the control should be autocalculated
+	 * 
 	 */
 	protected Boolean isCalculated = false;
 
 	/**
 	 * Decides whether the control should use skip logic
+	 * NOTES: Decides when to evaluate skip logic
 	 */
 	protected Boolean isSkipLogic = false;
 
 	/**
 	 * Decides whether the control should use skip logic
+	 * NOTES: generation of HTML
 	 */
 	protected Boolean isSkipLogicTargetControl = false;
 
 	/**
 	 * Decides whether the control should use skip logic
+	 * NOTES: Legacy
 	 */
 	protected Boolean isSkipLogicShowHideTargetControl = false;
 
 	/**
 	 * Decides whether the control should use skip logic
+	 * NOTES: Legacy
 	 */
 	protected Boolean isShowHide = false;
 
 	/**
 	 * Decides whether the control should use skip logic
+	 * NOTES: Legacy
 	 */
 	protected Boolean isSkipLogicLoadPermValues = false;
 
 	/**
 	 * Decides whether the control should use skip logic
+	 * NOTES: Legacy
 	 */
 	protected Boolean isSkipLogicDefaultValue = false;
 

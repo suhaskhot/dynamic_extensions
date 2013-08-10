@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
@@ -12,7 +14,6 @@ import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 public class SubFormControl extends Control {
-
 	private static final String EAV_ATT_VIEW_DETAILS = "eav.att.ViewDetails";
 
 	private static final String EAV_ATT_EDIT_DETAILS = "eav.att.EditDetails";
@@ -107,6 +108,46 @@ public class SubFormControl extends Control {
 		}
 		
 		this.foreignKeyColumn = foreignKeyColumn;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result	+ ((subContainer == null) ? 0 : subContainer.hashCode());
+		result = prime * result + noOfEntries;
+		result = prime * result + (showAddMoreLink ? 1231 : 1237);
+		result = prime * result + (pasteButtonEnabled ? 1231 : 1237);
+		result = prime * result	+ ((tableName == null) ? 0 : tableName.hashCode());
+		result = prime * result	+ ((parentKeyColumn == null) ? 0 : parentKeyColumn.hashCode());
+		result = prime * result	+ ((foreignKeyColumn == null) ? 0 : foreignKeyColumn.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		SubFormControl other = (SubFormControl) obj;
+		if ((subContainer == null && other.subContainer != null) ||
+			!subContainer.equals(other.subContainer) ||
+			noOfEntries != other.noOfEntries ||
+			showAddMoreLink != other.showAddMoreLink ||
+			pasteButtonEnabled != other.pasteButtonEnabled ||
+			!StringUtils.equals(tableName, other.tableName) ||
+			!StringUtils.equals(parentKeyColumn, other.parentKeyColumn) ||
+			!StringUtils.equals(foreignKeyColumn, other.foreignKeyColumn)) {
+			
+			return false;
+		}
+			
+		return true;
 	}
 
 	/**

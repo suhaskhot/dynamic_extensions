@@ -135,13 +135,39 @@ public abstract class SelectControl extends Control {
 		return dbType;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result	+ ((pvDataSource == null) ? 0 : pvDataSource.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		SelectControl other = (SelectControl) obj;
+		if ((pvDataSource == null && other.pvDataSource != null) ||
+			!pvDataSource.equals(other.pvDataSource)) {
+			return false;
+		}
+		
+		return true;
+	}
 	
+		
 	//////////////////////////////////////////////////////////////////////////
 	//
 	// Used by UI
 	//
-	//////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////	
 	protected String getDisplayValue(ControlValue controlValue, Date activationDate) {
 		String value = (String) controlValue.getValue();
 		if (value == null) {

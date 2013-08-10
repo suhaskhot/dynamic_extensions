@@ -1,6 +1,8 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.napi.ControlValue;
 
 public class SkipCondition {
@@ -37,6 +39,37 @@ public class SkipCondition {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result	+ ((relationalOp == null) ? 0 : relationalOp.hashCode());
+		result = prime * result	+ ((sourceControl == null) ? 0 : sourceControl.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		SkipCondition other = (SkipCondition) obj;
+		if (relationalOp != other.relationalOp ||
+			(sourceControl == null && other.sourceControl != null) ||
+			!sourceControl.equals(other.sourceControl) ||
+			!StringUtils.equals(value, other.value)) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	public boolean evaluate(ControlValue fieldValue) {

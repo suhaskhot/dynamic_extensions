@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
@@ -124,6 +126,39 @@ public class DatePicker extends Control {
 		} catch (Exception e) {
 			throw new RuntimeException("Error converting date to string: " + value, e);
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((format == null) ? 0 : format.hashCode());
+		result = prime * result + (showCalendar ? 1231 : 1237);
+		result = prime * result	+ ((defaultDate == null) ? 0 : defaultDate.hashCode());
+		result = prime * result	+ ((defaultDateType == null) ? 0 : defaultDateType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		DatePicker other = (DatePicker) obj;
+		if (!StringUtils.equals(format, other.format) ||
+			showCalendar != other.showCalendar ||
+			(defaultDate == null && other.defaultDate != null) ||
+			!defaultDate.equals(other.defaultDate) ||
+			defaultDateType != other.defaultDateType) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

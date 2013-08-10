@@ -67,6 +67,32 @@ public class TextArea extends TextField {
 	public String fromString(String value) {
 		return value;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + noOfRows;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		TextArea other = (TextArea) obj;
+		if (noOfRows != other.noOfRows) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	@Override
 	protected String render(String conrolName, ControlValue controlValue, Map<ContextParameter, String> contextParameter) {

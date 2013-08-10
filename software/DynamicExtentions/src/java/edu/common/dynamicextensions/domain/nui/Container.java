@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -192,7 +194,51 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		
 		skipRules.remove(i);
 	}
+			
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((caption == null) ? 0 : caption.hashCode());
+		result = prime * result	+ ((controlsMap == null) ? 0 : controlsMap.hashCode());
+		result = prime * result + (int) (ctrlId ^ (ctrlId >>> 32));
+		result = prime * result	+ ((dbTableName == null) ? 0 : dbTableName.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + sequenceNo;
+		result = prime * result	+ ((skipRules == null) ? 0 : skipRules.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
 		
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		Container other = (Container) obj;
+		if (!StringUtils.equals(caption, other.caption) ||
+		    (controlsMap == null && other.controlsMap != null) ||
+			controlsMap.equals(other.controlsMap) ||
+			ctrlId != other.ctrlId ||
+			!StringUtils.equals(dbTableName, other.dbTableName) ||
+			!StringUtils.equals(name, other.name) ||
+			sequenceNo != other.sequenceNo ||
+			(skipRules == null && other.skipRules != null) ||
+			!skipRules.equals(other.skipRules)) {
+			return false;
+		}
+			
+		return true;
+	}
+
 	public List<Container> getSubContainers() {
 		List<Container> containers = new ArrayList<Container>();
 		

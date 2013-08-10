@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.ui.util.ControlsUtility;
@@ -80,6 +82,38 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 		}
 		
 		this.foreignKeyColumn = foreignKeyColumn;		
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result	+ ((tableName == null) ? 0 : tableName.hashCode());
+		result = prime * result + optionsPerRow;
+		result = prime * result	+ ((parentKeyColumn == null) ? 0 : parentKeyColumn.hashCode());
+		result = prime * result	+ ((foreignKeyColumn == null) ? 0 : foreignKeyColumn.hashCode());		
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (!super.equals(obj)) {
+			return false;
+		}
+		
+		MultiSelectCheckBox other = (MultiSelectCheckBox) obj;
+		if (!StringUtils.equals(tableName, other.tableName) ||
+			optionsPerRow != other.optionsPerRow ||
+			!StringUtils.equals(parentKeyColumn, other.parentKeyColumn) ||
+			!StringUtils.equals(foreignKeyColumn, other.foreignKeyColumn)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

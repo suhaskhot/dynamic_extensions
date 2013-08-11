@@ -349,7 +349,7 @@ jQuery(document).ready(
 			</c:if>
 		<input type="hidden" name="participantId" value="${param.participantId}"/>
 		</form>
-		<iframe style="display:none" src="about:blank" id="tempIframe" name="tempIframe" onload=""></iframe>
+		<iframe style="display:none" src="ignore" id="tempIframe" name="tempIframe" onload=""></iframe>
 		<script type="text/javascript" defer="defer">
 			updateHTML();
 			document.getElementById('isDirty').value = false;

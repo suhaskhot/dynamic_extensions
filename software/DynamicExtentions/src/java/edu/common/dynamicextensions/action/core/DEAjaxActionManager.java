@@ -231,10 +231,12 @@ public class DEAjaxActionManager
 		Container subForm = addMore.getSubContainer();
 		FormData subFormData = new FormData(subForm);
 
-		List<FormData> subformValue = (List<FormData>) mainFormData.getFieldValue(addMore.getName()).getValue();
+		ControlValue fieldValue = mainFormData.getFieldValue(addMore.getName());
+		List<FormData> subformValue = (List<FormData>) fieldValue.getValue();
 
 		if (subformValue == null) {
 			subformValue = new ArrayList<FormData>();
+			fieldValue.setValue(subformValue);
 		}
 		subformValue.add(subFormData);
 		FormDataUtility.evaluateSkipLogic(mainFormData);

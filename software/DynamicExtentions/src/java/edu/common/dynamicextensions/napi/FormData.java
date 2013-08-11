@@ -135,14 +135,14 @@ public class FormData {
 		ControlValue controlValue = null;
 		int sequenceNumber = Control.getSequenceNumber(htmlName);
 		int xpos = Control.getXpos(htmlName);
-		Long containerId = Control.getContainerId(htmlName);
-		if (getContainer().getId().equals(containerId)) {
+		String containerName = Control.getContainerName(htmlName);
+		if (getContainer().getName().equals(containerName)) {
 			controlValue = getControlValue(this, sequenceNumber, xpos);
 		} else {
 			for (Control control : getContainer().getControls()) {
 				if (control instanceof SubFormControl) {
 					SubFormControl subFormControl = (SubFormControl) control;
-					if (subFormControl.getSubContainer().getId().equals(containerId)) {
+					if (subFormControl.getSubContainer().getName().equals(containerName)) {
 						List<FormData> datas = (List<FormData>) getFieldValue(control.getName()).getValue();
 						if (subFormControl.isCardinalityOneToMany()) {
 							controlValue = getControlValue(datas.get(Control.getRowNumber(htmlName) - 1),

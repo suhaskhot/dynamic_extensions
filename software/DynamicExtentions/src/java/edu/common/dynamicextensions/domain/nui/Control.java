@@ -407,7 +407,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	/**
 	 * Format for the control name
 	 */
-	private static final String CONTROL_NAME_FORMAT = "Control_%d_%d_%d_%d";
+	private static final String CONTROL_NAME_FORMAT = "Control_%d_%s_%d_%d";
 
 	public String getControlName(Integer rowNumber) {
 		String controlName = getControlName();
@@ -419,7 +419,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	public String getControlName() {
 		Container parentContainer = getContainer();
-		String controlName = String.format(CONTROL_NAME_FORMAT, getId(), parentContainer.getId(), getxPos(),
+		String controlName = String.format(CONTROL_NAME_FORMAT, getId(), parentContainer.getName(), getxPos(),
 				getSequenceNumber());
 		return controlName;
 	}
@@ -427,14 +427,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public static Integer getRowNumber(String controlName)
 	{
 		Integer rowNumber = null;
-		if (controlName.matches("Control_\\d_\\d+_\\d+_\\d+_\\d+")) {
+		if (controlName.matches("Control_\\d_\\s+_\\d+_\\d+_\\d+")) {
 			rowNumber = Integer.valueOf(controlName.substring(controlName.lastIndexOf("_") + 1));
 		}
 		return rowNumber;
 	}
 
-	public static Long getContainerId(String controlName) {
-		return Long.valueOf(controlName.split("_")[2]);
+	public static String getContainerName(String controlName) {
+		return controlName.split("_")[2];
 	}
 
 	public static int getXpos(String controlName) {

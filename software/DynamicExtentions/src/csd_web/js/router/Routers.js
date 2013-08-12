@@ -76,7 +76,7 @@ var Routers = {
 											}
 										});
 						$("#general-dialog").dialog("open");
-						Routers.controlEventsRouterPointer.navigate('clear', {
+						Routers.formEventsRouterPointer.navigate('clear', {
 							trigger : true
 						});
 					} else if (operation == "edit") {
@@ -91,19 +91,21 @@ var Routers = {
 						$('#controlledField')
 								.val(skipRule.controlledAttributes);
 						$("#controlledField").trigger("liszt:updated");
-						
+
 						// set action
 						$('#' + skipRule.action).prop('checked', true);
 						// set allOrAny
 						$('#' + skipRule.allAny).prop('checked', true);
 						// enable pvSubSet menu
-						if(skipRule.action=="pvSubSet"){
+						if (skipRule.action == "pvSubSet") {
+							Main.advancedControlsView
+									.populatePvSubSetDropDown();
 							$('#pvSubSetDiv').show();
+							$("#subsetPvs").chosen();
 							$('#subsetPvs').val(skipRule.pvSubSet);
 							$('#defaultPv').val(skipRule.defaultPv);
 							$("#subsetPvs").trigger("liszt:updated");
-						}
-						else{
+						} else {
 							$('#pvSubSetDiv').hide();
 						}
 
@@ -198,7 +200,7 @@ var Routers = {
 					// re populate skip rules table;
 					$("#skipRulesTable tr:gt(0)").remove();
 					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
-					
+
 				},
 
 				loadFormulae : function(model, subFormName) {
@@ -223,14 +225,12 @@ var Routers = {
 					}
 				},
 
-				
-
 				loadFormSuccessHandler : function(model, response) {
 					Routers.formEventsRouterPointer.updateFormAndUI(model);
 					Routers.formEventsRouterPointer.loadFormulae(Main.formView
 							.getFormModel(), "");
-					AdvancedControlPropertiesBizLogic.loadSkipRules(Main.formView
-							.getFormModel());
+					AdvancedControlPropertiesBizLogic
+							.loadSkipRules(Main.formView.getFormModel());
 					Main.advancedControlsView.setTableCss('formulaTable');
 					$("#formWaitingImage").hide();
 				},
@@ -429,6 +429,13 @@ var Routers = {
 	populateDesignModeTab : function() {
 		if (Main.formView.getFormModel()
 				&& Main.formView.getFormModel().get('controlObjectCollection') != null) {
+			// add rows
+			for ( var i = 0; i < ControlBizLogic.getNextSequenceNumber() - 1; i++) {
+				var newId = (new Date()).valueOf();
+				Main.designModeViewPointer.getGridObject()
+						.addRow(newId + i, "");
+			}
+
 			for ( var index in Main.formView.getFormModel().get(
 					'controlObjectCollection')) {
 				var xPos = Main.formView.getFormModel().get(
@@ -451,13 +458,6 @@ var Routers = {
 					Main.designModeViewPointer.getGridObject().insertColumn(
 							colNum, '', 'ro', '300', '', 'center');
 				}
-				// this will add row if not present
-				while (Main.designModeViewPointer.getGridObject().getRowsNum() - 1 < seqNumber) {
-					var newId = (new Date()).valueOf();
-					Main.designModeViewPointer.getGridObject()
-							.addRow(newId, "");
-				}
-
 				Main.designModeViewPointer.getGridObject().cellByIndex(
 						seqNumber, xPos).setValue(name);
 			}

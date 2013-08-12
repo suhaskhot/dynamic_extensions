@@ -21,6 +21,26 @@ var Models = {
 		}
 
 	}),
+
+	Page : Backbone.Model.extend({
+
+		defaults : {
+			controls : [],
+			name : "newPage",
+			caption : "New Page",
+			id : null
+		},
+		url : function() {
+			return "csdApi/form";
+		},
+		initialize : function() {
+			console.log("Page Model created");
+			this.controlCollection = new Array();
+			this.controlObjectCollection = {};
+		}
+
+	}),
+
 	// Field
 	Field : Backbone.Model
 			.extend({
@@ -32,6 +52,8 @@ var Models = {
 					id : null,
 					width : 15,
 					noOfRows : 3,
+					noOfDigits : 19,// based on migration code
+					noOfDigitsAfterDecimal : 5, // based on migration code
 					pvs : {}
 				},
 				url : function() {
@@ -51,7 +73,6 @@ var Models = {
 					if (!attrs.maximumValue) {
 					} else if (attrs.maximumValue != ""
 							&& isNaN(attrs.maximumValue)) {
-						// $("#inputField").css('color', 'red');
 						errors.push({
 							name : 'maximumValue',
 							message : 'Maximum value should be numeric.'
@@ -61,7 +82,6 @@ var Models = {
 					if (!attrs.minimumValue) {
 					} else if (attrs.minimumValue != ""
 							&& isNaN(attrs.minimumValue)) {
-						// $("#inputField").css('color', 'red');
 						errors.push({
 							name : 'minimumValue',
 							message : 'Minimum value should be numeric.'
@@ -69,40 +89,18 @@ var Models = {
 					}
 					if (!attrs.width) {
 					} else if (attrs.width != "" && isNaN(attrs.width)) {
-						// $("#inputField").css('color', 'red');
 						errors.push({
 							name : 'width',
 							message : 'Width should be numeric.'
 						});
 					}
+
 					if (!attrs.noOfRows) {
 					} else if (attrs.noOfRows != "" && isNaN(attrs.noOfRows)) {
-						// $("#inputField").css('color', 'red');
 						errors.push({
 							name : 'noOfRows',
 							message : 'Number of rows should be numeric.'
 						});
-					}
-
-					if (!attrs.noOfDigits) {
-					} else if (attrs.noOfDigits != ""
-							&& isNaN(attrs.noOfDigits)) {
-						// $("#inputField").css('color', 'red');
-						errors.push({
-							name : 'noOfDigits',
-							message : 'Number of digits should be numeric.'
-						});
-					}
-
-					if (!attrs.noOfDigitsAfterDecimal) {
-					} else if (attrs.noOfDigitsAfterDecimal != ""
-							&& isNaN(attrs.noOfDigitsAfterDecimal)) {
-						// $("#inputField").css('color', 'red');
-						errors
-								.push({
-									name : 'noOfDigitsAfterDecimal',
-									message : 'Number of digits after decimal should be numeric.'
-								});
 					}
 
 					switch (attrs.type) {
@@ -119,6 +117,23 @@ var Models = {
 								name : 'pvs',
 								message : 'Permissible values are required.'
 							});
+						}
+						break;
+					case "numericField":
+						if (!attrs.noOfDigits || isNaN(attrs.noOfDigits)) {
+							errors.push({
+								name : 'noOfDigits',
+								message : 'Number of Digits should be numeric.'
+							});
+						}
+
+						if (!attrs.noOfDigitsAfterDecimal
+								|| isNaN(attrs.noOfDigitsAfterDecimal)) {
+							errors
+									.push({
+										name : 'noOfDigitsAfterDecimal',
+										message : 'Number of Digits After Decimal should be numeric.'
+									});
 						}
 						break;
 

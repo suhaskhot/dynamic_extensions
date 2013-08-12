@@ -530,11 +530,6 @@ var ControlBizLogic = {
 
 	csdControlsTabSelectHandler : function(id) {
 		if (id == "designMode") {
-			Main.designModeViewPointer = new Views.DesignMode({
-				el : $("#design")
-			});
-			Routers.designModeOnBeforeDragEvent();
-			Routers.designModeOnDragEvent();
 			Routers.populateDesignModeTab();
 		} else if (id == "previewTab") {
 			Main.formView.loadModelInSessionForPreview();

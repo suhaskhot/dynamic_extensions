@@ -101,14 +101,13 @@ var AdvancedControlPropertiesBizLogic = {
 			}));
 		}
 	},
-	
+
 	loadSkipRules : function(model) {
 		var skipRules = model.get('skipRules');
 		for ( var key in skipRules) {
 			// var skipRule = skipRules[key];
-			Main.advancedControlsView.addSkipRuleToTable(
-					skipRules[key], key);
-			
+			Main.advancedControlsView.addSkipRuleToTable(skipRules[key], key);
+
 		}
 		$("#pvs").trigger("liszt:updated");
 		$("#controlledField").trigger("liszt:updated");

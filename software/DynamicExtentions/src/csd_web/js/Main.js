@@ -38,6 +38,12 @@ var Main = {
 			el : $('#advancedControlProperties'),
 			model : null
 		});
+		// init design mode
+		Main.designModeViewPointer = new Views.DesignMode({
+			el : $("#design")
+		});
+		Routers.designModeOnBeforeDragEvent();
+		Routers.designModeOnDragEvent();
 
 	}
 }

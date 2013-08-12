@@ -33,7 +33,7 @@
 </script>
 <title>CSD Preview</title>
 </head>
-<body style = "font-size : 20px;">
+<body>
 	<%
 	ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
 			"sessionContainer");

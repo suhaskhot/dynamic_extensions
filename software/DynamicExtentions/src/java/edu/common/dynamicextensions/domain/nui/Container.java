@@ -998,7 +998,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		htmlForGrid.append((formDataList != null ? formDataList.size() : 0));
 		htmlForGrid.append("'/>");
 		//2: update sub form heading
-		htmlForGrid.append("<tr width='100%'> <td " + "class='formFieldContainer_withoutBorder' colspan='100'"
+		htmlForGrid.append("<tr width='100%'> <td " + " colspan='100'"
 				+ " align='center'> <table cellpadding='3' cellspacing='0' " + "align='center' width='100%'>");
 
 		if (showCaption) {

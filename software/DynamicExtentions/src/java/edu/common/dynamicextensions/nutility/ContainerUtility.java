@@ -31,7 +31,7 @@ public class ContainerUtility {
 				if (subFormLog.anyChanges()) {
 					changeLog.getEditedSubCtrls().put(oldCtrl.getName(), subFormLog);
 				}
-			} else if (!oldCtrl.equals(newCtrl)) {
+			} else if (oldCtrl != null && !oldCtrl.equals(newCtrl)) {
 				changeLog.getEditedCtrls().add(newCtrl);
 			}
 		}

@@ -22,7 +22,7 @@ public class VersionedContainerDao {
 			List<Long> params = Collections.singletonList(draftContainerId);
 			rs = jdbcDao.getResultSet(GET_FORM_ID_BY_DRAFT_CONTAINER_ID_SQL, params);
 			if (rs.next()) {
-				formId = rs.getLong(1);
+				formId = rs.getLong("IDENTIFIER");
 			}
 			
 			return formId;
@@ -74,7 +74,7 @@ public class VersionedContainerDao {
 		
 		try {
 			List<Object> params = new ArrayList<Object>();
-			if (info.getFormId() != null) {
+			if (info.getFormId() == null) {
 				rs = jdbcDao.getResultSet(GET_NEXT_ID_SQL, null);
 				if (rs.next()) {
 					info.setFormId(rs.getLong(1));
@@ -102,10 +102,10 @@ public class VersionedContainerDao {
 	throws Exception {
 		VersionedContainerInfo info = new VersionedContainerInfo();
 		info.setFormId(formId);
-		info.setContainerId(rs.getLong(1));
-		info.setActivationDate(rs.getDate(2));
-		info.setCreatedBy(rs.getLong(3));
-		info.setCreationTime(rs.getDate(4));
+		info.setContainerId(rs.getLong("CONTAINER_ID"));
+		info.setActivationDate(rs.getDate("ACTIVATION_DATE"));
+		info.setCreatedBy(rs.getLong("CREATED_BY"));
+		info.setCreationTime(rs.getDate("CREATE_TIME"));		
 		info.setStatus(status);
 		return info;		
 	}

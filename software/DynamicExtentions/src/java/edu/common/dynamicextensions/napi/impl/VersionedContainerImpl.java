@@ -226,6 +226,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		VersionedContainerInfo vc = new VersionedContainerInfo();
 		vc.setFormId(formId);
 		vc.setContainerId(publishedContainerId);
+		vc.setActivationDate(activationDate);
 		vc.setCreatedBy(usrCtx.getUserId());
 		vc.setCreationTime(Calendar.getInstance().getTime());
 		vc.setStatus("published");

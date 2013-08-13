@@ -153,7 +153,7 @@ public class DatePicker extends Control {
 		if (!StringUtils.equals(format, other.format) ||
 			showCalendar != other.showCalendar ||
 			(defaultDate == null && other.defaultDate != null) ||
-			!defaultDate.equals(other.defaultDate) ||
+			(defaultDate != null && !defaultDate.equals(other.defaultDate)) ||
 			defaultDateType != other.defaultDateType) {
 			return false;
 		}

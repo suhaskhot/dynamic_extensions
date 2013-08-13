@@ -55,12 +55,13 @@ public class PvVersion {
 		}
 		
 		PvVersion other = (PvVersion) obj;
+				
 		if ((activationDate == null && other.activationDate != null) ||
-		    !activationDate.equals(other.activationDate) ||
+		    (activationDate != null &&  !activationDate.equals(other.activationDate)) ||
 		    (defaultValue == null && other.defaultValue != null) ||
-		    !defaultValue.equals(other.defaultValue) ||
+		    (defaultValue != null && !defaultValue.equals(other.defaultValue)) ||
 		    (permissibleValues == null && other.permissibleValues != null) ||
-		    !permissibleValues.equals(other.permissibleValues)) {
+		    (permissibleValues != null && !permissibleValues.equals(other.permissibleValues))) {
 			return false;
 		}
 		

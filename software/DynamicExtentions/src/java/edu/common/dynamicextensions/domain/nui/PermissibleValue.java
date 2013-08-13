@@ -82,7 +82,7 @@ public class PermissibleValue {
 		PermissibleValue other = (PermissibleValue) obj;
 		if (!StringUtils.equals(optionName, other.optionName) ||
 			(numericCode == null && other.numericCode != null) ||
-			!numericCode.equals(other.numericCode) ||
+			(numericCode != null && !numericCode.equals(other.numericCode)) ||
 			!StringUtils.equals(definitionSource, other.definitionSource) ||
 			!StringUtils.equals(conceptCode, other.conceptCode) ||
 			!StringUtils.equals(value, other.value)) {

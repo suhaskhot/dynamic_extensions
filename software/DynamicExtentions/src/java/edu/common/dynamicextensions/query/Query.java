@@ -106,14 +106,4 @@ public class Query {
 
         return columns;
     }
-
-    private String getCountSql() {
-        QueryGenerator gen = new QueryGenerator();
-        return gen.getCountSql(queryExpr, queryJoinTree);
-    }
-
-    private String getDataSql(int start, int numRows) {
-        QueryGenerator gen = new QueryGenerator();
-        return gen.getDataSql(queryExpr, queryJoinTree, start, numRows);
-    }
 }

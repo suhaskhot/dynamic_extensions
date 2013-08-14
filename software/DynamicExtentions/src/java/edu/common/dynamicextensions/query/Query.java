@@ -100,8 +100,8 @@ public class Query {
         ResultSetMetaData rsmd = rs.getMetaData();
         String columns[] = new String[rsmd.getColumnCount()];
         
-        for (int i = 1; i <= columns.length; i++) {
-            columns[i] = rsmd.getColumnLabel(i);
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = rsmd.getColumnLabel(i + 1);
         }
 
         return columns;

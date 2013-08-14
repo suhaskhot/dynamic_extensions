@@ -34,7 +34,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container: " + formId, e);
 		} finally {
-			if (jdbcDao != null) {
+			if (this.jdbcDao == null && jdbcDao != null) {
 				jdbcDao.close();
 			}
 		}
@@ -54,7 +54,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container: " + formId, e);
 		} finally {
-			if (jdbcDao != null) {
+			if (this.jdbcDao == null && jdbcDao != null) {
 				jdbcDao.close();
 			}
 		}
@@ -98,7 +98,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining draft container:" + formId, e);
 		} finally {
-			if (jdbcDao != null) {
+			if (this.jdbcDao == null && jdbcDao != null) {
 				jdbcDao.close();
 			}
 		}
@@ -131,7 +131,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving draft container:" + draftContainerId, e);
 		} finally {
-			if (jdbcDao != null) {
+			if (this.jdbcDao == null && jdbcDao != null) {
 				jdbcDao.close();
 			}
 		}		
@@ -164,7 +164,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving container retrospectively:" + formId, e);
 		} finally {
-			if (jdbcDao != null) {
+			if (this.jdbcDao == null && jdbcDao != null) {
 				jdbcDao.close();
 			}
 		}				
@@ -210,7 +210,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving container prospectively:" + formId, e);
 		} finally {
-			if (jdbcDao != null) {
+			if (this.jdbcDao == null && jdbcDao != null) {
 				jdbcDao.close();
 			}
 		}						

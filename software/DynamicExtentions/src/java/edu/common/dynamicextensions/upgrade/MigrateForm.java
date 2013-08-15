@@ -33,7 +33,7 @@ import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
-import edu.common.dynamicextensions.domain.nui.Page;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.UserContext;
@@ -49,7 +49,6 @@ import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
-import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.domain.nui.TextField;
 import edu.common.dynamicextensions.domain.userinterface.SurveyModeLayout;
@@ -313,17 +312,15 @@ public class MigrateForm {
 		SurveyModeLayout layout = (SurveyModeLayout)((CategoryEntityInterface)oldForm.getAbstractEntity())
 				.getCategory().getLayout();
 		
-		SurveyContainer newForm = new SurveyContainer();
+		Container newForm = new Container();
 		newForm.setCaption(oldForm.getCaption());
 		newForm.setName(getEntityName(oldForm.getAbstractEntity()));
 		
 		FormMigrationCtxt formMigrationCtxt = new FormMigrationCtxt();
 		formMigrationCtxt.newForm = newForm;
 		
-		int i = 1, seqOffset = 0;
+		int seqOffset = 0, lastSeq = 0;
 		for (edu.common.dynamicextensions.domain.userinterface.Page page : layout.getPageCollection()) {
-			Page newPage = newForm.createPage("page" + i, page.getDescription());
-			
 			for (ControlInterface oldCtrl : page.getControlCollection()) {
 				Control newCtrl = null;
 				Object mapCtxt = null;
@@ -331,7 +328,7 @@ public class MigrateForm {
 				if (oldCtrl.getHeading() != null) {
 					Label heading = getHeading(oldCtrl);
 					heading.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
-					newPage.addControl(getHeading(oldCtrl));
+					newForm.addControl(getHeading(oldCtrl));
 					
 					seqOffset++;
 				}
@@ -339,7 +336,7 @@ public class MigrateForm {
 				if (oldCtrl.getFormNotes() != null) {
 					for (Label note : getNotes(oldCtrl)) {
 						note.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
-						newPage.addControl(note);
+						newForm.addControl(note);
 						seqOffset++;
 					}				
 				}
@@ -358,11 +355,18 @@ public class MigrateForm {
 				}
 
 				newCtrl.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
-				newPage.addControl(newCtrl);
+				newForm.addControl(newCtrl);
 				formMigrationCtxt.fieldMap.put(oldCtrl.getBaseAbstractAttribute(), mapCtxt);				
+
+				lastSeq = oldCtrl.getSequenceNumber() + seqOffset;
 			}
+
+			PageBreak pageBreak = new PageBreak();
+			pageBreak.setName("pgBrk" + (lastSeq + 1));
+			pageBreak.setSequenceNumber(lastSeq + 1);
+			newForm.addControl(pageBreak);
+			seqOffset++;
 			
-			++i;
 		}
 		
 		return formMigrationCtxt;

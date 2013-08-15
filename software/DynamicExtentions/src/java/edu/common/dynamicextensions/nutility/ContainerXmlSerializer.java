@@ -36,6 +36,7 @@ import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
@@ -182,6 +183,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		serializerMap.put(MultiSelectListBox.class,  new ListBoxSerializer());
 		serializerMap.put(ListBox.class,  			 new ListBoxSerializer());
 		serializerMap.put(SubFormControl.class,      new SubFormControlSerializer());
+		serializerMap.put(PageBreak.class, 			 new PageBreakSerializer());
 	}
 	
 	private static Map<Class<?>, String> initializeSkipActionNameMap() {
@@ -467,6 +469,13 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 
 			serializeView(sfCtrl.getSubContainer());			
 			writeElementEnd(writer, "subForm");
+		}
+	}
+	
+	private class PageBreakSerializer extends ControlSerializer {
+		public void serialize(Control ctrl) {
+			writeElementStart(writer, "pageBreak");
+			writeElementEnd(writer, "pageBreak");			
 		}
 	}
 	

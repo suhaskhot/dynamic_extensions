@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.common.dynamicextensions.domain.nui;
 
 import java.util.ArrayList;
@@ -28,20 +25,12 @@ import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.nutility.ContainerParser;
+import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 
-public class Container extends DynamicExtensionBaseDomainObject {
-	
-	private static final String EMPTY_ROW_HTML = "<tr><td height='7'></td></tr>";
-
-	private static final String CLOSE_ROW_HTML = "</table></td></tr></tbody>";
-
-	private static final String TBODY_TAG = "<tbody id='%s_tbody'>";
-
-	private static final String CONTROL_ROW_HTML_START_TAG = "<tr valign='center' style='%s'/>";
-
+public class Container extends DynamicExtensionBaseDomainObject {	
 	private static final long serialVersionUID = 449976852456002554L;
 		
 	private String name;
@@ -193,6 +182,19 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		
 		skipRules.remove(i);
+	}
+	
+	public boolean isSurveyForm() {
+		boolean result = false;
+		
+		for (Control ctrl : controlsMap.values()) {
+			if (ctrl instanceof PageBreak) {
+				result = true;
+				break;
+			}
+		}
+		
+		return result;
 	}
 			
 	@Override
@@ -579,8 +581,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		//
 		List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 		for (Control ctrl : addLog) {
-			boolean isMultiValuedControl = ctrl instanceof MultiSelectControl || ctrl instanceof SubFormControl; 
-			if (!isMultiValuedControl ) {
+			boolean isMultiValuedControl = ctrl instanceof MultiSelectControl || ctrl instanceof SubFormControl;
+			boolean nonDataColumn = ctrl instanceof Label || ctrl instanceof PageBreak;
+			if (!isMultiValuedControl && !nonDataColumn) {
 				columnDefs.addAll(ctrl.getColumnDefs());
 			}
 		}
@@ -790,7 +793,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 
 	public String render(Map<ContextParameter, String> contextParameter, FormData formData) {
-
+		if (isSurveyForm()) {
+			return renderSurveyForm(contextParameter, formData);
+		}
+		
 		final StringBuffer containerHTML = new StringBuffer(128);
 		/*FIXME handling for override container caption */
 		boolean addCaption = true;
@@ -1193,7 +1199,82 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}		
 	}
 	
+	 
+	public String renderSurveyForm(Map<ContextParameter, String> contextParameter, FormData formData) {
+		String categorydiv = "<div><div id='sm-pages'>%s</div></div>";
+		String pagediv = "<div class='sm-page' id='%d' style='display:none'>%s</div>";
+		StringBuilder pages = new StringBuilder();
+		StringBuilder categoryHtml = new StringBuilder(renderHiddenInputs(formData));
 
+		for (Page p : getPages()) {
+			pages.append(String.format(pagediv, p.getId().longValue(), p.render(formData, contextParameter)));
+		}
+
+		categoryHtml.append(String.format(categorydiv, pages.toString()));
+		return categoryHtml.toString();
+	}
+	
+	private String renderHiddenInputs(FormData formData) throws NumberFormatException {
+		String containerIdentifier = String.format(CONTAINER_ID, getId());
+		String formCaption = String.format(FORM_CAPTION, getCaption());
+		String controlsCount = String.format(CONTROL_COUNT, FormDataUtility.getFilledControlCount(formData));
+		String emptyControlsCount = String.format(EMPTY_CONTROL_COUNT, FormDataUtility.getEmptyControlCount(formData));
+		String displayPage = String.format(DISPLAY_PAGE, getFirstEmptyPage(formData));
+
+		StringBuilder results = new StringBuilder();
+		results.append(containerIdentifier);
+		results.append(formCaption);
+		results.append(controlsCount);
+		results.append(emptyControlsCount);
+		results.append(displayPage);
+		return results.toString();
+	}
+	
+	private long getFirstEmptyPage(FormData data) {
+		long result = -1L, pageId = 1L;
+		for (Control ctrl : getOrderedControlList()) {
+			if (ctrl instanceof PageBreak) {
+				pageId++;
+				continue;
+			}
+			
+			if (data.getFieldValue(ctrl.getName()).isEmpty()) {
+				result = pageId;
+				break;
+			}
+		}
+		
+		return result;
+	}
+	
+	public List<Page> getPages() {
+		List<Page> pages = new ArrayList<Page>();		
+		Long pageId = 1L;
+		
+		Page page = new Page();
+		page.setId(pageId);
+		
+		for (Control ctrl :getOrderedControlList()) {
+			if (ctrl instanceof PageBreak) {
+				if (!page.isEmptyPage()) {
+					pages.add(page);
+				}
+				
+				++pageId;
+				page = new Page();
+				page.setId(pageId);				
+			} else {
+				page.addControl(ctrl);
+			}
+		}
+		
+		if (!page.isEmptyPage()) {
+			pages.add(page);
+		}
+		
+		return pages;
+	}
+		
 	//
 	// Works if the input control belongs to container
 	// on which this method is invoked
@@ -1270,4 +1351,21 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return subFormControl;
 	}
 	
+	private static final String EMPTY_ROW_HTML = "<tr><td height='7'></td></tr>";
+
+	private static final String CLOSE_ROW_HTML = "</table></td></tr></tbody>";
+
+	private static final String TBODY_TAG = "<tbody id='%s_tbody'>";
+
+	private static final String CONTROL_ROW_HTML_START_TAG = "<tr valign='center' style='%s'/>";
+	
+	private static final String CONTAINER_ID = "<input type='hidden' id='containerIdentifier' name='containerIdentifier'  value='%d'></input>";
+
+	private static final String FORM_CAPTION = "<input type='hidden' id='categoryName' value='%s'></input>";
+
+	private static final String CONTROL_COUNT = "<input type='hidden' id='controlsCount' value='%d'></input>";
+
+	private static final String EMPTY_CONTROL_COUNT = "<input type='hidden' id='emptyControlsCount' value='%d'></input>";
+
+	private static final String DISPLAY_PAGE = "<input type='hidden' id='displayPage' name='displayPage'  value='%d'></input>";	
 }

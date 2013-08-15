@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
-import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
@@ -60,7 +59,6 @@ public class FormRenderer implements LayoutRenderer {
 
 	@Override
 	public String render() {
-
 		FormDataUtility.evaluateSkipLogic(formDataStack.peek());
 		return container.render(contextParameter, formDataStack.peek());
 
@@ -154,8 +152,7 @@ public class FormRenderer implements LayoutRenderer {
 
 	public String getForward() {
 		String forward = "/pages/de/dataEntry/dataEntry.jsp";
-
-		if (container instanceof SurveyContainer) {
+		if (container != null && container.isSurveyForm()) {
 			forward = "/pages/de/surveymode.jsp";
 		}
 		return forward;

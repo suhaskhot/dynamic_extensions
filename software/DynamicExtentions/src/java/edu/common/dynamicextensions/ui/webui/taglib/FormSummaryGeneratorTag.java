@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 
-import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.summary.AbstractSummaryDataManager;
 import edu.common.dynamicextensions.summary.ColumnFormatter;
 import edu.common.dynamicextensions.summary.DefaultSummaryDataManager;
@@ -41,7 +40,7 @@ public class FormSummaryGeneratorTag extends DynamicExtensionsFormBaseTag {
 	}
 
 	private void populateData() {
-		if (formData.getContainer() instanceof SurveyContainer) {
+		if (formData.getContainer() != null && formData.getContainer().isSurveyForm()) {
 			dataManager = new SurveySummaryDataManager(formData, pageContext);
 		} else {
 			dataManager = new DefaultSummaryDataManager();

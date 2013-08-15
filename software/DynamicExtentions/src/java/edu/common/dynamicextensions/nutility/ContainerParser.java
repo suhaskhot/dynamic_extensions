@@ -20,7 +20,6 @@ import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
-import edu.common.dynamicextensions.domain.nui.Control.LabelPosition;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.DatePicker.DefaultDateType;
@@ -30,7 +29,7 @@ import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
-import edu.common.dynamicextensions.domain.nui.Page;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
@@ -42,7 +41,6 @@ import edu.common.dynamicextensions.domain.nui.SkipRuleBuilder.ActionBuilder;
 import edu.common.dynamicextensions.domain.nui.SkipRuleBuilder.ConditionBuilder;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
-import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.domain.nui.TextField;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
@@ -68,19 +66,12 @@ public class ContainerParser {
 		NodeList nodes = doc.getElementsByTagName("view");
 		Node viewNode = nodes.item(0);
 
-		Container container = null;
-
-		nodes = doc.getElementsByTagName("survey-form");
-		if (nodes != null && nodes.getLength() == 1) {
-			container = parseSurveyContainer((Element) viewNode);
-		} else {
-			container = parseContainer((Element) viewNode);
-		}
-
+		Container container = parseContainer((Element) viewNode, true);
 		nodes = doc.getElementsByTagName("skipRules");
 		if (nodes != null && nodes.getLength() == 1) {
 			parseAndSetSkipRules(container, (Element) nodes.item(0));
 		}
+		
 		updateCalculatedSourceControls(container, container);
 		return container;
 	}
@@ -109,7 +100,7 @@ public class ContainerParser {
 		}
 	}
 
-	private Container parseContainer(Element viewElement) {
+	private Container parseContainer(Element viewElement, boolean topLevel) {
 		Container container = new Container();
 		int currentRow = 0;
 		
@@ -129,76 +120,16 @@ public class ContainerParser {
 				for (Control control : controls) {
 					container.addControl(control);
 				}				
+			} else if (topLevel && row.getNodeName().equals("pageBreak")) {
+				++currentRow;
+				PageBreak pageBreak = new PageBreak();
+				pageBreak.setName("pgBrk" + currentRow);
+				pageBreak.setSequenceNumber(currentRow);
+				container.addControl(pageBreak);
 			}
 		}
+		
 		return container;
-	}
-
-	private Container parseSurveyContainer(Element viewElement) {
-		SurveyContainer surveyContainer = new SurveyContainer();
-		
-		surveyContainer.useAsDto();
-		setContainerProps(surveyContainer, viewElement);
-		
-		NodeList viewNodes = viewElement.getChildNodes();
-		for (int i = 0; i < viewNodes.getLength(); ++i) {
-
-			if (viewNodes.item(i).getNodeType() != Node.ELEMENT_NODE) {
-				continue;
-			}
-
-			Node pageElement = viewNodes.item(i);
-
-			if (pageElement.getNodeName().equals("page")) {
-				Page page = new Page();
-				setPageProps((Element) pageElement, page);
-				page.setContainer(surveyContainer);
-				surveyContainer.addPage(page);
-				parsePage(page, (Element) pageElement);
-
-			}
-		}		
-		return surveyContainer;
-	}
-
-	protected void setPageProps(Element pageElement, Page page) {
-
-		String name = getTextValue(pageElement, "name");
-		if (name == null) {
-			throw new RuntimeException("Page name can't be null");
-		}
-		page.setName(name);
-
-		String caption = getTextValue(pageElement, "caption");
-		if (caption == null) {
-			throw new RuntimeException("Page caption can't be null");
-		}
-		page.setCaption(caption);
-
-	}
-
-	private void parsePage(Page page, Element pageElement) {
-
-		int currentRow = 0;
-
-		NodeList rowList = pageElement.getElementsByTagName("row");
-
-		for (int i = 0; i < rowList.getLength(); i++) {
-			Node row = rowList.item(i);
-
-			if (row.getNodeType() != Node.ELEMENT_NODE) {
-				continue;
-			}
-
-			if (row.getNodeName().equals("row")) {
-				List<Control> controls = parseFormRow(row, ++currentRow);
-
-				for (Control control : controls) {
-					control.setLabelPosition(LabelPosition.TOP);
-					page.addControl(control);
-				}
-			}
-		}
 	}
 
 	private void setContainerProps(Container container, Element viewElement) {
@@ -281,7 +212,7 @@ public class ContainerParser {
 		subForm.setParentKey(getTextValue(subFormEle, "parentKey"));
 		subForm.setForeignKey(getTextValue(subFormEle, "foreignKey"));
 
-		Container subContainer = parseContainer(subFormEle);
+		Container subContainer = parseContainer(subFormEle, false);
 		subForm.setSubContainer(subContainer);
 		return subForm;
 	}

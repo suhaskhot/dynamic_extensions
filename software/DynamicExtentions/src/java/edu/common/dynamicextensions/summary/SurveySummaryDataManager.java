@@ -9,7 +9,6 @@ import javax.servlet.jsp.PageContext;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.Page;
-import edu.common.dynamicextensions.domain.nui.SurveyContainer;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -27,10 +26,8 @@ public class SurveySummaryDataManager extends AbstractSummaryDataManager {
 	public SurveySummaryDataManager(FormData formData, PageContext pageContext) {
 		this.pageContext = pageContext;
 		this.formData = formData;
-		SurveyContainer surveyContainer = (SurveyContainer) formData.getContainer();
 
-		for (Page page : surveyContainer.getPages()) {
-
+		for (Page page : formData.getContainer().getPages()) {
 			for (Control control : page.getControls()) {
 				controlPageIdMap.put(control, page.getId());
 			}

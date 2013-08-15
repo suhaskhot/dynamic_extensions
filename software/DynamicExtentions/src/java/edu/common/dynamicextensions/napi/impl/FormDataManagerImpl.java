@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.Label;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.napi.ControlValue;
@@ -454,7 +455,7 @@ public class FormDataManagerImpl implements FormDataManager {
 				subFormCtrls.add(ctrl);
 			} else if (ctrl instanceof MultiSelectControl) {
 				multiSelectCtrls.add(ctrl); 
-			} else if (!(ctrl instanceof Label)) {
+			} else if (!(ctrl instanceof Label || ctrl instanceof PageBreak)) {
 				simpleCtrls.add(ctrl);
 			}
 		}

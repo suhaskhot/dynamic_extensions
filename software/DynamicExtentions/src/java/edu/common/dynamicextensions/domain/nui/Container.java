@@ -738,6 +738,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		xstream.alias("numberField", NumberField.class);
 		xstream.alias("stringField", StringTextField.class);
 		xstream.alias("textArea", TextArea.class);
+		xstream.alias("pageBreak", PageBreak.class);
 		
 		xstream.alias("validationRule", ValidationRule.class);
 		xstream.alias("skipRule", SkipRule.class);

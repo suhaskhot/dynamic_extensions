@@ -26,6 +26,62 @@ public class VersionedContainerImpl implements VersionedContainer {
 	}
 	
 	@Override
+	public Long getContainerId(Long formId) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getContainerId(jdbcDao, formId);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container id: " + formId, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}			
+		}
+	}
+	
+	public Long getContainerId(JdbcDao jdbcDao, Long formId) {
+		return getContainerId(jdbcDao, formId, Calendar.getInstance().getTime());
+	}
+	
+	@Override
+	public Long getContainerId(Long formId, Date activationDate) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getContainerId(jdbcDao, formId, activationDate);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container id: " + formId, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}			
+		}		
+	}
+	
+	public Long getContainerId(JdbcDao jdbcDao, Long formId, Date activationDate) {
+		try {
+			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
+			List<VersionedContainerInfo> versionedContainers = vdao.getPublishedContainersInfo(formId);
+			
+			Long resultId = null;
+			Date resultDate = null;
+			for (VersionedContainerInfo info : versionedContainers) {
+				if (info.getActivationDate().before(activationDate) && 
+					(resultDate == null || info.getActivationDate().after(resultDate))) {
+
+					resultId = info.getContainerId();
+					resultDate = info.getActivationDate();
+				}
+			}
+			
+			return resultId;			
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining published container: " + formId, e);
+		}		
+	}
+	
+	@Override
 	public Container getContainer(Long formId) {
 		JdbcDao jdbcDao = null;
 		try {
@@ -61,32 +117,43 @@ public class VersionedContainerImpl implements VersionedContainer {
 	}
 	
 	public Container getContainer(JdbcDao jdbcDao, Long formId, Date activationDate) {		
-		Container published = null;
-		
 		try {
-			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
-			List<VersionedContainerInfo> versionedContainers = vdao.getPublishedContainersInfo(formId);
-			
-			Long resultId = null;
-			Date resultDate = null;
-			for (VersionedContainerInfo info : versionedContainers) {
-				if (info.getActivationDate().before(activationDate) && 
-					(resultDate == null || info.getActivationDate().after(resultDate))) {
-
-					resultId = info.getContainerId();
-					resultDate = info.getActivationDate();
-				}
-			}
-			
-			if (resultId != null) {
+			Container published = null;
+			Long publishedId = getContainerId(jdbcDao, formId, activationDate);
+			if (publishedId != null) {
 				ContainerDao cdao = new ContainerDao(jdbcDao);
-				published = cdao.getById(resultId);				
+				published = cdao.getById(publishedId);								
 			}
-			
+
 			return published;
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining published container: " + formId, e);
 		} 
+	}
+		
+	@Override
+	public Long getDraftContainerId(Long formId) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getDraftContainerId(jdbcDao, formId);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining draft container:" + formId, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}
+		}		
+	}
+	
+	public Long getDraftContainerId(JdbcDao jdbcDao, Long formId) {		
+		try {
+			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
+			VersionedContainerInfo info = vdao.getDraftContainerInfo(formId);			
+			return (info != null) ? info.getContainerId() : null; 
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtainer draft container:" + formId, e);
+		}		
 	}
 	
 	@Override
@@ -104,16 +171,13 @@ public class VersionedContainerImpl implements VersionedContainer {
 		}
 	}
 	
-	public Container getDraftContainer(JdbcDao jdbcDao, Long formId) {
-		Container draft = null;
-		
+	public Container getDraftContainer(JdbcDao jdbcDao, Long formId) {		
 		try {
-			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
-			VersionedContainerInfo info = vdao.getDraftContainerInfo(formId);
-			
-			if (info != null) {
+			Container draft = null;
+			Long draftContainerId = getDraftContainerId(jdbcDao, formId);
+			if (draftContainerId != null) {
 				ContainerDao cdao = new ContainerDao(jdbcDao);
-				draft = cdao.getById(info.getContainerId());
+				draft = cdao.getById(draftContainerId);
 			}
 			
 			return draft;

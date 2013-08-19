@@ -6,9 +6,15 @@ import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 
 public interface VersionedContainer {
+	public Long getContainerId(Long formId);
+	
+	public Long getContainerId(Long formId, Date activationDate);
+	
 	public Container getContainer(Long formId);
 	
 	public Container getContainer(Long formId, Date activationDate);
+	
+	public Long getDraftContainerId(Long formId);
 	
 	public Container getDraftContainer(Long formId);
 	

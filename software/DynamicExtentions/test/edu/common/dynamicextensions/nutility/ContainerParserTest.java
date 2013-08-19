@@ -328,7 +328,6 @@ public class ContainerParserTest {
 	protected void addControl(Container container, Control ctrl, int seqNo, int xPos) {
 		ctrl.setSequenceNumber(seqNo);
 		ctrl.setxPos(xPos);
-		ctrl.setDbColumnName(null);
 		container.addControl(ctrl);		
 	}
 	

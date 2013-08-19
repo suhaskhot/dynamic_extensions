@@ -5,12 +5,16 @@ import java.io.FileOutputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
@@ -33,6 +37,7 @@ import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
@@ -98,6 +103,7 @@ import edu.common.dynamicextensions.napi.FileControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
+import edu.common.dynamicextensions.napi.impl.VersionedContainerImpl;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.nutility.DeleteOnCloseFileInputStream;
 import edu.common.dynamicextensions.nutility.IoUtil;
@@ -129,6 +135,16 @@ public class MigrateForm {
 				new HashMap<BaseAbstractAttributeInterface, Object>();
 	}
 	
+	private class SelectCtrlPvDataSource {
+		private SelectControl selectCtrl;
+		
+		private PvDataSource pvDataSource;
+		
+		public String toString() {
+			return selectCtrl.getName();
+		}
+	}
+	
 	private static Logger logger = Logger.getLogger(MigrateForm.class);
 	
 	private static EntityCache entityCache = null;
@@ -140,6 +156,11 @@ public class MigrateForm {
 	private boolean verticalCtrlAlignment = false;
 	
 	private UserContext usrCtx = null;
+	
+	
+	private Map<Date, List<SelectCtrlPvDataSource>> versionedCtrls = new TreeMap<Date, List<SelectCtrlPvDataSource>>();
+	
+	//private Map<Date, >
 	
 	static {
 		entityCache = EntityCache.getInstance();
@@ -178,7 +199,8 @@ public class MigrateForm {
 		if (newFormId == null) {
 			return;
 		}
-
+		
+		logger.info("Versioned controls for form newFormId " + newFormId + " are : " + versionedCtrls);
 		migrateFormData(container, formMigrationCtxt, formCtxtTbl, recEntityId);		
 		updateFormContext(container.getId(), newFormId);		
 	}
@@ -329,7 +351,6 @@ public class MigrateForm {
 					Label heading = getHeading(oldCtrl);
 					heading.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
 					newForm.addControl(getHeading(oldCtrl));
-					
 					seqOffset++;
 				}
 				
@@ -357,7 +378,6 @@ public class MigrateForm {
 				newCtrl.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
 				newForm.addControl(newCtrl);
 				formMigrationCtxt.fieldMap.put(oldCtrl.getBaseAbstractAttribute(), mapCtxt);				
-
 				lastSeq = oldCtrl.getSequenceNumber() + seqOffset;
 			}
 
@@ -366,7 +386,6 @@ public class MigrateForm {
 			pageBreak.setSequenceNumber(lastSeq + 1);
 			newForm.addControl(pageBreak);
 			seqOffset++;
-			
 		}
 		
 		return formMigrationCtxt;
@@ -668,7 +687,7 @@ public class MigrateForm {
 	
 	private void setSelectProps(SelectControl newCtrl, SelectInterface oldCtrl) {
 		setCtrlProps(newCtrl, oldCtrl);
-		newCtrl.setPvDataSource(getPvDataSource(oldCtrl));		
+		newCtrl.setPvDataSource(getPvDataSource(newCtrl, oldCtrl));		
 	}
 	
 	private void setCtrlProps(Control newCtrl, ControlInterface oldCtrl) {
@@ -812,10 +831,10 @@ public class MigrateForm {
 		return attr.getAttributeTypeInformation();
 	}
 	
-	private PvDataSource getPvDataSource(SelectInterface selectCtrl) {
+	private PvDataSource getPvDataSource(SelectControl newSelectCtrl, SelectInterface selectCtrl) {
 		AttributeTypeInformationInterface attrInfo = getDataType(selectCtrl);
 
-		PvDataSource pvDataSource = new PvDataSource();		
+		PvDataSource result = null;		
 		
 		DataType dataType = DataType.STRING;
 		String dateFormat = null;		
@@ -832,16 +851,9 @@ public class MigrateForm {
 			dataType = DataType.INTEGER;
 		}
 
-		pvDataSource.setDataType(dataType);
-		pvDataSource.setDateFormat(dateFormat);
-		
-		CategoryAttributeInterface cattr = (CategoryAttributeInterface)selectCtrl.getBaseAbstractAttribute();	
-		for (DataElementInterface dataElement : cattr.getDataElementCollection()) {
-			if (!(dataElement instanceof UserDefinedDEInterface)) {
-				continue;
-			}
-			
-			UserDefinedDEInterface userDataElement = (UserDefinedDEInterface)dataElement;
+		//pvDataSource.setDataType(dataType);
+		//pvDataSource.setDateFormat(dateFormat);		
+		for (UserDefinedDEInterface userDataElement : getUserDataElements(selectCtrl)) {			
 			List<PermissibleValue> pvs = getPvs(userDataElement);
 				
 			PvVersion pvVersion = new PvVersion();
@@ -849,12 +861,13 @@ public class MigrateForm {
 			pvVersion.setPermissibleValues(pvs);
 				
 			Collection<PermissibleValueInterface> defPvs = userDataElement.getDefaultPermissibleValues();
-			if (defPvs != null) {				
-				if (defPvs.size() > 0) {
-					pvVersion.setDefaultValue(getPv(defPvs.iterator().next()));
-				}								
+			if (defPvs != null && defPvs.size() > 0) {				
+				pvVersion.setDefaultValue(getPv(defPvs.iterator().next()));								
 			}
-				
+			
+			PvDataSource pvDataSource = new PvDataSource();
+			pvDataSource.setDataType(dataType);
+			pvDataSource.setDateFormat(dateFormat);
 			pvDataSource.getPvVersions().add(pvVersion);
 			
 			if (bool(userDataElement.getIsOrdered())) {
@@ -864,11 +877,63 @@ public class MigrateForm {
 				} else {
 					pvDataSource.setOrdering(Ordering.ASC);
 				}
-			}						
+			}
+			
+			Date versionDate = getEpochDate();
+			if (pvVersion.getActivationDate() != null) {
+				versionDate = timeTrimmedDate(pvVersion.getActivationDate());
+			}
+			
+			List<SelectCtrlPvDataSource> selectCtrls = versionedCtrls.get(versionDate);
+			if (selectCtrls == null) {		
+				selectCtrls = new ArrayList<SelectCtrlPvDataSource>();
+				versionedCtrls.put(versionDate, selectCtrls);
+			}
+				
+			SelectCtrlPvDataSource pvSource = new SelectCtrlPvDataSource();
+			pvSource.selectCtrl   = newSelectCtrl;
+			pvSource.pvDataSource = pvDataSource;
+			selectCtrls.add(pvSource);
+
+			result = pvDataSource;
 		}
 				
-		return pvDataSource;
-	}	
+		return result;
+	}
+	
+	private List<UserDefinedDEInterface> getUserDataElements(SelectInterface selectCtrl) {
+		CategoryAttributeInterface cattr = (CategoryAttributeInterface)selectCtrl.getBaseAbstractAttribute();
+		List<UserDefinedDEInterface> userDataElements = new ArrayList<UserDefinedDEInterface>();
+		for (DataElementInterface dataElement : cattr.getDataElementCollection()) {			
+			if (!(dataElement instanceof UserDefinedDEInterface)) {
+				continue;
+			}
+			
+			userDataElements.add((UserDefinedDEInterface)dataElement);
+		}
+		
+		Collections.sort(userDataElements, new Comparator<UserDefinedDEInterface>() {
+			@Override
+			public int compare(UserDefinedDEInterface arg0,	UserDefinedDEInterface arg1) {
+				if (arg0.getActivationDate() == null && arg1.getActivationDate() == null) {
+					return 0;
+				} else if (arg0.getActivationDate() == null && arg1.getActivationDate() != null) {
+					return -1;
+				} else if (arg0.getActivationDate() != null && arg1.getActivationDate() == null) {
+					return 1;
+				} else if (arg0.getActivationDate().equals(arg1.getActivationDate())) {
+					return 0;
+				} else if (arg0.getActivationDate().before(arg1.getActivationDate())) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		});
+		
+		return userDataElements;
+		
+	}
 	
 	private List<PermissibleValue> getPvs(UserDefinedDEInterface userDataElement) {
 		List<PermissibleValue> result = new ArrayList<PermissibleValue>();
@@ -899,6 +964,16 @@ public class MigrateForm {
 		}
 		
 		return newPv;		
+	}
+	
+	private Date timeTrimmedDate(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
 	}
 	
 	private String getEntityName(AbstractEntityInterface entity) {
@@ -1211,22 +1286,61 @@ public class MigrateForm {
 		
 	private Long saveForm(Container container) 
 	throws Exception {
-		JDBCDAO jdbcDao = null;
-		Long newFormId = null;
+		JDBCDAO dao = null;
+		JdbcDao jdbcDao = null;
+		Long formId = null;		
+		VersionedContainerImpl versionedForm = new VersionedContainerImpl();
+		
 		try {
-			jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-			newFormId = container.save(usrCtx, new JdbcDao(jdbcDao));
-			logger.info("Saved container: " + newFormId + ", name: " + container.getName());
-			jdbcDao.commit();
+			dao = DynamicExtensionsUtility.getJDBCDAO(null);
+			jdbcDao = new JdbcDao(dao);
+			versionedForm.setJdbcDao(jdbcDao);
+			
+			if (versionedCtrls.isEmpty()) {
+				versionedCtrls.put(getEpochDate(), Collections.<SelectCtrlPvDataSource>emptyList());
+			}
+			
+			Long draftContainerId = null;
+			for (Map.Entry<Date, List<SelectCtrlPvDataSource>> selectCtrls : versionedCtrls.entrySet()) {
+				for (SelectCtrlPvDataSource selectCtrl : selectCtrls.getValue()) {
+					setControlPv(container, selectCtrl);
+				}
+				
+				if (draftContainerId == null) {
+					draftContainerId = container.save(usrCtx, jdbcDao);
+					formId = versionedForm.saveAsDraft(jdbcDao, usrCtx, draftContainerId);
+				} else {
+					container.save(usrCtx, jdbcDao);
+				}
+				
+				versionedForm.publishProspective(jdbcDao, usrCtx, formId, selectCtrls.getKey());				
+			}
+			
+			dao.commit();
+			jdbcDao.close();
 		} catch (Exception e) {
 			logger.error("Error saving container", e);
 		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.closeSession();
-			}
+			DynamicExtensionsUtility.closeDAO(dao);
 		}
 		
-		return newFormId;		
+		return formId;		
+	}
+	
+	private Date getEpochDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(0L);
+		return cal.getTime();
+	}
+	
+	private void setControlPv(Container container, SelectCtrlPvDataSource selectPvDs) {
+		for (Control ctrl : container.getAllControls()) {
+			if (selectPvDs.selectCtrl == ctrl) {
+				SelectControl selectCtrl = (SelectControl)ctrl;
+				selectCtrl.setPvDataSource(selectPvDs.pvDataSource);
+				break;
+			}
+		}
 	}
 	
 	private List<ContainerInterface> getAllChildAndSubContainers(ContainerInterface container) {

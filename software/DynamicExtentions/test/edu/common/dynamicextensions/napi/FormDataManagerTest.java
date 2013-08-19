@@ -186,13 +186,13 @@ public class FormDataManagerTest {
 	 */
 	@Test
 	public void testSaveFormData() {
-		mockIdGeneration("USER_PROFILES", 9933L);
+		mockIdGeneration("RECORD_ID_SEQ", 9933L);
 		mockUpdate(userTableInsertSql, 1);
 		mockUpdate(hobbiesTableDeleteSql, 1);
 		mockUpdate(hobbiesTableInsertSql, 2);
 				
-		mockIdGeneration("USER_ADDRESSES", 11L);
-		mockIdGeneration("USER_ADDRESSES", 12L);
+		mockIdGeneration("RECORD_ID_SEQ", 11L);
+		mockIdGeneration("RECORD_ID_SEQ", 12L);
 		mockUpdate(addressTableInsertSql, 2);
 		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
 		mockUpdate(parkingFacilitiesTableInsertSql, 3);		
@@ -230,8 +230,8 @@ public class FormDataManagerTest {
 		mockUpdate(hobbiesTableDeleteSql, 1);
 		mockUpdate(hobbiesTableInsertSql, 2);
 				
-		mockIdGeneration("USER_ADDRESSES", 11L);
-		mockIdGeneration("USER_ADDRESSES", 12L);
+		mockIdGeneration("RECORD_ID_SEQ", 11L);
+		mockIdGeneration("RECORD_ID_SEQ", 12L);
 		mockUpdate(addressTableInsertSql, 2);
 		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
 		mockUpdate(parkingFacilitiesTableInsertSql, 3);		

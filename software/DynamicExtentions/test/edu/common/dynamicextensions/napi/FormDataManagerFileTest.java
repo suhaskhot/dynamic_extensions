@@ -125,7 +125,7 @@ public class FormDataManagerFileTest {
 	 */
 	@Test
 	public void testSaveFormWithFileData() throws Exception {
-		mockIdGeneration("USER_PROFILES", 9933L);
+		mockIdGeneration("RECORD_ID_SEQ", 9933L);
 		mockUpdate(userTableInsertSql, 1);
 		mockJdbcDao.close();
 		nullifyId(formData);

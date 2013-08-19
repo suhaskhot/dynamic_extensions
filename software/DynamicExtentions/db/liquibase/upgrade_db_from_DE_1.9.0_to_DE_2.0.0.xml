@@ -67,4 +67,34 @@
                     update DYEXTN_ABSTRACT_FORM_CONTEXT set OLD_CONTAINER_ID = CONTAINER_ID
                 </sql>              
         </changeSet>
+
+	<changeSet id="5" author="pawarv"
+		<createTable tableName="DYEXTN_VERSIONED_CONTAINERS">
+			<column name="IDENTIFIER" type="${int.type}">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+
+			<column name="CONTAINER_ID" type="${int.type}">
+				<nullable="false"/>
+			</column>
+
+			<column name="ACTIVATION_DATE" type="${timestamp.type}">
+			</column>
+
+			<column name="CREATED_BY" type="${int.type}">
+			</column>
+
+			<column name="CREATE_TIME" type="${timestamp.type}">
+			</column>
+
+			<column name="STATUS" type="${string.type}(16)">
+			</column>
+		</createTable>
+
+		<createSequence sequenceName = "DYEXTN_VERS_CONTAINERS_SEQ"/>
+
+		<sql>
+			insert into DYEXTN_ID_SEQ values('RECORD_ID_SEQ', 1);
+		</sql>
+	</changeSet>
 </databaseChangeLog>

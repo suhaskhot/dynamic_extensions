@@ -32,11 +32,13 @@ public class FormDataManagerImpl implements FormDataManager {
 	
 	private static final String GET_FILE_CONTENT = "SELECT %s_CONTENT from %s where IDENTIFIER=?";
 
-	private static final String GET_MULTI_SELECT_VALUES_SQL = "SELECT VALUE FROM %s WHERE RECORD_ID = ?";
+	private static final String GET_MULTI_SELECT_VALUES_SQL = "SELECT %s FROM %s WHERE RECORD_ID = ?";
 	
 	private static final String DELETE_MULTI_SELECT_VALUES_SQL = "DELETE FROM %s WHERE RECORD_ID = ?";
 	
 	private static final String INSERT_MULTI_SELECT_VALUES_SQL = "INSERT INTO %s (RECORD_ID, VALUE) VALUES (?, ?)";
+	
+	private static final String RECORD_ID_SEQ = "RECORD_ID_SEQ";
 
 	private final Logger logger = Logger.getLogger(FormDataManagerImpl.class);
 
@@ -208,7 +210,8 @@ public class FormDataManagerImpl implements FormDataManager {
 		ResultSet rs = null;
 		
 		try {
-			String query = String.format(GET_MULTI_SELECT_VALUES_SQL, ((MultiSelectControl)ctrl).getTableName());
+			MultiSelectControl msCtrl = (MultiSelectControl)ctrl;
+			String query = String.format(GET_MULTI_SELECT_VALUES_SQL, ctrl.getDbColumnName(), msCtrl.getTableName());
 			rs = jdbcDao.getResultSet(query, Collections.singletonList(recordId));
 			
 			List<String> result = new ArrayList<String>();
@@ -297,7 +300,7 @@ public class FormDataManagerImpl implements FormDataManager {
 			}
 
 			if (recordId == null) {
-				recordId = jdbcDao.getNextId(container.getDbTableName());
+				recordId = jdbcDao.getNextId(RECORD_ID_SEQ);
 				formData.setRecordId(recordId);
 			}
 			params.add(recordId);
@@ -335,6 +338,7 @@ public class FormDataManagerImpl implements FormDataManager {
 				IoUtil.close(inputStream);
 			}
 		}
+		
 		return recordId;		
 	}
 

@@ -12,6 +12,7 @@
 <link rel="stylesheet" type="text/css" href="../../stylesheets/de/ext-all.css" />
 <link href="../../stylesheets/de/calanderComponent.css" type=text/css rel=stylesheet />
 <link rel="stylesheet" type="text/css" href="../../stylesheets/de/xtheme-gray.css" />
+<link rel="stylesheet" type="text/css" href="../../stylesheets/de/de.css" />
 <script src="../../javascripts/de/script.js" type="text/javascript"></script>
 <script src="../../javascripts/de/jquery-1.8.3.min.js" type="text/javascript"></script>
 <script>jQuery.noConflict();</script>
@@ -19,12 +20,12 @@
 <script src="../../javascripts/de/dynamicExtensions.js" type="text/javascript"></script>
 <script src="../../javascripts/de/overlib_mini.js" type="text/javascript"></script>
 <script src="../../javascripts/de/ajax.js"></script>
-<script language="JavaScript" type="text/javascript" src="../../javascripts/de/scriptaculous.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../javascripts/de/scr.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../javascripts/de/ext-base.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../javascripts/de/ext-all.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../javascripts/de/combos.js"></script>
 <script language="JavaScript" type="text/javascript" src="../../javascripts/de/ajaxupload.js"></script>
+<script language="JavaScript" type="text/javascript" src="../../javascripts/de/de.js"></script>
 <link rel="stylesheet" type="text/css" href="../../dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.css" />
 <link rel="stylesheet" type="text/css" href="../../dhtmlxSuite_v35/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_terrace.css" />
 <script type="text/javascript" src="../../dhtmlxSuite_v35/dhtmlxCalendar/codebase/dhtmlxcalendar.js"></script>
@@ -33,7 +34,7 @@
 </script>
 <title>CSD Preview</title>
 </head>
-<body>
+<body style = "font-size : 20px;">
 	<%
 	ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
 			"sessionContainer");

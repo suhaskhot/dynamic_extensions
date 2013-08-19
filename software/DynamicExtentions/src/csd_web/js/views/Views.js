@@ -219,6 +219,7 @@ var Views = {
 												ControlBizLogic
 														.deleteControl(GlobalMemory.currentBufferControlModel);
 												$(this).dialog("close");
+												Main.currentFieldView.destroy();
 											},
 											No : function() {
 												$(this).dialog("close");
@@ -262,26 +263,31 @@ var Views = {
 								toolTip : $('#toolTip').val(),
 								subFormName : $('#subFormName').val()
 							});
-					this.model = ControlBizLogic.updatePVs(this.model);
+					// set pvs
+					this.model.set({
+						pvs : Main.currentFieldView.getModel().get('pvs'),
+						pvFile : Main.currentFieldView.getModel().get('pvFile')
+					});
 
-					this.showMessages(this.model.validate(this.model.toJSON()));
+					var validationMessages = this.model.validate(this.model
+							.toJSON());
+					var status = "error";
+					if (validationMessages.length == 0) {
+						var displayLabel = $('#controlCaption').val() + " ("
+								+ $('#controlName').val() + ")";
+						status = ControlBizLogic.createControlNode(
+								displayLabel, $('#controlName').val(),
+								this.model.get('type'), this.model);
+					}
+
+					this.showMessages(validationMessages, status);
 
 				},
 
-				showMessages : function(validationMessages) {
+				showMessages : function(validationMessages, status) {
 
 					if (validationMessages.length == 0) {
 
-						var displayLabel = $('#controlCaption').val() + " ("
-								+ $('#controlName').val() + ")";
-						var url = "createCachedControl/" + displayLabel
-								+ "/control" + $('#controlName').val();
-
-						ControlBizLogic.createControlNode(displayLabel, $(
-								'#controlName').val());
-
-						var status = ControlBizLogic
-								.updateCachedControl(this.model);
 						if (status == "save" || status == "update") {
 							this.setSuccessMessageHeader();
 							$("#messagesDiv")
@@ -538,36 +544,37 @@ var Views = {
 	 * Tree View
 	 */
 
-	TreeView : Backbone.View.extend({
-		formTree : null,
-		initialize : function() {
-			_.bindAll(this, 'render'); // fixes loss of context for
-			// 'this' within methods
-			this.render();// self-rendering
-		},
+	TreeView : Backbone.View
+			.extend({
+				formTree : null,
+				initialize : function() {
+					_.bindAll(this, 'render'); // fixes loss of context for
+					// 'this' within methods
+					this.render();// self-rendering
+				},
 
-		render : function() {
-			var tree = new dhtmlXTreeObject(this.el, "100%", "100%", 0);
-			tree.setSkin('dhx_terrace');
-			tree.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxTree/"
-					+ "codebase/imgs/csh_dhx_terrace/");
-			tree.enableDragAndDrop(false);
-			tree.enableTreeImages(false);
-			tree.deleteChildItems(0);
-			var xml = "<?xml version='1.0' encoding='utf-8'?>"
-					+ "<tree id='0'>"
-					+ "<item text='New Form' id='1' child='1' >"
-					+ "<userdata name='system'>true</userdata>" + "</item> "
-					+ "</tree>";
-			tree.loadXMLString(xml);
-			tree.openAllItems(0);
-			this.formTree = tree;
-		},
+				render : function() {
+					var tree = new dhtmlXTreeObject(this.el, "100%", "100%", 0);
+					tree.setSkin('dhx_terrace');
+					tree.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxTree/"
+							+ "codebase/imgs/csh_dhx_terrace/");
+					tree.enableDragAndDrop(false);
+					tree.enableTreeImages(false);
+					tree.deleteChildItems(0);
+					var xml = "<?xml version='1.0' encoding='utf-8'?>"
+							+ "<tree id='0'>"
+							+ "<item text='New Form' id='1' child='1' >"
+							+ "<userdata name='type'>form</userdata><userdata name='system'>true</userdata>"
+							+ "</item> " + "</tree>";
+					tree.loadXMLString(xml);
+					tree.openAllItems(0);
+					this.formTree = tree;
+				},
 
-		getTree : function() {
-			return this.formTree;
-		}
-	}),
+				getTree : function() {
+					return this.formTree;
+				}
+			}),
 	/*
 	 * TabBar View
 	 */
@@ -579,6 +586,22 @@ var Views = {
 					_.bindAll(this, 'render'); // fixes loss of context for
 					// 'this' within methods
 					this.render();// self-rendering
+				},
+
+				highlightSelectedControlType : function() {
+					var pos = Utility
+							.getControlIndexForCarousel(Main.currentFieldView
+									.getModel().get('type'));
+					Main.carousel.tinycarousel_move(pos > 8 ? (pos % 8) + 1
+							: pos);
+					$('#' + Main.currentFieldView.getModel().get('type')).css(
+							'background-color', '#F0F0F0 ');
+				},
+
+				selectTab : function(tab) {
+					if (Main.mainTabBarView.getTabBar().getActiveTab() != tab) {
+						Main.mainTabBarView.getTabBar().setTabActive(tab);
+					}
 				},
 
 				render : function() {
@@ -891,9 +914,8 @@ var Views = {
 					var action = $(
 							'input[name=skipLogicOperations]:radio:checked')
 							.prop('id');
-					var allAny = $(
-							'input[name=anyOrAll]:radio:checked')
-							.prop('id');
+					var allAny = $('input[name=anyOrAll]:radio:checked').prop(
+							'id');
 					var controlledAttributes = $('#controlledField').val();
 					var pvs = $('#pvs').val();
 					var controllingConditon = $('#controllingValuesCondition')

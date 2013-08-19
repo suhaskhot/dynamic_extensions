@@ -1,49 +1,118 @@
 var Models = {
 
-	Form : Backbone.Model.extend({
-		controlCollection : null,
-		controlObjectCollection : null,
-		defaults : {
-			caption : "New Form ",
-			formName : "newForm",
-			status : "new",
-			save : "yes",
-			id : null,
-			skipRules : {}
-		},
-		url : function() {
-			return "csdApi/form";
-		},
-		initialize : function() {
-			console.log("Form Model created");
-			this.controlCollection = new Array();
-			this.controlObjectCollection = {};
-		}
+	Form : Backbone.Model
+			.extend({
+				defaults : {
+					caption : "New Form ",
+					formName : "newForm",
+					status : "new",
+					save : "yes",
+					id : null,
+					skipRules : {},
+					controlCollection : new Array(),
+					controlObjectCollection : {}
+				},
 
-	}),
+				url : function() {
+					return "csdApi/form";
+				},
 
-	Page : Backbone.Model.extend({
+				initialize : function() {
+					console.log("Form Model created");
+				},
 
-		defaults : {
-			controls : [],
-			name : "newPage",
-			caption : "New Page",
-			id : null
-		},
-		url : function() {
-			return "csdApi/form";
-		},
-		initialize : function() {
-			console.log("Page Model created");
-			this.controlCollection = new Array();
-			this.controlObjectCollection = {};
-		}
+				getControl : function(name) {
+					var controlName = name.split(".");
+					if (controlName.length == 1) {
+						return this.get('controlObjectCollection')[controlName[0]];
+					} else {
+						return this.get('controlObjectCollection')[controlName[0]]
+								.get('subForm').get('controlObjectCollection')[controlName[1]];
+					}
+				},
 
-	}),
+				addControl : function(controlName, control) {
+					var cntrlNames = controlName.split(".");
+					if (cntrlNames.length == 1) {
+						this.get('controlObjectCollection')[controlName] = control;
+					} else {
+						this.get('controlObjectCollection')[cntrlNames[0]].get(
+								'subForm').get('controlObjectCollection')[cntrlNames[1]] = control;
+					}
+				},
+
+				editControl : function(controlName, control) {
+					this.deleteControl(controlName);
+					this.addControl(controlName, control);
+				},
+
+				deleteControl : function(controlName) {
+					var cntrlName = controlName.split(".");
+					var control = this.getControl(controlName);
+					if (cntrlName.length == 1) {
+						if (control != undefined) {
+							delete this.get('controlObjectCollection')[cntrlName[0]];
+						}
+					} else {
+						if (control != undefined) {
+							delete this.get('controlObjectCollection')[cntrlName[0]]
+									.get('subForm').get(
+											'controlObjectCollection')[cntrlName[1]];
+						}
+					}
+
+				},
+
+				markControlAsDeleted : function(controlName) {
+					var cntrlName = controlName.split(".");
+					var control = this.getControl(controlName);
+					if (cntrlName.length == 1) {
+						if (control != undefined) {
+							this.get('controlObjectCollection')[cntrlName[0]]
+									.set({
+										status : "delete"
+									});
+						}
+					} else {
+						if (control != undefined) {
+							this.get('controlObjectCollection')[cntrlName[0]]
+									.get('subForm').get(
+											'controlObjectCollection')[cntrlName[1]]
+									.set({
+										status : "delete"
+									});
+						}
+					}
+
+				},
+
+				addSkipRule : function(skipRule) {
+					this.get('skipRules')[GlobalMemory.skipRulesCounter] = skipRule;
+					GlobalMemory.skipRulesCounter++;
+				},
+
+				editSkipRule : function(id, skipRule) {
+					delete this.get('skipRules')[id];
+					this.get('skipRules')[id] = skipRule;
+				},
+
+				deleteSkipRule : function(id) {
+					delete this.get('skipRules')[id];
+				},
+
+				addCalculationFormula : function(controlName, formula) {
+					this.get('controlObjectCollection')[controlName]
+							.addCalculationFormula(formula);
+				}
+
+			}),
+
+	
 
 	// Field
 	Field : Backbone.Model
 			.extend({
+
 				defaults : {
 					conceptDefinitionSource : "BJC-MED",
 					status : "new",
@@ -56,12 +125,37 @@ var Models = {
 					noOfDigitsAfterDecimal : 5, // based on migration code
 					pvs : {}
 				},
+
+				addPermissibleValue : function(id, pv) {
+					this.get('pvs')[id] = pv;
+				},
+
+				deletePermissibleValue : function(id) {
+					delete this.get('pvs')[id];
+				},
+
+				editPermissibleValue : function(id, pv) {
+					delete this.get('pvs')[id];
+					this.get('pvs')[id] = pv;
+				},
+
 				url : function() {
 					return "csdApi/form/control";
 				},
+
 				initialize : function() {
 					console.log("FieldControl Model created");
 				},
+
+				addCalculationFormula : function(cFormula) {
+					if (this.get('type') == "numericField") {
+						this.set({
+							isCalculated : true,
+							formula : cFormula
+						});
+					}
+				},
+
 				validate : function(attrs) {
 					var errors = [];
 					if (!attrs.controlName) {

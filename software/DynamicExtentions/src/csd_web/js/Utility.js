@@ -20,7 +20,7 @@ var Utility = {
 		}
 
 	},
-	
+
 	messageSpace : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 
 	getControlIndexForCarousel : function(controlType) {
@@ -81,6 +81,10 @@ var Utility = {
 
 		case "label":
 			return 14;
+			break;
+
+		case "pageBreak":
+			return 15;
 			break;
 
 		default:
@@ -147,6 +151,10 @@ var Utility = {
 
 		case "subForm":
 			shortCode = "SF_" + GlobalMemory.nodeCounter;
+			break;
+
+		case "pageBreak":
+			shortCode = "PB_" + GlobalMemory.nodeCounter;
 			break;
 
 		default:
@@ -365,6 +373,18 @@ var Utility = {
 			return controlModel;
 	},
 
+	addPageBreak : function(controlModel, show, container) {
+		controlModel.set({
+			template : Templates.templateList['pageBreakTemplate']
+					+ Templates.templateList['submitButtonTemplate']
+		});
+
+		if (show)
+			return Views.showControl(container, controlModel);
+		else
+			return controlModel;
+	},
+
 	initializeFieldHandlerMap : function() {
 		this.addFieldHandlerMap = new Array();
 
@@ -382,6 +402,7 @@ var Utility = {
 		this.addFieldHandlerMap['heading'] = this.addHeading;
 		this.addFieldHandlerMap['label'] = this.addLabel;
 		this.addFieldHandlerMap['subForm'] = this.addSubForm;
+		this.addFieldHandlerMap['pageBreak'] = this.addPageBreak;
 	},
 
 	getAddFieldHandler : function(controlType) {

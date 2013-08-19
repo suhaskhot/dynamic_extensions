@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
@@ -47,6 +48,7 @@ public class ControlMapper {
 			put(CSDConstants.HEADING, new HeadingMapper());
 			put(CSDConstants.SUB_FORM, new SubFormMapper());
 			put(CSDConstants.LABEL, new LabelMapper());
+			put(CSDConstants.PAGE_BREAK, new PageBreakMapper());
 		}
 	};
 
@@ -89,6 +91,9 @@ public class ControlMapper {
 			}
 		} else if (control instanceof SubFormControl) {
 			type = CSDConstants.SUB_FORM;
+		}
+		else if (control instanceof PageBreak){
+			type = CSDConstants.PAGE_BREAK;
 		}
 		return type;
 	}
@@ -477,7 +482,7 @@ public class ControlMapper {
 			subForm.put("formName", controlProps.getString(CSDConstants.CONTROL_NAME));
 			subForm.put("caption", controlProps.getString(CSDConstants.CONTROL_CAPTION));
 			if (subForm != null) {
-				Container subContainer = new ContainerMapper().propertiesToContainer(new Properties(subForm), false);
+				Container subContainer = new RegularContainerMapper().propertiesToContainer(new Properties(subForm), false);
 				control.setSubContainer(subContainer);
 			}
 
@@ -491,7 +496,7 @@ public class ControlMapper {
 			getCommonProperties(controlProps, control);
 			Container subContainer = ((SubFormControl) control).getSubContainer();
 			controlProps.setProperty("subFormName", subContainer.getName());
-			controlProps.setProperty("subForm", new ContainerMapper().containerToProperties(subContainer)
+			controlProps.setProperty("subForm", new RegularContainerMapper().containerToProperties(subContainer)
 					.getAllProperties());
 			return controlProps;
 		}
@@ -506,6 +511,28 @@ public class ControlMapper {
 		@Override
 		public Control propertiesToControl(Properties controlProps) throws Exception {
 			Label control = new Label();
+			setCommonProperties(controlProps, control);
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LABEL);
+			getCommonProperties(controlProps, control);
+			return controlProps;
+		}
+	}
+	
+	/**
+	 * Mapper for PAge Break control
+	 *
+	 */
+	private class PageBreakMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) throws Exception {
+			PageBreak control = new PageBreak();
 			setCommonProperties(controlProps, control);
 			return control;
 		}

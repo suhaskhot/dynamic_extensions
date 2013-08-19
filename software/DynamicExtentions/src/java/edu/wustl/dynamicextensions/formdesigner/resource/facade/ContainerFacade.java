@@ -19,11 +19,12 @@ import edu.wustl.dynamicextensions.formdesigner.mapper.ContainerMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ControlMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 import edu.wustl.dynamicextensions.formdesigner.mapper.PvMapper;
+import edu.wustl.dynamicextensions.formdesigner.mapper.RegularContainerMapper;
 
 public class ContainerFacade {
 
 	private Container container = null;
-	private static ContainerMapper containerMapper = new ContainerMapper();
+	private static ContainerMapper containerMapper = new RegularContainerMapper();
 
 	/**
 	 * @param container
@@ -76,7 +77,7 @@ public class ContainerFacade {
 		return container.render();
 	}
 
-	public Properties getProperties() {
+	public Properties getProperties() throws Exception {
 		return containerMapper.containerToProperties(container);
 	}
 

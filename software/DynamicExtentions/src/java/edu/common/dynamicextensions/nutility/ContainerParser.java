@@ -461,11 +461,6 @@ public class ContainerParser {
 				Node option = optionList.item(i);
 				Element optionEle = (Element)option;
 				
-				String optionVal = optionList.item(i).getFirstChild().getNodeValue();
-				if (optionVal == null) {
-					continue;
-				}
-				
 				PermissibleValue pv = new PermissibleValue();
 				pv.setValue(getTextValue(optionEle, "value"));
 				pv.setNumericCode(getLongValue(optionEle, "numericCode"));
@@ -476,7 +471,9 @@ public class ContainerParser {
 				// Now optionName = value
 				pv.setOptionName(pv.getValue());
 				
-				pvs.add(pv);
+				if (pv.getValue() != null) {
+					pvs.add(pv);
+				}
 			}
 		}
 		
@@ -555,7 +552,11 @@ public class ContainerParser {
 		ctrl.setSequenceNumber(currentRow);
 		ctrl.setConceptCode(getTextValue(ctrlEle, "conceptCode", null));
 		ctrl.setxPos(i);
-		ctrl.setDbColumnName(getTextValue(ctrlEle, "column"));
+		
+		String dbColumn = getTextValue(ctrlEle, "column");
+		if (dbColumn != null && !dbColumn.trim().isEmpty()) {
+			ctrl.setDbColumnName(dbColumn.trim());
+		}
 	}
 
 	private Long getLongValue(Element element, String name) {

@@ -68,14 +68,14 @@
                 </sql>              
         </changeSet>
 
-	<changeSet id="5" author="pawarv"
+	<changeSet id="5" author="pawarv">
 		<createTable tableName="DYEXTN_VERSIONED_CONTAINERS">
 			<column name="IDENTIFIER" type="${int.type}">
 				<constraints primaryKey="true" nullable="false"/>
 			</column>
 
 			<column name="CONTAINER_ID" type="${int.type}">
-				<nullable="false"/>
+				<constraints nullable="false"/>
 			</column>
 
 			<column name="ACTIVATION_DATE" type="${timestamp.type}">
@@ -94,7 +94,7 @@
 		<createSequence sequenceName = "DYEXTN_VERS_CONTAINERS_SEQ"/>
 
 		<sql>
-			insert into DYEXTN_ID_SEQ values('RECORD_ID_SEQ', 1);
+			insert into DYEXTN_ID_SEQ values('RECORD_ID_SEQ', 1)
 		</sql>
 	</changeSet>
 </databaseChangeLog>

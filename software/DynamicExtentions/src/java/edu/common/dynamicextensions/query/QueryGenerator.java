@@ -17,9 +17,9 @@ public class QueryGenerator {
     public QueryGenerator() {
     }
 
-    public String getCountSql(Node expr, JoinTree joinTree) {
+    public String getCountSql(QueryExpr queryExpr, JoinTree joinTree) {
         String fromClause  = buildFromClause(joinTree);
-        String whereClause = buildWhereClause(expr);
+        String whereClause = buildWhereClause(queryExpr.getExpr());
         
         return new StringBuilder("select count(*) from ")
         	.append(fromClause)
@@ -27,18 +27,19 @@ public class QueryGenerator {
         	.toString();
     }
 
-    public String getDataSql(Node expr, JoinTree joinTree) {
+    public String getDataSql(QueryExpr queryExpr, JoinTree joinTree) {
+    	String selectClause = buildSelectClause(queryExpr.getSelectList());
         String fromClause  = buildFromClause(joinTree);
-        String whereClause = buildWhereClause(expr);
+        String whereClause = buildWhereClause(queryExpr.getExpr());
         
-        return new StringBuilder("select * from ")
-        	.append(fromClause)
+        return new StringBuilder("select ").append(selectClause)
+        	.append(" from ").append(fromClause)
         	.append(" where ").append(whereClause)
         	.toString();
     }
 
-    public String getDataSql(Node expr, JoinTree joinTree, int start, int numRows) {
-        String dataSql = getDataSql(expr, joinTree);
+    public String getDataSql(QueryExpr queryExpr, JoinTree joinTree, int start, int numRows) {
+        String dataSql = getDataSql(queryExpr, joinTree);
 
         String result = null;
         if(start == 0 && numRows == 0) {
@@ -55,6 +56,16 @@ public class QueryGenerator {
         return result;
     }
 
+    private String buildSelectClause(SelectList selectList) {
+    	StringBuilder select = new StringBuilder();
+    	for (Field field : selectList.getFields()) {
+    		select.append(field.getTabAlias()).append(".").append(field.getCtrl().getDbColumnName()).append(", ");
+    	}
+    	
+    	select.delete(select.length() - 2, select.length());
+    	return select.toString();
+    }
+    
     private String buildFromClause(JoinTree joinTree) {
         StringBuilder from = new StringBuilder();
         JoinTree parentTree = joinTree.getParent();
@@ -79,7 +90,7 @@ public class QueryGenerator {
     private String buildWhereClause(Node root) {
         String exprStr = null;
         
-        if(root instanceof Filter) {
+        if (root instanceof Filter) {
             return buildFilter((Filter)root);
         } 
         
@@ -112,14 +123,14 @@ public class QueryGenerator {
     }
 
     private String buildFilter(Filter filter) {
-        Control field = filter.getField();
-        DataType fieldType = getFieldType(field);
+    	Field field = filter.getField();
+        DataType fieldType = getFieldType(field.getCtrl());
         
         if(!isValidOp(fieldType, filter.getRelOp())) {
-            throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used for " + filter.getFieldName());
+            throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used for " + field.getName());
         }
         
-        String lhs = filter.getTabAlias() + "." + field.getDbColumnName();
+        String lhs = field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
         String rhs = "";
         
         switch (fieldType) {

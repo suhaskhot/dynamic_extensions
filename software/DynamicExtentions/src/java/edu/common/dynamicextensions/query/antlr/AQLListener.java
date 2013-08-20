@@ -20,6 +20,28 @@ public interface AQLListener extends ParseTreeListener {
 	void exitNotExpr(@NotNull AQLParser.NotExprContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#QueryExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterQueryExpr(@NotNull AQLParser.QueryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#QueryExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitQueryExpr(@NotNull AQLParser.QueryExprContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#SelectList}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelectList(@NotNull AQLParser.SelectListContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#SelectList}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelectList(@NotNull AQLParser.SelectListContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#OrExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -40,17 +62,6 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAndExpr(@NotNull AQLParser.AndExprContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#query}.
-	 * @param ctx the parse tree
-	 */
-	void enterQuery(@NotNull AQLParser.QueryContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#query}.
-	 * @param ctx the parse tree
-	 */
-	void exitQuery(@NotNull AQLParser.QueryContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#CondExpr}.

@@ -19,6 +19,20 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitNotExpr(@NotNull AQLParser.NotExprContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#QueryExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQueryExpr(@NotNull AQLParser.QueryExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#SelectList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelectList(@NotNull AQLParser.SelectListContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#OrExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -31,13 +45,6 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAndExpr(@NotNull AQLParser.AndExprContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#query}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitQuery(@NotNull AQLParser.QueryContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#CondExpr}.

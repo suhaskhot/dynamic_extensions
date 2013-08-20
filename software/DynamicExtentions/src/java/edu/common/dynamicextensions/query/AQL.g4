@@ -1,7 +1,10 @@
 grammar AQL;
 
-query : expr
+query : SELECT select_list WHERE expr #QueryExpr
       ;
+      
+select_list : FIELD (',' FIELD)* #SelectList
+	 ;
 
 expr : expr AND expr       #AndExpr
      | expr OR expr        #OrExpr
@@ -18,6 +21,8 @@ cond : FIELD OP SLITERAL
 
 WS: [ \t\n\r]+ -> skip;
 
+SELECT: 'select';
+WHERE : 'where';
 OR: 'or';
 AND: 'and';
 NOT: 'not';

@@ -15,7 +15,7 @@ public class QueryParser {
         this.queryExpr = queryExpr;
     }
 
-    public Node getExpressionAst() {
+    public QueryExpr getQueryAst() {
         ANTLRInputStream input = new ANTLRInputStream(queryExpr);
         AQLLexer lexer = new AQLLexer(input);
         
@@ -24,6 +24,6 @@ public class QueryParser {
         
         ParseTree tree = parser.query();
         QueryAstBuilder builder = new QueryAstBuilder();
-        return (Node)builder.visit(tree);
+        return (QueryExpr)builder.visit(tree);
     }
 }

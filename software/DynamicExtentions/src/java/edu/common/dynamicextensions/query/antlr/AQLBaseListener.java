@@ -30,6 +30,32 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterQueryExpr(@NotNull AQLParser.QueryExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitQueryExpr(@NotNull AQLParser.QueryExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterSelectList(@NotNull AQLParser.SelectListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitSelectList(@NotNull AQLParser.SelectListContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -50,19 +76,6 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterQuery(@NotNull AQLParser.QueryContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitQuery(@NotNull AQLParser.QueryContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

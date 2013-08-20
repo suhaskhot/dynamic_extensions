@@ -3,8 +3,6 @@ package edu.common.dynamicextensions.query;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.common.dynamicextensions.domain.nui.Control;
-
 public class Filter implements Node {
     public static enum RelationalOp {
         EQ("="),
@@ -37,22 +35,18 @@ public class Filter implements Node {
         }                
     }
     
-    private String fieldName;
+    private Field field = new Field();
     
     private RelationalOp relOp;
     
     private List<String> values = new ArrayList<String>();
     
-    private Control field;
-    
-    private String tabAlias;
-
-    public String getFieldName() {
-        return fieldName;
+    public Field getField() {
+    	return field;
     }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    
+    public void setField(Field field) {
+    	this.field = field;
     }
 
     public RelationalOp getRelOp() {
@@ -69,21 +63,5 @@ public class Filter implements Node {
 
     public void setValues(List<String> values) {
         this.values = values;
-    }
-
-    public Control getField() {
-        return field;
-    }
-
-    public void setField(Control field) {
-        this.field = field;
-    }
-
-    public String getTabAlias() {
-        return tabAlias;
-    }
-
-    public void setTabAlias(String tabAlias) {
-        this.tabAlias = tabAlias;
     }
 }

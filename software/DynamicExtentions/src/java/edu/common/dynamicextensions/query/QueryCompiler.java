@@ -16,7 +16,7 @@ public class QueryCompiler
     
     private String query;
     
-    private Node queryExpr;
+    private QueryExpr queryExpr;
     
     private JoinTree queryJoinTree;
 	
@@ -27,11 +27,11 @@ public class QueryCompiler
 
     public void compile() {
         QueryParser queryParser = new QueryParser(query);
-        queryExpr     = queryParser.getExpressionAst();
+        queryExpr     = queryParser.getQueryAst();
         queryJoinTree = buildJoinTree(queryExpr);
     }
 
-    public Node getQueryExpr() {
+    public QueryExpr getQueryExpr() {
         return queryExpr;
     }
 
@@ -39,9 +39,15 @@ public class QueryCompiler
         return queryJoinTree;
     }
 
-    private Map<Long, JoinTree> analyzeExpr(Node expr) {
+    private Map<Long, JoinTree> analyzeExpr(QueryExpr expr) {
     	Map<Long, JoinTree> joinMap = new HashMap<Long, JoinTree>();
-        analyzeExpr(expr, joinMap);
+    	
+    	analyzeExpr(expr.getExpr(), joinMap);
+    	
+    	SelectList selectList = expr.getSelectList();
+    	for (Field field : selectList.getFields()) {
+    		analyzeField(field, joinMap);
+    	}    	
         return joinMap;
     }
 
@@ -58,30 +64,38 @@ public class QueryCompiler
     }
 
     private void analyzeFilter(Filter filter, Map<Long, JoinTree> joinMap) {
-        String fieldNameParts[] = filter.getFieldName().split("\\.");        
+    	analyzeField(filter.getField(), joinMap);
+    }
+    
+    private void analyzeField(Field field, Map<Long, JoinTree> joinMap) {
+        String fieldNameParts[] = field.getName().split("\\.");        
         
-        Long formId = Long.valueOf(Long.parseLong(fieldNameParts[0]));        
-        Container form = Container.getContainer(formId);        
-        if(form == null) {
-            throw new RuntimeException("Invalid filter referring to non-existing form: " + formId);
-        }
-        
+        Long formId = Long.valueOf(Long.parseLong(fieldNameParts[0]));
         JoinTree formTree = joinMap.get(formId);
+
+        Container form = null;        
         if(formTree == null) {
+            form = Container.getContainer(formId);
+            if(form == null) {
+                throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formId);
+            }
+                    	
             formTree = new JoinTree(form, "t" + tabCnt++);
             joinMap.put(formId, formTree);
+        } else {
+        	form = formTree.getForm();
         }
-        
-        Control field = form.getControl(fieldNameParts[1]);
-        if(field instanceof SubFormControl && fieldNameParts.length > 2) {
-            for(int i = 1; i < fieldNameParts.length - 1; i++) {
-                field = form.getControl(fieldNameParts[i]);
                 
-                if(!(field instanceof SubFormControl)) {
-                    throw new RuntimeException("Invalid filter referring to invalid field: " + filter.getFieldName());
+        Control ctrl = form.getControl(fieldNameParts[1]);
+        if(ctrl instanceof SubFormControl && fieldNameParts.length > 2) {
+            for(int i = 1; i < fieldNameParts.length - 1; i++) {
+                ctrl = form.getControl(fieldNameParts[i]);
+                
+                if(!(ctrl instanceof SubFormControl)) {
+                    throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
                 }
                 
-                SubFormControl sfCtrl = (SubFormControl)field;
+                SubFormControl sfCtrl = (SubFormControl)ctrl;
                 JoinTree sfTree = formTree.getChild(sfCtrl.getName());
                 if(sfTree == null) {
                     sfTree = getSubFormTree(formTree, sfCtrl);
@@ -92,31 +106,31 @@ public class QueryCompiler
                 form = sfCtrl.getSubContainer();
             }
 
-            field = form.getControl(fieldNameParts[fieldNameParts.length - 1]);
+            ctrl = form.getControl(fieldNameParts[fieldNameParts.length - 1]);
         }
         
-        if(field == null) {
-            throw new RuntimeException("Invalid filter referring to invalid field: " + filter.getFieldName());
+        if(ctrl == null) {
+            throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
         }
         
         String tabAlias = formTree.getAlias();
-        if(field instanceof MultiSelectControl) {
-            JoinTree fieldTree = formTree.getChild(field.getName());
-            if(fieldTree == null) {
-                MultiSelectControl msField = (MultiSelectControl)field;
+        if (ctrl instanceof MultiSelectControl) {
+            JoinTree fieldTree = formTree.getChild(ctrl.getName());
+            if (fieldTree == null) {
+                MultiSelectControl msField = (MultiSelectControl)ctrl;
                 fieldTree = getFieldTree(formTree, msField);
-                formTree.addChild(field.getName(), fieldTree);
+                formTree.addChild(ctrl.getName(), fieldTree);
             }
             
             tabAlias = fieldTree.getAlias();
         }
         
-        filter.setField(field);
-        filter.setTabAlias(tabAlias);
+        field.setCtrl(ctrl);
+        field.setTabAlias(tabAlias);
     }
 
-    private JoinTree buildJoinTree(Node expr) {
-        Map<Long, JoinTree> joinMap = analyzeExpr(expr);
+    private JoinTree buildJoinTree(QueryExpr queryExpr) {
+        Map<Long, JoinTree> joinMap = analyzeExpr(queryExpr);
         JoinTree rootTree = joinMap.get(rootFormId);
         
         if(rootTree == null) {

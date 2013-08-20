@@ -8,7 +8,7 @@ import edu.common.dynamicextensions.ndao.JdbcDao;
 public class Query {
     private JoinTree queryJoinTree;
 
-    private Node queryExpr;
+    private QueryExpr queryExpr;
 		
     public static Query createQuery() {
         return new Query();
@@ -75,6 +75,11 @@ public class Query {
         		jdbcDao.close();
         	}
         }
+    }
+    
+    public String getDataSql() {
+        QueryGenerator gen = new QueryGenerator();
+        return gen.getDataSql(queryExpr, queryJoinTree, 0, 0);    	
     }
 
     private QueryResultData getQueryResultData(ResultSet rs)

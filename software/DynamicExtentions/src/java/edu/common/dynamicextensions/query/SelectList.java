@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelectList implements Node {
-	private List<Field> fields = new ArrayList<Field>();
+	private List<ConditionOperand> elements = new ArrayList<ConditionOperand>();
 	
-	public void addField(Field field) {
-		fields.add(field);
+	public void addElement(ConditionOperand element) {
+		elements.add(element);
 	}
 	
-	public List<Field> getFields() {
-		return fields;
+	public List<ConditionOperand> getElements() {
+		return elements;
 	}
 	
 }

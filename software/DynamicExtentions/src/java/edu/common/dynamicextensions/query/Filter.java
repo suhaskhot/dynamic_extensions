@@ -1,8 +1,5 @@
 package edu.common.dynamicextensions.query;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Filter implements Node {
     public static enum RelationalOp {
         EQ("="),
@@ -35,33 +32,33 @@ public class Filter implements Node {
         }                
     }
     
-    private Field field = new Field();
+    private ConditionOperand lhs;
+   
+	private RelationalOp relOp;
     
-    private RelationalOp relOp;
-    
-    private List<String> values = new ArrayList<String>();
-    
-    public Field getField() {
-    	return field;
-    }
-    
-    public void setField(Field field) {
-    	this.field = field;
-    }
+    private ConditionOperand rhs;
+   
+    public ConditionOperand getLhs() {
+		return lhs;
+	}
 
-    public RelationalOp getRelOp() {
-        return relOp;
-    }
+	public void setLhs(ConditionOperand lhs) {
+		this.lhs = lhs;
+	}
 
-    public void setRelOp(RelationalOp relOp) {
-        this.relOp = relOp;
-    }
+	public RelationalOp getRelOp() {
+		return relOp;
+	}
 
-    public List<String> getValues() {
-        return values;
-    }
+	public void setRelOp(RelationalOp relOp) {
+		this.relOp = relOp;
+	}
 
-    public void setValues(List<String> values) {
-        this.values = values;
-    }
+	public ConditionOperand getRhs() {
+		return rhs;
+	}
+
+	public void setRhs(ConditionOperand rhs) {
+		this.rhs = rhs;
+	}    
 }

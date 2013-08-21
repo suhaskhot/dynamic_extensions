@@ -1,13 +1,6 @@
 package edu.common.dynamicextensions.query;
 
-import edu.common.dynamicextensions.domain.nui.CheckBox;
-import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
-import edu.common.dynamicextensions.domain.nui.DatePicker;
-import edu.common.dynamicextensions.domain.nui.NumberField;
-import edu.common.dynamicextensions.domain.nui.SelectControl;
-import edu.common.dynamicextensions.domain.nui.StringTextField;
-import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.query.Filter.RelationalOp;
 
 public class QueryGenerator {
@@ -58,8 +51,8 @@ public class QueryGenerator {
 
     private String buildSelectClause(SelectList selectList) {
     	StringBuilder select = new StringBuilder();
-    	for (Field field : selectList.getFields()) {
-    		select.append(field.getTabAlias()).append(".").append(field.getCtrl().getDbColumnName()).append(", ");
+    	for (ConditionOperand element : selectList.getElements()) { 
+    		select.append(getCondOperandExpr(element, element.getType())).append(", ");
     	}
     	
     	select.delete(select.length() - 2, select.length());
@@ -123,30 +116,16 @@ public class QueryGenerator {
     }
 
     private String buildFilter(Filter filter) {
-    	Field field = filter.getField();
-        DataType fieldType = getFieldType(field.getCtrl());
-        
-        if(!isValidOp(fieldType, filter.getRelOp())) {
-            throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used for " + field.getName());
+        if(!isValidOp(filter.getLhs().getType(), filter.getRelOp(), filter.getRhs().getType())) {
+            throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used");
         }
         
-        String lhs = field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
-        String rhs = "";
-        
-        switch (fieldType) {
-            case STRING:
-            	rhs = "'" + removeQuotes(filter.getValues().get(0)) + "'";
-            	break;
-            
-            default:
-            	rhs = filter.getValues().get(0);
-            	break;            
-        }
-        
+        String lhs = getCondOperandExpr(filter.getLhs(), filter.getLhs().getType());
+        String rhs = getCondOperandExpr(filter.getRhs(), filter.getLhs().getType());        
         return lhs + " " + filter.getRelOp().symbol() + " " + rhs;
     }
 
-    private boolean isValidOp(DataType dataType, RelationalOp op) {
+    private boolean isValidOp(DataType lhsType, RelationalOp op, DataType rhsType) {
         return true;
     }
 
@@ -157,22 +136,35 @@ public class QueryGenerator {
         
         return value;
     }
-
-    private DataType getFieldType(Control ctrl) {
-    	DataType result = null;
+    
+    private String getCondOperandExpr(ConditionOperand condOperand, DataType type) {
+    	String result = "";
     	
-        if (ctrl instanceof SelectControl) {
-            result = ctrl.getDataType();
-        } else if (ctrl instanceof StringTextField || ctrl instanceof TextArea) {
-            result = DataType.STRING;
-        } else if (ctrl instanceof NumberField) {
-            result = DataType.INTEGER;
-        } else if (ctrl instanceof DatePicker) {
-            result = DataType.DATE;
-        } else if (ctrl instanceof CheckBox) {
-            result = DataType.BOOLEAN;
-        }
-        
-        return result;
+    	if (condOperand instanceof Field) {
+    		Field field = (Field)condOperand;
+    		result = field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
+    	} else if (condOperand instanceof Value) {
+    		Value value = (Value)condOperand;
+            switch (value.getType()) {
+        		case STRING:
+        			if (type == DataType.DATE) {
+        				result = "to_date('" + removeQuotes(value.getValues().get(0).toString()) + "', 'MM-DD-YYYY')";
+        			} else {
+        				result = "'" + removeQuotes(value.getValues().get(0).toString()) + "'";
+        			}        		
+        			break;
+        		
+        		default:
+        			result = value.getValues().get(0).toString();
+        			break;
+            }
+    	} else if (condOperand instanceof ArithExpression) {
+    		ArithExpression arithExpr = (ArithExpression)condOperand;    		
+    		String loperand = getCondOperandExpr(arithExpr.getLeftOperand(),  arithExpr.getLeftOperandCoercion());
+    		String roperand = getCondOperandExpr(arithExpr.getRightOperand(), arithExpr.getRightOperandCoercion());
+    		result = "(" + loperand + " " + arithExpr.getOp().symbol() + " " + roperand + ")";
+    	}
+    	
+    	return result;
     }
 }

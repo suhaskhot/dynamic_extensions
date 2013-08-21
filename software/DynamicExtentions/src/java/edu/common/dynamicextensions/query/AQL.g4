@@ -3,7 +3,7 @@ grammar AQL;
 query : SELECT select_list WHERE expr #QueryExpr
       ;
       
-select_list : FIELD (',' FIELD)* #SelectList
+select_list : arith_expr (',' arith_expr)* #SelectList
 	 ;
 
 expr : expr AND expr       #AndExpr
@@ -13,12 +13,17 @@ expr : expr AND expr       #AndExpr
      | cond                #CondExpr
      ;
      
-cond : FIELD OP SLITERAL
-     | FIELD OP INT
-     | FIELD OP FLOAT
-     ;
-     
-
+cond : arith_expr OP arith_expr
+	 ;
+	 
+arith_expr : arith_expr ARITH_OP arith_expr #ArithExpr
+		  | LP arith_expr RP 		        #ParensArithExpr
+          | FIELD						    #FieldExpr
+          | SLITERAL					    #StringExpr
+          | INT							    #IntExpr
+          | FLOAT						    #FloatExpr
+          ;	 
+               
 WS: [ \t\n\r]+ -> skip;
 
 SELECT: 'select';
@@ -36,6 +41,7 @@ SLITERAL: '"' SGUTS '"';
 ESC: '\\' ('\\' | '"');
 ID: ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
 OP: ('>'|'<'|'>='|'<='|'='|'!='|'like');
+ARITH_OP: ('+'|'-'|'*'|'/');
 
 fragment
 SGUTS: (ESC | ~('\\' | '"'))*;

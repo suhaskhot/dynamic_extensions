@@ -17,13 +17,13 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterNotExpr(@NotNull AQLParser.NotExprContext ctx) { }
+	@Override public void enterFloatExpr(@NotNull AQLParser.FloatExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitNotExpr(@NotNull AQLParser.NotExprContext ctx) { }
+	@Override public void exitFloatExpr(@NotNull AQLParser.FloatExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -56,39 +56,26 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
+	@Override public void enterFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
+	@Override public void exitFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
+	@Override public void enterArithExpr(@NotNull AQLParser.ArithExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterCondExpr(@NotNull AQLParser.CondExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitCondExpr(@NotNull AQLParser.CondExprContext ctx) { }
+	@Override public void exitArithExpr(@NotNull AQLParser.ArithExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -115,6 +102,97 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitCond(@NotNull AQLParser.CondContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterNotExpr(@NotNull AQLParser.NotExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitNotExpr(@NotNull AQLParser.NotExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterIntExpr(@NotNull AQLParser.IntExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitIntExpr(@NotNull AQLParser.IntExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterCondExpr(@NotNull AQLParser.CondExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCondExpr(@NotNull AQLParser.CondExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterStringExpr(@NotNull AQLParser.StringExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitStringExpr(@NotNull AQLParser.StringExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

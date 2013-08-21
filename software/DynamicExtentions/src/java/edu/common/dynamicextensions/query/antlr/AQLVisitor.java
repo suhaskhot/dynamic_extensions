@@ -12,11 +12,11 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#NotExpr}.
+	 * Visit a parse tree produced by {@link AQLParser#FloatExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNotExpr(@NotNull AQLParser.NotExprContext ctx);
+	T visitFloatExpr(@NotNull AQLParser.FloatExprContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#QueryExpr}.
@@ -33,25 +33,18 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitSelectList(@NotNull AQLParser.SelectListContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#OrExpr}.
+	 * Visit a parse tree produced by {@link AQLParser#FieldExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOrExpr(@NotNull AQLParser.OrExprContext ctx);
+	T visitFieldExpr(@NotNull AQLParser.FieldExprContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#AndExpr}.
+	 * Visit a parse tree produced by {@link AQLParser#ArithExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAndExpr(@NotNull AQLParser.AndExprContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#CondExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCondExpr(@NotNull AQLParser.CondExprContext ctx);
+	T visitArithExpr(@NotNull AQLParser.ArithExprContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#ParensExpr}.
@@ -66,4 +59,53 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCond(@NotNull AQLParser.CondContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#NotExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotExpr(@NotNull AQLParser.NotExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#AndExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAndExpr(@NotNull AQLParser.AndExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#OrExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrExpr(@NotNull AQLParser.OrExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#IntExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntExpr(@NotNull AQLParser.IntExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#CondExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCondExpr(@NotNull AQLParser.CondExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#StringExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringExpr(@NotNull AQLParser.StringExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#ParensArithExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
 }

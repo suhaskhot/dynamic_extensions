@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.query;
 import java.util.HashMap;
 import java.util.Map;
 
+//import edu.QueryTester;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
@@ -45,9 +46,14 @@ public class QueryCompiler
     	analyzeExpr(expr.getExpr(), joinMap);
     	
     	SelectList selectList = expr.getSelectList();
-    	for (Field field : selectList.getFields()) {
-    		analyzeField(field, joinMap);
-    	}    	
+    	for (ConditionOperand element : selectList.getElements()) {
+    		if (element instanceof Field) {
+    			analyzeField((Field)element, joinMap);
+    		} else if (element instanceof ArithExpression) {
+    			analyzeArithExpr((ArithExpression)element, joinMap);
+    		} 
+    	}
+    	
         return joinMap;
     }
 
@@ -64,7 +70,29 @@ public class QueryCompiler
     }
 
     private void analyzeFilter(Filter filter, Map<Long, JoinTree> joinMap) {
-    	analyzeField(filter.getField(), joinMap);
+    	if (filter.getLhs() instanceof Field) {
+    		analyzeField((Field)filter.getLhs(), joinMap);
+    	} else if (filter.getLhs() instanceof ArithExpression) {
+    		analyzeArithExpr((ArithExpression)filter.getLhs(), joinMap);
+    	}
+    	
+    	if (filter.getRhs() instanceof Field) {
+    		analyzeField((Field)filter.getRhs(), joinMap);
+    	}
+    }
+    
+    private void analyzeArithExpr(ArithExpression expr, Map<Long, JoinTree> joinMap) {
+    	if (expr.getLeftOperand() instanceof ArithExpression) {
+    		analyzeArithExpr((ArithExpression)expr.getLeftOperand(), joinMap);
+    	} else if (expr.getLeftOperand() instanceof Field) {
+    		analyzeField((Field)expr.getLeftOperand(), joinMap);
+    	}
+    	
+    	if (expr.getRightOperand() instanceof ArithExpression) {
+    		analyzeArithExpr((ArithExpression)expr.getRightOperand(), joinMap);
+    	} else if (expr.getRightOperand() instanceof Field) {
+    		analyzeField((Field)expr.getRightOperand(), joinMap);
+    	}    	
     }
     
     private void analyzeField(Field field, Map<Long, JoinTree> joinMap) {
@@ -76,6 +104,7 @@ public class QueryCompiler
         Container form = null;        
         if(formTree == null) {
             form = Container.getContainer(formId);
+	    //form = QueryTester.getContainer(formId);
             if(form == null) {
                 throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formId);
             }
@@ -135,6 +164,7 @@ public class QueryCompiler
         
         if(rootTree == null) {
             Container rootForm = Container.getContainer(rootFormId);
+	    //Container rootForm = QueryTester.getContainer(rootFormId);
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
         

@@ -109,13 +109,17 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		
 		Collection<List<Control>> rows = groupControlsByRow(container.getControls());		
 		for (List<Control> rowCtrls : rows) {
-			emitStartRow();
+			if (rowCtrls.size() == 1 && rowCtrls.get(0) instanceof PageBreak) {
+				serializeControl(rowCtrls.get(0));				
+			} else {
+				emitStartRow();
 
-			for (Control ctrl : rowCtrls) {
-				serializeControl(ctrl);
-			}
-			
-			emitEndRow();
+				for (Control ctrl : rowCtrls) {
+					serializeControl(ctrl);
+				}
+				
+				emitEndRow();				
+			}			
 		}
 	}
 

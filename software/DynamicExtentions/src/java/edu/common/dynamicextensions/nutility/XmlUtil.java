@@ -58,6 +58,22 @@ public class XmlUtil {
 		write(writer, elementStr);
 	}
 
+	public static void writeCDataElement(Writer writer, String element, Object value) {
+		if(value == null) {
+			return;
+		}
+		
+		String elementStr = new StringBuilder()
+			.append("<").append(element).append(">")
+			.append("<![CDATA[")
+			.append(value)
+			.append("]]>")
+			.append("</").append(element).append(">")
+			.toString();
+		
+		write(writer, elementStr);
+	}
+
 	/**
 	 * Emits <element attr1="value1" attr2="value2">value</element>
 	 */

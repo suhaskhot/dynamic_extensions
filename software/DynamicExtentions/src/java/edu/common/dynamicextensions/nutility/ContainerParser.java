@@ -628,7 +628,7 @@ public class ContainerParser {
 			return def;
 		}
 		
-		if (node.getFirstChild().getNodeType() == Node.TEXT_NODE) {
+		if (node.getFirstChild().getNodeType() == Node.TEXT_NODE || node.getFirstChild().getNodeType() == Node.CDATA_SECTION_NODE) {
 			return node.getFirstChild().getNodeValue();
 		}
 		

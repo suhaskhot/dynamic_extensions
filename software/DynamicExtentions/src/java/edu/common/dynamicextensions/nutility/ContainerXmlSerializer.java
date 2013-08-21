@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.nutility;
 
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeCDataElement;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
 
@@ -212,7 +213,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		protected void serializeControlProps(Control ctrl) {
 			writeElement(writer, "name", 		ctrl.getName());
 			writeElement(writer, "caption", 	ctrl.getCaption());
-			writeElement(writer, "customLabel", ctrl.getCustomLabel());
+			writeCDataElement(writer, "customLabel", ctrl.getCustomLabel());
 			writeElement(writer, "phi", 		ctrl.isPhi());
 			writeElement(writer, "mandatory", 	ctrl.isMandatory());
 			writeElement(writer, "toolTip", 	ctrl.getToolTip());

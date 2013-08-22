@@ -119,33 +119,12 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
 
     @Override 
     public DateDiffFuncNode visitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { 
-    	DateDiffFuncNode diff = new DateDiffFuncNode();
-    	diff.setDiffType(DiffType.MONTH);
-    	
-    	ArithExpressionNode expr = (ArithExpressionNode)visit(ctx.arith_expr());
-    	if (expr.getOp() != ArithOp.MINUS) {
-    		throw new RuntimeException("Invalid operation inside months: " + expr.getOp());
-    	}
-    	
-    	diff.setLeftOperand(expr.getLeftOperand());
-    	diff.setRightOperand(expr.getRightOperand());
-    	return diff;
+    	return getDateDiffFuncNode(DiffType.MONTH, (ArithExpressionNode)visit(ctx.arith_expr()));
     }
 
     @Override 
-    public DateDiffFuncNode visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { 
-    	DateDiffFuncNode diff = new DateDiffFuncNode();
-    	diff.setDiffType(DiffType.YEAR);
-
-    	ArithExpressionNode expr = (ArithExpressionNode)visit(ctx.arith_expr());
-    	if (expr.getOp() != ArithOp.MINUS) {
-    		throw new RuntimeException("Invalid operation inside years: " + expr.getOp());
-    	}
-    	
-    	System.err.println("L:" + expr.getLeftOperand() + "R: " + expr.getRightOperand());
-    	diff.setLeftOperand(expr.getLeftOperand());
-    	diff.setRightOperand(expr.getRightOperand());
-    	return diff;
+    public DateDiffFuncNode visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) {
+    	return getDateDiffFuncNode(DiffType.YEAR, (ArithExpressionNode)visit(ctx.arith_expr()));
     }
     
     @Override 
@@ -185,7 +164,20 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	di.setYears(diPart(ctx.YEAR()));
     	return di;    	
     }
-    
+
+    private DateDiffFuncNode getDateDiffFuncNode(DiffType diffType, ArithExpressionNode arithExprNode) {
+    	DateDiffFuncNode diff = new DateDiffFuncNode();
+    	diff.setDiffType(diffType);
+    	
+    	if (arithExprNode.getOp() != ArithOp.MINUS) {
+    		throw new RuntimeException("Invalid operation inside months: " + arithExprNode.getOp());
+    	}
+    	
+    	diff.setLeftOperand(arithExprNode.getLeftOperand());
+    	diff.setRightOperand(arithExprNode.getRightOperand());
+    	return diff;
+    	
+    }
     private int diPart(TerminalNode term) {
     	int result = 0;
     	

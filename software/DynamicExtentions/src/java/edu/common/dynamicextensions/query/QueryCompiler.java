@@ -14,9 +14,8 @@ import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.FilterNode;
-import edu.common.dynamicextensions.query.ast.Node;
+import edu.common.dynamicextensions.query.ast.FilterNodeMarker;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
-import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryCompiler
 {
@@ -52,84 +51,51 @@ public class QueryCompiler
     private Map<Long, JoinTree> analyzeExpr(QueryExpressionNode expr) {
     	Map<Long, JoinTree> joinMap = new HashMap<Long, JoinTree>();
     	
-    	analyzeExpr(expr.getFilterExpr(), joinMap);
+    	analyzeFilterNodeMarker(expr.getFilterExpr(), joinMap);
     	
-    	SelectListNode selectList = expr.getSelectList();
-    	for (ExpressionNode element : selectList.getElements()) {
-    		if (element instanceof FieldNode) {
-    			analyzeField((FieldNode)element, joinMap);
-    		} else if (element instanceof ArithExpressionNode) {
-    			analyzeArithExpr((ArithExpressionNode)element, joinMap);
-    		} else if (element instanceof DateDiffFuncNode) {
-    			analyzeDateDiff((DateDiffFuncNode)element, joinMap);
-    		}
-    	}
-    	
+    	for (ExpressionNode element : expr.getSelectList().getElements()) {
+    		analyzeExpressionNode(element, joinMap);
+    	}    	
         return joinMap;
     }
 
-    private void analyzeExpr(Node expr, Map<Long, JoinTree> joinMap) {
-        if(expr instanceof FilterNode) {
+    private void analyzeFilterNodeMarker(FilterNodeMarker expr, Map<Long, JoinTree> joinMap) {
+        if (expr instanceof FilterNode) {
             FilterNode filter = (FilterNode)expr;
-            analyzeFilter(filter, joinMap);
+            analyzeFilterNode(filter, joinMap);
         } else {
         	FilterExpressionNode subExpr = (FilterExpressionNode)expr;
-        	for (Node childExpr : subExpr.getOperands()) {
-        		analyzeExpr(childExpr, joinMap);
+        	for (FilterNodeMarker childExpr : subExpr.getOperands()) {
+        		analyzeFilterNodeMarker(childExpr, joinMap);
         	}
         }
     }
 
-    private void analyzeFilter(FilterNode filter, Map<Long, JoinTree> joinMap) {
-    	if (filter.getLhs() instanceof FieldNode) {
-    		analyzeField((FieldNode)filter.getLhs(), joinMap);
-    	} else if (filter.getLhs() instanceof ArithExpressionNode) {
-    		analyzeArithExpr((ArithExpressionNode)filter.getLhs(), joinMap);
-    	} else if (filter.getLhs() instanceof DateDiffFuncNode) {
-    		analyzeDateDiff((DateDiffFuncNode)filter.getLhs(), joinMap);
-    	}
-    	
-    	if (filter.getRhs() instanceof FieldNode) {
-    		analyzeField((FieldNode)filter.getRhs(), joinMap);
-    	} else if (filter.getRhs() instanceof ArithExpressionNode) {
-    		analyzeArithExpr((ArithExpressionNode)filter.getRhs(), joinMap);
-    	} else if (filter.getRhs() instanceof DateDiffFuncNode) {
-    		analyzeDateDiff((DateDiffFuncNode)filter.getRhs(), joinMap);
-    	}
+    private void analyzeFilterNode(FilterNode filter, Map<Long, JoinTree> joinMap) {
+    	analyzeExpressionNode(filter.getLhs(), joinMap);
+    	analyzeExpressionNode(filter.getRhs(), joinMap);    	
     }
     
-    private void analyzeArithExpr(ArithExpressionNode expr, Map<Long, JoinTree> joinMap) {
-    	if (expr.getLeftOperand() instanceof ArithExpressionNode) {
-    		analyzeArithExpr((ArithExpressionNode)expr.getLeftOperand(), joinMap);
-    	} else if (expr.getLeftOperand() instanceof FieldNode) {
-    		analyzeField((FieldNode)expr.getLeftOperand(), joinMap);
-    	} else if (expr.getLeftOperand() instanceof DateDiffFuncNode) {
-    		analyzeDateDiff((DateDiffFuncNode)expr.getLeftOperand(), joinMap);
-    	}
-    	
-    	if (expr.getRightOperand() instanceof ArithExpressionNode) {
-    		analyzeArithExpr((ArithExpressionNode)expr.getRightOperand(), joinMap);
-    	} else if (expr.getRightOperand() instanceof FieldNode) {
-    		analyzeField((FieldNode)expr.getRightOperand(), joinMap);
-    	} else if (expr.getRightOperand() instanceof DateDiffFuncNode) {
-    		analyzeDateDiff((DateDiffFuncNode)expr.getRightOperand(), joinMap);
-    	}   	
+    private void analyzeArithExpressionNode(ArithExpressionNode expr, Map<Long, JoinTree> joinMap) {
+    	analyzeExpressionNode(expr.getLeftOperand(), joinMap);
+    	analyzeExpressionNode(expr.getRightOperand(), joinMap);    	
     }
     
-    private void analyzeDateDiff(DateDiffFuncNode dateDiff, Map<Long, JoinTree> joinMap) {
-    	if (dateDiff.getLeftOperand() instanceof ArithExpressionNode) {
-    		analyzeArithExpr((ArithExpressionNode)dateDiff.getLeftOperand(), joinMap);
-    	} else if (dateDiff.getLeftOperand() instanceof FieldNode) {
-    		analyzeField((FieldNode)dateDiff.getLeftOperand(), joinMap);
-    	}
-    	
-    	if (dateDiff.getRightOperand() instanceof ArithExpressionNode) {
-    		analyzeArithExpr((ArithExpressionNode)dateDiff.getRightOperand(), joinMap);
-    	} else if (dateDiff.getRightOperand() instanceof FieldNode) {
-    		analyzeField((FieldNode)dateDiff.getRightOperand(), joinMap);
-    	}
-    	
+    private void analyzeDateDiffFuncNode(DateDiffFuncNode dateDiff, Map<Long, JoinTree> joinMap) {
+    	analyzeExpressionNode(dateDiff.getLeftOperand(), joinMap);
+    	analyzeExpressionNode(dateDiff.getRightOperand(), joinMap);
     }
+
+    private void analyzeExpressionNode(ExpressionNode exprNode, Map<Long, JoinTree> joinMap) {
+		if (exprNode instanceof FieldNode) {
+			analyzeField((FieldNode)exprNode, joinMap);
+		} else if (exprNode instanceof ArithExpressionNode) {
+			analyzeArithExpressionNode((ArithExpressionNode)exprNode, joinMap);
+		} else if (exprNode instanceof DateDiffFuncNode) {
+			analyzeDateDiffFuncNode((DateDiffFuncNode)exprNode, joinMap);
+		}    	
+    }
+    
     
     private void analyzeField(FieldNode field, Map<Long, JoinTree> joinMap) {
         String fieldNameParts[] = field.getName().split("\\.");        

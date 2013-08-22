@@ -16,4 +16,8 @@ public abstract class ConditionOperand implements Node {
 	public boolean isNumber() {
 		return getType() == DataType.INTEGER || getType() == DataType.FLOAT || getType() == DataType.BOOLEAN;
 	}
+	
+	public boolean isDateInterval() {
+		return getType() == DataType.DATE_INTERVAL;
+	}
 }

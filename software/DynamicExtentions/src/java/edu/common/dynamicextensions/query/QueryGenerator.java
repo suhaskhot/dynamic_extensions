@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.query;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.query.ArithExpression.ArithOp;
 import edu.common.dynamicextensions.query.Filter.RelationalOp;
 
 public class QueryGenerator {
@@ -161,8 +162,49 @@ public class QueryGenerator {
     	} else if (condOperand instanceof ArithExpression) {
     		ArithExpression arithExpr = (ArithExpression)condOperand;    		
     		String loperand = getCondOperandExpr(arithExpr.getLeftOperand(),  arithExpr.getLeftOperandCoercion());
-    		String roperand = getCondOperandExpr(arithExpr.getRightOperand(), arithExpr.getRightOperandCoercion());
-    		result = "(" + loperand + " " + arithExpr.getOp().symbol() + " " + roperand + ")";
+    		
+    		String expr = "";
+    		if (arithExpr.getLeftOperand().isDate() && arithExpr.getRightOperand().isDateInterval()) {
+    			DateInterval di = (DateInterval)arithExpr.getRightOperand();
+    			int months = di.getYears() * 12 + di.getMonths();
+    			if (months == 0) {
+    				expr = loperand; 
+    			} else {
+    				if (arithExpr.getOp() == ArithOp.MINUS) {
+    					months = -months;    				    	
+    				}
+    				
+    				expr = "add_months(" + loperand + ", " + months + ")";
+    			}
+    			
+    			if (di.getDays() != 0) {
+    				expr += " " + arithExpr.getOp().symbol() + " " + di.getDays(); 
+    			}
+    		} else {
+    			String roperand = getCondOperandExpr(arithExpr.getRightOperand(), arithExpr.getRightOperandCoercion());
+    			expr = loperand + " " + arithExpr.getOp().symbol() + " " + roperand;
+    		}
+    		
+    		
+    		result = "(" + expr + ")";
+    	} else if (condOperand instanceof DateDiff) {
+    		DateDiff dateDiff = (DateDiff)condOperand;
+    		String loperand = getCondOperandExpr(dateDiff.getLeftOperand(), DataType.DATE);
+    		String roperand = getCondOperandExpr(dateDiff.getRightOperand(), DataType.DATE);
+    		
+    		switch (dateDiff.getDiffType()) {
+    			case YEAR:
+    				result = "(months_between(" + loperand + ", " + roperand + ") / 12)";
+    				break;
+    				
+    			case MONTH:
+    				result = "months_between(" + loperand + ", " + roperand + ")";
+    				break;
+    				
+    			case DAY:
+    				result = "(" + loperand + " - " + roperand + ")";
+    				break;    			
+    		}
     	}
     	
     	return result;

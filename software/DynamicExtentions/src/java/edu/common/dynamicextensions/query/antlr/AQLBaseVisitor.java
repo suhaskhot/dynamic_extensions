@@ -42,7 +42,23 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
+	@Override public T visitMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
 	@Override public T visitFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
+	@Override public T visitYearsDiff(@NotNull AQLParser.YearsDiffContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -59,6 +75,14 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
 	@Override public T visitParensExpr(@NotNull AQLParser.ParensExprContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
+	@Override public T visitDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -115,6 +139,14 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
 	@Override public T visitStringExpr(@NotNull AQLParser.StringExprContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
+	@Override public T visitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

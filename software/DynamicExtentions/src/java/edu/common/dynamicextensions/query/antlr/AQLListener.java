@@ -42,6 +42,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitSelectList(@NotNull AQLParser.SelectListContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#MonthsDiff}.
+	 * @param ctx the parse tree
+	 */
+	void enterMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#MonthsDiff}.
+	 * @param ctx the parse tree
+	 */
+	void exitMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#FieldExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -51,6 +62,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFieldExpr(@NotNull AQLParser.FieldExprContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#YearsDiff}.
+	 * @param ctx the parse tree
+	 */
+	void enterYearsDiff(@NotNull AQLParser.YearsDiffContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#YearsDiff}.
+	 * @param ctx the parse tree
+	 */
+	void exitYearsDiff(@NotNull AQLParser.YearsDiffContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#ArithExpr}.
@@ -73,6 +95,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParensExpr(@NotNull AQLParser.ParensExprContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#date_interval}.
+	 * @param ctx the parse tree
+	 */
+	void enterDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#date_interval}.
+	 * @param ctx the parse tree
+	 */
+	void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#cond}.
@@ -150,6 +183,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStringExpr(@NotNull AQLParser.StringExprContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#DateIntervalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#DateIntervalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#ParensArithExpr}.

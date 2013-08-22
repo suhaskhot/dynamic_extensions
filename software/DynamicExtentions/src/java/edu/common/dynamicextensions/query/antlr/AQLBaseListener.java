@@ -56,6 +56,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -63,6 +76,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterYearsDiff(@NotNull AQLParser.YearsDiffContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitYearsDiff(@NotNull AQLParser.YearsDiffContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -89,6 +115,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitParensExpr(@NotNull AQLParser.ParensExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -180,6 +219,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitStringExpr(@NotNull AQLParser.StringExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

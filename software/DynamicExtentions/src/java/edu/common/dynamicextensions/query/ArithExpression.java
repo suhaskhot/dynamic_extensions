@@ -68,11 +68,11 @@ public class ArithExpression extends ConditionOperand {
 			} else {
 				result = DataType.INTEGER;
 			}
-		} else if (op == ArithOp.PLUS && leftOperand.isNumber() && rightOperand.isDate()) {
+		} else if (op == ArithOp.PLUS && leftOperand.isDateInterval() && rightOperand.isDate()) {
 			result = DataType.DATE;
-		} else if (op == ArithOp.PLUS && leftOperand.isDate() && rightOperand.isNumber()) {
+		} else if (op == ArithOp.PLUS && leftOperand.isDate() && rightOperand.isDateInterval()) {
 			result = DataType.DATE;
-		} else if (op == ArithOp.MINUS && leftOperand.isDate() && rightOperand.isNumber()) {
+		} else if (op == ArithOp.MINUS && leftOperand.isDate() && rightOperand.isDateInterval()) {
 			result = DataType.DATE;
 		} else if (op == ArithOp.MINUS && leftOperand.isDate() && rightOperand.isDate()) {
 			result = DataType.FLOAT;

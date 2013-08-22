@@ -16,18 +16,29 @@ expr : expr AND expr       #AndExpr
 cond : arith_expr OP arith_expr
 	 ;
 	 
-arith_expr : arith_expr ARITH_OP arith_expr #ArithExpr
-		  | LP arith_expr RP 		        #ParensArithExpr
-          | FIELD						    #FieldExpr
-          | SLITERAL					    #StringExpr
-          | INT							    #IntExpr
-          | FLOAT						    #FloatExpr
+arith_expr : arith_expr ARITH_OP arith_expr   #ArithExpr
+		  | arith_expr ARITH_OP date_interval #DateIntervalExpr
+		  | MONTHS LP arith_expr RP           #MonthsDiff
+		  | YEARS LP arith_expr RP            #YearsDiff  
+		  | LP arith_expr RP 		          #ParensArithExpr
+          | FIELD						      #FieldExpr
+          | SLITERAL					      #StringExpr
+          | INT							      #IntExpr
+          | FLOAT						      #FloatExpr
           ;	 
+          
+date_interval : YEAR MONTH? DAY?
+              | YEAR? MONTH DAY?
+              | YEAR? MONTH? DAY
+              ;          
+                   
                
 WS: [ \t\n\r]+ -> skip;
 
 SELECT: 'select';
 WHERE : 'where';
+MONTHS: 'months';
+YEARS: 'years';
 OR: 'or';
 AND: 'and';
 NOT: 'not';
@@ -35,8 +46,12 @@ LP: '(';
 RP: ')';
 
 FIELD: (INT|ID) '.' ID ('.' ID)*;
-INT: '-'? ('0'..'9')+;
-FLOAT: '-'? ('0'..'9')+ '.' ('0'..'9')+;
+INT: '-'? DIGIT+;
+FLOAT: '-'? DIGIT+ '.' DIGIT+;
+YEAR: DIGIT+ ('y'|'Y');
+MONTH: DIGIT+ ('m'|'M');
+DAY: DIGIT+ ('d'|'D');
+DIGIT: ('0'..'9');
 SLITERAL: '"' SGUTS '"';
 ESC: '\\' ('\\' | '"');
 ID: ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;

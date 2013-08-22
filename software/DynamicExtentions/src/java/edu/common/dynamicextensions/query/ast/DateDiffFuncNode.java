@@ -1,17 +1,17 @@
-package edu.common.dynamicextensions.query;
+package edu.common.dynamicextensions.query.ast;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class DateDiff extends ConditionOperand {
+public class DateDiffFuncNode extends ExpressionNode {
 	public static enum DiffType {
 		DAY, MONTH, YEAR
 	}
 	
 	private DiffType diffType;
 	
-	private ConditionOperand leftOperand;
+	private ExpressionNode leftOperand;
 	
-	private ConditionOperand rightOperand;
+	private ExpressionNode rightOperand;
 
 	@Override
 	public DataType getType() {
@@ -26,20 +26,19 @@ public class DateDiff extends ConditionOperand {
 		this.diffType = diffType;
 	}
 
-	public ConditionOperand getLeftOperand() {
+	public ExpressionNode getLeftOperand() {
 		return leftOperand;
 	}
 
-	public void setLeftOperand(ConditionOperand leftOperand) {
+	public void setLeftOperand(ExpressionNode leftOperand) {
 		this.leftOperand = leftOperand;
 	}
 
-	public ConditionOperand getRightOperand() {
+	public ExpressionNode getRightOperand() {
 		return rightOperand;
 	}
 
-	public void setRightOperand(ConditionOperand rightOperand) {
+	public void setRightOperand(ExpressionNode rightOperand) {
 		this.rightOperand = rightOperand;
 	}
-
 }

@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import edu.common.dynamicextensions.query.antlr.AQLLexer;
 import edu.common.dynamicextensions.query.antlr.AQLParser;
+import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 
 public class QueryParser {
 
@@ -15,7 +16,7 @@ public class QueryParser {
         this.queryExpr = queryExpr;
     }
 
-    public QueryExpr getQueryAst() {
+    public QueryExpressionNode getQueryAst() {
         ANTLRInputStream input = new ANTLRInputStream(queryExpr);
         AQLLexer lexer = new AQLLexer(input);
         
@@ -24,6 +25,6 @@ public class QueryParser {
         
         ParseTree tree = parser.query();
         QueryAstBuilder builder = new QueryAstBuilder();
-        return (QueryExpr)builder.visit(tree);
+        return (QueryExpressionNode)builder.visit(tree);
     }
 }

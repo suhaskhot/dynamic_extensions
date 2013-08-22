@@ -1,8 +1,8 @@
-package edu.common.dynamicextensions.query;
+package edu.common.dynamicextensions.query.ast;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public abstract class ConditionOperand implements Node {
+public abstract class ExpressionNode implements Node {
 	public abstract DataType getType();
 	
 	public boolean isDate() {

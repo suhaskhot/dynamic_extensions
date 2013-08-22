@@ -1,13 +1,9 @@
-package edu.common.dynamicextensions.query;
+package edu.common.dynamicextensions.query.ast;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class DateInterval extends ConditionOperand {
-	private int years;
-	
-	private int months;
-	
-	private int days;
+public class DateIntervalNode extends ExpressionNode {
+	private int years, months, days;
 	
 	@Override
 	public DataType getType() {

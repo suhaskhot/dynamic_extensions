@@ -1,6 +1,7 @@
-package edu.common.dynamicextensions.query;
+package edu.common.dynamicextensions.query.ast;
 
-public class Filter implements Node {
+
+public class FilterNode implements FilterNodeMarker {
     public static enum RelationalOp {
         EQ("="),
         LT("<"),
@@ -32,17 +33,17 @@ public class Filter implements Node {
         }                
     }
     
-    private ConditionOperand lhs;
+    private ExpressionNode lhs;
    
 	private RelationalOp relOp;
     
-    private ConditionOperand rhs;
+    private ExpressionNode rhs;
    
-    public ConditionOperand getLhs() {
+    public ExpressionNode getLhs() {
 		return lhs;
 	}
 
-	public void setLhs(ConditionOperand lhs) {
+	public void setLhs(ExpressionNode lhs) {
 		this.lhs = lhs;
 	}
 
@@ -54,11 +55,11 @@ public class Filter implements Node {
 		this.relOp = relOp;
 	}
 
-	public ConditionOperand getRhs() {
+	public ExpressionNode getRhs() {
 		return rhs;
 	}
 
-	public void setRhs(ConditionOperand rhs) {
+	public void setRhs(ExpressionNode rhs) {
 		this.rhs = rhs;
 	}    
 }

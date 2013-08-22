@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 
 public class Query {
     private JoinTree queryJoinTree;
 
-    private QueryExpr queryExpr;
+    private QueryExpressionNode queryExpr;
 		
     public static Query createQuery() {
         return new Query();

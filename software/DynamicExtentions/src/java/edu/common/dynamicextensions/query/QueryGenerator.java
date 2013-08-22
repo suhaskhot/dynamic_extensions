@@ -1,8 +1,19 @@
 package edu.common.dynamicextensions.query;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
-import edu.common.dynamicextensions.query.ArithExpression.ArithOp;
-import edu.common.dynamicextensions.query.Filter.RelationalOp;
+import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
+import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
+import edu.common.dynamicextensions.query.ast.DateIntervalNode;
+import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
+import edu.common.dynamicextensions.query.ast.ExpressionNode;
+import edu.common.dynamicextensions.query.ast.FieldNode;
+import edu.common.dynamicextensions.query.ast.FilterNode;
+import edu.common.dynamicextensions.query.ast.LiteralValueNode;
+import edu.common.dynamicextensions.query.ast.Node;
+import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
+import edu.common.dynamicextensions.query.ast.SelectListNode;
+import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
+import edu.common.dynamicextensions.query.ast.FilterNode.RelationalOp;
 
 public class QueryGenerator {
 	
@@ -11,9 +22,9 @@ public class QueryGenerator {
     public QueryGenerator() {
     }
 
-    public String getCountSql(QueryExpr queryExpr, JoinTree joinTree) {
+    public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
         String fromClause  = buildFromClause(joinTree);
-        String whereClause = buildWhereClause(queryExpr.getExpr());
+        String whereClause = buildWhereClause(queryExpr.getFilterExpr());
         
         return new StringBuilder("select count(*) from ")
         	.append(fromClause)
@@ -21,10 +32,10 @@ public class QueryGenerator {
         	.toString();
     }
 
-    public String getDataSql(QueryExpr queryExpr, JoinTree joinTree) {
+    public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
     	String selectClause = buildSelectClause(queryExpr.getSelectList());
         String fromClause  = buildFromClause(joinTree);
-        String whereClause = buildWhereClause(queryExpr.getExpr());
+        String whereClause = buildWhereClause(queryExpr.getFilterExpr());
         
         return new StringBuilder("select ").append(selectClause)
         	.append(" from ").append(fromClause)
@@ -32,7 +43,7 @@ public class QueryGenerator {
         	.toString();
     }
 
-    public String getDataSql(QueryExpr queryExpr, JoinTree joinTree, int start, int numRows) {
+    public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree, int start, int numRows) {
         String dataSql = getDataSql(queryExpr, joinTree);
 
         String result = null;
@@ -50,9 +61,9 @@ public class QueryGenerator {
         return result;
     }
 
-    private String buildSelectClause(SelectList selectList) {
+    private String buildSelectClause(SelectListNode selectList) {
     	StringBuilder select = new StringBuilder();
-    	for (ConditionOperand element : selectList.getElements()) { 
+    	for (ExpressionNode element : selectList.getElements()) { 
     		select.append(getCondOperandExpr(element, element.getType())).append(", ");
     	}
     	
@@ -84,11 +95,11 @@ public class QueryGenerator {
     private String buildWhereClause(Node root) {
         String exprStr = null;
         
-        if (root instanceof Filter) {
-            return buildFilter((Filter)root);
+        if (root instanceof FilterNode) {
+            return buildFilter((FilterNode)root);
         } 
         
-        Expression expr = (Expression)root;
+        FilterExpressionNode expr = (FilterExpressionNode)root;
         String lhs = buildWhereClause(expr.getOperands().get(0));
         String rhs = null;
             
@@ -109,6 +120,10 @@ public class QueryGenerator {
             	exprStr = new StringBuilder("(").append(lhs).append(")").toString();
             	break;
             		
+            case IDENTITY:
+            	exprStr = lhs;
+            	break;
+            	
             case PAND:
             	break;
         }
@@ -116,8 +131,8 @@ public class QueryGenerator {
         return exprStr;
     }
 
-    private String buildFilter(Filter filter) {
-        if(!isValidOp(filter.getLhs().getType(), filter.getRelOp(), filter.getRhs().getType())) {
+    private String buildFilter(FilterNode filter) {
+        if (!isValidOp(filter.getLhs().getType(), filter.getRelOp(), filter.getRhs().getType())) {
             throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used");
         }
         
@@ -138,14 +153,14 @@ public class QueryGenerator {
         return value;
     }
     
-    private String getCondOperandExpr(ConditionOperand condOperand, DataType type) {
+    private String getCondOperandExpr(ExpressionNode condOperand, DataType type) {
     	String result = "";
     	
-    	if (condOperand instanceof Field) {
-    		Field field = (Field)condOperand;
+    	if (condOperand instanceof FieldNode) {
+    		FieldNode field = (FieldNode)condOperand;
     		result = field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
-    	} else if (condOperand instanceof Value) {
-    		Value value = (Value)condOperand;
+    	} else if (condOperand instanceof LiteralValueNode) {
+    		LiteralValueNode value = (LiteralValueNode)condOperand;
             switch (value.getType()) {
         		case STRING:
         			if (type == DataType.DATE) {
@@ -159,13 +174,13 @@ public class QueryGenerator {
         			result = value.getValues().get(0).toString();
         			break;
             }
-    	} else if (condOperand instanceof ArithExpression) {
-    		ArithExpression arithExpr = (ArithExpression)condOperand;    		
+    	} else if (condOperand instanceof ArithExpressionNode) {
+    		ArithExpressionNode arithExpr = (ArithExpressionNode)condOperand;    		
     		String loperand = getCondOperandExpr(arithExpr.getLeftOperand(),  arithExpr.getLeftOperandCoercion());
     		
     		String expr = "";
     		if (arithExpr.getLeftOperand().isDate() && arithExpr.getRightOperand().isDateInterval()) {
-    			DateInterval di = (DateInterval)arithExpr.getRightOperand();
+    			DateIntervalNode di = (DateIntervalNode)arithExpr.getRightOperand();
     			int months = di.getYears() * 12 + di.getMonths();
     			if (months == 0) {
     				expr = loperand; 
@@ -187,8 +202,8 @@ public class QueryGenerator {
     		
     		
     		result = "(" + expr + ")";
-    	} else if (condOperand instanceof DateDiff) {
-    		DateDiff dateDiff = (DateDiff)condOperand;
+    	} else if (condOperand instanceof DateDiffFuncNode) {
+    		DateDiffFuncNode dateDiff = (DateDiffFuncNode)condOperand;
     		String loperand = getCondOperandExpr(dateDiff.getLeftOperand(), DataType.DATE);
     		String roperand = getCondOperandExpr(dateDiff.getRightOperand(), DataType.DATE);
     		

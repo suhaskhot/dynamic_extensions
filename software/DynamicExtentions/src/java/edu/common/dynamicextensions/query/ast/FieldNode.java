@@ -1,9 +1,9 @@
-package edu.common.dynamicextensions.query;
+package edu.common.dynamicextensions.query.ast;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class Field extends ConditionOperand {
+public class FieldNode extends ExpressionNode {
 	private Control ctrl;
 	
 	private String name;

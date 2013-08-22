@@ -1,8 +1,8 @@
-package edu.common.dynamicextensions.query;
+package edu.common.dynamicextensions.query.ast;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class ArithExpression extends ConditionOperand {
+public class ArithExpressionNode extends ExpressionNode {
 	public static enum ArithOp {
 		PLUS("+"), MINUS("-"), MUL("*"), DIV("/");
 		
@@ -29,25 +29,25 @@ public class ArithExpression extends ConditionOperand {
         }                
 	};
 	
-	private ConditionOperand leftOperand;
+	private ExpressionNode leftOperand;
 	
-	private ConditionOperand rightOperand;
+	private ExpressionNode rightOperand;
 	
 	private ArithOp op;
 
-	public ConditionOperand getLeftOperand() {
+	public ExpressionNode getLeftOperand() {
 		return leftOperand;
 	}
 
-	public void setLeftOperand(ConditionOperand leftOperand) {
+	public void setLeftOperand(ExpressionNode leftOperand) {
 		this.leftOperand = leftOperand;
 	}
 
-	public ConditionOperand getRightOperand() {
+	public ExpressionNode getRightOperand() {
 		return rightOperand;
 	}
 
-	public void setRightOperand(ConditionOperand rightOperand) {
+	public void setRightOperand(ExpressionNode rightOperand) {
 		this.rightOperand = rightOperand;
 	}
 

@@ -18,12 +18,12 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     public QueryExpr visitQueryExpr(@NotNull AQLParser.QueryExprContext ctx) {  
     	QueryExpr queryExpr = new QueryExpr();
     	queryExpr.setSelectList((SelectList)visit(ctx.select_list()));
-    	queryExpr.setExpr(visit(ctx.expr()));
+    	queryExpr.setExpr(visit(ctx.filter_expr()));
     	return queryExpr;
     }    
     
     @Override
-    public SelectList visitSelectList(@NotNull AQLParser.SelectListContext ctx) { 
+    public SelectList visitSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { 
     	SelectList list = new SelectList();
     	
     	for (int i = 0; i < ctx.arith_expr().size(); ++i) {
@@ -34,27 +34,27 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     }
 
     @Override
-    public Node visitNotExpr(@NotNull AQLParser.NotExprContext ctx) {
-        return Expression.notExpr(visit(ctx.expr()));
+    public Expression visitAndFilterExpr(@NotNull AQLParser.AndFilterExprContext ctx) {
+        return Expression.andExpr(visit(ctx.filter_expr(0)), visit(ctx.filter_expr(1)));
     }
 
     @Override
-    public Node visitOrExpr(@NotNull AQLParser.OrExprContext ctx) {
-        return Expression.orExpr(visit(ctx.expr(0)), visit(ctx.expr(1)));
+    public Node visitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) {
+        return Expression.orExpr(visit(ctx.filter_expr(0)), visit(ctx.filter_expr(1)));
+    }
+    
+    @Override
+    public Node visitNotFilterExpr(@NotNull AQLParser.NotFilterExprContext ctx) {
+        return Expression.notExpr(visit(ctx.filter_expr()));
     }
 
     @Override
-    public Expression visitAndExpr(@NotNull AQLParser.AndExprContext ctx) {
-        return Expression.andExpr(visit(ctx.expr(0)), visit(ctx.expr(1)));
+    public Expression visitParensFilterExpr(@NotNull AQLParser.ParensFilterExprContext ctx) {
+        return Expression.parenExpr(visit(ctx.filter_expr()));
     }
 
     @Override
-    public Expression visitParensExpr(@NotNull AQLParser.ParensExprContext ctx) {
-        return Expression.parenExpr(visit(ctx.expr()));
-    }
-
-    @Override
-    public Node visitCond(@NotNull AQLParser.CondContext ctx) {
+    public Node visitFilter(@NotNull AQLParser.FilterContext ctx) {
     	String inputSymbol = ctx.OP().getText();
     	
     	Filter filter = new Filter();
@@ -63,14 +63,7 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	filter.setRelOp(RelationalOp.getBySymbol(inputSymbol));    	
     	return filter;    	
     }
-    
-    @Override 
-    public Field visitFieldExpr(@NotNull AQLParser.FieldExprContext ctx) {
-    	Field field = new Field();
-    	field.setName(ctx.FIELD().getText());
-    	return field; 
-    }    
-    
+
     @Override
     public ArithExpression visitArithExpr(@NotNull AQLParser.ArithExprContext ctx) {
     	ConditionOperand loperand = (ConditionOperand)visit(ctx.arith_expr(0));
@@ -83,12 +76,7 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	expr.setOp(op);
     	return expr;
     }
-    
-    @Override 
-    public ArithExpression visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { 
-    	return (ArithExpression)visit(ctx.arith_expr()); 
-    }
-    
+
     @Override 
     public ArithExpression visitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx) {
     	ConditionOperand loperand = (ConditionOperand)visit(ctx.arith_expr());
@@ -101,9 +89,14 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	expr.setOp(op);    	
     	return expr; 
     }
-    
+
     @Override 
-    public DateDiff visitMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx) { 
+    public ArithExpression visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { 
+    	return (ArithExpression)visit(ctx.arith_expr()); 
+    }
+
+    @Override 
+    public DateDiff visitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { 
     	DateDiff diff = new DateDiff();
     	diff.setDiffType(DiffType.MONTH);
     	
@@ -116,9 +109,9 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	diff.setRightOperand(expr.getRightOperand());
     	return diff;
     }
-    
+
     @Override 
-    public DateDiff visitYearsDiff(@NotNull AQLParser.YearsDiffContext ctx) { 
+    public DateDiff visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { 
     	DateDiff diff = new DateDiff();
     	diff.setDiffType(DiffType.YEAR);
 
@@ -132,7 +125,35 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	diff.setRightOperand(expr.getRightOperand());
     	return diff;
     }
+    
+    @Override 
+    public Field visitField(@NotNull AQLParser.FieldContext ctx) {
+    	Field field = new Field();
+    	field.setName(ctx.FIELD().getText());
+    	return field; 
+    }    
+        
+    @Override
+    public Value visitStringLiteral(@NotNull AQLParser.StringLiteralContext ctx) {
+    	Value value = new Value();
+    	value.getValues().add(ctx.SLITERAL().getText());
+    	return value;
+    }
+    
+    @Override
+    public Value visitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) {
+    	Value value = new Value();
+    	value.getValues().add(Long.parseLong(ctx.INT().getText()));
+    	return value;
+    }
 
+    @Override
+    public Value visitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) {
+    	Value value = new Value();
+    	value.getValues().add(Double.parseDouble(ctx.FLOAT().getText()));
+    	return value;
+    }
+    
     @Override 
     public DateInterval visitDate_interval(@NotNull AQLParser.Date_intervalContext ctx) {
     	DateInterval di = new DateInterval();
@@ -141,27 +162,6 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	di.setMonths(diPart(ctx.MONTH()));
     	di.setYears(diPart(ctx.YEAR()));
     	return di;    	
-    }
-
-    @Override
-    public Value visitStringExpr(@NotNull AQLParser.StringExprContext ctx) {
-    	Value value = new Value();
-    	value.getValues().add(ctx.SLITERAL().getText());
-    	return value;
-    }
-    
-    @Override
-    public Value visitIntExpr(@NotNull AQLParser.IntExprContext ctx) {
-    	Value value = new Value();
-    	value.getValues().add(Long.parseLong(ctx.INT().getText()));
-    	return value;
-    }
-    
-    @Override
-    public Value visitFloatExpr(@NotNull AQLParser.FloatExprContext ctx) {
-    	Value value = new Value();
-    	value.getValues().add(Double.parseDouble(ctx.FLOAT().getText()));
-    	return value;
     }
     
     private int diPart(TerminalNode term) {

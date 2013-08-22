@@ -17,13 +17,13 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterFloatExpr(@NotNull AQLParser.FloatExprContext ctx) { }
+	@Override public void enterStringLiteral(@NotNull AQLParser.StringLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitFloatExpr(@NotNull AQLParser.FloatExprContext ctx) { }
+	@Override public void exitStringLiteral(@NotNull AQLParser.StringLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -43,52 +43,26 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterSelectList(@NotNull AQLParser.SelectListContext ctx) { }
+	@Override public void enterNotFilterExpr(@NotNull AQLParser.NotFilterExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitSelectList(@NotNull AQLParser.SelectListContext ctx) { }
+	@Override public void exitNotFilterExpr(@NotNull AQLParser.NotFilterExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx) { }
+	@Override public void enterField(@NotNull AQLParser.FieldContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitMonthsDiff(@NotNull AQLParser.MonthsDiffContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitFieldExpr(@NotNull AQLParser.FieldExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterYearsDiff(@NotNull AQLParser.YearsDiffContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitYearsDiff(@NotNull AQLParser.YearsDiffContext ctx) { }
+	@Override public void exitField(@NotNull AQLParser.FieldContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -108,13 +82,39 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterParensExpr(@NotNull AQLParser.ParensExprContext ctx) { }
+	@Override public void enterFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitParensExpr(@NotNull AQLParser.ParensExprContext ctx) { }
+	@Override public void exitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -134,91 +134,65 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterCond(@NotNull AQLParser.CondContext ctx) { }
+	@Override public void enterSimpleFilter(@NotNull AQLParser.SimpleFilterContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitCond(@NotNull AQLParser.CondContext ctx) { }
+	@Override public void exitSimpleFilter(@NotNull AQLParser.SimpleFilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterNotExpr(@NotNull AQLParser.NotExprContext ctx) { }
+	@Override public void enterMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitNotExpr(@NotNull AQLParser.NotExprContext ctx) { }
+	@Override public void exitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
+	@Override public void enterParensFilterExpr(@NotNull AQLParser.ParensFilterExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitAndExpr(@NotNull AQLParser.AndExprContext ctx) { }
+	@Override public void exitParensFilterExpr(@NotNull AQLParser.ParensFilterExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
+	@Override public void enterSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitOrExpr(@NotNull AQLParser.OrExprContext ctx) { }
+	@Override public void exitSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterIntExpr(@NotNull AQLParser.IntExprContext ctx) { }
+	@Override public void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitIntExpr(@NotNull AQLParser.IntExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterCondExpr(@NotNull AQLParser.CondExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitCondExpr(@NotNull AQLParser.CondExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterStringExpr(@NotNull AQLParser.StringExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitStringExpr(@NotNull AQLParser.StringExprContext ctx) { }
+	@Override public void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -238,6 +212,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterFilter(@NotNull AQLParser.FilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitFilter(@NotNull AQLParser.FilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -245,6 +232,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAndFilterExpr(@NotNull AQLParser.AndFilterExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAndFilterExpr(@NotNull AQLParser.AndFilterExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

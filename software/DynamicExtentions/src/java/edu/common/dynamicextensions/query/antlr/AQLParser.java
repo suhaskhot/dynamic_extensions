@@ -24,10 +24,10 @@ public class AQLParser extends Parser {
 		"MONTH", "DAY", "DIGIT", "SLITERAL", "ESC", "ID", "OP", "ARITH_OP", "'\"'"
 	};
 	public static final int
-		RULE_query = 0, RULE_select_list = 1, RULE_expr = 2, RULE_cond = 3, RULE_arith_expr = 4, 
-		RULE_date_interval = 5;
+		RULE_query = 0, RULE_select_list = 1, RULE_filter_expr = 2, RULE_filter = 3, 
+		RULE_arith_expr = 4, RULE_date_interval = 5;
 	public static final String[] ruleNames = {
-		"query", "select_list", "expr", "cond", "arith_expr", "date_interval"
+		"query", "select_list", "filter_expr", "filter", "arith_expr", "date_interval"
 	};
 
 	@Override
@@ -59,8 +59,8 @@ public class AQLParser extends Parser {
 	}
 	public static class QueryExprContext extends QueryContext {
 		public TerminalNode WHERE() { return getToken(AQLParser.WHERE, 0); }
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+		public Filter_exprContext filter_expr() {
+			return getRuleContext(Filter_exprContext.class,0);
 		}
 		public TerminalNode SELECT() { return getToken(AQLParser.SELECT, 0); }
 		public Select_listContext select_list() {
@@ -92,7 +92,7 @@ public class AQLParser extends Parser {
 			setState(12); match(SELECT);
 			setState(13); select_list();
 			setState(14); match(WHERE);
-			setState(15); expr(0);
+			setState(15); filter_expr(0);
 			}
 		}
 		catch (RecognitionException re) {
@@ -117,25 +117,25 @@ public class AQLParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class SelectListContext extends Select_listContext {
+	public static class SelectExprContext extends Select_listContext {
 		public Arith_exprContext arith_expr(int i) {
 			return getRuleContext(Arith_exprContext.class,i);
 		}
 		public List<Arith_exprContext> arith_expr() {
 			return getRuleContexts(Arith_exprContext.class);
 		}
-		public SelectListContext(Select_listContext ctx) { copyFrom(ctx); }
+		public SelectExprContext(Select_listContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterSelectList(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterSelectExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitSelectList(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitSelectExpr(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitSelectList(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitSelectExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -145,7 +145,7 @@ public class AQLParser extends Parser {
 		enterRule(_localctx, 2, RULE_select_list);
 		int _la;
 		try {
-			_localctx = new SelectListContext(_localctx);
+			_localctx = new SelectExprContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(17); arith_expr(0);
@@ -176,135 +176,135 @@ public class AQLParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ExprContext extends ParserRuleContext {
+	public static class Filter_exprContext extends ParserRuleContext {
 		public int _p;
-		public ExprContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
-		public ExprContext(ParserRuleContext parent, int invokingState, int _p) {
+		public Filter_exprContext(ParserRuleContext parent, int invokingState) { super(parent, invokingState); }
+		public Filter_exprContext(ParserRuleContext parent, int invokingState, int _p) {
 			super(parent, invokingState);
 			this._p = _p;
 		}
-		@Override public int getRuleIndex() { return RULE_expr; }
+		@Override public int getRuleIndex() { return RULE_filter_expr; }
 	 
-		public ExprContext() { }
-		public void copyFrom(ExprContext ctx) {
+		public Filter_exprContext() { }
+		public void copyFrom(Filter_exprContext ctx) {
 			super.copyFrom(ctx);
 			this._p = ctx._p;
 		}
 	}
-	public static class NotExprContext extends ExprContext {
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+	public static class NotFilterExprContext extends Filter_exprContext {
+		public Filter_exprContext filter_expr() {
+			return getRuleContext(Filter_exprContext.class,0);
 		}
 		public TerminalNode NOT() { return getToken(AQLParser.NOT, 0); }
-		public NotExprContext(ExprContext ctx) { copyFrom(ctx); }
+		public NotFilterExprContext(Filter_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterNotExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterNotFilterExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitNotExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitNotFilterExpr(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitNotExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitNotFilterExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class AndExprContext extends ExprContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
-		}
-		public TerminalNode AND() { return getToken(AQLParser.AND, 0); }
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
-		}
-		public AndExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterAndExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitAndExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitAndExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class OrExprContext extends ExprContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
-		}
-		public TerminalNode OR() { return getToken(AQLParser.OR, 0); }
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
-		}
-		public OrExprContext(ExprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterOrExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitOrExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitOrExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ParensExprContext extends ExprContext {
-		public ExprContext expr() {
-			return getRuleContext(ExprContext.class,0);
+	public static class ParensFilterExprContext extends Filter_exprContext {
+		public Filter_exprContext filter_expr() {
+			return getRuleContext(Filter_exprContext.class,0);
 		}
 		public TerminalNode LP() { return getToken(AQLParser.LP, 0); }
 		public TerminalNode RP() { return getToken(AQLParser.RP, 0); }
-		public ParensExprContext(ExprContext ctx) { copyFrom(ctx); }
+		public ParensFilterExprContext(Filter_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterParensExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterParensFilterExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitParensExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitParensFilterExpr(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitParensExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitParensFilterExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class CondExprContext extends ExprContext {
-		public CondContext cond() {
-			return getRuleContext(CondContext.class,0);
+	public static class OrFilterExprContext extends Filter_exprContext {
+		public List<Filter_exprContext> filter_expr() {
+			return getRuleContexts(Filter_exprContext.class);
 		}
-		public CondExprContext(ExprContext ctx) { copyFrom(ctx); }
+		public Filter_exprContext filter_expr(int i) {
+			return getRuleContext(Filter_exprContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(AQLParser.OR, 0); }
+		public OrFilterExprContext(Filter_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterCondExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterOrFilterExpr(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitCondExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitOrFilterExpr(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitCondExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitOrFilterExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class SimpleFilterContext extends Filter_exprContext {
+		public FilterContext filter() {
+			return getRuleContext(FilterContext.class,0);
+		}
+		public SimpleFilterContext(Filter_exprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterSimpleFilter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitSimpleFilter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitSimpleFilter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class AndFilterExprContext extends Filter_exprContext {
+		public List<Filter_exprContext> filter_expr() {
+			return getRuleContexts(Filter_exprContext.class);
+		}
+		public TerminalNode AND() { return getToken(AQLParser.AND, 0); }
+		public Filter_exprContext filter_expr(int i) {
+			return getRuleContext(Filter_exprContext.class,i);
+		}
+		public AndFilterExprContext(Filter_exprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterAndFilterExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitAndFilterExpr(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitAndFilterExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final ExprContext expr(int _p) throws RecognitionException {
+	public final Filter_exprContext filter_expr(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		ExprContext _localctx = new ExprContext(_ctx, _parentState, _p);
-		ExprContext _prevctx = _localctx;
+		Filter_exprContext _localctx = new Filter_exprContext(_ctx, _parentState, _p);
+		Filter_exprContext _prevctx = _localctx;
 		int _startState = 4;
-		enterRecursionRule(_localctx, RULE_expr);
+		enterRecursionRule(_localctx, RULE_filter_expr);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -313,32 +313,32 @@ public class AQLParser extends Parser {
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				{
-				_localctx = new NotExprContext(_localctx);
+				_localctx = new NotFilterExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
 				setState(26); match(NOT);
-				setState(27); expr(2);
+				setState(27); filter_expr(2);
 				}
 				break;
 
 			case 2:
 				{
-				_localctx = new ParensExprContext(_localctx);
+				_localctx = new ParensFilterExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(28); match(LP);
-				setState(29); expr(0);
+				setState(29); filter_expr(0);
 				setState(30); match(RP);
 				}
 				break;
 
 			case 3:
 				{
-				_localctx = new CondExprContext(_localctx);
+				_localctx = new SimpleFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(32); cond();
+				setState(32); filter();
 				}
 				break;
 			}
@@ -355,23 +355,23 @@ public class AQLParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 					case 1:
 						{
-						_localctx = new AndExprContext(new ExprContext(_parentctx, _parentState, _p));
-						pushNewRecursionContext(_localctx, _startState, RULE_expr);
+						_localctx = new AndFilterExprContext(new Filter_exprContext(_parentctx, _parentState, _p));
+						pushNewRecursionContext(_localctx, _startState, RULE_filter_expr);
 						setState(35);
 						if (!(5 >= _localctx._p)) throw new FailedPredicateException(this, "5 >= $_p");
 						setState(36); match(AND);
-						setState(37); expr(6);
+						setState(37); filter_expr(6);
 						}
 						break;
 
 					case 2:
 						{
-						_localctx = new OrExprContext(new ExprContext(_parentctx, _parentState, _p));
-						pushNewRecursionContext(_localctx, _startState, RULE_expr);
+						_localctx = new OrFilterExprContext(new Filter_exprContext(_parentctx, _parentState, _p));
+						pushNewRecursionContext(_localctx, _startState, RULE_filter_expr);
 						setState(38);
 						if (!(4 >= _localctx._p)) throw new FailedPredicateException(this, "4 >= $_p");
 						setState(39); match(OR);
-						setState(40); expr(5);
+						setState(40); filter_expr(5);
 						}
 						break;
 					}
@@ -394,7 +394,7 @@ public class AQLParser extends Parser {
 		return _localctx;
 	}
 
-	public static class CondContext extends ParserRuleContext {
+	public static class FilterContext extends ParserRuleContext {
 		public Arith_exprContext arith_expr(int i) {
 			return getRuleContext(Arith_exprContext.class,i);
 		}
@@ -402,28 +402,28 @@ public class AQLParser extends Parser {
 			return getRuleContexts(Arith_exprContext.class);
 		}
 		public TerminalNode OP() { return getToken(AQLParser.OP, 0); }
-		public CondContext(ParserRuleContext parent, int invokingState) {
+		public FilterContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_cond; }
+		@Override public int getRuleIndex() { return RULE_filter; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterCond(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterFilter(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitCond(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitFilter(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitCond(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitFilter(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final CondContext cond() throws RecognitionException {
-		CondContext _localctx = new CondContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_cond);
+	public final FilterContext filter() throws RecognitionException {
+		FilterContext _localctx = new FilterContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_filter);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -458,98 +458,54 @@ public class AQLParser extends Parser {
 			this._p = ctx._p;
 		}
 	}
-	public static class FloatExprContext extends Arith_exprContext {
-		public TerminalNode FLOAT() { return getToken(AQLParser.FLOAT, 0); }
-		public FloatExprContext(Arith_exprContext ctx) { copyFrom(ctx); }
+	public static class StringLiteralContext extends Arith_exprContext {
+		public TerminalNode SLITERAL() { return getToken(AQLParser.SLITERAL, 0); }
+		public StringLiteralContext(Arith_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterFloatExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterStringLiteral(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitFloatExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitStringLiteral(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitFloatExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitStringLiteral(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class MonthsDiffContext extends Arith_exprContext {
-		public Arith_exprContext arith_expr() {
-			return getRuleContext(Arith_exprContext.class,0);
-		}
-		public TerminalNode LP() { return getToken(AQLParser.LP, 0); }
-		public TerminalNode RP() { return getToken(AQLParser.RP, 0); }
-		public TerminalNode MONTHS() { return getToken(AQLParser.MONTHS, 0); }
-		public MonthsDiffContext(Arith_exprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterMonthsDiff(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitMonthsDiff(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitMonthsDiff(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class FieldExprContext extends Arith_exprContext {
+	public static class FieldContext extends Arith_exprContext {
 		public TerminalNode FIELD() { return getToken(AQLParser.FIELD, 0); }
-		public FieldExprContext(Arith_exprContext ctx) { copyFrom(ctx); }
+		public FieldContext(Arith_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterFieldExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterField(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitFieldExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitField(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitFieldExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitField(this);
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class YearsDiffContext extends Arith_exprContext {
-		public Arith_exprContext arith_expr() {
-			return getRuleContext(Arith_exprContext.class,0);
-		}
-		public TerminalNode LP() { return getToken(AQLParser.LP, 0); }
-		public TerminalNode YEARS() { return getToken(AQLParser.YEARS, 0); }
-		public TerminalNode RP() { return getToken(AQLParser.RP, 0); }
-		public YearsDiffContext(Arith_exprContext ctx) { copyFrom(ctx); }
+	public static class FloatLiteralContext extends Arith_exprContext {
+		public TerminalNode FLOAT() { return getToken(AQLParser.FLOAT, 0); }
+		public FloatLiteralContext(Arith_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterYearsDiff(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterFloatLiteral(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitYearsDiff(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitFloatLiteral(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitYearsDiff(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class IntExprContext extends Arith_exprContext {
-		public TerminalNode INT() { return getToken(AQLParser.INT, 0); }
-		public IntExprContext(Arith_exprContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterIntExpr(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitIntExpr(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitIntExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitFloatLiteral(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -576,20 +532,42 @@ public class AQLParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class StringExprContext extends Arith_exprContext {
-		public TerminalNode SLITERAL() { return getToken(AQLParser.SLITERAL, 0); }
-		public StringExprContext(Arith_exprContext ctx) { copyFrom(ctx); }
+	public static class YearsDiffFuncContext extends Arith_exprContext {
+		public Arith_exprContext arith_expr() {
+			return getRuleContext(Arith_exprContext.class,0);
+		}
+		public TerminalNode LP() { return getToken(AQLParser.LP, 0); }
+		public TerminalNode YEARS() { return getToken(AQLParser.YEARS, 0); }
+		public TerminalNode RP() { return getToken(AQLParser.RP, 0); }
+		public YearsDiffFuncContext(Arith_exprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterStringExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterYearsDiffFunc(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitStringExpr(this);
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitYearsDiffFunc(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitStringExpr(this);
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitYearsDiffFunc(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class IntLiteralContext extends Arith_exprContext {
+		public TerminalNode INT() { return getToken(AQLParser.INT, 0); }
+		public IntLiteralContext(Arith_exprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterIntLiteral(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitIntLiteral(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitIntLiteral(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -637,6 +615,28 @@ public class AQLParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class MonthsDiffFuncContext extends Arith_exprContext {
+		public Arith_exprContext arith_expr() {
+			return getRuleContext(Arith_exprContext.class,0);
+		}
+		public TerminalNode LP() { return getToken(AQLParser.LP, 0); }
+		public TerminalNode RP() { return getToken(AQLParser.RP, 0); }
+		public TerminalNode MONTHS() { return getToken(AQLParser.MONTHS, 0); }
+		public MonthsDiffFuncContext(Arith_exprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).enterMonthsDiffFunc(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof AQLListener ) ((AQLListener)listener).exitMonthsDiffFunc(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof AQLVisitor ) return ((AQLVisitor<? extends T>)visitor).visitMonthsDiffFunc(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 
 	public final Arith_exprContext arith_expr(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
@@ -651,34 +651,34 @@ public class AQLParser extends Parser {
 			{
 			setState(69);
 			switch (_input.LA(1)) {
-			case MONTHS:
-				{
-				_localctx = new MonthsDiffContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-
-				setState(51); match(MONTHS);
-				setState(52); match(LP);
-				setState(53); arith_expr(0);
-				setState(54); match(RP);
-				}
-				break;
-			case YEARS:
-				{
-				_localctx = new YearsDiffContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(56); match(YEARS);
-				setState(57); match(LP);
-				setState(58); arith_expr(0);
-				setState(59); match(RP);
-				}
-				break;
 			case LP:
 				{
 				_localctx = new ParensArithExprContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
+
+				setState(51); match(LP);
+				setState(52); arith_expr(0);
+				setState(53); match(RP);
+				}
+				break;
+			case MONTHS:
+				{
+				_localctx = new MonthsDiffFuncContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(55); match(MONTHS);
+				setState(56); match(LP);
+				setState(57); arith_expr(0);
+				setState(58); match(RP);
+				}
+				break;
+			case YEARS:
+				{
+				_localctx = new YearsDiffFuncContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(60); match(YEARS);
 				setState(61); match(LP);
 				setState(62); arith_expr(0);
 				setState(63); match(RP);
@@ -686,7 +686,7 @@ public class AQLParser extends Parser {
 				break;
 			case FIELD:
 				{
-				_localctx = new FieldExprContext(_localctx);
+				_localctx = new FieldContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(65); match(FIELD);
@@ -694,7 +694,7 @@ public class AQLParser extends Parser {
 				break;
 			case SLITERAL:
 				{
-				_localctx = new StringExprContext(_localctx);
+				_localctx = new StringLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(66); match(SLITERAL);
@@ -702,7 +702,7 @@ public class AQLParser extends Parser {
 				break;
 			case INT:
 				{
-				_localctx = new IntExprContext(_localctx);
+				_localctx = new IntLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(67); match(INT);
@@ -710,7 +710,7 @@ public class AQLParser extends Parser {
 				break;
 			case FLOAT:
 				{
-				_localctx = new FloatExprContext(_localctx);
+				_localctx = new FloatLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(68); match(FLOAT);
@@ -884,9 +884,17 @@ public class AQLParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
-		case 2: return expr_sempred((ExprContext)_localctx, predIndex);
+		case 2: return filter_expr_sempred((Filter_exprContext)_localctx, predIndex);
 
 		case 4: return arith_expr_sempred((Arith_exprContext)_localctx, predIndex);
+		}
+		return true;
+	}
+	private boolean filter_expr_sempred(Filter_exprContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 0: return 5 >= _localctx._p;
+
+		case 1: return 4 >= _localctx._p;
 		}
 		return true;
 	}
@@ -895,14 +903,6 @@ public class AQLParser extends Parser {
 		case 2: return 9 >= _localctx._p;
 
 		case 3: return 8 >= _localctx._p;
-		}
-		return true;
-	}
-	private boolean expr_sempred(ExprContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 0: return 5 >= _localctx._p;
-
-		case 1: return 4 >= _localctx._p;
 		}
 		return true;
 	}
@@ -924,10 +924,10 @@ public class AQLParser extends Parser {
 		"\3\2\2\2#\"\3\2\2\2$-\3\2\2\2%&\6\4\2\3&\'\7\n\2\2\',\5\6\4\2()\6\4\3"+
 		"\3)*\7\t\2\2*,\5\6\4\2+%\3\2\2\2+(\3\2\2\2,/\3\2\2\2-+\3\2\2\2-.\3\2\2"+
 		"\2.\7\3\2\2\2/-\3\2\2\2\60\61\5\n\6\2\61\62\7\30\2\2\62\63\5\n\6\2\63"+
-		"\t\3\2\2\2\64\65\b\6\1\2\65\66\7\7\2\2\66\67\7\f\2\2\678\5\n\6\289\7\r"+
-		"\2\29H\3\2\2\2:;\7\b\2\2;<\7\f\2\2<=\5\n\6\2=>\7\r\2\2>H\3\2\2\2?@\7\f"+
+		"\t\3\2\2\2\64\65\b\6\1\2\65\66\7\f\2\2\66\67\5\n\6\2\678\7\r\2\28H\3\2"+
+		"\2\29:\7\7\2\2:;\7\f\2\2;<\5\n\6\2<=\7\r\2\2=H\3\2\2\2>?\7\b\2\2?@\7\f"+
 		"\2\2@A\5\n\6\2AB\7\r\2\2BH\3\2\2\2CH\7\16\2\2DH\7\25\2\2EH\7\17\2\2FH"+
-		"\7\20\2\2G\64\3\2\2\2G:\3\2\2\2G?\3\2\2\2GC\3\2\2\2GD\3\2\2\2GE\3\2\2"+
+		"\7\20\2\2G\64\3\2\2\2G9\3\2\2\2G>\3\2\2\2GC\3\2\2\2GD\3\2\2\2GE\3\2\2"+
 		"\2GF\3\2\2\2HQ\3\2\2\2IJ\6\6\4\3JK\7\31\2\2KP\5\n\6\2LM\6\6\5\3MN\7\31"+
 		"\2\2NP\5\f\7\2OI\3\2\2\2OL\3\2\2\2PS\3\2\2\2QO\3\2\2\2QR\3\2\2\2R\13\3"+
 		"\2\2\2SQ\3\2\2\2TV\7\21\2\2UW\7\22\2\2VU\3\2\2\2VW\3\2\2\2WY\3\2\2\2X"+

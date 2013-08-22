@@ -63,11 +63,7 @@ public class ArithExpressionNode extends ExpressionNode {
 	public DataType getType() {
 		DataType result = null;
 		if (leftOperand.isNumber() && rightOperand.isNumber()) {
-			if (leftOperand.getType() == DataType.FLOAT || rightOperand.getType() == DataType.FLOAT) {
-				result = DataType.FLOAT;
-			} else {
-				result = DataType.INTEGER;
-			}
+			result = (leftOperand.isFloat() || rightOperand.isFloat()) ? DataType.FLOAT : DataType.INTEGER;
 		} else if (op == ArithOp.PLUS && leftOperand.isDateInterval() && rightOperand.isDate()) {
 			result = DataType.DATE;
 		} else if (op == ArithOp.PLUS && leftOperand.isDate() && rightOperand.isDateInterval()) {

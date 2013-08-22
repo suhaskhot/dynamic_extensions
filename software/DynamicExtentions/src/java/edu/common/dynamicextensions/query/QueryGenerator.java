@@ -64,7 +64,7 @@ public class QueryGenerator {
     private String buildSelectClause(SelectListNode selectList) {
     	StringBuilder select = new StringBuilder();
     	for (ExpressionNode element : selectList.getElements()) { 
-    		select.append(getCondOperandExpr(element, element.getType())).append(", ");
+    		select.append(getExpressionNodeSql(element, element.getType())).append(", ");
     	}
     	
     	select.delete(select.length() - 2, select.length());
@@ -136,8 +136,8 @@ public class QueryGenerator {
             throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used");
         }
         
-        String lhs = getCondOperandExpr(filter.getLhs(), filter.getLhs().getType());
-        String rhs = getCondOperandExpr(filter.getRhs(), filter.getLhs().getType());        
+        String lhs = getExpressionNodeSql(filter.getLhs(), filter.getLhs().getType());
+        String rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());        
         return lhs + " " + filter.getRelOp().symbol() + " " + rhs;
     }
 
@@ -153,75 +153,93 @@ public class QueryGenerator {
         return value;
     }
     
-    private String getCondOperandExpr(ExpressionNode condOperand, DataType type) {
+    private String getExpressionNodeSql(ExpressionNode exprNode, DataType type) {
     	String result = "";
     	
-    	if (condOperand instanceof FieldNode) {
-    		FieldNode field = (FieldNode)condOperand;
-    		result = field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
-    	} else if (condOperand instanceof LiteralValueNode) {
-    		LiteralValueNode value = (LiteralValueNode)condOperand;
-            switch (value.getType()) {
-        		case STRING:
-        			if (type == DataType.DATE) {
-        				result = "to_date('" + removeQuotes(value.getValues().get(0).toString()) + "', 'MM-DD-YYYY')";
-        			} else {
-        				result = "'" + removeQuotes(value.getValues().get(0).toString()) + "'";
-        			}        		
-        			break;
-        		
-        		default:
-        			result = value.getValues().get(0).toString();
-        			break;
-            }
-    	} else if (condOperand instanceof ArithExpressionNode) {
-    		ArithExpressionNode arithExpr = (ArithExpressionNode)condOperand;    		
-    		String loperand = getCondOperandExpr(arithExpr.getLeftOperand(),  arithExpr.getLeftOperandCoercion());
-    		
-    		String expr = "";
-    		if (arithExpr.getLeftOperand().isDate() && arithExpr.getRightOperand().isDateInterval()) {
-    			DateIntervalNode di = (DateIntervalNode)arithExpr.getRightOperand();
-    			int months = di.getYears() * 12 + di.getMonths();
-    			if (months == 0) {
-    				expr = loperand; 
-    			} else {
-    				if (arithExpr.getOp() == ArithOp.MINUS) {
-    					months = -months;    				    	
-    				}
-    				
-    				expr = "add_months(" + loperand + ", " + months + ")";
-    			}
-    			
-    			if (di.getDays() != 0) {
-    				expr += " " + arithExpr.getOp().symbol() + " " + di.getDays(); 
-    			}
-    		} else {
-    			String roperand = getCondOperandExpr(arithExpr.getRightOperand(), arithExpr.getRightOperandCoercion());
-    			expr = loperand + " " + arithExpr.getOp().symbol() + " " + roperand;
-    		}
-    		
-    		
-    		result = "(" + expr + ")";
-    	} else if (condOperand instanceof DateDiffFuncNode) {
-    		DateDiffFuncNode dateDiff = (DateDiffFuncNode)condOperand;
-    		String loperand = getCondOperandExpr(dateDiff.getLeftOperand(), DataType.DATE);
-    		String roperand = getCondOperandExpr(dateDiff.getRightOperand(), DataType.DATE);
-    		
-    		switch (dateDiff.getDiffType()) {
-    			case YEAR:
-    				result = "(months_between(" + loperand + ", " + roperand + ") / 12)";
-    				break;
-    				
-    			case MONTH:
-    				result = "months_between(" + loperand + ", " + roperand + ")";
-    				break;
-    				
-    			case DAY:
-    				result = "(" + loperand + " - " + roperand + ")";
-    				break;    			
-    		}
+    	if (exprNode instanceof FieldNode) {
+    		result = getFieldNodeSql((FieldNode)exprNode);
+    	} else if (exprNode instanceof LiteralValueNode) {
+    		result = getLiteralValueNodeSql((LiteralValueNode)exprNode, type);
+    	} else if (exprNode instanceof ArithExpressionNode) {
+    		result = getArithExpressionNodeSql((ArithExpressionNode)exprNode);    		
+    	} else if (exprNode instanceof DateDiffFuncNode) {
+    		result = getDateDiffFuncNodeSql((DateDiffFuncNode)exprNode);
     	}
     	
     	return result;
+    }
+    
+    private String getFieldNodeSql(FieldNode field) {
+    	return field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
+    }
+    
+    private String getLiteralValueNodeSql(LiteralValueNode value, DataType coercionType) {
+    	String result = "";
+    	
+        switch (value.getType()) {
+    		case STRING:
+    			result = "'" + removeQuotes(value.getValues().get(0).toString()) + "'";        			
+    			if (coercionType == DataType.DATE) {
+    				result = "to_date(" + result + ", 'MM-DD-YYYY')";
+    			}        		
+    			break;
+    		
+    		default:
+    			result = value.getValues().get(0).toString();
+    			break;
+        }
+    	
+        return result;
+    }
+    
+    private String getArithExpressionNodeSql(ArithExpressionNode arithExpr) {    	
+    	String expr = "";
+    	
+    	String loperand = getExpressionNodeSql(arithExpr.getLeftOperand(),  arithExpr.getLeftOperandCoercion());
+		if (arithExpr.getLeftOperand().isDate() && arithExpr.getRightOperand().isDateInterval()) {
+			DateIntervalNode di = (DateIntervalNode)arithExpr.getRightOperand();
+			int months = di.getYears() * 12 + di.getMonths();
+			if (months == 0) {
+				expr = loperand; 
+			} else {
+				if (arithExpr.getOp() == ArithOp.MINUS) {
+					months = -months;    				    	
+				}
+				
+				expr = "add_months(" + loperand + ", " + months + ")";
+			}
+			
+			if (di.getDays() != 0) {
+				expr += " " + arithExpr.getOp().symbol() + " " + di.getDays(); 
+			}
+		} else {
+			String roperand = getExpressionNodeSql(arithExpr.getRightOperand(), arithExpr.getRightOperandCoercion());
+			expr = loperand + " " + arithExpr.getOp().symbol() + " " + roperand;
+		}
+		
+		
+		return "(" + expr + ")";    	
+    }
+    
+    private String getDateDiffFuncNodeSql(DateDiffFuncNode dateDiff) {
+    	String result = "";
+    	String loperand = getExpressionNodeSql(dateDiff.getLeftOperand(), DataType.DATE);
+		String roperand = getExpressionNodeSql(dateDiff.getRightOperand(), DataType.DATE);
+		
+		switch (dateDiff.getDiffType()) {
+			case YEAR:
+				result = "(months_between(" + loperand + ", " + roperand + ") / 12)";
+				break;
+				
+			case MONTH:
+				result = "months_between(" + loperand + ", " + roperand + ")";
+				break;
+				
+			case DAY:
+				result = "(" + loperand + " - " + roperand + ")";
+				break;    			
+		}
+    	    	
+		return result;
     }
 }

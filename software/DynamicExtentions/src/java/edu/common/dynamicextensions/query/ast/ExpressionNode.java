@@ -14,7 +14,19 @@ public abstract class ExpressionNode implements Node {
 	}
 	
 	public boolean isNumber() {
-		return getType() == DataType.INTEGER || getType() == DataType.FLOAT || getType() == DataType.BOOLEAN;
+		return isFloat() || isInteger() || isBoolean();
+	}
+	
+	public boolean isFloat() {
+		return getType() == DataType.FLOAT;
+	}
+	
+	public boolean isInteger() {
+		return getType() == DataType.INTEGER;
+	}
+	
+	public boolean isBoolean() {
+		return getType() == DataType.BOOLEAN;
 	}
 	
 	public boolean isDateInterval() {

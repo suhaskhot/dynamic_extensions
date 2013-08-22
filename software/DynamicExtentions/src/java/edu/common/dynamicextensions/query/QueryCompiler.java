@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.query;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.QueryTester;
+//import edu.QueryTester;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
@@ -130,8 +130,8 @@ public class QueryCompiler
 
         Container form = null;        
         if(formTree == null) {
-            //form = Container.getContainer(formId);
-	    form = QueryTester.getContainer(formId);
+            form = Container.getContainer(formId);
+	    //form = QueryTester.getContainer(formId);
             if(form == null) {
                 throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formId);
             }
@@ -190,8 +190,8 @@ public class QueryCompiler
         JoinTree rootTree = joinMap.get(rootFormId);
         
         if(rootTree == null) {
-            //Container rootForm = Container.getContainer(rootFormId);
-	    Container rootForm = QueryTester.getContainer(rootFormId);
+            Container rootForm = Container.getContainer(rootFormId);
+	    //Container rootForm = QueryTester.getContainer(rootFormId);
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
         

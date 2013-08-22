@@ -5,5 +5,6 @@ public enum DataType {
 	FLOAT,
 	STRING,
 	BOOLEAN,
-	DATE
+	DATE,
+	DATE_INTERVAL
 }

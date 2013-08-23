@@ -3,14 +3,10 @@ var Models = {
 	Form : Backbone.Model
 			.extend({
 				defaults : {
-					caption : "New Form ",
-					formName : "newForm",
 					status : "new",
 					save : "yes",
 					id : null,
-					skipRules : {},
-					controlCollection : new Array(),
-					controlObjectCollection : {}
+					skipRules : {}
 				},
 
 				url : function() {
@@ -19,12 +15,16 @@ var Models = {
 
 				initialize : function() {
 					console.log("Form Model created");
+					this.set({
+						controlCollection : new Array(),
+						controlObjectCollection : {}
+					});
 				},
 
 				getControl : function(name) {
 					var controlName = name.split(".");
 					if (controlName.length == 1) {
-						return this.get('controlObjectCollection')[controlName[0]];
+						return this.get('controlObjectCollection')[name];
 					} else {
 						return this.get('controlObjectCollection')[controlName[0]]
 								.get('subForm').get('controlObjectCollection')[controlName[1]];
@@ -41,6 +41,28 @@ var Models = {
 					}
 				},
 
+				setControlId : function(controlName, controlId) {
+					var cntrlNames = controlName.split(".");
+					if (cntrlNames.length == 1) {
+						this.get('controlObjectCollection')[controlName].set({
+							id : controlId
+						});
+					} else {
+						this.get('controlObjectCollection')[cntrlNames[0]].get(
+								'subForm').get('controlObjectCollection')[cntrlNames[1]]
+								.set({
+									id : controlId
+								});
+					}
+				},
+
+				setSubFormId : function(controlName, controlId) {
+					this.get('controlObjectCollection')[controlName].get(
+							'subForm').set({
+						id : controlId
+					});
+				},
+
 				editControl : function(controlName, control) {
 					this.deleteControl(controlName);
 					this.addControl(controlName, control);
@@ -48,17 +70,15 @@ var Models = {
 
 				deleteControl : function(controlName) {
 					var cntrlName = controlName.split(".");
-					var control = this.getControl(controlName);
 					if (cntrlName.length == 1) {
-						if (control != undefined) {
-							delete this.get('controlObjectCollection')[cntrlName[0]];
-						}
+
+						delete this.get('controlObjectCollection')[cntrlName[0]];
+
 					} else {
-						if (control != undefined) {
-							delete this.get('controlObjectCollection')[cntrlName[0]]
-									.get('subForm').get(
-											'controlObjectCollection')[cntrlName[1]];
-						}
+
+						delete this.get('controlObjectCollection')[cntrlName[0]]
+								.get('subForm').get('controlObjectCollection')[cntrlName[1]];
+
 					}
 
 				},
@@ -86,28 +106,48 @@ var Models = {
 
 				},
 
-				addSkipRule : function(skipRule) {
-					this.get('skipRules')[GlobalMemory.skipRulesCounter] = skipRule;
-					GlobalMemory.skipRulesCounter++;
+				setFormInformation : function(formInfo) {
+					this.set({
+						formName : formInfo.get('formName'),
+						caption : formInfo.get('caption'),
+					});
 				},
 
-				editSkipRule : function(id, skipRule) {
-					delete this.get('skipRules')[id];
-					this.get('skipRules')[id] = skipRule;
-				},
-
-				deleteSkipRule : function(id) {
-					delete this.get('skipRules')[id];
-				},
-
-				addCalculationFormula : function(controlName, formula) {
-					this.get('controlObjectCollection')[controlName]
-							.addCalculationFormula(formula);
+				getFormInformation : function() {
+					var formInfo = new Models.FormInfo();
+					var fName = this.get('formName');
+					var fCaption = this.get('caption');
+					var fCreatedBy = this.get('createdBy');
+					var fLastModifiedBy = this.get('lastModifiedBy');
+					var fCreatedOn = this.get('createdOn');
+					var fLastModifiedOn = this.get('lastModifiedOn');
+					formInfo.set({
+						formName : fName,
+						caption : fCaption,
+						createdBy : fCreatedBy,
+						lastModifiedBy : fLastModifiedBy,
+						createdOn : fCreatedOn,
+						lastModifiedOn : fLastModifiedOn
+					});
+					return formInfo;
 				}
 
 			}),
 
-	
+	// Form Information
+
+	FormInfo : Backbone.Model.extend({
+
+		defaults : {
+			formName : "",
+			caption : ""
+		},
+
+		initialize : function() {
+			console.log("Form Info Model created");
+		}
+
+	}),
 
 	// Field
 	Field : Backbone.Model

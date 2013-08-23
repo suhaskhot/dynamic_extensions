@@ -360,11 +360,12 @@ var Utility = {
 	},
 
 	addSubForm : function(controlModel, show, container) {
+		var subFrm = new Models.Form();
 		controlModel.set({
 			template : Templates.templateList['subFormTemplate']
 					+ Templates.templateList['commonControlPropsTemplate']
 					+ Templates.templateList['submitButtonTemplate'],
-			subForm : new Models.Form()
+			subForm : subFrm
 		});
 
 		if (show)

@@ -141,5 +141,11 @@ var Templates = {
 			async : false
 		}).responseText;
 		this.templateList['pageBreakTemplate'] = result;
+		
+		result = $.ajax({
+			url : "csd_web/pages/templates/summaryTemplate.html",
+			async : false
+		}).responseText;
+		this.templateList['summaryTemplate'] = result;
 	}
 }

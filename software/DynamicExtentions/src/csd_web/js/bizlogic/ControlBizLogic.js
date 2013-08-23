@@ -4,9 +4,8 @@
 
 var ControlBizLogic = {
 
-
 	deleteControl : function(model) {
-		
+
 		var controlName = model.get('controlName');
 		if (model.get('parentName') != undefined) {
 			controlName = model.get('parentName') + "." + controlName;
@@ -159,9 +158,14 @@ var ControlBizLogic = {
 
 		if (selectedNodeId == undefined || selectedNodeId == "") {
 			// no node has been selected, hence add it to main form
+			var editModel = Main.formView.getFormModel().getControl(
+					model.get('controlName'));
 			Main.formView.getFormModel().editControl(model.get('controlName'),
 					model);
-			ControlBizLogic.createTreeNode(1, name, controlName, type);
+			if (editModel == undefined) {
+				ControlBizLogic.createTreeNode(1, name, controlName, type);
+			}
+
 		} else {
 			if (selectedNodeControlType == "subForm") {
 				// add it to the sub form
@@ -173,17 +177,26 @@ var ControlBizLogic = {
 											+ "Cannot add a sub form or a page break within another sub form");
 					status = "error";
 				} else {
+					var editModel = Main.formView.getFormModel().getControl(
+							selectedNodeControlName + "."
+									+ model.get('controlName'));
 					Main.formView.getFormModel().editControl(
 							selectedNodeControlName + "."
 									+ model.get('controlName'), model);
-					ControlBizLogic.createTreeNode(selectedNodeId, name,
-							controlName, type);
+					if (editModel == undefined) {
+						ControlBizLogic.createTreeNode(selectedNodeId, name,
+								controlName, type);
+					}
 				}
 			} else {
 				// add it to the main form
+				var editModel = Main.formView.getFormModel().getControl(
+						model.get('controlName'));
 				Main.formView.getFormModel().editControl(
 						model.get('controlName'), model);
-				ControlBizLogic.createTreeNode(1, name, controlName, type);
+				if (editModel == undefined) {
+					ControlBizLogic.createTreeNode(1, name, controlName, type);
+				}
 			}
 		}
 		return status;
@@ -197,6 +210,10 @@ var ControlBizLogic = {
 
 		Main.treeView.getTree().setUserData(id, "controlName", controlName);
 		Main.treeView.getTree().setUserData(id, "controlType", type);
+		if (type == "pageBreak") {
+			Main.treeView.getTree().setItemStyle(id,
+					"font-weight:bold; font-style:italic; font-color:#505050;");
+		}
 		GlobalMemory.nodeCounter++;
 	},
 
@@ -235,6 +252,11 @@ var ControlBizLogic = {
 	 */
 	formTreeNodeClickHandler : function(id) {
 		// De select selected control
+		
+		// selected node is a form
+		if(id==1){
+			Main.mainTabBarView.selectTab("summaryTab");
+		}
 		Utility.resetCarouselControlSelect();
 
 		if (Main.currentFieldView != null) {
@@ -248,6 +270,7 @@ var ControlBizLogic = {
 		// Create a view with the relevant model
 		Main.currentFieldView = Views.showControl('controlContainer',
 				fieldModel);
+		Main.currentFieldView.setSubmitCaptionToUpdate();
 		// Show the control tab if not selected
 		Main.mainTabBarView.selectTab("controlTab");
 		// Select the carousel's control #FFFFFF
@@ -298,7 +321,9 @@ var ControlBizLogic = {
 			});
 		}
 		// set tree node id
-		control.set({treeNodeId : id});
+		control.set({
+			treeNodeId : id
+		});
 		return control;
 	},
 
@@ -325,11 +350,6 @@ var ControlBizLogic = {
 	 */
 	createControl : function(controlType) {
 
-		if (Main.currentFieldView != null) {
-			// Erase the existing view
-			Main.currentFieldView.destroy();
-		}
-
 		var controlModel = new Models.Field({
 			type : controlType,
 			pvs : {},
@@ -338,8 +358,7 @@ var ControlBizLogic = {
 		});
 		GlobalMemory.sequenceNumCntr++;
 
-		Main.currentFieldView = Utility.addFieldHandlerMap[controlType](
-				controlModel, true, 'controlContainer');
+		return controlModel;
 	},
 
 	//

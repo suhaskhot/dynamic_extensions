@@ -180,9 +180,6 @@ var Routers = {
 
 				updateFormUI : function(model) {
 					Main.formView.render();
-					Main.formView.getFormModel().set({
-						controlObjectCollection : {}
-					});
 				},
 
 				updateTreeWithFormName : function(model) {
@@ -192,14 +189,15 @@ var Routers = {
 				},
 
 				updateFormAndUI : function(model) {
-					Routers.formEventsRouterPointer.updateFormUI(model);
+				/*	Routers.formEventsRouterPointer.updateFormUI(model);
 					Routers.formEventsRouterPointer
 							.updateTreeWithFormName(model);
 					Routers.formEventsRouterPointer
 							.loadControlsInModelAndTree(model);
 					// re populate skip rules table;
 					$("#skipRulesTable tr:gt(0)").remove();
-					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
+					AdvancedControlPropertiesBizLogic.loadSkipRules(model);*/
+					Routers.formEventsRouterPointer.updateModelWithIds(model);
 
 				},
 
@@ -232,7 +230,46 @@ var Routers = {
 					AdvancedControlPropertiesBizLogic
 							.loadSkipRules(Main.formView.getFormModel());
 					Main.advancedControlsView.setTableCss('formulaTable');
+					Main.mainTabBarView.loadFormSummary();
+					
+					
 					$("#formWaitingImage").hide();
+				},
+
+				updateModelWithIds : function(model) {
+					// set form's id
+					Main.formView.getFormModel().set({
+						id : model.get('id')
+					});
+					// set controls' ids
+					for ( var cntr = 0; cntr < model.get('controlCollection').length; cntr++) {
+						var control = new Models.Field(model
+								.get('controlCollection')[cntr]);
+						Main.formView.getFormModel().setControlId(
+								control.get('controlName'), control.get('id'));
+						// set sub form controls' ids
+						if (control.get('type' == "subForm")) {
+							// set sub form id
+							Main.formView.getFormModel().setSubFormId(
+									control.get('controlName').control.get(
+											'subForm').get('id'));
+							// set sub controls' ids
+							var subFrom = new Models.Form(control
+									.get('subForm'));
+							for ( var subCntr = 0; cntr < subFrom
+									.get('controlCollection').length; subCntr++) {
+
+								var subControl = new Models.Field(subFrom
+										.get('controlCollection')[subCntr]);
+								var subControlName = control.get('controlName')
+										+ "." + subControl.get('controlName');
+								Main.formView.getFormModel().setControlId(
+										subControlName, subControl.get('id'));
+								
+							}
+						}
+
+					}
 				},
 
 				loadControlsInModelAndTree : function(model) {
@@ -244,7 +281,8 @@ var Routers = {
 						var displayLbl = control.get('caption') + " ("
 								+ control.get('controlName') + ")";
 						this.populateTreeWithControlNodes(control
-								.get('controlName'), displayLbl);
+								.get('controlName'), displayLbl, control
+								.get('type'));
 						var parentId = GlobalMemory.nodeCounter - 1;
 						if (control.get('type') == "subForm") {
 							var subFrm = new Models.Form(control.get('subForm'));
@@ -275,6 +313,9 @@ var Routers = {
 										GlobalMemory.nodeCounter,
 										"controlName",
 										subControl.get('controlName'));
+								Main.treeView.getTree().setUserData(
+										GlobalMemory.nodeCounter,
+										"controlType", subControl.get('type'));
 								GlobalMemory.nodeCounter++;
 
 							}
@@ -302,13 +343,15 @@ var Routers = {
 				},
 
 				populateTreeWithControlNodes : function(controlName,
-						displayLabel) {
+						displayLabel, type) {
 					Main.treeView.getTree().insertNewChild(1,
 							GlobalMemory.nodeCounter, displayLabel, 0, 0, 0, 0,
 							"SELECT,CALL,CHILD,CHECKED");
 					Main.treeView.getTree().setUserData(
 							GlobalMemory.nodeCounter, "controlName",
 							controlName);
+					Main.treeView.getTree().setUserData(
+							GlobalMemory.nodeCounter, "controlType", type);
 
 					GlobalMemory.nodeCounter++;
 				}

@@ -3,161 +3,148 @@ var Views = {
 	/*
 	 * Form View
 	 */
-	FormView : Backbone.View
-			.extend({
-				initialize : function() {
-					_.bindAll(this, 'render'); // fixes loss of context for
-					this.render();// self-rendering
+	FormView : Backbone.View.extend({
+		initialize : function() {
+			_.bindAll(this, 'render'); // fixes loss of context for
+			this.render();// self-rendering
+		},
+		loadForm : function() {
+
+			Routers.formEventsRouterPointer.navigate("loadCachedForm/"
+					+ $('#formCaption').val(), true);
+
+		},
+		saveForm : function() {
+
+			// Save Model
+			// alert(JSON.stringify(this.model.toJSON()));
+			this.populateControlsInForm();
+			$("#formWaitingImage").show();
+			// set form info from summary
+			this.model.setFormInformation(Main.mainTabBarView
+					.getFormSummaryView().getModel());
+			
+			
+			this.model.save({
+				save : "yes"
+			}, {
+				wait : true,
+				success : function(model, response) {
+					if (model.get("status") == "saved") {
+						
+						Routers.updateCachedFormMethod(model);
+						$("#formWaitingImage").hide();
+						var message = model.get('caption')
+								+ " was saved successfully.";
+						$("#popupMessageText").html(message);
+						$("#dialog-message").dialog('open');
+					} else {
+						$("#formWaitingImage").hide();
+						$("#popupMessageText").html(
+								"Could not save the form successfully.");
+						$("#dialog-message").dialog('open');
+					}
 				},
-				events : {
-					"click #saveFormID" : "saveModel",
-					"click #newForm" : "loadForm",
-					"keyup #formCaption" : "setTreeCaption"
-				},
-				loadForm : function() {
+				error : function(model, response) {
+					$("#formWaitingImage").hide();
+					$("#popupMessageText").html(
+							"Could not save the form successfully.");
+					$("#dialog-message").dialog('open');
+				}
 
-					Routers.formEventsRouterPointer.navigate("loadCachedForm/"
-							+ $('#formCaption').val(), true);
+			});
+		},
 
-				},
-				saveModel : function(event) {
+		loadModelInSessionForPreview : function() {
+			$("#formWaitingImage").show();
+			this.populateControlsInForm();
+			this.model.save({
+				save : "no"
+			}, {
+				wait : true,
+				success : function(model, response) {
+					FormBizLogic.loadPreview();
+				}
+			});
+		},
 
-					// Save Model
-					// alert(JSON.stringify(this.model.toJSON()));
-					this.populateControlsInForm();
-					$("#formWaitingImage").show();
-					this.model
-							.save(
-									{
-										save : "yes"
-									},
-									{
-										wait : true,
-										success : function(model, response) {
-											if (model.get("status") == "saved") {
-												Routers
-														.updateCachedFormMethod(model);
-												$("#formWaitingImage").hide();
-												var message = model
-														.get('caption')
-														+ " was saved successfully.";
-												$("#popupMessageText").html(
-														message);
-												$("#dialog-message").dialog(
-														'open');
-											} else {
-												$("#formWaitingImage").hide();
-												$("#popupMessageText")
-														.html(
-																"Could not save the form successfully.");
-												$("#dialog-message").dialog(
-														'open');
-											}
-										},
-										error : function(model, response) {
-											$("#formWaitingImage").hide();
-											$("#popupMessageText")
-													.html(
-															"Could not save the form successfully.");
-											$("#dialog-message").dialog('open');
-										}
+		loadModelInSession : function() {
+			$("#formWaitingImage").show();
+			this.populateControlsInForm();
+			this.model.save({
+				save : "no"
+			}, {
+				wait : true,
+				success : function(model, response) {
+					$("#formWaitingImage").hide();
+				}
+			});
 
-									});
-				},
+		},
 
-				loadModelInSessionForPreview : function() {
-					$("#formWaitingImage").show();
-					this.populateControlsInForm();
-					this.model.save({
-						save : "no"
-					}, {
-						wait : true,
-						success : function(model, response) {
-							FormBizLogic.loadPreview();
-						}
-					});
-				},
+		populateControlsInForm : function() {
+			this.model.set({
+				controlCollection : new Array()
+			});
 
-				loadModelInSession : function() {
-					$("#formWaitingImage").show();
-					this.populateControlsInForm();
-					this.model.save({
-						save : "no"
-					}, {
-						wait : true,
-						success : function(model, response) {
-							$("#formWaitingImage").hide();
-						}
-					});
+			// Set controls
+			for ( var key in this.model.get('controlObjectCollection')) {
+				var control = this.model.get('controlObjectCollection')[key];
 
-				},
-
-				populateControlsInForm : function() {
-					this.model.set({
-						caption : $('#formCaption').val(),
+				if (control.get('subForm') != undefined) {
+					this.model.get('controlObjectCollection')[key].get(
+							'subForm').set({
 						controlCollection : new Array()
 					});
-					if (this.model.get('controlObjectCollection') == null) {
-						this.model.set({
-							controlObjectCollection : {}
-						});
+					for ( var subKey in control.get('subForm').get(
+							'controlObjectCollection')) {
+						var subControl = control.get('subForm').get(
+								'controlObjectCollection')[subKey];
+						var subControlTemplate = subControl.get('template');
+						subControl.set({template : ""});
+						this.model.get('controlObjectCollection')[key].get(
+								'subForm').get('controlCollection').push(
+								subControl.toJSON());
+						subControl.set({template : subControlTemplate});
 					}
-
-					// Set controls
-					for ( var key in this.model.get('controlObjectCollection')) {
-						var control = this.model.get('controlObjectCollection')[key];
-
-						if (control.get('subForm') != undefined) {
-							this.model.get('controlObjectCollection')[key].get(
-									'subForm').set({
-								controlCollection : new Array()
-							});
-							for ( var subKey in control.get('subForm').get(
-									'controlObjectCollection')) {
-								var subControl = control.get('subForm').get(
-										'controlObjectCollection')[subKey];
-								this.model.get('controlObjectCollection')[key]
-										.get('subForm')
-										.get('controlCollection').push(
-												subControl.toJSON());
-							}
-						}
-						this.model.get('controlCollection').push(
-								control.toJSON());
-					}
-
-				},
-				setTreeCaption : function(event) {
-					Main.treeView.getTree().setItemText(1,
-							$('#formCaption').val(), '');
-				},
-				getFormModel : function() {
-
-					return this.model;
-				},
-				render : function() {
-					this.$el.html(Mustache.to_html(
-							Templates.templateList['formTemplate'], this.model
-									.toJSON()));
-					$("#formWaitingImage").hide();
-					// init dialog box
-					$("#dialog-message").dialog({
-						modal : true,
-						autoOpen : false,
-						buttons : {
-							Ok : function() {
-								$(this).dialog("close");
-							}
-						}
-					}).css("font-size", "10px");
-
-					$("#general-dialog").dialog({
-						modal : true,
-						autoOpen : false
-					}).css("font-size", "10px");
-
 				}
-			}),
+				var controlTemplate = control.get('template');
+				control.set({template : ""});
+				this.model.get('controlCollection').push(control.toJSON());
+				control.set({template : controlTemplate});
+			}
+
+		},
+
+		getFormModel : function() {
+
+			return this.model;
+		},
+		render : function() {
+			/*
+			 * this.$el.html(Mustache.to_html(
+			 * Templates.templateList['formTemplate'], this.model .toJSON()));
+			 */
+
+			$("#formWaitingImage").hide();
+			// init dialog box
+			$("#dialog-message").dialog({
+				modal : true,
+				autoOpen : false,
+				buttons : {
+					Ok : function() {
+						$(this).dialog("close");
+					}
+				}
+			}).css("font-size", "10px");
+
+			$("#general-dialog").dialog({
+				modal : true,
+				autoOpen : false
+			}).css("font-size", "10px");
+
+		}
+	}),
 
 	/*
 	 * Body View
@@ -189,7 +176,13 @@ var Views = {
 					"click #createControlButtonid" : "updateModel",
 					"click #addPv" : "addPv",
 					"click #deletePv" : "deletePv",
-					"click #deleteControlButtonid" : "deleteControl"
+					"click #deleteControlButtonid" : "deleteControl",
+					"keyup #controlCaption" : "setAttributeName"
+				},
+
+				setAttributeName : function(event) {
+					$('#attributeName').val(
+							Utility.toCamelCase($('#controlCaption').val()));
 				},
 
 				destroy : function() {
@@ -235,7 +228,32 @@ var Views = {
 				},
 
 				updateModel : function(event) {
+					this.populateFields();
+					var validationMessages = this.model.validate(this.model
+							.toJSON());
+					var status = "error";
+					if (validationMessages.length == 0) {
+						var displayLabel = $('#controlCaption').val() + " ("
+								+ $('#controlName').val() + ")";
+						status = ControlBizLogic.createControlNode(
+								displayLabel, $('#controlName').val(),
+								this.model.get('type'), this.model);
+						// add page break
+						var addPageBreak = $(
+								'input[name=addPageBreak]:radio:checked').prop(
+								'id');
+						if (addPageBreak == "pageBreakYes") {
+							if (status == "save" || status == "update") {
+								this.addPageBreak();
+							}
+						}
+					}
 
+					this.showMessages(validationMessages, status);
+
+				},
+
+				populateFields : function() {
 					this.model
 							.set({
 								caption : $('#controlCaption').val(),
@@ -268,20 +286,18 @@ var Views = {
 						pvs : Main.currentFieldView.getModel().get('pvs'),
 						pvFile : Main.currentFieldView.getModel().get('pvFile')
 					});
+				},
 
-					var validationMessages = this.model.validate(this.model
-							.toJSON());
-					var status = "error";
-					if (validationMessages.length == 0) {
-						var displayLabel = $('#controlCaption').val() + " ("
-								+ $('#controlName').val() + ")";
-						status = ControlBizLogic.createControlNode(
-								displayLabel, $('#controlName').val(),
-								this.model.get('type'), this.model);
-					}
-
-					this.showMessages(validationMessages, status);
-
+				addPageBreak : function() {
+					var pageBreak = ControlBizLogic.createControl("pageBreak");
+					pageBreak = Utility.addFieldHandlerMap["pageBreak"](
+							pageBreak, false, '');
+					pageBreak.set({
+						caption : "Page Break"
+					});
+					ControlBizLogic.createControlNode("Page Break ("
+							+ pageBreak.get('controlName') + ")", pageBreak
+							.get('controlName'), "pageBreak", pageBreak);
 				},
 
 				showMessages : function(validationMessages, status) {
@@ -361,6 +377,8 @@ var Views = {
 						break;
 					default:
 					}
+					// init page break
+					$("#addPageBreak").buttonset();
 
 				},
 
@@ -524,15 +542,8 @@ var Views = {
 					};
 				},
 
-				setControlName : function() {
-					if (this.model.get('status') == "new") {
-						$('#controlName')
-								.val(
-										Utility
-												.toCamelCase($(
-														'#controlCaption')
-														.val()));
-					}
+				setSubmitCaptionToUpdate : function() {
+					$('#createControlButtonid').val('Update Conrol');
 				},
 
 				getModel : function() {
@@ -563,11 +574,12 @@ var Views = {
 					tree.deleteChildItems(0);
 					var xml = "<?xml version='1.0' encoding='utf-8'?>"
 							+ "<tree id='0'>"
-							+ "<item text='New Form' id='1' child='1' >"
+							+ "<item text=' ' id='1' child='1' >"
 							+ "<userdata name='type'>form</userdata><userdata name='system'>true</userdata>"
 							+ "</item> " + "</tree>";
 					tree.loadXMLString(xml);
 					tree.openAllItems(0);
+					tree.setItemStyle(1, "font-weight:bold;");
 					this.formTree = tree;
 				},
 
@@ -582,6 +594,7 @@ var Views = {
 			.extend({
 
 				tab : null,
+				summaryView : null,
 				initialize : function() {
 					_.bindAll(this, 'render'); // fixes loss of context for
 					// 'this' within methods
@@ -592,7 +605,7 @@ var Views = {
 					var pos = Utility
 							.getControlIndexForCarousel(Main.currentFieldView
 									.getModel().get('type'));
-					Main.carousel.tinycarousel_move(pos > 8 ? (pos % 8) + 1
+					Main.carousel.tinycarousel_move(pos > 7 ? (pos % 7) + 1
 							: pos);
 					$('#' + Main.currentFieldView.getModel().get('type')).css(
 							'background-color', '#F0F0F0 ');
@@ -639,6 +652,38 @@ var Views = {
 						ControlBizLogic.csdControlsTabSelectHandler(id);
 						return true;
 					});
+
+					// render summary page
+					this.loadFormSummary();
+
+				},
+				loadFormSummary : function() {
+					var formInfo = Main.formView.getFormModel()
+							.getFormInformation();
+
+					if (formInfo.get('createdBy') == undefined
+							|| formInfo.get('createdBy') == "") {
+						var result = $.ajax({
+							url : "csdApi/form/currentuser",
+							async : false
+						}).responseText;
+						var today = new Date();
+						result = $.parseJSON(result);
+						formInfo.set({
+							createdBy : result.userName,
+							createdOn : today.getMonth() + "/" + today.getDay()
+									+ "/" + today.getFullYear()
+						});
+					}
+
+					this.summaryView = new Views.SummaryView({
+						el : $("#formSummaryContainer"),
+						model : formInfo
+					});
+				},
+
+				getFormSummaryView : function() {
+					return this.summaryView;
 				},
 
 				getTabBar : function() {
@@ -1222,15 +1267,124 @@ var Views = {
 
 		createControl : function(event) {
 
-			ControlBizLogic.createControl(event.target.id);
+			var controlModel = ControlBizLogic.createControl(event.target.id);
+			if (Main.currentFieldView != null) {
+				// Erase the existing view
+				Main.currentFieldView.destroy();
+			}
+			Main.currentFieldView = Utility.addFieldHandlerMap[event.target.id]
+					(controlModel, true, 'controlContainer');
 			Utility.resetCarouselControlSelect();
 			var pos = Utility.getControlIndexForCarousel(event.target.id);
-			Main.carousel.tinycarousel_move(pos > 8 ? (pos % 8) + 1 : pos);
+			Main.carousel.tinycarousel_move(pos > 7 ? (pos % 7) + 1 : pos);
 			$('#' + Main.currentFieldView.getModel().get('type')).css(
 					'background-color', '#F0F0F0 ');
+
 		}
 
 	}),
+
+	SummaryView : Backbone.View
+			.extend({
+				initialize : function() {
+					_.bindAll(this, 'render');
+					this.render();
+				},
+
+				events : {
+					"keyup #formCaption" : "setCaptionAndName",
+					"click #saveForm" : "saveForm",
+					"click #deleteForm" : "loadForm",
+					"click #exportForm" : "exportForm",
+					"click #importFormButton" : "importForm"
+				},
+
+				exportForm : function(event) {
+					var formId = Main.formView.getFormModel().get('id');
+					if (formId == null || formId == undefined) {
+						var message = "In order to export, the form needs to be saved.";
+						$("#popupMessageText").html(message);
+						$("#dialog-message").dialog('open');
+					} else {
+						location.href = "ExportFormAction.de?containerId="
+								+ formId;
+					}
+
+				},
+
+				importForm : function(event) {
+
+					$("#form-import-dialog").dialog({
+						buttons : {
+							Cancel : function() {
+								$(this).dialog("close");
+							}
+						}
+					});
+					$("#form-import-dialog").dialog("open");
+				},
+
+				loadForm : function(event) {
+					Main.formView.loadForm();
+				},
+
+				render : function() {
+					// this.$el.html(Templates.templateList['summaryTemplate']);
+					this.$el.html(Mustache.to_html(
+							Templates.templateList['summaryTemplate'],
+							this.model.toJSON()));
+					$("#form-import-dialog").dialog({
+						modal : true,
+						autoOpen : false
+					}).css("font-size", "10px");
+
+					$('#importForm')
+							.ajaxForm(
+									{
+										beforeSend : function() {
+											$("#importFileWaitingImage").show();
+										},
+										complete : function(xhr) {
+											var receivedData = $
+													.parseJSON(xhr.responseText);
+											$("#importFileWaitingImage").hide();
+											if (receivedData.status == "success") {
+												Routers.formEventsRouterPointer
+														.navigate(
+																"loadCachedForm/"
+																		+ receivedData.containerIds[0],
+																true);
+												$("#form-import-dialog")
+														.dialog("close");
+											} else {
+												alert("Error importing file.");
+											}
+										}
+									});
+					$("#importFileWaitingImage").hide();
+				},
+
+				saveForm : function(event) {
+					this.model.set({
+						formName : $('#formName').val(),
+						caption : $('#formCaption').val()
+					});
+					Main.formView.saveForm();
+				},
+
+				setCaptionAndName : function(event) {
+					Main.treeView.getTree().setItemText(1,
+							$('#formCaption').val(), '');
+					$('#formName').val(
+							Utility.toCamelCase($('#formCaption').val()));
+
+				},
+
+				getModel : function() {
+					return this.model;
+				}
+
+			}),
 
 	showForm : function(container, formModel) {
 		var formView = new Views.FormView({

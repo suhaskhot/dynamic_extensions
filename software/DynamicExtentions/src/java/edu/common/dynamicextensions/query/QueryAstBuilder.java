@@ -30,7 +30,13 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     @Override 
     public QueryExpressionNode visitQueryExpr(@NotNull AQLParser.QueryExprContext ctx) {  
     	QueryExpressionNode queryExpr = new QueryExpressionNode();
-    	queryExpr.setSelectList((SelectListNode)visit(ctx.select_list()));
+    	SelectListNode selectList = new SelectListNode();
+    	
+    	if (ctx.select_list() != null) {
+    		selectList = (SelectListNode)visit(ctx.select_list());
+    	}
+
+    	queryExpr.setSelectList(selectList);
     	queryExpr.setFilterExpr((FilterExpressionNode)visit(ctx.filter_expr()));
     	return queryExpr;
     }    

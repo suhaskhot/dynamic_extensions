@@ -1,6 +1,6 @@
 grammar AQL;
 
-query         : SELECT select_list WHERE filter_expr #QueryExpr
+query         : (SELECT select_list WHERE)? filter_expr #QueryExpr
               ;
       
 select_list   : arith_expr (',' arith_expr)*         #SelectExpr

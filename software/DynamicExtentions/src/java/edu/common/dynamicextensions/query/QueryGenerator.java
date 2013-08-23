@@ -67,7 +67,11 @@ public class QueryGenerator {
     		select.append(getExpressionNodeSql(element, element.getType())).append(", ");
     	}
     	
-    	select.delete(select.length() - 2, select.length());
+    	if (select.length() == 0) {
+    		select.append("*"); 
+    	} else {
+    		select.delete(select.length() - 2, select.length());
+    	}    	
     	return select.toString();
     }
     

@@ -482,7 +482,7 @@ public class ControlMapper {
 			subForm.put("formName", controlProps.getString(CSDConstants.CONTROL_NAME));
 			subForm.put("caption", controlProps.getString(CSDConstants.CONTROL_CAPTION));
 			if (subForm != null) {
-				Container subContainer = new RegularContainerMapper().propertiesToContainer(new Properties(subForm), false);
+				Container subContainer = new RegularContainerMapper().propertiesToContainer(new Properties(subForm), false, null);
 				control.setSubContainer(subContainer);
 			}
 
@@ -540,7 +540,7 @@ public class ControlMapper {
 		@Override
 		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
-			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LABEL);
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.PAGE_BREAK);
 			getCommonProperties(controlProps, control);
 			return controlProps;
 		}

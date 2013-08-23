@@ -3,12 +3,17 @@ package edu.wustl.dynamicextensions.formdesigner.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -31,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
+import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -39,6 +45,7 @@ import edu.wustl.dao.JDBCDAO;
 import edu.wustl.dao.exception.DAOException;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 import edu.wustl.dynamicextensions.formdesigner.resource.facade.ContainerFacade;
+import edu.wustl.dynamicextensions.formdesigner.usercontext.AppUserContextProvider;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 import edu.wustl.dynamicextensions.formdesigner.utility.Utility;
@@ -51,6 +58,8 @@ public class Form {
 	private JDBCDAO jdbcDao;
 
 	private HibernateDAO hibernateDao;
+
+	private static AtomicInteger formCnt = new AtomicInteger();
 
 	/**
 	 * Create a new Form
@@ -73,14 +82,14 @@ public class Form {
 		try {
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
 			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
-			ContainerFacade containerFacade = ContainerFacade.createContainer(formProps);
+			ContainerFacade containerFacade = ContainerFacade.createContainer(formProps, userData);
 			request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, containerFacade);
 			String save = formProps.getString("save");
 
 			if (save.equalsIgnoreCase("yes")) {
 				intializeDao();
-				containerFacade.persistContainer(userData);
+				containerFacade.persistContainer();
 				commitDao();
 			}
 
@@ -118,7 +127,8 @@ public class Form {
 		System.out.println(id);
 		try {
 			intializeDao();
-			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id));
+			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
+			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id), userData);
 
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, container);
 			Properties containerProps = container.getProperties();
@@ -184,12 +194,11 @@ public class Form {
 		try {
 			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
 			String save = formProps.getString("save");
-			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
 			ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
 			container.updateContainer(formProps);
 			if (save.equalsIgnoreCase("yes")) {
 				intializeDao();
-				container.persistContainer(userData);
+				container.persistContainer();
 				commitDao();
 			}
 			Writer strWriter = new StringWriter();
@@ -233,6 +242,20 @@ public class Form {
 	}
 
 	@GET
+	@Path("/currentuser")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getCurrentUser(@Context HttpServletRequest request, @Context HttpServletResponse response)
+			throws IOException, JSONException {
+		AppUserContextProvider contextProvider = CSDProperties.getInstance().getUserContextProvider();
+		JSONObject responseJSON = new JSONObject();
+		responseJSON.put("userName",
+				contextProvider.getUserNameById(contextProvider.getUserContext(request).getUserId()));
+
+		return responseJSON.toString();
+
+	}
+
+	@GET
 	@Path("/permissibleValues/{controlName}")
 	@Produces("text/plain")
 	public Response getPermissibleValues(@PathParam("controlName") String controlName,
@@ -240,15 +263,68 @@ public class Form {
 
 		ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
 		File pvFile = container.getPvFile(controlName);
-		if(pvFile==null){
+		if (pvFile == null) {
 			return Response.serverError().build();
-		}else
-		{
-			ResponseBuilder fileResponse = Response.ok((Object)pvFile);
-			fileResponse.header("Content-Disposition", "attachment; filename=\""+pvFile.getName()+"\"");
+		} else {
+			ResponseBuilder fileResponse = Response.ok((Object) pvFile);
+			fileResponse.header("Content-Disposition", "attachment; filename=\"" + pvFile.getName() + "\"");
 			return fileResponse.build();
 		}
 
+	}
+
+	@POST
+	@Path("/formxml")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String importForm(@FormDataParam("file") InputStream uploadedInputStream,
+			@FormDataParam("file") FormDataContentDisposition fileDetail) throws JSONException {
+		JSONObject output = new JSONObject();
+		
+		String tmpDirName = getTmpDirName();
+		Boolean createTables = false;
+		try {
+			Utility.downloadZipFile(uploadedInputStream, tmpDirName, "forms.zip");
+
+			//
+			// Once the zip is extracted, following will be directory layout
+			// temp-dir
+			//   |___ form-dir (created from zip)
+			//           |____ form1.xml
+			//           |____ form2.xml
+			//           |____ pvs
+			//
+			File tmpDir = new File(tmpDirName);
+			for (File formDir : tmpDir.listFiles()) {
+				if (!formDir.isDirectory()) {
+					continue;
+				}
+				String[] formFileNames = formDir.list(new FilenameFilter() {
+
+					@Override
+					public boolean accept(File dir, String name) {
+						return name.endsWith(".xml");
+					}
+				});
+
+				String formDirPath = new StringBuilder(formDir.getAbsolutePath()).append(File.separator).toString();
+				String pvDirPath = new StringBuilder(formDirPath).append("pvs").toString();
+				List<Long> containerIds = new ArrayList<Long>();
+				for (String formFile : formFileNames) {
+					String formFilePath = new StringBuilder(formDirPath).append(formFile).toString();
+					Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
+					containerIds.add(containerId);
+				}
+				output.put("status", "success");
+				output.put("containerIds", containerIds);
+				
+			}
+
+		} catch (Exception ex) {
+			output.put("status", "error");
+		}
+
+		return output.toString();
 	}
 
 	/**
@@ -278,5 +354,10 @@ public class Form {
 	private void intializeDao() throws DynamicExtensionsSystemException {
 		jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
 		hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
+	}
+
+	private String getTmpDirName() {
+		return new StringBuilder().append(System.getProperty("java.io.tmpdir")).append(File.separator)
+				.append(System.currentTimeMillis()).append(formCnt.incrementAndGet()).append("create").toString();
 	}
 }

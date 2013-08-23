@@ -24,13 +24,15 @@ import edu.wustl.dynamicextensions.formdesigner.mapper.RegularContainerMapper;
 public class ContainerFacade {
 
 	private Container container = null;
+	private UserContext userContext = null;
 	private static ContainerMapper containerMapper = new RegularContainerMapper();
 
 	/**
 	 * @param container
 	 */
-	private ContainerFacade(Container container) {
+	private ContainerFacade(Container container, UserContext userContext) {
 		this.container = container;
+		this.userContext = userContext;
 	}
 
 	/**
@@ -38,22 +40,22 @@ public class ContainerFacade {
 	 * @return
 	 * @throws Exception 
 	 */
-	public static ContainerFacade createContainer(Properties containerProps) throws Exception {
-		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, true));
+	public static ContainerFacade createContainer(Properties containerProps, UserContext userContext) throws Exception {
+		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, true, userContext), userContext);
 	}
 
 	public void updateContainer(Properties containerProps) throws Exception {
-		containerMapper.propertiesToContainer(containerProps, container, true);
+		containerMapper.propertiesToContainer(containerProps, container, true, null);
 	}
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public static ContainerFacade loadContainer(Long id) {
+	public static ContainerFacade loadContainer(Long id, UserContext userContext) {
 		Container newContainer = Container.getContainer(id);
 
-		return new ContainerFacade(newContainer);
+		return new ContainerFacade(newContainer, userContext);
 	}
 
 	/**
@@ -65,7 +67,7 @@ public class ContainerFacade {
 		container.addControl(control);
 	}
 
-	public void persistContainer(UserContext userContext) {
+	public void persistContainer() {
 		container.save(userContext);
 	}
 

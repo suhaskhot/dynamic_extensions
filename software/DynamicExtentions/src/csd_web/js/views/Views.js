@@ -671,8 +671,7 @@ var Views = {
 						result = $.parseJSON(result);
 						formInfo.set({
 							createdBy : result.userName,
-							createdOn : today.getMonth() + "/" + today.getDay()
-									+ "/" + today.getFullYear()
+							createdOn : ""
 						});
 					}
 

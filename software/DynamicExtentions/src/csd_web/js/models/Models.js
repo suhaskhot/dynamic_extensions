@@ -109,7 +109,7 @@ var Models = {
 				setFormInformation : function(formInfo) {
 					this.set({
 						formName : formInfo.get('formName'),
-						caption : formInfo.get('caption'),
+						caption : formInfo.get('caption')
 					});
 				},
 

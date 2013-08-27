@@ -23,21 +23,23 @@ var Views = {
 			// set form info from summary
 			this.model.setFormInformation(Main.mainTabBarView
 					.getFormSummaryView().getModel());
-			
-			
+
 			this.model.save({
 				save : "yes"
 			}, {
 				wait : true,
 				success : function(model, response) {
 					if (model.get("status") == "saved") {
-						
+
 						Routers.updateCachedFormMethod(model);
 						$("#formWaitingImage").hide();
 						var message = model.get('caption')
 								+ " was saved successfully.";
 						$("#popupMessageText").html(message);
 						$("#dialog-message").dialog('open');
+						Main.mainTabBarView.getFormSummaryView()
+								.displayFormInfo(model.getFormInformation());
+
 					} else {
 						$("#formWaitingImage").hide();
 						$("#popupMessageText").html(
@@ -58,6 +60,8 @@ var Views = {
 		loadModelInSessionForPreview : function() {
 			$("#formWaitingImage").show();
 			this.populateControlsInForm();
+			this.model.setFormInformation(Main.mainTabBarView.getFormSummaryView().getModel());
+
 			this.model.save({
 				save : "no"
 			}, {
@@ -71,6 +75,7 @@ var Views = {
 		loadModelInSession : function() {
 			$("#formWaitingImage").show();
 			this.populateControlsInForm();
+			this.model.setFormInformation(Main.mainTabBarView.getFormSummaryView().getModel());
 			this.model.save({
 				save : "no"
 			}, {
@@ -101,17 +106,25 @@ var Views = {
 						var subControl = control.get('subForm').get(
 								'controlObjectCollection')[subKey];
 						var subControlTemplate = subControl.get('template');
-						subControl.set({template : ""});
+						subControl.set({
+							template : ""
+						});
 						this.model.get('controlObjectCollection')[key].get(
 								'subForm').get('controlCollection').push(
 								subControl.toJSON());
-						subControl.set({template : subControlTemplate});
+						subControl.set({
+							template : subControlTemplate
+						});
 					}
 				}
 				var controlTemplate = control.get('template');
-				control.set({template : ""});
+				control.set({
+					template : ""
+				});
 				this.model.get('controlCollection').push(control.toJSON());
-				control.set({template : controlTemplate});
+				control.set({
+					template : controlTemplate
+				});
 			}
 
 		},
@@ -667,11 +680,11 @@ var Views = {
 							url : "csdApi/form/currentuser",
 							async : false
 						}).responseText;
-						var today = new Date();
+
 						result = $.parseJSON(result);
 						formInfo.set({
 							createdBy : result.userName,
-							createdOn : ""
+							lastModifiedBy : result.userName
 						});
 					}
 
@@ -1298,6 +1311,13 @@ var Views = {
 					"click #importFormButton" : "importForm"
 				},
 
+				displayFormInfo : function(formInfo) {
+					$("#createdBy").text(formInfo.get('createdBy'));
+					$("#createdOn").text(formInfo.get('createdOn'));
+					$("#lastModifiedBy").text(formInfo.get('lastModifiedBy'));
+					$("#lastModifiedOn").text(formInfo.get('lastModifiedOn'));
+				},
+
 				exportForm : function(event) {
 					var formId = Main.formView.getFormModel().get('id');
 					if (formId == null || formId == undefined) {
@@ -1380,6 +1400,10 @@ var Views = {
 				},
 
 				getModel : function() {
+					this.model.set({
+						formName : $('#formName').val(),
+						caption : $('#formCaption').val()
+					});
 					return this.model;
 				}
 
@@ -1434,7 +1458,7 @@ var Views = {
 
 		events : {
 			"click #addRow" : "addRow",
-			"click #addColumn" : "addColumn",
+			"click #addColumn" : "addColumn"
 		},
 
 		initLayoutGrid : function() {

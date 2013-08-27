@@ -54,7 +54,9 @@
 
 		<taskdef resource="net/sf/antcontrib/antlib.xml">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 
@@ -80,7 +82,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 
@@ -136,7 +140,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -171,7 +177,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -207,7 +215,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -245,7 +255,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -283,7 +295,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -316,7 +330,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -355,7 +371,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -574,7 +592,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<unjar src="./${de.temp.dir}/binaries/DynamicExtensionsInterface/DynamicExtensions.jar" dest="${temp.dir.DE}" overwrite="true" />
@@ -648,11 +668,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -666,11 +686,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -695,11 +715,11 @@
 				<pathelement location="${base.dir}/classes/" />
 				<fileset dir="${base.dir}/../lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${base.dir}/../lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -720,11 +740,11 @@
 				<pathelement location="${base.dir}/classes/" />
 				<fileset dir="${base.dir}/../lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${base.dir}/../lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -772,7 +792,7 @@
 			<classpath>
 				<fileset dir="${de.temp.dir}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -810,7 +830,7 @@
 				<classpath>
 					<fileset dir="${de.temp.dir}">
 						<include name="*.jar" />
-						<exclude name="uml-1.3.jar" />
+						<exclude name="uml-*.jar" />
 					</fileset>
 				</classpath>
 			</java>
@@ -832,7 +852,7 @@
 			<classpath>
 				<fileset dir="${de.temp.dir}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -848,11 +868,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -881,11 +901,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -919,7 +939,7 @@
 			<classpath>
 				<fileset dir="${de.temp.dir}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -948,7 +968,7 @@
 			<classpath>
 				<fileset dir="${de.temp.dir}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -963,11 +983,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -981,11 +1001,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1020,11 +1040,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1044,11 +1064,11 @@
 				<pathelement location="${base.dir}/classes/" />
 				<fileset dir="${base.dir}/../lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${base.dir}/../lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1062,11 +1082,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1089,7 +1109,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<sql driver="${oracle.driver.string.DE}" url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" userid="${database.username}" password="${database.password}" onerror="continue" delimiter="/" delimitertype="row" keepformat="yes" rdbms="oracle">
@@ -1109,7 +1131,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -1175,7 +1199,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -1367,11 +1393,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1405,11 +1431,11 @@
 				<pathelement location="${base.dir}/classes/" />
 				<fileset dir="${base.dir}/../lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${base.dir}/../lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1446,11 +1472,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${de.zip.location}/lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${de.zip.location}/lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1473,11 +1499,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${de.zip.location}/lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${de.zip.location}/lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1532,11 +1558,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${de.zip.location}/lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${de.zip.location}/lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1639,11 +1665,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${de.zip.location}/lib/server">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${de.zip.location}/lib/extra">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1776,11 +1802,11 @@
 						<pathelement location="${base.dir}/classes/" />
 						<fileset dir="${base.dir}/../lib/server">
 							<include name="*.jar" />
-							<exclude name="uml-1.3.jar" />
+							<exclude name="uml-*.jar" />
 						</fileset>
 						<fileset dir="${base.dir}/../lib/extra">
-							<include name="jboss-j2ee.jar" />
-							<include name="jta.jar" />
+							<include name="jboss-j2ee*.jar" />
+							<include name="jta*.jar" />
 						</fileset>
 					</classpath>
 				</java>
@@ -1792,11 +1818,11 @@
 						<pathelement location="${base.dir}/classes/" />
 						<fileset dir="${base.dir}/../lib/server">
 							<include name="*.jar" />
-							<exclude name="uml-1.3.jar" />
+							<exclude name="uml-*.jar" />
 						</fileset>
 						<fileset dir="${base.dir}/../lib/extra">
-							<include name="jboss-j2ee.jar" />
-							<include name="jta.jar" />
+							<include name="jboss-j2ee*.jar" />
+							<include name="jta*.jar" />
 						</fileset>
 					</classpath>
 				</java>
@@ -1905,11 +1931,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1922,7 +1948,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<if>
@@ -1963,11 +1991,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -1983,11 +2011,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -2003,11 +2031,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -2025,11 +2053,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -2046,11 +2074,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -2065,11 +2093,11 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
-					<include name="jboss-j2ee.jar" />
-					<include name="jta.jar" />
+					<include name="jboss-j2ee*.jar" />
+					<include name="jta*.jar" />
 				</fileset>
 			</classpath>
 		</java>
@@ -2082,7 +2110,9 @@
 		</unzip>
 		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 			<classpath>
-				<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 			</classpath>
 		</taskdef>
 		<sql driver="${oracle.driver.string.DE}" url="jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}" userid="${database.username}" password="${database.password}" onerror="continue" delimiter="/" delimitertype="row" keepformat="yes" rdbms="oracle">
@@ -2146,7 +2176,7 @@
 				<pathelement location="${temp.dir.DE}" />
 				<fileset dir="${lib.dir.DE}">
 					<include name="*.jar" />
-					<exclude name="uml-1.3.jar" />
+					<exclude name="uml-*.jar" />
 				</fileset>
 				<fileset dir="${extra.lib.dir.DE}">
 					<include name="*.jar" />
@@ -2178,7 +2208,9 @@
 			
 			<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 				<classpath>
-					<pathelement location="${extra.lib.dir.DE}/ant-contrib.jar" />
+          <fileset dir="${extra.lib.dir.DE}">
+            <include name="ant-contrib*.jar" />
+          </fileset>
 				</classpath>
 			</taskdef>
 			
@@ -2221,17 +2253,17 @@
 		<copy overwrite="true" todir="${common.lib.dir}">
 			<fileset dir="${lib.dir.DE}">
 				<include name="axis-ant.jar"/>
-				<include name="c3p0-0.9.0.jar"/>
-				<include name="castor-1.3-core.jar"/>
-				<include name="cglib.jar.jar"/>
+				<include name="c3p0-*.jar"/>
+				<include name="castor-core*.jar"/>
+				<include name="cglib*.jar"/>
 				<include name="commonpackage*.jar"/>
-				<include name="ehcache-1.2.3.jar"/>
-				<include name="hibernate3.jar"/>
-				<include name="jep-2.4.1.jar"/>
-				<include name="log4j.jar"/>
+				<include name="ehcache-*.jar"/>
+				<include name="hibernate*.jar"/>
+				<include name="jep-*.jar"/>
+				<include name="log4j*.jar"/>
 				<include name="script-api-1.0.jar"/>
 				<include name="securityManager-1.1.7.5.jar"/>
-				<include name="struts.jar"/>
+				<include name="struts*.jar"/>
 				<include name="washu-commons*.jar"/>
 			</fileset>
 		</copy>

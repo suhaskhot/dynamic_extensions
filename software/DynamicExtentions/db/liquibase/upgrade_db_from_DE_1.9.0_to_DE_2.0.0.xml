@@ -71,7 +71,7 @@
 	<changeSet id="5" author="pawarv">
 		<createTable tableName="DYEXTN_VERSIONED_CONTAINERS">
 			<column name="IDENTIFIER" type="${int.type}">
-				<constraints primaryKey="true" nullable="false"/>
+				<constraints nullable="false"/>
 			</column>
 
 			<column name="CONTAINER_ID" type="${int.type}">

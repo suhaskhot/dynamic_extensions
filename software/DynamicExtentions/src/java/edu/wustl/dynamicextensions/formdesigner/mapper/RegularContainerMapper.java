@@ -109,7 +109,7 @@ public class RegularContainerMapper extends ContainerMapper {
 	 */
 	@Override
 	public Properties containerToProperties(Container container) {
-		DateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put("formName", container.getName());
 		propertiesMap.put("caption", container.getCaption());

@@ -67,7 +67,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 			Long resultId = null;
 			Date resultDate = null;
 			for (VersionedContainerInfo info : versionedContainers) {
-				if (info.getActivationDate().before(activationDate) && 
+				if (info.getActivationDate().compareTo(activationDate) <= 0 && 
 					(resultDate == null || info.getActivationDate().after(resultDate))) {
 
 					resultId = info.getContainerId();

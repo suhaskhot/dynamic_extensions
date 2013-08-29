@@ -163,7 +163,8 @@ var Models = {
 					noOfRows : 3,
 					noOfDigits : 19,// based on migration code
 					noOfDigitsAfterDecimal : 5, // based on migration code
-					pvs : {}
+					pvs : {},
+					lazyLoad : true
 				},
 
 				addPermissibleValue : function(id, pv) {
@@ -243,6 +244,8 @@ var Models = {
 					case "listBox":
 
 					case "multiselectBox":
+					
+					case "comboBox":
 
 					case "multiselectCheckBox":
 

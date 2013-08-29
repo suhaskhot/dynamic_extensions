@@ -61,6 +61,8 @@ var Views = {
 			$("#formWaitingImage").show();
 			this.populateControlsInForm();
 			this.model.setFormInformation(Main.mainTabBarView.getFormSummaryView().getModel());
+			
+			
 
 			this.model.save({
 				save : "no"
@@ -76,6 +78,10 @@ var Views = {
 			$("#formWaitingImage").show();
 			this.populateControlsInForm();
 			this.model.setFormInformation(Main.mainTabBarView.getFormSummaryView().getModel());
+
+			
+
+
 			this.model.save({
 				save : "no"
 			}, {
@@ -288,6 +294,7 @@ var Views = {
 								dataType : $('#dataType').val(),
 								format : $('#format').val(),
 								isPHI : $('#isPHI').is(":checked"),
+								autoComplete : $('#autoComplete').is(":checked"),
 								isMandatory : $('#isMandatory').is(":checked"),
 								isAutoCalculate : $('#autoCalculate').is(
 										":checked"),
@@ -384,6 +391,8 @@ var Views = {
 					case "listBox":
 
 					case "multiselectBox":
+					
+					case "comboBox":
 
 					case "multiselectCheckBox":
 						this.renderPvUI();
@@ -683,8 +692,7 @@ var Views = {
 
 						result = $.parseJSON(result);
 						formInfo.set({
-							createdBy : result.userName,
-							lastModifiedBy : result.userName
+							createdBy : result.userName
 						});
 					}
 
@@ -733,41 +741,8 @@ var Views = {
 					$('#pvSubSetDiv').hide();
 
 					$('#controllingField')
-							.change(
-									function() {
-										// based on control type show hide pvs
-										var control = ControlBizLogic
-												.getControlFromControlName($(
-														'#controllingField')
-														.val());
-										// clear the messages
-										Main.advancedControlsView
-												.clearMessage();
-
-										switch (control.get('type')) {
-										case "radioButton":
-
-										case "listBox":
-
-										case "multiselectBox":
-
-										case "multiselectCheckBox":
-											$('#controllingValuesDiv').hide();
-											$('#pvDiv').show();
-											AdvancedControlPropertiesBizLogic
-													.populatePvSelectBoxWithControlNames(
-															'pvs', control);
-											$("#pvs").trigger("liszt:updated");
-											break;
-										case "numericField":
-											$('#pvDiv').hide();
-											$('#controllingValuesDiv').show();
-											break;
-										default:
-											$('#pvDiv').hide();
-											$('#controllingValuesDiv').hide();
-										}
-									});
+							.change(function(){AdvancedControlPropertiesBizLogic.setSkipRuleControllingFieldsUI();}
+									);
 
 					$('#controlledField').change(
 							function() {
@@ -860,6 +835,8 @@ var Views = {
 						case "listBox":
 
 						case "multiselectBox":
+						
+						case "comboBox":
 
 						case "multiselectCheckBox":
 
@@ -1312,6 +1289,8 @@ var Views = {
 				},
 
 				displayFormInfo : function(formInfo) {
+					$("#formCaption").val(formInfo.get('caption'));
+					$("#formName").val(formInfo.get('formName'));
 					$("#createdBy").text(formInfo.get('createdBy'));
 					$("#createdOn").text(formInfo.get('createdOn'));
 					$("#lastModifiedBy").text(formInfo.get('lastModifiedBy'));

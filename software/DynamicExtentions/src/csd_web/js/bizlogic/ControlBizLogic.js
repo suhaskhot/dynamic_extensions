@@ -285,6 +285,8 @@ var ControlBizLogic = {
 		case "listBox":
 
 		case "multiselectBox":
+		
+		case "comboBox":
 
 		case "multiselectCheckBox":
 			// show pv data in grid

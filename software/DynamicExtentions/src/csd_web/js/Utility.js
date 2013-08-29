@@ -13,7 +13,7 @@ var Utility = {
 		var controlTypes = [ "stringTextField", "numericField", "textArea",
 				"radioButton", "checkBox", "listBox", "multiselectBox",
 				"multiselectCheckBox", "datePicker", "fileUpload", "note",
-				"heading", "subForm", "label" ];
+				"heading", "subForm", "label", "comboBox" ];
 
 		for ( var cntr = 0; cntr < controlTypes.length; cntr++) {
 			$('#' + controlTypes[cntr]).css('background-color', '#FFFFFF ');
@@ -47,44 +47,48 @@ var Utility = {
 			return 5;
 			break;
 
-		case "listBox":
+		case "comboBox":
 			return 6;
 			break;
 
 		case "multiselectBox":
 			return 7;
 			break;
-
-		case "multiselectCheckBox":
+			
+		case "listBox":
 			return 8;
 			break;
 
-		case "datePicker":
+		case "multiselectCheckBox":
 			return 9;
 			break;
 
-		case "fileUpload":
+		case "datePicker":
 			return 10;
 			break;
 
-		case "note":
+		case "fileUpload":
 			return 11;
 			break;
 
-		case "heading":
+		case "note":
 			return 12;
 			break;
 
-		case "subForm":
+		case "heading":
 			return 13;
 			break;
 
-		case "label":
+		case "subForm":
 			return 14;
 			break;
 
-		case "pageBreak":
+		case "label":
 			return 15;
+			break;
+
+		case "pageBreak":
+			return 16;
 			break;
 
 		default:
@@ -99,6 +103,10 @@ var Utility = {
 
 		case "stringTextField":
 			shortCode = "ST_" + GlobalMemory.nodeCounter;
+			break;
+			
+		case "comboBox":
+			shortCode = "DD_" + GlobalMemory.nodeCounter;
 			break;
 
 		case "numericField":
@@ -265,7 +273,7 @@ var Utility = {
 		else
 			return controlModel;
 	},
-
+	
 	addMultiselectDropDown : function(controlModel, show, container) {
 		controlModel.set({
 			template : Templates.templateList['multiSelectDropdownTemplate']
@@ -394,7 +402,8 @@ var Utility = {
 		this.addFieldHandlerMap['textArea'] = this.addTextArea;
 		this.addFieldHandlerMap['radioButton'] = this.addRadioButton;
 		this.addFieldHandlerMap['checkBox'] = this.addCheckBox;
-		this.addFieldHandlerMap['listBox'] = this.addDropDown;
+		this.addFieldHandlerMap['comboBox'] = this.addDropDown;
+		this.addFieldHandlerMap['listBox'] = this.addMultiselectDropDown;
 		this.addFieldHandlerMap['multiselectBox'] = this.addMultiselectDropDown;
 		this.addFieldHandlerMap['multiselectCheckBox'] = this.addMultiselectCheckBox;
 		this.addFieldHandlerMap['datePicker'] = this.addDatePicker;

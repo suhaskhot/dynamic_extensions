@@ -112,6 +112,38 @@ var AdvancedControlPropertiesBizLogic = {
 		$("#pvs").trigger("liszt:updated");
 		$("#controlledField").trigger("liszt:updated");
 		Main.advancedControlsView.setTableCss('skipRulesTable');
+	},
+	setSkipRuleControllingFieldsUI : function() {
+		// based on control type show hide pvs
+		var control = ControlBizLogic.getControlFromControlName($(
+				'#controllingField').val());
+		// clear the messages
+		Main.advancedControlsView.clearMessage();
+
+		switch (control.get('type')) {
+		case "radioButton":
+
+		case "listBox":
+
+		case "multiselectBox":
+		
+		case "comboBox":
+
+		case "multiselectCheckBox":
+			$('#controllingValuesDiv').hide();
+			$('#pvDiv').show();
+			AdvancedControlPropertiesBizLogic
+					.populatePvSelectBoxWithControlNames('pvs', control);
+			$("#pvs").trigger("liszt:updated");
+			break;
+		case "numericField":
+			$('#pvDiv').hide();
+			$('#controllingValuesDiv').show();
+			break;
+		default:
+			$('#pvDiv').hide();
+			$('#controllingValuesDiv').hide();
+		}
 	}
 
 }

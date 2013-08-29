@@ -43,7 +43,7 @@ var Routers = {
 							trigger : true
 						});
 					} else if (operation == "edit") {
-						var _formula = $('#' + id).find('td').eq(1).text();
+						var _formula = $('#' + id).find('td').eq(2).text();
 						AdvancedControlPropertiesBizLogic.deleteFormula(id);
 						$("#availableFields1").val(id);
 						$('#formulaField').val(_formula);
@@ -82,6 +82,7 @@ var Routers = {
 					} else if (operation == "edit") {
 						var skipRule = Main.formView.getFormModel().get(
 								'skipRules')[id];
+
 						AdvancedControlPropertiesBizLogic.deleteSkipRule(id);
 						Main.advancedControlsView.setTableCss('skipRulesTable');
 						// set controlling fields
@@ -93,9 +94,13 @@ var Routers = {
 						$("#controlledField").trigger("liszt:updated");
 
 						// set action
-						$('#' + skipRule.action).prop('checked', true);
+						$('#' + skipRule.action).prop('checked', true).button(
+								'refresh');
+
 						// set allOrAny
-						$('#' + skipRule.allAny).prop('checked', true);
+						$('#' + skipRule.allAny).prop('checked', true).button(
+								'refresh');
+						;
 						// enable pvSubSet menu
 						if (skipRule.action == "pvSubSet") {
 							Main.advancedControlsView
@@ -109,10 +114,14 @@ var Routers = {
 							$('#pvSubSetDiv').hide();
 						}
 
+						AdvancedControlPropertiesBizLogic
+								.setSkipRuleControllingFieldsUI();
+
 						if (skipRule.controllingPvs != null
 								&& skipRule.controllingPvs != undefined) {
 
 							$("#controllingValuesDiv").hide();
+
 							$('#pvs').val(skipRule.controllingPvs);
 							$("#pvs").trigger("liszt:updated");
 							$("#pvDiv").show();
@@ -189,16 +198,29 @@ var Routers = {
 				},
 
 				updateFormAndUI : function(model) {
-				/*	Routers.formEventsRouterPointer.updateFormUI(model);
+					/*
+					 * Routers.formEventsRouterPointer.updateFormUI(model);
+					 * Routers.formEventsRouterPointer
+					 * .updateTreeWithFormName(model);
+					 * Routers.formEventsRouterPointer
+					 * .loadControlsInModelAndTree(model); // re populate skip
+					 * rules table; $("#skipRulesTable tr:gt(0)").remove();
+					 * AdvancedControlPropertiesBizLogic.loadSkipRules(model);
+					 */
+					Routers.formEventsRouterPointer.updateModelWithIds(model);
+
+				},
+
+				updateUI : function(model) {
+					Routers.formEventsRouterPointer.updateFormUI(model);
 					Routers.formEventsRouterPointer
 							.updateTreeWithFormName(model);
 					Routers.formEventsRouterPointer
 							.loadControlsInModelAndTree(model);
 					// re populate skip rules table;
 					$("#skipRulesTable tr:gt(0)").remove();
-					AdvancedControlPropertiesBizLogic.loadSkipRules(model);*/
+					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
 					Routers.formEventsRouterPointer.updateModelWithIds(model);
-
 				},
 
 				loadFormulae : function(model, subFormName) {
@@ -224,15 +246,20 @@ var Routers = {
 				},
 
 				loadFormSuccessHandler : function(model, response) {
-					Routers.formEventsRouterPointer.updateFormAndUI(model);
+					Routers.formEventsRouterPointer.updateUI(model);
 					Routers.formEventsRouterPointer.loadFormulae(Main.formView
 							.getFormModel(), "");
+
 					AdvancedControlPropertiesBizLogic
 							.loadSkipRules(Main.formView.getFormModel());
+					Main.formView.getFormModel().set({
+						skipRules : model.get('skipRules')
+					});
 					Main.advancedControlsView.setTableCss('formulaTable');
 					Main.mainTabBarView.loadFormSummary();
-					
-					
+					Main.mainTabBarView.getFormSummaryView().displayFormInfo(
+							model.getFormInformation());
+
 					$("#formWaitingImage").hide();
 				},
 
@@ -265,7 +292,7 @@ var Routers = {
 										+ "." + subControl.get('controlName');
 								Main.formView.getFormModel().setControlId(
 										subControlName, subControl.get('id'));
-								
+
 							}
 						}
 

@@ -21,6 +21,7 @@ public class CSDConstants {
 	public static final String LABEL = "label";
 	public static final String SUB_FORM = "subForm";
 	public static final String PAGE_BREAK= "pageBreak";
+	public static final String COMBO_BOX= "comboBox";
 	public static final String STATUS_SAVED = "saved";
 	public static final String STATUS_NEW = "new";
 	public static final String STATUS_ERROR = "error";

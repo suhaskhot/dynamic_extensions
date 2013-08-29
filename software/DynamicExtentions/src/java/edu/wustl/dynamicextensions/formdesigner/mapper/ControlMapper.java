@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.CheckBox;
+import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
@@ -49,6 +50,7 @@ public class ControlMapper {
 			put(CSDConstants.SUB_FORM, new SubFormMapper());
 			put(CSDConstants.LABEL, new LabelMapper());
 			put(CSDConstants.PAGE_BREAK, new PageBreakMapper());
+			put(CSDConstants.COMBO_BOX, new ComboBoxMapper());
 		}
 	};
 
@@ -79,8 +81,8 @@ public class ControlMapper {
 			type = CSDConstants.MULTISELECT_CHECK_BOX;
 		} else if (control instanceof FileUploadControl) {
 			type = CSDConstants.FILE_UPLOAD;
-		} else if (control instanceof FileUploadControl) {
-			type = CSDConstants.FILE_UPLOAD;
+		} else if (control instanceof ComboBox) {
+			type = CSDConstants.COMBO_BOX;
 		} else if (control instanceof Label) {
 			if (((Label) control).isHeading()) {
 				type = CSDConstants.HEADING;
@@ -91,8 +93,7 @@ public class ControlMapper {
 			}
 		} else if (control instanceof SubFormControl) {
 			type = CSDConstants.SUB_FORM;
-		}
-		else if (control instanceof PageBreak){
+		} else if (control instanceof PageBreak) {
 			type = CSDConstants.PAGE_BREAK;
 		}
 		return type;
@@ -271,6 +272,7 @@ public class ControlMapper {
 		public Control propertiesToControl(Properties controlProps) throws Exception {
 			ListBox control = new ListBox();
 			setCommonProperties(controlProps, control);
+			control.setAutoCompleteDropdownEnabled(true);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
 			return control;
 		}
@@ -280,6 +282,7 @@ public class ControlMapper {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LIST_BOX);
 			getCommonProperties(controlProps, control);
+			controlProps.setProperty("autoComplete", true);
 			PvMapper.pVDataSourcetoProperties(((ListBox) control).getPvDataSource(), controlProps);
 			return controlProps;
 		}
@@ -482,7 +485,8 @@ public class ControlMapper {
 			subForm.put("formName", controlProps.getString(CSDConstants.CONTROL_NAME));
 			subForm.put("caption", controlProps.getString(CSDConstants.CONTROL_CAPTION));
 			if (subForm != null) {
-				Container subContainer = new RegularContainerMapper().propertiesToContainer(new Properties(subForm), false, null);
+				Container subContainer = new RegularContainerMapper().propertiesToContainer(new Properties(subForm),
+						false, null);
 				control.setSubContainer(subContainer);
 			}
 
@@ -523,7 +527,7 @@ public class ControlMapper {
 			return controlProps;
 		}
 	}
-	
+
 	/**
 	 * Mapper for PAge Break control
 	 *
@@ -542,6 +546,32 @@ public class ControlMapper {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.PAGE_BREAK);
 			getCommonProperties(controlProps, control);
+			return controlProps;
+		}
+	}
+
+	/**
+	 * Mapper for list box
+	 *
+	 */
+	private class ComboBoxMapper extends DefaultControlMapper {
+
+		@Override
+		public Control propertiesToControl(Properties controlProps) throws Exception {
+			ComboBox control = new ComboBox();
+			setCommonProperties(controlProps, control);
+			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
+			control.setLazyPvFetchingEnabled(controlProps.getBoolean("lazyLoad"));
+			return control;
+		}
+
+		@Override
+		public Properties controlToProperties(Control control) {
+			Properties controlProps = new Properties();
+			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.COMBO_BOX);
+			getCommonProperties(controlProps, control);
+			controlProps.setProperty("lazyLoad", ((ComboBox) control).isLazyPvFetchingEnabled());
+			PvMapper.pVDataSourcetoProperties(((ComboBox) control).getPvDataSource(), controlProps);
 			return controlProps;
 		}
 	}

@@ -279,6 +279,19 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	//
 	// Behavioral API
 	//
+	public Container getReplica() {
+		Container replica = Container.fromXml(this.toXml());
+		replica.nullifyContainerIds();
+		return replica;
+	}
+
+	public void nullifyContainerIds() {
+		setId(null);
+		for (Container sub : getAllSubContainers()) {
+			sub.setId(null);
+		}		
+	}
+		
 	public void addControl(Control control) {		
 		if (controlsMap.containsKey(control.getName())) {
 			// change this exception to status code

@@ -119,20 +119,25 @@ public class Form {
 	 * @return
 	 * @throws JSONException
 	 */
-	@Path("/{id}")
+	@Path("/{id}/{edit}")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getForm(@PathParam("id") String id, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) throws JSONException {
+	public String getForm(@PathParam("id") String id, @PathParam("edit") boolean edit,
+			final @Context HttpServletRequest request, @Context HttpServletResponse response) throws JSONException {
 		System.out.println(id);
 		try {
 			intializeDao();
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
-			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id), userData);
+			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id), userData, edit);
 
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, container);
 			Properties containerProps = container.getProperties();
-			containerProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
+			if (edit) {
+				containerProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
+			} else {
+				containerProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_NEW);
+			}
+
 			Writer strWriter = new StringWriter();
 			new ObjectMapper().writeValue(strWriter, containerProps.getAllProperties());
 			return strWriter.toString();
@@ -280,11 +285,12 @@ public class Form {
 	public String importForm(@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) throws JSONException {
 		JSONObject output = new JSONObject();
-		
+
 		String tmpDirName = getTmpDirName();
 		Boolean createTables = false;
 		try {
-			Utility.downloadZipFile(uploadedInputStream, tmpDirName, "forms.zip");
+
+			Utility.downloadFile(uploadedInputStream, tmpDirName, "forms.xml", false);
 
 			//
 			// Once the zip is extracted, following will be directory layout
@@ -295,33 +301,36 @@ public class Form {
 			//           |____ pvs
 			//
 			File tmpDir = new File(tmpDirName);
-			for (File formDir : tmpDir.listFiles()) {
-				if (!formDir.isDirectory()) {
-					continue;
-				}
-				String[] formFileNames = formDir.list(new FilenameFilter() {
+			//for (File formDir : tmpDir.listFiles()) {
 
-					@Override
-					public boolean accept(File dir, String name) {
-						return name.endsWith(".xml");
-					}
-				});
+			String[] formFileNames = tmpDir.list(new FilenameFilter() {
 
-				String formDirPath = new StringBuilder(formDir.getAbsolutePath()).append(File.separator).toString();
-				String pvDirPath = new StringBuilder(formDirPath).append("pvs").toString();
-				List<Long> containerIds = new ArrayList<Long>();
-				for (String formFile : formFileNames) {
-					String formFilePath = new StringBuilder(formDirPath).append(formFile).toString();
-					Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
-					containerIds.add(containerId);
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".xml");
 				}
-				output.put("status", "success");
-				output.put("containerIds", containerIds);
-				
+			});
+
+			String formDirPath = new StringBuilder(tmpDir.getAbsolutePath()).append(File.separator).toString();
+			String pvDirPath = new StringBuilder(formDirPath).append("pvs").toString();
+			List<Long> containerIds = new ArrayList<Long>();
+			intializeDao();
+			for (String formFile : formFileNames) {
+				String formFilePath = new StringBuilder(formDirPath).append(formFile).toString();
+
+				Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
+				containerIds.add(containerId);
 			}
+			commitDao();
+			output.put("status", "success");
+			output.put("containerIds", containerIds);
+
+			//	}
 
 		} catch (Exception ex) {
 			output.put("status", "error");
+		} finally {
+			closeDao();
 		}
 
 		return output.toString();

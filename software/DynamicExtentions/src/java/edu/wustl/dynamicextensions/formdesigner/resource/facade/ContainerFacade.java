@@ -41,7 +41,8 @@ public class ContainerFacade {
 	 * @throws Exception 
 	 */
 	public static ContainerFacade createContainer(Properties containerProps, UserContext userContext) throws Exception {
-		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, true, userContext), userContext);
+		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, true, userContext),
+				userContext);
 	}
 
 	public void updateContainer(Properties containerProps) throws Exception {
@@ -50,11 +51,15 @@ public class ContainerFacade {
 
 	/**
 	 * @param id
+	 * @param edit TODO
 	 * @return
 	 */
-	public static ContainerFacade loadContainer(Long id, UserContext userContext) {
+	public static ContainerFacade loadContainer(Long id, UserContext userContext, boolean edit) {
 		Container newContainer = Container.getContainer(id);
-
+		if (!edit) {
+			Container containerReplica = newContainer.getReplica();
+			newContainer = containerReplica;
+		}
 		return new ContainerFacade(newContainer, userContext);
 	}
 
@@ -85,7 +90,7 @@ public class ContainerFacade {
 
 	public File getPvFile(String controlName) throws IOException {
 
-		Control control = container.getControl(controlName,"\\.");
+		Control control = container.getControl(controlName, "\\.");
 		File pvFile = null;
 		if (control instanceof SelectControl) {
 			String uploadedFileLocation = "/tmp/" + new Date().getTime() + "_Permissible_Values.csv";

@@ -92,15 +92,13 @@ public class RegularContainerMapper extends ContainerMapper {
 	private void addEditControl(Container container, Properties controlProperties) throws Exception {
 		Control control = controlMapper.propertiesToControl(controlProperties);
 		control.setContainer(container);
-		if (controlProperties.get("id") != null) {
-			container.editControl(control.getName(), control);
+
+		if (container.getControl(control.getName()) == null) {
+			container.addControl(control);
 		} else {
-			if (container.getControl(control.getName()) == null) {
-				container.addControl(control);
-			} else {
-				container.editControl(control.getName(), control);
-			}
+			container.editControl(control.getName(), control);
 		}
+
 	}
 
 	/**

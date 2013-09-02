@@ -23,8 +23,8 @@ public class Utility {
 		FileUtils.copyInputStreamToFile(uploadedInputStream, pvFile);
 	}
 	
-	public static void downloadZipFile(InputStream inputStream, String tempDirName,
-			String fileName) throws IOException, DynamicExtensionsSystemException
+	public static void downloadFile(InputStream inputStream, String tempDirName,
+			String fileName, boolean unZip) throws IOException, DynamicExtensionsSystemException
 	{
 		BufferedInputStream reader = null;
 		BufferedOutputStream fileWriter = null;
@@ -67,7 +67,9 @@ public class Utility {
 				reader.close();
 			}
 		}
-		ZipUtility.extractZipToDestination(completeFileName, tempDirName);
+		if(unZip){
+			ZipUtility.extractZipToDestination(completeFileName, tempDirName);
+		}
 	}
 
 

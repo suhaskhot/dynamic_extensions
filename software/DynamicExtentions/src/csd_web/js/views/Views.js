@@ -39,6 +39,8 @@ var Views = {
 						$("#dialog-message").dialog('open');
 						Main.mainTabBarView.getFormSummaryView()
 								.displayFormInfo(model.getFormInformation());
+						// change from Save as to save
+						$('#saveForm').prop("value", " Save  ")
 
 					} else {
 						$("#formWaitingImage").hide();

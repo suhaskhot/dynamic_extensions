@@ -155,7 +155,7 @@ var Routers = {
 	FormRouter : Backbone.Router
 			.extend({
 				routes : {
-					"loadCachedForm/:id" : "loadForm",
+					"loadCachedForm/:id/:edit" : "loadForm",
 					"clear" : "dummy"
 
 				},
@@ -167,17 +167,19 @@ var Routers = {
 				dummy : function() {
 				},
 
-				loadForm : function(id) {
+				loadForm : function(id, edit) {
 					$("#formWaitingImage").show();
 					if (Main.formView == null) {
 						Main.formView = Views.showForm('formTab',
 								new Models.Form());
 
 					}
+					GlobalMemory.editForm = (edit == "true");
 					Main.formView.getFormModel().fetch({
-						url : 'csdApi/form/' + id,
+						url : 'csdApi/form/' + id + "/" + edit,
 						success : this.loadFormSuccessHandler
 					});
+					// save as
 				},
 
 				updateId : function(nId) {
@@ -261,6 +263,12 @@ var Routers = {
 							model.getFormInformation());
 
 					$("#formWaitingImage").hide();
+					// save form
+					
+					if(!GlobalMemory.editForm){
+
+						$('#saveForm').prop("value", " Save As ")
+					}
 				},
 
 				updateModelWithIds : function(model) {

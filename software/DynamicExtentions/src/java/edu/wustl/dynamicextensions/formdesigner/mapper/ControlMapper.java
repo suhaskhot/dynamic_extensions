@@ -73,10 +73,10 @@ public class ControlMapper {
 			type = CSDConstants.RADIO_BUTTON;
 		} else if (control instanceof CheckBox) {
 			type = CSDConstants.CHECK_BOX;
-		} else if (control instanceof ListBox) {
-			type = CSDConstants.LIST_BOX;
 		} else if (control instanceof MultiSelectListBox) {
 			type = CSDConstants.MULTISELECT_BOX;
+		} else if (control instanceof ListBox) {
+			type = CSDConstants.LIST_BOX;
 		} else if (control instanceof MultiSelectCheckBox) {
 			type = CSDConstants.MULTISELECT_CHECK_BOX;
 		} else if (control instanceof FileUploadControl) {
@@ -486,7 +486,7 @@ public class ControlMapper {
 			subForm.put("caption", controlProps.getString(CSDConstants.CONTROL_CAPTION));
 			if (subForm != null) {
 				Container subContainer = new RegularContainerMapper().propertiesToContainer(new Properties(subForm),
-						false, null);
+						null);
 				control.setSubContainer(subContainer);
 			}
 

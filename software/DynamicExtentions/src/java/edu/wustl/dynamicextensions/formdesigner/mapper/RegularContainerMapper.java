@@ -21,15 +21,14 @@ import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public class RegularContainerMapper extends ContainerMapper {
 
-	public Container propertiesToContainer(Properties properties, boolean editControls, UserContext userContext)
-			throws Exception {
+	public Container propertiesToContainer(Properties properties, UserContext userContext) throws Exception {
 		Container container = new Container();
-		propertiesToContainer(properties, container, editControls, userContext);
+		propertiesToContainer(properties, container, userContext);
 		return container;
 	}
 
-	public void propertiesToContainer(Properties formProperties, Container container, boolean editControls,
-			UserContext userContext) throws Exception {
+	public void propertiesToContainer(Properties formProperties, Container container, UserContext userContext)
+			throws Exception {
 		container.setName(formProperties.getString("formName"));
 		container.setCaption(formProperties.getString("caption"));
 		container.setId(formProperties.getLong("id"));
@@ -47,59 +46,24 @@ public class RegularContainerMapper extends ContainerMapper {
 		if (controlCollection != null) {
 			for (Map<String, Object> controlPropertiesMap : controlCollection) {
 				Properties controlProps = new Properties(controlPropertiesMap);
-				String status = controlProps.getString("status");
-				if (status != null && status.trim().equalsIgnoreCase("delete")) {
-					// delete control
-					String controlName = controlProps.getString("controlName");
-					if (container.getControl(controlName) != null) {
-						container.deleteControl(controlName);
-					}
-				} else {
-					// add edit controls
-					if (editControls) {
-						addEditControl(container, controlProps);
-					} else {
-						container.addControl(controlMapper.propertiesToControl(controlProps));
-					}
-				}
+
+				Control control = controlMapper.propertiesToControl(controlProps);
+				control.setContainer(container);
+				container.addControl(control);
 			}
+		}
+		// process skip rules
+		Properties skipRulesPropertiesList = new Properties(formProperties.getMap("skipRules"));
+		Set<String> keySet = skipRulesPropertiesList.getAllProperties().keySet();
+		SkipRuleMapper skipRuleMapper = new SkipRuleMapper(container);
 
-			// process skip rules
-			Properties skipRulesPropertiesList = new Properties(formProperties.getMap("skipRules"));
-			Set<String> keySet = skipRulesPropertiesList.getAllProperties().keySet();
-			SkipRuleMapper skipRuleMapper = new SkipRuleMapper(container);
-
-			List<SkipRule> skipRules = container.getSkipRules();
-
-			if (skipRules != null) {
-				for (int skipRuleCntr = 0; skipRuleCntr < skipRules.size(); skipRuleCntr++) {
-					container.removeSkipRule(skipRuleCntr);
-				}
-			}
-
-			for (String key : keySet) {
-				Properties skipRuleProperties = new Properties(skipRulesPropertiesList.getMap(key));
-				container.addSkipRule(skipRuleMapper.propertiesToSkipRule(skipRuleProperties));
-			}
+		for (String key : keySet) {
+			Properties skipRuleProperties = new Properties(skipRulesPropertiesList.getMap(key));
+			container.addSkipRule(skipRuleMapper.propertiesToSkipRule(skipRuleProperties));
 		}
 	}
 
-	/**
-	 * @param container
-	 * @param controlProperties
-	 * @throws Exception 
-	 */
-	private void addEditControl(Container container, Properties controlProperties) throws Exception {
-		Control control = controlMapper.propertiesToControl(controlProperties);
-		control.setContainer(container);
-
-		if (container.getControl(control.getName()) == null) {
-			container.addControl(control);
-		} else {
-			container.editControl(control.getName(), control);
-		}
-
-	}
+	
 
 	/**
 	 * @param container

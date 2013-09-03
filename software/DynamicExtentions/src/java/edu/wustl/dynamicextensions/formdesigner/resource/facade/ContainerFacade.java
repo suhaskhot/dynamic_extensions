@@ -41,12 +41,14 @@ public class ContainerFacade {
 	 * @throws Exception 
 	 */
 	public static ContainerFacade createContainer(Properties containerProps, UserContext userContext) throws Exception {
-		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, true, userContext),
+		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, userContext),
 				userContext);
 	}
 
 	public void updateContainer(Properties containerProps) throws Exception {
-		containerMapper.propertiesToContainer(containerProps, container, true, null);
+		Container containerFromUI =  containerMapper.propertiesToContainer(containerProps, null);
+		container.editContainer(containerFromUI);
+		//containerMapper.propertiesToContainer(containerProps, container, null);
 	}
 
 	/**

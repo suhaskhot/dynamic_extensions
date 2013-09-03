@@ -10,7 +10,7 @@ var ControlBizLogic = {
 		if (model.get('parentName') != undefined) {
 			controlName = model.get('parentName') + "." + controlName;
 		}
-		Main.formView.getFormModel().markControlAsDeleted(controlName);
+		Main.formView.getFormModel().deleteControl(controlName);
 		Main.treeView.getTree().deleteItem(model.get('treeNodeId'), true);
 	},
 

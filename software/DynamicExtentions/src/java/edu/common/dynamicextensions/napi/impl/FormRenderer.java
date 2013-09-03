@@ -87,7 +87,7 @@ public class FormRenderer implements LayoutRenderer {
 			formDataStack = new Stack<FormData>();
 			CacheManager.addObjectToCache(request, DEConstants.FORM_DATA_STACK, formDataStack);
 			String recordId = request.getParameter(WebUIManagerConstants.RECORD_IDENTIFIER_PARAMETER_NAME);
-			if (recordId != null) {
+			if (recordId != null && !recordId.isEmpty()) {
 				FormDataManager dataManager = new FormDataManagerImpl();
 				formDataStack.push(dataManager.getFormData(container, Long.valueOf(recordId)));
 			} else {

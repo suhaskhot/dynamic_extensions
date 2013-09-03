@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.nutility;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.Label;
+import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 
@@ -12,10 +13,10 @@ public class FormDataUtility {
 
 		for (Control control : formData.getContainer().getControls()) {
 			ControlValue fieldValue = formData.getFieldValue(control.getName());
-			if (control instanceof Label) {
+			if (control instanceof Label || control instanceof PageBreak) {
 				continue;
 			}
-			if (!fieldValue.isHidden() && !fieldValue.isReadOnly() && fieldValue.isEmpty() == true) {
+			if (!fieldValue.isHidden() && !fieldValue.isReadOnly() && fieldValue.isEmpty()) {
 				countrolCount++;
 			}
 		}
@@ -27,6 +28,9 @@ public class FormDataUtility {
 		evaluateSkipLogic(formData);
 
 		for (Control control : formData.getContainer().getControls()) {
+			if (control instanceof Label || control instanceof PageBreak) {
+				continue;
+			}
 			ControlValue fieldValue = formData.getFieldValue(control.getName());
 
 			if (!fieldValue.isHidden() && !fieldValue.isReadOnly()) {
@@ -36,10 +40,18 @@ public class FormDataUtility {
 		return countrolCount;
 	}
 	
+	public static int getCompletionStatus(FormData formData) {
+		int controlsCount = getFilledControlCount(formData);
+		int emptyCtrlCount = getEmptyControlCount(formData);
+		int percentage = Math.round(100 * (controlsCount - emptyCtrlCount)/ controlsCount);
+		return percentage;
+	}
+	
 	public static void evaluateSkipLogic(FormData formData) {
 		SkipRulesEvaluator evaluator = new SkipRulesEvaluator();
 		evaluator.evaluate(formData);
 	}
+	
 	
 //	public static void evaluateSkipLogic(FormData formData) {
 //		evaluateSkipLogic(formData, formData, null, true);

@@ -1245,14 +1245,15 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	private long getFirstEmptyPage(FormData data) {
-		long result = -1L, pageId = 1L;
+		long result = -1L, pageId = 0L;
 		for (Control ctrl : getOrderedControlList()) {
 			if (ctrl instanceof PageBreak) {
 				pageId++;
 				continue;
 			}
 			
-			if (data.getFieldValue(ctrl.getName()).isEmpty()) {
+			ControlValue fieldValue = data.getFieldValue(ctrl.getName());
+			if(!fieldValue.isHidden() && !fieldValue.isReadOnly() && fieldValue.isEmpty() == true) {
 				result = pageId;
 				break;
 			}

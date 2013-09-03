@@ -104,9 +104,9 @@ edu.wustl.de.CategorySurveyMode.prototype.bind = function () {
 					edu.wustl.de.currentpage -= 1;
 					sm.show();
 					
-					 if($(this.ctx).find(".control_caption:visible").length > 0|| (edu.wustl.de.currentpage <= 0))
+					 if($(sm.ctx).find(".control_caption:visible").length > 0|| (edu.wustl.de.currentpage <= 0))
 					{
-						if(edu.wustl.de.currentpage <= 0 && $(this.ctx).find(".control_caption:visible").length < 0)
+						if(edu.wustl.de.currentpage <= 0 && $(sm.ctx).find(".control_caption:visible").length < 0)
 						{
 							sm.hide();
 							edu.wustl.de.currentpage = prevPage ;
@@ -150,10 +150,9 @@ edu.wustl.de.CategorySurveyMode.prototype.bind = function () {
 					sm.hide();
 					edu.wustl.de.currentpage += 1;
 					sm.show();
-					
-					if(($(this.ctx).find(".control_caption:visible").length > 0 && sm.isEmptyFieldsExist({curPage:this.ctx}))|| (edu.wustl.de.currentpage >= sm.pages.length -1))
+					if(($(sm.ctx).find(".control_caption:visible").length > 0 && sm.isEmptyFieldsExist({curPage:sm.ctx}))|| (edu.wustl.de.currentpage >= sm.pages.length -1))
 					{
-						if(edu.wustl.de.currentpage >= sm.pages.length -1 && $(this.ctx).find(".control_caption:visible").length < 0)
+						if(edu.wustl.de.currentpage >= sm.pages.length -1 && $(sm.ctx).find(".control_caption:visible").length < 0)
 						{
 							sm.hide();
 							edu.wustl.de.currentpage = nextPage ;
@@ -197,9 +196,11 @@ edu.wustl.de.CategorySurveyMode.prototype.tidyNavbar = function () {
 			this.navbar.show({label: "Next"});
 		}
 	}
+	
+	// Need to Fix this.. ! Activity Status is evaluating to Active always
 	if($("#ActivityStatus").val() == "Active")
 	{
-		this.navbar.hide({label:"Save as Draft"});
+		//this.navbar.hide({label:"Save as Draft"});
 	}
 	if($("#mode").val() == "view")
 	{

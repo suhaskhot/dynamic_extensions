@@ -21,6 +21,7 @@ import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FileControlValue;
 import edu.common.dynamicextensions.napi.FormData;
+import edu.common.dynamicextensions.nvalidator.DraftValidatorUtil;
 import edu.common.dynamicextensions.nvalidator.ValidatorUtil;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -42,7 +43,7 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 	 * Used to form the key for retrieving total number rows for a sub form
 	 */
 	private static final String ROW_COUNT = "_rowCount";
-	private final ValidatorUtil validatorUtil;
+	private ValidatorUtil validatorUtil;
 
 	public HTTPFormDataCollector(HttpServletRequest request, ValidatorUtil validatorUtill) {
 		this.request = request;
@@ -52,6 +53,7 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 	public void collectControlValue(FormData formData, Control control, Integer rowId) {
 		String controlName;
 		ControlValue controlValue = null;
+		
 		if (rowId != null) {
 			controlName = control.getControlName(rowId);
 		} else {
@@ -87,10 +89,14 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 				value = getValueForCheckbox(value);
 			}
 			controlValue = new ControlValue(control, value);
-		}
-		formData.addFieldValue(controlValue);
-		validatorUtil.validate(controlValue, errorList);
+		}	
+		
+		ControlValue fieldValue = formData.getFieldValue(control.getName());
 
+		if (!fieldValue.isHidden() && !fieldValue.isReadOnly()) {
+			validatorUtil.validate(controlValue, errorList);
+		} 
+		formData.addFieldValue(controlValue);
 	}
 
 	private String getValueForComboBox(String controlName) {

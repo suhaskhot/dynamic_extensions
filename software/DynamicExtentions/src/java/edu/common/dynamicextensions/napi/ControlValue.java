@@ -107,14 +107,16 @@ public class ControlValue {
 	}
 
 	public boolean isEmpty() {
-		
-		if (value == null) {
-			return true;
-		}
 		boolean isEmpty = false;
-		if (value instanceof String[] && ((String[]) value).length == 0) {
+
+		if (value == null || value.toString().isEmpty()) {
+			isEmpty = true;
+		} else if (value instanceof String[] && ((String[]) value).length == 0) {
+			isEmpty = true;
+		} else if (value instanceof List && ((List)value).isEmpty()) {
 			isEmpty = true;
 		}
+		
 		return isEmpty;
 	}
 }

@@ -18,6 +18,7 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.nutility.HTTPFormDataCollector;
+import edu.common.dynamicextensions.nvalidator.DraftValidatorUtil;
 import edu.common.dynamicextensions.nvalidator.ValidatorUtil;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
@@ -49,7 +50,8 @@ public class ApplyDataEntryFormAction extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException {
 
-		HTTPFormDataCollector collector = new HTTPFormDataCollector(request, new ValidatorUtil());
+		ValidatorUtil validator = Boolean.parseBoolean(request.getParameter("isDraft")) ? new DraftValidatorUtil() : new ValidatorUtil();
+		HTTPFormDataCollector collector = new HTTPFormDataCollector(request, validator);
 		
 		try {
 			FormData formData = collector.collectFormData();

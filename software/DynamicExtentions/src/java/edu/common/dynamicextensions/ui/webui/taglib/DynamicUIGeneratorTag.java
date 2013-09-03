@@ -53,10 +53,15 @@ public class DynamicUIGeneratorTag extends TagSupport
 		Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request,
 				DEConstants.FORM_DATA_STACK);
 
-		Map<ContextParameter, String> contextParameter = (Map<ContextParameter, String>) CacheManager
-				.getObjectFromCache(request, FormRenderer.CONTEXT_INFO);
-		FormRenderer renderer = new FormRenderer(formDataStack, contextParameter);
-
+		FormRenderer renderer = null;
+		if (formDataStack == null) {
+			renderer = new FormRenderer(request);
+		}
+		else {
+			Map<ContextParameter, String> contextParameter = (Map<ContextParameter, String>) CacheManager
+					.getObjectFromCache(request, FormRenderer.CONTEXT_INFO);
+			renderer = new FormRenderer(formDataStack, contextParameter);
+		}
 		try {
 			out.println(renderer.render());
 		} catch (IOException e) {

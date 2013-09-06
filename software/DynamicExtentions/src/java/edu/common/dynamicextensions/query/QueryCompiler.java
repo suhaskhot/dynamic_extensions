@@ -59,7 +59,7 @@ public class QueryCompiler
         }
         
         for (Map.Entry<Long, JoinTree> formTreeEntry : joinMap.entrySet()) {
-        	if (formTreeEntry.getKey() == rootFormId) {
+        	if (formTreeEntry.getKey().equals(rootFormId)) {
         		continue;
         	}
         	

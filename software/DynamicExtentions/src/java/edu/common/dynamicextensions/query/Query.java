@@ -3,8 +3,12 @@ package edu.common.dynamicextensions.query;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
+import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.query.ast.ExpressionNode;
+import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
+import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class Query {
     private JoinTree queryJoinTree;
@@ -85,7 +89,7 @@ public class Query {
 
     private QueryResultData getQueryResultData(ResultSet rs)
     throws Exception {
-        String columnNames[] = getColumnNames(rs);
+        String columnNames[] = getColumnNames(queryExpr); // getColumnNames(rs);
         int columnCount = columnNames.length;
         
         QueryResultData queryResult = new QueryResultData(columnNames);
@@ -101,15 +105,35 @@ public class Query {
         return queryResult;
     }
 
-    private String[] getColumnNames(ResultSet rs)
-    throws Exception {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        String columns[] = new String[rsmd.getColumnCount()];
-        
-        for (int i = 0; i < columns.length; i++) {
-            columns[i] = rsmd.getColumnLabel(i + 1);
-        }
-
-        return columns;
+//    private String[] getColumnNames(ResultSet rs)
+//    throws Exception {
+//        ResultSetMetaData rsmd = rs.getMetaData();
+//        String columns[] = new String[rsmd.getColumnCount()];
+//        
+//        for (int i = 0; i < columns.length; i++) {
+//            columns[i] = rsmd.getColumnLabel(i + 1);
+//        }
+//
+//        return columns;
+//    }
+    
+    private String[] getColumnNames(QueryExpressionNode queryExpr) {
+    	SelectListNode selectList = queryExpr.getSelectList();
+    	String columns[] = new String[selectList.getElements().size()];
+    	
+    	int i = 0;
+    	for (ExpressionNode node : selectList.getElements()) {
+    		if (node instanceof FieldNode) {
+    			FieldNode fieldNode = (FieldNode)node;
+    			Control ctrl = fieldNode.getCtrl();
+    			columns[i] = ctrl.getContainer().getCaption() + ": " + ctrl.getCaption();    			
+    		} else {
+    			columns[i] = "Column " + i; // TODO: for types of expression node
+    		}
+    		
+    		++i;
+    	}
+    	
+    	return columns;
     }
 }

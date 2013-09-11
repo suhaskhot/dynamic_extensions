@@ -99,18 +99,20 @@ public class QueryCompiler
     }
 
     private JoinTree createPath(JoinTree formTree, String startField) {
-        if(startField == null) {
+        if (startField == null) {
             return formTree;
         }
         
         String fieldNameParts[] = startField.split("\\.");
-        for(int i = 0; i < fieldNameParts.length; i++) {
+        for (int i = 0; i < fieldNameParts.length; i++) {
             JoinTree child = formTree.getChild(fieldNameParts[i]);
-            if(child == null) {
+            if (child == null) {
                 SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControl(fieldNameParts[i]);
                 JoinTree sfTree = getSubFormTree(formTree, sfCtrl);
                 formTree.addChild(fieldNameParts[i], sfTree);
                 formTree = sfTree;
+            } else {
+            	formTree = child;
             }
         }
 

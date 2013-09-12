@@ -39,6 +39,6 @@
 	ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
 			"sessionContainer");
 	%>
-	<%=containerFacade.getHTML(request).replaceAll("images/de/", "../../images/de/") %>
+	<%=containerFacade.getHTML(request).replaceAll("images/", "../../images/") %>
 </body>
 </html>

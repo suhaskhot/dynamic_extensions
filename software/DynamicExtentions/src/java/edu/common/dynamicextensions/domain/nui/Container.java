@@ -316,7 +316,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				SubFormControl sfCtrl = (SubFormControl)control;
 				Container sfContainer = sfCtrl.getSubContainer();
 				if (sfContainer.isDto) {
-					sfCtrl.setContainer(fromDto(sfContainer));
+					sfCtrl.setSubContainer(fromDto(sfContainer));
 				}
 			}
 		}

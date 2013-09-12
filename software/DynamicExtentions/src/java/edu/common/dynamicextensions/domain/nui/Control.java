@@ -427,7 +427,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public static Integer getRowNumber(String controlName)
 	{
 		Integer rowNumber = null;
-		if (controlName.matches("Control_\\d_\\s+_\\d+_\\d+_\\d+")) {
+		if (controlName.matches("Control_(\\d)_(\\S+)_(\\d+)_(\\d+)_(\\d+)")) {
 			rowNumber = Integer.valueOf(controlName.substring(controlName.lastIndexOf("_") + 1));
 		}
 		return rowNumber;

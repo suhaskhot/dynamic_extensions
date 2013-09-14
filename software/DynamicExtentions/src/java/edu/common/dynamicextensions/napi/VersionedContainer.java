@@ -23,5 +23,6 @@ public interface VersionedContainer {
 	public void publishRetrospective(UserContext usrCtx, Long formId);
 	
 	public void publishProspective(UserContext usrCtx, Long formId, Date activationDate);
-
+	
+	public boolean isChangedSinceLastPublish(Long formId);
 }

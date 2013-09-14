@@ -299,6 +299,13 @@ public class VersionedContainerImpl implements VersionedContainer {
 		vdao.insertVersionedContainerInfo(vc);
 	}
 	
+	@Override
+	public boolean isChangedSinceLastPublish(Long formId) {
+		Container draftContainer = getDraftContainer(formId);
+		Container publishedContainer = getContainer(formId);
+		return ContainerUtility.getChangeLog(draftContainer, publishedContainer).anyChanges();
+	}
+		
 	private void nullifyContainerIds(Container container) {
 		container.setId(null);
 		for (Container sub : container.getAllSubContainers()) {

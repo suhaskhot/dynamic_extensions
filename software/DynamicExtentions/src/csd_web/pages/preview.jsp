@@ -32,7 +32,7 @@
 <script>
 	var imgsrc="../..images/de/";
 </script>
-<title>Preview</title>
+<title>Preview </title>
 </head>
 <body style = "font-size : 20px;">
 	<%

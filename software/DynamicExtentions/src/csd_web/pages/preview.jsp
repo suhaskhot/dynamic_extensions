@@ -32,13 +32,13 @@
 <script>
 	var imgsrc="../..images/de/";
 </script>
-<title>Preview</title>
+<title>Preview </title>
 </head>
 <body style = "font-size : 20px;">
 	<%
 	ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
 			"sessionContainer");
 	%>
-	<%=containerFacade.getHTML(request).replaceAll("images/de/", "../../images/de/") %>
+	<%=containerFacade.getHTML(request).replaceAll("images/", "../../images/") %>
 </body>
 </html>

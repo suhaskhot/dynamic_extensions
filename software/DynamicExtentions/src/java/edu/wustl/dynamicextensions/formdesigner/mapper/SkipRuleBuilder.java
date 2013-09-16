@@ -102,7 +102,7 @@ public class SkipRuleBuilder {
 	}
 
 	public void createPvSubSet(String fieldName, String defVal, String... pvs) {
-		Control tgtCtrl = container.getControl(fieldName.trim(),"\\.");
+		Control tgtCtrl = container.getControl(fieldName.trim(), "\\.");
 		if (tgtCtrl == null) {
 			throw new RuntimeException("Invalid field name: " + fieldName);
 		}
@@ -113,19 +113,19 @@ public class SkipRuleBuilder {
 		pvAction.setListOfPvs(subSet);
 		PermissibleValue defaultPv = new PermissibleValue();
 		defaultPv.setValue(defVal);
-		
+
 		int subSetPvIndex = subSet.indexOf(defaultPv);
-		if(subSetPvIndex>=0){
+		if (subSetPvIndex >= 0) {
 			pvAction.setDefaultPv(subSet.get(subSetPvIndex));
 		}
-		
+
 		pvAction.setTargetCtrl(tgtCtrl);
 
 		skipRule.getActions().add(pvAction);
 	}
-	
+
 	public void createPvSubSet(String fieldName, String defVal, List<PermissibleValue> pvSubSet) {
-		Control tgtCtrl = container.getControl(fieldName.trim(),"\\.");
+		Control tgtCtrl = container.getControl(fieldName.trim(), "\\.");
 		if (tgtCtrl == null) {
 			throw new RuntimeException("Invalid field name: " + fieldName);
 		}
@@ -145,23 +145,29 @@ public class SkipRuleBuilder {
 
 	public List<PermissibleValue> getPvsFromValues(SelectControl control, String... values) {
 		List<PermissibleValue> pvSubSet = new ArrayList<PermissibleValue>();
-		List<PermissibleValue> pvSuperSet = control.getPvDataSource().getPermissibleValues(new Date());
+		List<PermissibleValue> pvSuperSet = control.getPvs();
 
 		for (String value : values) {
-			PermissibleValue pv = new PermissibleValue();
-			pv.setValue(value.trim());
-			int index = pvSuperSet.indexOf(pv);
-			if (index >= 0) {
-				pv = pvSuperSet.get(index);
-				pvSubSet.add(pv);
-			}
+			pvSubSet.add(getPvFromPvList(value, pvSuperSet));
 		}
 
 		return pvSubSet;
 	}
 
+	private PermissibleValue getPvFromPvList(String pvValue, List<PermissibleValue> pvs) {
+		PermissibleValue permValue = null;
+		for (PermissibleValue pv : pvs) {
+			if (pv.getValue().equalsIgnoreCase(pvValue)) {
+				permValue = pv;
+				break;
+			}
+		}
+
+		return permValue;
+	}
+
 	private void addAction(String actionName, String fieldName) {
-		Control tgtCtrl = container.getControl(fieldName.trim(),"\\.");
+		Control tgtCtrl = container.getControl(fieldName.trim(), "\\.");
 		if (tgtCtrl == null) {
 			throw new RuntimeException("Invalid field name:  " + fieldName);
 		}
@@ -188,7 +194,7 @@ public class SkipRuleBuilder {
 	 */
 	private void setSkipConditionDetails(String fieldName, SkipCondition skipCondition, String fieldValue)
 			throws RuntimeException {
-		Control ctrl = container.getControl(fieldName.trim(),"\\.");
+		Control ctrl = container.getControl(fieldName.trim(), "\\.");
 
 		if (ctrl == null) {
 			throw new RuntimeException("Invalid field name: " + fieldName);

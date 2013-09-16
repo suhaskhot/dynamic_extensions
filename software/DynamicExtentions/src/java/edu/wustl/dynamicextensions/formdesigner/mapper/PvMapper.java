@@ -39,6 +39,11 @@ public class PvMapper {
 		List<PermissibleValue> pvList = new ArrayList<PermissibleValue>();
 
 		// process permissible values from grid.
+		Map<String, Object> defaultPvMap = controlProperties.getMap("defaultPv");
+		if (defaultPvMap != null) {
+			pvVersion.setDefaultValue(propertiesToPv(new Properties(defaultPvMap)));
+		}
+
 		Map<String, Object> pvs = controlProperties.getMap("pvs");
 		if (pvs != null) {
 
@@ -82,7 +87,7 @@ public class PvMapper {
 		File file = new File(fileName);
 
 		CSVWriter csvWriter = new CSVWriter(new FileWriter(file));
-		
+
 		csvWriter.writeNext(CSDConstants.PV_HEADERS);
 		for (PermissibleValue pv : pvs) {
 			csvWriter.writeNext(getPvTuple(pv));
@@ -199,7 +204,7 @@ public class PvMapper {
 			pvMap.put(pvKey + pvKeyNum, pvToProperties(pv));
 			pvKeyNum++;
 		}
-
+		controlProps.setProperty("defaultPv", pvToProperties(pvDataSource.getDefaultValue(new Date())));
 		controlProps.setProperty("pvs", pvMap);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}

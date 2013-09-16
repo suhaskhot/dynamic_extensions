@@ -23,6 +23,7 @@ import edu.common.dynamicextensions.domain.nui.SkipCondition;
 import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
+import edu.common.dynamicextensions.domain.nui.SubFormControl;
 
 public class SkipRuleMapper {
 
@@ -207,18 +208,31 @@ public class SkipRuleMapper {
 			for (String controllingValue : skipConditionValues) {
 				controllingValueStr.add(controllingValue);
 			}
-			
+
 			LogicalOp anyOrAllOp = skipRule.getLogicalOp();
 			String allOrAny = "all";
-			if(anyOrAllOp == LogicalOp.OR){
+			if (anyOrAllOp == LogicalOp.OR) {
 				allOrAny = "any";
 			}
 			skipRuleProperties.put("allAny", allOrAny);
-			
+
 			Control controllingField = (Control) skipCondition.get("controllingField");
 			String controllingFieldName = controllingField.getName();
 			if (container != controllingField.getContainer()) {
-				controllingFieldName = controllingField.getContainer().getName() + "." + controllingFieldName;
+				String controlContainerName = controllingField.getContainer().getName();
+				if (container.getName().equalsIgnoreCase(controlContainerName)) {
+
+				} else {
+					String controllingFieldPreFix = getSubFormControlNameFromSubFormName(controlContainerName,
+							controllingFieldName);
+					if (controllingFieldPreFix != null) {
+						controllingFieldName = controllingFieldPreFix + "." + controllingFieldName;
+					}
+
+					//container.gets
+
+				}
+
 			}
 
 			skipRuleProperties.put("controllingCondition", skipCondition.get("controllingCondition"));
@@ -254,7 +268,7 @@ public class SkipRuleMapper {
 					defaultPv = defPv.getValue();
 				}
 			}
-			
+
 			List<String> controlledFields = getControlledFields(skipActions);
 
 			if (!pvSubSet.isEmpty()) {
@@ -281,9 +295,21 @@ public class SkipRuleMapper {
 		for (SkipAction skpAction : skipActions) {
 			Control targetControl = skpAction.getTargetCtrl();
 			String targetControlName = targetControl.getName();
-			if (container != targetControl.getContainer()) {
-				targetControlName = targetControl.getContainer().getName() + "." + targetControlName;
+
+			String controlContainerName = targetControl.getContainer().getName();
+			if (container.getName().equalsIgnoreCase(controlContainerName)) {
+
+			} else {
+				String tagetControlPreFix = getSubFormControlNameFromSubFormName(controlContainerName,
+						targetControlName);
+
+				if (tagetControlPreFix != null) {
+					targetControlName = tagetControlPreFix + "." + targetControlName;
+				}
+				//container.gets
+
 			}
+
 			controlledFields.add(targetControlName);
 		}
 		return controlledFields;
@@ -333,4 +359,20 @@ public class SkipRuleMapper {
 		return stringRep;
 	}
 
+	public String getSubFormControlNameFromSubFormName(String subFormName, String subControlName) {
+		String subFormControlName = null;
+		for (Control control : container.getAllControls()) {
+			if (control instanceof SubFormControl) {
+				SubFormControl subFormControl = (SubFormControl) control;
+				if (subFormControl.getSubContainer().getName().equalsIgnoreCase(subFormName)) {
+					if (subFormControl.getSubContainer().getControl(subControlName) != null) {
+						subFormControlName = subFormControl.getName();
+						break;
+					}
+				}
+			}
+		}
+
+		return subFormControlName;
+	}
 }

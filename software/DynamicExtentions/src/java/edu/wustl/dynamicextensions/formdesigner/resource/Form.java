@@ -174,7 +174,7 @@ public class Form {
 			String previewString = IOUtils.toString(previewFileInputStream, "UTF-8");
 
 			return previewString.replace("{{content}}",
-					containerFacade.getHTML(request).replaceAll("images/de/", "../../images/de/"));
+					containerFacade.getHTML(request).replaceAll("images/", "../../images/"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return "Error";

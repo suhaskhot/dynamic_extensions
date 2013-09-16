@@ -278,7 +278,9 @@ var Views = {
 					this.populateFields();
 					var validationMessages = this.model.validate(this.model
 							.toJSON());
-					if (!ControlBizLogic.isControlNameUniqueInForm(this.model)) {
+					if (this.model.get('editName') == undefined
+							&& !ControlBizLogic
+									.isControlNameUniqueInForm(this.model)) {
 						validationMessages.push({
 							name : 'controlName',
 							message : 'Attribute name should be unique.'
@@ -393,6 +395,7 @@ var Views = {
 								defaultPv : Main.currentFieldView.getModel()
 										.get('defaultPv')
 							});
+
 				},
 
 				addPageBreak : function() {
@@ -614,14 +617,7 @@ var Views = {
 					this.pvGrid.selectRowById(this.model.get('controlName')
 							+ GlobalMemory.pvCounter);
 					GlobalMemory.pvCounter++;
-					$('input:radio[name="defaultPv"]').change(
-							function() {
-								var _defaultPv = Main.currentFieldView
-										.getModel().get('pvs')[$(this).val()];
-								Main.currentFieldView.getModel().set({
-									defaultPv : _defaultPv
-								});
-							});
+					ControlBizLogic.initDefaultPv();
 
 				},
 

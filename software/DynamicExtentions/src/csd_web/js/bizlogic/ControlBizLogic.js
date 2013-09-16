@@ -395,6 +395,7 @@ var ControlBizLogic = {
 							.attr('checked', true);
 				}
 			}
+			ControlBizLogic.initDefaultPv();
 			// increment the pv counter
 			GlobalMemory.pvCounter++;
 		}
@@ -493,6 +494,18 @@ var ControlBizLogic = {
 			}
 		}
 		return isUnique;
+
+	},
+	initDefaultPv : function() {
+
+		$('input:radio[name="defaultPv"]').change(
+				function() {
+					var _defaultPv = Main.currentFieldView.getModel()
+							.get('pvs')[$(this).val()];
+					Main.currentFieldView.getModel().set({
+						defaultPv : _defaultPv
+					});
+				});
 
 	}
 

@@ -204,7 +204,10 @@ public class PvMapper {
 			pvMap.put(pvKey + pvKeyNum, pvToProperties(pv));
 			pvKeyNum++;
 		}
-		controlProps.setProperty("defaultPv", pvToProperties(pvDataSource.getDefaultValue(new Date())));
+		PermissibleValue defaultPv = pvDataSource.getDefaultValue(new Date());
+		if (defaultPv != null) {
+			controlProps.setProperty("defaultPv", pvToProperties(defaultPv));
+		}
 		controlProps.setProperty("pvs", pvMap);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}

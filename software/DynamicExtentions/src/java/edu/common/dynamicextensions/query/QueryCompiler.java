@@ -191,7 +191,8 @@ public class QueryCompiler
     
     
     private void analyzeField(FieldNode field, Map<Long, JoinTree> joinMap) {
-        String fieldNameParts[] = field.getName().split("\\.");        
+        String[] fieldNameParts = field.getName().split("\\.");
+        String[] captions = new String[fieldNameParts.length];
         
         Long formId = Long.valueOf(Long.parseLong(fieldNameParts[0]));
         JoinTree formTree = joinMap.get(formId);
@@ -199,7 +200,6 @@ public class QueryCompiler
         Container form = null;        
         if(formTree == null) {
             form = Container.getContainer(formId);
-        	//form = QueryTester.getContainer(formId);
             if(form == null) {
                 throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formId);
             }
@@ -208,7 +208,8 @@ public class QueryCompiler
             joinMap.put(formId, formTree);
         } else {
         	form = formTree.getForm();
-        }
+        }        
+        captions[0] = form.getCaption();
                 
         Control ctrl = form.getControl(fieldNameParts[1]);
         if(ctrl instanceof SubFormControl && fieldNameParts.length > 2) {
@@ -228,6 +229,7 @@ public class QueryCompiler
                 
                 formTree = sfTree;
                 form = sfCtrl.getSubContainer();
+                captions[i] = form.getCaption();
             }
 
             ctrl = form.getControl(fieldNameParts[fieldNameParts.length - 1]);
@@ -249,7 +251,10 @@ public class QueryCompiler
             tabAlias = fieldTree.getAlias();
         }
         
+        captions[captions.length - 1] = ctrl.getCaption();
+        
         field.setCtrl(ctrl);
         field.setTabAlias(tabAlias);
+        field.setNodeCaptions(captions);
     }    
 }

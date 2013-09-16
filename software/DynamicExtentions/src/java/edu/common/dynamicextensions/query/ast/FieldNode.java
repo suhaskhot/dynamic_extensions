@@ -9,6 +9,8 @@ public class FieldNode extends ExpressionNode {
 	private String name;
 	
 	private String tabAlias;
+	
+	private String[] nodeCaptions;
 
 	public Control getCtrl() {
 		return ctrl;
@@ -32,6 +34,14 @@ public class FieldNode extends ExpressionNode {
 
 	public void setTabAlias(String tabAlias) {
 		this.tabAlias = tabAlias;
+	}
+
+	public String[] getNodeCaptions() {
+		return nodeCaptions;
+	}
+
+	public void setNodeCaptions(String[] nodeCaptions) {
+		this.nodeCaptions = nodeCaptions;
 	}
 
 	@Override

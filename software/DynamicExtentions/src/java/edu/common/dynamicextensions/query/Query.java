@@ -1,9 +1,7 @@
 package edu.common.dynamicextensions.query;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 
-import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
@@ -14,12 +12,19 @@ public class Query {
     private JoinTree queryJoinTree;
 
     private QueryExpressionNode queryExpr;
+    
+    private String separator = ": ";
 		
     public static Query createQuery() {
         return new Query();
     }
     
     private Query() {
+    }
+    
+    public Query columnHeadingSeparator(String separator) {
+    	this.separator = separator;
+    	return this;
     }
   
     public void compile(Long rootFormId, String query) {
@@ -89,7 +94,7 @@ public class Query {
 
     private QueryResultData getQueryResultData(ResultSet rs)
     throws Exception {
-        String columnNames[] = getColumnNames(queryExpr); // getColumnNames(rs);
+        String columnNames[] = getColumnNames(queryExpr);
         int columnCount = columnNames.length;
         
         QueryResultData queryResult = new QueryResultData(columnNames);
@@ -104,19 +109,7 @@ public class Query {
 
         return queryResult;
     }
-
-//    private String[] getColumnNames(ResultSet rs)
-//    throws Exception {
-//        ResultSetMetaData rsmd = rs.getMetaData();
-//        String columns[] = new String[rsmd.getColumnCount()];
-//        
-//        for (int i = 0; i < columns.length; i++) {
-//            columns[i] = rsmd.getColumnLabel(i + 1);
-//        }
-//
-//        return columns;
-//    }
-    
+   
     private String[] getColumnNames(QueryExpressionNode queryExpr) {
     	SelectListNode selectList = queryExpr.getSelectList();
     	String columns[] = new String[selectList.getElements().size()];
@@ -124,9 +117,7 @@ public class Query {
     	int i = 0;
     	for (ExpressionNode node : selectList.getElements()) {
     		if (node instanceof FieldNode) {
-    			FieldNode fieldNode = (FieldNode)node;
-    			Control ctrl = fieldNode.getCtrl();
-    			columns[i] = ctrl.getContainer().getCaption() + ": " + ctrl.getCaption();    			
+    			columns[i] = getColumnHeading((FieldNode)node);    			
     		} else {
     			columns[i] = "Column " + i; // TODO: for types of expression node
     		}
@@ -135,5 +126,16 @@ public class Query {
     	}
     	
     	return columns;
+    }
+    
+    private String getColumnHeading(FieldNode node) {
+		String[] nodeCaptions = node.getNodeCaptions();
+		
+		StringBuilder heading = new StringBuilder(nodeCaptions[0]);
+		for (int j = 1; j < nodeCaptions.length; ++j) {
+			heading.append(separator).append(nodeCaptions[j]);
+		}
+		
+		return heading.toString();    	
     }
 }

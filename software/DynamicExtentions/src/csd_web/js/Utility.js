@@ -168,7 +168,7 @@ var Utility = {
 		default:
 
 		}
-		GlobalMemory.nodeCounter++;
+		
 		return shortCode;
 	},
 

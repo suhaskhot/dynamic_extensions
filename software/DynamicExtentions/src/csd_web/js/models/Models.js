@@ -16,7 +16,7 @@ var Models = {
 				initialize : function() {
 					console.log("Form Model created");
 					this.set({
-					//	controlCollection : new Array(),
+						// controlCollection : new Array(),
 						controlObjectCollection : {}
 					});
 				},
@@ -32,6 +32,9 @@ var Models = {
 				},
 
 				addControl : function(controlName, control) {
+					control.set({
+						editName : controlName
+					});
 					var cntrlNames = controlName.split(".");
 					if (cntrlNames.length == 1) {
 						this.get('controlObjectCollection')[controlName] = control;
@@ -88,19 +91,13 @@ var Models = {
 					var control = this.getControl(controlName);
 					if (cntrlName.length == 1) {
 						if (control != undefined) {
-							this.get('controlObjectCollection')[cntrlName[0]]
-									.set({
-										status : "delete"
-									});
+							delete this.get('controlObjectCollection')[cntrlName[0]];
 						}
 					} else {
 						if (control != undefined) {
-							this.get('controlObjectCollection')[cntrlName[0]]
+							delete this.get('controlObjectCollection')[cntrlName[0]]
 									.get('subForm').get(
-											'controlObjectCollection')[cntrlName[1]]
-									.set({
-										status : "delete"
-									});
+											'controlObjectCollection')[cntrlName[1]];
 						}
 					}
 
@@ -154,9 +151,8 @@ var Models = {
 			.extend({
 
 				defaults : {
-					conceptDefinitionSource : "BJC-MED",
 					status : "new",
-					xPos : 0,
+					xPos : 1,
 					sequenceNumber : 0,
 					id : null,
 					width : 15,
@@ -205,6 +201,7 @@ var Models = {
 							message : 'Field\'s name is required.'
 						});
 					}
+
 					if (!attrs.maximumValue) {
 					} else if (attrs.maximumValue != ""
 							&& isNaN(attrs.maximumValue)) {
@@ -212,6 +209,15 @@ var Models = {
 							name : 'maximumValue',
 							message : 'Maximum value should be numeric.'
 						});
+					}
+
+					if (attrs.maximumValue && attrs.minimumValue) {
+						if (attrs.maximumValue < attrs.minimumValue) {
+							errors.push({
+								name : 'maximumValue',
+								message : 'Maximum value should be greater than Minimum value.'
+							});
+						}
 					}
 
 					if (!attrs.minimumValue) {
@@ -244,7 +250,7 @@ var Models = {
 					case "listBox":
 
 					case "multiselectBox":
-					
+
 					case "comboBox":
 
 					case "multiselectCheckBox":

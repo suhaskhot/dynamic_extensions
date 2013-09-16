@@ -1,29 +1,29 @@
-<div>
 	<div class = "controlHeaders"><label class = 'text_bold'>Semantic Properties</label></div>
-	<div style = 'width: 100%;'>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right>
+	<div class = "propertiesContainer">
+		<div class = "propertiesTextBoxContainer" align = right>
 			<label class = 'text_normal'>Definition Source </label>
-			<input id = 'conceptDefinitionSource' type = 'text' value = '{{conceptDefinitionSource}}' class = 'textBox'>
+			<input id = 'conceptDefinitionSource' type = 'text' value = '{{conceptDefinitionSource}}' class = 'textBoxSmall'>
 		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right>
+		<div class = "propertiesTextBoxContainer" align = right>
 			<label class = 'text_normal'>Definition </label>
-			<input id = 'conceptDefinition' type = 'text' value = '{{conceptDefinition}}' class = 'textBox'>
+			<input id = 'conceptDefinition' type = 'text' value = '{{conceptDefinition}}' class = 'textBoxSmall'>
 		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right>
+	</div>
+	<div class = "propertiesContainer">
+		<div class = "propertiesTextBoxContainer" align = right>
 			<label class = 'text_normal'>Code  </label>
-			<input id = 'conceptCode' type = 'text' value = '{{conceptCode}}' class = 'textBox'>
+			<input id = 'conceptCode' type = 'text' value = '{{conceptCode}}' class = 'textBoxSmall'>
 		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right>
+		<div class = "propertiesTextBoxContainer" align = right>
 			<label class = 'text_normal'>Preferred Name </label>
-			<input id = 'conceptPreferredName' type = 'text' value = '{{conceptPreferredName}}' class = 'textBox'>		
+			<input id = 'conceptPreferredName' type = 'text' value = '{{conceptPreferredName}}' class = 'textBoxSmall'>		
 		</div>
 		
 	</div>
-</div>
-<div>
+
 	<div class = "controlHeaders"><label class = 'text_bold'>Other Options</label></div>
-	<div style = 'width: 100%; float: left; padding : 5px;'>
-		<div align = left id="addPageBreak" style = 'width : 40%; float : left; font-size:62.5%; padding-left:5%;'>
+	<div class = "propertiesContainer">
+		<div align = left id="addPageBreak" style = 'width : 40%; float : left; font-size:62.5%; padding-left:7%;'>
 				<label class = 'text_normal'>Page Break after Control</label>
 				<input type="radio" id="pageBreakNo" name="addPageBreak" checked="checked" />
 				<label for="pageBreakNo">No</label>
@@ -31,4 +31,3 @@
 				<label for="pageBreakYes">Yes</label>
 		</div>
 	</div>
-</div>

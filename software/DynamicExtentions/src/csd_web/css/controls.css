@@ -1,9 +1,17 @@
-.textBox {
+.textBox,.textBoxSmall,.textBoxTiny {
 	font-size: 12px;
 	padding: 7px;
 	border: 1px solid #c0c0c0;
 	color: #000000;
 	background-color: #ffffff;
+}
+
+.textBoxSmall{
+	width: 50%;
+}
+
+.textBoxTiny{
+	width: 25%;
 }
 
 .readOnlyTextBox {
@@ -59,12 +67,14 @@
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	color: red;
+	font-weight: bold;
 }
 
 .text_success {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 12px;
 	color: green;
+	font-weight: bold;
 }
 
 .iconBorder {
@@ -72,7 +82,7 @@
 	padding: 2px;
 	margin: 5px;
 	color: #303030;
-	font-color : #303030;
+	font-color: #303030;
 }
 
 .evenGridRow {
@@ -116,6 +126,33 @@
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 10px;
 	color: #303030;
-	font-color : #303030;
+	font-color: #303030;
 	float: left;
+}
+
+.propertiesContainer {
+	width: 83%;
+	display: table;
+	float: left;
+	height: auto;
+}
+
+.propertiesContainerCell,.propertiesCheckBoxContainer,.propertiesTextBoxContainer,.propertiesCheckBoxLabelContainer
+	{
+	padding: 3px;
+	margin: 3px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.propertiesCheckBoxContainer {
+	width: 26%;
+}
+
+.propertiesCheckBoxLabelContainer {
+	width: 24%;
+}
+
+.propertiesTextBoxContainer {
+	width: 40%;
 }

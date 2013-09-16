@@ -103,10 +103,13 @@ var AdvancedControlPropertiesBizLogic = {
 	},
 
 	loadSkipRules : function(model) {
+		//clear the table;
+		$("#skipRulesTable tr:gt(0)").remove();
 		var skipRules = model.get('skipRules');
 		for ( var key in skipRules) {
 			// var skipRule = skipRules[key];
 			Main.advancedControlsView.addSkipRuleToTable(skipRules[key], key);
+			GlobalMemory.skipRulesCounter++;
 
 		}
 		$("#pvs").trigger("liszt:updated");

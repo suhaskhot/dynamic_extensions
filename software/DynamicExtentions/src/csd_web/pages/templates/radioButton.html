@@ -1,49 +1,50 @@
 <div class = "controlHeaders"><label class = 'text_bold'>Field Properties</label></div>
-	<div style = 'width: 100%; '>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right >
+	<div class = "propertiesContainer">
+		<div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
 			<label class = 'text_normal'>Field Name</label>
-			<input id = 'controlCaption' type = 'text' value = '{{caption}}' class = 'textBox'>
 		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right>
-			<label class = 'text_normal'>Attribute Name</label>
-			<input id = 'attributeName' type = 'text' value = '{{attributeName}}' class = 'textBox'>		
+		<div style = 'width: 76%;' class = "propertiesContainerCell" align = right >
+			<input type = 'text' id = 'controlCaption' class = 'textBox' style = "width:99%" value = "{{caption}}">
 		</div>
 	</div>
-	<div style = 'width: 100%; '>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right >
-			<label class = 'text_normal'>Unique Code</label>
-			<input id = 'controlName' type = 'text' value = '{{controlName}}' class = 'textBox'>
-		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left' align = right >
-			<label class = 'text_normal'>Data Type</label>
-			<select id = "dataType" class = 'textBox' style = 'width : 52%'>
-				  <option value="STRING">String</option>
-				  <option value="INTEGER">Integer</option>
-				  <option value="FLOAT">Float</option>
-				  <option value="BOOLEAN">Boolean</option>
-				  <option value="DATE">Date</option>
-			</select>
-		</div>
+<div class = "propertiesContainer">
+			<div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
+				<label class = 'text_normal'>Attribute Name</label>
+			</div>
+			<div style = 'width: 76%;' class = "propertiesContainerCell" align = right >
+				<input type = 'text' id = 'controlName' class = 'textBox' style = "width:99%" value = "{{controlName}}">
+			</div>			
+</div>
+
+<div class = "propertiesContainer">
+	<div class = "propertiesCheckBoxLabelContainer" align = right >
+		<label class = 'text_normal'>PHI</label>
 	</div>
-	<div style = 'width: 100%; '>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = left >
-			<table style = "margin-left:40%">
-				<tr>
-				<td><label class = 'text_normal'>PHI</label></td><td><input id = 'isPHI' type = 'checkbox'></td>
-				</tr>
-			</table>			
-		</div>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = left >
-			<table  style = "margin-left:30%">
-				<tr>
-				<td><label class = 'text_normal'>Mandatory</label></td><td><input id = 'isMandatory' type = 'checkbox'></td>
-				</tr>
-			</table>
-		</div>
+	<div class = "propertiesCheckBoxContainer" align = left >
+		<input id = 'isPHI' type = 'checkbox'>			
 	</div>
-	<div style = 'width: 100%; '>
-		<div style = 'width: 40%; padding: 3px; margin: 3px; float: left;' align = right >
-				<label class = 'text_normal'>Tool Tip</label>
-				<input id = 'toolTip' type = 'text' value = '{{toolTip}}' class = 'textBox'>		
-		</div>
+	<div class = "propertiesCheckBoxLabelContainer" align = right >
+		<label class = 'text_normal'>Mandatory</label>
 	</div>
+	<div class = "propertiesCheckBoxContainer" align = left >
+		<input id = 'isMandatory' type = 'checkbox'>		
+	</div>
+</div>
+<div class = "propertiesContainer">
+	<div class = "propertiesTextBoxContainer" align = "right">
+	<label class = 'text_normal'>Data Type</label>
+	<select id = "dataType" class = 'textBoxSmall'>
+		  <option value="STRING">String</option>
+		  <option value="INTEGER">Integer</option>
+		  <option value="FLOAT">Float</option>
+		  <option value="BOOLEAN">Boolean</option>
+		  <option value="DATE">Date</option>
+	</select>
+	</div>
+	<div class = "propertiesTextBoxContainer" align = right>
+			<label class = 'text_normal'>Tooltip</label>
+			<input id = 'toolTip' type = 'text' value = '{{toolTip}}' class = 'textBoxSmall'>		
+	</div>
+</div>
+	
+	

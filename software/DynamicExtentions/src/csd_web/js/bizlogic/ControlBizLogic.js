@@ -6,12 +6,14 @@ var ControlBizLogic = {
 
 	deleteControl : function(model) {
 
-		var controlName = model.get('controlName');
-		if (model.get('parentName') != undefined) {
-			controlName = model.get('parentName') + "." + controlName;
-		}
-		Main.formView.getFormModel().deleteControl(controlName);
-		Main.treeView.getTree().deleteItem(model.get('treeNodeId'), true);
+		/*
+		 * var controlName = model.get('controlName'); if
+		 * (model.get('parentName') != undefined) { controlName =
+		 * model.get('parentName') + "." + controlName; }
+		 */
+		Main.formView.getFormModel().deleteControl(model.get('editName'));
+
+		Main.treeView.getTree().deleteItem(model.get('formTreeNodeId'), true);
 	},
 
 	getListOfCurrentNumericControls : function(isNameCaptionPair) {
@@ -160,11 +162,15 @@ var ControlBizLogic = {
 			// no node has been selected, hence add it to main form
 			var editModel = Main.formView.getFormModel().getControl(
 					model.get('controlName'));
+			if (editModel == undefined) {
+				var id = ControlBizLogic.createTreeNode(1, name, controlName,
+						type);
+				model.set({
+					formTreeNodeId : id
+				});
+			}
 			Main.formView.getFormModel().editControl(model.get('controlName'),
 					model);
-			if (editModel == undefined) {
-				ControlBizLogic.createTreeNode(1, name, controlName, type);
-			}
 
 		} else {
 			if (selectedNodeControlType == "subForm") {
@@ -180,25 +186,36 @@ var ControlBizLogic = {
 					var editModel = Main.formView.getFormModel().getControl(
 							selectedNodeControlName + "."
 									+ model.get('controlName'));
+					if (editModel == undefined) {
+						var id = ControlBizLogic.createTreeNode(selectedNodeId,
+								name, controlName, type);
+						model.set({
+							formTreeNodeId : id
+						});
+					}
 					Main.formView.getFormModel().editControl(
 							selectedNodeControlName + "."
 									+ model.get('controlName'), model);
-					if (editModel == undefined) {
-						ControlBizLogic.createTreeNode(selectedNodeId, name,
-								controlName, type);
-					}
+
 				}
 			} else {
 				// add it to the main form
 				var editModel = Main.formView.getFormModel().getControl(
 						model.get('controlName'));
+				if (editModel == undefined) {
+					var id = ControlBizLogic.createTreeNode(1, name,
+							controlName, type);
+					model.set({
+						formTreeNodeId : id
+					});
+				}
+
 				Main.formView.getFormModel().editControl(
 						model.get('controlName'), model);
-				if (editModel == undefined) {
-					ControlBizLogic.createTreeNode(1, name, controlName, type);
-				}
+
 			}
 		}
+		GlobalMemory.nodeCounter++;
 		return status;
 	},
 
@@ -214,7 +231,8 @@ var ControlBizLogic = {
 			Main.treeView.getTree().setItemStyle(id,
 					"font-weight:bold; font-style:italic; font-color:#505050;");
 		}
-		GlobalMemory.nodeCounter++;
+
+		return id;
 	},
 
 	/*
@@ -252,12 +270,15 @@ var ControlBizLogic = {
 	 */
 	formTreeNodeClickHandler : function(id) {
 		// De select selected control
-		
+
 		// selected node is a form
-		if(id==1){
+		if (id == 1) {
 			Main.mainTabBarView.selectTab("summaryTab");
 		}
 		Utility.resetCarouselControlSelect();
+
+		// Show the control tab if not selected
+		Main.mainTabBarView.selectTab("controlTab");
 
 		if (Main.currentFieldView != null) {
 			// Erase the existing view
@@ -267,14 +288,38 @@ var ControlBizLogic = {
 		// Get the relevant model
 		var fieldModel = ControlBizLogic.getSelectedModelFromTree(id);
 
+		ControlBizLogic.populateViewWithControl(fieldModel);
+		// Select the carousel's control #FFFFFF
+		Main.mainTabBarView.highlightSelectedControlType();
+
+		// enable delete button of the selected control.
+		Main.currentFieldView.enableDisableButton("delete", false);
+		Main.currentFieldView.enableDisableButton("copy", false);
+		Main.currentFieldView.setSubmitCaptionToUpdate();
+
+		return true;
+	},
+
+	createCopyControl : function(fieldModel) {
+
+		if (Main.currentFieldView != null) {
+			// Erase the existing view
+			Main.currentFieldView.destroy();
+		}
+		var control = new Models.Field(fieldModel.toJSON());
+		control.set({
+			editName : undefined,
+			formTreeNodeId : undefined,
+			controlName : undefined,
+			caption : undefined
+		});
+		this.populateViewWithControl(control);
+	},
+
+	populateViewWithControl : function(fieldModel) {
 		// Create a view with the relevant model
 		Main.currentFieldView = Views.showControl('controlContainer',
 				fieldModel);
-		Main.currentFieldView.setSubmitCaptionToUpdate();
-		// Show the control tab if not selected
-		Main.mainTabBarView.selectTab("controlTab");
-		// Select the carousel's control #FFFFFF
-		Main.mainTabBarView.highlightSelectedControlType();
 
 		// Populate pv grid
 		// reset the pv counter
@@ -285,7 +330,7 @@ var ControlBizLogic = {
 		case "listBox":
 
 		case "multiselectBox":
-		
+
 		case "comboBox":
 
 		case "multiselectCheckBox":
@@ -294,15 +339,13 @@ var ControlBizLogic = {
 			break;
 		default:
 		}
-		// enable delete button of the selected control.
-		Main.currentFieldView.enableDeleteButton();
-		return true;
 	},
 
 	getSelectedModelFromTree : function(id) {
 		var parentId = Main.treeView.getTree().getParentId(id);
 		var controlName = Main.treeView.getTree()
 				.getUserData(id, "controlName");
+
 		var controlType = Main.treeView.getTree()
 				.getUserData(id, "controlType");
 		var parentControlType = Main.treeView.getTree().getUserData(parentId,
@@ -332,16 +375,25 @@ var ControlBizLogic = {
 	showPvDataForCurrentControl : function(model) {
 		GlobalMemory.pvCounter = 0;
 		// iterate through the pv list
+		var defaultPv = model.get('defaultPv');
 		for ( var cntr in model.get('pvs')) {
 			// get the i'th pv
 			var pv = model.get('pvs')[cntr];
 			// add the i'th pv
 			var rowId = model.get('controlName') + GlobalMemory.pvCounter;
+			var defaultPvRadio = "<input type='radio' name='defaultPv' value='"
+					+ rowId + "'>";
 			Main.currentFieldView.getPvGrid().addRow(
 					rowId,
-					pv.value + ',' + pv.numericCode + ',' + pv.definition + ','
-							+ pv.definitionSource + ',' + pv.conceptCode + ','
-							+ "saved");
+					[ pv.value, pv.numericCode, pv.definition,
+							pv.definitionSource, pv.conceptCode,
+							defaultPvRadio, "saved" ]);
+
+			if (pv.value == defaultPv.value) {
+
+				$('input:radio[name="defaultPv"][value="' + rowId + '"]').attr(
+						'checked', true);
+			}
 			// increment the pv counter
 			GlobalMemory.pvCounter++;
 		}
@@ -356,7 +408,7 @@ var ControlBizLogic = {
 			type : controlType,
 			pvs : {},
 			sequenceNumber : ControlBizLogic.getNextSequenceNumber(),
-			controlName : Utility.getShortCode(controlType)
+			controlName : ""
 		});
 		GlobalMemory.sequenceNumCntr++;
 
@@ -388,6 +440,59 @@ var ControlBizLogic = {
 							'#availableFields1').val()));
 
 		}
+	},
+
+	isControlNameUniqueInForm : function(control) {
+
+		// get selected control's properties to distinguish between main form
+		// controls and sub form controls
+		var selectedNodeId = Main.treeView.getTree().getSelectedItemId();
+		var selectedNodeControlType = Main.treeView.getTree().getUserData(
+				selectedNodeId, "controlType");
+		var selectedNodeControlName = Main.treeView.getTree().getUserData(
+				selectedNodeId, "controlName");
+		var isUnique = false;
+
+		if (control.has('editName')) {
+			// edit case
+			var editName = control.get('editName').split(".");
+			var controlName = control.get('controlName');
+			// edit control
+			if (editName.length > 1) {
+				controlName = editName[0] + "." + controlName;
+			}
+			if (Main.formView.getFormModel().getControl(controlName) == undefined) {
+				isUnique = true;
+			}
+
+		} else {
+			// add case
+			if ((selectedNodeControlType == undefined && selectedNodeControlName == undefined)
+					|| (selectedNodeControlType == "" && selectedNodeControlName == "")) {
+				if (selectedNodeControlType == "subForm") {
+					// subForm control add case
+
+					if (Main.formView.getFormModel().getControl(
+							selectedNodeControlName + "."
+									+ control.get('controlName')) == undefined) {
+						isUnique = true;
+					}
+
+				} else {
+					if (Main.formView.getFormModel().getControl(
+							control.get('controlName')) == undefined) {
+						isUnique = true;
+					}
+				}
+			} else {
+				if (Main.formView.getFormModel().getControl(
+						control.get('controlName')) == undefined) {
+					isUnique = true;
+				}
+			}
+		}
+		return isUnique;
+
 	}
 
 }

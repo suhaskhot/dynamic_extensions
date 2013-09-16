@@ -17,6 +17,6 @@ var GlobalMemory = {
 	currentBufferControlModel : null,
 	generalFlag : false,
 	controlName : null,
-	skipRulesCounter : 0,
+	skipRulesCounter : 1,
 	editForm : false
 }

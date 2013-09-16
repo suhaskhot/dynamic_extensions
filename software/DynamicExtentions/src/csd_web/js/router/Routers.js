@@ -43,10 +43,13 @@ var Routers = {
 							trigger : true
 						});
 					} else if (operation == "edit") {
-						var _formula = $('#' + id).find('td').eq(2).text();
-						AdvancedControlPropertiesBizLogic.deleteFormula(id);
+						var _formula = $('#formulaTable')[0].rows[id].cells[2].innerHTML;
+						//AdvancedControlPropertiesBizLogic.deleteFormula(id);
 						$("#availableFields1").val(id);
 						$('#formulaField').val(_formula);
+						Routers.formEventsRouterPointer.navigate('clear', {
+							trigger : true
+						});
 					}
 				},
 				setSkipRule : function(id, operation) {
@@ -83,8 +86,8 @@ var Routers = {
 						var skipRule = Main.formView.getFormModel().get(
 								'skipRules')[id];
 
-						AdvancedControlPropertiesBizLogic.deleteSkipRule(id);
-						Main.advancedControlsView.setTableCss('skipRulesTable');
+						//AdvancedControlPropertiesBizLogic.deleteSkipRule(id);
+						//Main.advancedControlsView.setTableCss('skipRulesTable');
 						// set controlling fields
 						$("#controllingField").val(
 								skipRule.controllingAttributes);
@@ -138,6 +141,9 @@ var Routers = {
 									skipRule.controllingValues);
 							$("#controllingValuesDiv").show();
 						}
+						Routers.formEventsRouterPointer.navigate('clear', {
+							trigger : true
+						});
 
 					}
 				}
@@ -210,7 +216,7 @@ var Routers = {
 					 * AdvancedControlPropertiesBizLogic.loadSkipRules(model);
 					 */
 					Routers.formEventsRouterPointer.updateModelWithIds(model);
-
+					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
 				},
 
 				updateUI : function(model) {
@@ -258,7 +264,7 @@ var Routers = {
 						skipRules : model.get('skipRules')
 					});
 					Main.advancedControlsView.setTableCss('formulaTable');
-					Main.mainTabBarView.loadFormSummary();
+					//Main.mainTabBarView.loadFormSummary();
 					Main.mainTabBarView.getFormSummaryView().displayFormInfo(
 							model.getFormInformation());
 
@@ -315,10 +321,12 @@ var Routers = {
 								.get('controlCollection')[cntr]);
 						var displayLbl = control.get('caption') + " ("
 								+ control.get('controlName') + ")";
-						this.populateTreeWithControlNodes(control
+						var controlNodeId = this.populateTreeWithControlNodes(control
 								.get('controlName'), displayLbl, control
 								.get('type'));
+						control.set({editName : control.get('controlName'), formTreeNodeId : controlNodeId});
 						var parentId = GlobalMemory.nodeCounter - 1;
+						GlobalMemory.nodeCounter++;
 						if (control.get('type') == "subForm") {
 							var subFrm = new Models.Form(control.get('subForm'));
 							subFrm.set({
@@ -329,28 +337,32 @@ var Routers = {
 
 								var subControl = new Models.Field(subFrm
 										.get('controlCollection')[subCntr]);
-
+								
 								var updatedControl = Utility.addFieldHandlerMap[subControl
 										.get('type')](subControl, false,
 										'controlContainer');
+								
 
-								subFrm.get('controlObjectCollection')[subControl
-										.get('controlName')] = updatedControl;
 								var displayLabel = subControl.get('caption')
 										+ " (" + subControl.get('controlName')
 										+ ")";
-
+								var subFrmCntrlNodeId = GlobalMemory.nodeCounter;
 								Main.treeView.getTree().insertNewChild(
-										parentId, GlobalMemory.nodeCounter,
+										parentId, subFrmCntrlNodeId,
 										displayLabel, 0, 0, 0, 0,
 										"SELECT,CALL,CHILD,CHECKED");
 								Main.treeView.getTree().setUserData(
-										GlobalMemory.nodeCounter,
+										subFrmCntrlNodeId,
 										"controlName",
 										subControl.get('controlName'));
 								Main.treeView.getTree().setUserData(
-										GlobalMemory.nodeCounter,
+										subFrmCntrlNodeId,
 										"controlType", subControl.get('type'));
+
+							updatedControl.set({editName : control.get('controlName')+"."+updatedControl.get('controlName'), formTreeNodeId : subFrmCntrlNodeId});
+
+							subFrm.get('controlObjectCollection')[subControl.get('controlName')] = updatedControl;
+								
 								GlobalMemory.nodeCounter++;
 
 							}
@@ -379,16 +391,18 @@ var Routers = {
 
 				populateTreeWithControlNodes : function(controlName,
 						displayLabel, type) {
+					var id = GlobalMemory.nodeCounter;
 					Main.treeView.getTree().insertNewChild(1,
-							GlobalMemory.nodeCounter, displayLabel, 0, 0, 0, 0,
+							id, displayLabel, 0, 0, 0, 0,
 							"SELECT,CALL,CHILD,CHECKED");
 					Main.treeView.getTree().setUserData(
-							GlobalMemory.nodeCounter, "controlName",
+							id, "controlName",
 							controlName);
 					Main.treeView.getTree().setUserData(
-							GlobalMemory.nodeCounter, "controlType", type);
+							id, "controlType", type);
 
-					GlobalMemory.nodeCounter++;
+
+					return id;
 				}
 			}),
 
@@ -443,7 +457,7 @@ var Routers = {
 									Main.designModeViewPointer
 											.updateControlObjectCollection(
 													sourceCell.getValue(),
-													tInd, rowId + 1);
+													tInd+1, rowId + 1);
 									sourceCell.setValue('');
 
 									var sourceValue = '';
@@ -474,7 +488,7 @@ var Routers = {
 													.setValue(targetValue);
 											Main.designModeViewPointer
 													.updateControlObjectCollection(
-															targetValue, tInd,
+															targetValue, tInd+1,
 															seqNo + 1);
 											targetValue = sourceValue;
 										} else {
@@ -484,7 +498,7 @@ var Routers = {
 													.setValue(targetValue);
 											Main.designModeViewPointer
 													.updateControlObjectCollection(
-															targetValue, tInd,
+															targetValue, tInd+1,
 															seqNo + 1);
 											break;
 										}
@@ -516,8 +530,9 @@ var Routers = {
 
 			for ( var index in Main.formView.getFormModel().get(
 					'controlObjectCollection')) {
+				//-1 because db doesn't accept zero and grid zero based
 				var xPos = Main.formView.getFormModel().get(
-						'controlObjectCollection')[index].get("xPos");
+						'controlObjectCollection')[index].get("xPos") - 1;
 				// -1 because db doesn't accept zero and grid zero based
 				var seqNumber = Main.formView.getFormModel().get(
 						'controlObjectCollection')[index].get("sequenceNumber") - 1;

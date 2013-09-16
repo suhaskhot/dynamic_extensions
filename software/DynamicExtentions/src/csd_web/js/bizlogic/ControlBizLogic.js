@@ -388,11 +388,12 @@ var ControlBizLogic = {
 					[ pv.value, pv.numericCode, pv.definition,
 							pv.definitionSource, pv.conceptCode,
 							defaultPvRadio, "saved" ]);
+			if (defaultPv != undefined) {
+				if (pv.value == defaultPv.value) {
 
-			if (pv.value == defaultPv.value) {
-
-				$('input:radio[name="defaultPv"][value="' + rowId + '"]').attr(
-						'checked', true);
+					$('input:radio[name="defaultPv"][value="' + rowId + '"]')
+							.attr('checked', true);
+				}
 			}
 			// increment the pv counter
 			GlobalMemory.pvCounter++;

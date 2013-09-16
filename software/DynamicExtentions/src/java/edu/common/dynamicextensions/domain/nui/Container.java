@@ -546,6 +546,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 				
 	public void editContainer(Container newContainer) {
+		this.setName(newContainer.getName());
+		this.setCaption(newContainer.getCaption());
 		for (Control  ctrl : newContainer.getControls()) {
 			if (getControl(ctrl.getName()) == null) {
 				addControl(ctrl);

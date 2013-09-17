@@ -1,10 +1,13 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+
+import edu.common.dynamicextensions.ndao.JdbcDao;
 
 public class PvDataSource {
 	public static enum Ordering {
@@ -65,11 +68,7 @@ public class PvDataSource {
 		List<PermissibleValue> pvs = null;
 		
 		if (sql != null) {
-			//
-			// TODO:
-			// execute sql
-			// return pv list
-			//
+			pvs = getPvsFromDb(sql);
 		} else {
 			pvs = getPvVersion(activationDate).getPermissibleValues();
 		}
@@ -131,5 +130,36 @@ public class PvDataSource {
 		}
 				
 		return result;		
-	}	
+	}
+	
+	private List<PermissibleValue> getPvsFromDb(String sql) {
+		JdbcDao jdbcDao = null;
+		ResultSet rs = null;
+		
+		List<PermissibleValue> result = new ArrayList<PermissibleValue>();
+		try {
+			jdbcDao = new JdbcDao();
+			rs = jdbcDao.getResultSet(sql, null);
+			while (rs.next()) {
+				String value = rs.getString(1);
+				if (value == null || value.trim().isEmpty()) {
+					continue;
+				}
+				
+				PermissibleValue pv = new PermissibleValue();
+				pv.setOptionName(value);
+				pv.setValue(value);
+				result.add(pv);
+			}
+			
+			return result;			
+		} catch (Exception e) {
+			throw new RuntimeException("Error executing SQL to obtain pvs: " + sql, e);
+		} finally {
+			if (jdbcDao != null) {
+				jdbcDao.close(rs);
+				jdbcDao.close();
+			}
+		}
+	}
 }

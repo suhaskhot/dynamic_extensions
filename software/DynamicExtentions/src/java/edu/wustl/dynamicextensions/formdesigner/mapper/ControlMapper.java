@@ -227,6 +227,10 @@ public class ControlMapper {
 			RadioButton control = new RadioButton();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
+			Integer optionsPerRow = controlProps.getInteger("optionsPerRow");
+			if (optionsPerRow != null) {
+				control.setOptionsPerRow(optionsPerRow);
+			}
 			return control;
 		}
 
@@ -236,6 +240,7 @@ public class ControlMapper {
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.RADIO_BUTTON);
 			getCommonProperties(controlProps, control);
 			PvMapper.pVDataSourcetoProperties(((RadioButton) control).getPvDataSource(), controlProps);
+			controlProps.setProperty("optionsPerRow", ((RadioButton) control).getOptionsPerRow());
 			return controlProps;
 		}
 	}
@@ -323,6 +328,10 @@ public class ControlMapper {
 			MultiSelectCheckBox control = new MultiSelectCheckBox();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
+			Integer optionsPerRow = controlProps.getInteger("optionsPerRow");
+			if (optionsPerRow != null) {
+				control.setOptionsPerRow(optionsPerRow);
+			}
 			return control;
 		}
 
@@ -332,6 +341,7 @@ public class ControlMapper {
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.MULTISELECT_CHECK_BOX);
 			getCommonProperties(controlProps, control);
 			PvMapper.pVDataSourcetoProperties(((MultiSelectCheckBox) control).getPvDataSource(), controlProps);
+			controlProps.setProperty("optionsPerRow", ((MultiSelectCheckBox) control).getOptionsPerRow());
 			return controlProps;
 		}
 	}

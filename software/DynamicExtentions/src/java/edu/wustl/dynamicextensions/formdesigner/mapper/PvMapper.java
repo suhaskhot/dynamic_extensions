@@ -34,7 +34,13 @@ public class PvMapper {
 			pvDataSource.setDataType(DataType.STRING);
 		}
 
-		pvDataSource.setOrdering(Ordering.ASC);
+		String pvOrder = controlProperties.getString("pvOrder");
+		if (pvOrder.equalsIgnoreCase("ASC")) {
+			pvDataSource.setOrdering(Ordering.ASC);
+		} else if (pvOrder.equalsIgnoreCase("DESC")) {
+			pvDataSource.setOrdering(Ordering.DESC);
+		}
+
 		PvVersion pvVersion = new PvVersion();
 		List<PermissibleValue> pvList = new ArrayList<PermissibleValue>();
 
@@ -208,6 +214,13 @@ public class PvMapper {
 		if (defaultPv != null) {
 			controlProps.setProperty("defaultPv", pvToProperties(defaultPv));
 		}
+		
+		if (pvDataSource.getOrdering() == Ordering.ASC) {
+			controlProps.setProperty("pvOrder", "ASC");
+		} else if (pvDataSource.getOrdering() == Ordering.DESC) {
+			controlProps.setProperty("pvOrder", "DESC");
+		}
+
 		controlProps.setProperty("pvs", pvMap);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}

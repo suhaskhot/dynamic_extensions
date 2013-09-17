@@ -148,7 +148,7 @@ public class SkipRuleBuilder {
 		List<PermissibleValue> pvSuperSet = control.getPvs();
 
 		for (String value : values) {
-			pvSubSet.add(getPvFromPvList(value, pvSuperSet));
+			pvSubSet.add(getPvFromPvList(value.trim(), pvSuperSet));
 		}
 
 		return pvSubSet;
@@ -157,7 +157,7 @@ public class SkipRuleBuilder {
 	private PermissibleValue getPvFromPvList(String pvValue, List<PermissibleValue> pvs) {
 		PermissibleValue permValue = null;
 		for (PermissibleValue pv : pvs) {
-			if (pv.getValue().equalsIgnoreCase(pvValue)) {
+			if (pv.getValue().trim().equalsIgnoreCase(pvValue)) {
 				permValue = pv;
 				break;
 			}

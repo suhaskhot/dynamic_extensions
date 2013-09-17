@@ -191,7 +191,7 @@ public class PvMapper {
 		}
 		String value = properties.getString("value");
 		if (value != null) {
-			pv.setValue(value);
+			pv.setValue(value.trim());
 		}
 		return pv;
 	}

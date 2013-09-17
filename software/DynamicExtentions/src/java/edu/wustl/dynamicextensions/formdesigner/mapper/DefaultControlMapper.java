@@ -2,6 +2,7 @@
 package edu.wustl.dynamicextensions.formdesigner.mapper;
 
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.Control.LabelPosition;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public abstract class DefaultControlMapper {
@@ -24,9 +25,9 @@ public abstract class DefaultControlMapper {
 	 * @param control
 	 */
 	protected void setCommonProperties(Properties controlProps, Control control) {
-		
+
 		Long id = controlProps.getLong("id");
-		if(id!=null){
+		if (id != null) {
 			control.setId(id);
 		}
 
@@ -83,8 +84,34 @@ public abstract class DefaultControlMapper {
 			control.setToolTip(toolTip);
 		}
 
+		/*String labelPosition = controlProps.getString("labelPosition");
+		
+		if (labelPosition != null) {
+			control.setLabelPosition(getLabelPosition(labelPosition));
+		}*/
+
 	}
 
+	/*protected LabelPosition getLabelPosition(String labelPos) {
+		if (labelPos.equalsIgnoreCase("LEFT")) {
+			return LabelPosition.LEFT_SIDE;
+		} else if (labelPos.equalsIgnoreCase("TOP")) {
+			return LabelPosition.TOP;
+		} else {
+			return null;
+		}
+	}
+
+	protected String getStringLabelPosition(LabelPosition labelPos) {
+		if (labelPos == LabelPosition.LEFT_SIDE) {
+			return "LEFT";
+		} else if (labelPos == LabelPosition.TOP) {
+			return "TOP";
+		} else {
+			return null;
+		}
+	}
+*/
 	/**
 	 * @param controlProps
 	 * @param control
@@ -104,6 +131,7 @@ public abstract class DefaultControlMapper {
 		controlProps.setProperty("sequenceNumber", control.getSequenceNumber());
 		controlProps.setProperty("customLabel", control.getCustomLabel());
 		controlProps.setProperty("toolTip", control.getToolTip());
+		//controlProps.setProperty("labelPosition", getStringLabelPosition(control.getLabelPosition()));
 		controlProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
 	}
 }

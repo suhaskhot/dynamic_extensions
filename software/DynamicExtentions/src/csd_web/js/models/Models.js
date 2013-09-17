@@ -235,6 +235,14 @@ var Models = {
 							message : 'Width should be numeric.'
 						});
 					}
+					
+					if (!attrs.optionsPerRow) {
+					} else if (attrs.optionsPerRow != "" && isNaN(attrs.optionsPerRow)) {
+						errors.push({
+							name : 'optionsPerRow',
+							message : 'Number of Values Per Row should be numeric.'
+						});
+					}
 
 					if (!attrs.noOfRows) {
 					} else if (attrs.noOfRows != "" && isNaN(attrs.noOfRows)) {

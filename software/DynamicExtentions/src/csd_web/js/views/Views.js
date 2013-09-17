@@ -382,9 +382,12 @@ var Views = {
 								isMandatory : $('#isMandatory').is(":checked"),
 								isAutoCalculate : $('#autoCalculate').is(
 										":checked"),
+								optionsPerRow : $('#optionsPerRow').val(),
+								pvOrder : $('#pvOrder').val(),
 								toolTip : $('#toolTip').val(),
 								subFormName : $('#subFormName').val()
 							});
+
 					// set pvs
 					this.model
 							.set({
@@ -470,6 +473,9 @@ var Views = {
 
 					// data type
 					$("#dataType").val(this.model.get('dataType')).prop(
+							'selected', true);
+					// pv order
+					$("#pvOrder").val(this.model.get('pvOrder')).prop(
 							'selected', true);
 					// format
 					$("#format").val(this.model.get('format')).prop('selected',

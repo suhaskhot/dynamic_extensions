@@ -13,17 +13,18 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
               | filter                               #SimpleFilter
               ;
      
-filter        : arith_expr  OP   arith_expr              
-	      | arith_expr  MOP  literal_values 
+filter        : arith_expr  OP   arith_expr          #BasicFilter
+              | arith_expr  MOP  literal_values      #MvFilter
+              | FIELD       SOP  SLITERAL            #StringCompFilter
               ;
               
 literal_values: '(' literal (',' literal)* ')'
               ;
               
 literal       : SLITERAL                             #StringLiteral 
-	      | INT                                  #IntLiteral
-	      | FLOAT                                #FloatLiteral
-			  ;                            
+              | INT                                  #IntLiteral
+              | FLOAT                                #FloatLiteral
+              ;                            
 	 
 arith_expr    : arith_expr ARITH_OP arith_expr       #ArithExpr
               | arith_expr ARITH_OP date_interval    #DateIntervalExpr
@@ -52,6 +53,7 @@ NOT      : 'not';
 LP       : '(';
 RP       : ')';
 MOP      : ('in'|'not in');
+SOP      : ('contains'|'starts with'|'ends with');
 OP       : ('>'|'<'|'>='|'<='|'='|'!='|'like');
 INT      : '-'? DIGIT+;
 FLOAT    : '-'? DIGIT+ '.' DIGIT+;
@@ -59,11 +61,11 @@ YEAR     : DIGIT+ ('y'|'Y');
 MONTH    : DIGIT+ ('m'|'M');
 DAY      : DIGIT+ ('d'|'D');
 DIGIT    : ('0'..'9');
+ID       : ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
+FIELD    : (INT|ID) '.' ID ('.' ID)*;
 SLITERAL : '"' SGUTS '"';
 ESC      : '\\' ('\\' | '"');
-ID       : ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
 ARITH_OP : ('+'|'-'|'*'|'/');
-FIELD    : (INT|ID) '.' ID ('.' ID)*;
 
 fragment
 SGUTS    : (ESC | ~('\\' | '"'))*;

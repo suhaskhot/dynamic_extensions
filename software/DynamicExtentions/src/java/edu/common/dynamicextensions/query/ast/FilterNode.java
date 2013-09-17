@@ -10,7 +10,10 @@ public class FilterNode implements FilterNodeMarker {
         GE(">="),
         NE("!="),
         IN("in"),
-        NOT_IN("not in");
+        NOT_IN("not in"),
+        STARTS_WITH("starts with"),
+        ENDS_WITH("ends with"),
+        CONTAINS("contains");
         
         
         private String symbol;

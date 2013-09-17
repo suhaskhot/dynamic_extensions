@@ -141,9 +141,24 @@ public class QueryGenerator {
             throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used");
         }
         
-        String lhs = getExpressionNodeSql(filter.getLhs(), filter.getLhs().getType());
-        String rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());        
-        return lhs + " " + filter.getRelOp().symbol() + " " + rhs;
+        String filterExpr = null, rhs = null;
+        
+        String lhs = getExpressionNodeSql(filter.getLhs(), filter.getLhs().getType());        
+        switch (filter.getRelOp()) {
+            case STARTS_WITH:
+            case ENDS_WITH:
+            case CONTAINS:
+            	rhs = getStringMatchSql((LiteralValueNode)filter.getRhs(), filter.getRelOp());
+            	filterExpr = lhs + " like " + rhs;
+            	break;
+            	
+            default:
+            	rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());
+            	filterExpr = lhs + " " + filter.getRelOp().symbol() + " " + rhs;
+            	break;            	
+        }
+        
+        return filterExpr;
     }
 
     private boolean isValidOp(DataType lhsType, RelationalOp op, DataType rhsType) {
@@ -184,7 +199,7 @@ public class QueryGenerator {
     	
     	return result;
     }
-    
+        
     private String getFieldNodeSql(FieldNode field) {
     	return field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
     }
@@ -208,6 +223,30 @@ public class QueryGenerator {
         return result;
     }
     
+    private String getStringMatchSql(LiteralValueNode stringNode, RelationalOp op) {
+    	String prefix = "", suffix = "";
+    	
+    	switch (op) {
+    	    case CONTAINS:
+    	    	prefix = suffix = "%";
+    	    	break;
+    	    	
+    	    case STARTS_WITH:
+    	    	suffix = "%";
+    	    	break;
+    	    	
+    	    case ENDS_WITH:
+    	    	prefix = "%";
+    	    	break;
+    	    	
+    	    default:
+    	    	break;
+    	}
+    	
+    	String value = removeQuotes(stringNode.getValues().get(0).toString());
+    	return "'" + prefix + value + suffix + "'";
+    }
+        
     private String getArithExpressionNodeSql(ArithExpressionNode arithExpr) {    	
     	String expr = "";
     	

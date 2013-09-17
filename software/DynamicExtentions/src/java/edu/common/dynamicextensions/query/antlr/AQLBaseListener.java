@@ -69,6 +69,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterArithExpr(@NotNull AQLParser.ArithExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -102,6 +115,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -186,6 +212,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterStringCompFilter(@NotNull AQLParser.StringCompFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitStringCompFilter(@NotNull AQLParser.StringCompFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -245,19 +284,6 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterFilter(@NotNull AQLParser.FilterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitFilter(@NotNull AQLParser.FilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

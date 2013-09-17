@@ -24,7 +24,7 @@ public class QueryParser {
         AQLParser parser = new AQLParser(tokens);
         
         ParseTree tree = parser.query();
-        QueryAstBuilder builder = new QueryAstBuilder();
+        QueryAstBuilder builder = new QueryAstBuilder();        
         return (QueryExpressionNode)builder.visit(tree);
     }
 }

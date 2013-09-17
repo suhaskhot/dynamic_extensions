@@ -8,7 +8,10 @@ public class FilterNode implements FilterNodeMarker {
         LE("<="),
         GT(">"),
         GE(">="),
-        NE("!=");
+        NE("!="),
+        IN("in"),
+        NOT_IN("not in");
+        
         
         private String symbol;
         

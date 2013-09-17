@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.query.antlr.AQLBaseVisitor;
 import edu.common.dynamicextensions.query.antlr.AQLParser;
+import edu.common.dynamicextensions.query.antlr.AQLParser.LiteralContext;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
@@ -14,6 +15,7 @@ import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.FilterNode;
 import edu.common.dynamicextensions.query.ast.FilterNodeMarker;
+import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.Node;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
@@ -83,13 +85,41 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
 
     @Override
     public FilterNode visitFilter(@NotNull AQLParser.FilterContext ctx) {
-    	String inputSymbol = ctx.OP().getText();
-    	
     	FilterNode filter = new FilterNode();
     	filter.setLhs((ExpressionNode)visit(ctx.arith_expr(0)));
-    	filter.setRhs((ExpressionNode)visit(ctx.arith_expr(1)));
-    	filter.setRelOp(RelationalOp.getBySymbol(inputSymbol));    	
+    	
+    	String inputSymbol = "";
+    	if (ctx.OP() != null) {
+        	inputSymbol = ctx.OP().getText();
+    	} else if (ctx.MOP() != null) {
+    		inputSymbol = ctx.MOP().getText();
+    	}
+        	
+    	filter.setRelOp(RelationalOp.getBySymbol(inputSymbol));
+    	
+    	ExpressionNode rhs = null;
+    	switch (filter.getRelOp()) {
+    	  case IN:
+    	  case NOT_IN:
+    		  rhs = (ExpressionNode)visit(ctx.literal_values());
+    		  break;
+    		  
+    	  default:
+    		  rhs = (ExpressionNode)visit(ctx.arith_expr(1));
+    		  break;
+    	}
+    	
+    	filter.setRhs(rhs);
     	return filter;    	
+    }
+    
+    public LiteralValueListNode visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) {
+    	LiteralValueListNode literals = new LiteralValueListNode();
+    	for (LiteralContext literalCtx : ctx.literal()) {
+    		literals.addLiteralVa((LiteralValueNode)visit(literalCtx));
+    	}
+    	
+    	return literals;
     }
 
     @Override

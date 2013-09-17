@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.FilterNode;
+import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.Node;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
@@ -164,6 +165,17 @@ public class QueryGenerator {
     		result = getFieldNodeSql((FieldNode)exprNode);
     	} else if (exprNode instanceof LiteralValueNode) {
     		result = getLiteralValueNodeSql((LiteralValueNode)exprNode, type);
+    	} else if (exprNode instanceof LiteralValueListNode) {
+    		LiteralValueListNode literalNodes = (LiteralValueListNode)exprNode;
+    		StringBuilder literals = new StringBuilder();
+    		for (LiteralValueNode literalNode : literalNodes.getLiteralVals()) {
+    			if (literals.length() != 0) {
+    				literals.append(", ");
+    			}
+    			literals.append(getLiteralValueNodeSql(literalNode, type));
+    		}
+    		
+    		result = "(" + literals.toString() + ")";    		    		
     	} else if (exprNode instanceof ArithExpressionNode) {
     		result = getArithExpressionNodeSql((ArithExpressionNode)exprNode);    		
     	} else if (exprNode instanceof DateDiffFuncNode) {

@@ -39,6 +39,7 @@ import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
+import edu.common.dynamicextensions.domain.nui.PvDataSource;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.ShowAction;
@@ -240,11 +241,16 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			serializeControlProps(ctrl);
 			
 			writeElementStart(writer, "options");
-			
-			Date today = Calendar.getInstance().getTime();
-			List<PermissibleValue> pvs = ctrl.getPvDataSource().getPermissibleValues(today);			
-			writePvValues(pvs, ctrl.getName());
-			
+			PvDataSource pvDataSource = ctrl.getPvDataSource();
+			String sql = pvDataSource.getSql();
+			if (sql != null) {
+				writeElement(writer, "sql", sql);
+			} else {
+				Date today = Calendar.getInstance().getTime();
+				List<PermissibleValue> pvs = ctrl.getPvDataSource().getPermissibleValues(today);			
+				writePvValues(pvs, ctrl.getName());				
+			}
+
 			writeElementEnd(writer, "options");
 		}
 	}

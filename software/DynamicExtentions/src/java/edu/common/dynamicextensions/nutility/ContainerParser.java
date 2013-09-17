@@ -422,27 +422,38 @@ public class ContainerParser {
 	
 	private void setSelectProps(SelectControl selectControl, Element ctrlEle, int currentRow, int i) {		
 		setControlProps(selectControl, ctrlEle, currentRow, i);		
-
-		List<PermissibleValue> permissibleValues = getPemissibleValues(ctrlEle);
-		PvVersion pvVersion = new PvVersion();
-		pvVersion.setPermissibleValues(permissibleValues);
-
-		String defVal = getTextValue(ctrlEle, "defaultValue");
-		if (defVal != null) {
-			PermissibleValue pv = new PermissibleValue();
-			pv.setOptionName(defVal);
-			pv.setValue(defVal);
-			pvVersion.setDefaultValue(pv);
-		}
-		
-		
-		List<PvVersion> pvVersions = new ArrayList<PvVersion>();
-		pvVersions.add(pvVersion);
-		
+			
 		PvDataSource pvDataSource = new PvDataSource();
-		pvDataSource.setPvVersions(pvVersions);
 		pvDataSource.setDataType(DataType.STRING); // TODO: Need to read data type of options as well
 		selectControl.setPvDataSource(pvDataSource);
+		
+		String sql = getSql(ctrlEle);
+		if (sql == null) {
+			List<PermissibleValue> permissibleValues = getPemissibleValues(ctrlEle);
+			PvVersion pvVersion = new PvVersion();
+			pvVersion.setPermissibleValues(permissibleValues);
+
+			String defVal = getTextValue(ctrlEle, "defaultValue");
+			if (defVal != null) {
+				PermissibleValue pv = new PermissibleValue();
+				pv.setOptionName(defVal);
+				pv.setValue(defVal);
+				pvVersion.setDefaultValue(pv);
+			}
+						
+			List<PvVersion> pvVersions = new ArrayList<PvVersion>();
+			pvVersions.add(pvVersion);			
+			pvDataSource.setPvVersions(pvVersions);
+		} else {
+			pvDataSource.setSql(sql);
+		}		
+	}
+	
+	private String getSql(Element optionsParentEl) {
+		Element options = (Element)optionsParentEl.getElementsByTagName("options").item(0);
+		NodeList sqlNode = options.getElementsByTagName("sql");
+		return (sqlNode != null && sqlNode.getLength() == 1) ? 
+				sqlNode.item(0).getFirstChild().getNodeValue() : null;  
 	}
 	
 	private List<PermissibleValue> getPemissibleValues(Element optionsParentEl) {

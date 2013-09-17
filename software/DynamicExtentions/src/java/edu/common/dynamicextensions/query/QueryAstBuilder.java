@@ -82,35 +82,39 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     public FilterExpressionNode visitSimpleFilter(@NotNull AQLParser.SimpleFilterContext ctx) {
     	return FilterExpressionNode.identity((FilterNodeMarker)visit(ctx.filter()));
     }
-
+    
     @Override
-    public FilterNode visitFilter(@NotNull AQLParser.FilterContext ctx) {
+    public FilterNode visitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) {
     	FilterNode filter = new FilterNode();
     	filter.setLhs((ExpressionNode)visit(ctx.arith_expr(0)));
-    	
-    	String inputSymbol = "";
-    	if (ctx.OP() != null) {
-        	inputSymbol = ctx.OP().getText();
-    	} else if (ctx.MOP() != null) {
-    		inputSymbol = ctx.MOP().getText();
-    	}
-        	
-    	filter.setRelOp(RelationalOp.getBySymbol(inputSymbol));
-    	
-    	ExpressionNode rhs = null;
-    	switch (filter.getRelOp()) {
-    	  case IN:
-    	  case NOT_IN:
-    		  rhs = (ExpressionNode)visit(ctx.literal_values());
-    		  break;
-    		  
-    	  default:
-    		  rhs = (ExpressionNode)visit(ctx.arith_expr(1));
-    		  break;
-    	}
-    	
-    	filter.setRhs(rhs);
+    	filter.setRhs((ExpressionNode)visit(ctx.arith_expr(1)));
+    	filter.setRelOp(RelationalOp.getBySymbol(ctx.OP().getText()));
     	return filter;    	
+    }
+    
+    @Override
+    public FilterNode visitMvFilter(@NotNull AQLParser.MvFilterContext ctx) {
+    	FilterNode filter = new FilterNode();
+    	filter.setLhs((ExpressionNode)visit(ctx.arith_expr()));
+    	filter.setRhs((ExpressionNode)visit(ctx.literal_values()));
+    	filter.setRelOp(RelationalOp.getBySymbol(ctx.MOP().getText()));
+    	return filter;    	
+    }
+    
+    @Override
+    public FilterNode visitStringCompFilter(@NotNull AQLParser.StringCompFilterContext ctx) {
+    	FilterNode filter = new FilterNode();
+    	
+    	FieldNode field = new FieldNode();
+    	field.setName(ctx.FIELD().getText());    	
+    	filter.setLhs(field);
+    	
+    	LiteralValueNode value = new LiteralValueNode(DataType.STRING);
+    	value.getValues().add(ctx.SLITERAL().getText());
+    	filter.setRhs(value);
+    	
+    	filter.setRelOp(RelationalOp.getBySymbol(ctx.SOP().getText()));
+    	return filter;
     }
     
     public LiteralValueListNode visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) {

@@ -1,7 +1,7 @@
 package edu.common.dynamicextensions.nutility;
 
-import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeCDataElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
 
@@ -9,7 +9,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -60,6 +60,8 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 	
 	private Map<Class<?>, ControlSerializer> serializerMap = new HashMap<Class<?>, ControlSerializer>();
 
+	private static final String[] csvHeader = {"Value", "Numeric Code", "Concept Code", "Definition Source"};
+	
 	private Container container;
 	
 	private String outDir;
@@ -213,6 +215,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		
 		protected void serializeControlProps(Control ctrl) {
 			writeElement(writer, "name", 		ctrl.getName());
+			writeElement(writer, "userDefinedName", ctrl.getUserDefinedName());
 			writeElement(writer, "caption", 	ctrl.getCaption());
 			writeCDataElement(writer, "customLabel", ctrl.getCustomLabel());
 			writeElement(writer, "phi", 		ctrl.isPhi());
@@ -610,7 +613,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			String fileName, String outDir) {
 		
 		StringBuilder csvFile = null;
-		PrintWriter csvWriter = null;
+		CSVWriter csvWriter = null;
 		try {
 			StringBuilder pvDir = new StringBuilder().append(outDir).append(File.separator).append("pvs");
 			File pvDirFile = new File(pvDir.toString());
@@ -620,14 +623,9 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			}
 			
 			csvFile =  new StringBuilder(pvDir).append(File.separator).append(fileName).append(".csv");
-			csvWriter = new PrintWriter(new FileWriter(csvFile.toString()));
-			
-			String csvHeader = new StringBuilder().append("Value").append(",")
-					.append("Numeric Code").append(",")
-					.append("Concept Code").append(",")
-					.append("Definition Source").toString();
-			
-			csvWriter.println(csvHeader);
+			csvWriter = new CSVWriter(new FileWriter(csvFile.toString()));
+
+			csvWriter.writeNext(csvHeader);
 			
 			for(PermissibleValue pv : permissibleValues) {
 				String val = pv.getValue() != null ? pv.getValue() : "";
@@ -635,13 +633,11 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 				String conceptCode = pv.getConceptCode() != null ? pv.getConceptCode() : "";
 				String defSrc = pv.getDefinitionSource() != null ? pv.getDefinitionSource() : "";
 
-				String pvDetails = new StringBuilder().append(val).append(",")
-							.append(numericCode).append(",")
-							.append(conceptCode).append(",")
-							.append(defSrc).toString();
-				
-				csvWriter.println(pvDetails);
+				String[] pvDetails = {val, numericCode, conceptCode, defSrc};
+				csvWriter.writeNext(pvDetails);
 			}
+			
+			csvWriter.flush();
 		} catch(IOException e){
 			throw new RuntimeException("Error occured while creating .csv file" + csvFile.toString());
 		} finally {

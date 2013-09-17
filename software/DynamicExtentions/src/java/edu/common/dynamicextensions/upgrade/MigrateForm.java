@@ -691,7 +691,9 @@ public class MigrateForm {
 	}
 	
 	private void setCtrlProps(Control newCtrl, ControlInterface oldCtrl) {
-		newCtrl.setName(getCtrlName(oldCtrl));
+		String userDefinedName = getCtrlName(oldCtrl);
+		newCtrl.setName(userDefinedName.concat(oldCtrl.getId().toString()));
+		newCtrl.setUserDefinedName(userDefinedName);
 		newCtrl.setCaption(oldCtrl.getCaption());
 		newCtrl.setCustomLabel(getCustomLabel(oldCtrl));
 		newCtrl.setLabelPosition(verticalCtrlAlignment ? LabelPosition.TOP : LabelPosition.LEFT_SIDE);
@@ -716,8 +718,6 @@ public class MigrateForm {
 			if (idx != -1) {
 				name = name.substring(0, idx);
 			}
-			
-			name = name.concat(ctrl.getId().toString());
 		}
  		
 		return name;

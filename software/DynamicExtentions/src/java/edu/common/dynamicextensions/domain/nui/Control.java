@@ -27,6 +27,8 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	private static final long serialVersionUID = -6394740140841823297L;
 
 	private String name;
+	
+	private String userDefinedName;
 
 	private String caption;
 
@@ -87,6 +89,14 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getUserDefinedName() {
+		return userDefinedName;
+	}
+
+	public void setUserDefinedName(String userDefinedName) {
+		this.userDefinedName = userDefinedName;
 	}
 
 	public String getCaption() {
@@ -330,6 +340,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((userDefinedName == null) ? 0 : userDefinedName.hashCode());
 		result = prime * result + ((caption == null) ? 0 : caption.hashCode());
 		result = prime * result	+ ((customLabel == null) ? 0 : customLabel.hashCode());
 		result = prime * result	+ ((labelPosition == null) ? 0 : labelPosition.hashCode());
@@ -368,6 +379,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		
 		Control ctrl = (Control)other;
 		if (!StringUtils.equals(name, ctrl.name) ||
+			!StringUtils.equals(userDefinedName, ctrl.userDefinedName) ||
 			!StringUtils.equals(caption, ctrl.caption) ||
 			!StringUtils.equals(customLabel, ctrl.customLabel) ||
 			labelPosition != ctrl.labelPosition ||
@@ -531,7 +543,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			controlHTML.append("<td class='formRequiredLabel_withoutBorder'><div class='control_caption'>");
 		} else if (getxPos() == 1) {
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);
-			controlHTML.append("<td class='formRequiredLabel_withoutBorder' width='40%'  title='").append(toolTip)
+			controlHTML.append("<td class='formRequiredLabel_withoutBorder' title='").append(toolTip)
 					.append("'><div class='control_caption'>");
 		} else {
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);

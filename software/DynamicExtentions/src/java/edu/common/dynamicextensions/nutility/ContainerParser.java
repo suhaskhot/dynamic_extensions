@@ -542,6 +542,7 @@ public class ContainerParser {
 			throw new RuntimeException("Control name can't be null. Type = " + ctrlEle.getNodeName());
 		}
 		ctrl.setName(name);
+		ctrl.setUserDefinedName(getTextValue(ctrlEle, "userDefinedName"));
 		ctrl.setCaption(getTextValue(ctrlEle, "caption"));
 		ctrl.setCustomLabel(getTextValue(ctrlEle, "customLabel"));
 		ctrl.setToolTip(getTextValue(ctrlEle, "toolTip", ""));

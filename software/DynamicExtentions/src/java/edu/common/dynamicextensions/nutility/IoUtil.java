@@ -15,10 +15,22 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 public class IoUtil {
 	private static final Logger logger = Logger.getLogger(IoUtil.class);
 	
 	public static void close(Writer writer) {
+		if (writer != null) {
+			try {
+				writer.close();
+			} catch (Exception e) {
+				logger.warn("Error closing an instance of writer", e);
+			}
+		}
+	}
+	
+	public static void close(CSVWriter writer) {
 		if (writer != null) {
 			try {
 				writer.close();

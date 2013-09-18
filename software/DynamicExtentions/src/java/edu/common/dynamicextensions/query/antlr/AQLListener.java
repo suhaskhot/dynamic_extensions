@@ -185,6 +185,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitStringCompFilter(@NotNull AQLParser.StringCompFilterContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#ExistsFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#ExistsFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#YearsDiffFunc}.
 	 * @param ctx the parse tree
 	 */

@@ -13,7 +13,9 @@ public class FilterNode implements FilterNodeMarker {
         NOT_IN("not in"),
         STARTS_WITH("starts with"),
         ENDS_WITH("ends with"),
-        CONTAINS("contains");
+        CONTAINS("contains"),
+        EXISTS("exists"),
+        NOT_EXISTS("not exists");
         
         
         private String symbol;

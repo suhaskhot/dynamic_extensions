@@ -117,6 +117,18 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	return filter;
     }
     
+    @Override
+    public FilterNode visitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx) {
+    	FilterNode filter = new FilterNode();
+    	
+    	FieldNode field = new FieldNode();
+    	field.setName(ctx.FIELD().getText());
+    	filter.setLhs(field);
+    	
+    	filter.setRelOp(RelationalOp.getBySymbol(ctx.EOP().getText()));
+    	return filter;
+    }
+    
     public LiteralValueListNode visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) {
     	LiteralValueListNode literals = new LiteralValueListNode();
     	for (LiteralContext literalCtx : ctx.literal()) {

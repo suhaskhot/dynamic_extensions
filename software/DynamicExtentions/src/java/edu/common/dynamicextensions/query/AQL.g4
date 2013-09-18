@@ -16,6 +16,7 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
 filter        : arith_expr  OP   arith_expr          #BasicFilter
               | arith_expr  MOP  literal_values      #MvFilter
               | FIELD       SOP  SLITERAL            #StringCompFilter
+              | FIELD       EOP                      #ExistsFilter
               ;
               
 literal_values: '(' literal (',' literal)* ')'
@@ -54,6 +55,7 @@ LP       : '(';
 RP       : ')';
 MOP      : ('in'|'not in');
 SOP      : ('contains'|'starts with'|'ends with');
+EOP      : ('exists'|'not exists');
 OP       : ('>'|'<'|'>='|'<='|'='|'!='|'like');
 INT      : '-'? DIGIT+;
 FLOAT    : '-'? DIGIT+ '.' DIGIT+;

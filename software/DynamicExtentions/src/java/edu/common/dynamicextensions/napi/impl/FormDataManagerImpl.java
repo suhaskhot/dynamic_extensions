@@ -49,8 +49,7 @@ public class FormDataManagerImpl implements FormDataManager {
 		
 		try {
 			jdbcDao = new JdbcDao();
-			ContainerDao containerDao = new ContainerDao(jdbcDao);
-			Container container = containerDao.getById(containerId);
+			Container container = Container.getContainer(containerId);
 			if (container != null) {
 				List<FormData> formsData = getFormData(jdbcDao, container, "IDENTIFIER", recordId);
 				if (formsData != null && !formsData.isEmpty()) {

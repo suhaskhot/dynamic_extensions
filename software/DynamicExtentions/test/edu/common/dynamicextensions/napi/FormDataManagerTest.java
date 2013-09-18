@@ -1,7 +1,12 @@
 
 package edu.common.dynamicextensions.napi;
 
-import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.*;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockEmptyResultSet;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockIdGeneration;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockJdbcDao;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockQueryResultSet;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.mockUpdate;
+import static edu.common.dynamicextensions.napi.FormDataManagerTestUtility.nullifyId;
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +44,7 @@ import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FormDataManagerImpl.class, JdbcDao.class, ResultSet.class})
+@PrepareForTest({FormDataManagerImpl.class, JdbcDao.class, ResultSet.class, Container.class})
 public class FormDataManagerTest {
 	
 	//@Rule 
@@ -160,6 +165,8 @@ public class FormDataManagerTest {
 	throws Exception {
 		ContainerDao containerDao = createMock(ContainerDao.class);
 		expectNew(ContainerDao.class, new Class[] { JdbcDao.class }, mockJdbcDao).andReturn(containerDao);
+		expectNew(JdbcDao.class).andReturn(mockJdbcDao);
+
 		expect(containerDao.getById(111L)).andReturn(userProfile);
 		
 		mockQueryResultSet(userTableQuery, userTabColumnNames, userTabRows);
@@ -167,7 +174,8 @@ public class FormDataManagerTest {
 		mockQueryResultSet(hobbiesTableQuery, hobbiesTabColumnNames, hobbiesTabRows);
 		mockQueryResultSet(parkingFacilitiesTableQuery, parkingFacilitiesColumnNames, parkingFacilitiesTabRows);
 		mockEmptyResultSet(parkingFacilitiesTableQuery);
-		mockJdbcDao.close();		
+		mockJdbcDao.close();
+		mockJdbcDao.close();
 		
 		replayAll();
 		

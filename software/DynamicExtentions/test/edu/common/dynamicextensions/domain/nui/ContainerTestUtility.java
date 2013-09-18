@@ -117,7 +117,7 @@ public class ContainerTestUtility {
 					} else if (columnName.equals("XML")) {
 						expect(rs.getBlob("XML")).andReturn((Blob)row.get(i));
 					}else if (columnName.equals("CREATE_TIME") || columnName.equals("LAST_MODIFY_TIME")) {
-						expect(rs.getDate(columnName)).andReturn((java.sql.Date)row.get(i));
+						expect(rs.getTimestamp(columnName)).andReturn((java.sql.Timestamp)row.get(i));
 					}
 					else {
 						expect(rs.getObject(columnName)).andReturn(row.get(i));

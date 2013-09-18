@@ -12,7 +12,6 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.VersionedContainerInfo;
 import edu.common.dynamicextensions.napi.VersionedContainer;
-import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.VersionedContainerDao;
 import edu.common.dynamicextensions.nutility.ContainerChangeLog;
@@ -121,8 +120,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 			Container published = null;
 			Long publishedId = getContainerId(jdbcDao, formId, activationDate);
 			if (publishedId != null) {
-				ContainerDao cdao = new ContainerDao(jdbcDao);
-				published = cdao.getById(publishedId);								
+				published = Container.getContainer(publishedId);								
 			}
 
 			return published;
@@ -176,8 +174,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 			Container draft = null;
 			Long draftContainerId = getDraftContainerId(jdbcDao, formId);
 			if (draftContainerId != null) {
-				ContainerDao cdao = new ContainerDao(jdbcDao);
-				draft = cdao.getById(draftContainerId);
+				draft = Container.getContainer(draftContainerId);
 			}
 			
 			return draft;
@@ -242,9 +239,8 @@ public class VersionedContainerImpl implements VersionedContainer {
 		}
 		
 		try {
-			ContainerDao cdao = new ContainerDao(jdbcDao);
 			Container draftContainer = getDraftContainer(formId);			
-			Container latestContainer = cdao.getById(publishedIds.get(publishedIds.size() - 1));
+			Container latestContainer = Container.getContainer(publishedIds.get(publishedIds.size() - 1));
 			
 			ContainerChangeLog changeLog = ContainerUtility.getChangeLog(latestContainer, draftContainer);
 			if (!changeLog.anyChanges()) {
@@ -254,9 +250,9 @@ public class VersionedContainerImpl implements VersionedContainer {
 			applyChangeAndSave(jdbcDao, usrCtx, latestContainer, changeLog);
 			
 			for (int i = 0; i < publishedIds.size() - 1; ++i) {
-				Container publishedContainer = cdao.getById(publishedIds.get(i));
+				Container publishedContainer = Container.getContainer(publishedIds.get(i));
 				applyChangeAndSave(jdbcDao, usrCtx, publishedContainer, changeLog);
-			}					
+			}	
 		} catch (Exception e) {
 			throw new RuntimeException("Error publishing container retrospectively", e);
 		}
@@ -298,6 +294,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
 		vdao.insertVersionedContainerInfo(vc);
 	}
+	
 	
 	@Override
 	public boolean isChangedSinceLastPublish(Long formId) {

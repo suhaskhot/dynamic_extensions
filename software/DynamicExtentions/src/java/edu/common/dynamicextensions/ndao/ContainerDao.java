@@ -4,8 +4,11 @@ import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -42,6 +45,8 @@ public class ContainerDao {
 			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
 			"FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ?";
 	
+	private static final String GET_LAST_UPDATED_TIME_SQL = "SELECT LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+
 	private JdbcDao jdbcDao = null;
 	
 	public ContainerDao(JdbcDao jdbcDao) {
@@ -76,7 +81,8 @@ public class ContainerDao {
 		params.add(c.getName());
 		params.add(c.getCaption());
 		params.add(userCtxt != null ? userCtxt.getUserId() : null);
-		params.add(Calendar.getInstance().getTime());
+		Timestamp createTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+		params.add(createTime);
 		
 		jdbcDao.executeUpdate(INSERT_CONTAINER_SQL, params);	
 		updateContainerXml(c.getId(), c.toXml());
@@ -88,7 +94,8 @@ public class ContainerDao {
 		params.add(c.getName());
 		params.add(c.getCaption());
 		params.add(userCtxt != null ? userCtxt.getUserId() : null);
-		params.add(Calendar.getInstance().getTime());
+		Timestamp updateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+		params.add(updateTime);
 		params.add(c.getId());
 		
 		jdbcDao.executeUpdate(UPDATE_CONTAINER_SQL, params);
@@ -114,9 +121,9 @@ public class ContainerDao {
 			if (xml != null) {
 				Container container = Container.fromXml(xml);
 				container.setCreatedBy(rs.getLong("CREATED_BY"));
-				container.setCreationTime(rs.getDate("CREATE_TIME"));
+				container.setCreationTime(rs.getTimestamp("CREATE_TIME"));
 				container.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
-				container.setLastUpdatedTime(rs.getDate("LAST_MODIFY_TIME"));
+				container.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
 				return container;
 			}
 		} finally {
@@ -141,9 +148,9 @@ public class ContainerDao {
 				containerInfo.setName(rs.getString("NAME"));
 				containerInfo.setCaption(rs.getString("CAPTION"));
 				containerInfo.setCreatedBy(rs.getLong("CREATED_BY"));
-				containerInfo.setCreationTime(rs.getDate("CREATE_TIME"));
+				containerInfo.setCreationTime(rs.getTimestamp("CREATE_TIME"));
 				containerInfo.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
-				containerInfo.setLastUpdatedTime(rs.getDate("LAST_MODIFY_TIME"));
+				containerInfo.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
 				
 				result.add(containerInfo);				
 			}
@@ -220,9 +227,9 @@ public class ContainerDao {
 			if (xml != null) {
 				Container container = Container.fromXml(xml);
 				container.setCreatedBy(rs.getLong("CREATED_BY"));
-				container.setCreationTime(rs.getDate("CREATE_TIME"));
+				container.setCreationTime(rs.getTimestamp("CREATE_TIME"));
 				container.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
-				container.setLastUpdatedTime(rs.getDate("LAST_MODIFY_TIME"));
+				container.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
 				return container;
 			}
 		} finally {
@@ -231,5 +238,22 @@ public class ContainerDao {
 		
 
 		return null;
+	}
+	
+	public Date getLastUpdatedTime(Long id) throws SQLException {
+		Date lastUpdatedTime = null;
+		ResultSet rs = null;
+		List<Object> params = new ArrayList<Object>();
+		params.add(id);
+		try {
+			rs = jdbcDao.getResultSet(GET_LAST_UPDATED_TIME_SQL, Collections.singletonList(id));
+
+			if (rs.next()) {
+				lastUpdatedTime = rs.getTimestamp("LAST_MODIFY_TIME");
+			}
+			return lastUpdatedTime;
+		} finally {
+			jdbcDao.close(rs);
+		}
 	}
 }

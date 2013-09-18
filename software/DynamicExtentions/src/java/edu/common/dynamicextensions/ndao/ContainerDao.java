@@ -243,8 +243,6 @@ public class ContainerDao {
 	public Date getLastUpdatedTime(Long id) throws SQLException {
 		Date lastUpdatedTime = null;
 		ResultSet rs = null;
-		List<Object> params = new ArrayList<Object>();
-		params.add(id);
 		try {
 			rs = jdbcDao.getResultSet(GET_LAST_UPDATED_TIME_SQL, Collections.singletonList(id));
 

@@ -88,4 +88,53 @@ public class ArithExpressionNode extends ExpressionNode {
 	public DataType getRightOperandCoercion() {
 		return leftOperand.isDate() && rightOperand.isString() ? DataType.DATE : null; 
 	}
+	
+	@Override
+	public ArithExpressionNode copy() {
+		ArithExpressionNode copy = new ArithExpressionNode();
+		copy.setOp(this.op);
+		copy.setLeftOperand(leftOperand.copy());
+		copy.setRightOperand(rightOperand.copy());
+		return copy;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result	+ ((leftOperand == null) ? 0 : leftOperand.hashCode());
+		result = prime * result + ((op == null) ? 0 : op.hashCode());
+		result = prime * result	+ ((rightOperand == null) ? 0 : rightOperand.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		ArithExpressionNode other = (ArithExpressionNode) obj;
+		if (leftOperand == null && other.leftOperand != null) {
+			return false;
+		} else if (!leftOperand.equals(other.leftOperand)) {
+			return false;
+	    }
+		
+		if (op != other.op) {
+			return false;
+		}
+		
+		if (rightOperand == null && other.rightOperand != null) {
+			return false;
+		} else if (!rightOperand.equals(other.rightOperand)) {
+			return false;
+		}
+		
+		return true;
+	}
 }

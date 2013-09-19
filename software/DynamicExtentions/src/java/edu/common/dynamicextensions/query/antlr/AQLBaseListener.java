@@ -121,6 +121,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterPandFilterExpr(@NotNull AQLParser.PandFilterExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitPandFilterExpr(@NotNull AQLParser.PandFilterExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
 	/**
 	 * {@inheritDoc}

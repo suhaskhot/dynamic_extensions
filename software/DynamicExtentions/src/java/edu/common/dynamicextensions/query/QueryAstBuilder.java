@@ -69,6 +69,13 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     }
     
     @Override
+    public Node visitPandFilterExpr(@NotNull AQLParser.PandFilterExprContext ctx) {
+    	return FilterExpressionNode.pAndExpr(
+    			(FilterNodeMarker)visit(ctx.filter_expr(0)),
+    			(FilterNodeMarker)visit(ctx.filter_expr(1)));
+    }
+    
+    @Override
     public Node visitNotFilterExpr(@NotNull AQLParser.NotFilterExprContext ctx) {
         return FilterExpressionNode.notExpr((FilterNodeMarker)visit(ctx.filter_expr()));
     }
@@ -132,7 +139,7 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     public LiteralValueListNode visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) {
     	LiteralValueListNode literals = new LiteralValueListNode();
     	for (LiteralContext literalCtx : ctx.literal()) {
-    		literals.addLiteralVa((LiteralValueNode)visit(literalCtx));
+    		literals.addLiteralVal((LiteralValueNode)visit(literalCtx));
     	}
     	
     	return literals;

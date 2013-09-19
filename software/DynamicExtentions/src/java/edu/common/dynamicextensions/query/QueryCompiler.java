@@ -1,8 +1,14 @@
 package edu.common.dynamicextensions.query;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+//import edu.QueryTester;
 //import edu.QueryTester;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
@@ -16,6 +22,8 @@ import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.FilterNode;
 import edu.common.dynamicextensions.query.ast.FilterNodeMarker;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
+import edu.common.dynamicextensions.query.ast.FilterExpressionNode.Op;
+import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryCompiler
 {
@@ -28,6 +36,8 @@ public class QueryCompiler
     private QueryExpressionNode queryExpr;
     
     private JoinTree queryJoinTree;
+    
+    private int numQueries;
 	
     public QueryCompiler(Long rootFormId, String query) {
         this.rootFormId = rootFormId;
@@ -49,17 +59,16 @@ public class QueryCompiler
     }
 
     private JoinTree buildJoinTree(QueryExpressionNode queryExpr) {
-        Map<Long, JoinTree> joinMap = analyzeExpr(queryExpr);
-        JoinTree rootTree = joinMap.get(rootFormId);
+        Map<String, JoinTree> joinMap = analyzeExpr(queryExpr);
+        JoinTree rootTree = joinMap.get("0." + rootFormId);
         
         if (rootTree == null) {
-            Container rootForm = Container.getContainer(rootFormId);
-        	//Container rootForm = QueryTester.getContainer(rootFormId);
+            Container rootForm = Container.getContainer(rootFormId); //Container rootForm = QueryTester.getContainer(rootFormId);
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
         
-        for (Map.Entry<Long, JoinTree> formTreeEntry : joinMap.entrySet()) {
-        	if (formTreeEntry.getKey().equals(rootFormId)) {
+        for (Map.Entry<String, JoinTree> formTreeEntry : joinMap.entrySet()) {
+        	if (formTreeEntry.getKey().equals("0." + rootFormId)) {
         		continue;
         	}
         	
@@ -69,20 +78,22 @@ public class QueryCompiler
         		throw new RuntimeException("No path between root form " + rootFormId + " and " + childTree.getFormId());
         	}
         	
-        	createPath(rootTree, childTree, path);
+        	int queryId = Integer.parseInt(formTreeEntry.getKey().split("\\.")[0]);
+        	createPath(queryId, rootTree, childTree, path);
         }
 
         return rootTree;
     }
 
-    private void createPath(JoinTree from, JoinTree to, Path path) {
-        JoinTree current = createPath(from, path.getStartField());
+    private void createPath(int queryId, JoinTree from, JoinTree to, Path path) {
+        JoinTree current = createPath(queryId, from, path.getStartField());
         for (PathLink link : path.getLinks()) {
             if (link.getRefTab() == null && to.getParent() == null) {
                 to.setParent(current);
                 to.setForeignKey(link.getRefTabKey());
                 to.setParentKey(link.getKey());
-                current.addChild(to.getTab(), to);
+                //current.addChild(to.getTab(), to); // TODO: PAND Fix
+                current.addChild(to.getAlias(), to);
                 break;
             }
             
@@ -98,18 +109,22 @@ public class QueryCompiler
         }
     }
 
-    private JoinTree createPath(JoinTree formTree, String startField) {
+    private JoinTree createPath(int queryId, JoinTree formTree, String startField) {
         if (startField == null) {
             return formTree;
         }
         
         String fieldNameParts[] = startField.split("\\.");
         for (int i = 0; i < fieldNameParts.length; i++) {
-            JoinTree child = formTree.getChild(fieldNameParts[i]);
+            JoinTree child = formTree.getChild(queryId + "." + fieldNameParts[i]);
+            if (child == null) {
+            	child = formTree.getChild("0." + fieldNameParts[i]);
+            }
+            
             if (child == null) {
                 SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControl(fieldNameParts[i]);
                 JoinTree sfTree = getSubFormTree(formTree, sfCtrl);
-                formTree.addChild(fieldNameParts[i], sfTree);
+                formTree.addChild("0." + fieldNameParts[i], sfTree); // PAND fix "0."
                 formTree = sfTree;
             } else {
             	formTree = child;
@@ -141,71 +156,169 @@ public class QueryCompiler
         return fieldTree;
     }
     
-    private Map<Long, JoinTree> analyzeExpr(QueryExpressionNode expr) {
-    	Map<Long, JoinTree> joinMap = new HashMap<Long, JoinTree>();
-    	
-    	analyzeFilterNodeMarker(expr.getFilterExpr(), joinMap);
-    	
-    	for (ExpressionNode element : expr.getSelectList().getElements()) {
-    		analyzeExpressionNode(element, joinMap);
-    	}    	
-        return joinMap;
-    }
+    private Map<String, JoinTree> analyzeExpr(QueryExpressionNode expr) {
+    	Map<String, JoinTree> joinMap = new HashMap<String, JoinTree>();    	
+    	analyzeFilterNodeMarker(0, expr.getFilterExpr(), joinMap);
+    	expr.setSelectList(analyzeSelectList(expr.getSelectList(), joinMap));
+    	return joinMap;
 
-    private void analyzeFilterNodeMarker(FilterNodeMarker expr, Map<Long, JoinTree> joinMap) {
+    	//TODO: Implement select 
+//    	for (ExpressionNode element : expr.getSelectList().getElements()) {
+//    		analyzeExpressionNode(0, element, joinMap);
+//    	}    	
+    	
+        
+    }
+    
+    
+
+    private void analyzeFilterNodeMarker(int queryId, FilterNodeMarker expr, Map<String, JoinTree> joinMap) {
         if (expr instanceof FilterNode) {
             FilterNode filter = (FilterNode)expr;
-            analyzeFilterNode(filter, joinMap);
+            analyzeFilterNode(queryId, filter, joinMap);
         } else {
         	FilterExpressionNode subExpr = (FilterExpressionNode)expr;
         	for (FilterNodeMarker childExpr : subExpr.getOperands()) {
-        		analyzeFilterNodeMarker(childExpr, joinMap);
+        		if (subExpr.getOperator() == Op.PAND) {
+        			queryId++;
+        			this.numQueries++;
+        		}
+        		
+        		analyzeFilterNodeMarker(queryId, childExpr, joinMap);
         	}
         }
     }
 
-    private void analyzeFilterNode(FilterNode filter, Map<Long, JoinTree> joinMap) {
-    	analyzeExpressionNode(filter.getLhs(), joinMap);
-    	analyzeExpressionNode(filter.getRhs(), joinMap);    	
+    private void analyzeFilterNode(int queryId, FilterNode filter, Map<String, JoinTree> joinMap) {
+    	analyzeExpressionNode(queryId, filter.getLhs(), joinMap);
+    	analyzeExpressionNode(queryId, filter.getRhs(), joinMap);    	
     }
     
-    private void analyzeArithExpressionNode(ArithExpressionNode expr, Map<Long, JoinTree> joinMap) {
-    	analyzeExpressionNode(expr.getLeftOperand(), joinMap);
-    	analyzeExpressionNode(expr.getRightOperand(), joinMap);    	
+    private void analyzeArithExpressionNode(int queryId, ArithExpressionNode expr, Map<String, JoinTree> joinMap) {
+    	analyzeExpressionNode(queryId, expr.getLeftOperand(), joinMap);
+    	analyzeExpressionNode(queryId, expr.getRightOperand(), joinMap);    	
     }
     
-    private void analyzeDateDiffFuncNode(DateDiffFuncNode dateDiff, Map<Long, JoinTree> joinMap) {
-    	analyzeExpressionNode(dateDiff.getLeftOperand(), joinMap);
-    	analyzeExpressionNode(dateDiff.getRightOperand(), joinMap);
+    private void analyzeDateDiffFuncNode(int queryId, DateDiffFuncNode dateDiff, Map<String, JoinTree> joinMap) {
+    	analyzeExpressionNode(queryId, dateDiff.getLeftOperand(), joinMap);
+    	analyzeExpressionNode(queryId, dateDiff.getRightOperand(), joinMap);
     }
 
-    private void analyzeExpressionNode(ExpressionNode exprNode, Map<Long, JoinTree> joinMap) {
+    private void analyzeExpressionNode(int queryId, ExpressionNode exprNode, Map<String, JoinTree> joinMap) {
 		if (exprNode instanceof FieldNode) {
-			analyzeField((FieldNode)exprNode, joinMap);
+			analyzeField(queryId, (FieldNode)exprNode, joinMap);
 		} else if (exprNode instanceof ArithExpressionNode) {
-			analyzeArithExpressionNode((ArithExpressionNode)exprNode, joinMap);
+			analyzeArithExpressionNode(queryId, (ArithExpressionNode)exprNode, joinMap);
 		} else if (exprNode instanceof DateDiffFuncNode) {
-			analyzeDateDiffFuncNode((DateDiffFuncNode)exprNode, joinMap);
+			analyzeDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap);
 		}    	
     }
     
+    private SelectListNode analyzeSelectList(SelectListNode selectList, Map<String, JoinTree> joinMap) {
+    	Map<ExpressionNode, Set<ExpressionNode>> selectElementMap = new LinkedHashMap<ExpressionNode, Set<ExpressionNode>>();
+    	
+    	for (ExpressionNode element : selectList.getElements()) {
+    	  selectElementMap.put(element, new LinkedHashSet<ExpressionNode>());
+    	}
+    	
+    	for (ExpressionNode element : selectElementMap.keySet()) {
+    		  for (int i = 0; i <= numQueries; ++i) {
+    			  // TODO: Need to make copy of element
+    			  ExpressionNode selectNode = element.copy();
+    			  if (analyzeSelectExpressionNode(i, selectNode, joinMap, true)) {
+    				  selectElementMap.get(element).add(selectNode);
+    			  }    			 
+    		  }
+    	}
+    	
+    	for (ExpressionNode element : selectElementMap.keySet()) {
+    		if (selectElementMap.get(element).isEmpty()) {
+    			ExpressionNode selectNode = element.copy();
+    			analyzeSelectExpressionNode(0, selectNode, joinMap, false);
+    			selectElementMap.get(element).add(selectNode);
+    		}
+    	}
+    	
+    	SelectListNode finalSelectList = new SelectListNode();
+    	boolean endOfElements = false;
+    	while (!endOfElements) {
+    		endOfElements = true;
+    		
+        	for (Set<ExpressionNode> expressionNodes : selectElementMap.values()) {
+        		if (expressionNodes.isEmpty()) {
+        			continue;
+        		}
+        		
+        		ExpressionNode element = expressionNodes.iterator().next();
+        		expressionNodes.remove(element);
+        		finalSelectList.addElement(element);
+        		endOfElements = false;
+        	}    		
+    	}
+    	
+    	return finalSelectList;    	
+    }
+
+    private boolean analyzeSelectArithExpressionNode(int queryId, ArithExpressionNode expr, Map<String, JoinTree> joinMap, boolean failIfAbsent) {
+    	boolean result = analyzeSelectExpressionNode(queryId, expr.getLeftOperand(), joinMap, failIfAbsent);
+    	if (result || !failIfAbsent) {
+    		result = analyzeSelectExpressionNode(queryId, expr.getRightOperand(), joinMap, failIfAbsent); 
+    	}
+    	
+    	return (result || !failIfAbsent);    	    	
+    }
     
-    private void analyzeField(FieldNode field, Map<Long, JoinTree> joinMap) {
+    private boolean analyzeSelectDateDiffFuncNode(int queryId, DateDiffFuncNode dateDiff, Map<String, JoinTree> joinMap, boolean failIfAbsent) {
+    	boolean result = analyzeSelectExpressionNode(queryId, dateDiff.getLeftOperand(), joinMap, failIfAbsent);
+    	if (result || !failIfAbsent) {
+    		result = analyzeSelectExpressionNode(queryId, dateDiff.getRightOperand(), joinMap, failIfAbsent);
+    	}
+    	
+    	return (result || !failIfAbsent);
+    }
+
+    private boolean analyzeSelectExpressionNode(int queryId, ExpressionNode exprNode, Map<String, JoinTree> joinMap, boolean failIfAbsent) {
+		if (exprNode instanceof FieldNode) {
+			return analyzeField(queryId, (FieldNode)exprNode, joinMap, failIfAbsent);
+		} else if (exprNode instanceof ArithExpressionNode) {
+			return analyzeSelectArithExpressionNode(queryId, (ArithExpressionNode)exprNode, joinMap, failIfAbsent);
+		} else if (exprNode instanceof DateDiffFuncNode) {
+			return analyzeSelectDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap, failIfAbsent);
+		} else {
+			return !failIfAbsent; // literal nodes
+		}
+    }
+    
+    private boolean analyzeField(int queryId, FieldNode field, Map<String, JoinTree> joinMap) {
+    	return analyzeField(queryId, field, joinMap, false);
+    }
+    
+    private boolean analyzeField(int queryId, FieldNode field, Map<String, JoinTree> joinMap, boolean failIfAbsent) {
+    	String formLookupId = "";
         String[] fieldNameParts = field.getName().split("\\.");
         String[] captions = new String[fieldNameParts.length];
         
         Long formId = Long.valueOf(Long.parseLong(fieldNameParts[0]));
-        JoinTree formTree = joinMap.get(formId);
-
+        if (formId.equals(rootFormId)) {
+        	formLookupId = "0." + formId;
+        } else {
+        	formLookupId = queryId + "." + formId;
+        }
+                
+        JoinTree formTree = joinMap.get(formLookupId);
+        if (formTree == null && failIfAbsent) {
+        	return false;
+        }
+        
         Container form = null;        
-        if(formTree == null) {
-            form = Container.getContainer(formId);
+        if (formTree == null) {
+            form = Container.getContainer(formId); //form = QueryTester.getContainer(formId);
             if(form == null) {
                 throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formId);
             }
                     	
             formTree = new JoinTree(form, "t" + tabCnt++);
-            joinMap.put(formId, formTree);
+            joinMap.put(formLookupId, formTree);
         } else {
         	form = formTree.getForm();
         }        
@@ -221,10 +334,14 @@ public class QueryCompiler
                 }
                 
                 SubFormControl sfCtrl = (SubFormControl)ctrl;
-                JoinTree sfTree = formTree.getChild(sfCtrl.getName());
+                JoinTree sfTree = formTree.getChild(queryId + "." + sfCtrl.getName());
+                if (sfTree == null && failIfAbsent) {
+                	return false;
+                }
+                
                 if(sfTree == null) {
                     sfTree = getSubFormTree(formTree, sfCtrl);
-                    formTree.addChild(sfCtrl.getName(), sfTree);
+                    formTree.addChild(queryId + "." + sfCtrl.getName(), sfTree);
                 }
                 
                 formTree = sfTree;
@@ -241,11 +358,15 @@ public class QueryCompiler
         
         String tabAlias = formTree.getAlias();
         if (ctrl instanceof MultiSelectControl) {
-            JoinTree fieldTree = formTree.getChild(ctrl.getName());
+            JoinTree fieldTree = formTree.getChild(queryId + "." + ctrl.getName());
+            if (fieldTree == null && failIfAbsent) {
+            	return false;
+            }
+            
             if (fieldTree == null) {
                 MultiSelectControl msField = (MultiSelectControl)ctrl;
                 fieldTree = getFieldTree(formTree, msField);
-                formTree.addChild(ctrl.getName(), fieldTree);
+                formTree.addChild(queryId + "." + ctrl.getName(), fieldTree);
             }
             
             tabAlias = fieldTree.getAlias();
@@ -256,5 +377,6 @@ public class QueryCompiler
         field.setCtrl(ctrl);
         field.setTabAlias(tabAlias);
         field.setNodeCaptions(captions);
+        return true;
     }    
 }

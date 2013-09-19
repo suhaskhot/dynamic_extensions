@@ -137,7 +137,7 @@ public class QueryGenerator {
     }
 
     private String buildFilter(FilterNode filter) {
-        if (!isValidOp(filter.getLhs().getType(), filter.getRelOp(), filter.getRhs().getType())) {
+        if (!isValidOp(filter.getLhs(), filter.getRelOp(), filter.getRhs())) {
             throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used");
         }
         
@@ -152,6 +152,14 @@ public class QueryGenerator {
             	filterExpr = lhs + " like " + rhs;
             	break;
             	
+            case EXISTS:
+            	filterExpr = lhs + " is not null ";
+            	break;
+            	
+            case NOT_EXISTS:
+            	filterExpr = lhs + " is null ";
+            	break;
+            	            	
             default:
             	rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());
             	filterExpr = lhs + " " + filter.getRelOp().symbol() + " " + rhs;
@@ -161,8 +169,9 @@ public class QueryGenerator {
         return filterExpr;
     }
 
-    private boolean isValidOp(DataType lhsType, RelationalOp op, DataType rhsType) {
-        return true;
+    private boolean isValidOp(ExpressionNode lhs, RelationalOp op, ExpressionNode rhs) {
+    	// check validity of {lhs.getType(), op, rhs.getType()} or {lhs.getType(), op}    	
+    	return true;    	
     }
 
     private String removeQuotes(String value) {

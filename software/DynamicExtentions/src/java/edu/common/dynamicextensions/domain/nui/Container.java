@@ -67,6 +67,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 	private transient Date lastUpdatedTime;
 	
+	public static Map<Long, Container> containerCache = new HashMap<Long, Container> ();
+
+	
 	public void useAsDto() {
 		this.isDto = true;
 	}
@@ -481,7 +484,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			} else {
 				dao.update(userCtxt, this);
 			}
-
+			
+			containerCache.remove(id);
 			return id;			
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving container", e);
@@ -493,7 +497,23 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		try {
 			jdbcDao = new JdbcDao();
 			ContainerDao dao = new ContainerDao(jdbcDao);
-			return dao.getById(id);
+		
+			boolean isStale = true;
+			Container cachedContainer = containerCache.get(id);
+			
+			if (cachedContainer != null) {
+				Date dbLastModifyTime = dao.getLastUpdatedTime(id);
+				Date cacheLastModifyTime = cachedContainer.getLastUpdatedTime();
+				
+				if ((dbLastModifyTime == cacheLastModifyTime) || 
+					(dbLastModifyTime != null && dbLastModifyTime.equals(cacheLastModifyTime))) {
+					isStale = false;
+				} 
+			}
+			if (isStale) {
+				containerCache.put(id, dao.getById(id));
+			}
+			return containerCache.get(id);
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container: " + id, e);
 		} finally {
@@ -530,8 +550,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 		Container existingContainer = null;		
 		if (parsedContainer.getId() != null) {
-			ContainerDao dao = new ContainerDao(new JdbcDao());
-			existingContainer = dao.getById(parsedContainer.getId());
+			existingContainer = getContainer(parsedContainer.getId());
 		}
 		
 		Container container = null;

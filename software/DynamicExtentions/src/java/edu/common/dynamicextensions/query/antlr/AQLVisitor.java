@@ -124,6 +124,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitStringCompFilter(@NotNull AQLParser.StringCompFilterContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#ExistsFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#YearsDiffFunc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

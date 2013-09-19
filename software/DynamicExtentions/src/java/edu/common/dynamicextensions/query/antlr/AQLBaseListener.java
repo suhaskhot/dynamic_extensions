@@ -225,6 +225,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}

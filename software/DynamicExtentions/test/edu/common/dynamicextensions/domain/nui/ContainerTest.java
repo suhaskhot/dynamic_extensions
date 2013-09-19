@@ -428,7 +428,7 @@ public class ContainerTest {
 		mockJdbcDao.close();
 		
 		replayAll();
-		
+		Container.containerCache.clear();
 		Container actual = Container.getContainer(containerId);
 		assertNull(actual);
 	}

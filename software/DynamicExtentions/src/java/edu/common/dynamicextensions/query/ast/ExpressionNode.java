@@ -5,6 +5,8 @@ import edu.common.dynamicextensions.domain.nui.DataType;
 public abstract class ExpressionNode implements Node {
 	public abstract DataType getType();
 	
+	public abstract ExpressionNode copy();
+		
 	public boolean isDate() {
 		return getType() == DataType.DATE;
 	}

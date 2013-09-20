@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.util.Arrays;
+
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
@@ -10,8 +12,8 @@ public class FieldNode extends ExpressionNode {
 	
 	private String tabAlias;
 	
-	private String[] nodeCaptions;
-
+	private String[] nodeCaptions = new String[0];
+	
 	public Control getCtrl() {
 		return ctrl;
 	}
@@ -48,4 +50,66 @@ public class FieldNode extends ExpressionNode {
 	public DataType getType() {
 		return ctrl != null ? ctrl.getDataType() : null;
 	}
+
+	@Override
+	public FieldNode copy() {
+		FieldNode copy = new FieldNode();
+		copy.setCtrl(ctrl);
+		copy.setName(name);
+		copy.setTabAlias(tabAlias);
+		
+		String[] copyNodeCaptions = new String[nodeCaptions.length];
+		for (int i = 0; i < nodeCaptions.length; ++i) {
+			copyNodeCaptions[i] = nodeCaptions[i];
+		}
+
+		return copy;
+	}	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ctrl == null) ? 0 : ctrl.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + Arrays.hashCode(nodeCaptions);
+		result = prime * result	+ ((tabAlias == null) ? 0 : tabAlias.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null || getClass() != obj.getClass()) { 
+			return false;
+		}
+		
+		FieldNode other = (FieldNode) obj;
+		if (ctrl == null && other.ctrl != null) {
+			return false;
+		} else if (!ctrl.equals(other.ctrl)) {
+			return false;
+		}
+		
+		if (name == null && other.name != null) {
+			return false;
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		
+		if (!Arrays.equals(nodeCaptions, other.nodeCaptions)) {
+			return false;
+		}
+		
+		if (tabAlias == null && other.tabAlias != null) {
+			return false;
+		} else if (!tabAlias.equals(other.tabAlias)) {
+			return false;
+		}
+		
+		return true;
+	}	
 }

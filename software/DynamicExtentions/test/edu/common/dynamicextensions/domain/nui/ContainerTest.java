@@ -22,6 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.nutility.ContainerCache;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.*;
 
@@ -428,7 +429,7 @@ public class ContainerTest {
 		mockJdbcDao.close();
 		
 		replayAll();
-		Container.containerCache.clear();
+		ContainerCache.getInstance().clear();
 		Container actual = Container.getContainer(containerId);
 		assertNull(actual);
 	}

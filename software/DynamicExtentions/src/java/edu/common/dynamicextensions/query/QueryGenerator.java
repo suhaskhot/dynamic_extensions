@@ -81,7 +81,7 @@ public class QueryGenerator {
         JoinTree parentTree = joinTree.getParent();
         
         if(parentTree != null) {
-            from.append(" left join ");
+            from.append(" left join "); // TODO: left join is required only for outer join AQL.  
         }        
         from.append(joinTree.getTab()).append(" ").append(joinTree.getAlias()).append(" ");
         
@@ -130,6 +130,10 @@ public class QueryGenerator {
             	break;
             	
             case PAND:
+           		rhs = buildWhereClause(expr.getOperands().get(1));
+           		exprStr = new StringBuilder(lhs).append(" ")
+           				.append(" AND ")
+           				.append(rhs).toString();            	
             	break;
         }
 

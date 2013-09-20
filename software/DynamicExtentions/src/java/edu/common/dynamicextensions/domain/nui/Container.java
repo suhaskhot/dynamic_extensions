@@ -24,6 +24,7 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.nutility.ContainerCache;
 import edu.common.dynamicextensions.nutility.ContainerParser;
 import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -66,10 +67,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private transient Date creationTime;
 
 	private transient Date lastUpdatedTime;
-	
-	public static Map<Long, Container> containerCache = new HashMap<Long, Container> ();
 
-	
 	public void useAsDto() {
 		this.isDto = true;
 	}
@@ -485,7 +483,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				dao.update(userCtxt, this);
 			}
 			
-			containerCache.remove(id);
+			ContainerCache.getInstance().remove(id);
 			return id;			
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving container", e);
@@ -499,21 +497,24 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			ContainerDao dao = new ContainerDao(jdbcDao);
 		
 			boolean isStale = true;
-			Container cachedContainer = containerCache.get(id);
+			Container container = ContainerCache.getInstance().get(id);
 			
-			if (cachedContainer != null) {
+			if (container != null) {
 				Date dbLastModifyTime = dao.getLastUpdatedTime(id);
-				Date cacheLastModifyTime = cachedContainer.getLastUpdatedTime();
+				Date cacheLastModifyTime = container.getLastUpdatedTime();
 				
 				if ((dbLastModifyTime == cacheLastModifyTime) || 
 					(dbLastModifyTime != null && dbLastModifyTime.equals(cacheLastModifyTime))) {
 					isStale = false;
 				} 
 			}
+			
 			if (isStale) {
-				containerCache.put(id, dao.getById(id));
+				container = dao.getById(id);				
+				ContainerCache.getInstance().put(id, container);
 			}
-			return containerCache.get(id);
+			
+			return container;
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container: " + id, e);
 		} finally {

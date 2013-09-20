@@ -68,6 +68,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#PandFilterExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPandFilterExpr(@NotNull AQLParser.PandFilterExprContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#MvFilter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

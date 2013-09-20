@@ -7,7 +7,8 @@ select_list   : arith_expr (',' arith_expr)*         #SelectExpr
               ;
 
 filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
-              | filter_expr OR filter_expr           #OrFilterExpr
+              | filter_expr OR  filter_expr          #OrFilterExpr
+              | filter_expr PAND filter_expr         #PandFilterExpr
               | LP filter_expr RP                    #ParensFilterExpr
               | NOT filter_expr                      #NotFilterExpr
               | filter                               #SimpleFilter
@@ -50,6 +51,7 @@ MONTHS   : 'months';
 YEARS    : 'years';
 OR       : 'or';
 AND      : 'and';
+PAND     : 'pand';
 NOT      : 'not';
 LP       : '(';
 RP       : ')';

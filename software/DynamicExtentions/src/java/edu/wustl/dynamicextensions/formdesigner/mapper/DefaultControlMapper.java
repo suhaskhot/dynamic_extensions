@@ -84,15 +84,14 @@ public abstract class DefaultControlMapper {
 			control.setToolTip(toolTip);
 		}
 
-		/*String labelPosition = controlProps.getString("labelPosition");
-		
+		String labelPosition = controlProps.getString("labelPosition");
 		if (labelPosition != null) {
 			control.setLabelPosition(getLabelPosition(labelPosition));
-		}*/
+		}
 
 	}
 
-	/*protected LabelPosition getLabelPosition(String labelPos) {
+	protected LabelPosition getLabelPosition(String labelPos) {
 		if (labelPos.equalsIgnoreCase("LEFT")) {
 			return LabelPosition.LEFT_SIDE;
 		} else if (labelPos.equalsIgnoreCase("TOP")) {
@@ -111,7 +110,7 @@ public abstract class DefaultControlMapper {
 			return null;
 		}
 	}
-*/
+
 	/**
 	 * @param controlProps
 	 * @param control
@@ -131,7 +130,7 @@ public abstract class DefaultControlMapper {
 		controlProps.setProperty("sequenceNumber", control.getSequenceNumber());
 		controlProps.setProperty("customLabel", control.getCustomLabel());
 		controlProps.setProperty("toolTip", control.getToolTip());
-		//controlProps.setProperty("labelPosition", getStringLabelPosition(control.getLabelPosition()));
+		controlProps.setProperty("labelPosition", getStringLabelPosition(control.getLabelPosition()));
 		controlProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
 	}
 }

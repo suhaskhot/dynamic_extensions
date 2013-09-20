@@ -39,6 +39,8 @@ public class PvMapper {
 			pvDataSource.setOrdering(Ordering.ASC);
 		} else if (pvOrder.equalsIgnoreCase("DESC")) {
 			pvDataSource.setOrdering(Ordering.DESC);
+		} else if (pvOrder.equalsIgnoreCase("NONE")) {
+			// do not sort
 		}
 
 		PvVersion pvVersion = new PvVersion();
@@ -214,7 +216,7 @@ public class PvMapper {
 		if (defaultPv != null) {
 			controlProps.setProperty("defaultPv", pvToProperties(defaultPv));
 		}
-		
+
 		if (pvDataSource.getOrdering() == Ordering.ASC) {
 			controlProps.setProperty("pvOrder", "ASC");
 		} else if (pvDataSource.getOrdering() == Ordering.DESC) {

@@ -10,11 +10,26 @@
 	
 	<div class = "propertiesContainer">
 			<div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
-				<label class = 'text_normal'>Attribute Name</label>
+				<label class = 'text_normal'>Tooltip</label>
 			</div>
 			<div style = 'width: 76%;' class = "propertiesContainerCell" align = right >
-				<input type = 'text' id = 'controlName' class = 'textBox' style = "width:99%" value = "{{controlName}}">
+				<input type = 'text' id = 'toolTip' class = 'textBox' style = "width:99%" value = "{{toolTip}}">
 			</div>			
+	</div>
+	<div class = "propertiesContainer">
+		<div class = "propertiesTextBoxContainer" align = right>
+			<label class = 'text_normal'>Attribute Name</label>
+			<input id = 'controlName' type = 'text' value = '{{controlName}}' class = 'textBoxSmall'>		
+		</div>	
+		<div class = "propertiesTextBoxContainer" align = right>
+			<label class = 'text_normal'>Format</label>
+			<select id = "format" class = 'textBoxSmall'>
+				  <option value="DATE">Date Only</option>
+				  <option value="DATE AND TIME">Date and Time</option>
+				  <option value="MONTH AND YEAR">Month and Year</option>
+				  <option value="YEAR ONLY">Year Only</option>
+			</select>
+		</div>	
 	</div>
 	<div class = "propertiesContainer">
 		<div class = "propertiesCheckBoxLabelContainer" align = right >
@@ -30,20 +45,6 @@
 			<input id = 'isMandatory' type = 'checkbox'>		
 		</div>
 	</div>
-	<div class = "propertiesContainer">
-		<div class = "propertiesTextBoxContainer" align = right>
-			<label class = 'text_normal'>Format</label>
-			<select id = "format" class = 'textBoxSmall'>
-				  <option value="DATE">Date Only</option>
-				  <option value="DATE AND TIME">Date and Time</option>
-				  <option value="MONTH AND YEAR">Month and Year</option>
-				  <option value="YEAR ONLY">Year Only</option>
-			</select>
-		</div>
-		<div class = "propertiesTextBoxContainer" align = right>
-			<label class = 'text_normal'>Tooltip</label>
-			<input id = 'toolTip' type = 'text' value = '{{toolTip}}' class = 'textBoxSmall'>		
-		</div>	
-	</div>
+	
 	
 	

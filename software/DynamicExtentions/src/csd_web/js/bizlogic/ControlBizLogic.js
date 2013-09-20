@@ -148,7 +148,8 @@ var ControlBizLogic = {
 		}
 	},
 
-	createControlNode : function(name, controlName, type, model) {
+	createControlNode : function(name, controlName, type, model, copyControl) {
+
 		// Check for selected control type, if its subform then add to it else
 		// add to main form.
 		var selectedNodeId = Main.treeView.getTree().getSelectedItemId();
@@ -169,6 +170,7 @@ var ControlBizLogic = {
 					formTreeNodeId : id
 				});
 			}
+
 			Main.formView.getFormModel().editControl(model.get('controlName'),
 					model);
 
@@ -214,8 +216,13 @@ var ControlBizLogic = {
 						model.get('controlName'), model);
 
 			}
+
 		}
 		GlobalMemory.nodeCounter++;
+		if (copyControl == true) {
+			this.copySubForm(model);
+		}
+
 		return status;
 	},
 
@@ -233,6 +240,47 @@ var ControlBizLogic = {
 		}
 
 		return id;
+	},
+
+	copySubForm : function(model) {
+		if (model.get('type') == "subForm") {
+
+			// update controls and set their attributes
+			var subForm = new Models.Form(model.get('subForm').toJSON());
+			var subFrm = model.get('subForm');
+
+			for ( var key in subFrm.get('controlObjectCollection')) {
+
+				var subFormControl = new Models.Field(subFrm
+						.get('controlObjectCollection')[key].toJSON());
+
+				var _editName = model.get('controlName') + "."
+						+ subFormControl.get('controlName');
+				var _treeDisplayName = subFormControl.get('caption') + "("
+						+ subFormControl.get('controlName') + ")";
+
+				subFormControl.set({
+					editName : _editName
+				});
+
+				var id = ControlBizLogic.createTreeNode(model
+						.get('formTreeNodeId'), _treeDisplayName,
+						subFormControl.get('controlName'), subFormControl
+								.get('type'));
+
+				subFormControl.set({
+					formTreeNodeId : id
+				});
+
+				delete subForm.get('controlObjectCollection')[key];
+				subForm.get('controlObjectCollection')[key] = subFormControl;
+				var _subForm = subForm;
+				GlobalMemory.nodeCounter++;
+			}
+			model.set({
+				subForm : _subForm
+			});
+		}
 	},
 
 	/*
@@ -311,7 +359,8 @@ var ControlBizLogic = {
 			editName : undefined,
 			formTreeNodeId : undefined,
 			controlName : undefined,
-			caption : undefined
+			caption : undefined,
+			copy : true
 		});
 		this.populateViewWithControl(control);
 	},

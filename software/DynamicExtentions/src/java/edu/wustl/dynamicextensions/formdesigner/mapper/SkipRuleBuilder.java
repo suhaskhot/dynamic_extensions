@@ -2,7 +2,6 @@
 package edu.wustl.dynamicextensions.formdesigner.mapper;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.nui.Container;

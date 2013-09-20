@@ -325,9 +325,10 @@ var Routers = {
 								.get('controlName'), displayLbl, control
 								.get('type'));
 						control.set({editName : control.get('controlName'), formTreeNodeId : controlNodeId});
-						var parentId = GlobalMemory.nodeCounter - 1;
+
 						GlobalMemory.nodeCounter++;
 						if (control.get('type') == "subForm") {
+
 							var subFrm = new Models.Form(control.get('subForm'));
 							subFrm.set({
 								controlObjectCollection : {}
@@ -348,7 +349,7 @@ var Routers = {
 										+ ")";
 								var subFrmCntrlNodeId = GlobalMemory.nodeCounter;
 								Main.treeView.getTree().insertNewChild(
-										parentId, subFrmCntrlNodeId,
+										controlNodeId, subFrmCntrlNodeId,
 										displayLabel, 0, 0, 0, 0,
 										"SELECT,CALL,CHILD,CHECKED");
 								Main.treeView.getTree().setUserData(

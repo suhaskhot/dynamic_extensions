@@ -278,6 +278,7 @@ var Views = {
 					this.populateFields();
 					var validationMessages = this.model.validate(this.model
 							.toJSON());
+
 					if (this.model.get('editName') == undefined
 							&& !ControlBizLogic
 									.isControlNameUniqueInForm(this.model)) {
@@ -294,7 +295,8 @@ var Views = {
 						if (this.model.get('editName') == undefined) {
 							status = ControlBizLogic.createControlNode(
 									displayLabel, $('#controlName').val(),
-									this.model.get('type'), this.model);
+									this.model.get('type'), this.model,
+									this.model.get('copy'));
 
 						} else {
 							status = "update";
@@ -356,6 +358,14 @@ var Views = {
 				},
 
 				populateFields : function() {
+					var labelPos = $('input[name=labelAlignment]:radio:checked')
+							.prop('id');
+					if (labelPos == "align_left") {
+						labelPos = "LEFT"
+					} else if (labelPos == "align_top") {
+						labelPos = "TOP"
+					}
+
 					this.model
 							.set({
 								caption : $('#controlCaption').val(),
@@ -385,6 +395,7 @@ var Views = {
 								optionsPerRow : $('#optionsPerRow').val(),
 								pvOrder : $('#pvOrder').val(),
 								toolTip : $('#toolTip').val(),
+								labelPosition : labelPos,
 								subFormName : $('#subFormName').val()
 							});
 
@@ -410,7 +421,7 @@ var Views = {
 					});
 					ControlBizLogic.createControlNode("Page Break ("
 							+ pageBreak.get('controlName') + ")", pageBreak
-							.get('controlName'), "pageBreak", pageBreak);
+							.get('controlName'), "pageBreak", pageBreak, false);
 				},
 
 				showMessages : function(validationMessages, status) {
@@ -499,6 +510,16 @@ var Views = {
 					}
 					// init page break
 					$("#addPageBreak").buttonset();
+					// init label position
+					$("#labelAlignment").buttonset();
+					// show the set position
+					var labelPos = this.model.get('labelPosition');
+					if (labelPos == "TOP") {
+						labelPos = "align_top";
+					} else if (labelPos == "LEFT") {
+						labelPos = "align_top";
+					}
+					$('#' + labelPos).prop('checked', true).button('refresh');
 
 				},
 

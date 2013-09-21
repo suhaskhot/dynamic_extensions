@@ -33,12 +33,18 @@ import edu.common.dynamicextensions.util.IdGeneratorUtil;
 
 public class Container extends DynamicExtensionBaseDomainObject {	
 	private static final long serialVersionUID = 449976852456002554L;
-		
+	
+	private static final String tableNameFmt = "DE_E_%d";
+	
+	private static final String columnNameFmt = "DE_A_%d";
+			
 	private String name;
 
 	private String caption;
 	
 	private String dbTableName;
+	
+	private String primaryKey = "IDENTIFIER";
    	
 	private int sequenceNo;
 
@@ -47,11 +53,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private Map<String, Control> controlsMap = new LinkedHashMap<String, Control>();
 	
 	private List<SkipRule> skipRules = new ArrayList<SkipRule>();
-	
-	private static final String tableNameFmt = "DE_E_%d";
-	
-	private static final String columnNameFmt = "DE_A_%d";
-	
+		
 	private transient boolean isDto;
 		
 	private transient List<Control> addLog = new ArrayList<Control>();
@@ -104,6 +106,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 	public void setDbTableName(String dbTableName) {
 		this.dbTableName = dbTableName;
+	}
+	
+	public String getPrimaryKey() {
+		return primaryKey == null ? "IDENTIFIER" : primaryKey;
+	}
+	
+	public void setPrimaryKey(String primaryKey) {
+		this.primaryKey = primaryKey;
 	}
 	
 	public int getSequenceNo() {
@@ -494,29 +504,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		JdbcDao jdbcDao = null;
 		try {
 			jdbcDao = new JdbcDao();
-			ContainerDao dao = new ContainerDao(jdbcDao);
-		
-			boolean isStale = true;
-			Container container = ContainerCache.getInstance().get(id);
-			
-			if (container != null) {
-				Date dbLastModifyTime = dao.getLastUpdatedTime(id);
-				Date cacheLastModifyTime = container.getLastUpdatedTime();
-				
-				if ((dbLastModifyTime == cacheLastModifyTime) || 
-					(dbLastModifyTime != null && dbLastModifyTime.equals(cacheLastModifyTime))) {
-					isStale = false;
-				} 
-			}
-			
-			if (isStale) {
-				container = dao.getById(id);				
-				ContainerCache.getInstance().put(id, container);
-			}
-			
-			return container;
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container: " + id, e);
+			return getContainer(jdbcDao, id);
 		} finally {
 			if (jdbcDao != null) {
 				jdbcDao.close();
@@ -524,6 +512,33 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}		
 	}
 	
+	public static Container getContainer(JdbcDao jdbcDao, Long id) {
+		try {						
+			boolean isStale = true;
+			Container container = ContainerCache.getInstance().get(id);
+
+			ContainerDao containerDao = new ContainerDao(jdbcDao);
+			if (container != null) {
+				Date dbLastModifyTime = containerDao.getLastUpdatedTime(id);
+				Date cacheLastModifyTime = container.getLastUpdatedTime();
+				
+				if ((dbLastModifyTime == cacheLastModifyTime) ||
+					(dbLastModifyTime != null && dbLastModifyTime.equals(cacheLastModifyTime))) {
+					isStale = false;
+				} 
+			}
+				
+			if (isStale) {
+				container = containerDao.getById(id);				
+				ContainerCache.getInstance().put(id, container);
+			}
+				
+			return container;						
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container: " + id, e);
+		}	
+	}
+		
 	public static List<ContainerInfo> getContainerInfoByCreator(Long creatorId) {
 		JdbcDao jdbcDao = null;
 		try {
@@ -568,6 +583,11 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	public void editContainer(Container newContainer) {
 		this.setName(newContainer.getName());
 		this.setCaption(newContainer.getCaption());
+		
+		if (newContainer.getPrimaryKey() != null) {
+			this.setPrimaryKey(newContainer.getPrimaryKey());
+		}
+		
 		for (Control  ctrl : newContainer.getControls()) {
 			if (getControl(ctrl.getName()) == null) {
 				addControl(ctrl);

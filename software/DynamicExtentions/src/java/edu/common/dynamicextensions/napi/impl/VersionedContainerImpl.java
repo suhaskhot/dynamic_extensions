@@ -12,6 +12,7 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.VersionedContainerInfo;
 import edu.common.dynamicextensions.napi.VersionedContainer;
+import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.VersionedContainerDao;
 import edu.common.dynamicextensions.nutility.ContainerChangeLog;
@@ -120,7 +121,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 			Container published = null;
 			Long publishedId = getContainerId(jdbcDao, formId, activationDate);
 			if (publishedId != null) {
-				published = Container.getContainer(publishedId);								
+				published = Container.getContainer(jdbcDao, publishedId); 								
 			}
 
 			return published;
@@ -174,7 +175,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 			Container draft = null;
 			Long draftContainerId = getDraftContainerId(jdbcDao, formId);
 			if (draftContainerId != null) {
-				draft = Container.getContainer(draftContainerId);
+				draft = Container.getContainer(jdbcDao, draftContainerId);
 			}
 			
 			return draft;
@@ -240,7 +241,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		
 		try {
 			Container draftContainer = getDraftContainer(formId);			
-			Container latestContainer = Container.getContainer(publishedIds.get(publishedIds.size() - 1));
+			Container latestContainer = Container.getContainer(jdbcDao, publishedIds.get(publishedIds.size() - 1));
 			
 			ContainerChangeLog changeLog = ContainerUtility.getChangeLog(latestContainer, draftContainer);
 			if (!changeLog.anyChanges()) {
@@ -250,7 +251,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 			applyChangeAndSave(jdbcDao, usrCtx, latestContainer, changeLog);
 			
 			for (int i = 0; i < publishedIds.size() - 1; ++i) {
-				Container publishedContainer = Container.getContainer(publishedIds.get(i));
+				Container publishedContainer = Container.getContainer(jdbcDao, publishedIds.get(i));
 				applyChangeAndSave(jdbcDao, usrCtx, publishedContainer, changeLog);
 			}	
 		} catch (Exception e) {

@@ -1,6 +1,11 @@
 package edu.common.dynamicextensions.query;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
@@ -19,8 +24,14 @@ import edu.common.dynamicextensions.query.ast.FilterNode.RelationalOp;
 public class QueryGenerator {
 	
 	private static String LIMIT_QUERY = "select * from (select rownum rnum, tab.* from (%s) tab where rownum < %d) where rnum >= %d";
+	
+	private boolean addWideRowMarkerCols;
 
     public QueryGenerator() {
+    }
+    
+    public QueryGenerator(boolean addWideRowMarkerCols) {
+    	this.addWideRowMarkerCols = addWideRowMarkerCols;
     }
 
     public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
@@ -34,7 +45,7 @@ public class QueryGenerator {
     }
 
     public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
-    	String selectClause = buildSelectClause(queryExpr.getSelectList());
+    	String selectClause = buildSelectClause(queryExpr.getSelectList(), joinTree);
         String fromClause  = buildFromClause(joinTree);
         String whereClause = buildWhereClause(queryExpr.getFilterExpr());
         
@@ -53,7 +64,7 @@ public class QueryGenerator {
         } else {
             String orderedQuery = new StringBuilder(dataSql)
             	.append(" order by ")
-            	.append(joinTree.getAlias()).append(".IDENTIFIER")
+            	.append(joinTree.getAlias()).append(".").append(joinTree.getForm().getPrimaryKey())
             	.toString();
             
             result = String.format(LIMIT_QUERY, orderedQuery, start + numRows, start);
@@ -61,8 +72,8 @@ public class QueryGenerator {
         
         return result;
     }
-
-    private String buildSelectClause(SelectListNode selectList) {
+    
+    private String buildSelectClause(SelectListNode selectList, JoinTree joinTree) {
     	StringBuilder select = new StringBuilder();
     	for (ExpressionNode element : selectList.getElements()) { 
     		select.append(getExpressionNodeSql(element, element.getType())).append(", ");
@@ -71,9 +82,44 @@ public class QueryGenerator {
     	if (select.length() == 0) {
     		select.append("*"); 
     	} else {
+    		if (addWideRowMarkerCols) {
+    			addWideRowMarkerCols(select, selectList, joinTree);    			
+    		}
+    		
     		select.delete(select.length() - 2, select.length());
     	}    	
+    	
     	return select.toString();
+    }
+    
+    private void addWideRowMarkerCols(StringBuilder select, SelectListNode selectList, JoinTree joinTree) {
+    	Set<String> wideRowMarkerColumns = new LinkedHashSet<String>();
+    	
+    	String alias = joinTree.getAlias();
+    	String pk = joinTree.getForm().getPrimaryKey();    	
+    	wideRowMarkerColumns.add(getWideRowMarkerColumn(alias, pk));
+    	
+    	for (ExpressionNode element : selectList.getElements()) {
+    		if (element instanceof FieldNode) {
+    			FieldNode field = (FieldNode)element;
+    			Control ctrl = field.getCtrl();
+    			if (ctrl instanceof MultiSelectControl) {
+    				continue;
+    			}
+    			
+    			alias = field.getTabAlias();
+    			pk = ctrl.getContainer().getPrimaryKey();
+    			wideRowMarkerColumns.add(getWideRowMarkerColumn(alias, pk));
+    		}
+    	}
+    	
+    	for (String column : wideRowMarkerColumns) {
+    		select.append(column).append(", ");
+    	}    	
+    }
+    
+    private String getWideRowMarkerColumn(String alias, String primaryKey) {
+    	return "'" + alias + "', " + alias + "." + primaryKey;
     }
     
     private String buildFromClause(JoinTree joinTree) {

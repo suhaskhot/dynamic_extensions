@@ -223,7 +223,6 @@ public class QueryCompiler
     	
     	for (ExpressionNode element : selectElementMap.keySet()) {
     		  for (int i = 0; i <= numQueries; ++i) {
-    			  // TODO: Need to make copy of element
     			  ExpressionNode selectNode = element.copy();
     			  if (analyzeSelectExpressionNode(i, selectNode, joinMap, true)) {
     				  selectElementMap.get(element).add(selectNode);

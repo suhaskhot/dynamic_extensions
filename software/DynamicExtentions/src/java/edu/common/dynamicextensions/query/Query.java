@@ -14,6 +14,8 @@ public class Query {
     private QueryExpressionNode queryExpr;
     
     private String separator = ": ";
+    
+    private boolean wideRows;
 		
     public static Query createQuery() {
         return new Query();
@@ -24,6 +26,11 @@ public class Query {
     
     public Query columnHeadingSeparator(String separator) {
     	this.separator = separator;
+    	return this;
+    }
+    
+    public Query wideRows(boolean wideRows) {
+    	this.wideRows = wideRows;
     	return this;
     }
   
@@ -65,18 +72,22 @@ public class Query {
     }
 
     public QueryResultData getData(int start, int numRows) {
-        QueryGenerator gen = new QueryGenerator();
-        String dataSql = gen.getDataSql(queryExpr, queryJoinTree, 0, 0);
-        
+        String dataSql = getDataSql(wideRows, start, numRows);
+
         JdbcDao jdbcDao = null;
-        ResultSet rs = null;
-        QueryResultData queryResultdata = null;
-        
+        ResultSet rs = null;        
         try {
-            jdbcDao = new JdbcDao();
+            jdbcDao = new JdbcDao();            
             rs = jdbcDao.getResultSet(dataSql, null);
-            queryResultdata = getQueryResultData(rs);
-            return queryResultdata;
+            
+            QueryResultData resultData = null;
+            if (wideRows) {
+            	resultData = getWideRowData(rs);
+            } else {
+            	resultData = getQueryResultData(rs);
+            }
+            
+            return resultData;            
         } catch(Exception e) {
             throw new RuntimeException("Error executing data query: " + dataSql, e);
         } finally {
@@ -86,10 +97,14 @@ public class Query {
         	}
         }
     }
-    
+        
     public String getDataSql() {
-        QueryGenerator gen = new QueryGenerator();
-        return gen.getDataSql(queryExpr, queryJoinTree, 0, 0);    	
+    	return getDataSql(false, 0, 0);
+    }
+    
+    private String getDataSql(boolean wideRows, int start, int numRows) {
+        QueryGenerator gen = new QueryGenerator(wideRows);
+        return gen.getDataSql(queryExpr, queryJoinTree, start, numRows);    	
     }
 
     private QueryResultData getQueryResultData(ResultSet rs)
@@ -109,7 +124,15 @@ public class Query {
 
         return queryResult;
     }
-   
+    
+    private QueryResultData getWideRowData(ResultSet rs) {
+   		WideRowGenerator wideRowGenerator = new WideRowGenerator(queryJoinTree, queryExpr);
+   		wideRowGenerator.start();
+   		wideRowGenerator.processResultSet(rs);
+   		wideRowGenerator.end();
+   		return wideRowGenerator.getQueryResultData();
+    }
+       
     private String[] getColumnNames(QueryExpressionNode queryExpr) {
     	SelectListNode selectList = queryExpr.getSelectList();
     	String columns[] = new String[selectList.getElements().size()];
@@ -129,6 +152,10 @@ public class Query {
     }
     
     private String getColumnHeading(FieldNode node) {
+    	return getColumnHeading(node, separator);
+    }
+    
+    public static String getColumnHeading(FieldNode node, String separator) {
 		String[] nodeCaptions = node.getNodeCaptions();
 		
 		StringBuilder heading = new StringBuilder(nodeCaptions[0]);
@@ -137,5 +164,5 @@ public class Query {
 		}
 		
 		return heading.toString();    	
-    }
+    }    
 }

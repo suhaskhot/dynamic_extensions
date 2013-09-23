@@ -34,8 +34,15 @@ public class SubFormControl extends Control {
 
 	private String tableName;
 	
+	//
+	// Parent key column specifies DB column of parent table used to index 
+	// into sub-form table
+	//
 	private String parentKeyColumn  = "IDENTIFIER";
 	
+	//
+	// Foreign key column specifies DB column referring to parent table
+	//
 	private String foreignKeyColumn = "PARENT_RECORD_ID";
 
 	public Container getSubContainer() {

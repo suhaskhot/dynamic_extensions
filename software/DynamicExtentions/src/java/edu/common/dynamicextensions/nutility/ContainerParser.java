@@ -149,6 +149,8 @@ public class ContainerParser {
 		if (table != null) {
 			container.setDbTableName(table);
 		}
+		
+		container.setPrimaryKey(getTextValue(viewElement, "primaryKey", "IDENTIFIER"));
 	}
 	
 	private List<Control> parseFormRow(Node row, int currentRow) {

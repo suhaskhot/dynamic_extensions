@@ -35,14 +35,22 @@ public class QueryGenerator {
     }
 
     public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
-    	String countClause = buildCountClause(joinTree);
-    	String fromClause  = buildFromClause(joinTree);
-        String whereClause = buildWhereClause(queryExpr.getFilterExpr());
-        
-        return new StringBuilder("select ").append(countClause).append(" from ")
-        	.append(fromClause)
-        	.append(" where ").append(whereClause)
-        	.toString();
+    	StringBuilder countSql = new StringBuilder();
+    	
+    	if (wideRowSupport) {
+        	String fromClause  = buildFromClause(joinTree);
+        	String whereClause = buildWhereClause(queryExpr.getFilterExpr());
+    		
+    		countSql.append("select count(distinct ")
+    			.append(joinTree.getForm().getPrimaryKey()).append(")")
+    			.append(" from ").append(fromClause)
+    			.append(" where ").append(whereClause);    			    		
+    	} else {
+    		String dataSql = getDataSql(queryExpr, joinTree);
+    		countSql.append("select count(*) from (").append(dataSql).append(")");    		
+    	}
+    	
+    	return countSql.toString();
     }
 
     public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree) {

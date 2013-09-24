@@ -83,6 +83,10 @@ public class Query {
             QueryResultData resultData = null;
             if (wideRows) {
             	resultData = getWideRowData(rs);
+            	if (resultData == null) {
+            		// this will ensure at least the header columns are populated
+            		resultData = new QueryResultData(getColumnNames(queryExpr));
+            	}
             } else {
             	resultData = getQueryResultData(rs);
             }

@@ -42,7 +42,7 @@ public class Query {
     }
 
     public long getCount() {
-        QueryGenerator gen = new QueryGenerator();
+        QueryGenerator gen = new QueryGenerator(wideRows);
         String countSql = gen.getCountSql(queryExpr, queryJoinTree);
 
         long count = -1L;

@@ -25,20 +25,21 @@ public class QueryGenerator {
 	
 	private static String LIMIT_QUERY = "select * from (select rownum rnum, tab.* from (%s) tab where rownum < %d) where rnum >= %d";
 	
-	private boolean addWideRowMarkerCols;
+	private boolean wideRowSupport;
 
     public QueryGenerator() {
     }
     
-    public QueryGenerator(boolean addWideRowMarkerCols) {
-    	this.addWideRowMarkerCols = addWideRowMarkerCols;
+    public QueryGenerator(boolean wideRowSupport) {
+    	this.wideRowSupport = wideRowSupport;
     }
 
     public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
-        String fromClause  = buildFromClause(joinTree);
+    	String countClause = buildCountClause(joinTree);
+    	String fromClause  = buildFromClause(joinTree);
         String whereClause = buildWhereClause(queryExpr.getFilterExpr());
         
-        return new StringBuilder("select count(*) from ")
+        return new StringBuilder("select ").append(countClause).append(" from ")
         	.append(fromClause)
         	.append(" where ").append(whereClause)
         	.toString();
@@ -82,7 +83,7 @@ public class QueryGenerator {
     	if (select.length() == 0) {
     		select.append("*"); 
     	} else {
-    		if (addWideRowMarkerCols) {
+    		if (wideRowSupport) {
     			addWideRowMarkerCols(select, selectList, joinTree);    			
     		}
     		
@@ -120,6 +121,13 @@ public class QueryGenerator {
     
     private String getWideRowMarkerColumn(String alias, String primaryKey) {
     	return "'" + alias + "', " + alias + "." + primaryKey;
+    }
+    
+    private String buildCountClause(JoinTree joinTree) {
+    	StringBuilder countClause = new StringBuilder("count(");   	
+    	return countClause.append(wideRowSupport ? "distinct " : "")
+    		.append(joinTree.getForm().getPrimaryKey())
+    		.append(")").toString();    	     
     }
     
     private String buildFromClause(JoinTree joinTree) {

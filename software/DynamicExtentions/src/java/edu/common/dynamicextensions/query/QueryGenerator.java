@@ -41,8 +41,10 @@ public class QueryGenerator {
         	String fromClause  = buildFromClause(joinTree);
         	String whereClause = buildWhereClause(queryExpr.getFilterExpr());
     		
+        	String alias = joinTree.getAlias();
+        	String pk = joinTree.getForm().getPrimaryKey();
     		countSql.append("select count(distinct ")
-    			.append(joinTree.getForm().getPrimaryKey()).append(")")
+    			.append(alias).append(".").append(pk).append(")")
     			.append(" from ").append(fromClause)
     			.append(" where ").append(whereClause);    			    		
     	} else {

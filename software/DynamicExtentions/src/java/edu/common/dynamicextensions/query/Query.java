@@ -35,10 +35,14 @@ public class Query {
     }
   
     public void compile(Long rootFormId, String query) {
-        QueryCompiler compiler = new QueryCompiler(rootFormId, query);
+    	compile(rootFormId, query, null);
+    }
+    
+    public void compile(Long rootFormId, String query, String restriction) {
+        QueryCompiler compiler = new QueryCompiler(rootFormId, query, restriction);
         compiler.compile();
         queryExpr     = compiler.getQueryExpr();
-        queryJoinTree = compiler.getQueryJoinTree();
+        queryJoinTree = compiler.getQueryJoinTree();    	
     }
 
     public long getCount() {

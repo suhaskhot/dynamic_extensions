@@ -1,10 +1,8 @@
 package edu.common.dynamicextensions.query;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +31,8 @@ public class QueryCompiler
     
     private String query;
     
+    private String restriction;
+    
     private QueryExpressionNode queryExpr;
     
     private JoinTree queryJoinTree;
@@ -40,13 +40,19 @@ public class QueryCompiler
     private int numQueries;
 	
     public QueryCompiler(Long rootFormId, String query) {
+    	this(rootFormId, query, null);
+    }
+    
+    public QueryCompiler(Long rootFormId, String query, String restriction) {
         this.rootFormId = rootFormId;
         this.query = query;
+        this.restriction = restriction;
     }
-
+    
     public void compile() {
         QueryParser queryParser = new QueryParser(query);
-        queryExpr     = queryParser.getQueryAst();
+        queryExpr = queryParser.getQueryAst();
+        addRestrictions();
         queryJoinTree = buildJoinTree(queryExpr);
     }
 
@@ -56,6 +62,18 @@ public class QueryCompiler
 
     public JoinTree getQueryJoinTree() {
         return queryJoinTree;
+    }
+    
+    private void addRestrictions() {
+    	if (restriction == null) {
+    		return;
+    	}
+    	
+        QueryParser parser = new QueryParser(restriction);
+        QueryExpressionNode ast = parser.getQueryAst();
+        FilterNodeMarker filter = ast.getFilterExpr();
+        FilterExpressionNode newFilter = FilterExpressionNode.andExpr(queryExpr.getFilterExpr(), filter);
+        queryExpr.setFilterExpr(newFilter);
     }
 
     private JoinTree buildJoinTree(QueryExpressionNode queryExpr) {

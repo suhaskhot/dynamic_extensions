@@ -551,11 +551,18 @@ public class ContainerParser {
 	
 	private void setControlProps(Control ctrl, Element ctrlEle, int currentRow, int i) {	
 		String name = getTextValue(ctrlEle, "name");
+		String userDefName = getTextValue(ctrlEle, "userDefinedName");
+	
 		if (name == null) {
 			throw new RuntimeException("Control name can't be null. Type = " + ctrlEle.getNodeName());
 		}
+		
+		if (userDefName == null) {
+			throw new RuntimeException("User defined name of control can't be null. Type = " + ctrlEle.getNodeName());
+		}
+		
 		ctrl.setName(name);
-		ctrl.setUserDefinedName(getTextValue(ctrlEle, "userDefinedName"));
+		ctrl.setUserDefinedName(userDefName);
 		ctrl.setCaption(getTextValue(ctrlEle, "caption"));
 		ctrl.setCustomLabel(getTextValue(ctrlEle, "customLabel"));
 		ctrl.setToolTip(getTextValue(ctrlEle, "toolTip", ""));

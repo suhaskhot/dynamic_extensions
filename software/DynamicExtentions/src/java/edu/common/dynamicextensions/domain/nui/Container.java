@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private long ctrlId;
 	
 	private Map<String, Control> controlsMap = new LinkedHashMap<String, Control>();
+	
+	private Set<String> userDefCtrlNames = new HashSet<String>();
 	
 	private List<SkipRule> skipRules = new ArrayList<SkipRule>();
 		
@@ -304,9 +307,13 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 		
 	public void addControl(Control control) {		
-		if (controlsMap.containsKey(control.getName())) {
+		if (control.getName() == null || controlsMap.containsKey(control.getName())) {
 			// change this exception to status code
-			throw new RuntimeException("Control with same name already exists: " + control.getName());
+			throw new RuntimeException("Control with same name already exists or control name is null " + control.getName());
+		}
+		
+		if (control.getUserDefinedName() == null || userDefCtrlNames.contains(control.getUserDefinedName())) {
+			throw new RuntimeException("Control with same user defined name already exists or user defined name of control is null " + control.getName());
 		}
 				
 		if (control.getSequenceNumber() == 0) {
@@ -333,6 +340,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		
 		controlsMap.put(control.getName(), control);
+		userDefCtrlNames.add(control.getUserDefinedName());
 		control.setContainer(this);
 	}
 	
@@ -349,6 +357,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			// change this exception to status code
 			throw new RuntimeException("Control with name doesn't exist: " + name);
 		}
+			userDefCtrlNames.remove(existingControl.getUserDefinedName());
 
 		if (control.getSequenceNumber() == 0) {
 			control.setSequenceNumber(existingControl.getSequenceNumber());
@@ -400,6 +409,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}	
 
 		controlsMap.put(control.getName(), control);
+		userDefCtrlNames.add(control.getUserDefinedName());
 	}
 	
 	public void deleteControl(String name) {
@@ -410,6 +420,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			// change this exception to status code
 			throw new RuntimeException("Control with name doesn't exist: " + name);			
 		}
+		userDefCtrlNames.remove(existingControl.getUserDefinedName());
 		
 		if (!remove(addLog, existingControl)) {
 			add(delLog, existingControl);

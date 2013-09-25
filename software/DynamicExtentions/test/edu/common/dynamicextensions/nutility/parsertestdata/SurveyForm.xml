@@ -10,7 +10,8 @@
 			<caption>Name Details</caption>
 			<row>
 				<textField>
-					<name>firstName</name>         		
+					<name>firstName</name> 
+					<userDefinedName>First Name</userDefinedName> 		
 					<caption>First Name</caption>
 					<phi>true</phi>
 					<mandatory>true</mandatory>  
@@ -20,6 +21,7 @@
 	
 				<textField>
 					<name>lastName</name> 
+					<userDefinedName>Last Name</userDefinedName>
 					<caption>Last Name</caption>
 					<phi>true</phi>
 					<mandatory>true</mandatory>  
@@ -34,6 +36,7 @@
 			<row>
 				<datePicker>
 					<name>dateOfBirth</name>
+					<userDefinedName>Date Of Birth</userDefinedName>
 					<caption>Date Of Birth</caption>
 					<phi>true</phi>
 					<mandatory>true</mandatory>

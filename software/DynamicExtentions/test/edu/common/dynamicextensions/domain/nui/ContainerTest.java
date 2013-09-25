@@ -1,5 +1,13 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.createUserContext;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockBlobForRead;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockBlobForReadException;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockContainerIdGen;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockContainerInsert;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockContainerUpdate;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockJdbcDao;
+import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.mockQueryResultSet;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.assertEquals;
@@ -24,7 +32,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.nutility.ContainerCache;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
-import static edu.common.dynamicextensions.domain.nui.ContainerTestUtility.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IdGeneratorUtil.class, Container.class, JdbcDao.class, ResultSet.class, Blob.class})
@@ -114,6 +121,8 @@ public class ContainerTest {
 		//
 		NumberField approxSalary = new NumberField();
 		approxSalary.setName("approxSalary");
+		approxSalary.setUserDefinedName("Approx Salary");
+
 		userProfile.addControl(approxSalary);
 		
 		Long actualContainerId = userProfile.save(userCtxt);
@@ -123,12 +132,33 @@ public class ContainerTest {
 		assertEquals(userProfile.toXml(), xml);		
 	}
 	
+	
+	@Test(expected=RuntimeException.class)
+	public void testAddNewControlWithoutUsrDefName() 
+	throws Exception {
+		NumberField approxSalary = new NumberField();
+		approxSalary.setName("approxSalary");
+	
+		userProfile.addControl(approxSalary);
+	}
+	
 	@Test(expected=RuntimeException.class)
 	public void testAddNewControlDuplicateName()
 	throws Exception {
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
+		firstName.setUserDefinedName("First Name");
+	
 		userProfile.addControl(firstName);
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void testAddNewControlDuplicateUserDefinedName()
+	throws Exception {
+		StringTextField MiddleName = new StringTextField();
+		MiddleName.setName("middleName");
+		MiddleName.setUserDefinedName("First Name");
+		userProfile.addControl(MiddleName);
 	}
 	
 	@Test
@@ -169,6 +199,8 @@ public class ContainerTest {
 		SubFormControl addressSf = new SubFormControl();
 		addressSf.setSubContainer(address);
 		addressSf.setName("address");
+		addressSf.setUserDefinedName("Address");
+
 		userProfile.addControl(addressSf);
 		
 		Long actualContainerId = userProfile.save(userCtxt);
@@ -205,6 +237,7 @@ public class ContainerTest {
 		//
 		StringTextField approxSalary = new StringTextField();
 		approxSalary.setName("approxSalary");
+		approxSalary.setUserDefinedName("Approx Salary");
 		userProfile.addControl(approxSalary);
 
 		//
@@ -309,6 +342,8 @@ public class ContainerTest {
 		//
 		NumberField salary = new NumberField();
 		salary.setName("salary");
+		salary.setUserDefinedName("Salary");
+
 		userProfile.addControl(salary);
 		
 		//
@@ -353,6 +388,8 @@ public class ContainerTest {
 		PvDataSource pvDataSource = new PvDataSource();
 		pvDataSource.setDataType(DataType.INTEGER);
 		MultiSelectCheckBox luckyNumbers = new MultiSelectCheckBox();
+		luckyNumbers.setName("luckyNumbers");
+		luckyNumbers.setUserDefinedName("Lucky Numbers");
 		luckyNumbers.setPvDataSource(pvDataSource);
 		
 		userProfile.addControl(luckyNumbers);
@@ -388,6 +425,8 @@ public class ContainerTest {
 		PvDataSource pvDataSource = new PvDataSource();
 		pvDataSource.setDataType(DataType.STRING);
 		MultiSelectListBox favoriteCusines = new MultiSelectListBox();
+		favoriteCusines.setName("favoriteCusines");
+		favoriteCusines.setUserDefinedName("Favorite Cusines");
 		favoriteCusines.setPvDataSource(pvDataSource);
 		
 		userProfile.addControl(favoriteCusines);
@@ -475,14 +514,20 @@ public class ContainerTest {
 				
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
+		firstName.setUserDefinedName("First Name");
+
 		userProfile.addControl(firstName);
 			
 		StringTextField lastName = new StringTextField();
 		lastName.setName("lastName");
+		lastName.setUserDefinedName("Last Name");
+
 		userProfile.addControl(lastName);
 		
 		DatePicker dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
+		dateOfBirth.setUserDefinedName("Date Of Birth");
+
 		userProfile.addControl(dateOfBirth);
 		
 		
@@ -497,13 +542,17 @@ public class ContainerTest {
 		
 		address = new Container();
 		address.setName("address");
+
 		
 		StringTextField street = new StringTextField();
 		street.setName("street");
+		street.setUserDefinedName("Street");
+
 		address.addControl(street);
 		
 		ComboBox city = new ComboBox();
 		city.setName("city");		
+		city.setUserDefinedName("City");		
 		PvDataSource cities = new PvDataSource();
 		cities.setDataType(DataType.STRING);		
 		city.setPvDataSource(cities);
@@ -512,6 +561,8 @@ public class ContainerTest {
 		MultiSelectListBox parkingFacilities = new MultiSelectListBox();
 		parkingFacilities.setTableName("PARKING_FACILITIES");
 		parkingFacilities.setName("parkingFacilities");
+		parkingFacilities.setUserDefinedName("Parking Facilities");		
+
 		PvDataSource parkingTypes = new PvDataSource();
 		parkingTypes.setDataType(DataType.STRING);		
 		parkingFacilities.setPvDataSource(parkingTypes);

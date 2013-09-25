@@ -7,13 +7,15 @@
 		<row>
 			<label>
 				<name>FormHeading</name>
+				<userDefinedName>Form Heading</userDefinedName>      
 				<heading>Fill in correct personal details for loan processing</heading>	
 			</label>		
 		</row>
 		
 		<row>
 			<textField>
-				<name>firstName</name>         		
+				<name>firstName</name>    
+				<userDefinedName>First Name</userDefinedName>           		
 				<caption>First Name</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>  
@@ -23,6 +25,7 @@
 
 			<textField>
 				<name>lastName</name> 
+				<userDefinedName>Last Name</userDefinedName>      
 				<caption>Last Name</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>  
@@ -33,6 +36,7 @@
 		<row>
 			<checkBox>
 				<name>sourcesOfIncome</name>
+				<userDefinedName>Sources of Income</userDefinedName>      
 				<caption>Sources of Income</caption>
 				<options>
 					<option>
@@ -58,12 +62,14 @@
 		<row>
 			<subForm>			
 				<name>address</name>
+				<userDefinedName>Address</userDefinedName>      
 				<caption>Address</caption>
 				<maxEntries>0</maxEntries>
 				<showAddMoreLink>true</showAddMoreLink>
                			<row>
 					<dropDown>
 						<name>city</name>
+						<userDefinedName>City</userDefinedName>      
 						<caption>City</caption>
 						<mandatory>true</mandatory>
 						<options>
@@ -75,6 +81,7 @@
 				<row>
 					<textField>
 						<name>Company</name> 
+						<userDefinedName>Company</userDefinedName>      
 						<caption>Company</caption>
 						<phi>true</phi>
 						<mandatory>true</mandatory>  

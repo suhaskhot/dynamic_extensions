@@ -191,11 +191,13 @@ public class ContainerParserTest {
 		
 		formHeading = new Label();
 		formHeading.setName("FormHeading");
+		formHeading.setUserDefinedName("Form Heading");
 		formHeading.setHeading(true);
 		formHeading.setCaption("Fill in correct personal details for loan processing");
 		
 		firstName = new StringTextField();
 		firstName.setName("firstName");
+		firstName.setUserDefinedName("First Name");
 		firstName.setCaption("First Name");
 		firstName.setPhi(true);
 		firstName.setMandatory(true);
@@ -204,6 +206,7 @@ public class ContainerParserTest {
 				
 		lastName = new StringTextField();
 		lastName.setName("lastName");
+		lastName.setUserDefinedName("Last Name");
 		lastName.setCaption("Last Name");
 		lastName.setPhi(true);
 		lastName.setMandatory(true);
@@ -212,6 +215,7 @@ public class ContainerParserTest {
 				
 		gender = new RadioButton();
 		gender.setName("gender");
+		gender.setUserDefinedName("Gender");
 		gender.setCaption("Gender");
 		gender.setPhi(true);
 		gender.setMandatory(true);
@@ -220,6 +224,7 @@ public class ContainerParserTest {
 		
 		income = new NumberField();
 		income.setName("income");
+		income.setUserDefinedName("Income");
 		income.setCaption("Annual Income");
 		income.setMinValue("100000");
 		income.setMaxValue("10000000");
@@ -227,12 +232,14 @@ public class ContainerParserTest {
 	
 		loanAmount = new NumberField();
 		loanAmount.setName("loanAmount");
+		loanAmount.setUserDefinedName("Loan Amount");
 		loanAmount.setCaption("Eligible Loan Amount");
 		loanAmount.setFormula("income * 5");
 		loanAmount.setNoOfDigits(19);
 	
 		sourcesOfIncome = new MultiSelectCheckBox();
 		sourcesOfIncome.setName("sourcesOfIncome");
+		sourcesOfIncome.setUserDefinedName("Sources of Income");
 		sourcesOfIncome.setCaption("Sources of Income");
 		sourcesOfIncome.setPvDataSource(getPvDataSource(
 				DataType.STRING, 
@@ -240,6 +247,7 @@ public class ContainerParserTest {
 					
 		description = new TextArea();
 		description.setName("description");
+		description.setUserDefinedName("Description");
 		description.setCaption("Introduction");
 		description.setPhi(true);
 		description.setMandatory(true);
@@ -250,6 +258,7 @@ public class ContainerParserTest {
 
 		bankAccounts = new MultiSelectListBox();
 		bankAccounts.setName("bankAccounts");
+		bankAccounts.setUserDefinedName("Bank Accounts");
 		bankAccounts.setCaption("Select banks where you have maintained savings account");		
 		bankAccounts.setMandatory(true);
 		bankAccounts.setPvDataSource(getPvDataSource(DataType.STRING, 
@@ -257,6 +266,7 @@ public class ContainerParserTest {
 	
 		dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
+		dateOfBirth.setUserDefinedName("Date Of Birth");
 		dateOfBirth.setCaption("Date Of Birth");
 		dateOfBirth.setPhi(true);
 		dateOfBirth.setMandatory(true);
@@ -265,6 +275,7 @@ public class ContainerParserTest {
 		
 		formNote = new Label();
 		formNote.setName("FormNote");
+		formNote.setUserDefinedName("Form Note");
 		formNote.setNote(true);
 		formNote.setCaption("Information filled here may be used for marketing purpose");
 					
@@ -275,6 +286,7 @@ public class ContainerParserTest {
 		
 		addressSf = new SubFormControl();
 		addressSf.setName("address");
+		addressSf.setUserDefinedName("Address");
 		addressSf.setCaption("Address");
 		addressSf.setSubContainer(address);
 		addressSf.setShowAddMoreLink(true);
@@ -282,6 +294,7 @@ public class ContainerParserTest {
 				
 		city = new ComboBox();
 		city.setName("city");
+		city.setUserDefinedName("City");
 		city.setCaption("City");
 		city.setMandatory(true);
 		city.setPvDataSource(getPvDataSource(
@@ -289,6 +302,7 @@ public class ContainerParserTest {
 
 		company = new StringTextField();
 		company.setName("Company");
+		company.setUserDefinedName("Company");
 		company.setCaption("Company");
 		company.setPhi(true);
 		company.setMandatory(true);
@@ -297,6 +311,7 @@ public class ContainerParserTest {
 		
 		consent = new CheckBox();
 		consent.setName("consent");
+		consent.setUserDefinedName("Consent");
 		consent.setCaption("I agree to terms and conditions");		
 	}
 	

@@ -8,6 +8,7 @@
 		<row>
 			<radioButton>
 				<name>gender</name>
+				<userDefinedName>Gender</userDefinedName>       		
 				<caption>Gender</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>
@@ -28,6 +29,7 @@
 		<row>
 			<checkBox>
 				<name>sourcesOfIncome</name>
+				<userDefinedName>Sources of Income</userDefinedName>       		
 				<caption>Sources of Income</caption>
 				<options>
 					<option>
@@ -53,6 +55,7 @@
 		<row>
 			<booleanCheckBox>
 				<name>consent</name>
+				<userDefinedName>Consent</userDefinedName>       		
 				<caption>I agree to terms and conditions</caption>				
 			</booleanCheckBox>
 		</row>

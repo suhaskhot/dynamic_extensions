@@ -16,7 +16,7 @@ public class FormAuditEvent {
 	
 	private Long recordId;
 	
-	private Clob formDataXml;
+	private String formDataXml;
 
 	public Long getIdentifier() {
 		return identifier;
@@ -42,11 +42,11 @@ public class FormAuditEvent {
 		this.recordId = recordId;
 	}
 
-	public Clob getFormDataXml() {
+	public String getFormDataXml() {
 		return formDataXml;
 	}
 
-	public void setFormDataXml(Clob formDataXml) {
+	public void setFormDataXml(String formDataXml) {
 		this.formDataXml = formDataXml;
 	}
 	

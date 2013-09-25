@@ -1,7 +1,6 @@
 package edu.common.dynamicextensions.napi.impl;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
@@ -21,9 +20,9 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FileControlValue;
+import edu.common.dynamicextensions.napi.FormAuditManager;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
-import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.common.beans.SessionDataBean;
@@ -40,8 +39,16 @@ public class FormDataManagerImpl implements FormDataManager {
 	
 	private static final String RECORD_ID_SEQ = "RECORD_ID_SEQ";
 
+	private boolean auditEnable = true;
 	private final Logger logger = Logger.getLogger(FormDataManagerImpl.class);
 
+	public FormDataManagerImpl(boolean auditEnable) {
+		this.auditEnable = auditEnable;
+	}
+	
+	public FormDataManagerImpl() { 
+	}
+		
 	@Override
 	public FormData getFormData(Long containerId, Long recordId) {
 		FormData result = null;
@@ -109,8 +116,15 @@ public class FormDataManagerImpl implements FormDataManager {
 	@Override
 	public Long saveOrUpdateFormData(UserContext userCtxt, FormData formData, JdbcDao jdbcDao) {
 		try {
+			String operation = formData.getRecordId() == null ? "INSERT" : "UPDATE";
 			Long recordId = saveOrUpdateFormData(jdbcDao, formData, null);
 			formData.setRecordId(recordId);
+			
+			if(auditEnable) {
+				FormAuditManager auditManager = new FormAuditManagerImpl();
+				auditManager.audit(userCtxt, formData, operation, jdbcDao);
+			}
+			
 			return recordId;
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving form data", e);

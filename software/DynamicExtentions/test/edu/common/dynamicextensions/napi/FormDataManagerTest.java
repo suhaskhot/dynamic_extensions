@@ -74,7 +74,7 @@ public class FormDataManagerTest {
 		//
 		// Unit under test
 		//
-		formDataMgr = new FormDataManagerImpl();		
+		formDataMgr = new FormDataManagerImpl(false);		
 	}
 	
 	@After
@@ -360,19 +360,26 @@ public class FormDataManagerTest {
 		
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
+		firstName.setUserDefinedName("First Name");
+
 		userProfile.addControl(firstName);
 			
 		StringTextField lastName = new StringTextField();
 		lastName.setName("lastName");
+		lastName.setUserDefinedName("Last Name");
+
 		userProfile.addControl(lastName);
 		
 		DatePicker dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
+		dateOfBirth.setUserDefinedName("Date Of Birth");
+
 		userProfile.addControl(dateOfBirth);
 		
 		MultiSelectCheckBox hobbies = new MultiSelectCheckBox();
 		hobbies.setTableName("HOBBIES");
 		hobbies.setName("hobbies");
+		hobbies.setUserDefinedName("Hobbies");
 		PvDataSource hobbiesDs = new PvDataSource();
 		hobbiesDs.setDataType(DataType.STRING);		
 		hobbies.setPvDataSource(hobbiesDs);
@@ -385,10 +392,12 @@ public class FormDataManagerTest {
 		
 		StringTextField street = new StringTextField();
 		street.setName("street");
+		street.setUserDefinedName("Street");
 		address.addControl(street);
 		
 		ComboBox city = new ComboBox();
 		city.setName("city");		
+		city.setUserDefinedName("City");
 		PvDataSource cities = new PvDataSource();
 		cities.setDataType(DataType.STRING);		
 		city.setPvDataSource(cities);
@@ -397,6 +406,7 @@ public class FormDataManagerTest {
 		MultiSelectListBox parkingFacilities = new MultiSelectListBox();
 		parkingFacilities.setTableName("PARKING_FACILITIES");
 		parkingFacilities.setName("parkingFacilities");
+		parkingFacilities.setUserDefinedName("Parking Facilities");
 		PvDataSource parkingTypes = new PvDataSource();
 		parkingTypes.setDataType(DataType.STRING);		
 		parkingFacilities.setPvDataSource(parkingTypes);
@@ -405,6 +415,8 @@ public class FormDataManagerTest {
 		SubFormControl addressSf = new SubFormControl();
 		addressSf.setSubContainer(address);
 		addressSf.setName("address");
+		addressSf.setUserDefinedName("Address");
+
 		userProfile.addControl(addressSf);		
 	}
 	

@@ -73,7 +73,7 @@ public class FormAuditManager {
 			formAuditEvent.setIdentifier(auditEvent.getId());
 			formAuditEvent.setFormName(formName);
 			formAuditEvent.setRecordId(recordId);
-			formAuditEvent.setFormDataXml(Hibernate.createClob(xml));
+//			formAuditEvent.setFormDataXml(Hibernate.createClob(xml));
 			hibernateDao.insert(formAuditEvent);
 			hibernateDao.commit();
 		} catch (Exception e) {

@@ -67,7 +67,7 @@ public class FormDataManagerFileTest {
 		//
 		// Unit under test
 		//
-		formDataMgr = new FormDataManagerImpl();
+		formDataMgr = new FormDataManagerImpl(false);
 	}
 
 	@After
@@ -176,10 +176,14 @@ public class FormDataManagerFileTest {
 
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
+		firstName.setUserDefinedName("First Name");
+
 		userProfile.addControl(firstName);
 
 		FileUploadControl reports = new FileUploadControl();
 		reports.setName("reports");
+		reports.setUserDefinedName("Reports");
+
 		userProfile.addControl(reports);
 	}
 

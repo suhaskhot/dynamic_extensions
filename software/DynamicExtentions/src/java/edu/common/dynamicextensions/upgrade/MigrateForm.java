@@ -1436,7 +1436,7 @@ public class MigrateForm {
 			JdbcDao jdbcDao = new JdbcDao(dao);
 			
 			FormData newRecord = getFormData(jdbcDao, formMigrationCtxt, oldForm, oldRecord);
-			FormDataManager formDataMgr = new FormDataManagerImpl();
+			FormDataManager formDataMgr = new FormDataManagerImpl(false);
 			Long newRecordId = formDataMgr.saveOrUpdateFormData(null, newRecord, jdbcDao);
 
 			List<Long> params = new ArrayList<Long>();

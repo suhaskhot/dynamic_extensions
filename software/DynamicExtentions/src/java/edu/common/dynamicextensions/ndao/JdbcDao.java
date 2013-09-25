@@ -1,7 +1,13 @@
 package edu.common.dynamicextensions.ndao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -14,6 +20,7 @@ import edu.common.dynamicextensions.entitymanager.persister.IdGenerator;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.dao.JDBCDAO;
+import edu.wustl.dao.connectionmanager.IConnectionManager;
 import edu.wustl.dao.query.generator.ColumnValueBean;
 import edu.wustl.dao.util.DAOUtility;
 
@@ -53,6 +60,52 @@ public class JdbcDao {
 		}		
 	}
 	
+	public ResultSet executeUpdateAndGetResultSet(String sql, List<?> columnValueBeans, String[] returnCols) 
+	throws Exception{
+		PreparedStatement stmt = null;
+		try	{
+			
+			if (!sql.contains("?") || columnValueBeans == null || columnValueBeans.isEmpty()) {
+				throw new RuntimeException("db.prepstmt.param.error : JdbcDao.java : "+sql);
+			}
+
+			stmt = getPreparedStatement(sql, returnCols);
+
+			Iterator<?> colValItr =  columnValueBeans.iterator();
+			int index = 1;
+			while(colValItr.hasNext()) {
+				ColumnValueBean colValueBean = new ColumnValueBean(colValItr.next());
+
+				if(colValueBean.getColumnValue() instanceof Timestamp) {
+					stmt.setTimestamp(index,(Timestamp)colValueBean.getColumnValue());
+				} else if((colValueBean.getColumnValue() instanceof Date)) {
+					Date date = (Date)colValueBean.getColumnValue();
+					stmt.setDate(index,new java.sql.Date(date.getTime()));
+				} else {
+					stmt.setObject(index, colValueBean.getColumnValue());
+				}
+				index += 1;
+			}
+			stmt.executeUpdate();
+			
+			return stmt.getGeneratedKeys();
+		} catch (SQLException e) {
+			throw new RuntimeException("db.update.data.error : JdbcDao.java : "+sql, e);
+		} 
+	}
+	
+	
+	public PreparedStatement getPreparedStatement(String query, String[] returnCols) {
+		try {
+			IConnectionManager connectionManager = dao.getConnectionManager();
+			PreparedStatement preparedStatement = connectionManager.getConnection().prepareStatement(query,returnCols);
+	
+			return preparedStatement;
+		} catch (Exception e) {
+			throw new RuntimeException("db.stmt.creation.error : JdbcDao.java : "+query, e);
+		}
+	}
+	
 	public void close() {
 		if (dao != null) {
 			try {
@@ -66,9 +119,13 @@ public class JdbcDao {
 	public void close(ResultSet rs) {
 		if (rs != null) {
 			try {
+				Statement stmt = rs.getStatement();
 				rs.close();
+				if (stmt != null) {
+					stmt.close();
+				}
 			} catch (Exception e) {
-				
+
 			}
 		}
 	}

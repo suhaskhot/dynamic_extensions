@@ -25,13 +25,14 @@
 				</div>
 			</div>
 	</div>
-
+	<!-- Dialogues  -->
 		<div id="dialog-message" title="Message">
 				<p>
 					<span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 50px 0;"></span>
 					<div id = "popupMessageText"></div>
 				</p>
 		</div>
+		
 		<div id="general-dialog" title="Message">
 				<p>
 					<span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 50px 0;"></span>
@@ -39,6 +40,7 @@
 					<input type = "hidden" id = "tempData"/>
 				</p>
 		</div>
+		
 		<div id="form-import-dialog" title="Import Form">
 			<div style = 'width: 100%; float: left'>	
 				<form action="csdApi/form/formxml" method="post" enctype="multipart/form-data" id = 'importForm'>
@@ -46,6 +48,17 @@
 				   <input type="file" name="file" id = 'fileID'/>
 				   <input type="submit" value="Upload" class = 'btn'/><img src = "csd_web/icons/loader.gif" id = "importFileWaitingImage">
 			   	</form>
+			</div>
+		</div>
+		
+		<div id="control-change-dialog" title="Change Control Type">
+			<div class = "propertiesContainer" style = "width : 100%;">	
+				  <div class = "propertiesTextBoxContainer" align = "right">
+					<label class = 'text_normal'>Select a Control Type</label>
+					<select id = "newControlType" class = 'textBoxSmall'>
+						 
+					</select>
+				</div>   
 			</div>
 		</div>
 

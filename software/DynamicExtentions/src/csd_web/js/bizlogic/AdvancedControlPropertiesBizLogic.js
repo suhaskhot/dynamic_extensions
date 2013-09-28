@@ -104,8 +104,9 @@ var AdvancedControlPropertiesBizLogic = {
 
 	loadSkipRules : function(model) {
 		//clear the table;
-		$("#skipRulesTable tr:gt(0)").remove();
+		//$("#skipRulesTable tr:gt(0)").remove();
 		var skipRules = model.get('skipRules');
+		if(Object.keys(skipRules).length != 0){
 		for ( var key in skipRules) {
 			// var skipRule = skipRules[key];
 			Main.advancedControlsView.addSkipRuleToTable(skipRules[key], key);
@@ -115,6 +116,9 @@ var AdvancedControlPropertiesBizLogic = {
 		$("#pvs").trigger("liszt:updated");
 		$("#controlledField").trigger("liszt:updated");
 		Main.advancedControlsView.setTableCss('skipRulesTable');
+
+		}
+		
 	},
 	setSkipRuleControllingFieldsUI : function() {
 		// based on control type show hide pvs

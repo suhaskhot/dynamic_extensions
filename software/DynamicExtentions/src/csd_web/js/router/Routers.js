@@ -44,7 +44,7 @@ var Routers = {
 						});
 					} else if (operation == "edit") {
 						var _formula = $('#formulaTable')[0].rows[id].cells[2].innerHTML;
-						//AdvancedControlPropertiesBizLogic.deleteFormula(id);
+						// AdvancedControlPropertiesBizLogic.deleteFormula(id);
 						$("#availableFields1").val(id);
 						$('#formulaField').val(_formula);
 						Routers.formEventsRouterPointer.navigate('clear', {
@@ -86,8 +86,8 @@ var Routers = {
 						var skipRule = Main.formView.getFormModel().get(
 								'skipRules')[id];
 
-						//AdvancedControlPropertiesBizLogic.deleteSkipRule(id);
-						//Main.advancedControlsView.setTableCss('skipRulesTable');
+						// AdvancedControlPropertiesBizLogic.deleteSkipRule(id);
+						// Main.advancedControlsView.setTableCss('skipRulesTable');
 						// set controlling fields
 						$("#controllingField").val(
 								skipRule.controllingAttributes);
@@ -215,6 +215,7 @@ var Routers = {
 					 * rules table; $("#skipRulesTable tr:gt(0)").remove();
 					 * AdvancedControlPropertiesBizLogic.loadSkipRules(model);
 					 */
+					$("#skipRulesTable tr:gt(0)").remove();
 					Routers.formEventsRouterPointer.updateModelWithIds(model);
 					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
 				},
@@ -226,9 +227,9 @@ var Routers = {
 					Routers.formEventsRouterPointer
 							.loadControlsInModelAndTree(model);
 					// re populate skip rules table;
-					$("#skipRulesTable tr:gt(0)").remove();
+					//$("#skipRulesTable tr:gt(0)").remove();
 					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
-					Routers.formEventsRouterPointer.updateModelWithIds(model);
+					//Routers.formEventsRouterPointer.updateModelWithIds(model);
 				},
 
 				loadFormulae : function(model, subFormName) {
@@ -264,14 +265,14 @@ var Routers = {
 						skipRules : model.get('skipRules')
 					});
 					Main.advancedControlsView.setTableCss('formulaTable');
-					//Main.mainTabBarView.loadFormSummary();
+					// Main.mainTabBarView.loadFormSummary();
 					Main.mainTabBarView.getFormSummaryView().displayFormInfo(
 							model.getFormInformation());
 
 					$("#formWaitingImage").hide();
 					// save form
-					
-					if(!GlobalMemory.editForm){
+
+					if (!GlobalMemory.editForm) {
 
 						$('#saveForm').prop("value", " Save As ")
 					}
@@ -319,14 +320,37 @@ var Routers = {
 
 						var control = new Models.Field(model
 								.get('controlCollection')[cntr]);
+
+						var previousControl = null;
+
+						
+							previousControl = new Models.Field(model
+									.get('controlCollection')[cntr + 1]);
+						
+						
+						
+
 						var displayLbl = control.get('caption') + " ("
 								+ control.get('controlName') + ")";
-						var controlNodeId = this.populateTreeWithControlNodes(control
-								.get('controlName'), displayLbl, control
-								.get('type'));
-						control.set({editName : control.get('controlName'), formTreeNodeId : controlNodeId});
+						var controlNodeId = this.populateTreeWithControlNodes(
+								control.get('controlName'), displayLbl, control
+										.get('type'));
+						control.set({
+							editName : control.get('controlName'),
+							formTreeNodeId : controlNodeId
+						});
+						
+						
+						if(previousControl!=null){if(previousControl.get('type')=="pageBreak"){
+							control.set({pageBreak : true});
+						}}
 
 						GlobalMemory.nodeCounter++;
+
+						if(control.get('type') == "pageBreak"){
+						Main.treeView.getTree().setItemStyle(controlNodeId,"font-weight:bold; font-style:italic; font-color:#505050;");	
+							}
+
 						if (control.get('type') == "subForm") {
 
 							var subFrm = new Models.Form(control.get('subForm'));
@@ -338,11 +362,10 @@ var Routers = {
 
 								var subControl = new Models.Field(subFrm
 										.get('controlCollection')[subCntr]);
-								
+
 								var updatedControl = Utility.addFieldHandlerMap[subControl
 										.get('type')](subControl, false,
 										'controlContainer');
-								
 
 								var displayLabel = subControl.get('caption')
 										+ " (" + subControl.get('controlName')
@@ -353,17 +376,25 @@ var Routers = {
 										displayLabel, 0, 0, 0, 0,
 										"SELECT,CALL,CHILD,CHECKED");
 								Main.treeView.getTree().setUserData(
-										subFrmCntrlNodeId,
-										"controlName",
+										subFrmCntrlNodeId, "controlName",
 										subControl.get('controlName'));
 								Main.treeView.getTree().setUserData(
-										subFrmCntrlNodeId,
-										"controlType", subControl.get('type'));
+										subFrmCntrlNodeId, "controlType",
+										subControl.get('type'));
 
-							updatedControl.set({editName : control.get('controlName')+"."+updatedControl.get('controlName'), formTreeNodeId : subFrmCntrlNodeId});
+								updatedControl
+										.set({
+											editName : control
+													.get('controlName')
+													+ "."
+													+ updatedControl
+															.get('controlName'),
+											formTreeNodeId : subFrmCntrlNodeId
+										});
 
-							subFrm.get('controlObjectCollection')[subControl.get('controlName')] = updatedControl;
-								
+								subFrm.get('controlObjectCollection')[subControl
+										.get('controlName')] = updatedControl;
+
 								GlobalMemory.nodeCounter++;
 
 							}
@@ -393,15 +424,12 @@ var Routers = {
 				populateTreeWithControlNodes : function(controlName,
 						displayLabel, type) {
 					var id = GlobalMemory.nodeCounter;
-					Main.treeView.getTree().insertNewChild(1,
-							id, displayLabel, 0, 0, 0, 0,
-							"SELECT,CALL,CHILD,CHECKED");
-					Main.treeView.getTree().setUserData(
-							id, "controlName",
+					Main.treeView.getTree().insertNewChild(1, id, displayLabel,
+							0, 0, 0, 0, "SELECT,CALL,CHILD,CHECKED");
+					Main.treeView.getTree().setUserData(id, "controlName",
 							controlName);
-					Main.treeView.getTree().setUserData(
-							id, "controlType", type);
-
+					Main.treeView.getTree()
+							.setUserData(id, "controlType", type);
 
 					return id;
 				}
@@ -458,7 +486,7 @@ var Routers = {
 									Main.designModeViewPointer
 											.updateControlObjectCollection(
 													sourceCell.getValue(),
-													tInd+1, rowId + 1);
+													tInd + 1, rowId + 1);
 									sourceCell.setValue('');
 
 									var sourceValue = '';
@@ -489,8 +517,8 @@ var Routers = {
 													.setValue(targetValue);
 											Main.designModeViewPointer
 													.updateControlObjectCollection(
-															targetValue, tInd+1,
-															seqNo + 1);
+															targetValue,
+															tInd + 1, seqNo + 1);
 											targetValue = sourceValue;
 										} else {
 											Main.designModeViewPointer
@@ -499,8 +527,8 @@ var Routers = {
 													.setValue(targetValue);
 											Main.designModeViewPointer
 													.updateControlObjectCollection(
-															targetValue, tInd+1,
-															seqNo + 1);
+															targetValue,
+															tInd + 1, seqNo + 1);
 											break;
 										}
 										rowId++;
@@ -531,7 +559,7 @@ var Routers = {
 
 			for ( var index in Main.formView.getFormModel().get(
 					'controlObjectCollection')) {
-				//-1 because db doesn't accept zero and grid zero based
+				// -1 because db doesn't accept zero and grid zero based
 				var xPos = Main.formView.getFormModel().get(
 						'controlObjectCollection')[index].get("xPos") - 1;
 				// -1 because db doesn't accept zero and grid zero based

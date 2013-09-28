@@ -196,21 +196,45 @@ var Views = {
 					"click #copyControlButtonid" : "copyControl",
 					"click #addPv" : "addPv",
 					"click #deletePv" : "deletePv",
+					"click #changeControlButtonid" : "changeControl",
 					"keyup #controlCaption" : "setAttributeName"
 				},
 
 				setAttributeName : function(event) {
-					var controlName = Utility.toCamelCase($('#controlCaption')
+					var userDefinedName = Utility.toCamelCase($('#controlCaption')
 							.val());
-					if (controlName.length > 28) {
-						controlName = controlName.substring(0, 27) + ""
+					if (userDefinedName.length > 28) {
+						userDefinedName = userDefinedName.substring(0, 27) + ""
 								+ GlobalMemory.nodeCounter;
 					}
-					$('#controlName').val(controlName);
+					$('#controlName').val(userDefinedName);
+				},
+
+				changeControl : function(event) {
+					var currentType = Main.currentFieldView.getModel().get('type');
+					ControlBizLogic.populatePermissibleControlTypes(
+							currentType, 'newControlType');
+					$("#control-change-dialog")
+							.dialog(
+									{
+										buttons : {
+											Cancel : function() {
+												$(this).dialog("close");
+											},
+											Ok : function() {
+												ControlBizLogic.changeCurrentControlAndDisplay()
+												// close the dialog
+												$(this).dialog("close");
+											}
+										}
+									});
+					$("#control-change-dialog").dialog("open");
+
 				},
 
 				copyControl : function(event) {
 					ControlBizLogic.createCopyControl(this.model);
+
 				},
 
 				destroy : function() {
@@ -384,14 +408,14 @@ var Views = {
 								maximumValue : $('#maximumValue').val(),
 								minimumValue : $('#minimumValue').val(),
 								width : $('#width').val(),
+								userDefinedName : $('#controlName').val(),// change it after implementation
 								dataType : $('#dataType').val(),
 								format : $('#format').val(),
 								isPHI : $('#isPHI').is(":checked"),
-								autoComplete : $('#autoComplete')
-										.is(":checked"),
 								isMandatory : $('#isMandatory').is(":checked"),
 								isAutoCalculate : $('#autoCalculate').is(
 										":checked"),
+								isChecked : $('#isChecked').is(":checked"),
 								optionsPerRow : $('#optionsPerRow').val(),
 								pvOrder : $('#pvOrder').val(),
 								toolTip : $('#toolTip').val(),
@@ -491,10 +515,17 @@ var Views = {
 					// format
 					$("#format").val(this.model.get('format')).prop('selected',
 							true);
+
 					// make short code readonly
 					// $('#controlName').prop('readonly', 'readonly');
 
 					switch ((this.model.get('type'))) {
+
+					case "checkBox":
+						$('#isChecked').prop('checked',
+								this.model.get('isChecked'));
+						break;
+
 					case "radioButton":
 
 					case "listBox":
@@ -517,9 +548,20 @@ var Views = {
 					if (labelPos == "TOP") {
 						labelPos = "align_top";
 					} else if (labelPos == "LEFT") {
-						labelPos = "align_top";
+						labelPos = "align_left";
 					}
 					$('#' + labelPos).prop('checked', true).button('refresh');
+					// page break exists after control
+					if (this.model.get('pageBreak') == true) {
+						$('#pageBreakYes').prop('checked', true).button(
+								'refresh');
+					}
+					// set page break on click of yes
+					$('#pageBreakYes').click(function() {
+						Main.currentFieldView.getModel().set({
+							pageBreak : true
+						});
+					});
 
 				},
 
@@ -552,7 +594,7 @@ var Views = {
 
 					this.pvGrid = new dhtmlXGridObject('pvGrid');
 					this.pvGrid
-							.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
+							.setImagePath("dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
 					this.pvGrid
 							.setHeader("<span id = 'header1'>Value</span>,<span id='header2'>Numeric Code</span>,"
 									+ "<span id='header3'>Definition</span>,<span id='header4'>Definition Source</span>,"
@@ -574,27 +616,8 @@ var Views = {
 					 * cell.setValue(1); });
 					 */
 					// set default pv
-					this.pvGrid
-							.attachEvent(
-									"onCellChanged",
-									function(rId, cInd, nValue) {
-										// alert(rId + ' ' + cInd + ' ' +
-										// nValue);
-										if (Main.currentFieldView.getModel()
-												.get('pvs')[rId] == undefined) {
-											// not decided
-										} else {
-											Main.currentFieldView.getModel()
-													.get('pvs')[rId] = Main.currentFieldView
-													.setpvPropertyBasedOnIndex(
-															cInd,
-															Main.currentFieldView
-																	.getModel()
-																	.get('pvs')[rId],
-															nValue);
-										}
-
-									});
+					this.pvGrid.attachEvent("onCellChanged",
+							ControlBizLogic.pvGridHandler);
 					this.pvGrid.init();
 
 					for ( var i = 1; i < 7; i++) {
@@ -632,17 +655,15 @@ var Views = {
 				},
 
 				addPv : function() {
-					var rowId = this.model.get('controlName')
-							+ GlobalMemory.pvCounter;
+					var rowId = "pv_" + GlobalMemory.pvCounter;
 					var defaultPvRadio = "<input type='radio' name='defaultPv' value='"
 							+ rowId + "'>";
 					this.pvGrid.addRow(rowId, [ "", "", "", "", "",
 							defaultPvRadio, "new" ]);
-					this.model.get('pvs')[this.model.get('controlName')
-							+ GlobalMemory.pvCounter] = this
-							.generatePvFromGridData('', '', '', '', '', "add");
-					this.pvGrid.selectRowById(this.model.get('controlName')
-							+ GlobalMemory.pvCounter);
+					this.model.get('pvs')[rowId] = this.generatePvFromGridData(
+							'', '', '', '', '', "add");
+
+					this.pvGrid.selectRowById(rowId);
 					GlobalMemory.pvCounter++;
 					ControlBizLogic.initDefaultPv();
 
@@ -652,6 +673,7 @@ var Views = {
 					var pvIds = this.pvGrid.getSelectedRowId().split(",");
 
 					if (pvIds.length == 1) {
+
 						delete this.model.get('pvs')[pvIds[0]];
 						this.pvGrid.deleteRow(pvIds[0]);
 					} else if (pvIds.length > 1) {
@@ -720,7 +742,7 @@ var Views = {
 				render : function() {
 					var tree = new dhtmlXTreeObject(this.el, "100%", "100%", 0);
 					tree.setSkin('dhx_terrace');
-					tree.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxTree/"
+					tree.setImagePath("dhtmlxSuite_v35/dhtmlxTree/"
 							+ "codebase/imgs/csh_dhx_terrace/");
 					tree.enableDragAndDrop(false);
 					tree.enableTreeImages(false);
@@ -787,7 +809,7 @@ var Views = {
 					this.tab.setSkin('dhx_terrace');
 					// this.tab.setHrefMode("iframes-on-demand");
 					this.tab
-							.setImagePath("csd_web/dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/");
+							.setImagePath("dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/");
 					this.tab.addTab("summaryTab", "Summary", "150px");
 					this.tab.addTab("controlTab", "Add/Edit Control", "150px");
 					this.tab.addTab("advancedControlPropertiesTab",
@@ -905,12 +927,22 @@ var Views = {
 					$('#controllingValuesDiv').hide();
 					$('#calculatedAttributeTab').show();
 					// toggle between tabs.
-					$("#skipLogic").click(function() {
-						$('#calculatedAttributeTab').hide();
-						$('#skipLogicTab').show();
-						$("#controlledField").trigger("liszt:updated");
-						// populate skip logic
+					$("#skipLogic").click(
+							function() {
+								$('#calculatedAttributeTab').hide();
+								$('#skipLogicTab').show();
+								$("#controlledField").trigger("liszt:updated");
+								AdvancedControlPropertiesBizLogic
+										.setSkipRuleControllingFieldsUI();
 
+								// populate skip logic
+								AdvancedControlPropertiesBizLogic
+										.setSkipRuleControllingFieldsUI();
+
+							});
+					// pv subset ui
+					$("#pvSubSet").click(function() {
+						Main.advancedControlsView.populatePvSubSetDropDown();
 					});
 
 					$("#calculatedAttribute").click(function() {
@@ -1500,6 +1532,11 @@ var Views = {
 							Templates.templateList['summaryTemplate'],
 							this.model.toJSON()));
 					$("#form-import-dialog").dialog({
+						modal : true,
+						autoOpen : false
+					}).css("font-size", "10px");
+
+					$("#control-change-dialog").dialog({
 						modal : true,
 						autoOpen : false
 					}).css("font-size", "10px");

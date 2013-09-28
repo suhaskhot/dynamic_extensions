@@ -4,6 +4,54 @@
 
 var ControlBizLogic = {
 
+	_controlTypeChangeRules : {
+		'stringTextField' : [ 'numericField', 'textArea' ],
+		'numericField' : [ 'stringTextField' ],
+		'textArea' : [ 'stringTextField' ],
+		'radioButton' : [ 'checkBox', 'comboBox', 'listBox', 'multiselectBox',
+				'multiselectCheckBox' ],
+		'comboBox' : [ 'checkBox', 'listBox', 'multiselectBox',
+				'multiselectCheckBox', 'radioButton' ],
+		'listBox' : [ 'checkBox', 'comboBox', 'multiselectBox',
+				'multiselectCheckBox', 'radioButton' ],
+		'multiselectBox' : [ 'checkBox', 'comboBox', 'listBox',
+				'multiselectCheckBox', 'radioButton' ],
+		'multiselectCheckBox' : [ 'checkBox', 'comboBox', 'listBox',
+				'multiselectBox', 'radioButton' ],
+		'checkBox' : [ 'radioButton', 'comboBox', 'listBox', 'multiselectBox',
+				'multiselectCheckBox' ],
+		'note' : [ 'heading', 'label' ],
+		'heading' : [ 'note', 'label' ],
+		'label' : [ 'note', 'heading' ]
+	},
+
+	_controlLabels : {
+		'stringTextField' : 'String Text Box',
+		'numericField' : 'Numeric',
+		'textArea' : 'Text Area',
+		'radioButton' : 'Radio Button',
+		'comboBox' : 'Drop down',
+		'checkBox' : 'Check Box',
+		'multiselectBox' : 'Multi Select List Box',
+		'listBox' : 'List Box',
+		'multiselectCheckBox' : 'Multi Select Check Box',
+		'datePicker' : 'Date Picker',
+		'fileUpload' : 'File Upload',
+		'note' : 'Note',
+		'heading' : 'Heading',
+		'label' : 'Label',
+		'subForm' : 'Sub Form',
+		'pageBreak' : 'Page Break'
+	},
+
+	getPermissibleControlTypes : function(controlType) {
+		return ControlBizLogic._controlTypeChangeRules[controlType];
+	},
+
+	getLabelByType : function(controlType) {
+		return ControlBizLogic._controlLabels[controlType];
+	},
+
 	deleteControl : function(model) {
 
 		/*
@@ -399,6 +447,7 @@ var ControlBizLogic = {
 				.getUserData(id, "controlType");
 		var parentControlType = Main.treeView.getTree().getUserData(parentId,
 				"controlType");
+
 		var parentControlName = null;
 		var modifiedControlName = controlName;
 		if (parentControlType == "subForm") {
@@ -406,8 +455,10 @@ var ControlBizLogic = {
 					"controlName");
 			modifiedControlName = parentControlName + "." + modifiedControlName;
 		}
+
 		var control = Main.formView.getFormModel().getControl(
 				modifiedControlName);
+
 		// set parent name if it is a sub form's control
 		if (parentControlName != null) {
 			control.set({
@@ -429,7 +480,7 @@ var ControlBizLogic = {
 			// get the i'th pv
 			var pv = model.get('pvs')[cntr];
 			// add the i'th pv
-			var rowId = model.get('controlName') + GlobalMemory.pvCounter;
+			var rowId = cntr;
 			var defaultPvRadio = "<input type='radio' name='defaultPv' value='"
 					+ rowId + "'>";
 			Main.currentFieldView.getPvGrid().addRow(
@@ -454,14 +505,13 @@ var ControlBizLogic = {
 	 * Create an empty control for editing
 	 */
 	createControl : function(controlType) {
-
+		var shortCode = Utility.getShortCode(controlType);
 		var controlModel = new Models.Field({
 			type : controlType,
 			pvs : {},
 			sequenceNumber : ControlBizLogic.getNextSequenceNumber(),
-			controlName : ""
+			controlName : ''
 		});
-		GlobalMemory.sequenceNumCntr++;
 
 		return controlModel;
 	},
@@ -555,6 +605,99 @@ var ControlBizLogic = {
 						defaultPv : _defaultPv
 					});
 				});
+
+	},
+
+	pvGridHandler : function(rId, cInd, nValue) {
+		// alert(rId + ' ' + cInd + ' ' +
+		// nValue);
+		if (Main.currentFieldView.getModel().get('pvs')[rId] == undefined) {
+			// not decided
+		} else {
+			var isValid = true;
+			// validation for numeric value
+			switch (cInd) {
+			case 1:
+				/*if (isNaN(nValue)) {
+					isValid = false;
+					Main.currentFieldView.setErrorMessageHeader();
+
+					$("#messagesDiv").append(
+							Utility.messageSpace + "! "
+									+ "Numeric code should be numeric."
+									+ "<br>");
+					Main.currentFieldView.getPvGrid.cellById(rId, cInd)
+							.setValue('');
+				}*/
+				break;
+			default:
+			}
+
+			if (isValid) {
+				Main.currentFieldView.getModel().get('pvs')[rId] = Main.currentFieldView
+						.setpvPropertyBasedOnIndex(cInd, Main.currentFieldView
+								.getModel().get('pvs')[rId], nValue);
+			}
+		}
+
+	},
+
+	changeControl : function(control, newType) {
+
+		control.set({
+			type : newType,
+			defaultValue : undefined
+		});
+		
+		var cntrolView = Utility.addFieldHandlerMap[newType](control, true,
+				'controlContainer');
+
+		return cntrolView;
+	},
+
+	changeCurrentControlAndDisplay : function() {
+		// change and show the new type
+		Main.currentFieldView.populateFields();
+		var currentModel = Main.currentFieldView.getModel();
+
+		//alert(JSON.stringify(currentModel.toJSON()));
+		Main.currentFieldView.destroy();
+		Main.currentFieldView = ControlBizLogic.changeControl(currentModel, $(
+				"#newControlType").val());
+		ControlBizLogic.populateViewWithControl(currentModel);
+
+		// edit the control if it has
+		// been already added
+		
+		if (currentModel.has('editName')) {
+			Main.formView.getFormModel().editControl(
+					currentModel.get('editName'), currentModel);
+			Main.currentFieldView.setSubmitCaptionToUpdate();
+			Main.currentFieldView.enableDisableButton("delete", false);
+			Main.currentFieldView.enableDisableButton("copy", false);
+			Main.treeView.getTree().setUserData(
+					currentModel.get('formTreeNodeId'), "controlType", currentModel.get('type'));
+		}
+		// change the carousel
+		Utility.resetCarouselControlSelect();
+		Main.mainTabBarView.highlightSelectedControlType();
+	},
+
+	populatePermissibleControlTypes : function(controlType, selectDropDownId) {
+		var permTypes = ControlBizLogic.getPermissibleControlTypes(controlType);
+		if (permTypes == undefined) {
+		} else {
+			$("#" + selectDropDownId).empty();
+			for ( var cntr = 0; cntr < permTypes.length; cntr++) {
+				var type = permTypes[cntr];
+				var label = ControlBizLogic.getLabelByType(type);
+				$("#" + selectDropDownId).append($("<option/>", {
+					value : type,
+					text : label,
+					title : label
+				}));
+			}
+		}
 
 	}
 

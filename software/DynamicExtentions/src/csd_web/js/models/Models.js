@@ -155,10 +155,10 @@ var Models = {
 					xPos : 1,
 					sequenceNumber : 0,
 					id : null,
-					width : 15,
+					width : 8,
 					noOfRows : 3,
-					noOfDigits : 19,// based on migration code
-					noOfDigitsAfterDecimal : 5, // based on migration code
+					noOfDigits : 6,// based on migration code
+					noOfDigitsAfterDecimal : 2, // based on migration code
 					pvs : {},
 					lazyLoad : true
 				},

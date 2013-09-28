@@ -54,7 +54,7 @@ var Utility = {
 		case "multiselectBox":
 			return 7;
 			break;
-			
+
 		case "listBox":
 			return 8;
 			break;
@@ -102,73 +102,73 @@ var Utility = {
 		switch (type) {
 
 		case "stringTextField":
-			shortCode = "ST_" + GlobalMemory.nodeCounter;
+			shortCode = "ST" + GlobalMemory.nodeCounter;
 			break;
-			
+
 		case "comboBox":
-			shortCode = "DD_" + GlobalMemory.nodeCounter;
+			shortCode = "DD" + GlobalMemory.nodeCounter;
 			break;
 
 		case "numericField":
-			shortCode = "NT_" + GlobalMemory.nodeCounter;
+			shortCode = "NT" + GlobalMemory.nodeCounter;
 			break;
 
 		case "textArea":
-			shortCode = "TA_" + GlobalMemory.nodeCounter;
+			shortCode = "TA" + GlobalMemory.nodeCounter;
 			break;
 
 		case "radioButton":
-			shortCode = "RB_" + GlobalMemory.nodeCounter;
+			shortCode = "RB" + GlobalMemory.nodeCounter;
 			break;
 
 		case "checkBox":
-			shortCode = "CB_" + GlobalMemory.nodeCounter;
+			shortCode = "CB" + GlobalMemory.nodeCounter;
 			break;
 
 		case "listBox":
-			shortCode = "LB_" + GlobalMemory.nodeCounter;
+			shortCode = "LB" + GlobalMemory.nodeCounter;
 			break;
 
 		case "multiselectBox":
-			shortCode = "MLB_" + GlobalMemory.nodeCounter;
+			shortCode = "MLB" + GlobalMemory.nodeCounter;
 			break;
 
 		case "multiselectCheckBox":
-			shortCode = "MCB_" + GlobalMemory.nodeCounter;
+			shortCode = "MCB" + GlobalMemory.nodeCounter;
 			break;
 
 		case "datePicker":
-			shortCode = "DP_" + GlobalMemory.nodeCounter;
+			shortCode = "DP" + GlobalMemory.nodeCounter;
 			break;
 
 		case "fileUpload":
-			shortCode = "FU_" + GlobalMemory.nodeCounter;
+			shortCode = "FU" + GlobalMemory.nodeCounter;
 			break;
 
 		case "note":
-			shortCode = "N_" + GlobalMemory.nodeCounter;
+			shortCode = "N" + GlobalMemory.nodeCounter;
 			break;
 
 		case "heading":
-			shortCode = "H_" + GlobalMemory.nodeCounter;
+			shortCode = "H" + GlobalMemory.nodeCounter;
 			break;
 
 		case "label":
-			shortCode = "L_" + GlobalMemory.nodeCounter;
+			shortCode = "L" + GlobalMemory.nodeCounter;
 			break;
 
 		case "subForm":
-			shortCode = "SF_" + GlobalMemory.nodeCounter;
+			shortCode = "SF" + GlobalMemory.nodeCounter;
 			break;
 
 		case "pageBreak":
-			shortCode = "PB_" + GlobalMemory.nodeCounter;
+			shortCode = "PB" + GlobalMemory.nodeCounter;
 			break;
 
 		default:
 
 		}
-		
+
 		return shortCode;
 	},
 
@@ -273,8 +273,23 @@ var Utility = {
 		else
 			return controlModel;
 	},
-	
+
 	addMultiselectDropDown : function(controlModel, show, container) {
+		controlModel.set({
+			template : Templates.templateList['multiSelectDropdownTemplate']
+					+ Templates.templateList['commonControlPropsTemplate']
+					+ Templates.templateList['pvTemplate']
+					+ Templates.templateList['submitButtonTemplate'],
+			autoComplete : true
+		});
+
+		if (show)
+			return Views.showControl(container, controlModel);
+		else
+			return controlModel;
+	},
+
+	addMultiselect : function(controlModel, show, container) {
 		controlModel.set({
 			template : Templates.templateList['multiSelectDropdownTemplate']
 					+ Templates.templateList['commonControlPropsTemplate']
@@ -386,7 +401,10 @@ var Utility = {
 		controlModel.set({
 			template : Templates.templateList['pageBreakTemplate']
 					+ Templates.templateList['submitButtonTemplate']
+			
 		});
+
+		if(controlModel.has('controlName')){}else{controlModel.set({controlName : Utility.getShortCode("pageBreak")});}
 
 		if (show)
 			return Views.showControl(container, controlModel);
@@ -404,7 +422,7 @@ var Utility = {
 		this.addFieldHandlerMap['checkBox'] = this.addCheckBox;
 		this.addFieldHandlerMap['comboBox'] = this.addDropDown;
 		this.addFieldHandlerMap['listBox'] = this.addMultiselectDropDown;
-		this.addFieldHandlerMap['multiselectBox'] = this.addMultiselectDropDown;
+		this.addFieldHandlerMap['multiselectBox'] = this.addMultiselect;
 		this.addFieldHandlerMap['multiselectCheckBox'] = this.addMultiselectCheckBox;
 		this.addFieldHandlerMap['datePicker'] = this.addDatePicker;
 		this.addFieldHandlerMap['fileUpload'] = this.addFileUpload;

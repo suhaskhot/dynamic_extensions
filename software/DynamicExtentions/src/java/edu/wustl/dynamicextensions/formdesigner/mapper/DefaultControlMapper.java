@@ -35,6 +35,11 @@ public abstract class DefaultControlMapper {
 		if (controlCaption != null) {
 			control.setCaption(controlCaption);
 		}
+		
+		String userDefinedName = controlProps.getString("userDefinedName");
+		if (controlCaption != null) {
+			control.setUserDefinedName(userDefinedName);
+		}
 
 		String controlName = controlProps.getString(CSDConstants.CONTROL_NAME);
 		if (controlName != null) {
@@ -132,5 +137,6 @@ public abstract class DefaultControlMapper {
 		controlProps.setProperty("toolTip", control.getToolTip());
 		controlProps.setProperty("labelPosition", getStringLabelPosition(control.getLabelPosition()));
 		controlProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
+		controlProps.setProperty("userDefinedName", control.getUserDefinedName());
 	}
 }

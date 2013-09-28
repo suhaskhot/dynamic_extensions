@@ -361,7 +361,7 @@ public class SkipRuleMapper {
 
 	public String getSubFormControlNameFromSubFormName(String subFormName, String subControlName) {
 		String subFormControlName = null;
-		for (Control control : container.getAllControls()) {
+		for (Control control : container.getControls()) {
 			if (control instanceof SubFormControl) {
 				SubFormControl subFormControl = (SubFormControl) control;
 				if (subFormControl.getSubContainer().getName().equalsIgnoreCase(subFormName)) {

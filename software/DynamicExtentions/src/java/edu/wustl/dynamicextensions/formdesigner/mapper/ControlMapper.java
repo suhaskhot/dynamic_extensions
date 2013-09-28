@@ -11,7 +11,7 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.Label;
-import edu.common.dynamicextensions.domain.nui.ListBox;
+//import edu.common.dynamicextensions.domain.nui.ListBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
@@ -40,7 +40,7 @@ public class ControlMapper {
 			put(CSDConstants.TEXT_AREA, new TextAreaMapper());
 			put(CSDConstants.RADIO_BUTTON, new RadioButtonMapper());
 			put(CSDConstants.CHECK_BOX, new CheckBoxMapper());
-			put(CSDConstants.LIST_BOX, new ListBoxMapper());
+			put(CSDConstants.LIST_BOX, new MultiSelectBoxMapper());
 			put(CSDConstants.MULTISELECT_BOX, new MultiSelectBoxMapper());
 			put(CSDConstants.MULTISELECT_CHECK_BOX, new MultiSelectCheckBoxMapper());
 			put(CSDConstants.DATE_PICKER, new DatePickerMapper());
@@ -75,8 +75,6 @@ public class ControlMapper {
 			type = CSDConstants.CHECK_BOX;
 		} else if (control instanceof MultiSelectListBox) {
 			type = CSDConstants.MULTISELECT_BOX;
-		} else if (control instanceof ListBox) {
-			type = CSDConstants.LIST_BOX;
 		} else if (control instanceof MultiSelectCheckBox) {
 			type = CSDConstants.MULTISELECT_CHECK_BOX;
 		} else if (control instanceof FileUploadControl) {
@@ -255,6 +253,7 @@ public class ControlMapper {
 		public Control propertiesToControl(Properties controlProps) {
 			CheckBox control = new CheckBox();
 			setCommonProperties(controlProps, control);
+			control.setDefaultValueChecked(controlProps.getBoolean("isChecked"));
 			return control;
 		}
 
@@ -263,6 +262,7 @@ public class ControlMapper {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.CHECK_BOX);
 			getCommonProperties(controlProps, control);
+			controlProps.setProperty("isChecked", ((CheckBox) control).isDefaultValueChecked());
 			return controlProps;
 		}
 	}
@@ -271,13 +271,13 @@ public class ControlMapper {
 	 * Mapper for list box
 	 *
 	 */
-	private class ListBoxMapper extends DefaultControlMapper {
+	/*private class ListBoxMapper extends DefaultControlMapper {
 
 		@Override
 		public Control propertiesToControl(Properties controlProps) throws Exception {
 			ListBox control = new ListBox();
 			setCommonProperties(controlProps, control);
-			control.setAutoCompleteDropdownEnabled(true);
+			//control.setAutoCompleteDropdownEnabled(true);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
 			return control;
 		}
@@ -287,11 +287,11 @@ public class ControlMapper {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LIST_BOX);
 			getCommonProperties(controlProps, control);
-			controlProps.setProperty("autoComplete", true);
+			//controlProps.setProperty("autoComplete", true);
 			PvMapper.pVDataSourcetoProperties(((ListBox) control).getPvDataSource(), controlProps);
 			return controlProps;
 		}
-	}
+	}*/
 
 	/**
 	 * Mapper for multi select box
@@ -304,15 +304,24 @@ public class ControlMapper {
 			MultiSelectListBox control = new MultiSelectListBox();
 			setCommonProperties(controlProps, control);
 			control.setPvDataSource(PvMapper.propertiesToPvDataSource(controlProps));
+			control.setAutoCompleteDropdownEnabled(controlProps.getBoolean("autoComplete"));
 			return control;
 		}
 
 		@Override
 		public Properties controlToProperties(Control control) {
 			Properties controlProps = new Properties();
-			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.MULTISELECT_BOX);
+			boolean autoComplete = ((MultiSelectListBox) control).isAutoCompleteDropdownEnabled();
+
+			if (autoComplete) {
+				controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.LIST_BOX);
+			} else {
+				controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.MULTISELECT_BOX);
+			}
+
 			getCommonProperties(controlProps, control);
 			PvMapper.pVDataSourcetoProperties(((MultiSelectListBox) control).getPvDataSource(), controlProps);
+			controlProps.setProperty("autoComplete", autoComplete);
 			return controlProps;
 		}
 	}

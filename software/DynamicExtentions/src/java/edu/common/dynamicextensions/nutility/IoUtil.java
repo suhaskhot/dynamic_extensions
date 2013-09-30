@@ -90,12 +90,22 @@ public class IoUtil {
 	}
 	
 	public static void zipFiles(String inputDir, String outFilePath) {
-		FileOutputStream fout = null;
-		ZipOutputStream zout = null;
-		
+		FileOutputStream fout = null;				
 		try {
 			fout = new FileOutputStream(outFilePath);
-			zout = new ZipOutputStream(fout);
+			zipFiles(inputDir, fout);
+		} catch (Exception e) {
+			throw new RuntimeException("Error creating zip file", e);
+		} finally {
+			IoUtil.close(fout);
+		}
+	}
+	
+	public static void zipFiles(String inputDir, OutputStream out) {
+		ZipOutputStream zout = null;
+	
+		try {		
+			zout = new ZipOutputStream(out);
 
 			File inputDirFile = new File(inputDir);
 			URI baseDir = inputDirFile.toURI();
@@ -121,7 +131,7 @@ public class IoUtil {
 			throw new RuntimeException("Error zipping input directory:" + inputDir, e);
 		} finally {
 			IoUtil.close(zout);
-			IoUtil.close(fout);
+			
 		}
 	}
 	

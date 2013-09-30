@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.query;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +34,9 @@ public class SasProgramGenerator {
 	public void generate(List<ResultColumn> columns) {
 		FileWriter writer = null;
 		FormatInfo formatInfo = new FormatInfo();
-		
-		try {			
+				
+		try {
+			
 			generateFormatInfo(columns, formatInfo);
 			
 			writer = new FileWriter(pgmFile);						
@@ -65,46 +67,9 @@ public class SasProgramGenerator {
 		
 		try {
 			writer = new FileWriter(pvFile);
-			
-			writer.write("\r\n/********** numberToStringFormat **********/\r\n");
-			writer.write("proc format ; \r\n");
-			
-			for (PvVar pvVar : formatInfo.getPvVars()) {
-				FieldNode field = (FieldNode)pvVar.column.getExpression();
-				SelectControl ctrl = (SelectControl)field.getCtrl();
-				
-				writer.write("\r\n/* Numeric to character format for " + pvVar.varName + " */ \r\n");
-				writer.write("\r\n value $" + pvVar.varName + "noToStrFmt\r\n");
-				
-				int count = 1;
-				for (PermissibleValue pv : ctrl.getPvs()) {					
-					writer.write(count + " = " + " \"" + pv.getValue() + "\"\r\n");
-					++count;
-				}
-				
-				writer.write(";\r\n");
-			}
-			
-			writer.write("\r\n/********** stringToNumberFormat **********/\r\n");
-			writer.write("proc format ; \r\n");
-
-			for (PvVar pvVar : formatInfo.getPvVars()) {
-				FieldNode field = (FieldNode)pvVar.column.getExpression();
-				SelectControl ctrl = (SelectControl)field.getCtrl();
-				
-				writer.write("\r\n/* Character to numeric format for " + pvVar.varName + " */ \r\n");
-				writer.write("\r\n value $" + pvVar.varName + "strToNoFmt\r\n");
-				
-				int count = 1;
-				for (PermissibleValue pv : ctrl.getPvs()) {					
-					writer.write(" \"" + pv.getValue() + "\"" + " = " + count + "\r\n");
-					++count;
-				}
-				
-				writer.write(";\r\n");
-			}
-			
-			writer.write("\r\n run;\r\n");
+			writeNum2StrMapping(writer, formatInfo);
+			writeStr2NumMapping(writer, formatInfo);			
+			writer.write("\r\nrun;\r\n");
 			writer.flush();			
 		} catch (Exception e) {
 			throw new RuntimeException("Error writing PV mapping file", e);
@@ -171,6 +136,54 @@ public class SasProgramGenerator {
 			}
 		}
 		
+	}
+	
+	private void writeNum2StrMapping(Writer writer, FormatInfo formatInfo) 
+	throws IOException {
+		writer.write("\r\n/********** numberToStringFormat **********/\r\n");
+		writer.write("proc format ; \r\n");
+		
+		for (PvVar pvVar : formatInfo.getPvVars()) {
+			FieldNode field = (FieldNode)pvVar.column.getExpression();
+			SelectControl ctrl = (SelectControl)field.getCtrl();
+			
+			writer.write("\r\n/* Numeric to character format for " + pvVar.varName + " */ \r\n");
+			writer.write("\r\n value $" + pvVar.varName + "noToStrFmt\r\n");
+			
+			int count = 1;
+			for (PermissibleValue pv : ctrl.getPvs()) {					
+				writer.write(count + " = " + " \"" + pv.getValue() + "\"\r\n");
+				++count;
+			}
+			
+			writer.write(";\r\n");
+		}
+		
+		writer.flush();		
+	}
+	
+	private void writeStr2NumMapping(Writer writer, FormatInfo formatInfo)
+	throws IOException {
+		writer.write("\r\n/********** stringToNumberFormat **********/\r\n");
+		writer.write("proc format ; \r\n");
+
+		for (PvVar pvVar : formatInfo.getPvVars()) {
+			FieldNode field = (FieldNode)pvVar.column.getExpression();
+			SelectControl ctrl = (SelectControl)field.getCtrl();
+			
+			writer.write("\r\n/* Character to numeric format for " + pvVar.varName + " */ \r\n");
+			writer.write("\r\n value $" + pvVar.varName + "strToNoFmt\r\n");
+			
+			int count = 1;
+			for (PermissibleValue pv : ctrl.getPvs()) {					
+				writer.write(" \"" + pv.getValue() + "\"" + " = " + count + "\r\n");
+				++count;
+			}
+			
+			writer.write(";\r\n");
+		}
+		
+		writer.flush();		
 	}
 	
 	private String getUniqueName(Map<String, Integer> countMap, String name) {

@@ -1,46 +1,61 @@
-<div style= "padding-top : 15px;">
-<div style = 'width: 100%;'>
-	<div style = 'width: 70%; padding: 3px; margin: 3px; float: left;' align = right >
+
+<div class = "propertiesContainer" style= "padding-top : 15px;">
+	<div class = "propertiesContainerCell" style = 'width: 70%; padding: 3px; margin: 3px;' align = right >
 		<label class = 'text_normal'>Form Name</label>
 		<input id = 'formCaption' type = 'text' value = '{{caption}}' class = 'textBox' style = "width : 85%">
 		<input id = 'formName' type = 'hidden' value = '{{formName}}'>
 	</div>
 </div>			
-</div>
-<div  style = 'width: 100%; float: left;'><br><br></div>
-<div style = 'width: 100%;'>
-	<div style = 'width: 45%; padding: 3px; margin: 3px; float: left;' align = left>
+
+
+<div class = "propertiesContainer" style = "width : 100%;"><div class = "propertiesContainerCell"><br><br></div></div>
+
+<div class = "propertiesContainer" style = "width : 100%; margin-left: 40px;">
+	<div class = "propertiesContainerCell" style = 'width: 45%; padding: 3px; margin: 3px;' align = left>
 		<label class = 'text_normal' style = 'padding-left: 28px;'>Created by: </label>
 		<label class = 'readOnlyTextBox' id = "createdBy">{{createdBy}}</label>
 	</div>
-	<div style = 'width: 45%; padding: 3px; margin: 3px; float: left;' align = left>
+	<div class = "propertiesContainerCell" style = 'width: 45%; padding: 3px; margin: 3px;' align = left>
 		<label class = 'text_normal' style = 'padding-left: 28px;'>Created on: </label>
 		<label class = 'readOnlyTextBox' id = "createdOn">{{createdOn}}</label>
 	</div>
 </div>
 
-<div style = 'width: 100%;'>
-	<div style = 'width: 45%; padding: 3px; margin: 3px; float: left;' align = left>
+<div class = "propertiesContainer" style = "width : 100%; margin-left: 40px;">
+	<div class = "propertiesContainerCell" style = 'width: 45%; padding: 3px; margin: 3px;' align = left>
 		<label class = 'text_normal'>Last modified by: </label>
 		<label class = 'readOnlyTextBox' id = "lastModifiedBy">{{lastModifiedBy}}</label>
 	</div>
-	<div style = 'width: 45%; padding: 3px; margin: 3px; float: left;' align = left>
+	<div class = "propertiesContainerCell" style = 'width: 45%; padding: 3px; margin: 3px;' align = left>
 		<label class = 'text_normal'>Last modified on: </label>
 		<label class = 'readOnlyTextBox' id = "lastModifiedOn">{{lastModifiedOn}}</label>
 	</div>
 </div>
 
-<div  style = 'width: 100%; float : left;'><br><br></div>
+<div class = "propertiesContainer" style = "width : 100%;"><div class = "propertiesContainerCell"><br><br></div></div>
 
-<div style = 'width: 100%;'>
-	<div style = 'width: 71%; padding: 3px; margin: 3px; float: left;' align = right >
-		<input type = 'button' class = 'button' value = '&nbsp;Save &nbsp;' id = 'saveForm' style = 'width: 22%'>&nbsp;		
-
-		<input type = 'button' class = 'button' value = '&nbsp;Import &nbsp;' id = 'importFormButton' style = 'width: 22%'>&nbsp;	
-	
-		<input type = 'button' class = 'button' value = '&nbsp;Export &nbsp;' id = 'exportForm' style = 'width: 22%'>&nbsp;	
-		
-		<input type = 'button' class = 'button' value = '&nbsp;Delete &nbsp;' id = 'deleteForm' style = 'width: 22%'>&nbsp;	
+<div class = "propertiesContainer">
+	<div class = "propertiesContainerCell" style = 'width: 45%; padding: 3px;' align = left>
+	<div align = left id="globalLabelAlignment" style = 'font-size:62.5%; margin-left: 45px;'>
+		<label class = 'text_normal'>Label Position</label>
+		<input type="radio" id="global_align_left" name="globalLabelAlignment" checked="checked" />
+		<label for="global_align_left">Left</label>
+		<input type="radio" id="global_align_top" name="globalLabelAlignment"/>
+		<label for="global_align_top">Top</label>
+	</div>
 	</div>
 </div>
+
+<div class = "propertiesContainer" style = "width : 100%;"><div class = "propertiesContainerCell"><br><br></div></div>
+
+<div class = "propertiesContainer" style = "width : 80%;">
+	<div class = "propertiesContainerCell" style = 'width: 70%; padding: 3px; margin: 3px;' align = right >
+		<input type = 'button' class = 'button' value = '&nbsp;Save &nbsp;' id = 'saveForm' style = 'width: 20%'>&nbsp;		
+
+		<input type = 'button' class = 'button' value = '&nbsp;Import &nbsp;' id = 'importFormButton' style = 'width: 20%'>&nbsp;	
+	
+		<input type = 'button' class = 'button' value = '&nbsp;Export &nbsp;' id = 'exportForm' style = 'width: 20%'>&nbsp;	
+		
+		<input type = 'button' class = 'button' value = '&nbsp;Delete &nbsp;' id = 'deleteForm' style = 'width: 20%'>&nbsp;	
+	</div>
 </div>

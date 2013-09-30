@@ -18,5 +18,6 @@ var GlobalMemory = {
 	generalFlag : false,
 	controlName : null,
 	skipRulesCounter : 1,
-	editForm : false
+	editForm : false,
+	globalLabelPosition : "LEFT"
 }

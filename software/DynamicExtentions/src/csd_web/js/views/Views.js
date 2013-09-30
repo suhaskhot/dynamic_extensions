@@ -201,8 +201,8 @@ var Views = {
 				},
 
 				setAttributeName : function(event) {
-					var userDefinedName = Utility.toCamelCase($('#controlCaption')
-							.val());
+					var userDefinedName = Utility.toCamelCase($(
+							'#controlCaption').val());
 					if (userDefinedName.length > 28) {
 						userDefinedName = userDefinedName.substring(0, 27) + ""
 								+ GlobalMemory.nodeCounter;
@@ -211,7 +211,8 @@ var Views = {
 				},
 
 				changeControl : function(event) {
-					var currentType = Main.currentFieldView.getModel().get('type');
+					var currentType = Main.currentFieldView.getModel().get(
+							'type');
 					ControlBizLogic.populatePermissibleControlTypes(
 							currentType, 'newControlType');
 					$("#control-change-dialog")
@@ -222,7 +223,8 @@ var Views = {
 												$(this).dialog("close");
 											},
 											Ok : function() {
-												ControlBizLogic.changeCurrentControlAndDisplay()
+												ControlBizLogic
+														.changeCurrentControlAndDisplay()
 												// close the dialog
 												$(this).dialog("close");
 											}
@@ -408,7 +410,10 @@ var Views = {
 								maximumValue : $('#maximumValue').val(),
 								minimumValue : $('#minimumValue').val(),
 								width : $('#width').val(),
-								userDefinedName : $('#controlName').val(),// change it after implementation
+								userDefinedName : $('#controlName').val(),// change
+								// it
+								// after
+								// implementation
 								dataType : $('#dataType').val(),
 								format : $('#format').val(),
 								isPHI : $('#isPHI').is(":checked"),
@@ -543,14 +548,20 @@ var Views = {
 					$("#addPageBreak").buttonset();
 					// init label position
 					$("#labelAlignment").buttonset();
+					
 					// show the set position
-					var labelPos = this.model.get('labelPosition');
+					var labelPos = GlobalMemory.globalLabelPosition;
+					if (this.model.has('labelPosition')) {
+						labelPos = this.model.get('labelPosition');
+					}
+
 					if (labelPos == "TOP") {
 						labelPos = "align_top";
 					} else if (labelPos == "LEFT") {
 						labelPos = "align_left";
 					}
 					$('#' + labelPos).prop('checked', true).button('refresh');
+
 					// page break exists after control
 					if (this.model.get('pageBreak') == true) {
 						$('#pageBreakYes').prop('checked', true).button(
@@ -1566,6 +1577,18 @@ var Views = {
 										}
 									});
 					$("#importFileWaitingImage").hide();
+					// init global label position
+					$("#globalLabelAlignment").buttonset();
+
+					// setting global label position
+					$('#global_align_left').click(function() {
+						GlobalMemory.globalLabelPosition = "LEFT";
+					});
+
+					$('#global_align_top').click(function() {
+						GlobalMemory.globalLabelPosition = "TOP";
+					});
+
 				},
 
 				saveForm : function(event) {

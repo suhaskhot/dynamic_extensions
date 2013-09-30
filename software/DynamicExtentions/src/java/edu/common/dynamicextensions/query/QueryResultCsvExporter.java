@@ -1,6 +1,6 @@
 package edu.common.dynamicextensions.query;	
 
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
@@ -12,43 +12,39 @@ public class QueryResultCsvExporter implements QueryResultExporter {
 	
 	@Override
 	public void export(String exportPath, Query query) {
-		export(getCsvWriter(exportPath), query);
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream(exportPath);
+			export(out, query);
+		} catch (Exception e) {
+			throw new RuntimeException("Error exporting CSV file", e);
+		} finally {
+			IoUtil.close(out);
+		}		
 	}
 
 	@Override
 	public void export(OutputStream out, Query query) {
-		export(getCsvWriter(out), query);		
+		QueryResultData data = query.getData();
+		data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
+		export(out, data);
 	}
-	
-	private void export(CSVWriter csvWriter, Query query) {
+
+	@Override
+	public void export(OutputStream out, QueryResultData result) {
+		CSVWriter csvWriter = null;
+
 		try {
-			query.columnHeadingSeparator("_");
-			QueryResultData data = query.getData();
-			
-			csvWriter.writeNext(data.headerColumns());
-			
-			for (int i = 0; i < data.rowCount(); ++i) {
-				csvWriter.writeNext(data.stringifiedRow(i));
-			}			
+			csvWriter = getCsvWriter(out);			
+			csvWriter.writeNext(result.getColumnLabels());			
+			for (int i = 0; i < result.rowCount(); ++i) {
+				csvWriter.writeNext(result.stringifiedRow(i));
+			}						
 		} catch (Exception e) {
 			throw new RuntimeException("Error writing query result data to CSV file", e);
 		} finally {
-			if (csvWriter != null) {
-				try { csvWriter.close(); } catch(Exception e) { }				
-			}
-		}				
-	}
-	
-	private CSVWriter getCsvWriter(String exportPath) {		
-		FileWriter fileWriter = null;
-		
-		try {
-			fileWriter = new FileWriter(exportPath);
-			return new CSVWriter(fileWriter);
-		} catch (Exception e) {
-			IoUtil.close(fileWriter);
-			throw new RuntimeException("Error opening csv file for writing", e);
-		} 
+			IoUtil.close(csvWriter);
+		}		
 	}
 	
 	private CSVWriter getCsvWriter(OutputStream out) {

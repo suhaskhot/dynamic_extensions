@@ -12,9 +12,7 @@ import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 
-public class WideRowGenerator {
-	private static final String separator = ": ";
-	
+public class WideRowGenerator {		
 	private Map<String, WideRowNode> wideRows = new LinkedHashMap<String, WideRowNode>();
 	
 	private Map<String, String[]> tabJoinPath = new HashMap<String, String[]>();
@@ -244,8 +242,8 @@ public class WideRowGenerator {
 	
 	private QueryResultData initQueryResultData(WideRowNode wideRow) {
 		Map<String, List<FieldNode>> fieldsMap = getTabFieldsMap();
-		List<String> columnHeadings = wideRow.getColumnHeadings(aliasRowCountMap, fieldsMap); 
-		return new QueryResultData(columnHeadings.toArray(new String[0]));
+		List<ResultColumn> columns = wideRow.getTabColumns(aliasRowCountMap, fieldsMap); 
+		return new QueryResultData(columns);
 	}
 		
 	private class WideRowNode {
@@ -310,13 +308,13 @@ public class WideRowGenerator {
     	}
     	
     	
-    	public List<String> getColumnHeadings(Map<String, Integer> maxCount, Map<String, List<FieldNode>> fieldsMap) {
-    		List<String> result = new ArrayList<String>();
+    	public List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<FieldNode>> fieldsMap) {
+    		List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
     		
     		if (columns != null) {
     			List<FieldNode> fields = fieldsMap.get(alias);
     			for (FieldNode field : fields) {
-    				result.add(Query.getColumnHeading(field, separator));
+    				resultColumns.add(new ResultColumn(field, 0));
     			}    			
     		}
     		
@@ -324,15 +322,17 @@ public class WideRowGenerator {
     			assert(!childTabRows.getValue().isEmpty());    				
     				
     			WideRowNode childTabRow = childTabRows.getValue().values().iterator().next();
-    			List<String> childTabRowColHeading = childTabRow.getColumnHeadings(maxCount, fieldsMap);
+    			List<ResultColumn> childTabRowColumns = childTabRow.getTabColumns(maxCount, fieldsMap);
     				
     			Integer count = maxCount.get(childTabRows.getKey());
     			for (int i = 0; i < count; ++i) {
-    				result.addAll(childTabRowColHeading);
+    				for (ResultColumn column : childTabRowColumns) {
+    					resultColumns.add(new ResultColumn(column.getExpression(), i));
+    				}    				
     			}    				
     		}
     		
-    		return result;
+    		return resultColumns;
     	}    	
 	}
 }

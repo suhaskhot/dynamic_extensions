@@ -4,16 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QueryResultData {
-    private String[] headerColumns;
+    private ResultColumnLabelFormatter formatter = new DefaultResultColLabelFormatter(": ");
+    
+    private List<ResultColumn> resultColumns;
     
     private List<Object[]> rows = new ArrayList<Object[]>();
 	
-    public QueryResultData(String headerColumns[]) {
-        this.headerColumns = headerColumns;
+    public QueryResultData(List<ResultColumn> resultColumns) {
+        this.resultColumns = resultColumns;
+    }
+    
+    public void setColumnLabelFormatter(ResultColumnLabelFormatter formatter) {
+    	this.formatter = formatter;
     }
 
-    public String[] headerColumns() {
-        return headerColumns;
+    public String[] getColumnLabels() {
+        String[] labels = new String[resultColumns.size()];
+        int i = 0;
+        for (ResultColumn column : resultColumns) {
+        	labels[i++] = column.getColumnLabel(formatter);
+        }
+        
+        return labels;
+    }
+    
+    public List<ResultColumn> getResultColumns() {
+    	return resultColumns;
     }
 
     public int rowCount() {
@@ -44,7 +60,7 @@ public class QueryResultData {
     }
 
     public void createRow() {
-        Object row[] = new Object[headerColumns.length];
+        Object row[] = new Object[resultColumns.size()];
         rows.add(row);
     }
 

@@ -1,10 +1,11 @@
 package edu.common.dynamicextensions.query;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
-import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
 
@@ -12,9 +13,7 @@ public class Query {
     private JoinTree queryJoinTree;
 
     private QueryExpressionNode queryExpr;
-    
-    private String separator = ": ";
-    
+        
     private boolean wideRows;
 		
     public static Query createQuery() {
@@ -23,12 +22,7 @@ public class Query {
     
     private Query() {
     }
-    
-    public Query columnHeadingSeparator(String separator) {
-    	this.separator = separator;
-    	return this;
-    }
-    
+        
     public Query wideRows(boolean wideRows) {
     	this.wideRows = wideRows;
     	return this;
@@ -89,7 +83,7 @@ public class Query {
             	resultData = getWideRowData(rs);
             	if (resultData == null) {
             		// this will ensure at least the header columns are populated
-            		resultData = new QueryResultData(getColumnNames(queryExpr));
+            		resultData = new QueryResultData(getResultColumns(queryExpr));
             	}
             } else {
             	resultData = getQueryResultData(rs);
@@ -117,10 +111,10 @@ public class Query {
 
     private QueryResultData getQueryResultData(ResultSet rs)
     throws Exception {
-        String columnNames[] = getColumnNames(queryExpr);
-        int columnCount = columnNames.length;
+        List<ResultColumn> columns = getResultColumns(queryExpr);
+        int columnCount = columns.size();
         
-        QueryResultData queryResult = new QueryResultData(columnNames);
+        QueryResultData queryResult = new QueryResultData(columns);
         while (rs.next()) {
         	Object[] row = new Object[columnCount];
         	for (int i = 0; i < columnCount; ++i) {
@@ -140,37 +134,15 @@ public class Query {
    		wideRowGenerator.end();
    		return wideRowGenerator.getQueryResultData();
     }
-       
-    private String[] getColumnNames(QueryExpressionNode queryExpr) {
+           
+    private List<ResultColumn> getResultColumns(QueryExpressionNode queryExpr) {
     	SelectListNode selectList = queryExpr.getSelectList();
-    	String columns[] = new String[selectList.getElements().size()];
+    	List<ResultColumn> columns = new ArrayList<ResultColumn>();
     	
-    	int i = 0;
     	for (ExpressionNode node : selectList.getElements()) {
-    		if (node instanceof FieldNode) {
-    			columns[i] = getColumnHeading((FieldNode)node);    			
-    		} else {
-    			columns[i] = "Column " + i; // TODO: for types of expression node
-    		}
-    		
-    		++i;
+    		columns.add(new ResultColumn(node, 0));
     	}
     	
-    	return columns;
-    }
-    
-    private String getColumnHeading(FieldNode node) {
-    	return getColumnHeading(node, separator);
-    }
-    
-    public static String getColumnHeading(FieldNode node, String separator) {
-		String[] nodeCaptions = node.getNodeCaptions();
-		
-		StringBuilder heading = new StringBuilder(nodeCaptions[0]);
-		for (int j = 1; j < nodeCaptions.length; ++j) {
-			heading.append(separator).append(nodeCaptions[j]);
-		}
-		
-		return heading.toString();    	
+    	return columns;    	
     }    
 }

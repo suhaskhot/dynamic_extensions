@@ -26,6 +26,7 @@ literal_values: '(' literal (',' literal)* ')'
 literal       : SLITERAL                             #StringLiteral 
               | INT                                  #IntLiteral
               | FLOAT                                #FloatLiteral
+              | BOOL                                 #BoolLiteral
               ;                            
 	 
 arith_expr    : arith_expr ARITH_OP arith_expr       #ArithExpr
@@ -61,6 +62,7 @@ EOP      : ('exists'|'not exists');
 OP       : ('>'|'<'|'>='|'<='|'='|'!='|'like');
 INT      : '-'? DIGIT+;
 FLOAT    : '-'? DIGIT+ '.' DIGIT+;
+BOOL     : ('true'|'false');
 YEAR     : DIGIT+ ('y'|'Y');
 MONTH    : DIGIT+ ('m'|'M');
 DAY      : DIGIT+ ('d'|'D');

@@ -214,6 +214,13 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	return value;
     }
     
+    @Override
+    public LiteralValueNode visitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) {
+    	LiteralValueNode value = new LiteralValueNode(DataType.BOOLEAN);
+    	value.getValues().add(Boolean.parseBoolean(ctx.BOOL().getText()));
+    	return value;
+    }
+    
     @Override 
     public DateIntervalNode visitDate_interval(@NotNull AQLParser.Date_intervalContext ctx) {
     	DateIntervalNode di = new DateIntervalNode();

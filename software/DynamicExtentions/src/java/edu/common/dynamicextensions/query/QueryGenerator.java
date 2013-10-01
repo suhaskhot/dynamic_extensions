@@ -291,6 +291,10 @@ public class QueryGenerator {
     				result = "to_date(" + result + ", 'MM-DD-YYYY')";
     			}        		
     			break;
+    			
+    		case BOOLEAN:
+    			result = ((Boolean)value.getValues().get(0)) ? "1" : "0";
+    			break;
     		
     		default:
     			result = value.getValues().get(0).toString();

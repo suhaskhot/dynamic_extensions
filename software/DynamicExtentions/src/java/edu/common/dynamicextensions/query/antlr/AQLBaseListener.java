@@ -212,6 +212,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
 	/**
 	 * {@inheritDoc}

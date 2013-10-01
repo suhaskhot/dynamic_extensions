@@ -138,6 +138,14 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
+	@Override public T visitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
 	@Override public T visitSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { return visitChildren(ctx); }
 
 	/**

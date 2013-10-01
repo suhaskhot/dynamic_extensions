@@ -174,6 +174,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitParensFilterExpr(@NotNull AQLParser.ParensFilterExprContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#BoolLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#BoolLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#SelectExpr}.
 	 * @param ctx the parse tree
 	 */

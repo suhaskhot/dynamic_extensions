@@ -7,7 +7,7 @@
 		<row>
 			<label>
 				<name>FormHeading</name>
-				<userDefinedName>Form Heading</userDefinedName>       		
+				<udn>Form Heading</udn>       		
 				<heading>Fill in correct personal details for loan processing</heading>	
 			</label>		
 		</row>
@@ -15,7 +15,7 @@
 		<row>
 			<radioButton>
 				<name>gender</name>
-				<userDefinedName>Gender</userDefinedName>       		
+				<udn>Gender</udn>       		
 				<caption>Gender</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>
@@ -36,7 +36,7 @@
 		<row>
 			<checkBox>
 				<name>sourcesOfIncome</name>
-				<userDefinedName>Sources of Income</userDefinedName>       		
+				<udn>Sources of Income</udn>       		
 				<caption>Sources of Income</caption>
 				<options>
 					<option>
@@ -62,7 +62,7 @@
 		<row>
 			<listBox>
 				<name>bankAccounts</name>
-				<userDefinedName>Bank Accounts</userDefinedName>       		
+				<udn>Bank Accounts</udn>       		
 				<caption>Select banks where you have maintained savings account</caption>
 				<mandatory>true</mandatory>
 				<multiSelect>true</multiSelect>				

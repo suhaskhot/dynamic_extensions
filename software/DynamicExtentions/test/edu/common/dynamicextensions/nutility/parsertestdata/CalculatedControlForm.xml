@@ -7,7 +7,7 @@
 		<row>
 			<textField>
 				<name>firstName</name>  
-				<userDefinedName>First Name</userDefinedName>       		
+				<udn>First Name</udn>       		
 				<caption>First Name</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>  
@@ -17,7 +17,7 @@
 
 			<textField>
 				<name>lastName</name> 
-				<userDefinedName>Last Name</userDefinedName>       		
+				<udn>Last Name</udn>       		
 				<caption>Last Name</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>  
@@ -29,7 +29,7 @@
 		<row>
 			<numberField>
 				<name>income</name>
-				<userDefinedName>Income</userDefinedName>       		
+				<udn>Income</udn>       		
 				<caption>Annual Income</caption>
 				<minValue>100000</minValue>
 				<maxValue>10000000</maxValue>				
@@ -39,7 +39,7 @@
 		<row>
 			<numberField> 
 				<name>loanAmount</name>
-				<userDefinedName>Loan Amount</userDefinedName>       		
+				<udn>Loan Amount</udn>       		
 				<caption>Eligible Loan Amount</caption>
 				<formula>income * 5</formula>
 			</numberField>

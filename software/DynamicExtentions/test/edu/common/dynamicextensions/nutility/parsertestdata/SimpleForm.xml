@@ -7,7 +7,7 @@
 		<row>
 			<label>
 				<name>FormHeading</name>
-				<userDefinedName>Form Heading</userDefinedName>
+				<udn>Form Heading</udn>
 				<heading>Fill in correct personal details for loan processing</heading>	
 			</label>		
 		</row>
@@ -15,7 +15,7 @@
 		<row>
 			<textField>
 				<name>firstName</name>     
-				<userDefinedName>First Name</userDefinedName>    		
+				<udn>First Name</udn>    		
 				<caption>First Name</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>  
@@ -25,7 +25,7 @@
 
 			<textField>
 				<name>lastName</name> 
-				<userDefinedName>Last Name</userDefinedName>
+				<udn>Last Name</udn>
 				<caption>Last Name</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>  
@@ -37,7 +37,7 @@
 		<row>
 			<datePicker>
 				<name>dateOfBirth</name>
-				<userDefinedName>Date Of Birth</userDefinedName>
+				<udn>Date Of Birth</udn>
 				<caption>Date Of Birth</caption>
 				<phi>true</phi>
 				<mandatory>true</mandatory>
@@ -49,7 +49,7 @@
 		<row>
 			<label>
 				<name>FormNote</name>
-				<userDefinedName>Form Note</userDefinedName>
+				<udn>Form Note</udn>
 				<note>Information filled here may be used for marketing purpose</note>	
 			</label>
 		</row>

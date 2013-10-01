@@ -551,7 +551,7 @@ public class ContainerParser {
 	
 	private void setControlProps(Control ctrl, Element ctrlEle, int currentRow, int i) {	
 		String name = getTextValue(ctrlEle, "name");
-		String userDefName = getTextValue(ctrlEle, "userDefinedName");
+		String userDefName = getTextValue(ctrlEle, "udn");
 	
 		if (name == null) {
 			throw new RuntimeException("Control name can't be null. Type = " + ctrlEle.getNodeName());

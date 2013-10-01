@@ -215,7 +215,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		
 		protected void serializeControlProps(Control ctrl) {
 			writeElement(writer, "name", 		ctrl.getName());
-			writeElement(writer, "userDefinedName", ctrl.getUserDefinedName());
+			writeElement(writer, "udn",         ctrl.getUserDefinedName());
 			writeElement(writer, "caption", 	ctrl.getCaption());
 			writeCDataElement(writer, "customLabel", ctrl.getCustomLabel());
 			writeElement(writer, "phi", 		ctrl.isPhi());

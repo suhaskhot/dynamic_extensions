@@ -254,6 +254,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			
 		return true;
 	}
+	
+	private Object readResolve() {
+		if (userDefCtrlNames == null) {
+			userDefCtrlNames = new HashSet<String>();
+		}
+		
+		return this;
+	}
 
 	public List<Container> getSubContainers() {
 		List<Container> containers = new ArrayList<Container>();
@@ -356,8 +364,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		if (existingControl == null) {
 			// change this exception to status code
 			throw new RuntimeException("Control with name doesn't exist: " + name);
-		}
-			userDefCtrlNames.remove(existingControl.getUserDefinedName());
+		}		
+		userDefCtrlNames.remove(existingControl.getUserDefinedName());
 
 		if (control.getSequenceNumber() == 0) {
 			control.setSequenceNumber(existingControl.getSequenceNumber());
@@ -399,12 +407,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 					Container existingSfContainer = existingSfCtrl.getSubContainer();
 					newSfContainer.setId(existingSfContainer.getId());
 					newSfContainer.setDbTableName(existingSfContainer.getDbTableName());
-					existingSfContainer.editContainer(newSfCtrl.getSubContainer());
-				}								
+					existingSfContainer.editContainer(newSfContainer);
+					control = existingSfCtrl;
+				}				
 			}
-			control.setContainer(this);
+			
 			control.setId(existingControl.getId());
-			control.setDbColumnName(existingControl.getDbColumnName());			
+			control.setDbColumnName(existingControl.getDbColumnName());
+			control.setContainer(this);
 			add(editLog, control);			
 		}	
 
@@ -456,7 +466,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return save(userCtxt, jdbcDao, true);
 	}
 	
-	public Long save(UserContext userCtxt, JdbcDao jdbcDao, boolean createTables) {
+	public Long save(UserContext userCtxt, JdbcDao jdbcDao, boolean createTables) {		
 		throwExceptionIfDto();
 		
 		try {
@@ -505,6 +515,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			}
 			
 			ContainerCache.getInstance().remove(id);
+						
 			return id;			
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving container", e);
@@ -672,6 +683,13 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				mCtrl.setTableName(getUniqueTableName());
 				createTable(jdbcDao, mCtrl.getTableName(), ctrl.getColumnDefs(), false);
 			} else if (ctrl instanceof SubFormControl) {
+				SubFormControl sfCtrl = (SubFormControl)ctrl;
+				sfCtrl.getSubContainer().executeDDL(jdbcDao, dbTableName);
+			}
+		}
+		
+		for (Control ctrl : editLog) {
+			if (ctrl instanceof SubFormControl) {
 				SubFormControl sfCtrl = (SubFormControl)ctrl;
 				sfCtrl.getSubContainer().executeDDL(jdbcDao, dbTableName);
 			}

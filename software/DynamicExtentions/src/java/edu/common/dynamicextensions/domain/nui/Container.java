@@ -594,7 +594,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	public static Container getContainer(JdbcDao jdbcDao, Long id) {
 		try {						
 			boolean isStale = true;
-			Container container = ContainerCache.getInstance().get(id);
+			Container container = null; //ContainerCache.getInstance().get(id); //TODO:
 
 			ContainerDao containerDao = new ContainerDao(jdbcDao);
 			if (container != null) {
@@ -684,6 +684,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		//
 		this.skipRules.clear();
 		this.skipRules.addAll(newContainer.getSkipRules());
+		fixSkipRules(); // TODO
 	}
 
 	protected void deleteRemovedControls(Container newContainer) {
@@ -1565,6 +1566,38 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		return subFormControl;
 	}
+	
+	private void fixSkipRules() {
+		for (SkipRule rule : skipRules) {
+			for (SkipAction action : rule.getActions()) {
+				Long containerId = action.getTargetCtrl().getContainer().getId();
+				action.getTargetCtrl().setContainer(getExistingContainer(containerId));
+			}
+			
+			for(SkipCondition condition : rule.getConditions()) {
+				Long containerId = condition.getSourceControl().getContainer().getId();
+				condition.getSourceControl().setContainer(getExistingContainer(containerId));
+			}
+		}
+	}
+	
+	private Container getExistingContainer (Long id) {
+		Container c = null;
+
+		if (this.getId().equals(id)) {
+			return this;
+		}
+		
+		for (Container subContainer : this.getSubContainers()) {
+			c = subContainer.getExistingContainer(id);
+			
+			if (c != null) {
+				return c;
+			}
+		}
+		
+		return null;
+	}	
 	
 	private static final String EMPTY_ROW_HTML = "<tr><td height='7'></td></tr>";
 

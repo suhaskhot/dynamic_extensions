@@ -40,6 +40,7 @@ public class SkipRulesEvaluator {
 	}
 	
 	private void evaluateSkipRules(FormData formData, List<SkipRule> rules) {
+		evaluatedTgtCtrls.clear();
 		for (SkipRule rule : rules) {
 			evaluateSkipRule(formData, rule);
 		}		

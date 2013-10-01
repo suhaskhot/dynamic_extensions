@@ -97,7 +97,7 @@ public class FormulaParser
 	 *
 	 * @return
 	 */
-	public List<String> getSymobols()
+	public List<String> getSymbols()
 	{
 		List<String> symbols = new ArrayList <String>();
 		SymbolTable symbolTable = parser.getSymbolTable();// Parse the expression

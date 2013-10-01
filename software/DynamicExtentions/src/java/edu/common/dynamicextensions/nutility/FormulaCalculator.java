@@ -40,7 +40,7 @@ public class FormulaCalculator {
 		boolean allControlPresent = true;
 		String evaluatedValue = null;
 		
-		for (String symbol : formulaParser.getSymobols()) {
+		for (String symbol : formulaParser.getSymbols()) {
 			ControlValue controlValue = formData.getFieldValue(symbol, rowNumber);
 
 			if (controlValue.getValue() == null || controlValue.getValue().toString().isEmpty()) {

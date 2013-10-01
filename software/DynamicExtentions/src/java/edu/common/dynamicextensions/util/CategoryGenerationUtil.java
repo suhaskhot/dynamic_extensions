@@ -801,7 +801,7 @@ public class CategoryGenerationUtil
 		if (formulaParser.validateExpression(categoryAttribute.getFormula().getExpression()))
 		{
 			categoryAttribute.removeAllCalculatedCategoryAttributes();
-			List<String> symbols = formulaParser.getSymobols();
+			List<String> symbols = formulaParser.getSymbols();
 			List<CategoryAttributeInterface> attributes = new ArrayList<CategoryAttributeInterface>();
 			for (String symbol : symbols)
 			{

@@ -11,12 +11,14 @@ import java.util.Map;
 import org.apache.commons.lang.WordUtils;
 
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.common.dynamicextensions.query.ast.FieldNode;
+import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 
 public class SasProgramGenerator {
 	private String pvFile;
@@ -103,10 +105,20 @@ public class SasProgramGenerator {
 		for (ResultColumn column : columns) {
 			String[] captions = column.getCaptions();
 			String formShortName = getShortName(captions[0]);
-			Control ctrl = ((FieldNode)column.getExpression()).getCtrl();
-			String varName = getUniqueName(varCountMap, formShortName + "_" + ctrl.getName());
 			String desc = column.getColumnLabel(formatter).replaceAll("[\\s+-]", "_");
 			
+			Control ctrl = null;
+			String varName = null;
+			DataType type = null;
+			if (column.getExpression() instanceof FieldNode) {
+				ctrl = ((FieldNode)column.getExpression()).getCtrl();
+				varName = getUniqueName(varCountMap, formShortName + "_" + ctrl.getName());
+				type = ctrl.getDataType();
+			} else if (column.getExpression() instanceof LiteralValueNode) {
+				varName = captions[captions.length - 1];
+				type = column.getExpression().getType();
+			}
+									
 			int size = 0;
 			if (ctrl instanceof StringTextField) {
 				size = ((StringTextField)ctrl).getMaxLength();
@@ -114,11 +126,7 @@ public class SasProgramGenerator {
 				size = ((TextArea)ctrl).getMaxLength();
 			}
 			
-			switch (ctrl.getDataType()) {
-			    case STRING:
-			    	formatInfo.writeStringVar(varName, desc, size);
-			    	break;
-			    
+			switch (type) {
 			    case INTEGER:
 			    case FLOAT:
 			    case BOOLEAN:
@@ -128,6 +136,11 @@ public class SasProgramGenerator {
 			    	
 			    case DATE:
 			    	formatInfo.writeDateVar(varName, desc);
+			    	break;
+			    	
+			    case STRING:
+			    default:
+			    	formatInfo.writeStringVar(varName, desc, size);
 			    	break;
 			}
 			

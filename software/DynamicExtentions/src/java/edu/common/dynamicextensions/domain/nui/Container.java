@@ -31,6 +31,7 @@ import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.IdGeneratorUtil;
+import edu.common.dynamicextensions.util.parser.FormulaParser;
 
 public class Container extends DynamicExtensionBaseDomainObject {	
 	private static final long serialVersionUID = 449976852456002554L;
@@ -198,6 +199,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		skipRules.remove(i);
 	}
 	
+	public Set<String> getUserDefCtrlNames() {
+		return userDefCtrlNames;
+	}
+
+	public void setUserDefCtrlNames(Set<String> userDefCtrlNames) {
+		this.userDefCtrlNames = userDefCtrlNames;
+	}
+	
 	public boolean isSurveyForm() {
 		boolean result = false;
 		
@@ -210,7 +219,55 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		
 		return result;
 	}
+		
+	
+	public String getUdnFormula(String shortCodeFormula) {
+		FormulaParser formulaParser = new FormulaParser();
+		String udnFormula = shortCodeFormula;
+		
+		try {
+			formulaParser.parseExpression(shortCodeFormula);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while parsing the formula : "+shortCodeFormula,e);
+		}
+	
+		for (String symbol : formulaParser.getSymbols()) {
+			Control ctrl =  getControl(symbol, "\\.");
 			
+			if (ctrl == null) {
+				throw new RuntimeException("Control with name doesn't exist: " + symbol);
+			}
+			
+			String userDefName = getControlCanonicalUdn(ctrl);
+			udnFormula = udnFormula.replaceAll(symbol, userDefName);
+		}
+	
+		return udnFormula;
+	}
+	
+	public String getShortCodeFormula(String udnFormula) { 
+		FormulaParser formulaParser = new FormulaParser();
+		String shortCodeFormula = udnFormula;
+		
+		try {
+			formulaParser.parseExpression(udnFormula);
+		} catch (Exception e) {
+			throw new RuntimeException("Error while parsing the formula : "+shortCodeFormula,e);
+		}
+	
+		for (String symbol : formulaParser.getSymbols()) {
+			Control ctrl =  getControlByUdn(symbol, "\\.");
+			
+			if (ctrl == null) {
+				throw new RuntimeException("Control with udn doesn't exist: " + symbol);
+			}
+			String ctrlName = getControlCanonicalName(ctrl);
+			shortCodeFormula = shortCodeFormula.replaceAll(symbol, ctrlName);
+		}
+	
+		return shortCodeFormula;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -1353,7 +1410,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		
 		Control formCtrl = controlsMap.get(ctrl.getName());
-		if (formCtrl != null) {
+		if (formCtrl != null && formCtrl.getContainer() == this) {
 			return formCtrl.getName();
 		}
 		
@@ -1366,6 +1423,31 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			String name = sfCtrl.getSubContainer().getControlCanonicalName(ctrl);
 			if (name != null) {
 				return new StringBuilder(sfCtrl.getName()).append(".").append(name).toString();
+			}
+		}
+		
+		return null;		
+	}
+	
+	public String getControlCanonicalUdn(Control ctrl) {
+		if (ctrl.getUserDefinedName() == null) {
+			throw new RuntimeException("User defined name of control is null. Invalid control state");
+		}
+		
+		Control formCtrl = controlsMap.get(ctrl.getName());
+		if (formCtrl != null && formCtrl.getContainer() == this) {
+			return formCtrl.getUserDefinedName();
+		}
+		
+		for (Control c : getControls()) {
+			if (!(c instanceof SubFormControl)) {
+				continue;
+			}
+			
+			SubFormControl sfCtrl = (SubFormControl)c;
+			String userDefName = sfCtrl.getSubContainer().getControlCanonicalUdn(ctrl);
+			if (userDefName != null) {
+				return new StringBuilder(sfCtrl.getUserDefinedName()).append(".").append(userDefName).toString();
 			}
 		}
 		
@@ -1401,6 +1483,53 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		
 		return ctrl;
 	}
+	
+	public Control getControlByUdn(String userDefinedName, String separator) {
+		Container container = this;
+		Control ctrl = container.getControlByUdn(userDefinedName);
+		if (ctrl != null) {
+			return ctrl;
+		}
+		
+		String[] udnParts = userDefinedName.split(separator);
+		if (udnParts.length == 1) { // no sub form control name
+			throw new RuntimeException("Invalid user defined name: " + userDefinedName); 
+		}
+		
+		for (int i = 0; i < udnParts.length - 1; ++i) {
+			ctrl = container.getControlByUdn(udnParts[i]);
+			if (!(ctrl instanceof SubFormControl)) {
+				throw new RuntimeException("Invalid user defined name: " + userDefinedName);
+			}
+			
+			SubFormControl sfCtrl = (SubFormControl)ctrl;
+			container = sfCtrl.getSubContainer();			
+		}
+		
+		ctrl = container.getControlByUdn(udnParts[udnParts.length - 1]);
+		if (ctrl == null) {
+			throw new RuntimeException("Invalid user defined name: " + userDefinedName);
+		}
+		
+		return ctrl;
+	}
+	
+	private Control getControlByUdn(String userDefName) {
+		if (!userDefCtrlNames.contains(userDefName)) {
+			return null;
+		}
+		
+		Control result = null;
+		
+		for (Control ctrl : getControls()) {
+			if (ctrl.getUserDefinedName().equals(userDefName)) {
+				result = ctrl;
+				break;
+			}
+		}
+		
+		return result;
+	}
 
 	public SubFormControl getSubFormControl(String name) {
 
@@ -1435,5 +1564,6 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 	private static final String EMPTY_CONTROL_COUNT = "<input type='hidden' id='emptyControlsCount' value='%d'></input>";
 
-	private static final String DISPLAY_PAGE = "<input type='hidden' id='displayPage' name='displayPage'  value='%d'></input>";	
+	private static final String DISPLAY_PAGE = "<input type='hidden' id='displayPage' name='displayPage'  value='%d'></input>";
+
 }

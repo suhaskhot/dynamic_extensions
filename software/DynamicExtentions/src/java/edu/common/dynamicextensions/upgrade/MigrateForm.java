@@ -19,7 +19,6 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.domain.CategoryEntityRecord;
-import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.CheckBox;
 import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
@@ -38,16 +37,15 @@ import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
 import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
-import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
-import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.PvDataSource.Ordering;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.ShowAction;
 import edu.common.dynamicextensions.domain.nui.ShowPvAction;
+import edu.common.dynamicextensions.domain.nui.SkipAction;
 import edu.common.dynamicextensions.domain.nui.SkipCondition;
 import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
@@ -56,6 +54,7 @@ import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.domain.nui.TextField;
+import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.userinterface.SurveyModeLayout;
 import edu.common.dynamicextensions.domaininterface.AbstractAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.AbstractEntityInterface;
@@ -157,9 +156,10 @@ public class MigrateForm {
 	
 	private UserContext usrCtx = null;
 	
-	
 	private Map<Date, List<SelectCtrlPvDataSource>> versionedCtrls = new TreeMap<Date, List<SelectCtrlPvDataSource>>();
 	
+	private int userDefId = 0;
+
 	//private Map<Date, >
 	
 	static {
@@ -439,6 +439,7 @@ public class MigrateForm {
 	private Label getHeading(ControlInterface oldCtrl) {
 		Label label = new Label();
 		label.setName("heading" + oldCtrl.getId());
+		label.setUserDefinedName("heading" + oldCtrl.getId());
 		label.setCaption(oldCtrl.getHeading());
 		label.setHeading(true);
 		label.setLabelPosition(verticalCtrlAlignment ? LabelPosition.TOP : LabelPosition.LEFT_SIDE);
@@ -455,6 +456,7 @@ public class MigrateForm {
 			for (FormControlNotesInterface oldNote : oldNotes) {
 				Label note = new Label();
 				note.setName("note" + oldCtrl.getId() + "_" + i);
+				note.setUserDefinedName("note" + oldCtrl.getId() + "_" + i);
 				note.setCaption(oldNote.getNote());
 				note.setNote(true);
 				note.setLabelPosition(verticalCtrlAlignment ? LabelPosition.TOP : LabelPosition.LEFT_SIDE);
@@ -691,9 +693,9 @@ public class MigrateForm {
 	}
 	
 	private void setCtrlProps(Control newCtrl, ControlInterface oldCtrl) {
-		String userDefinedName = getCtrlName(oldCtrl);
-		newCtrl.setName(userDefinedName.concat(oldCtrl.getId().toString()));
-		newCtrl.setUserDefinedName(userDefinedName);
+		String ctrlName = getCtrlName(oldCtrl);
+		newCtrl.setName(ctrlName.concat(oldCtrl.getId().toString()));
+		newCtrl.setUserDefinedName(getUserDefinedName(newCtrl.getContainer(), ctrlName));
 		newCtrl.setCaption(oldCtrl.getCaption());
 		newCtrl.setCustomLabel(getCustomLabel(oldCtrl));
 		newCtrl.setLabelPosition(verticalCtrlAlignment ? LabelPosition.TOP : LabelPosition.LEFT_SIDE);
@@ -706,6 +708,13 @@ public class MigrateForm {
 		newCtrl.setShowInGrid(showInGrid(oldCtrl));		
 	}
 	
+	private String getUserDefinedName(Container c, String userDefName) {
+		if (c.getUserDefCtrlNames().contains(userDefName)) {
+			userDefName = userDefName + (++userDefId);
+		}
+		return userDefName;
+	}
+
 	private String getCtrlName(ControlInterface ctrl) {
 		String name = "";
 		if (ctrl instanceof LabelInterface) {
@@ -1229,7 +1238,7 @@ public class MigrateForm {
 			
 		// optimize for multiple occurrences of operand
 		String newFormula = oldFormula;		
-		for (String operand : formulaParser.getSymobols()) {
+		for (String operand : formulaParser.getSymbols()) {
 			StringBuilder newOperand = new StringBuilder();
 			Control ctrl = getControl(newOperand, operand, fieldMap);
 			

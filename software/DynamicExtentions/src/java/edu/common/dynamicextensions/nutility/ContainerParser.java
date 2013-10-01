@@ -94,7 +94,7 @@ public class ContainerParser {
 	private void updateSourceCalculatedControls(Container rootContainer, FormulaParser formulaParser, Control control)
 			throws DynamicExtensionsSystemException {
 		formulaParser.parseExpression(((NumberField) control).getFormula());
-		for (String symbol : formulaParser.getSymobols()) {
+		for (String symbol : formulaParser.getSymbols()) {
 			Control sourceControl = rootContainer.getControl(symbol,"\\.");
 			sourceControl.setCalculatedSourceControl(true);
 		}

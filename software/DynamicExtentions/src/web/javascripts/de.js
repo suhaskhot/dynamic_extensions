@@ -278,7 +278,21 @@ edu.wustl.de.CategorySurveyMode.prototype.isErrorsExist = function (args) {
 					var defaultValue = edu.wustl.de.defaultValues[$(this).attr("name")];
 					var controlName = $(this).attr("name");
 	
-					if ($(this).is(":visible") && (defaultValue == "" || defaultValue == undefined) 
+					if(this.id.endsWith("_tbody")) {
+						var selectCtrlName = this.id.split("_tbody")[0];
+						var selectElement = $('input[name='+selectCtrlName+']')
+						
+						if ((selectElement.is(":visible")) 
+						&& !(selectElement.attr("readonly"))
+						&& !(selectElement.attr("disabled"))
+						&& ($('input[name='+selectCtrlName+']:checked').val() == null)) {
+								errors = true;
+								alert("Please enter values for the mandatory field(s).");
+								return false; // break out of the each-loop
+						}
+					}
+	
+					else if ($(this).is(":visible") && (defaultValue == "" || defaultValue == undefined) 
 					&& (!$(this).attr("readonly") && $(this).attr("disabled") != true))
 					{
 						if($(this).attr('type') == 'text' || $(this).attr('type') == 'select'

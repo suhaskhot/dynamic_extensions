@@ -2400,7 +2400,7 @@ function updateHTML() {
 
 	var str = "";
 	if ($("#sm-form") != null) {
-		str = $("#sm-form").serialize(true);
+		str = $("#sm-form").serialize(true).replace(/\+/g,' ');
 	} else {
 		str = $("dataEntryForm").serialize(true);
 	}

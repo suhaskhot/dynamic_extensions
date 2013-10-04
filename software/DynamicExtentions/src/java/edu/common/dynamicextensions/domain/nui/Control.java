@@ -469,8 +469,13 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		innerHTML.append(render(controlName, controlValue, contextParameter));
 
 		if (isMandatory()) {
-			innerHTML.append("<script defer='defer'>if($('#Control_1_462_1_1') != null){$('#").append(controlName)
-					.append("').addClass('required-field-marker');}</script>");
+			if (controlValue.getControl() instanceof SelectControl) {
+				innerHTML.append("<script defer='defer'>$('#").append(controlName)
+				.append("_tbody').addClass('required-field-marker');</script>");
+			} else {
+				innerHTML.append("<script defer='defer'>$('#").append(controlName)
+				.append("').addClass('required-field-marker');</script>");
+			}
 		}
 		controlHTML = attachLabel(innerHTML.toString());
 

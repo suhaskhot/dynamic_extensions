@@ -295,6 +295,7 @@ public class MigrateForm {
 			if (oldCtrl.getHeading() != null) {
 				Label heading = getHeading(oldCtrl);
 				heading.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
+				ensureUniqueUdn(newForm, heading);
 				newForm.addControl(getHeading(oldCtrl));
 				
 				seqOffset++;
@@ -303,6 +304,7 @@ public class MigrateForm {
 			if (oldCtrl.getFormNotes() != null) {
 				for (Label note : getNotes(oldCtrl)) {
 					note.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
+					ensureUniqueUdn(newForm, note);
 					newForm.addControl(note);
 					seqOffset++;
 				}				
@@ -322,7 +324,9 @@ public class MigrateForm {
 			}
 			
 			newCtrl.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
+			ensureUniqueUdn(newForm, newCtrl);
 			newForm.addControl(newCtrl);
+
 			formMigrationCtxt.fieldMap.put(oldCtrl.getBaseAbstractAttribute(), mapCtxt);			
 		}
 		
@@ -350,6 +354,7 @@ public class MigrateForm {
 				if (oldCtrl.getHeading() != null) {
 					Label heading = getHeading(oldCtrl);
 					heading.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
+					ensureUniqueUdn(newForm, heading);
 					newForm.addControl(getHeading(oldCtrl));
 					seqOffset++;
 				}
@@ -357,6 +362,7 @@ public class MigrateForm {
 				if (oldCtrl.getFormNotes() != null) {
 					for (Label note : getNotes(oldCtrl)) {
 						note.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
+						ensureUniqueUdn(newForm, note);
 						newForm.addControl(note);
 						seqOffset++;
 					}				
@@ -376,6 +382,7 @@ public class MigrateForm {
 				}
 
 				newCtrl.setSequenceNumber(oldCtrl.getSequenceNumber() + seqOffset);
+				ensureUniqueUdn(newForm, newCtrl);
 				newForm.addControl(newCtrl);
 				formMigrationCtxt.fieldMap.put(oldCtrl.getBaseAbstractAttribute(), mapCtxt);				
 				lastSeq = oldCtrl.getSequenceNumber() + seqOffset;
@@ -383,6 +390,7 @@ public class MigrateForm {
 
 			PageBreak pageBreak = new PageBreak();
 			pageBreak.setName("pgBrk" + (lastSeq + 1));
+			pageBreak.setUserDefinedName(pageBreak.getName());
 			pageBreak.setSequenceNumber(lastSeq + 1);
 			newForm.addControl(pageBreak);
 			seqOffset++;
@@ -695,7 +703,7 @@ public class MigrateForm {
 	private void setCtrlProps(Control newCtrl, ControlInterface oldCtrl) {
 		String ctrlName = getCtrlName(oldCtrl);
 		newCtrl.setName(ctrlName.concat(oldCtrl.getId().toString()));
-		newCtrl.setUserDefinedName(getUserDefinedName(newCtrl.getContainer(), ctrlName));
+		newCtrl.setUserDefinedName(ctrlName);
 		newCtrl.setCaption(oldCtrl.getCaption());
 		newCtrl.setCustomLabel(getCustomLabel(oldCtrl));
 		newCtrl.setLabelPosition(verticalCtrlAlignment ? LabelPosition.TOP : LabelPosition.LEFT_SIDE);
@@ -708,11 +716,11 @@ public class MigrateForm {
 		newCtrl.setShowInGrid(showInGrid(oldCtrl));		
 	}
 	
-	private String getUserDefinedName(Container c, String userDefName) {
-		if (c.getUserDefCtrlNames().contains(userDefName)) {
-			userDefName = userDefName + (++userDefId);
+	private void ensureUniqueUdn(Container c, Control ctrl) {
+		String useDefName = ctrl.getUserDefinedName();
+		if (c.getUserDefCtrlNames().contains(useDefName)) {
+			ctrl.setUserDefinedName(useDefName + (++userDefId));
 		}
-		return userDefName;
 	}
 
 	private String getCtrlName(ControlInterface ctrl) {

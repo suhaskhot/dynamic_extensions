@@ -173,16 +173,21 @@ var Routers = {
 				dummy : function() {
 				},
 
-				loadForm : function(id, edit) {
+				loadForm : function(_id, edit) {
 					$("#formWaitingImage").show();
 					if (Main.formView == null) {
 						Main.formView = Views.showForm('formTab',
-								new Models.Form());
+								new Models.Form({
+									"id" : _id
+								}));
 
 					}
+					Main.formView.getFormModel().set({
+						id : _id
+					});
 					GlobalMemory.editForm = (edit == "true");
 					Main.formView.getFormModel().fetch({
-						url : 'csdApi/form/' + id + "/" + edit,
+						url : 'csdApi/form/' + _id + "/" + edit,
 						success : this.loadFormSuccessHandler
 					});
 					// save as
@@ -227,29 +232,36 @@ var Routers = {
 					Routers.formEventsRouterPointer
 							.loadControlsInModelAndTree(model);
 					// re populate skip rules table;
-					//$("#skipRulesTable tr:gt(0)").remove();
+					// $("#skipRulesTable tr:gt(0)").remove();
 					AdvancedControlPropertiesBizLogic.loadSkipRules(model);
-					//Routers.formEventsRouterPointer.updateModelWithIds(model);
+					// Routers.formEventsRouterPointer.updateModelWithIds(model);
 				},
 
-				loadFormulae : function(model, subFormName) {
+				loadFormulae : function(model, subFormName, subFormUDN) {
 					for ( var key in model.get('controlObjectCollection')) {
 						var control = model.get('controlObjectCollection')[key];
 						if (control.get('type') == "numericField") {
 							if (control.get('isCalculated') != undefined
 									&& control.get('isCalculated')) {
 								var controlName = control.get('controlName');
+								var userDefinedName = control
+										.get('userDefinedName');
 								if (subFormName != "") {
 									controlName = subFormName + "."
 											+ controlName;
+									userDefinedName = subFormUDN + "."
+											+ userDefinedName;
 								}
 								Main.advancedControlsView.addFormulaToTable(
-										controlName, control.get('formula'));
+										controlName, control.get('formula'),
+										userDefinedName);
+								AdvancedControlPropertiesBizLogic.addFormulaToMemory(controlName, control.get('formula'));
 							}
 						}
 						if (control.get('type') == "subForm") {
 							this.loadFormulae(control.get('subForm'), control
-									.get('controlName'));
+									.get('controlName'), control
+									.get('userDefinedName'));
 						}
 					}
 				},
@@ -257,12 +269,13 @@ var Routers = {
 				loadFormSuccessHandler : function(model, response) {
 					Routers.formEventsRouterPointer.updateUI(model);
 					Routers.formEventsRouterPointer.loadFormulae(Main.formView
-							.getFormModel(), "");
+							.getFormModel(), "", "");
 
 					AdvancedControlPropertiesBizLogic
 							.loadSkipRules(Main.formView.getFormModel());
 					Main.formView.getFormModel().set({
-						skipRules : model.get('skipRules')
+						skipRules : model.get('skipRules'),
+						id : model.get('id')
 					});
 					Main.advancedControlsView.setTableCss('formulaTable');
 					// Main.mainTabBarView.loadFormSummary();
@@ -323,15 +336,11 @@ var Routers = {
 
 						var previousControl = null;
 
-						
-							previousControl = new Models.Field(model
-									.get('controlCollection')[cntr + 1]);
-						
-						
-						
+						previousControl = new Models.Field(model
+								.get('controlCollection')[cntr + 1]);
 
 						var displayLbl = control.get('caption') + " ("
-								+ control.get('controlName') + ")";
+								+ control.get('userDefinedName') + ")";
 						var controlNodeId = this.populateTreeWithControlNodes(
 								control.get('controlName'), displayLbl, control
 										.get('type'));
@@ -339,17 +348,23 @@ var Routers = {
 							editName : control.get('controlName'),
 							formTreeNodeId : controlNodeId
 						});
-						
-						
-						if(previousControl!=null){if(previousControl.get('type')=="pageBreak"){
-							control.set({pageBreak : true});
-						}}
+
+						if (previousControl != null) {
+							if (previousControl.get('type') == "pageBreak") {
+								control.set({
+									pageBreak : true
+								});
+							}
+						}
 
 						GlobalMemory.nodeCounter++;
 
-						if(control.get('type') == "pageBreak"){
-						Main.treeView.getTree().setItemStyle(controlNodeId,"font-weight:bold; font-style:italic; font-color:#505050;");	
-							}
+						if (control.get('type') == "pageBreak") {
+							Main.treeView
+									.getTree()
+									.setItemStyle(controlNodeId,
+											"font-weight:bold; font-style:italic; font-color:#505050;");
+						}
 
 						if (control.get('type') == "subForm") {
 
@@ -480,12 +495,19 @@ var Routers = {
 								if (sourceCell.getValue() != "") {
 
 									var targetValue = targetCell.getValue();
+									var targetName = targetCell
+											.getAttribute("name");
+
 									targetCell.setValue(sourceCell.getValue());
+									targetCell.setAttribute("name", sourceCell
+											.getAttribute("name"));
+
 									var rowId = Main.designModeViewPointer
 											.getGridObject().getRowIndex(tId);
 									Main.designModeViewPointer
 											.updateControlObjectCollection(
-													sourceCell.getValue(),
+													sourceCell
+															.getAttribute("name"),
 													tInd + 1, rowId + 1);
 									sourceCell.setValue('');
 
@@ -511,13 +533,20 @@ var Routers = {
 													.getGridObject()
 													.cellByIndex(seqNo, tInd)
 													.getValue();
+
+											Main.designModeViewPoi
+											nter.getGridObject().cellByIndex(
+													seqNo, tInd).setValue(
+													targetValue);
 											Main.designModeViewPointer
 													.getGridObject()
 													.cellByIndex(seqNo, tInd)
-													.setValue(targetValue);
+													.setAttribute("name",
+															targetName);
+
 											Main.designModeViewPointer
 													.updateControlObjectCollection(
-															targetValue,
+															targetName,
 															tInd + 1, seqNo + 1);
 											targetValue = sourceValue;
 										} else {
@@ -526,8 +555,14 @@ var Routers = {
 													.cellByIndex(seqNo, tInd)
 													.setValue(targetValue);
 											Main.designModeViewPointer
+													.getGridObject()
+													.cellByIndex(seqNo, tInd)
+													.setAttribute("name",
+															targetName);
+
+											Main.designModeViewPointer
 													.updateControlObjectCollection(
-															targetValue,
+															targetName,
 															tInd + 1, seqNo + 1);
 											break;
 										}
@@ -567,6 +602,9 @@ var Routers = {
 						'controlObjectCollection')[index].get("sequenceNumber") - 1;
 				var name = Main.formView.getFormModel().get(
 						'controlObjectCollection')[index].get("controlName");
+				var udn = Main.formView.getFormModel().get(
+						'controlObjectCollection')[index]
+						.get("userDefinedName");
 				// alert("xpos= " + xPos + " seqNumber = " + seqNumber + " name=
 				// " + name + " gridRows = " + layoutGrid.getRowsNum() + "
 				// gridColNum = " +layoutGrid.getColumnsNum());
@@ -581,7 +619,9 @@ var Routers = {
 							colNum, '', 'ro', '300', '', 'center');
 				}
 				Main.designModeViewPointer.getGridObject().cellByIndex(
-						seqNumber, xPos).setValue(name);
+						seqNumber, xPos).setValue(udn);
+				Main.designModeViewPointer.getGridObject().cellByIndex(
+						seqNumber, xPos).setAttribute("name", name);
 			}
 		}
 	}

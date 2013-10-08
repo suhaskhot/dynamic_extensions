@@ -36,11 +36,30 @@ var Models = {
 						editName : controlName
 					});
 					var cntrlNames = controlName.split(".");
+					if (this.get('controlCollection') == undefined) {
+						this.set({
+							controlCollection : new Array()
+						});
+					}
+
 					if (cntrlNames.length == 1) {
 						this.get('controlObjectCollection')[controlName] = control;
+						this.get('controlCollection').push(controlName);
 					} else {
 						this.get('controlObjectCollection')[cntrlNames[0]].get(
 								'subForm').get('controlObjectCollection')[cntrlNames[1]] = control;
+
+						if (this.get('controlObjectCollection')[cntrlNames[0]]
+								.get('subForm').get('controlCollection') == undefined) {
+							this.get('controlObjectCollection')[cntrlNames[0]]
+									.get('subForm').set({
+										controlCollection : new Array()
+									});
+						}
+
+						this.get('controlObjectCollection')[cntrlNames[0]].get(
+								'subForm').get('controlCollection').push(
+								cntrlNames[1]);
 					}
 				},
 
@@ -195,10 +214,10 @@ var Models = {
 
 				validate : function(attrs) {
 					var errors = [];
-					if (!attrs.controlName) {
+					if (!attrs.userDefinedName) {
 						errors.push({
-							name : 'controlName',
-							message : 'Field\'s name is required.'
+							name : 'userDefinedName',
+							message : 'Attribute name is required.'
 						});
 					}
 
@@ -213,10 +232,11 @@ var Models = {
 
 					if (attrs.maximumValue && attrs.minimumValue) {
 						if (attrs.maximumValue < attrs.minimumValue) {
-							errors.push({
-								name : 'maximumValue',
-								message : 'Maximum value should be greater than Minimum value.'
-							});
+							errors
+									.push({
+										name : 'maximumValue',
+										message : 'Maximum value should be greater than Minimum value.'
+									});
 						}
 					}
 
@@ -235,13 +255,15 @@ var Models = {
 							message : 'Width should be numeric.'
 						});
 					}
-					
+
 					if (!attrs.optionsPerRow) {
-					} else if (attrs.optionsPerRow != "" && isNaN(attrs.optionsPerRow)) {
-						errors.push({
-							name : 'optionsPerRow',
-							message : 'Number of Values Per Row should be numeric.'
-						});
+					} else if (attrs.optionsPerRow != ""
+							&& isNaN(attrs.optionsPerRow)) {
+						errors
+								.push({
+									name : 'optionsPerRow',
+									message : 'Number of Values Per Row should be numeric.'
+								});
 					}
 
 					if (!attrs.noOfRows) {

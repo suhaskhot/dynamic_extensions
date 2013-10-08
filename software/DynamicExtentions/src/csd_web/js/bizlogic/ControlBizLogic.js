@@ -74,7 +74,8 @@ var ControlBizLogic = {
 				if (isNameCaptionPair) {
 					controls.push({
 						'name' : control.get('controlName'),
-						'caption' : control.get('caption')
+						'caption' : control.get('caption'),
+						'userDefinedName' : control.get('userDefinedName')
 					});
 				} else {
 					controls.push(control.get('controlName'));
@@ -84,23 +85,60 @@ var ControlBizLogic = {
 			if (control.get('type') == "subForm") {
 				for ( var subKey in control.get('subForm').get(
 						'controlObjectCollection')) {
+
 					var subControl = control.get('subForm').get(
 							'controlObjectCollection')[subKey];
 					var subControlName = subControl.get('controlName');
+					var _name = control.get('controlName') + "."
+							+ subControlName;
+
 					if (subControl.get('type') == "numericField") {
 						if (isNameCaptionPair) {
+
+							var _userDefinedName = control
+									.get('userDefinedName')
+									+ "." + subControl.get('userDefinedName');
 							controls.push({
-								'name' : control.get('controlName') + "."
-										+ subControlName,
-								'caption' : control.get('caption')
+								'name' : _name,
+								'caption' : subControl.get('caption'),
+								'userDefinedName' : _userDefinedName
 							});
 						} else {
-							controls.push(control.get('controlName') + "."
-									+ subControlName);
+							controls.push(_name);
 						}
 					}
 				}
 			}
+		}
+		return controls;
+	},
+
+	getListOfUDNForNumericControls : function() {
+		var controls = new Array();
+		for ( var key in Main.formView.getFormModel().get(
+				'controlObjectCollection')) {
+			var control = Main.formView.getFormModel().get(
+					'controlObjectCollection')[key];
+
+			if (control.get('type') == "numericField") {
+				controls.push(control.get('userDefinedName'));
+			}
+
+			if (control.get('type') == "subForm") {
+				for ( var subKey in control.get('subForm').get(
+						'controlObjectCollection')) {
+
+					var subControl = control.get('subForm').get(
+							'controlObjectCollection')[subKey];
+
+					if (subControl.get('type') == "numericField") {
+						var _userDefinedName = control.get('userDefinedName')
+								+ "." + subControl.get('userDefinedName');
+						controls.push(_userDefinedName);
+					}
+				}
+			}
+
 		}
 		return controls;
 	},
@@ -116,7 +154,8 @@ var ControlBizLogic = {
 				controls.push({
 					'name' : control.get('controlName'),
 					'caption' : control.get('caption') + " ("
-							+ control.get('controlName') + ")"
+							+ control.get('userDefinedName') + ")",
+					'userDefinedName' : control.get('userDefinedName')
 				});
 			} else {
 				controls.push(control.get('controlName'));
@@ -125,21 +164,26 @@ var ControlBizLogic = {
 			if (control.get('type') == "subForm") {
 				for ( var subKey in control.get('subForm').get(
 						'controlObjectCollection')) {
+
 					var subControl = control.get('subForm').get(
 							'controlObjectCollection')[subKey];
 					var subControlName = subControl.get('controlName');
+					var _name = control.get('controlName') + "."
+							+ subControlName;
 
 					if (isNameCaptionPair) {
+						var _userDefinedName = control.get('userDefinedName')
+								+ "." + subControl.get('userDefinedName');
+
 						controls.push({
-							'name' : control.get('controlName') + "."
-									+ subControlName,
+							'name' : _name,
 							'caption' : subControl.get('caption') + " ("
-									+ subControlName + ")"
+									+ subControl.get('userDefinedName') + ")",
+							'userDefinedName' : _userDefinedName
 						});
 
 					} else {
-						controls.push(control.get('controlName') + "."
-								+ subControlName);
+						controls.push(_name);
 					}
 				}
 			}
@@ -291,6 +335,13 @@ var ControlBizLogic = {
 	},
 
 	copySubForm : function(model) {
+		
+		/*var shortCode = Utility.getShortCode(model.get('type'));
+		model.set({
+			controlName : shortCode
+		});
+		GlobalMemory.nodeCounter++;*/
+		
 		if (model.get('type') == "subForm") {
 
 			// update controls and set their attributes
@@ -301,11 +352,17 @@ var ControlBizLogic = {
 
 				var subFormControl = new Models.Field(subFrm
 						.get('controlObjectCollection')[key].toJSON());
+				var _shortCode = Utility.getShortCode(subFormControl
+						.get('type'));
+				subFormControl.set({
+					controlName : _shortCode
+				});
+				GlobalMemory.nodeCounter++;
 
 				var _editName = model.get('controlName') + "."
 						+ subFormControl.get('controlName');
 				var _treeDisplayName = subFormControl.get('caption') + "("
-						+ subFormControl.get('controlName') + ")";
+						+ subFormControl.get('userDefinedName') + ")";
 
 				subFormControl.set({
 					editName : _editName
@@ -321,7 +378,7 @@ var ControlBizLogic = {
 				});
 
 				delete subForm.get('controlObjectCollection')[key];
-				subForm.get('controlObjectCollection')[key] = subFormControl;
+				subForm.get('controlObjectCollection')[_shortCode] = subFormControl;
 				var _subForm = subForm;
 				GlobalMemory.nodeCounter++;
 			}
@@ -403,13 +460,16 @@ var ControlBizLogic = {
 			Main.currentFieldView.destroy();
 		}
 		var control = new Models.Field(fieldModel.toJSON());
+		var shortCode = Utility.getShortCode(control.get('type'));
 		control.set({
 			editName : undefined,
 			formTreeNodeId : undefined,
-			controlName : undefined,
+			controlName : shortCode,
 			caption : undefined,
-			copy : true
+			copy : true,
+			userDefinedName : undefined
 		});
+		GlobalMemory.nodeCounter++;
 		this.populateViewWithControl(control);
 	},
 
@@ -510,9 +570,13 @@ var ControlBizLogic = {
 			type : controlType,
 			pvs : {},
 			sequenceNumber : ControlBizLogic.getNextSequenceNumber(),
-			controlName : ''
+			controlName : shortCode
 		});
-
+		if (controlType == "pageBreak") {
+			controlModel.set({
+				userDefinedName : shortCode
+			});
+		}
 		return controlModel;
 	},
 
@@ -541,6 +605,38 @@ var ControlBizLogic = {
 							'#availableFields1').val()));
 
 		}
+	},
+
+	isUserDefinedNameUnique : function(controlModel) {
+		var userDefinedName = controlModel.get('userDefinedName');
+		var controlName = controlModel.get('controlName');
+		var isUnique = true;
+		var controlCollection = Main.formView.getFormModel().get(
+				'controlObjectCollection');
+		for ( var key in controlCollection) {
+			var control = controlCollection[key];
+			if (userDefinedName == control.get('userDefinedName')) {
+				if (controlName != control.get('controlName')) {
+					isUnique = false;
+					break;
+				}
+			}
+			if (control.get('type') == "subForm") {
+				var subFormControls = control.get('subForm').get(
+						'controlObjectCollection');
+				for ( var subFormControlKey in subFormControls) {
+					if (userDefinedName == subFormControls[subFormControlKey]
+							.get('userDefinedName')) {
+						if (controlName != subFormControls[subFormControlKey]
+								.get('controlName')) {
+							isUnique = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return isUnique;
 	},
 
 	isControlNameUniqueInForm : function(control) {
@@ -618,17 +714,15 @@ var ControlBizLogic = {
 			// validation for numeric value
 			switch (cInd) {
 			case 1:
-				/*if (isNaN(nValue)) {
-					isValid = false;
-					Main.currentFieldView.setErrorMessageHeader();
-
-					$("#messagesDiv").append(
-							Utility.messageSpace + "! "
-									+ "Numeric code should be numeric."
-									+ "<br>");
-					Main.currentFieldView.getPvGrid.cellById(rId, cInd)
-							.setValue('');
-				}*/
+				/*
+				 * if (isNaN(nValue)) { isValid = false;
+				 * Main.currentFieldView.setErrorMessageHeader();
+				 * 
+				 * $("#messagesDiv").append( Utility.messageSpace + "! " +
+				 * "Numeric code should be numeric." + "<br>");
+				 * Main.currentFieldView.getPvGrid.cellById(rId, cInd)
+				 * .setValue(''); }
+				 */
 				break;
 			default:
 			}
@@ -648,7 +742,7 @@ var ControlBizLogic = {
 			type : newType,
 			defaultValue : undefined
 		});
-		
+
 		var cntrolView = Utility.addFieldHandlerMap[newType](control, true,
 				'controlContainer');
 
@@ -660,7 +754,7 @@ var ControlBizLogic = {
 		Main.currentFieldView.populateFields();
 		var currentModel = Main.currentFieldView.getModel();
 
-		//alert(JSON.stringify(currentModel.toJSON()));
+		// alert(JSON.stringify(currentModel.toJSON()));
 		Main.currentFieldView.destroy();
 		Main.currentFieldView = ControlBizLogic.changeControl(currentModel, $(
 				"#newControlType").val());
@@ -668,7 +762,7 @@ var ControlBizLogic = {
 
 		// edit the control if it has
 		// been already added
-		
+
 		if (currentModel.has('editName')) {
 			Main.formView.getFormModel().editControl(
 					currentModel.get('editName'), currentModel);
@@ -676,7 +770,8 @@ var ControlBizLogic = {
 			Main.currentFieldView.enableDisableButton("delete", false);
 			Main.currentFieldView.enableDisableButton("copy", false);
 			Main.treeView.getTree().setUserData(
-					currentModel.get('formTreeNodeId'), "controlType", currentModel.get('type'));
+					currentModel.get('formTreeNodeId'), "controlType",
+					currentModel.get('type'));
 		}
 		// change the carousel
 		Utility.resetCarouselControlSelect();

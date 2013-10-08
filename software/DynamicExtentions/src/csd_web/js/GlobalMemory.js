@@ -19,5 +19,6 @@ var GlobalMemory = {
 	controlName : null,
 	skipRulesCounter : 1,
 	editForm : false,
-	globalLabelPosition : "LEFT"
+	globalLabelPosition : "LEFT",
+	formulae : {}
 }

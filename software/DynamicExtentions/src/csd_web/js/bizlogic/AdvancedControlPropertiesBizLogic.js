@@ -7,13 +7,15 @@ var AdvancedControlPropertiesBizLogic = {
 	 */
 	setFormulaForCalculatedAttirbute : function(selectionName, isCalc,
 			calcFormula) {
+		
+		AdvancedControlPropertiesBizLogic.addFormulaToMemory(selectionName, calcFormula);
+
 		var controlNames = selectionName.split(".");
 		if (controlNames.length == 1) {
 			if (Main.formView.getFormModel().get('controlObjectCollection')[selectionName] != undefined) {
 				Main.formView.getFormModel().get('controlObjectCollection')[selectionName]
 						.set({
-							isCalculated : isCalc,
-							formula : calcFormula
+							isCalculated : isCalc
 						});
 			}
 		} else {
@@ -22,8 +24,7 @@ var AdvancedControlPropertiesBizLogic = {
 				Main.formView.getFormModel().get('controlObjectCollection')[controlNames[0]]
 						.get('subForm').get('controlObjectCollection')[controlNames[1]]
 						.set({
-							isCalculated : isCalc,
-							formula : calcFormula
+							isCalculated : isCalc
 						});
 			}
 		}
@@ -46,6 +47,7 @@ var AdvancedControlPropertiesBizLogic = {
 		AdvancedControlPropertiesBizLogic.setFormulaForCalculatedAttirbute(id,
 				false, null);
 		$('#' + id).remove();
+		AdvancedControlPropertiesBizLogic.deleteFormulaFromMemory(id);
 
 	},
 
@@ -70,7 +72,7 @@ var AdvancedControlPropertiesBizLogic = {
 			var control = controls[key];
 			$("#" + selectTagId).append($("<option/>", {
 				value : control.name,
-				text : control.name,
+				text : control.userDefinedName,
 				title : control.caption
 			}));
 		}
@@ -103,22 +105,23 @@ var AdvancedControlPropertiesBizLogic = {
 	},
 
 	loadSkipRules : function(model) {
-		//clear the table;
-		//$("#skipRulesTable tr:gt(0)").remove();
+		// clear the table;
+		// $("#skipRulesTable tr:gt(0)").remove();
 		var skipRules = model.get('skipRules');
-		if(Object.keys(skipRules).length != 0){
-		for ( var key in skipRules) {
-			// var skipRule = skipRules[key];
-			Main.advancedControlsView.addSkipRuleToTable(skipRules[key], key);
-			GlobalMemory.skipRulesCounter++;
+		if (Object.keys(skipRules).length != 0) {
+			for ( var key in skipRules) {
+				// var skipRule = skipRules[key];
+				Main.advancedControlsView.addSkipRuleToTable(skipRules[key],
+						key);
+				GlobalMemory.skipRulesCounter++;
+
+			}
+			$("#pvs").trigger("liszt:updated");
+			$("#controlledField").trigger("liszt:updated");
+			Main.advancedControlsView.setTableCss('skipRulesTable');
 
 		}
-		$("#pvs").trigger("liszt:updated");
-		$("#controlledField").trigger("liszt:updated");
-		Main.advancedControlsView.setTableCss('skipRulesTable');
 
-		}
-		
 	},
 	setSkipRuleControllingFieldsUI : function() {
 		// based on control type show hide pvs
@@ -133,7 +136,7 @@ var AdvancedControlPropertiesBizLogic = {
 		case "listBox":
 
 		case "multiselectBox":
-		
+
 		case "comboBox":
 
 		case "multiselectCheckBox":
@@ -150,6 +153,22 @@ var AdvancedControlPropertiesBizLogic = {
 		default:
 			$('#pvDiv').hide();
 			$('#controllingValuesDiv').hide();
+		}
+	},
+
+	addFormulaToMemory : function(controlName, formula) {
+		var _formula = GlobalMemory.formulae[controlName];
+		if (_formula == undefined) {
+			delete GlobalMemory.formulae[controlName];
+		}
+		GlobalMemory.formulae[controlName] = formula;
+
+	},
+
+	deleteFormulaFromMemory : function(controlName) {
+		var _formula = GlobalMemory.formulae[controlName];
+		if (_formula == undefined) {
+			delete GlobalMemory.formulae[controlName];
 		}
 	}
 

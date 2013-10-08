@@ -18,7 +18,8 @@
 <div class = "propertiesContainer">
 	<div class = "propertiesTextBoxContainer" align = right>
 			<label class = 'text_normal'>Attribute Name</label>
-			<input id = 'controlName' type = 'text' value = '{{controlName}}' class = 'textBoxSmall'>
+			<input id = 'userDefinedName' type = 'text' value = '{{userDefinedName}}' class = 'textBoxSmall'>
+			<input id = 'controlName' type = 'hidden' value = '{{controlName}}'>
 	</div>
 	<div class = "propertiesTextBoxContainer" align = right>
 		<div class = "isChecked" align = right >
@@ -30,12 +31,7 @@
 	</div>
 </div>
 	<div class = "propertiesContainer">
-		<div class = "propertiesCheckBoxLabelContainer" align = right >
-			<label class = 'text_normal'>PHI</label>
-		</div>
-		<div class = "propertiesCheckBoxContainer" align = left >
-			<input id = 'isPHI' type = 'checkbox'>			
-		</div>
+
 		<div class = "propertiesCheckBoxLabelContainer" align = right >
 			<label class = 'text_normal'>Mandatory</label>
 		</div>

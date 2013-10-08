@@ -119,6 +119,12 @@
 	border-right: 1px solid #F8F8F8;
 }
 
+.formulaTableRowOdd {
+	background-color: white;
+	border-left: 1px solid white;
+	border-right: 1px solid white;
+}
+
 .link {
 	width: 100px;
 	border: 0px;

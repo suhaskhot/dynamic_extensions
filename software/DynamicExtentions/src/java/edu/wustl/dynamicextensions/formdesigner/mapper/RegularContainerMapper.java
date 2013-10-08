@@ -13,6 +13,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.AppUserContextProvider;
@@ -20,7 +21,7 @@ import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public class RegularContainerMapper extends ContainerMapper {
-
+	
 	public Container propertiesToContainer(Properties properties, UserContext userContext) throws Exception {
 		Container container = new Container();
 		propertiesToContainer(properties, container, userContext);
@@ -47,23 +48,37 @@ public class RegularContainerMapper extends ContainerMapper {
 			for (Map<String, Object> controlPropertiesMap : controlCollection) {
 				Properties controlProps = new Properties(controlPropertiesMap);
 
-				Control control = controlMapper.propertiesToControl(controlProps);
+				Control control = controlMapper.propertiesToControl(controlProps, null);
 				control.setContainer(container);
 				container.addControl(control);
 			}
 		}
 		// process skip rules
 		Properties skipRulesPropertiesList = new Properties(formProperties.getMap("skipRules"));
-		Set<String> keySet = skipRulesPropertiesList.getAllProperties().keySet();
+		Set<String> skipRuleKeySet = skipRulesPropertiesList.getAllProperties().keySet();
 		SkipRuleMapper skipRuleMapper = new SkipRuleMapper(container);
 
-		for (String key : keySet) {
+		for (String key : skipRuleKeySet) {
 			Properties skipRuleProperties = new Properties(skipRulesPropertiesList.getMap(key));
 			container.addSkipRule(skipRuleMapper.propertiesToSkipRule(skipRuleProperties));
 		}
-	}
 
-	
+		// process calculated attributes
+		Map<String, Object> formulaeProperties = formProperties.getMap("formulae");
+		if (formulaeProperties != null) {
+			Properties formulaeList = new Properties(formulaeProperties);
+			Set<String> formulaeKeySet = formulaeList.getAllProperties().keySet();
+
+			for (String key : formulaeKeySet) {
+
+				String controlName = key;
+				String formula = container.getShortCodeFormula(formulaeList.getString(key));
+				NumberField numericControl = (NumberField) container.getControl(controlName, "\\.");
+				numericControl.setFormula(formula);
+			}
+		}
+
+	}
 
 	/**
 	 * @param container
@@ -94,7 +109,7 @@ public class RegularContainerMapper extends ContainerMapper {
 		propertiesMap.put("status", CSDConstants.STATUS_SAVED);
 		List<Map<String, Object>> controlPropertiesCollection = new ArrayList<Map<String, Object>>();
 		for (Control control : container.getControls()) {
-			controlPropertiesCollection.add(controlMapper.controlToProperties(control).getAllProperties());
+			controlPropertiesCollection.add(controlMapper.controlToProperties(control, container).getAllProperties());
 		}
 		propertiesMap.put("controlCollection", controlPropertiesCollection);
 

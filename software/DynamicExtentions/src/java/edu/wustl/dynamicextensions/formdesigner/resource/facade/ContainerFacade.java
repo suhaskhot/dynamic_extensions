@@ -41,12 +41,13 @@ public class ContainerFacade {
 	 * @throws Exception 
 	 */
 	public static ContainerFacade createContainer(Properties containerProps, UserContext userContext) throws Exception {
-		return new ContainerFacade(containerMapper.propertiesToContainer(containerProps, userContext),
-				userContext);
+		Container container = containerMapper.propertiesToContainer(containerProps, userContext);
+		containerMapper.setRootContainer(container);
+		return new ContainerFacade(container, userContext);
 	}
 
 	public void updateContainer(Properties containerProps) throws Exception {
-		Container containerFromUI =  containerMapper.propertiesToContainer(containerProps, null);
+		Container containerFromUI = containerMapper.propertiesToContainer(containerProps, null);
 		container.editContainer(containerFromUI);
 		//containerMapper.propertiesToContainer(containerProps, container, null);
 	}
@@ -62,6 +63,7 @@ public class ContainerFacade {
 			Container containerReplica = newContainer.getReplica();
 			newContainer = containerReplica;
 		}
+		containerMapper.setRootContainer(newContainer);
 		return new ContainerFacade(newContainer, userContext);
 	}
 
@@ -70,7 +72,7 @@ public class ContainerFacade {
 	 * @throws Exception 
 	 */
 	public void createControl(Properties controlProps) throws Exception {
-		Control control = new ControlMapper().propertiesToControl(controlProps);
+		Control control = new ControlMapper().propertiesToControl(controlProps, null);
 		container.addControl(control);
 	}
 
@@ -87,6 +89,7 @@ public class ContainerFacade {
 	}
 
 	public Properties getProperties() throws Exception {
+		containerMapper.setRootContainer(container);
 		return containerMapper.containerToProperties(container);
 	}
 

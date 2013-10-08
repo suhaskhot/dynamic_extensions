@@ -1,6 +1,7 @@
 
 package edu.wustl.dynamicextensions.formdesigner.mapper;
 
+import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.Control.LabelPosition;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
@@ -9,16 +10,18 @@ public abstract class DefaultControlMapper {
 
 	/**
 	 * @param controlProps
+	 * @param container TODO
 	 * @return
 	 * @throws Exception 
 	 */
-	public abstract Control propertiesToControl(Properties controlProps) throws Exception;
+	public abstract Control propertiesToControl(Properties controlProps, Container container) throws Exception;
 
 	/**
 	 * @param control
+	 * @param container TODO
 	 * @return
 	 */
-	public abstract Properties controlToProperties(Control control);
+	public abstract Properties controlToProperties(Control control, Container container);
 
 	/**
 	 * @param controlProps

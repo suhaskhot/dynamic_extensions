@@ -7,6 +7,16 @@ import edu.common.dynamicextensions.domain.nui.UserContext;
 public abstract class ContainerMapper {
 
 	protected static ControlMapper controlMapper = new ControlMapper();
+	protected Container rootContainer = null;
+
+	public Container getRootContainer() {
+		return rootContainer;
+	}
+
+	public void setRootContainer(Container rootContainer) {
+		this.rootContainer = rootContainer;
+		controlMapper.setRootContainer(rootContainer);
+	}
 
 	public abstract Container propertiesToContainer(Properties properties, UserContext userContext) throws Exception;
 

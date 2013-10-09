@@ -858,6 +858,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		container.setName(dtoContainer.getName());
 		container.setCaption(dtoContainer.getCaption());
 		container.setDbTableName(dtoContainer.getDbTableName());
+		container.setPrimaryKey(dtoContainer.getPrimaryKey());
 		
 		for (Control ctrl : dtoContainer.addLog) {
 			container.addControl(ctrl);

@@ -379,6 +379,7 @@ var ControlBizLogic = {
 
 				delete subForm.get('controlObjectCollection')[key];
 				subForm.get('controlObjectCollection')[_shortCode] = subFormControl;
+				subForm.get('controlsOrder').push(_shortCode);
 				var _subForm = subForm;
 				GlobalMemory.nodeCounter++;
 			}

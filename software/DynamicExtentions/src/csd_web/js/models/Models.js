@@ -17,7 +17,8 @@ var Models = {
 					console.log("Form Model created");
 					this.set({
 						// controlCollection : new Array(),
-						controlObjectCollection : {}
+						controlObjectCollection : {},
+						controlsOrder : new Array()
 					});
 				},
 
@@ -36,29 +37,16 @@ var Models = {
 						editName : controlName
 					});
 					var cntrlNames = controlName.split(".");
-					if (this.get('controlCollection') == undefined) {
-						this.set({
-							controlCollection : new Array()
-						});
-					}
 
 					if (cntrlNames.length == 1) {
 						this.get('controlObjectCollection')[controlName] = control;
-						this.get('controlCollection').push(controlName);
+						this.get('controlsOrder').push(controlName);
 					} else {
 						this.get('controlObjectCollection')[cntrlNames[0]].get(
 								'subForm').get('controlObjectCollection')[cntrlNames[1]] = control;
 
-						if (this.get('controlObjectCollection')[cntrlNames[0]]
-								.get('subForm').get('controlCollection') == undefined) {
-							this.get('controlObjectCollection')[cntrlNames[0]]
-									.get('subForm').set({
-										controlCollection : new Array()
-									});
-						}
-
 						this.get('controlObjectCollection')[cntrlNames[0]].get(
-								'subForm').get('controlCollection').push(
+								'subForm').get('controlsOrder').push(
 								cntrlNames[1]);
 					}
 				},

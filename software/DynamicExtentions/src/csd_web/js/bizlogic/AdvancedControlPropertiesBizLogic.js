@@ -107,6 +107,11 @@ var AdvancedControlPropertiesBizLogic = {
 	loadSkipRules : function(model) {
 		// clear the table;
 		// $("#skipRulesTable tr:gt(0)").remove();
+		if(Main.advancedControlsView == null){
+			Main.designModeViewPointer = new Views.DesignMode({
+				el : $("#design")
+			});
+		}
 		var skipRules = model.get('skipRules');
 		if (Object.keys(skipRules).length != 0) {
 			for ( var key in skipRules) {

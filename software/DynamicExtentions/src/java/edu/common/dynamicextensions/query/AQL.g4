@@ -72,6 +72,7 @@ FIELD    : (INT|ID) '.' ID ('.' ID)*;
 SLITERAL : '"' SGUTS '"';
 ESC      : '\\' ('\\' | '"');
 ARITH_OP : ('+'|'-'|'*'|'/');
+ERROR    : .;
 
 fragment
 SGUTS    : (ESC | ~('\\' | '"'))*;

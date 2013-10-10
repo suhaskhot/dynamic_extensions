@@ -26,14 +26,17 @@ public class QueryGenerator {
 	private static String LIMIT_QUERY = "select * from (select rownum rnum, tab.* from (%s) tab where rownum < %d) where rnum >= %d";
 	
 	private boolean wideRowSupport;
+	
+	private boolean ic;
 
     public QueryGenerator() {
     }
     
-    public QueryGenerator(boolean wideRowSupport) {
+    public QueryGenerator(boolean wideRowSupport, boolean ic) {
     	this.wideRowSupport = wideRowSupport;
+    	this.ic = ic;
     }
-
+   
     public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
     	StringBuilder countSql = new StringBuilder();
     	
@@ -205,19 +208,22 @@ public class QueryGenerator {
     }
 
     private String buildFilter(FilterNode filter) {
-        if (!isValidOp(filter.getLhs(), filter.getRelOp(), filter.getRhs())) {
-            throw new RuntimeException("Invalid operator: " + filter.getRelOp() + " used");
-        }
-        
-        String filterExpr = null, rhs = null;
-        
+    	if (!isValidFilter(filter)) {
+    		throw new RuntimeException("Invalid filter"); // add more info here
+    	}
+    	
+        String filterExpr = null, rhs = null;        
         String lhs = getExpressionNodeSql(filter.getLhs(), filter.getLhs().getType());        
         switch (filter.getRelOp()) {
             case STARTS_WITH:
             case ENDS_WITH:
             case CONTAINS:
             	rhs = getStringMatchSql((LiteralValueNode)filter.getRhs(), filter.getRelOp());
-            	filterExpr = lhs + " like " + rhs;
+            	if (ic) {
+            		filterExpr = "upper(" + lhs + ") like " + rhs.toUpperCase();
+            	} else {
+            		filterExpr = lhs + " like " + rhs;
+            	}            	
             	break;
             	
             case EXISTS:
@@ -229,12 +235,38 @@ public class QueryGenerator {
             	break;
             	            	
             default:
-            	rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());
+            	rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());            	
+            	if (filter.getLhs().isString() && ic) {
+            		lhs = "upper (" + lhs + ")";
+            		if (filter.getRhs() instanceof FieldNode) {
+            			rhs = "upper (" + rhs + ")";
+            		} else {
+            			rhs = rhs.toUpperCase();
+            		}
+            	}            	
             	filterExpr = lhs + " " + filter.getRelOp().symbol() + " " + rhs;
             	break;            	
         }
         
         return filterExpr;
+    }
+    
+    private boolean isValidFilter(FilterNode filter) {
+    	ExpressionNode lhs = filter.getLhs(), rhs = filter.getRhs();
+    	boolean isValid = false;
+    	if (rhs == null) { // unary operators like exists and not exists
+    		isValid = true;
+    	} else if (lhs.isString() && rhs.isString()) {
+    		isValid = true;
+    	} else if (lhs.isDate() && (rhs.isString() || rhs.isDate())) {
+    		isValid = true;
+    	} else if (lhs.isNumber() && rhs.isNumber()) {
+    		isValid = true;
+    	} else if (lhs.isDateInterval() && rhs.isNumber()) {
+    		isValid = true;
+    	} 
+    	
+    	return isValid;
     }
 
     private boolean isValidOp(ExpressionNode lhs, RelationalOp op, ExpressionNode rhs) {

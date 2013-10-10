@@ -19,6 +19,8 @@ public class Query {
     private QueryExpressionNode queryExpr;
         
     private boolean wideRows;
+    
+    private boolean ic;
         
     public static Query createQuery() {
         return new Query();
@@ -30,6 +32,11 @@ public class Query {
     public Query wideRows(boolean wideRows) {
         this.wideRows = wideRows;
         return this;
+    }
+    
+    public Query ic(boolean ic) {
+    	this.ic = ic;
+    	return this;
     }
   
     public void compile(Long rootFormId, String query) {
@@ -44,7 +51,7 @@ public class Query {
     }
 
     public long getCount() {
-        QueryGenerator gen = new QueryGenerator(wideRows);
+        QueryGenerator gen = new QueryGenerator(wideRows, ic);
         String countSql = gen.getCountSql(queryExpr, queryJoinTree);
 
         long count = -1L;
@@ -120,7 +127,7 @@ public class Query {
     }
     
     private String getDataSql(boolean wideRows, int start, int numRows) {
-        QueryGenerator gen = new QueryGenerator(wideRows);
+        QueryGenerator gen = new QueryGenerator(wideRows, ic);
         return gen.getDataSql(queryExpr, queryJoinTree, start, numRows);        
     }
 

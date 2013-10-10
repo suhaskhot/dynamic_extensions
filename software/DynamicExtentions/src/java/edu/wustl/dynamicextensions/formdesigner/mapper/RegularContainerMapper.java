@@ -16,12 +16,14 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.common.dynamicextensions.domain.nui.UserContext;
+import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.AppUserContextProvider;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public class RegularContainerMapper extends ContainerMapper {
-	
+
 	public Container propertiesToContainer(Properties properties, UserContext userContext) throws Exception {
 		Container container = new Container();
 		propertiesToContainer(properties, container, userContext);
@@ -75,9 +77,20 @@ public class RegularContainerMapper extends ContainerMapper {
 				String formula = container.getShortCodeFormula(formulaeList.getString(key));
 				NumberField numericControl = (NumberField) container.getControl(controlName, "\\.");
 				numericControl.setFormula(formula);
+				FormulaParser formulaParser = new FormulaParser();
+				updateSourceCalculatedControls(container, formulaParser, numericControl);
 			}
 		}
 
+	}
+
+	private void updateSourceCalculatedControls(Container rootContainer, FormulaParser formulaParser, Control control)
+			throws DynamicExtensionsSystemException {
+		formulaParser.parseExpression(((NumberField) control).getFormula());
+		for (String symbol : formulaParser.getSymbols()) {
+			Control sourceControl = rootContainer.getControl(symbol, "\\.");
+			sourceControl.setCalculatedSourceControl(true);
+		}
 	}
 
 	/**

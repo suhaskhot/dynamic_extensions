@@ -167,7 +167,8 @@ var Models = {
 					noOfDigits : 6,// based on migration code
 					noOfDigitsAfterDecimal : 2, // based on migration code
 					pvs : {},
-					lazyLoad : true
+					lazyLoad : true,
+					isCalculatedSourceControl : false
 				},
 
 				addPermissibleValue : function(id, pv) {

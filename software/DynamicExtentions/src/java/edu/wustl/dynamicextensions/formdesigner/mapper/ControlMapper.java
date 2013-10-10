@@ -29,13 +29,13 @@ import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
  *
  */
 public class ControlMapper {
-	
+
 	protected Container rootContainer = null;
-	
+
 	public Container getRootContainer() {
 		return rootContainer;
 	}
-	
+
 	public void setRootContainer(Container rootContainer) {
 		this.rootContainer = rootContainer;
 	}
@@ -169,6 +169,8 @@ public class ControlMapper {
 				control.setMaxValue(maximumValue);
 			}
 
+			control.setCalculatedSourceControl(controlProps.getBoolean("isCalculatedSourceControl"));
+
 			control.setCalculated(controlProps.getBoolean("isCalculated"));
 
 			return control;
@@ -183,12 +185,13 @@ public class ControlMapper {
 			controlProps.setProperty("noOfDigits", numericControl.getNoOfDigits());
 			controlProps.setProperty("noOfDigitsAfterDecimal", numericControl.getNoOfDigitsAfterDecimal());
 			controlProps.setProperty("isCalculated", numericControl.isCalculated());
+			controlProps.setProperty("isCalculatedSourceControl", numericControl.isCalculatedSourceControl());
 			if (numericControl.isCalculated()) {
-				String formula =numericControl.getFormula();
-				if(formula !=null){
+				String formula = numericControl.getFormula();
+				if (formula != null) {
 					controlProps.setProperty("formula", rootContainer.getUdnFormula(formula));
 				}
-				
+
 			}
 
 			return controlProps;
@@ -514,9 +517,8 @@ public class ControlMapper {
 			if (subForm != null) {
 				ContainerMapper containerMapper = new RegularContainerMapper();
 				containerMapper.setRootContainer(container);
-				
-				Container subContainer = containerMapper.propertiesToContainer(new Properties(subForm),
-						null);
+
+				Container subContainer = containerMapper.propertiesToContainer(new Properties(subForm), null);
 				control.setSubContainer(subContainer);
 			}
 

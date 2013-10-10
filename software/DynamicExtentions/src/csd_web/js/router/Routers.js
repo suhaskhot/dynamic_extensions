@@ -252,6 +252,11 @@ var Routers = {
 									userDefinedName = subFormUDN + "."
 											+ userDefinedName;
 								}
+								if(Main.advancedControlsView == null){
+									Main.designModeViewPointer = new Views.DesignMode({
+										el : $("#design")
+									});
+								}
 								Main.advancedControlsView.addFormulaToTable(
 										controlName, control.get('formula'),
 										userDefinedName);
@@ -409,6 +414,7 @@ var Routers = {
 
 								subFrm.get('controlObjectCollection')[subControl
 										.get('controlName')] = updatedControl;
+								subFrm.get('controlsOrder').push(updatedControl.get('controlName'));
 
 								GlobalMemory.nodeCounter++;
 
@@ -434,6 +440,8 @@ var Routers = {
 					}
 					Main.formView.getFormModel().get('controlObjectCollection')[control
 							.get('controlName')] = updatedControl;
+					Main.formView.getFormModel().get('controlsOrder').push(control.get('controlName'));
+					
 				},
 
 				populateTreeWithControlNodes : function(controlName,

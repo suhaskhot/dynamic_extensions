@@ -135,39 +135,53 @@ var Views = {
 						controlCollection : new Array()
 					});
 
-					// Set controls
-					for ( var key in this.model.get('controlObjectCollection')) {
-						var control = this.model.get('controlObjectCollection')[key];
+					var controlsOrder = this.model.get('controlsOrder');
+					var controlObjectCollection = this.model
+							.get('controlObjectCollection');
+					for (cntr = 0; cntr < controlsOrder.length; cntr++) {
 
-						if (control.get('subForm') != undefined) {
-							this.model.get('controlObjectCollection')[key].get(
-									'subForm').set({
-								controlCollection : new Array()
-							});
-							for ( var subKey in control.get('subForm').get(
-									'controlObjectCollection')) {
-								var subControl = control.get('subForm').get(
-										'controlObjectCollection')[subKey];
-								var subControlTemplate = subControl.get('template');
-								subControl.set({
-									template : ""
+						var controlName = controlsOrder[cntr];
+						var control = controlObjectCollection[controlName];
+
+						if (control == undefined) {
+
+						} else {
+							if (control.get('type') == "subForm") {
+
+								var _subForm = control.get('subForm');
+								var subFormControlsOrder = _subForm
+										.get('controlsOrder');
+								var subFormControlObjectCollection = _subForm
+										.get('controlObjectCollection');
+								
+								_subForm.set({
+									controlCollection : new Array()
 								});
-								this.model.get('controlObjectCollection')[key].get(
-										'subForm').get('controlCollection').push(
-										subControl.toJSON());
-								subControl.set({
-									template : subControlTemplate
+
+								for ( var subCntr = 0; subCntr < subFormControlsOrder.length; subCntr++) {
+
+									var subFormControlName = subFormControlsOrder[subCntr];
+									var subFormControl = subFormControlObjectCollection[subFormControlName];
+
+									if (subFormControl == undefined) {
+									} else {
+										// set control json
+										_subForm.get('controlCollection').push(
+												subFormControl.toJSON());
+									}
+								}
+
+								// set sub form
+								control.set({
+									subForm : _subForm
 								});
 							}
+
+							// set control json
+							this.model.get('controlCollection').push(
+									control.toJSON());
+
 						}
-						var controlTemplate = control.get('template');
-						control.set({
-							template : ""
-						});
-						this.model.get('controlCollection').push(control.toJSON());
-						control.set({
-							template : controlTemplate
-						});
 					}
 
 				},

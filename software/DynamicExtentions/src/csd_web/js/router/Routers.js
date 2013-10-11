@@ -253,8 +253,9 @@ var Routers = {
 											+ userDefinedName;
 								}
 								if(Main.advancedControlsView == null){
-									Main.designModeViewPointer = new Views.DesignMode({
-										el : $("#design")
+									Main.advancedControlsView = new Views.AdvancedPropertiesTabView({
+										el : $('#advancedControlProperties'),
+										model : null
 									});
 								}
 								Main.advancedControlsView.addFormulaToTable(

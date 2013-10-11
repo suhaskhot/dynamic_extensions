@@ -108,8 +108,9 @@ var AdvancedControlPropertiesBizLogic = {
 		// clear the table;
 		// $("#skipRulesTable tr:gt(0)").remove();
 		if(Main.advancedControlsView == null){
-			Main.designModeViewPointer = new Views.DesignMode({
-				el : $("#design")
+			Main.advancedControlsView = new Views.AdvancedPropertiesTabView({
+				el : $('#advancedControlProperties'),
+				model : null
 			});
 		}
 		var skipRules = model.get('skipRules');

@@ -109,7 +109,7 @@
 			</column>
 		</createTable>
 		
-		<addForeignKeyConstraint constraintName="FK_VERSIONED_CONTAINERS_IDENIFIER"
+		<addForeignKeyConstraint constraintName="FK_VERS_CONTAINERS_ID"
 		baseTableName="DYEXTN_VERSIONED_CONTAINERS" baseColumnNames="IDENTIFIER"
 		referencedTableName="DYEXTN_FORMS" referencedColumnNames="IDENTIFIER"/>
 		

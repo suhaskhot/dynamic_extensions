@@ -206,7 +206,7 @@ public class ListBox extends SelectControl {
 	protected boolean isPVSelected(ControlValue controlValue, PermissibleValue pv) {
 		String value = (String) controlValue.getValue();
 
-		return value != null && pv.getValue().equals(DynamicExtensionsUtility.getUnEscapedStringValue(value));
+		return value != null && pv.getValue().equals(value);
 
 	}
 

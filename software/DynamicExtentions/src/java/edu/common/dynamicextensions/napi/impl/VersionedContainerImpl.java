@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.napi.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -128,7 +129,83 @@ public class VersionedContainerImpl implements VersionedContainer {
 			throw new RuntimeException("Error obtaining published container: " + formId, e);
 		} 
 	}
+	
+	//
+	// The method which refers form by name goes below
+	// 
+	
+	
+	@Override
+	public Container getContainer(String formName) {
 		
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getContainer(jdbcDao, formName);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container: " + formName, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}
+		}
+	}
+
+	public Container getContainer(JdbcDao jdbcDao,String formName) {
+		return getContainer(jdbcDao, formName, Calendar.getInstance().getTime());
+	}
+	
+	@Override
+	public Container getContainer(String formName, Date activationDate) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getContainer(jdbcDao, formName, activationDate);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container: " + formName, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}
+		}
+	}
+	
+	public Container getContainer(JdbcDao jdbcDao, String formName, Date activationDate) {		
+		try {
+			Container published = null;
+			Long publishedId = getContainerIdByName(jdbcDao, formName, activationDate);
+			if (publishedId != null) {
+				published = Container.getContainer(jdbcDao, publishedId); 								
+			}
+
+			return published;
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining published container: " + formName, e);
+		} 
+	}
+	
+	public Long getContainerIdByName(JdbcDao jdbcDao, String formName, Date activationDate) {
+		try {
+			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
+			List<VersionedContainerInfo> versionedContainers = vdao.getPublishedContainersInfo(formName);
+			
+			Long resultId = null;
+			Date resultDate = null;
+			for (VersionedContainerInfo info : versionedContainers) {
+				if (info.getActivationDate().compareTo(activationDate) <= 0 && 
+					(resultDate == null || info.getActivationDate().after(resultDate))) {
+
+					resultId = info.getContainerId();
+					resultDate = info.getActivationDate();
+				}
+			}
+			
+			return resultId;			
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining published container: " + formName, e);
+		}		
+	}
+	
 	@Override
 	public Long getDraftContainerId(Long formId) {
 		JdbcDao jdbcDao = null;
@@ -203,14 +280,17 @@ public class VersionedContainerImpl implements VersionedContainer {
 		Long formId = vdao.getFormIdByDraftContainerId(draftContainerId);
 		
 		if (formId == null) {
+			String containerName = Container.getContainerNameById(jdbcDao, draftContainerId);
+			formId = vdao.insertFormInfo(containerName);
+			
 			VersionedContainerInfo vc = new VersionedContainerInfo();
+			vc.setFormId(formId);
 			vc.setContainerId(draftContainerId);
 			vc.setCreatedBy(usrCtx.getUserId());
 			vc.setCreationTime(Calendar.getInstance().getTime());
 			vc.setStatus("draft");
 			
 			vdao.insertVersionedContainerInfo(vc);
-			formId = vc.getFormId();
 		}
 		
 		return formId;
@@ -280,6 +360,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 		Container draftContainer = getDraftContainer(formId);
 		nullifyContainerIds(draftContainer);
 		
+		draftContainer.setName(getFormName(draftContainer.getName(), activationDate));
 		Long publishedContainerId = draftContainer.save(usrCtx, jdbcDao, false);
 		activationDate = (activationDate == null) ? Calendar.getInstance().getTime() : activationDate;
 		
@@ -293,9 +374,19 @@ public class VersionedContainerImpl implements VersionedContainer {
 		
 		VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
 		vdao.insertVersionedContainerInfo(vc);
+		
 	}
 	
 	
+	private String getFormName(String formName, Date activationDate) {
+		SimpleDateFormat sf = new SimpleDateFormat("MMddyyyy_HHmmss");
+		
+		StringBuilder qualifiedFormName = new StringBuilder(formName)
+			.append("_").append(sf.format(activationDate));
+		
+		return qualifiedFormName.toString();
+	}
+
 	@Override
 	public boolean isChangedSinceLastPublish(Long formId) {
 		Container draftContainer = getDraftContainer(formId);

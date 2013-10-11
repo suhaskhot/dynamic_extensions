@@ -14,6 +14,20 @@ public class VersionedContainerDao {
 		this.jdbcDao = jdbcDao;
 	}
 	
+	public Long getFormId(String formName) {
+		ResultSet rs = null;
+		
+		try {
+			List<String> params = Collections.singletonList(formName);
+			rs = jdbcDao.getResultSet(GET_FORM_ID_BY_FORM_NAME_SQL, params);
+			return rs.next() ? rs.getLong("IDENTIFIER") : null;
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining form with name : " + formName, e);
+		} finally {
+			jdbcDao.close(rs);
+		}
+	}
+	
 	public Long getFormIdByDraftContainerId(Long draftContainerId) {
 		ResultSet rs = null;
 		Long formId = null;
@@ -69,20 +83,29 @@ public class VersionedContainerDao {
 		}
 	}
 	
+	public List<VersionedContainerInfo> getPublishedContainersInfo(String formName) {
+		List<VersionedContainerInfo> result = new ArrayList<VersionedContainerInfo>();
+		ResultSet rs = null;
+		try {
+			rs = jdbcDao.getResultSet(GET_PUBLISHED_CONTAINER_INFO_BY_FORM_NAME_SQL, Collections.singletonList(formName));
+			while (rs.next()) {
+				result.add(getInfo(rs.getLong("IDENTIFIER"), "published", rs));
+			}
+			
+			return result;
+		} catch (Exception e) {
+			throw new RuntimeException("Error getting published container info: " + formName, e);
+		} finally {
+			jdbcDao.close(rs);
+		}
+	}
+	
 	public void insertVersionedContainerInfo(VersionedContainerInfo info) {
 		ResultSet rs = null;
 		
 		try {
 			List<Object> params = new ArrayList<Object>();
-			if (info.getFormId() == null) {
-				rs = jdbcDao.getResultSet(GET_NEXT_ID_SQL, null);
-				if (rs.next()) {
-					info.setFormId(rs.getLong(1));
-				} else {
-					throw new RuntimeException("Failed to obtain next form id");
-				}
-			}
-			
+
 			params.add(info.getFormId());
 			params.add(info.getContainerId());
 			params.add(info.getActivationDate());
@@ -91,6 +114,7 @@ public class VersionedContainerDao {
 			params.add(info.getStatus());
 			
 			jdbcDao.executeUpdate(INSERT_VERSIONED_CONTAINER_INFO_SQL, params);
+		
 		} catch (Exception e) {
 			throw new RuntimeException("Error inserting versioned container info", e);
 		} finally {
@@ -110,6 +134,31 @@ public class VersionedContainerDao {
 		return info;		
 	}
 		
+	public Long insertFormInfo(String formName) {
+		ResultSet rs = null;
+		Long formId = null;
+		try {
+			rs = jdbcDao.getResultSet(GET_NEXT_ID_SQL, null);
+		
+			if (rs.next()) {
+				formId = rs.getLong(1);
+			} else {
+				throw new RuntimeException("Failed to obtain next form id");
+			}
+			
+			List<Object> params = new ArrayList<Object>();
+			params.add(formId);
+			params.add(formName);
+			
+			jdbcDao.executeUpdate(INSERT_FORM_INFO_SQL, params);
+			
+			return formId;
+		} catch (Exception e) {
+			throw new RuntimeException("Error inserting versioned container info", e);
+		} finally {
+			jdbcDao.close(rs);
+		}
+	}
 	private final static String GET_DRAFT_CONTAINER_INFO_SQL = 
 			"SELECT CONTAINER_ID, ACTIVATION_DATE, CREATED_BY, CREATE_TIME " +
 			"FROM DYEXTN_VERSIONED_CONTAINERS " +
@@ -121,6 +170,13 @@ public class VersionedContainerDao {
 			"WHERE IDENTIFIER = ? AND STATUS = 'published' " +
 			"ORDER BY ACTIVATION_DATE";
 	
+	private final static String GET_PUBLISHED_CONTAINER_INFO_BY_FORM_NAME_SQL =
+			"SELECT VC.IDENTIFIER, CONTAINER_ID, ACTIVATION_DATE, CREATED_BY, CREATE_TIME " +
+			"FROM DYEXTN_VERSIONED_CONTAINERS VC " +
+			"INNER JOIN DYEXTN_FORMS DF ON VC.IDENTIFIER = DF.IDENTIFIER " +
+			"WHERE FORM_NAME = ? AND STATUS = 'published' " +
+			"ORDER BY ACTIVATION_DATE";
+	
 	private final static String INSERT_VERSIONED_CONTAINER_INFO_SQL = 
 			"INSERT INTO DYEXTN_VERSIONED_CONTAINERS (IDENTIFIER, CONTAINER_ID, ACTIVATION_DATE, CREATED_BY, CREATE_TIME, STATUS) " +
 			"VALUES (?, ?, ?, ?, ?, ?)";
@@ -128,6 +184,13 @@ public class VersionedContainerDao {
 	private final static String GET_FORM_ID_BY_DRAFT_CONTAINER_ID_SQL =
 			"SELECT IDENTIFIER FROM DYEXTN_VERSIONED_CONTAINERS WHERE CONTAINER_ID = ? AND STATUS = 'draft'";
 	
+	private final static String INSERT_FORM_INFO_SQL = 
+			"INSERT INTO DYEXTN_FORMS (IDENTIFIER, FORM_NAME) VALUES (?, ?)";
+	
+	private final static String GET_FORM_ID_BY_FORM_NAME_SQL =
+			"SELECT IDENTIFIER FROM DYEXTN_FORMS WHERE FORM_NAME = ? ";
+	
 	private final static String GET_NEXT_ID_SQL = 
-			"SELECT DYEXTN_VERS_CONTAINERS_SEQ.NEXTVAL FROM DUAL";
+			"SELECT DYEXTN_FORMS_SEQ.NEXTVAL FROM DUAL";
+
 }

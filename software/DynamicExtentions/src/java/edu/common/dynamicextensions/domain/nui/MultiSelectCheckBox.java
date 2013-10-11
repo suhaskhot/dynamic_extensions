@@ -202,7 +202,9 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 							.append((this.isSkipLogicSourceControl() ? "getSkipLogicControl('" + controlName + "','"
 									+ identifier + "','" + getContainer().getId() + "');" : ""))
 							.append("\" /></td><td class='formRequiredLabel_withoutBorder' >").append("<label for=\"")
-							.append(controlName).append("\">").append(pv.getValue()).append("</label> </td>");
+							.append(controlName).append("\">")
+							.append(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))
+							.append("</label> </td>");
 				}
 				if (columnNum % optionsPerRow == optionsPerRow - 1) {
 					htmlString.append("</tr>");
@@ -225,13 +227,13 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 		
 		if (selectedPvs != null) {
 			
-			if (selectedPvs.contains(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))) {
+			if (selectedPvs.contains(pv.getValue())) {
 					isPVSelected = true;
-				}
+			}
 
 		} else if (getDefaultValue() != null) {
 			
-			if (getDefaultValue().getValue().equals(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))) {
+			if (getDefaultValue().getValue().equals(pv.getValue())) {
 				isPVSelected = true;
 			}
 		}

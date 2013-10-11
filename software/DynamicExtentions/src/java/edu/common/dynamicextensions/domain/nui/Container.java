@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -381,6 +383,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Control with same user defined name already exists or user defined name of control is null " + control.getName());
 		}
 				
+		validateNameAndUdn(control);
+		
 		if (control.getSequenceNumber() == 0) {
 			control.setSequenceNumber(++sequenceNo);
 		} else if (control.getSequenceNumber() > sequenceNo) {
@@ -409,6 +413,16 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		control.setContainer(this);
 	}
 	
+	private void validateNameAndUdn(Control control) {
+		Pattern p = Pattern.compile("[+-/*(){}%]", Pattern.CASE_INSENSITIVE);
+		
+		if (p.matcher(control.getName()).find()) {
+			throw new RuntimeException("Control name contains spl characters "+ control.getName());
+		} else if (p.matcher(control.getUserDefinedName()).find()) {
+			throw new RuntimeException("Control user defined name contains spl characters "+ control.getUserDefinedName());
+		}
+	}
+
 	public void editControl(String name, Control control) {
 		throwExceptionIfDto();
 		editControl(name, control, false);
@@ -423,6 +437,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Control with name doesn't exist: " + name);
 		}		
 		userDefCtrlNames.remove(existingControl.getUserDefinedName());
+
+		validateNameAndUdn(control);
 
 		if (control.getSequenceNumber() == 0) {
 			control.setSequenceNumber(existingControl.getSequenceNumber());
@@ -617,6 +633,27 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error obtaining container: " + id, e);
 		}	
 	}
+	
+	public static Container getContainer(String name) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = new JdbcDao();
+			return getContainer(jdbcDao, name);
+		} finally {
+			if (jdbcDao != null) {
+				jdbcDao.close();
+			}			
+		}		
+	}
+	
+	public static Container getContainer(JdbcDao jdbcDao, String name) {
+		try {						
+			ContainerDao containerDao = new ContainerDao(jdbcDao);
+			return containerDao.getByName(name);				
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container: " + name, e);
+		}	
+	}
 		
 	public static List<ContainerInfo> getContainerInfoByCreator(Long creatorId) {
 		JdbcDao jdbcDao = null;
@@ -660,6 +697,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 				
 	public void editContainer(Container newContainer) {
+		if (! this.getName().equals(newContainer.getName())) {
+			throw new RuntimeException("Error : Container name cannot be edited");
+		}
+		
 		this.setName(newContainer.getName());
 		this.setCaption(newContainer.getCaption());
 		
@@ -684,7 +725,6 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		//
 		this.skipRules.clear();
 		this.skipRules.addAll(newContainer.getSkipRules());
-		fixSkipRules(); // TODO
 	}
 
 	protected void deleteRemovedControls(Container newContainer) {
@@ -1568,17 +1608,24 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return subFormControl;
 	}
 	
-	private void fixSkipRules() {
-		for (SkipRule rule : skipRules) {
-			for (SkipAction action : rule.getActions()) {
-				Long containerId = action.getTargetCtrl().getContainer().getId();
-				action.getTargetCtrl().setContainer(getExistingContainer(containerId));
-			}
-			
-			for(SkipCondition condition : rule.getConditions()) {
-				Long containerId = condition.getSourceControl().getContainer().getId();
-				condition.getSourceControl().setContainer(getExistingContainer(containerId));
-			}
+	public static String getContainerNameById(Long id) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = new JdbcDao();
+			return getContainerNameById(jdbcDao, id);
+		} finally {
+			if (jdbcDao != null) {
+				jdbcDao.close();
+			}			
+		}		
+	}
+
+	public static String getContainerNameById(JdbcDao jdbcDao, Long id) {
+		try {
+			ContainerDao containerDao = new ContainerDao(jdbcDao);
+			return containerDao.getNameById(id);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container name with id : " + id);
 		}
 	}
 	

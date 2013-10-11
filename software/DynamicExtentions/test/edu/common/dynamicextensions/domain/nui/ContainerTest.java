@@ -245,6 +245,8 @@ public class ContainerTest {
 		//
 		NumberField approxSalaryEdited = new NumberField();
 		approxSalaryEdited.setName("approxSalary");
+		approxSalaryEdited.setUserDefinedName("approxSalary");
+
 		userProfile.editControl("approxSalary", approxSalaryEdited);
 		
 		Long actualContainerId = userProfile.save(userCtxt);
@@ -271,6 +273,8 @@ public class ContainerTest {
 		//
 		DatePicker dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
+		dateOfBirth.setUserDefinedName("dateOfBirth");
+
 		dateOfBirth.setFormat("yyyy-MM-dd");
 		userProfile.editControl("dateOfBirth", dateOfBirth);
 
@@ -297,6 +301,7 @@ public class ContainerTest {
 		//
 		TextArea firstName = new TextArea();
 		firstName.setName("firstName");
+		firstName.setUserDefinedName("firstName");
 		userProfile.editControl("firstName", firstName);
 
 		Long actualContainerId = userProfile.save(userCtxt);
@@ -458,6 +463,25 @@ public class ContainerTest {
 		assertEquals(userProfile.toXml(), actual.toXml());
 	}
 	
+	@Test
+	public void testGetContainerByName() 
+	throws Exception {
+		userProfile.setId(5L);
+		userProfile.setDbTableName("DE_E_3");
+		
+		String expectedGetSql = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE NAME = ?";
+		Blob mockedBlob = mockBlobForRead(userProfile.toXml());
+		
+		mockQueryResultSet(expectedGetSql, Arrays.asList("XML","CREATED_BY","CREATE_TIME","LAST_MODIFIED_BY","LAST_MODIFY_TIME"), 
+				new List[] { Arrays.asList(mockedBlob, 0L, null, 0L, null) });
+		mockJdbcDao.close();
+		
+		replayAll();
+		
+		Container actual = Container.getContainer("userProfile");
+		assertEquals(userProfile.toXml(), actual.toXml());
+	}
+		
 	@Test
 	public void testGetNonExistingContainer()
 	throws Exception {

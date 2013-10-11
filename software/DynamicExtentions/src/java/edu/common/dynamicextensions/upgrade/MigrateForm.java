@@ -11,9 +11,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -67,6 +69,7 @@ import edu.common.dynamicextensions.domaininterface.BooleanTypeInformationInterf
 import edu.common.dynamicextensions.domaininterface.CategoryAssociationInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryAttributeInterface;
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
+import edu.common.dynamicextensions.domaininterface.CategoryInterface;
 import edu.common.dynamicextensions.domaininterface.DataElementInterface;
 import edu.common.dynamicextensions.domaininterface.DateTypeInformationInterface;
 import edu.common.dynamicextensions.domaininterface.DoubleTypeInformationInterface;
@@ -159,6 +162,8 @@ public class MigrateForm {
 	private Map<Date, List<SelectCtrlPvDataSource>> versionedCtrls = new TreeMap<Date, List<SelectCtrlPvDataSource>>();
 	
 	private int userDefId = 0;
+	
+	private static Set<String> containerNames = new HashSet<String>();
 
 	//private Map<Date, >
 	
@@ -713,7 +718,7 @@ public class MigrateForm {
 		newCtrl.setSequenceNumber(oldCtrl.getSequenceNumber());
 		newCtrl.setxPos(oldCtrl.getYPosition());
 		newCtrl.setShowLabel(showLabel(oldCtrl));
-		newCtrl.setShowInGrid(showInGrid(oldCtrl));		
+		newCtrl.setShowInGrid(showInGrid(oldCtrl));	
 	}
 	
 	private void ensureUniqueUdn(Container c, Control ctrl) {
@@ -996,7 +1001,11 @@ public class MigrateForm {
 	private String getEntityName(AbstractEntityInterface entity) {
 		String name = entity.getName();
 		if (entity instanceof CategoryEntityInterface) {
-			name = getLastPart(entity.getName(), 2); 			
+			CategoryInterface category = ((CategoryEntityInterface) entity).getCategory();
+			
+			if (category != null) {
+				name = getUniqueFormName(category.getName());
+			} 
 		}
 		
 		return name;
@@ -1010,6 +1019,17 @@ public class MigrateForm {
 		
 		return name;
 	}
+	
+
+	private String getUniqueFormName(String name) {
+		String uniqueName = name;
+		int i = 0;
+		while (containerNames.contains(uniqueName)) {                 
+			uniqueName = name + "_" + ++i;
+		}
+		containerNames.add(uniqueName);
+		return uniqueName;
+    }
 	
 	private String getLastPart(String name, int startIdx) {
 		String[] nameParts = name.split("[\\[\\]]");

@@ -14,6 +14,10 @@ public interface VersionedContainer {
 	
 	public Container getContainer(Long formId, Date activationDate);
 	
+	public Container getContainer(String formName);
+	
+	public Container getContainer(String formName, Date activationDate);
+	
 	public Long getDraftContainerId(Long formId);
 	
 	public Container getDraftContainer(Long formId);

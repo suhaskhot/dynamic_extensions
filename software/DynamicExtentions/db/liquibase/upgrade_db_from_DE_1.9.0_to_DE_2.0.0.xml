@@ -97,4 +97,25 @@
 			insert into DYEXTN_ID_SEQ values('RECORD_ID_SEQ', 1)
 		</sql>
 	</changeSet>
+	
+	<changeSet id="6" author="ahegade">
+		<createTable tableName="DYEXTN_FORMS">
+			<column name="IDENTIFIER" type="${int.type}">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+			
+			<column name="FORM_NAME" type="${text.type}">
+				<constraints nullable="false" unique="true"/>
+			</column>
+		</createTable>
+		
+		<addForeignKeyConstraint constraintName="FK_VERSIONED_CONTAINERS_IDENIFIER"
+		baseTableName="DYEXTN_VERSIONED_CONTAINERS" baseColumnNames="IDENTIFIER"
+		referencedTableName="DYEXTN_FORMS" referencedColumnNames="IDENTIFIER"/>
+		
+		<createSequence sequenceName = "DYEXTN_FORMS_SEQ"/>
+		
+	</changeSet>
+	
+
 </databaseChangeLog>

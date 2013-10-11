@@ -39,6 +39,9 @@ public class ContainerDao {
 			"SELECT DYEXTN_CONTAINERS_SEQ.NEXTVAL " +
 			"FROM (SELECT LEVEL FROM DUAL CONNECT BY LEVEL <= %d)";
 	
+	private static final String GET_CONTAINER_NAME_BY_ID =  
+			"SELECT NAME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+	
 	private static final String LIST_ALL_CONTAINERS = "SELECT NAME,IDENTIFIER FROM DYEXTN_CONTAINERS ORDER BY NAME";
 	
 	private static final String GET_CONTAINER_INFO_BY_CREATOR_SQL = 
@@ -250,6 +253,16 @@ public class ContainerDao {
 				lastUpdatedTime = rs.getTimestamp("LAST_MODIFY_TIME");
 			}
 			return lastUpdatedTime;
+		} finally {
+			jdbcDao.close(rs);
+		}
+	}
+
+	public String getNameById(Long id) throws SQLException {
+		ResultSet rs = null; 
+		try {
+			rs = jdbcDao.getResultSet(GET_CONTAINER_NAME_BY_ID, Collections.singletonList(id));
+			return rs.next() ? rs.getString("NAME") : null;
 		} finally {
 			jdbcDao.close(rs);
 		}

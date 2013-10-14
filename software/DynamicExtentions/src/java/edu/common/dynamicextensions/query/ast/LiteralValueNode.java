@@ -30,6 +30,7 @@ public class LiteralValueNode extends ExpressionNode {
 	@Override
 	public LiteralValueNode copy() {
 		LiteralValueNode copy = new LiteralValueNode(literalType);
+		copy.setLabel(this.getLabel());
 		copy.getValues().addAll(getValues()); // Assume literals are immutable
 		return copy;
 	}	

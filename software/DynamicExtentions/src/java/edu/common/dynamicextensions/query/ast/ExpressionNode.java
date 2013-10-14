@@ -3,10 +3,20 @@ package edu.common.dynamicextensions.query.ast;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
 public abstract class ExpressionNode implements Node {
+	private String label;
+	
 	public abstract DataType getType();
 	
 	public abstract ExpressionNode copy();
-		
+	
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	public String getLabel() {
+		return label;
+	}
+	
 	public boolean isDate() {
 		return getType() == DataType.DATE;
 	}

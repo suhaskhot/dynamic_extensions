@@ -9,6 +9,127 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface AQLListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#Field}.
+	 * @param ctx the parse tree
+	 */
+	void enterField(@NotNull AQLParser.FieldContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#Field}.
+	 * @param ctx the parse tree
+	 */
+	void exitField(@NotNull AQLParser.FieldContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#BasicFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#BasicFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#FloatLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#FloatLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#MvFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#MvFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#CurrentDateFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#CurrentDateFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#IntLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntLiteral(@NotNull AQLParser.IntLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#IntLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#SelectElement}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelectElement(@NotNull AQLParser.SelectElementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#SelectElement}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelectElement(@NotNull AQLParser.SelectElementContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#date_interval}.
+	 * @param ctx the parse tree
+	 */
+	void enterDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#date_interval}.
+	 * @param ctx the parse tree
+	 */
+	void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#BoolLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#BoolLiteral}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#SelectExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelectExpr(@NotNull AQLParser.SelectExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#SelectExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelectExpr(@NotNull AQLParser.SelectExprContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#StringLiteral}.
 	 * @param ctx the parse tree
 	 */
@@ -42,28 +163,6 @@ public interface AQLListener extends ParseTreeListener {
 	void exitNotFilterExpr(@NotNull AQLParser.NotFilterExprContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#Field}.
-	 * @param ctx the parse tree
-	 */
-	void enterField(@NotNull AQLParser.FieldContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#Field}.
-	 * @param ctx the parse tree
-	 */
-	void exitField(@NotNull AQLParser.FieldContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#BasicFilter}.
-	 * @param ctx the parse tree
-	 */
-	void enterBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#BasicFilter}.
-	 * @param ctx the parse tree
-	 */
-	void exitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link AQLParser#ArithExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -73,28 +172,6 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArithExpr(@NotNull AQLParser.ArithExprContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#FloatLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void enterFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#FloatLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void exitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#OrFilterExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#OrFilterExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#PandFilterExpr}.
@@ -108,48 +185,15 @@ public interface AQLListener extends ParseTreeListener {
 	void exitPandFilterExpr(@NotNull AQLParser.PandFilterExprContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#MvFilter}.
+	 * Enter a parse tree produced by {@link AQLParser#OrFilterExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx);
+	void enterOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link AQLParser#MvFilter}.
+	 * Exit a parse tree produced by {@link AQLParser#OrFilterExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#IntLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntLiteral(@NotNull AQLParser.IntLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#IntLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#date_interval}.
-	 * @param ctx the parse tree
-	 */
-	void enterDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#date_interval}.
-	 * @param ctx the parse tree
-	 */
-	void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
-	 * @param ctx the parse tree
-	 */
-	void enterMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
-	 * @param ctx the parse tree
-	 */
-	void exitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
+	void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#SimpleFilter}.
@@ -174,28 +218,6 @@ public interface AQLListener extends ParseTreeListener {
 	void exitParensFilterExpr(@NotNull AQLParser.ParensFilterExprContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#BoolLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#BoolLiteral}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#SelectExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterSelectExpr(@NotNull AQLParser.SelectExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#SelectExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitSelectExpr(@NotNull AQLParser.SelectExprContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link AQLParser#StringCompFilter}.
 	 * @param ctx the parse tree
 	 */
@@ -218,17 +240,6 @@ public interface AQLListener extends ParseTreeListener {
 	void exitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#YearsDiffFunc}.
-	 * @param ctx the parse tree
-	 */
-	void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#YearsDiffFunc}.
-	 * @param ctx the parse tree
-	 */
-	void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link AQLParser#literal_values}.
 	 * @param ctx the parse tree
 	 */
@@ -238,6 +249,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#YearsDiffFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#YearsDiffFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#DateIntervalExpr}.
@@ -251,17 +273,6 @@ public interface AQLListener extends ParseTreeListener {
 	void exitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#LiteralVal}.
-	 * @param ctx the parse tree
-	 */
-	void enterLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#LiteralVal}.
-	 * @param ctx the parse tree
-	 */
-	void exitLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link AQLParser#ParensArithExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -271,6 +282,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#LiteralVal}.
+	 * @param ctx the parse tree
+	 */
+	void enterLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#LiteralVal}.
+	 * @param ctx the parse tree
+	 */
+	void exitLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#AndFilterExpr}.

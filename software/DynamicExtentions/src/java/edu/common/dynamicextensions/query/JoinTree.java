@@ -110,4 +110,71 @@ public class JoinTree
     public void addChild(String name, JoinTree child)  {
         children.put(name, child);
     }
+    
+    public JoinTree getNode(String alias) {
+    	if (this.getAlias().equals(alias)) {
+    		return this;
+    	}
+    	
+    	JoinTree result = null;
+    	for (JoinTree child : children.values()) {
+    		if (alias.equals(child.getAlias())) {
+    			result = child;
+    			break;
+    		}
+    	}
+    	
+    	if (result != null) {
+    		return result;
+    	}
+
+    	for (JoinTree child : children.values()) {
+    		result = child.getNode(alias);
+    		if (result != null) {
+    			break;
+    		}
+    	}
+    	
+    	return result;    	
+    }
+    
+    public boolean isAncestorOf(JoinTree tree) {
+    	boolean yes = false;
+    	for (JoinTree child : children.values()) {
+    		if (tree == child) {
+    			yes = true;
+    			break;
+    		}
+    	}
+    	
+    	if (yes) {
+    		return yes;
+    	}
+    	
+    	for (JoinTree child : children.values()) {
+    		if ((yes = child.isAncestorOf(tree))) {
+    			break;
+    		}
+    	}
+   		
+    	return yes;
+    }
+    
+    public JoinTree getCommonAncestor(JoinTree tree1, JoinTree tree2) {
+    	if (tree1.getParent() == tree2.getParent()) {
+    		return getNonLinkParentNode(tree1);
+    	}
+    	
+    	JoinTree tree1Parent = getNonLinkParentNode(tree1);
+    	JoinTree tree2Parent = getNonLinkParentNode(tree2);
+    	return getCommonAncestor(tree1Parent, tree2Parent);
+    }
+    
+    private JoinTree getNonLinkParentNode(JoinTree joinTree) {
+    	if (joinTree.form == null && joinTree.field == null) {
+    		return getNonLinkParentNode(joinTree.getParent());
+    	}
+    	
+    	return joinTree;
+    }
 }

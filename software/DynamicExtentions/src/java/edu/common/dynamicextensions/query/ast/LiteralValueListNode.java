@@ -20,6 +20,7 @@ public class LiteralValueListNode extends ExpressionNode {
 	@Override
 	public LiteralValueListNode copy() {
 		LiteralValueListNode copy = new LiteralValueListNode();
+		copy.setLabel(this.getLabel());
 		for (LiteralValueNode literal : literalVals) {
 			copy.addLiteralVal(literal.copy());
 		}

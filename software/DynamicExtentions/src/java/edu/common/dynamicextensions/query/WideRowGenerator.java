@@ -27,8 +27,11 @@ public class WideRowGenerator {
     
     private QueryExpressionNode queryExpr;
     
+    private JoinTree queryJoinTree;
+    
     public WideRowGenerator(JoinTree queryJoinTree, QueryExpressionNode queryExpr) {
         this.queryExpr = queryExpr;
+        this.queryJoinTree = queryJoinTree;
         this.rootTabAlias = queryJoinTree.getAlias();
         initTableJoinPath(queryJoinTree);
     }
@@ -183,20 +186,7 @@ public class WideRowGenerator {
         
         return tabAliasIdMap;
     }
-    
-    /*private String getTabAliasId(ResultSet rs, String tabAlias, int start, int end) 
-    throws Exception {
-        String result = null;
-        for (int i = start; i <= end; i += 2) {
-            if (tabAlias.equals(rs.getString(i))) {
-                result = rs.getString(i + 1);
-                break;
-            }
-        }
         
-        return result;
-    }*/
-    
     private Map<String, List<Object>> getTabAliasColumnValuesMap(ResultSet rs) 
     throws Exception {
         Map<String, List<Object>> aliasColumnValuesMap = new HashMap<String, List<Object>>(); 
@@ -206,50 +196,44 @@ public class WideRowGenerator {
         for (ExpressionNode element : selectElements) {
             col++;
             
-            if (!(element instanceof FieldNode)) {
-                continue;
-            }
-            
-            FieldNode field = (FieldNode)element;
-            List<Object> columns = aliasColumnValuesMap.get(field.getTabAlias());
+            String[] aliasPk = WideRowUtil.getTabAliasPk(queryJoinTree, element);
+            String alias = aliasPk == null ? "literal" : aliasPk[0];
+            List<Object> columns = aliasColumnValuesMap.get(alias);
             if (columns == null) {
                 columns = new ArrayList<Object>();
-                aliasColumnValuesMap.put(field.getTabAlias(), columns);
-            }
-            
+                aliasColumnValuesMap.put(alias, columns);
+            }            
             columns.add(rs.getObject(col));         
         }
         
         return aliasColumnValuesMap;
     }
     
-    private Map<String, List<FieldNode>> getTabFieldsMap() {
-        Map<String, List<FieldNode>> tabFieldsMap = new HashMap<String, List<FieldNode>>();
+    private Map<String, List<ExpressionNode>> getTabFieldsMap() {
+        Map<String, List<ExpressionNode>> tabFieldsMap = new HashMap<String, List<ExpressionNode>>();
         
         for (ExpressionNode exprNode : queryExpr.getSelectList().getElements()) {
-            if (!(exprNode instanceof FieldNode)) {
-                continue;
-            }
-            
-            FieldNode field = (FieldNode)exprNode;
-            List<FieldNode> fields = tabFieldsMap.get(field.getTabAlias());
+            String[] aliasPk = WideRowUtil.getTabAliasPk(queryJoinTree, exprNode);
+            String tabAlias = aliasPk == null ? "literal" : aliasPk[0];
+
+            List<ExpressionNode> fields = tabFieldsMap.get(tabAlias);
             if (fields == null) {
-                fields = new ArrayList<FieldNode>();
-                tabFieldsMap.put(field.getTabAlias(), fields);
+                fields = new ArrayList<ExpressionNode>();
+                tabFieldsMap.put(tabAlias, fields);
             }
             
-            fields.add(field);
+            fields.add(exprNode);
         }
         
         return tabFieldsMap;        
     }
     
     private QueryResultData initQueryResultData(WideRowNode wideRow) {
-        Map<String, List<FieldNode>> fieldsMap = getTabFieldsMap();
+        Map<String, List<ExpressionNode>> fieldsMap = getTabFieldsMap();
         List<ResultColumn> columns = wideRow.getTabColumns(aliasRowCountMap, fieldsMap); 
         return new QueryResultData(columns);
     }
-        
+            
     private class WideRowNode {
         private String alias;
         
@@ -312,12 +296,12 @@ public class WideRowGenerator {
         }
         
         
-        public List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<FieldNode>> fieldsMap) {
+        public List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<ExpressionNode>> fieldsMap) {
             List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
             
             if (columns != null) {
-                List<FieldNode> fields = fieldsMap.get(alias);
-                for (FieldNode field : fields) {
+                List<ExpressionNode> fields = fieldsMap.get(alias);
+                for (ExpressionNode field : fields) {
                     resultColumns.add(new ResultColumn(field, 0));
                 }               
             }

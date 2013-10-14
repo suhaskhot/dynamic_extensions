@@ -18,12 +18,16 @@ public class ResultColumn {
 	}
 	
 	public String getColumnLabel(ResultColumnLabelFormatter formatter) {
-		if (!(columnExpr instanceof FieldNode)) {
-			return "Column - " + instance;
+		String[] captions;
+		if (columnExpr.getLabel() != null) {
+			captions = new String[] {columnExpr.getLabel()};
+		} else if (!(columnExpr instanceof FieldNode)) {
+			captions = new String[] {"Column"};
+		} else {
+			captions = ((FieldNode)columnExpr).getNodeCaptions();
 		}
 		
-		FieldNode field = (FieldNode)columnExpr;
-		return formatter.format(field.getNodeCaptions(), instance);		
+		return formatter.format(captions, instance);		
 	}
 	
 	public String[] getCaptions() {

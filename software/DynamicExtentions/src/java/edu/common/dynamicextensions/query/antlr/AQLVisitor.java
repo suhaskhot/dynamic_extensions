@@ -12,6 +12,83 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#Field}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitField(@NotNull AQLParser.FieldContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#BasicFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#FloatLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#MvFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#CurrentDateFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#IntLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#SelectElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelectElement(@NotNull AQLParser.SelectElementContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#date_interval}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#BoolLiteral}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#SelectExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelectExpr(@NotNull AQLParser.SelectExprContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#StringLiteral}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -33,39 +110,11 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitNotFilterExpr(@NotNull AQLParser.NotFilterExprContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#Field}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitField(@NotNull AQLParser.FieldContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#BasicFilter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link AQLParser#ArithExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitArithExpr(@NotNull AQLParser.ArithExprContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#FloatLiteral}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#OrFilterExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#PandFilterExpr}.
@@ -75,32 +124,11 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPandFilterExpr(@NotNull AQLParser.PandFilterExprContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#MvFilter}.
+	 * Visit a parse tree produced by {@link AQLParser#OrFilterExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#IntLiteral}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#date_interval}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
+	T visitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#SimpleFilter}.
@@ -117,20 +145,6 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitParensFilterExpr(@NotNull AQLParser.ParensFilterExprContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#BoolLiteral}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#SelectExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSelectExpr(@NotNull AQLParser.SelectExprContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link AQLParser#StringCompFilter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -145,18 +159,18 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#YearsDiffFunc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link AQLParser#literal_values}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#YearsDiffFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#DateIntervalExpr}.
@@ -166,18 +180,18 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#LiteralVal}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link AQLParser#ParensArithExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#LiteralVal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#AndFilterExpr}.

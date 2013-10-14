@@ -17,6 +17,149 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterField(@NotNull AQLParser.FieldContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitField(@NotNull AQLParser.FieldContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterSelectElement(@NotNull AQLParser.SelectElementContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitSelectElement(@NotNull AQLParser.SelectElementContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterStringLiteral(@NotNull AQLParser.StringLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -56,32 +199,6 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterField(@NotNull AQLParser.FieldContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitField(@NotNull AQLParser.FieldContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterArithExpr(@NotNull AQLParser.ArithExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -89,32 +206,6 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitArithExpr(@NotNull AQLParser.ArithExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -134,52 +225,13 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
+	@Override public void enterOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitIntLiteral(@NotNull AQLParser.IntLiteralContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
+	@Override public void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -212,32 +264,6 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterStringCompFilter(@NotNull AQLParser.StringCompFilterContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -264,19 +290,6 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -284,6 +297,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -303,19 +329,6 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterLiteralVal(@NotNull AQLParser.LiteralValContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitLiteralVal(@NotNull AQLParser.LiteralValContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -323,6 +336,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterLiteralVal(@NotNull AQLParser.LiteralValContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitLiteralVal(@NotNull AQLParser.LiteralValContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

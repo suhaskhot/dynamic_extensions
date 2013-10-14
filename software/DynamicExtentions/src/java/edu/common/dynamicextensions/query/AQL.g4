@@ -3,7 +3,10 @@ grammar AQL;
 query         : (SELECT select_list WHERE)? filter_expr #QueryExpr
               ;
       
-select_list   : arith_expr (',' arith_expr)*         #SelectExpr
+select_list   : select_element (',' select_element)* #SelectExpr
+              ;
+
+select_element: arith_expr ('as' SLITERAL)?          #SelectElement
               ;
 
 filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
@@ -29,13 +32,14 @@ literal       : SLITERAL                             #StringLiteral
               | BOOL                                 #BoolLiteral
               ;                            
 	 
-arith_expr    : arith_expr ARITH_OP arith_expr       #ArithExpr
-              | arith_expr ARITH_OP date_interval    #DateIntervalExpr
-              | LP arith_expr RP                     #ParensArithExpr
-              | MONTHS LP arith_expr RP              #MonthsDiffFunc
-              | YEARS LP arith_expr RP               #YearsDiffFunc
-              | FIELD                                #Field
-              | literal                              #LiteralVal              
+arith_expr    : arith_expr ARITH_OP arith_expr               #ArithExpr
+              | arith_expr ARITH_OP date_interval            #DateIntervalExpr
+              | LP arith_expr RP                             #ParensArithExpr
+              | MTHS_BTWN LP arith_expr ',' arith_expr RP    #MonthsDiffFunc
+              | YRS_BTWN LP arith_expr ',' arith_expr RP     #YearsDiffFunc
+              | CURR_DATE LP RP                              #CurrentDateFunc
+              | FIELD                                        #Field
+              | literal                                      #LiteralVal              
               ;	 
           
 date_interval : YEAR MONTH? DAY?
@@ -48,8 +52,9 @@ WS       : [ \t\n\r]+ -> skip;
 
 SELECT   : 'select';
 WHERE    : 'where';
-MONTHS   : 'months';
-YEARS    : 'years';
+MTHS_BTWN: 'months_between';
+YRS_BTWN:  'years_between';
+CURR_DATE: 'current_date';
 OR       : 'or';
 AND      : 'and';
 PAND     : 'pand';

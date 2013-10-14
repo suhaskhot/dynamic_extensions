@@ -54,6 +54,7 @@ public class FieldNode extends ExpressionNode {
 	@Override
 	public FieldNode copy() {
 		FieldNode copy = new FieldNode();
+		copy.setLabel(this.getLabel());
 		copy.setCtrl(ctrl);
 		copy.setName(name);
 		copy.setTabAlias(tabAlias);

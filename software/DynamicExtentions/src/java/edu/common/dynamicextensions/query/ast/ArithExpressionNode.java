@@ -92,6 +92,7 @@ public class ArithExpressionNode extends ExpressionNode {
 	@Override
 	public ArithExpressionNode copy() {
 		ArithExpressionNode copy = new ArithExpressionNode();
+		copy.setLabel(this.getLabel());
 		copy.setOp(this.op);
 		copy.setLeftOperand(leftOperand.copy());
 		copy.setRightOperand(rightOperand.copy());

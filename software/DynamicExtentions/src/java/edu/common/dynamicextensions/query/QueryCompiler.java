@@ -6,8 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import edu.QueryTester;
-//import edu.QueryTester;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
@@ -101,7 +99,7 @@ public class QueryCompiler
 
         return rootTree;
     }
-
+    
     private void createPath(int queryId, JoinTree from, JoinTree to, Path path) {
         JoinTree current = createPath(queryId, from, path.getStartField());
         for (PathLink link : path.getLinks()) {
@@ -120,7 +118,7 @@ public class QueryCompiler
                 child.setParent(current);
                 child.setForeignKey(link.getRefTabKey());
                 child.setParentKey(link.getKey());
-                current.addChild(child.getTab(), child);
+                current.addChild(child.getAlias(), child); // Earlier: name = child.getTab()
             }
             current = child;            
         }
@@ -178,17 +176,8 @@ public class QueryCompiler
         analyzeFilterNodeMarker(0, expr.getFilterExpr(), joinMap);
         expr.setSelectList(analyzeSelectList(expr.getSelectList(), joinMap));
         return joinMap;
-
-        //TODO: Implement select 
-//      for (ExpressionNode element : expr.getSelectList().getElements()) {
-//          analyzeExpressionNode(0, element, joinMap);
-//      }       
-        
-        
     }
     
-    
-
     private void analyzeFilterNodeMarker(int queryId, FilterNodeMarker expr, Map<String, JoinTree> joinMap) {
         if (expr instanceof FilterNode) {
             FilterNode filter = (FilterNode)expr;
@@ -220,7 +209,7 @@ public class QueryCompiler
         analyzeExpressionNode(queryId, dateDiff.getLeftOperand(), joinMap);
         analyzeExpressionNode(queryId, dateDiff.getRightOperand(), joinMap);
     }
-
+    
     private void analyzeExpressionNode(int queryId, ExpressionNode exprNode, Map<String, JoinTree> joinMap) {
         if (exprNode instanceof FieldNode) {
             analyzeField(queryId, (FieldNode)exprNode, joinMap);

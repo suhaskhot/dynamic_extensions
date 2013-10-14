@@ -13,6 +13,7 @@ public class DateIntervalNode extends ExpressionNode {
 	@Override
 	public DateIntervalNode copy() {
 		DateIntervalNode copy = new DateIntervalNode();
+		copy.setLabel(this.getLabel());
 		copy.setYears(years);
 		copy.setMonths(months);
 		copy.setDays(days);

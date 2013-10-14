@@ -21,6 +21,7 @@ public class DateDiffFuncNode extends ExpressionNode {
 	@Override
 	public DateDiffFuncNode copy() {
 		DateDiffFuncNode copy = new DateDiffFuncNode();
+		copy.setLabel(this.getLabel());
 		copy.setDiffType(diffType);
 		copy.setLeftOperand(leftOperand.copy());
 		copy.setRightOperand(rightOperand.copy());
@@ -50,7 +51,7 @@ public class DateDiffFuncNode extends ExpressionNode {
 	public void setRightOperand(ExpressionNode rightOperand) {
 		this.rightOperand = rightOperand;
 	}
-	
+		
 	@Override
 	public int hashCode() {
 		final int prime = 31;

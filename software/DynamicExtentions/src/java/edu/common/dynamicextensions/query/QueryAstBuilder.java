@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.query.antlr.AQLBaseVisitor;
 import edu.common.dynamicextensions.query.antlr.AQLParser;
 import edu.common.dynamicextensions.query.antlr.AQLParser.LiteralContext;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
+import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
 import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
@@ -45,13 +46,23 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     
     @Override
     public SelectListNode visitSelectExpr(@NotNull AQLParser.SelectExprContext ctx) { 
-    	SelectListNode list = new SelectListNode();
-    	
-    	for (int i = 0; i < ctx.arith_expr().size(); ++i) {
-    		list.addElement((ExpressionNode)visit(ctx.arith_expr(i)));    		
+    	SelectListNode list = new SelectListNode();    	    	
+    	for (int i = 0; i < ctx.select_element().size(); ++i) {
+    		list.addElement((ExpressionNode)visit(ctx.select_element(i)));    		
     	}
     	
     	return list;  
+    }
+    
+    @Override
+    public ExpressionNode visitSelectElement(@NotNull AQLParser.SelectElementContext ctx) {
+    	ExpressionNode expr = (ExpressionNode)visit(ctx.arith_expr());
+    	if (ctx.SLITERAL() != null) {
+    		String text = ctx.SLITERAL().getText();
+    		expr.setLabel(text.substring(1, text.length() - 1));
+    	}
+    	
+    	return expr;
     }
 
     @Override
@@ -172,18 +183,27 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     }
 
     @Override 
-    public ArithExpressionNode visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { 
-    	return (ArithExpressionNode)visit(ctx.arith_expr()); 
+    public ExpressionNode visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { 
+    	return (ExpressionNode)visit(ctx.arith_expr()); 
     }
-
+    
     @Override 
     public DateDiffFuncNode visitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { 
-    	return getDateDiffFuncNode(DiffType.MONTH, (ArithExpressionNode)visit(ctx.arith_expr()));
+    	ExpressionNode leftOperand = (ExpressionNode)visit(ctx.arith_expr(0));
+    	ExpressionNode rightOperand = (ExpressionNode)visit(ctx.arith_expr(1));
+    	return getDateDiffFuncNode(DiffType.MONTH, leftOperand, rightOperand);
     }
 
     @Override 
     public DateDiffFuncNode visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) {
-    	return getDateDiffFuncNode(DiffType.YEAR, (ArithExpressionNode)visit(ctx.arith_expr()));
+    	ExpressionNode leftOperand = (ExpressionNode)visit(ctx.arith_expr(0));
+    	ExpressionNode rightOperand = (ExpressionNode)visit(ctx.arith_expr(1));
+    	return getDateDiffFuncNode(DiffType.YEAR, leftOperand, rightOperand);
+    }
+    
+    @Override
+    public CurrentDateNode visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) {
+    	return new CurrentDateNode();
     }
     
     @Override 
@@ -231,19 +251,14 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	return di;    	
     }
 
-    private DateDiffFuncNode getDateDiffFuncNode(DiffType diffType, ArithExpressionNode arithExprNode) {
+    private DateDiffFuncNode getDateDiffFuncNode(DiffType diffType, ExpressionNode leftOperand, ExpressionNode rightOperand) {
     	DateDiffFuncNode diff = new DateDiffFuncNode();
-    	diff.setDiffType(diffType);
-    	
-    	if (arithExprNode.getOp() != ArithOp.MINUS) {
-    		throw new RuntimeException("Invalid operation inside months: " + arithExprNode.getOp());
-    	}
-    	
-    	diff.setLeftOperand(arithExprNode.getLeftOperand());
-    	diff.setRightOperand(arithExprNode.getRightOperand());
-    	return diff;
-    	
+    	diff.setDiffType(diffType);    	
+    	diff.setLeftOperand(leftOperand);
+    	diff.setRightOperand(rightOperand);
+    	return diff;    	
     }
+    
     private int diPart(TerminalNode term) {
     	int result = 0;
     	

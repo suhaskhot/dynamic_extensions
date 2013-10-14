@@ -7,6 +7,7 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
+import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
 import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
@@ -124,6 +125,11 @@ public class QueryGenerator {
     			alias = field.getTabAlias();
     			pk = ctrl.getContainer().getPrimaryKey();
     			wideRowMarkerColumns.add(getWideRowMarkerColumn(alias, pk));
+    		} else {
+    			String[] aliasPk = WideRowUtil.getTabAliasPk(joinTree, element);
+    			if (aliasPk != null) {
+    				wideRowMarkerColumns.add(getWideRowMarkerColumn(aliasPk[0], aliasPk[1]));
+    			}
     		}
     	}
     	
@@ -258,9 +264,11 @@ public class QueryGenerator {
     		isValid = true;
     	} else if (lhs.isString() && rhs.isString()) {
     		isValid = true;
-    	} else if (lhs.isDate() && (rhs.isString() || rhs.isDate())) {
+    	} else if (lhs.isDate() && (rhs.isString() || rhs.isDateInterval() || rhs.isDate() || rhs.isNumber())) {
     		isValid = true;
-    	} else if (lhs.isNumber() && rhs.isNumber()) {
+    	} else if (lhs.isString() && (rhs.isDate() || rhs.isDateInterval() || rhs.isNumber())) {
+    		isValid = true;
+        } else if (lhs.isNumber() && rhs.isNumber()) {
     		isValid = true;
     	} else if (lhs.isDateInterval() && rhs.isNumber()) {
     		isValid = true;
@@ -304,6 +312,8 @@ public class QueryGenerator {
     		result = getArithExpressionNodeSql((ArithExpressionNode)exprNode);    		
     	} else if (exprNode instanceof DateDiffFuncNode) {
     		result = getDateDiffFuncNodeSql((DateDiffFuncNode)exprNode);
+    	} else if (exprNode instanceof CurrentDateNode) {
+    		result = "sysdate";
     	}
     	
     	return result;

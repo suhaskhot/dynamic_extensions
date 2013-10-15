@@ -167,10 +167,10 @@ public class SkipRuleMapper {
 
 			String[] pvs = controllingPvs.split(",");
 			if (pvs.length == 0) {
-				skipRuleBuilder.equalsCondition(controllingField, controllingPvs);
+				skipRuleBuilder.equalsCondition(controllingField, controllingPvs.trim());
 			} else {
 				for (String pv : pvs) {
-					skipRuleBuilder.equalsCondition(controllingField, pv);
+					skipRuleBuilder.equalsCondition(controllingField, pv.trim());
 				}
 			}
 		}

@@ -34,7 +34,7 @@ var Main = {
 		Views.showControlTab('control');
 		this.carousel = $('#controlTypesSlider');
 		this.carousel.tinycarousel();
-		this.advancedControlsView = new Views.AdvancedPropertiesTabView({
+		Main.advancedControlsView = new Views.AdvancedPropertiesTabView({
 			el : $('#advancedControlProperties'),
 			model : null
 		});

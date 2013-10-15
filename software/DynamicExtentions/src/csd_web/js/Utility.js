@@ -401,10 +401,15 @@ var Utility = {
 		controlModel.set({
 			template : Templates.templateList['pageBreakTemplate']
 					+ Templates.templateList['submitButtonTemplate']
-			
+
 		});
 
-		if(controlModel.has('controlName')){}else{controlModel.set({controlName : Utility.getShortCode("pageBreak")});}
+		if (controlModel.has('controlName')) {
+		} else {
+			controlModel.set({
+				controlName : Utility.getShortCode("pageBreak")
+			});
+		}
 
 		if (show)
 			return Views.showControl(container, controlModel);
@@ -435,6 +440,19 @@ var Utility = {
 
 	getAddFieldHandler : function(controlType) {
 		return this.addFieldHandlerMap[controlType];
+	},
+
+	checkNameForCorrectness : function(name) {
+		var isCorrect = true;
+		var charactersNotAllowed = [ "[", "+", "-", "/", "*", "(", ")", "{",
+				"}", "%", "]" ];
+		for ( var cntr = 0; cntr < charactersNotAllowed.length; cntr++) {
+			if (name.indexOf(charactersNotAllowed[cntr]) >= 0) {
+				isCorrect = false;
+				break;
+			}
+		}
+		return isCorrect;
 	}
 
 }

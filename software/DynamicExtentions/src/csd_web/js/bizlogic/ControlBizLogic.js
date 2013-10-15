@@ -64,6 +64,73 @@ var ControlBizLogic = {
 		Main.treeView.getTree().deleteItem(model.get('formTreeNodeId'), true);
 	},
 
+	getListOfControlsForSkipRuleControllingField : function() {
+		var controls = new Array();
+		for ( var key in Main.formView.getFormModel().get(
+				'controlObjectCollection')) {
+			var control = Main.formView.getFormModel().get(
+					'controlObjectCollection')[key];
+
+			switch (control.get('type')) {
+			case "numericField":
+
+			case "radioButton":
+
+			case "listBox":
+
+			case "multiselectBox":
+
+			case "comboBox":
+
+			case "multiselectCheckBox":
+				controls.push({
+					'name' : control.get('controlName'),
+					'caption' : control.get('caption'),
+					'userDefinedName' : control.get('userDefinedName')
+				});
+				break;
+			default:
+			}
+
+			if (control.get('type') == "subForm") {
+				for ( var subKey in control.get('subForm').get(
+						'controlObjectCollection')) {
+
+					var subControl = control.get('subForm').get(
+							'controlObjectCollection')[subKey];
+					var subControlName = subControl.get('controlName');
+					var _name = control.get('controlName') + "."
+							+ subControlName;
+
+					switch (subControl.get('type')) {
+					case "numericField":
+
+					case "radioButton":
+
+					case "listBox":
+
+					case "multiselectBox":
+
+					case "comboBox":
+
+					case "multiselectCheckBox":
+						var _userDefinedName = control.get('userDefinedName')
+								+ "." + subControl.get('userDefinedName');
+						controls.push({
+							'name' : _name,
+							'caption' : subControl.get('caption'),
+							'userDefinedName' : _userDefinedName
+						});
+						break;
+					default:
+					}
+
+				}
+			}
+		}
+		return controls;
+	},
+
 	getListOfCurrentNumericControls : function(isNameCaptionPair) {
 		var controls = new Array();
 		for ( var key in Main.formView.getFormModel().get(
@@ -335,13 +402,12 @@ var ControlBizLogic = {
 	},
 
 	copySubForm : function(model) {
-		
-		/*var shortCode = Utility.getShortCode(model.get('type'));
-		model.set({
-			controlName : shortCode
-		});
-		GlobalMemory.nodeCounter++;*/
-		
+
+		/*
+		 * var shortCode = Utility.getShortCode(model.get('type')); model.set({
+		 * controlName : shortCode }); GlobalMemory.nodeCounter++;
+		 */
+
 		if (model.get('type') == "subForm") {
 
 			// update controls and set their attributes
@@ -638,6 +704,13 @@ var ControlBizLogic = {
 			}
 		}
 		return isUnique;
+	},
+
+	validateUserDefinedName : function(controlModel) {
+		var isUnique = ControlBizLogic.isUserDefinedNameUnique(controlModel);
+		var isValid = Utility.checkNameForCorrectness(controlModel
+				.get('userDefinedName'));
+		return (isUnique && isValid);
 	},
 
 	isControlNameUniqueInForm : function(control) {

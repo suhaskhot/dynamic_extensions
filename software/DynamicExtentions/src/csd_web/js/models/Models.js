@@ -40,14 +40,20 @@ var Models = {
 
 					if (cntrlNames.length == 1) {
 						this.get('controlObjectCollection')[controlName] = control;
-						this.get('controlsOrder').push(controlName);
+						if (this.get('controlsOrder').indexOf(controlName) < 0) {
+							this.get('controlsOrder').push(controlName);
+						}
 					} else {
 						this.get('controlObjectCollection')[cntrlNames[0]].get(
 								'subForm').get('controlObjectCollection')[cntrlNames[1]] = control;
+						if (this.get('controlObjectCollection')[cntrlNames[0]]
+								.get('subForm').get('controlsOrder').indexOf(
+										cntrlNames[1])) {
+							this.get('controlObjectCollection')[cntrlNames[0]]
+									.get('subForm').get('controlsOrder').push(
+											cntrlNames[1]);
+						}
 
-						this.get('controlObjectCollection')[cntrlNames[0]].get(
-								'subForm').get('controlsOrder').push(
-								cntrlNames[1]);
 					}
 				},
 
@@ -220,7 +226,7 @@ var Models = {
 					}
 
 					if (attrs.maximumValue && attrs.minimumValue) {
-						if (attrs.maximumValue < attrs.minimumValue) {
+						if (parseInt(attrs.maximumValue) < parseInt(attrs.minimumValue)) {
 							errors
 									.push({
 										name : 'maximumValue',
@@ -297,6 +303,16 @@ var Models = {
 										message : 'Number of Digits After Decimal should be numeric.'
 									});
 						}
+
+						if (!attrs.defaultValue) {
+						} else if (attrs.defaultValue != ""
+								&& isNaN(attrs.defaultValue)) {
+							errors.push({
+								name : 'defaultValue',
+								message : 'Default Value should be numeric.'
+							});
+						}
+
 						break;
 
 					default:

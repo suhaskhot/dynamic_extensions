@@ -369,7 +369,7 @@ var Views = {
 					 * 'Attribute name should be unique.' }); }
 					 */
 
-					if (!ControlBizLogic.isUserDefinedNameUnique(newModel)) {
+					if (!ControlBizLogic.validateUserDefinedName(newModel)) {
 						validationMessages.push({
 							name : 'userDefinedName',
 							message : 'Attribute name should be unique.'

@@ -59,7 +59,7 @@ var AdvancedControlPropertiesBizLogic = {
 		AdvancedControlPropertiesBizLogic
 				.populateSkipLogicSelectBoxWithControlNames("controlledField");
 		AdvancedControlPropertiesBizLogic
-				.populateSkipLogicSelectBoxWithControlNames("controllingField");
+				.populateSkipLogicControllingFieldWithControlNames("controllingField");
 		$("#controlledField").trigger("liszt:updated");
 
 	},
@@ -90,6 +90,21 @@ var AdvancedControlPropertiesBizLogic = {
 			}));
 		}
 	},
+	
+	populateSkipLogicControllingFieldWithControlNames : function(selectTagId) {
+		$("#" + selectTagId).empty();
+		var controls = ControlBizLogic.getListOfControlsForSkipRuleControllingField();
+		for ( var key = 0; key < controls.length; key++) {
+			var control = controls[key];
+			$("#" + selectTagId).append($("<option/>", {
+				value : control.name,
+				text : control.caption,
+				title : control.caption
+			}));
+		}
+	},
+	
+	
 
 	populatePvSelectBoxWithControlNames : function(selectTagId, control) {
 		$("#" + selectTagId).empty();

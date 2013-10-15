@@ -123,7 +123,8 @@ public class ContainerParser {
 			} else if (topLevel && row.getNodeName().equals("pageBreak")) {
 				++currentRow;
 				PageBreak pageBreak = new PageBreak();
-				pageBreak.setName("pgBrk" + currentRow);
+				pageBreak.setName("_pgBrk_" + currentRow);
+				pageBreak.setUserDefinedName("_pgBrk_" + currentRow);
 				pageBreak.setSequenceNumber(currentRow);
 				container.addControl(pageBreak);
 			}

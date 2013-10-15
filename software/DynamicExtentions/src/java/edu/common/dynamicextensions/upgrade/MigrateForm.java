@@ -352,7 +352,11 @@ public class MigrateForm {
 		
 		int seqOffset = 0, lastSeq = 0;
 		for (edu.common.dynamicextensions.domain.userinterface.Page page : layout.getPageCollection()) {
-			for (ControlInterface oldCtrl : page.getControlCollection()) {
+			List<ControlInterface> oldCtrls = new ArrayList<ControlInterface>(page.getControlCollection()); 
+			Collections.sort(oldCtrls);
+			Collections.reverse(oldCtrls);
+			
+			for (ControlInterface oldCtrl : oldCtrls) {
 				Control newCtrl = null;
 				Object mapCtxt = null;
 

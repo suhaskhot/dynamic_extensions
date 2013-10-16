@@ -982,18 +982,18 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 		
 		final StringBuffer containerHTML = new StringBuffer(128);
-		/*FIXME handling for override container caption */
 		boolean addCaption = true;
 
 		containerHTML.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
 
 		updateWarningMessageHTML(contextParameter, containerHTML);
+		String caption = contextParameter.get(ContextParameter.FORM_LABEL);
+		if (StringUtils.isEmpty(caption)) {
+			caption = this.caption;
+		}
 		
 		String allControlHTML = generateContainerHTML(caption, addCaption, formData, contextParameter, true);
-		containerHTML.append(allControlHTML);
-
-		containerHTML.append("</table>");
-
+		containerHTML.append(allControlHTML).append("</table>");
 		return containerHTML.toString();
 
 	}
@@ -1388,7 +1388,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		String categorydiv = "<div><div id='sm-pages'>%s</div></div>";
 		String pagediv = "<div class='sm-page' id='%d' style='display:none'>%s</div>";
 		StringBuilder pages = new StringBuilder();
-		StringBuilder categoryHtml = new StringBuilder(renderHiddenInputs(formData));
+		StringBuilder categoryHtml = new StringBuilder(renderHiddenInputs(contextParameter, formData));
 
 		for (Page p : getPages()) {
 			pages.append(String.format(pagediv, p.getId().longValue(), p.render(formData, contextParameter)));
@@ -1398,9 +1398,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return categoryHtml.toString();
 	}
 	
-	private String renderHiddenInputs(FormData formData) throws NumberFormatException {
+	private String renderHiddenInputs(Map<ContextParameter, String> ctxParams, FormData formData) throws NumberFormatException {
+		String caption = ctxParams.get(ContextParameter.FORM_LABEL);
+		if (StringUtils.isEmpty(caption)) {
+			caption = getCaption();
+		}
+		
 		String containerIdentifier = String.format(CONTAINER_ID, getId());
-		String formCaption = String.format(FORM_CAPTION, getCaption());
+		String formCaption = String.format(FORM_CAPTION, caption);
 		String controlsCount = String.format(CONTROL_COUNT, FormDataUtility.getFilledControlCount(formData));
 		String emptyControlsCount = String.format(EMPTY_CONTROL_COUNT, FormDataUtility.getEmptyControlCount(formData));
 		String displayPage = String.format(DISPLAY_PAGE, getFirstEmptyPage(formData));

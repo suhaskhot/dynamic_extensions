@@ -31,7 +31,7 @@ public class FormRenderer implements LayoutRenderer {
 	private Map<ContextParameter, String> contextParameter;
 
 	public enum ContextParameter {
-		MODE, ACTIVATION_DATE, IS_AJAX, CONTEXT_PATH, MANDATORY_MESSAGE
+		MODE, ACTIVATION_DATE, IS_AJAX, CONTEXT_PATH, MANDATORY_MESSAGE, FORM_LABEL
 	}
 
 	public FormRenderer(Stack<FormData> formData, Map<ContextParameter, String> contextParameter) {
@@ -53,8 +53,8 @@ public class FormRenderer implements LayoutRenderer {
 		String mode = request.getParameter(WebUIManagerConstants.MODE_PARAM_NAME);
 		contextParameter.put(ContextParameter.MODE, (mode == null ? WebUIManagerConstants.EDIT_MODE : mode));
 		contextParameter.put(ContextParameter.MANDATORY_MESSAGE, request.getParameter(Constants.MANDATORY_MESSAGE));
-			CacheManager.addObjectToCache(request, CONTEXT_INFO, contextParameter);
-
+		contextParameter.put(ContextParameter.FORM_LABEL, request.getParameter(WebUIManagerConstants.FORM_LABEL));
+		CacheManager.addObjectToCache(request, CONTEXT_INFO, contextParameter);
 	}
 
 	@Override

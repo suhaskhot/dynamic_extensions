@@ -48,7 +48,7 @@ var Models = {
 								'subForm').get('controlObjectCollection')[cntrlNames[1]] = control;
 						if (this.get('controlObjectCollection')[cntrlNames[0]]
 								.get('subForm').get('controlsOrder').indexOf(
-										cntrlNames[1])) {
+										cntrlNames[1]) < 0) {
 							this.get('controlObjectCollection')[cntrlNames[0]]
 									.get('subForm').get('controlsOrder').push(
 											cntrlNames[1]);

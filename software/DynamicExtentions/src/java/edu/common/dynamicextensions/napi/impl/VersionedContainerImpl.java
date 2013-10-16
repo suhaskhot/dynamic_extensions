@@ -60,25 +60,8 @@ public class VersionedContainerImpl implements VersionedContainer {
 	}
 	
 	public Long getContainerId(JdbcDao jdbcDao, Long formId, Date activationDate) {
-		try {
-			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
-			List<VersionedContainerInfo> versionedContainers = vdao.getPublishedContainersInfo(formId);
-			
-			Long resultId = null;
-			Date resultDate = null;
-			for (VersionedContainerInfo info : versionedContainers) {
-				if (info.getActivationDate().compareTo(activationDate) <= 0 && 
-					(resultDate == null || info.getActivationDate().after(resultDate))) {
-
-					resultId = info.getContainerId();
-					resultDate = info.getActivationDate();
-				}
-			}
-			
-			return resultId;			
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining published container: " + formId, e);
-		}		
+		VersionedContainerInfo info = getMatchingContainerInfo(jdbcDao, formId, activationDate);
+		return info != null ? info.getContainerId() : null;
 	}
 	
 	@Override
@@ -134,6 +117,44 @@ public class VersionedContainerImpl implements VersionedContainer {
 	// The method which refers form by name goes below
 	// 
 	
+	@Override
+	public String getContainerName(Long formId) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getContainerName(jdbcDao, formId);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container id: " + formId, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}			
+		}
+	}
+	
+	public String getContainerName(JdbcDao jdbcDao, Long formId) {
+		return getContainerName(jdbcDao, formId, Calendar.getInstance().getTime());
+	}
+	
+	@Override
+	public String getContainerName(Long formId, Date activationDate) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			return getContainerName(jdbcDao, formId, activationDate);
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container id: " + formId, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}			
+		}		
+	}
+	
+	public String getContainerName(JdbcDao jdbcDao, Long formId, Date activationDate) {
+		VersionedContainerInfo info = getMatchingContainerInfo(jdbcDao, formId, activationDate);
+		return info != null ? Container.getContainerNameById(info.getContainerId()) : null;
+	}
 	
 	@Override
 	public Container getContainer(String formName) {
@@ -203,6 +224,27 @@ public class VersionedContainerImpl implements VersionedContainer {
 			return resultId;			
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining published container: " + formName, e);
+		}		
+	}
+	
+	private VersionedContainerInfo getMatchingContainerInfo(JdbcDao jdbcDao, Long formId, Date activationDate) {
+		VersionedContainerInfo versionInfo = null;;
+		try {
+			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
+			List<VersionedContainerInfo> versionedContainers = vdao.getPublishedContainersInfo(formId);
+			
+			Date resultDate = null;
+			for (VersionedContainerInfo info : versionedContainers) {
+			
+				if (info.getActivationDate().compareTo(activationDate) <= 0 && 
+						(resultDate == null || info.getActivationDate().after(resultDate))) {
+					versionInfo = info;
+				}
+			}
+			
+			return versionInfo;			
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining published container: " + formId, e);
 		}		
 	}
 	

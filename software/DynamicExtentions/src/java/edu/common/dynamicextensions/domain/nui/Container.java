@@ -474,13 +474,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 				SubFormControl existingSfCtrl = (SubFormControl)existingControl;
 				SubFormControl newSfCtrl = (SubFormControl)control;				
 				newSfCtrl.setTableName(existingSfCtrl.getTableName());
-				
+								
 				if (bulkEdit) {
 					Container newSfContainer = newSfCtrl.getSubContainer();
 					Container existingSfContainer = existingSfCtrl.getSubContainer();
 					newSfContainer.setId(existingSfContainer.getId());
 					newSfContainer.setDbTableName(existingSfContainer.getDbTableName());
 					existingSfContainer.editContainer(newSfContainer);
+					existingSfCtrl.setUserDefinedName(newSfCtrl.getUserDefinedName());
 					control = existingSfCtrl;
 				}				
 			}
@@ -517,6 +518,22 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	
 	public Control getControl(String name) {
 		return controlsMap.get(name);
+	}
+	
+	public Control getControlByUdn(String userDefName) {
+		if (!userDefCtrlNames.contains(userDefName)) {
+			return null;
+		}
+		
+		Control result = null;		
+		for (Control ctrl : getControls()) {
+			if (ctrl.getUserDefinedName().equals(userDefName)) {
+				result = ctrl;
+				break;
+			}
+		}
+		
+		return result;
 	}
 	
 	public Long save(UserContext userCtxt) {
@@ -1579,22 +1596,6 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return ctrl;
 	}
 	
-	private Control getControlByUdn(String userDefName) {
-		if (!userDefCtrlNames.contains(userDefName)) {
-			return null;
-		}
-		
-		Control result = null;
-		
-		for (Control ctrl : getControls()) {
-			if (ctrl.getUserDefinedName().equals(userDefName)) {
-				result = ctrl;
-				break;
-			}
-		}
-		
-		return result;
-	}
 
 	public SubFormControl getSubFormControl(String name) {
 

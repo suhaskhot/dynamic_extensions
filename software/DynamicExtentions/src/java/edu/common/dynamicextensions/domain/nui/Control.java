@@ -541,6 +541,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	protected String attachLabel(String htmlString) {
 		StringBuilder controlHTML = new StringBuilder(434);
+		String toolTip = (this.toolTip != null) ? this.toolTip.trim() : StringUtils.EMPTY;
 
 		if (LabelPosition.TOP == labelPosition) {
 			controlHTML.append("<td title='").append(toolTip).append("'><table><tr>");

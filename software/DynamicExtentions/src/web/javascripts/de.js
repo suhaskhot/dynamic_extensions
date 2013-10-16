@@ -458,7 +458,7 @@ edu.wustl.de.Request = function (args) {
 edu.wustl.de.CategorySurveyMode.prototype.isEmptyFieldsExist = function (args) {
 	var emptyFields = false;
 	
-		$(args.curPage).find('[name^="Control_"]:visible').each(function() {
+		$(args.curPage).find('[name^="Control-"]:visible').each(function() {
 		if((!$(this).attr("readonly") && $(this).attr("disabled") != true))
 		{
 			var controlName = $(this).attr("name");

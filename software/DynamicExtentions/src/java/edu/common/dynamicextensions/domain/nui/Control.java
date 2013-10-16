@@ -419,12 +419,12 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	/**
 	 * Format for the control name
 	 */
-	private static final String CONTROL_NAME_FORMAT = "Control_%d_%s_%d_%d";
+	private static final String CONTROL_NAME_FORMAT = "Control-%d-%s-%d-%d";
 
 	public String getControlName(Integer rowNumber) {
 		String controlName = getControlName();
 		if (rowNumber != -1) {
-			controlName += "_" + rowNumber;
+			controlName += "-" + rowNumber;
 		}
 		return controlName;
 	}
@@ -439,22 +439,22 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 	public static Integer getRowNumber(String controlName)
 	{
 		Integer rowNumber = null;
-		if (controlName.matches("Control_(\\d)_(\\S+)_(\\d+)_(\\d+)_(\\d+)")) {
-			rowNumber = Integer.valueOf(controlName.substring(controlName.lastIndexOf("_") + 1));
+		if (controlName.matches("Control-(\\d)-(\\S+)-(\\d+)-(\\d+)-(\\d+)")) {
+			rowNumber = Integer.valueOf(controlName.substring(controlName.lastIndexOf("-") + 1));
 		}
 		return rowNumber;
 	}
 
 	public static String getContainerName(String controlName) {
-		return controlName.split("_")[2];
+		return controlName.split("-")[2];
 	}
 
 	public static int getXpos(String controlName) {
-		return Integer.valueOf(controlName.split("_")[3]);
+		return Integer.valueOf(controlName.split("-")[3]);
 	}
 
 	public static int getSequenceNumber(String controlName) {
-		return Integer.valueOf(controlName.split("_")[4]);
+		return Integer.valueOf(controlName.split("-")[4]);
 	}
 
 	/**

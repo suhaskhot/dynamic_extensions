@@ -25,6 +25,7 @@ import edu.common.dynamicextensions.nvalidator.DraftValidatorUtil;
 import edu.common.dynamicextensions.nvalidator.ValidatorUtil;
 import edu.common.dynamicextensions.processor.ProcessorConstants;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.global.DEConstants;
 
@@ -169,12 +170,14 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 	}
 
 	public FormData collectFormData() throws DynamicExtensionsApplicationException {
+		String updateResponseStr = request.getParameter(DEConstants.UPDATE_RESPONSE);
+		boolean updateResponse = updateResponseStr != null && updateResponseStr.equals("true");
 
 		Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request,
 				DEConstants.FORM_DATA_STACK);
 		FormData formData = formDataStack.peek();
 		collectFormData(formData, null, true);
-		if (!getErrorList().isEmpty()) {
+		if (!getErrorList().isEmpty() && !updateResponse) {
 			throw new DynamicExtensionsApplicationException("Error validating form data: " + errorList);
 		}
 		return formData;

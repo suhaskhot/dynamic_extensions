@@ -433,7 +433,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 		Container parentContainer = getContainer();
 		String controlName = String.format(CONTROL_NAME_FORMAT, getId(), parentContainer.getName(), getxPos(),
 				getSequenceNumber());
-		return controlName;
+		return StringUtils.deleteWhitespace(controlName);
 	}
 
 	public static Integer getRowNumber(String controlName)

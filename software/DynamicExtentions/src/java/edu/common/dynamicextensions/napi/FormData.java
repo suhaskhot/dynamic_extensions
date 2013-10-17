@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
@@ -136,13 +138,14 @@ public class FormData {
 		int sequenceNumber = Control.getSequenceNumber(htmlName);
 		int xpos = Control.getXpos(htmlName);
 		String containerName = Control.getContainerName(htmlName);
-		if (getContainer().getName().equals(containerName)) {
+		
+		if (StringUtils.deleteWhitespace(getContainer().getName()).equals(containerName)) {
 			controlValue = getControlValue(this, sequenceNumber, xpos);
 		} else {
 			for (Control control : getContainer().getControls()) {
 				if (control instanceof SubFormControl) {
 					SubFormControl subFormControl = (SubFormControl) control;
-					if (subFormControl.getSubContainer().getName().equals(containerName)) {
+					if (StringUtils.deleteWhitespace(subFormControl.getSubContainer().getName()).equals(containerName)) {
 						List<FormData> datas = (List<FormData>) getFieldValue(control.getName()).getValue();
 						if (subFormControl.isCardinalityOneToMany()) {
 							controlValue = getControlValue(datas.get(Control.getRowNumber(htmlName) - 1),

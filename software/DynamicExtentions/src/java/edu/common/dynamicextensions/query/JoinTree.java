@@ -74,6 +74,10 @@ public class JoinTree
     public Long getFormId() {
         return form.getId();
     }
+    
+    public String getFormName() {
+    	return form.getName();
+    }
 
     public Container getForm() {
         return form;

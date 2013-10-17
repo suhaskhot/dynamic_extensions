@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+//import edu.QueryTester;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
@@ -25,7 +26,7 @@ public class QueryCompiler
 {
     private int tabCnt;
     
-    private Long rootFormId;
+    private String rootFormName;
     
     private String query;
     
@@ -37,12 +38,12 @@ public class QueryCompiler
     
     private int numQueries;
     
-    public QueryCompiler(Long rootFormId, String query) {
-        this(rootFormId, query, null);
+    public QueryCompiler(String rootFormName, String query) {
+        this(rootFormName, query, null);
     }
     
-    public QueryCompiler(Long rootFormId, String query, String restriction) {
-        this.rootFormId = rootFormId;
+    public QueryCompiler(String rootFormName, String query, String restriction) {
+        this.rootFormName = rootFormName;
         this.query = query;
         this.restriction = restriction;
     }
@@ -75,22 +76,23 @@ public class QueryCompiler
 
     private JoinTree buildJoinTree(QueryExpressionNode queryExpr) {
         Map<String, JoinTree> joinMap = analyzeExpr(queryExpr);
-        JoinTree rootTree = joinMap.get("0." + rootFormId);
+        JoinTree rootTree = joinMap.get("0." + rootFormName);
         
         if (rootTree == null) {
-            Container rootForm = Container.getContainer(rootFormId); //Container rootForm = QueryTester.getContainer(rootFormId);
+            Container rootForm = Container.getContainer(rootFormName);
+            //Container rootForm = QueryTester.getContainer(rootFormName);
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
         
         for (Map.Entry<String, JoinTree> formTreeEntry : joinMap.entrySet()) {
-            if (formTreeEntry.getKey().equals("0." + rootFormId)) {
+            if (formTreeEntry.getKey().equals("0." + rootFormName)) {
                 continue;
             }
             
             JoinTree childTree = formTreeEntry.getValue();
-            Path path = PathConfig.getInstance().getPath(rootFormId, childTree.getFormId());
+            Path path = PathConfig.getInstance().getPath(rootFormName, childTree.getFormName());
             if (path == null) {
-                throw new RuntimeException("No path between root form " + rootFormId + " and " + childTree.getFormId());
+                throw new RuntimeException("No path between root form " + rootFormName + " and " + childTree.getFormName());
             }
             
             int queryId = Integer.parseInt(formTreeEntry.getKey().split("\\.")[0]);
@@ -137,7 +139,7 @@ public class QueryCompiler
             }
             
             if (child == null) {
-                SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControl(fieldNameParts[i]);
+            	SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControlByUdn(fieldNameParts[i]);
                 JoinTree sfTree = getSubFormTree(formTree, sfCtrl);
                 formTree.addChild("0." + fieldNameParts[i], sfTree); // PAND fix "0."
                 formTree = sfTree;
@@ -299,40 +301,41 @@ public class QueryCompiler
     }
     
     private boolean analyzeField(int queryId, FieldNode field, Map<String, JoinTree> joinMap, boolean failIfAbsent) {
-        String formLookupId = "";
+        String formLookupName = "";
         String[] fieldNameParts = field.getName().split("\\.");
         String[] captions = new String[fieldNameParts.length];
         
-        Long formId = Long.valueOf(Long.parseLong(fieldNameParts[0]));
-        if (formId.equals(rootFormId)) {
-            formLookupId = "0." + formId;
+        String formName = fieldNameParts[0];
+        if (formName.equals(rootFormName)) {
+            formLookupName = "0." + formName;
         } else {
-            formLookupId = queryId + "." + formId;
+            formLookupName = queryId + "." + formName;
         }
                 
-        JoinTree formTree = joinMap.get(formLookupId);
+        JoinTree formTree = joinMap.get(formLookupName);
         if (formTree == null && failIfAbsent) {
             return false;
         }
         
         Container form = null;        
         if (formTree == null) {
-            form = Container.getContainer(formId); //form = QueryTester.getContainer(formId);
+            form = Container.getContainer(formName); 
+            //form = QueryTester.getContainer(formName);
             if(form == null) {
-                throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formId);
+                throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formName);
             }
                         
             formTree = new JoinTree(form, "t" + tabCnt++);
-            joinMap.put(formLookupId, formTree);
+            joinMap.put(formLookupName, formTree);
         } else {
             form = formTree.getForm();
         }        
         captions[0] = form.getCaption();
                 
-        Control ctrl = form.getControl(fieldNameParts[1]);
+        Control ctrl = form.getControlByUdn(fieldNameParts[1]);
         if(ctrl instanceof SubFormControl && fieldNameParts.length > 2) {
             for(int i = 1; i < fieldNameParts.length - 1; i++) {
-                ctrl = form.getControl(fieldNameParts[i]);
+                ctrl = form.getControlByUdn(fieldNameParts[i]);
                 
                 if(!(ctrl instanceof SubFormControl)) {
                     throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
@@ -354,7 +357,7 @@ public class QueryCompiler
                 captions[i] = form.getCaption();
             }
 
-            ctrl = form.getControl(fieldNameParts[fieldNameParts.length - 1]);
+            ctrl = form.getControlByUdn(fieldNameParts[fieldNameParts.length - 1]);
         }
         
         if(ctrl == null) {

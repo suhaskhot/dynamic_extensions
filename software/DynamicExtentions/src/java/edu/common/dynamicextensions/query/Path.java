@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Path
 {
-    private Long startForm;
+    private String startForm;
     
-    private Long endForm;
+    private String endForm;
     
     private String startField;
     
@@ -25,19 +25,19 @@ public class Path
         links.add(new PathLink(key, refTab, refTabKey));
     }
 
-    public Long getStartForm() {
+    public String getStartForm() {
         return startForm;
     }
 
-    public void setStartForm(Long startForm) {
+    public void setStartForm(String startForm) {
         this.startForm = startForm;
     }
 
-    public Long getEndForm() {
+    public String getEndForm() {
         return endForm;
     }
 
-    public void setEndForm(Long endForm) {
+    public void setEndForm(String endForm) {
         this.endForm = endForm;
     }
 

@@ -39,12 +39,12 @@ public class Query {
     	return this;
     }
   
-    public void compile(Long rootFormId, String query) {
-        compile(rootFormId, query, null);
+    public void compile(String rootFormName, String query) {
+        compile(rootFormName, query, null);
     }
     
-    public void compile(Long rootFormId, String query, String restriction) {
-        QueryCompiler compiler = new QueryCompiler(rootFormId, query, restriction);
+    public void compile(String rootFormName, String query, String restriction) {
+        QueryCompiler compiler = new QueryCompiler(rootFormName, query, restriction);
         compiler.compile();
         queryExpr     = compiler.getQueryExpr();
         queryJoinTree = compiler.getQueryJoinTree();        

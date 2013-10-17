@@ -63,7 +63,7 @@ public class PathConfig {
         }
     }
 
-    public Path getPath(Long start, Long end) {
+    public Path getPath(String start, String end) {
         String pathStr = getPathStr(start, end);
         Path result = paths.get(pathStr);
         
@@ -75,7 +75,7 @@ public class PathConfig {
         return result;
     }
 
-    private String getPathStr(Long start, Long end) {
+    private String getPathStr(String start, String end) {
         StringBuilder pathStr = new StringBuilder();
         pathStr.append(start).append(":");
         pathStr.append(end != null ? ((Object) (end)) : "*");

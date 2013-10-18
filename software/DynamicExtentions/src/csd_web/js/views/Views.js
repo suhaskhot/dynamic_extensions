@@ -357,6 +357,7 @@ var Views = {
 				updateModel : function(event) {
 
 					var newModel = new Models.Field();
+					newModel.set({type : this.model.get('type')});
 
 					this.populateFieldsInModel(newModel);
 					var validationMessages = newModel.validate(newModel

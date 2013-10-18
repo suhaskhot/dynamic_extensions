@@ -3,11 +3,21 @@ package edu.common.dynamicextensions.query.ast;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
 public abstract class ExpressionNode implements Node {
+	private int pos;
+	
 	private String label;
 	
 	public abstract DataType getType();
 	
 	public abstract ExpressionNode copy();
+	
+	public int getPos() {
+		return pos;
+	}
+	
+	public void setPos(int pos) {
+		this.pos = pos;
+	}
 	
 	public void setLabel(String label) {
 		this.label = label;

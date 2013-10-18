@@ -8,13 +8,24 @@ public class ResultColumn {
 	
 	private int instance;
 	
+	private Object value;
+	
 	public ResultColumn(ExpressionNode columnExpr, int instance) {
 		this.columnExpr = columnExpr;
 		this.instance = instance;
 	}
 	
+	public ResultColumn(ExpressionNode columnExpr, Object value) {
+		this.columnExpr = columnExpr;
+		this.value = value;
+	}
+	
 	public ExpressionNode getExpression() {
 		return columnExpr;
+	}
+	
+	public Object getValue() {
+		return value;
 	}
 	
 	public String getColumnLabel(ResultColumnLabelFormatter formatter) {

@@ -433,8 +433,7 @@ public class MigrateForm {
 			ctrl = getNewListBox((ListBoxInterface)oldCtrl);
 		} else {
 			throw new RuntimeException("Unknown control type: " + oldCtrl);
-		}
-		
+		}		
 		return ctrl;
 	}
 		
@@ -722,7 +721,26 @@ public class MigrateForm {
 		newCtrl.setSequenceNumber(oldCtrl.getSequenceNumber());
 		newCtrl.setxPos(oldCtrl.getYPosition());
 		newCtrl.setShowLabel(showLabel(oldCtrl));
-		newCtrl.setShowInGrid(showInGrid(oldCtrl));	
+		newCtrl.setShowInGrid(showInGrid(oldCtrl));
+		
+		BaseAbstractAttributeInterface categoryAttr = oldCtrl.getBaseAbstractAttribute();
+		if (!(categoryAttr instanceof CategoryAttributeInterface)) {
+			return;
+		}
+		
+		AbstractAttributeInterface attr = ((CategoryAttributeInterface)categoryAttr).getAbstractAttribute();
+		if (attr != null) {
+			Collection<SemanticPropertyInterface> semanticProps = attr.getSemanticPropertyCollection();
+			if (semanticProps != null && !semanticProps.isEmpty()) {
+				SemanticPropertyInterface sp = semanticProps.iterator().next();
+				newCtrl.setConceptCode(sp.getConceptCode());
+				newCtrl.setConceptDefinition(sp.getConceptDefinition());
+				newCtrl.setConceptDefinitionSource(sp.getConceptDefinitionSource());
+				newCtrl.setConceptPreferredName(sp.getConceptPreferredName());
+				
+				logger.info("Migrated concept code of " + attr.getId());
+			}
+		}
 	}
 	
 	private void ensureUniqueUdn(Container c, Control ctrl) {

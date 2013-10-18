@@ -1230,7 +1230,7 @@ function removeCheckedRow(containerId) {
 	var table = document.getElementById(containerId + "_table");
 	var children = table.rows;
 	var deletedRowIds = "";
-
+	var initialCount = children.length - 1;
 	if (children.length > 0) {
 		var rowsDeleted = 0;
 
@@ -1254,240 +1254,22 @@ function removeCheckedRow(containerId) {
 				}
 			}
 		}
-
-		table = document.getElementById(containerId + "_table");
-		children = table.rows;
-		rowLength = children.length;
-
-		for ( var rowIndex = 1; rowIndex < children.length; rowIndex++) {
-			var childObject = children[rowIndex];
-			var cells = childObject.cells;
-
-			for (cellIndex = 0; cellIndex < cells.length; cellIndex++) {
-				var cell = cells[cellIndex];
-
-				var childNodes = cell.childNodes;
-				for (childNodeIndex = 0; childNodeIndex < childNodes.length; childNodeIndex++) {
-					var childNode = childNodes[childNodeIndex];
-
-					var childObjectName= null;
-
-					try
-					{
-						childObjectName = childNode.getElementsBySelector("[name^=Control]")[0].getAttribute("name");
-					}catch (ex){
-						childObjectName = childNode.name;					
-					}
-
-					if (childObjectName != null
-							&& "deleteRow" == childObjectName) {
-						childNode.id = "checkBox_" + containerId + "_"
-								+ rowIndex;
-					}
-
-					if (cell.innerHTML.indexOf("comboControl") != -1) {
-
-						var rowTobeCopied = getRowToBeCopied(containerId);
-						var childNodes2;
-						var isSkipLogicTargetCombo = (rowTobeCopied.cells[cellIndex].childNodes.length == 1);
-								
-						if(isSkipLogicTargetCombo)
-						{
-							childNodes2 = rowTobeCopied.cells[cellIndex].childNodes[0].childNodes;
-						}else
-						{
-							childNodes2 = rowTobeCopied.cells[cellIndex].childNodes;
-						}
-						for (i = 0; i < childNodes2.length; i++) {
-
-							if (childNodes2[i].id == 'auto_complete_dropdown') {
-								var oldName = childNodes2[i].childNodes[0].childNodes[0].id;
-								if (oldName == undefined) {
-									oldName = 'combo'
-											+ childNodes2[i].childNodes[1].childNodes[0].childNodes[0].id;
-								}
-
-								oldName = replaceAll(oldName, "combo", "");
-								var newName = oldName + "_" + rowIndex;
-
-								var newScript;
-								if(isSkipLogicTargetCombo)
-								{
-								newScript = replaceAll(
-										childNodes2[0].childNodes[1].childNodes[0].innerHTML, oldName,
-										newName);
-								}else
-								{
-								newScript = replaceAll(
-										childNodes2[i - 1].innerHTML, oldName,
-										newName);
-								}
-								
-
-								var comboValue = "";
-								var comboId = getComboControlName(cell);
-								if (comboId != null) {
-									comboValue = document
-											.getElementById(comboId).value;
-								}
-								if (Ext.getCmp(newName) != undefined) {
-									eval(Ext.getCmp(newName).destroy());
-								}
-								
-								if(isSkipLogicTargetCombo)
-								{
-								cell.innerHTML = replaceAll(
-										childNodes2[i].getElementsBySelector("[id='comboHtml']")[0].firstChild.innerHTML,
-										oldName, newName);
-								}else
-								{
-								cell.innerHTML = replaceAll(
-										childNodes2[1].childNodes[2].childNodes[0].innerHTML,
-										oldName, newName);
-								}
-
-								eval(newScript);
-								// Added code to catch blur event
-								// to set Combobox value to its empty text if it
-								// is blank.
-								if (comboValue != '') {
-									var comboObj = Ext
-											.getCmp("combo" + newName);
-									comboObj.emptyText = comboValue;
-									comboObj.setRawValue(comboValue);
-									document.getElementById("combo" + newName).value = comboValue;
-									comboObj
-											.on(
-													"blur",
-													function(comboBox) {
-														if (comboBox.getValue() == "") {
-															comboBox
-																	.setValue(comboBox.emptyText);
-														}
-													})
-								}
-								break;
-							} else if (childNodes2[i].id != null
-									&& childNodes2[i].id.indexOf('_div') != -1
-									&& childNodes2[i].hasChildNodes
-									&& childNodes2[i].childNodes[0] != null
-									&& childNodes2[i].childNodes[0].id == 'auto_complete_dropdown') {
-								var oldName = childNodes2[i].childNodes[0].childNodes[0].childNodes[0].id;
-								if (oldName == undefined) {
-									oldName = 'combo'
-											+ childNodes2[i].childNodes[0].childNodes[1].childNodes[0].childNodes[0].id;
-								}
-
-								if (Ext.getCmp(oldName) != undefined) {
-									eval(Ext.getCmp(oldName).destroy());
-								}
-								oldName = replaceAll(oldName, "combo", "");
-								var newName = oldName + "_" + rowIndex;
-
-								var newScript = replaceAll(
-										document
-												.getElementById(childNodes2[i].childNodes[2].value).innerHTML,
-										oldName, newName);
-
-								var comboValue = "";
-								var comboId = getComboControlName(cell);
-								if (comboId != null) {
-									comboValue = document
-											.getElementById(comboId).value;
-								}
-
-								cell.innerHTML = replaceAll(
-										childNodes2[i].childNodes[0].childNodes[1].innerHTML,
-										oldName, newName);
-
-								eval(newScript);
-								// Added code to catch blur event
-								// to set Combobox value to its empty text if it
-								// is blank.
-								if (comboValue != '') {
-									var comboObj = Ext
-											.getCmp("combo" + newName);
-									comboObj.emptyText = comboValue;
-									comboObj.setRawValue(comboValue);
-									document.getElementById("combo" + newName).value = comboValue;
-									comboObj
-											.on(
-													"blur",
-													function(comboBox) {
-														if (comboBox.getValue() == "") {
-															comboBox
-																	.setValue(comboBox.emptyText);
-														}
-													})
-								}
-								break;
-							}
-						}
-
-					}
-					if (childObjectName != null
-							&& childObjectName.indexOf('_') != -1
-							|| (childNode.id != null && childNode.hasChildNodes
-									&& childNode.childNodes[0] != null
-									&& childNode.id.indexOf('_div') != -1
-									&& childNode.childNodes[0].name != null && childNode.childNodes[0].name
-									.indexOf('_') != -1)) {
-						if (childNode.id != null
-								&& childNode.id.indexOf('_div') != -1) {
-							if (childNode.hasChildNodes
-									&& childNode.childNodes[0] != null) {
-								childObject = childNode.childNodes[0];
-								childObjectName = childNode.childNodes[0].name;
-							}
-						}
-						if (childObjectName != null
-								&& childObjectName.indexOf('_') != -1) {
-							str = getNewName(childObjectName, rowIndex);
-
-							if (document.getElementById(childObjectName) == null) {
-								var controlValue = childNode.value;
-							} else {
-								var controlValue = document
-										.getElementById(childObjectName).value;
-							}
-
-							cell.innerHTML = replaceAll(cell.innerHTML,
-									childObjectName, str);
-							if (document.getElementById(str) != null) {
-								document.getElementById(str).value = controlValue;
-							}
-
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		var currentRowCounter = document.getElementById(hiddenVar);
-		var numberOfRows = currentRowCounter.value;
-		document.getElementById(hiddenVar).value = parseInt(numberOfRows)
-				- rowsDeleted;
-
-		document.getElementById(containerId + "_table").value = table;
-		document.getElementById('isDirty').value = true;
 	}
-
-	var request = newXMLHTTPReq();
-	var handlerFunction = getReadyStateHandler(request, ignoreResponseHandler,
-			false);
-
-	// no brackets after the function name and no parameters are passed because
-	// we are assigning a reference to the function and not actually calling it
-	request.onreadystatechange = handlerFunction;
-	// send data to ActionServlet
-	// Open connection to servlet
-	request.open("POST", DeAjaxHandler, true);
-	request.setRequestHeader("Content-Type",
-			"application/x-www-form-urlencoded");
-	request
-			.send(encodeURI("&ajaxOperation=deleteRowsForContainment&containerId="
-					+ containerId + "&deletedRowIds=" + deletedRowIds));
+	if (rowsDeleted == 0) {
+		alert("No rows selected for delete");
+		return;
+	}
+	new Ajax.Request('/clinportal/AjaxcodeHandlerAction.de',{
+		parameters:{ajaxOperation:'deleteRowsForContainment',containerId:containerId,deletedRowIds:deletedRowIds},	
+		onFailure: function(){
+			alert("Error occurred on server. Please try again.");
+		},
+		onSuccess: function(rowHTML) {
+			var currentCount = initialCount - rowsDeleted;
+			$(containerId + "_rowCount").setValue(parseInt(currentCount));
+			document.getElementById('isDirty').value = true;
+		}	
+	});
 }
 
 function ignoreResponseHandler(str) {

@@ -30,7 +30,6 @@ import edu.common.dynamicextensions.domaininterface.BaseAbstractAttributeInterfa
 import edu.common.dynamicextensions.domaininterface.CategoryEntityInterface;
 import edu.common.dynamicextensions.domaininterface.EntityGroupInterface;
 import edu.common.dynamicextensions.domaininterface.EntityInterface;
-import edu.common.dynamicextensions.domaininterface.userinterface.AbstractContainmentControlInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ContainerInterface;
 import edu.common.dynamicextensions.domaininterface.userinterface.ControlInterface;
 import edu.common.dynamicextensions.entitymanager.DynamicExtensionsQueryBuilderConstantsInterface;
@@ -456,40 +455,26 @@ public class DEAjaxActionManager
 	 * @param childContainerId
 	 * @return
 	 */
-	private String deleteRowsForContainment(final HttpServletRequest request,
-			final String deletedRowIds, final String childContainerId)
-	{
-		final Stack containerStack = (Stack) CacheManager.getObjectFromCache(request,
-				DEConstants.CONTAINER_STACK);
-		final Stack valueMapStack = (Stack) CacheManager.getObjectFromCache(request,
-				DEConstants.VALUE_MAP_STACK);
+	private String deleteRowsForContainment(final HttpServletRequest request, 
+			final String deletedRowIds, final String childContainerId) {
+		
+		Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request, 
+				DEConstants.FORM_DATA_STACK);
 
-		final Map<AbstractAttributeInterface, Object> valueMap = (Map<AbstractAttributeInterface, Object>) valueMapStack
-				.peek();
-		final ContainerInterface containerInterface = (ContainerInterface) containerStack.peek();
+		FormData mainFormData = formDataStack.peek();
+		SubFormControl sfCtrl = mainFormData.getContainer().getSubFormControl(childContainerId);
+		ControlValue subFormVal = mainFormData.getFieldValue(sfCtrl.getName());
 
-		final AbstractContainmentControlInterface associationControl = UserInterfaceiUtility
-				.getAssociationControl(containerInterface, childContainerId);
-
-		final AssociationMetadataInterface association = (AssociationMetadataInterface) associationControl
-				.getBaseAbstractAttribute();
-
-		final List<Map<AbstractAttributeInterface, Object>> associationValueMapList = (List<Map<AbstractAttributeInterface, Object>>) valueMap
-				.get(association);
-
-		final String[] deletedRows = deletedRowIds.split(",");
-
-		for (final String deletedRow : deletedRows)
-		{
-			final int removeIndex = Integer.valueOf(deletedRow) - 1;
-
-			if (associationValueMapList.size() > removeIndex)
-			{
-				associationValueMapList.remove(removeIndex);
+		List<FormData> subFormsData = (List<FormData>) subFormVal.getValue();
+		String[] deletedRows = deletedRowIds.split(",");
+		for (String deletedRow : deletedRows) {
+			int removeIndex = Integer.valueOf(deletedRow) - 1;
+			
+			if (subFormsData.size() > removeIndex) {
+				subFormsData.remove(removeIndex);
 			}
-
 		}
-
+		FormDataUtility.evaluateSkipLogic(mainFormData);
 		return "";
 	}
 

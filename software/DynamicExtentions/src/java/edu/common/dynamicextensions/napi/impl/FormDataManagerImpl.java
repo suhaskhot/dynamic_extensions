@@ -6,7 +6,9 @@ import java.sql.Blob;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -37,6 +39,8 @@ public class FormDataManagerImpl implements FormDataManager {
 	
 	private static final String INSERT_MULTI_SELECT_VALUES_SQL = "INSERT INTO %s (RECORD_ID, VALUE) VALUES (?, ?)";
 	
+	private static final String GET_SUB_FORM_IDS_SQL = "SELECT IDENTIFIER FROM %s WHERE PARENT_RECORD_ID = ?";
+
 	private static final String RECORD_ID_SEQ = "RECORD_ID_SEQ";
 
 	private boolean auditEnable = true;
@@ -337,13 +341,29 @@ public class FormDataManagerImpl implements FormDataManager {
 				SubFormControl subFormCtrl = (SubFormControl) sfCtrl;
 				ControlValue subFormVal = formData.getFieldValue(subFormCtrl.getName());
 				List<FormData> subFormsData = (List<FormData>) subFormVal.getValue();
+				
 				if (subFormsData == null) {
 					continue;
 				}
-
+				String sfTableName = subFormCtrl.getSubContainer().getDbTableName();
+				Set<Long> currentSfIds = new HashSet<Long>();
+				
 				for (FormData subFormData : subFormsData) {
 					Long subFormRecId = saveOrUpdateFormData(jdbcDao, subFormData, recordId);
 					subFormData.setRecordId(subFormRecId);
+					currentSfIds.add(subFormRecId);
+				}
+				Set<Long> persistedSfIds = getPersistedSfIds(jdbcDao, sfTableName, formData.getRecordId());
+				List<Long> deletedSfData = new ArrayList<Long>();
+				
+				for (Long persistedId : persistedSfIds) {
+					if (! currentSfIds.contains(persistedId)) {
+						deletedSfData.add(persistedId);
+					}
+				}
+				
+				if (! deletedSfData.isEmpty()) {
+					removeDeletedSfData(jdbcDao, sfTableName, deletedSfData);
 				}
 			}
 		} finally {
@@ -476,5 +496,36 @@ public class FormDataManagerImpl implements FormDataManager {
 				simpleCtrls.add(ctrl);
 			}
 		}
+	}
+	
+	private Set<Long> getPersistedSfIds(JdbcDao jdbcDao, String dbTableName, Long parentRecId) {
+		ResultSet rs = null;
+		String selectSql = String.format(GET_SUB_FORM_IDS_SQL, dbTableName);
+		Set<Long> sfIds = new HashSet<Long>();
+		try {
+			rs = jdbcDao.getResultSet(selectSql, Collections.singletonList(parentRecId));
+			
+			while (rs.next()) {
+				sfIds.add(rs.getLong("IDENTIFIER"));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining identifier from table  data: " + dbTableName  + ", " +
+					"with Parent record id : " + parentRecId , e);
+		} finally {
+			jdbcDao.close(rs);
+		}
+		
+		return sfIds;
+	}
+	
+	private void removeDeletedSfData(JdbcDao jdbcDao, String sfTableName, List<Long> toBeDeletedSfData) {
+		StringBuilder deleteSqlBuilder = new StringBuilder().append("DELETE FROM ")
+				.append(sfTableName).append(" WHERE IDENTIFIER IN ( ");
+		
+		for (int i = 0 ; i < toBeDeletedSfData.size() ; i++) {
+			deleteSqlBuilder.append(" ?,");
+		}
+		String deleteSql = deleteSqlBuilder.substring(0, deleteSqlBuilder.lastIndexOf(",")).concat(")");
+		jdbcDao.executeUpdate(deleteSql, toBeDeletedSfData);
 	}
 }

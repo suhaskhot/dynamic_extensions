@@ -193,12 +193,15 @@ public class FormDataManagerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testSaveFormData() {
+	public void testSaveFormData() throws Exception {
 		mockIdGeneration("RECORD_ID_SEQ", 9933L);
 		mockUpdate(userTableInsertSql, 1);
 		mockUpdate(hobbiesTableDeleteSql, 1);
 		mockUpdate(hobbiesTableInsertSql, 2);
-				
+		mockUpdate(userTableDeleteSql, 1);
+		mockQueryResultSet(userTableQuerySelectIds, Collections.singletonList("IDENTIFIER"), 
+				new List[] {Arrays.asList(9933L)});
+
 		mockIdGeneration("RECORD_ID_SEQ", 11L);
 		mockIdGeneration("RECORD_ID_SEQ", 12L);
 		mockUpdate(addressTableInsertSql, 2);
@@ -233,7 +236,7 @@ public class FormDataManagerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testUpdateParentFormData() {	
+	public void testUpdateParentFormData() throws Exception {	
 		mockUpdate(userTableUpdateSql, 1);
 		mockUpdate(hobbiesTableDeleteSql, 1);
 		mockUpdate(hobbiesTableInsertSql, 2);
@@ -243,6 +246,9 @@ public class FormDataManagerTest {
 		mockUpdate(addressTableInsertSql, 2);
 		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
 		mockUpdate(parkingFacilitiesTableInsertSql, 3);		
+		mockUpdate(userTableDeleteSql, 1);
+		mockQueryResultSet(userTableQuerySelectIds, Collections.singletonList("IDENTIFIER"), 
+				new List[] {Arrays.asList(9933L)});
 	    mockJdbcDao.close();
 	    
 	    nullifyId(formData);
@@ -273,14 +279,17 @@ public class FormDataManagerTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testUpdateFormData() {	
+	public void testUpdateFormData() throws Exception {	
 		mockUpdate(userTableUpdateSql, 1);
 		mockUpdate(hobbiesTableDeleteSql, 1);
 		mockUpdate(hobbiesTableInsertSql, 2);
 				
 		mockUpdate(addressTableUpdateSql, 2);
 		mockUpdate(parkingFacilitiesTableDeleteSql, 2); // one delete for each instance of sub-form insert
-		mockUpdate(parkingFacilitiesTableInsertSql, 3);		
+		mockUpdate(parkingFacilitiesTableInsertSql, 3);
+		mockUpdate(userTableDeleteSql, 1);
+		mockQueryResultSet(userTableQuerySelectIds, Collections.singletonList("IDENTIFIER"), 
+				new List[] {Arrays.asList(9933L)});
 	    mockJdbcDao.close();
 	    
 	    replayAll();
@@ -429,7 +438,8 @@ public class FormDataManagerTest {
 		addressTableQuery           = "SELECT DE_A_1, DE_A_2, IDENTIFIER FROM USER_ADDRESSES WHERE PARENT_RECORD_ID = ?";
 		hobbiesTableQuery           = "SELECT VALUE FROM HOBBIES WHERE RECORD_ID = ?";
 		parkingFacilitiesTableQuery = "SELECT VALUE FROM PARKING_FACILITIES WHERE RECORD_ID = ?";
-		
+		userTableQuerySelectIds		= "SELECT IDENTIFIER FROM USER_ADDRESSES WHERE PARENT_RECORD_ID = ?";
+	
 		userTableInsertSql          = "INSERT INTO USER_PROFILES(DE_A_1, DE_A_2, DE_A_3, IDENTIFIER) VALUES(?, ?, ?, ?)";
 		addressTableInsertSql       = "INSERT INTO USER_ADDRESSES(DE_A_1, DE_A_2, PARENT_RECORD_ID, IDENTIFIER) VALUES(?, ?, ?, ?)";
 		hobbiesTableInsertSql       = "INSERT INTO HOBBIES (RECORD_ID, VALUE) VALUES (?, ?)";
@@ -438,7 +448,8 @@ public class FormDataManagerTest {
 		userTableUpdateSql          = "UPDATE USER_PROFILES SET DE_A_1 = ?, DE_A_2 = ?, DE_A_3 = ? WHERE IDENTIFIER = ?";
 		addressTableUpdateSql       = "UPDATE USER_ADDRESSES SET DE_A_1 = ?, DE_A_2 = ? WHERE IDENTIFIER = ?";
 		hobbiesTableDeleteSql       = "DELETE FROM HOBBIES WHERE RECORD_ID = ?";
-		parkingFacilitiesTableDeleteSql = "DELETE FROM PARKING_FACILITIES WHERE RECORD_ID = ?";        		
+		parkingFacilitiesTableDeleteSql = "DELETE FROM PARKING_FACILITIES WHERE RECORD_ID = ?"; 
+		userTableDeleteSql          = "DELETE FROM USER_ADDRESSES WHERE IDENTIFIER IN (  ?)";
 	}
 	
 	private void setUpTestFormData() {
@@ -512,6 +523,7 @@ public class FormDataManagerTest {
 	// SELECT SQLs
 	//
 	private String userTableQuery;
+	private String userTableQuerySelectIds;
 	private String addressTableQuery;
 	private String hobbiesTableQuery;
 	private String parkingFacilitiesTableQuery;
@@ -532,7 +544,7 @@ public class FormDataManagerTest {
 	
 	private String hobbiesTableDeleteSql;
 	private String parkingFacilitiesTableDeleteSql;
-	
+	private String userTableDeleteSql;
 	//
 	// test form data for insert, update and get
 	//

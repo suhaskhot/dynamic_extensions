@@ -96,7 +96,7 @@ public class SasProgramGenerator {
 		writer.write(
 				"%let file1=S_1;\r\n\r\n" +
 				"ods listing;\r\n" +
-				"options linesize=256;\r\n" +		
+				"options linesize=256;\r\n\r\n" +		
 			    "filename &file1 \"&stored\\" + inputCsv + "\";\r\n");
 	}
 	

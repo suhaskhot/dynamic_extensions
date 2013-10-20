@@ -176,13 +176,13 @@ public class FormDataManagerFileTest {
 
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
-		firstName.setUserDefinedName("First Name");
+		firstName.setUserDefinedName("FirstName");
 
 		userProfile.addControl(firstName);
 
 		FileUploadControl reports = new FileUploadControl();
 		reports.setName("reports");
-		reports.setUserDefinedName("Reports");
+		reports.setUserDefinedName("reports");
 
 		userProfile.addControl(reports);
 	}

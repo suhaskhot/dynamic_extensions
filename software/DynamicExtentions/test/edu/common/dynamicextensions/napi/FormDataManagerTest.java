@@ -369,26 +369,26 @@ public class FormDataManagerTest {
 		
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
-		firstName.setUserDefinedName("First Name");
+		firstName.setUserDefinedName("firstName");
 
 		userProfile.addControl(firstName);
 			
 		StringTextField lastName = new StringTextField();
 		lastName.setName("lastName");
-		lastName.setUserDefinedName("Last Name");
+		lastName.setUserDefinedName("lastName");
 
 		userProfile.addControl(lastName);
 		
 		DatePicker dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
-		dateOfBirth.setUserDefinedName("Date Of Birth");
+		dateOfBirth.setUserDefinedName("dateOfBirth");
 
 		userProfile.addControl(dateOfBirth);
 		
 		MultiSelectCheckBox hobbies = new MultiSelectCheckBox();
 		hobbies.setTableName("HOBBIES");
 		hobbies.setName("hobbies");
-		hobbies.setUserDefinedName("Hobbies");
+		hobbies.setUserDefinedName("hobbies");
 		PvDataSource hobbiesDs = new PvDataSource();
 		hobbiesDs.setDataType(DataType.STRING);		
 		hobbies.setPvDataSource(hobbiesDs);
@@ -401,12 +401,12 @@ public class FormDataManagerTest {
 		
 		StringTextField street = new StringTextField();
 		street.setName("street");
-		street.setUserDefinedName("Street");
+		street.setUserDefinedName("street");
 		address.addControl(street);
 		
 		ComboBox city = new ComboBox();
 		city.setName("city");		
-		city.setUserDefinedName("City");
+		city.setUserDefinedName("city");
 		PvDataSource cities = new PvDataSource();
 		cities.setDataType(DataType.STRING);		
 		city.setPvDataSource(cities);
@@ -415,7 +415,7 @@ public class FormDataManagerTest {
 		MultiSelectListBox parkingFacilities = new MultiSelectListBox();
 		parkingFacilities.setTableName("PARKING_FACILITIES");
 		parkingFacilities.setName("parkingFacilities");
-		parkingFacilities.setUserDefinedName("Parking Facilities");
+		parkingFacilities.setUserDefinedName("parkingFacilities");
 		PvDataSource parkingTypes = new PvDataSource();
 		parkingTypes.setDataType(DataType.STRING);		
 		parkingFacilities.setPvDataSource(parkingTypes);
@@ -424,7 +424,7 @@ public class FormDataManagerTest {
 		SubFormControl addressSf = new SubFormControl();
 		addressSf.setSubContainer(address);
 		addressSf.setName("address");
-		addressSf.setUserDefinedName("Address");
+		addressSf.setUserDefinedName("address");
 
 		userProfile.addControl(addressSf);		
 	}

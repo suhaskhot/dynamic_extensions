@@ -9,7 +9,6 @@ import edu.common.dynamicextensions.nutility.IoUtil;
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class QueryResultCsvExporter implements QueryResultExporter {
-	
 	@Override
 	public void export(String exportPath, Query query) {
 		OutputStream out = null;

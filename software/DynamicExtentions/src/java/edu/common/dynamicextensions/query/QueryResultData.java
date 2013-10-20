@@ -1,6 +1,8 @@
 package edu.common.dynamicextensions.query;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class QueryResultData {
@@ -9,9 +11,16 @@ public class QueryResultData {
     private List<ResultColumn> resultColumns;
     
     private List<Object[]> rows = new ArrayList<Object[]>();
-	
-    public QueryResultData(List<ResultColumn> resultColumns) {
+    
+    private SimpleDateFormat sdf = null;
+    
+    
+    	
+    public QueryResultData(List<ResultColumn> resultColumns, String dateFormat) {
         this.resultColumns = resultColumns;
+        if (dateFormat != null) {
+        	sdf = new SimpleDateFormat(dateFormat);
+        }
     }
     
     public void setColumnLabelFormatter(ResultColumnLabelFormatter formatter) {
@@ -51,8 +60,10 @@ public class QueryResultData {
         for(int j = 0; j < row.length; j++) {
             if(row[j] == null) {
                 result[j] = null;
+            } else if (row[j] instanceof Date && sdf != null){
+                result[j] = sdf.format(row[j]);
             } else {
-                result[j] = row[j].toString();
+            	result[j] = row[j].toString();
             }
         }
 

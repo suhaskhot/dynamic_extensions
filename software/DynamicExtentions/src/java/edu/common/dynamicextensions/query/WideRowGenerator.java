@@ -31,6 +31,8 @@ public class WideRowGenerator {
     
     private JoinTree queryJoinTree;
     
+    private String dateFormat;
+    
     public WideRowGenerator(JoinTree queryJoinTree, QueryExpressionNode queryExpr) {
         this.queryExpr = queryExpr;
         this.queryJoinTree = queryJoinTree;
@@ -43,6 +45,11 @@ public class WideRowGenerator {
         aliasRowCountMap.clear();
         currAliasRowCountMap.clear();
         lastRootId = null;
+    }
+    
+    public WideRowGenerator dateFormat(String dateFormat) {
+    	this.dateFormat = dateFormat;
+    	return this;
     }
     
     public void processResultSet(ResultSet rs) {
@@ -257,7 +264,7 @@ public class WideRowGenerator {
         	}
         });
         
-        return new QueryResultData(columns);
+        return new QueryResultData(columns, dateFormat);
     }
             
     private class WideRowNode {

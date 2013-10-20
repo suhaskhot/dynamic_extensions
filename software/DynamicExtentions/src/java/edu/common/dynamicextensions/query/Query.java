@@ -21,6 +21,8 @@ public class Query {
     private boolean wideRows;
     
     private boolean ic;
+    
+    private String dateFormat;
         
     public static Query createQuery() {
         return new Query();
@@ -36,6 +38,11 @@ public class Query {
     
     public Query ic(boolean ic) {
     	this.ic = ic;
+    	return this;
+    }
+    
+    public Query dateFormat(String dateFormat) {
+    	this.dateFormat = dateFormat;
     	return this;
     }
   
@@ -102,7 +109,7 @@ public class Query {
                 resultData = getWideRowData(rs);
                 if (resultData == null) {
                     // this will ensure at least the header columns are populated
-                    resultData = new QueryResultData(getResultColumns(queryExpr));
+                    resultData = new QueryResultData(getResultColumns(queryExpr), dateFormat);
                 }
             } else {
                 resultData = getQueryResultData(rs);
@@ -136,7 +143,7 @@ public class Query {
         List<ResultColumn> columns = getResultColumns(queryExpr);
         int columnCount = columns.size();
         
-        QueryResultData queryResult = new QueryResultData(columns);
+        QueryResultData queryResult = new QueryResultData(columns, dateFormat);
         while (rs.next()) {
             Object[] row = new Object[columnCount];
             for (int i = 0; i < columnCount; ++i) {
@@ -151,6 +158,7 @@ public class Query {
     
     private QueryResultData getWideRowData(ResultSet rs) {
         WideRowGenerator wideRowGenerator = new WideRowGenerator(queryJoinTree, queryExpr);
+        wideRowGenerator.dateFormat(dateFormat);
         wideRowGenerator.start();
         wideRowGenerator.processResultSet(rs);
         wideRowGenerator.end();

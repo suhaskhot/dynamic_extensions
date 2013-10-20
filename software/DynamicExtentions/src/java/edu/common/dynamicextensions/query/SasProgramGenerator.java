@@ -94,7 +94,7 @@ public class SasProgramGenerator {
 	private void writeFileImportInfo(FileWriter writer) 
 	throws IOException {
 		writer.write(
-				"%let file1=S_1" + inputCsv + ";\n\n\r\n" +
+				"%let file1=SearchResults;\n\n\r\n" +
 			    "filename &file1 \"&stored\\" + inputCsv + "\";\r\n");
 	}
 	

@@ -538,19 +538,19 @@ public class ContainerTest {
 				
 		StringTextField firstName = new StringTextField();
 		firstName.setName("firstName");
-		firstName.setUserDefinedName("First Name");
+		firstName.setUserDefinedName("firstName");
 
 		userProfile.addControl(firstName);
 			
 		StringTextField lastName = new StringTextField();
 		lastName.setName("lastName");
-		lastName.setUserDefinedName("Last Name");
+		lastName.setUserDefinedName("lastName");
 
 		userProfile.addControl(lastName);
 		
 		DatePicker dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
-		dateOfBirth.setUserDefinedName("Date Of Birth");
+		dateOfBirth.setUserDefinedName("dateOfBirth");
 
 		userProfile.addControl(dateOfBirth);
 		
@@ -585,7 +585,7 @@ public class ContainerTest {
 		MultiSelectListBox parkingFacilities = new MultiSelectListBox();
 		parkingFacilities.setTableName("PARKING_FACILITIES");
 		parkingFacilities.setName("parkingFacilities");
-		parkingFacilities.setUserDefinedName("Parking Facilities");		
+		parkingFacilities.setUserDefinedName("parkingFacilities");		
 
 		PvDataSource parkingTypes = new PvDataSource();
 		parkingTypes.setDataType(DataType.STRING);		

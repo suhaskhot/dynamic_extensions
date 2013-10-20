@@ -121,7 +121,7 @@ public class ContainerTest {
 		//
 		NumberField approxSalary = new NumberField();
 		approxSalary.setName("approxSalary");
-		approxSalary.setUserDefinedName("Approx Salary");
+		approxSalary.setUserDefinedName("approxSalary");
 
 		userProfile.addControl(approxSalary);
 		
@@ -237,7 +237,7 @@ public class ContainerTest {
 		//
 		StringTextField approxSalary = new StringTextField();
 		approxSalary.setName("approxSalary");
-		approxSalary.setUserDefinedName("Approx Salary");
+		approxSalary.setUserDefinedName("approxSalary");
 		userProfile.addControl(approxSalary);
 
 		//
@@ -394,7 +394,7 @@ public class ContainerTest {
 		pvDataSource.setDataType(DataType.INTEGER);
 		MultiSelectCheckBox luckyNumbers = new MultiSelectCheckBox();
 		luckyNumbers.setName("luckyNumbers");
-		luckyNumbers.setUserDefinedName("Lucky Numbers");
+		luckyNumbers.setUserDefinedName("luckyNumbers");
 		luckyNumbers.setPvDataSource(pvDataSource);
 		
 		userProfile.addControl(luckyNumbers);
@@ -431,7 +431,7 @@ public class ContainerTest {
 		pvDataSource.setDataType(DataType.STRING);
 		MultiSelectListBox favoriteCusines = new MultiSelectListBox();
 		favoriteCusines.setName("favoriteCusines");
-		favoriteCusines.setUserDefinedName("Favorite Cusines");
+		favoriteCusines.setUserDefinedName("favoriteCusines");
 		favoriteCusines.setPvDataSource(pvDataSource);
 		
 		userProfile.addControl(favoriteCusines);

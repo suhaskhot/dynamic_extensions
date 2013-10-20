@@ -41,6 +41,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	private static final String tableNameFmt = "DE_E_%d";
 	
 	private static final String columnNameFmt = "DE_A_%d";
+	
+	private static final String specialChars = "[+-/*(){}%. ]";
+	
+	private static Pattern notAllowed = Pattern.compile(specialChars, Pattern.CASE_INSENSITIVE);
 			
 	private String name;
 
@@ -95,6 +99,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 
 	public void setName(String name) {
+		if (notAllowed.matcher(name).find()) {
+			throw new RuntimeException("Following special characters in form names not allowed: " + specialChars);
+		}
+		
 		this.name = name;
 	}
 
@@ -413,13 +421,11 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		control.setContainer(this);
 	}
 	
-	private void validateNameAndUdn(Control control) {
-		Pattern p = Pattern.compile("[+-/*(){}%]", Pattern.CASE_INSENSITIVE);
-		
-		if (p.matcher(control.getName()).find()) {
-			throw new RuntimeException("Control name contains spl characters "+ control.getName());
-		} else if (p.matcher(control.getUserDefinedName()).find()) {
-			throw new RuntimeException("Control user defined name contains spl characters "+ control.getUserDefinedName());
+	private void validateNameAndUdn(Control control) {		
+		if (notAllowed.matcher(control.getName()).find()) {
+			throw new RuntimeException("Control name contains spl characters: " + specialChars + ", " + control.getName());
+		} else if (notAllowed.matcher(control.getUserDefinedName()).find()) {
+			throw new RuntimeException("Control user defined name contains spl characters: " + specialChars + ", " +  control.getUserDefinedName());
 		}
 	}
 

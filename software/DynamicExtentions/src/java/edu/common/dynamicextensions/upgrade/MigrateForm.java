@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.domain.CategoryEntityRecord;
@@ -764,7 +765,7 @@ public class MigrateForm {
 			}
 		}
  		
-		return name;
+		return StringUtils.deleteWhitespace(name).replaceAll("\\.", "_");
 	}
 	
 	private String getCustomLabel(ControlInterface ctrl) {
@@ -1044,7 +1045,7 @@ public class MigrateForm {
 	
 
 	private String getUniqueFormName(String name) {
-		String uniqueName = name;
+		String uniqueName = StringUtils.deleteWhitespace(name).replaceAll("\\.", "_");
 		int i = 0;
 		while (containerNames.contains(uniqueName)) {                 
 			uniqueName = name + "_" + ++i;

@@ -242,7 +242,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error while parsing the formula : "+shortCodeFormula,e);
 		}
 	
-		for (String symbol : getSymbolsOrderedByLength(formulaParser.getSymbols())) {
+		List<String> symbols = formulaParser.getSymbols();
+		orderByLength(symbols);
+		
+		for (String symbol : symbols) {
 			Control ctrl =  getControl(symbol, "\\.");
 			
 			if (ctrl == null) {
@@ -266,7 +269,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error while parsing the formula : "+shortCodeFormula,e);
 		}
 	
-		for (String symbol : getSymbolsOrderedByLength(formulaParser.getSymbols())) {
+		List<String> symbols = formulaParser.getSymbols();
+		orderByLength(symbols);
+		
+		for (String symbol : symbols) {
 			Control ctrl =  getControlByUdn(symbol, "\\.");
 			
 			if (ctrl == null) {
@@ -279,14 +285,12 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return shortCodeFormula;
 	}
 	
-	private List<String> getSymbolsOrderedByLength(List<String> symbols) {
+	private void orderByLength(List<String> symbols) {
 		Collections.sort(symbols, new Comparator<String>() {
 			public int compare(String s1, String s2) {
 				return s2.length() - s1.length(); // < 0 =0 > 0
 			}
 		});
-		
-		return symbols;
 	}
 	
 	@Override

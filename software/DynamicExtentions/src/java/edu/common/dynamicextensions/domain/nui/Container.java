@@ -2,6 +2,8 @@ package edu.common.dynamicextensions.domain.nui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -241,7 +242,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error while parsing the formula : "+shortCodeFormula,e);
 		}
 	
-		for (String symbol : formulaParser.getSymbols()) {
+		for (String symbol : getSymbolsOrderedByLength(formulaParser.getSymbols())) {
 			Control ctrl =  getControl(symbol, "\\.");
 			
 			if (ctrl == null) {
@@ -265,7 +266,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error while parsing the formula : "+shortCodeFormula,e);
 		}
 	
-		for (String symbol : formulaParser.getSymbols()) {
+		for (String symbol : getSymbolsOrderedByLength(formulaParser.getSymbols())) {
 			Control ctrl =  getControlByUdn(symbol, "\\.");
 			
 			if (ctrl == null) {
@@ -276,6 +277,16 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}
 	
 		return shortCodeFormula;
+	}
+	
+	private List<String> getSymbolsOrderedByLength(List<String> symbols) {
+		Collections.sort(symbols, new Comparator<String>() {
+			public int compare(String s1, String s2) {
+				return s2.length() - s1.length(); // < 0 =0 > 0
+			}
+		});
+		
+		return symbols;
 	}
 	
 	@Override

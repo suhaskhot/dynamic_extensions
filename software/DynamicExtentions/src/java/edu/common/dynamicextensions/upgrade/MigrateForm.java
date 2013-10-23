@@ -116,8 +116,10 @@ import edu.common.dynamicextensions.skiplogic.ConditionStatements;
 import edu.common.dynamicextensions.skiplogic.PrimitiveCondition;
 import edu.common.dynamicextensions.skiplogic.RelationalOperator;
 import edu.common.dynamicextensions.skiplogic.SkipLogic;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
+import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.wustl.cab2b.server.cache.EntityCache;
 import edu.wustl.dao.HibernateDAO;
@@ -941,6 +943,14 @@ public class MigrateForm {
 			selectCtrls.add(pvSource);
 
 			result = pvDataSource;
+		}
+		
+		if (result == null && ControlsUtility.isSQLPv(selectCtrl.getAttibuteMetadataInterface())) {
+			String sql = selectCtrl.getAttibuteMetadataInterface().getTaggedValue(DEConstants.PV_PROCESSOR);
+			result = new PvDataSource();
+			result.setDataType(dataType);
+			result.setDateFormat(dateFormat);
+			result.setSql(sql);			
 		}
 				
 		return result;

@@ -1032,7 +1032,8 @@ public class MigrateForm {
 	}
 	
 	private String getEntityName(AbstractEntityInterface entity) {
-		String name = null;
+		String specialChars = "[+-/*(){}%. ]";
+		String name = entity.getName();
 		if (entity instanceof CategoryEntityInterface) {
 			CategoryInterface category = ((CategoryEntityInterface) entity).getCategory();
 			
@@ -1041,7 +1042,7 @@ public class MigrateForm {
 			} 
 		}
 		
-		return name;
+		return StringUtils.deleteWhitespace(name).replaceAll(specialChars, "_");
 	}
 	
 	private String getAssociationName(BaseAbstractAttributeInterface attr) {

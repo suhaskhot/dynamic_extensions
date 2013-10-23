@@ -116,6 +116,7 @@ import edu.common.dynamicextensions.skiplogic.ConditionStatements;
 import edu.common.dynamicextensions.skiplogic.PrimitiveCondition;
 import edu.common.dynamicextensions.skiplogic.RelationalOperator;
 import edu.common.dynamicextensions.skiplogic.SkipLogic;
+import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.util.DataValueMapUtility;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
@@ -942,7 +943,7 @@ public class MigrateForm {
 
 			result = pvDataSource;
 		}
-				
+
 		return result;
 	}
 	
@@ -1022,7 +1023,7 @@ public class MigrateForm {
 	}
 	
 	private String getEntityName(AbstractEntityInterface entity) {
-		String name = entity.getName();
+		String name = null;
 		if (entity instanceof CategoryEntityInterface) {
 			CategoryInterface category = ((CategoryEntityInterface) entity).getCategory();
 			
@@ -1045,7 +1046,8 @@ public class MigrateForm {
 	
 
 	private String getUniqueFormName(String name) {
-		String uniqueName = StringUtils.deleteWhitespace(name).replaceAll("\\.", "_");
+		String specialChars = "[+-/*(){}%. ]";
+		String uniqueName = StringUtils.deleteWhitespace(name).replaceAll(specialChars, "_");
 		int i = 0;
 		while (containerNames.contains(uniqueName)) {                 
 			uniqueName = name + "_" + ++i;

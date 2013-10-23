@@ -191,13 +191,13 @@ public class ContainerParserTest {
 		
 		formHeading = new Label();
 		formHeading.setName("FormHeading");
-		formHeading.setUserDefinedName("Form Heading");
+		formHeading.setUserDefinedName("FormHeading");
 		formHeading.setHeading(true);
 		formHeading.setCaption("Fill in correct personal details for loan processing");
 		
 		firstName = new StringTextField();
 		firstName.setName("firstName");
-		firstName.setUserDefinedName("First Name");
+		firstName.setUserDefinedName("firstName");
 		firstName.setCaption("First Name");
 		firstName.setPhi(true);
 		firstName.setMandatory(true);
@@ -206,7 +206,7 @@ public class ContainerParserTest {
 				
 		lastName = new StringTextField();
 		lastName.setName("lastName");
-		lastName.setUserDefinedName("Last Name");
+		lastName.setUserDefinedName("lastName");
 		lastName.setCaption("Last Name");
 		lastName.setPhi(true);
 		lastName.setMandatory(true);
@@ -215,7 +215,7 @@ public class ContainerParserTest {
 				
 		gender = new RadioButton();
 		gender.setName("gender");
-		gender.setUserDefinedName("Gender");
+		gender.setUserDefinedName("gender");
 		gender.setCaption("Gender");
 		gender.setPhi(true);
 		gender.setMandatory(true);
@@ -224,7 +224,7 @@ public class ContainerParserTest {
 		
 		income = new NumberField();
 		income.setName("income");
-		income.setUserDefinedName("Income");
+		income.setUserDefinedName("income");
 		income.setCaption("Annual Income");
 		income.setMinValue("100000");
 		income.setMaxValue("10000000");
@@ -232,14 +232,14 @@ public class ContainerParserTest {
 	
 		loanAmount = new NumberField();
 		loanAmount.setName("loanAmount");
-		loanAmount.setUserDefinedName("Loan Amount");
+		loanAmount.setUserDefinedName("loanAmount");
 		loanAmount.setCaption("Eligible Loan Amount");
 		loanAmount.setFormula("income * 5");
 		loanAmount.setNoOfDigits(19);
 	
 		sourcesOfIncome = new MultiSelectCheckBox();
 		sourcesOfIncome.setName("sourcesOfIncome");
-		sourcesOfIncome.setUserDefinedName("Sources of Income");
+		sourcesOfIncome.setUserDefinedName("sourcesOfIncome");
 		sourcesOfIncome.setCaption("Sources of Income");
 		sourcesOfIncome.setPvDataSource(getPvDataSource(
 				DataType.STRING, 
@@ -247,7 +247,7 @@ public class ContainerParserTest {
 					
 		description = new TextArea();
 		description.setName("description");
-		description.setUserDefinedName("Description");
+		description.setUserDefinedName("description");
 		description.setCaption("Introduction");
 		description.setPhi(true);
 		description.setMandatory(true);
@@ -258,7 +258,7 @@ public class ContainerParserTest {
 
 		bankAccounts = new MultiSelectListBox();
 		bankAccounts.setName("bankAccounts");
-		bankAccounts.setUserDefinedName("Bank Accounts");
+		bankAccounts.setUserDefinedName("bankAccounts");
 		bankAccounts.setCaption("Select banks where you have maintained savings account");		
 		bankAccounts.setMandatory(true);
 		bankAccounts.setPvDataSource(getPvDataSource(DataType.STRING, 
@@ -266,7 +266,7 @@ public class ContainerParserTest {
 	
 		dateOfBirth = new DatePicker();
 		dateOfBirth.setName("dateOfBirth");
-		dateOfBirth.setUserDefinedName("Date Of Birth");
+		dateOfBirth.setUserDefinedName("dateOfBirth");
 		dateOfBirth.setCaption("Date Of Birth");
 		dateOfBirth.setPhi(true);
 		dateOfBirth.setMandatory(true);
@@ -275,7 +275,7 @@ public class ContainerParserTest {
 		
 		formNote = new Label();
 		formNote.setName("FormNote");
-		formNote.setUserDefinedName("Form Note");
+		formNote.setUserDefinedName("FormNote");
 		formNote.setNote(true);
 		formNote.setCaption("Information filled here may be used for marketing purpose");
 					
@@ -286,7 +286,7 @@ public class ContainerParserTest {
 		
 		addressSf = new SubFormControl();
 		addressSf.setName("address");
-		addressSf.setUserDefinedName("Address");
+		addressSf.setUserDefinedName("address");
 		addressSf.setCaption("Address");
 		addressSf.setSubContainer(address);
 		addressSf.setShowAddMoreLink(true);
@@ -294,7 +294,7 @@ public class ContainerParserTest {
 				
 		city = new ComboBox();
 		city.setName("city");
-		city.setUserDefinedName("City");
+		city.setUserDefinedName("city");
 		city.setCaption("City");
 		city.setMandatory(true);
 		city.setPvDataSource(getPvDataSource(
@@ -311,7 +311,7 @@ public class ContainerParserTest {
 		
 		consent = new CheckBox();
 		consent.setName("consent");
-		consent.setUserDefinedName("Consent");
+		consent.setUserDefinedName("consent");
 		consent.setCaption("I agree to terms and conditions");		
 	}
 	

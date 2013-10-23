@@ -944,7 +944,7 @@ public class MigrateForm {
 
 			result = pvDataSource;
 		}
-		
+
 		if (result == null && ControlsUtility.isSQLPv(selectCtrl.getAttibuteMetadataInterface())) {
 			String sql = selectCtrl.getAttibuteMetadataInterface().getTaggedValue(DEConstants.PV_PROCESSOR);
 			result = new PvDataSource();
@@ -1032,7 +1032,7 @@ public class MigrateForm {
 	}
 	
 	private String getEntityName(AbstractEntityInterface entity) {
-		String name = entity.getName();
+		String name = null;
 		if (entity instanceof CategoryEntityInterface) {
 			CategoryInterface category = ((CategoryEntityInterface) entity).getCategory();
 			
@@ -1055,7 +1055,8 @@ public class MigrateForm {
 	
 
 	private String getUniqueFormName(String name) {
-		String uniqueName = StringUtils.deleteWhitespace(name).replaceAll("\\.", "_");
+		String specialChars = "[+-/*(){}%. ]";
+		String uniqueName = StringUtils.deleteWhitespace(name).replaceAll(specialChars, "_");
 		int i = 0;
 		while (containerNames.contains(uniqueName)) {                 
 			uniqueName = name + "_" + ++i;

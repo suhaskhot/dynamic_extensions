@@ -7,11 +7,11 @@
 		  	
 		<page>
 			<name>nameDetails</name>         		
-			<caption>Name Details</caption>
+			<caption>nameDetails</caption>
 			<row>
 				<textField>
 					<name>firstName</name> 
-					<udn>First Name</udn> 		
+					<udn>firstName</udn> 		
 					<caption>First Name</caption>
 					<phi>true</phi>
 					<mandatory>true</mandatory>  
@@ -21,7 +21,7 @@
 	
 				<textField>
 					<name>lastName</name> 
-					<udn>Last Name</udn>
+					<udn>lastName</udn>
 					<caption>Last Name</caption>
 					<phi>true</phi>
 					<mandatory>true</mandatory>  
@@ -36,7 +36,7 @@
 			<row>
 				<datePicker>
 					<name>dateOfBirth</name>
-					<udn>Date Of Birth</udn>
+					<udn>dateOfBirth</udn>
 					<caption>Date Of Birth</caption>
 					<phi>true</phi>
 					<mandatory>true</mandatory>

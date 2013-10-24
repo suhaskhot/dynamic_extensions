@@ -252,16 +252,19 @@ var Routers = {
 									userDefinedName = subFormUDN + "."
 											+ userDefinedName;
 								}
-								if(Main.advancedControlsView == null){
-									Main.advancedControlsView = new Views.AdvancedPropertiesTabView({
-										el : $('#advancedControlProperties'),
-										model : null
-									});
+								if (Main.advancedControlsView == null) {
+									Main.advancedControlsView = new Views.AdvancedPropertiesTabView(
+											{
+												el : $('#advancedControlProperties'),
+												model : null
+											});
 								}
 								Main.advancedControlsView.addFormulaToTable(
 										controlName, control.get('formula'),
 										userDefinedName);
-								AdvancedControlPropertiesBizLogic.addFormulaToMemory(controlName, control.get('formula'));
+								AdvancedControlPropertiesBizLogic
+										.addFormulaToMemory(controlName,
+												control.get('formula'));
 							}
 						}
 						if (control.get('type') == "subForm") {
@@ -415,7 +418,8 @@ var Routers = {
 
 								subFrm.get('controlObjectCollection')[subControl
 										.get('controlName')] = updatedControl;
-								subFrm.get('controlsOrder').push(updatedControl.get('controlName'));
+								subFrm.get('controlsOrder').push(
+										updatedControl.get('controlName'));
 
 								GlobalMemory.nodeCounter++;
 
@@ -441,8 +445,9 @@ var Routers = {
 					}
 					Main.formView.getFormModel().get('controlObjectCollection')[control
 							.get('controlName')] = updatedControl;
-					Main.formView.getFormModel().get('controlsOrder').push(control.get('controlName'));
-					
+					Main.formView.getFormModel().get('controlsOrder').push(
+							control.get('controlName'));
+
 				},
 
 				populateTreeWithControlNodes : function(controlName,
@@ -495,98 +500,153 @@ var Routers = {
 				.attachEvent(
 						"onDrag",
 						function(sId, tId, sObj, tObj, sInd, tInd) {
+							var gridObject = Main.designModeViewPointer
+									.getGridObject();
 							try {
-								var sourceCell = Main.designModeViewPointer
-										.getGridObject().cells(sId, sInd);
-								var targetCell = Main.designModeViewPointer
-										.getGridObject().cells(tId, tInd);
-								// alert(sourceCell.getValue());
-								if (sourceCell.getValue() != "") {
+								var sourceCell = gridObject.cells(sId, sInd);
+								var targetCell = gridObject.cells(tId, tInd);
 
-									var targetValue = targetCell.getValue();
-									var targetName = targetCell
-											.getAttribute("name");
+								var sourceColumnIndex = sInd;
+								var sourceRowIndex = gridObject
+										.getRowIndex(sId);
 
-									targetCell.setValue(sourceCell.getValue());
-									targetCell.setAttribute("name", sourceCell
-											.getAttribute("name"));
+								var targetColumnIndex = tInd;
+								var targetRowIndex = gridObject
+										.getRowIndex(tId);
 
-									var rowId = Main.designModeViewPointer
-											.getGridObject().getRowIndex(tId);
-									Main.designModeViewPointer
-											.updateControlObjectCollection(
-													sourceCell
-															.getAttribute("name"),
-													tInd + 1, rowId + 1);
-									sourceCell.setValue('');
+								var sourceValue = sourceCell.getValue();
+								var targetValue = targetCell.getValue();
 
-									var sourceValue = '';
-									var seqNo = '';
-									while (targetValue != '') {
-										seqNo = rowId + 1;
-										if (Main.designModeViewPointer
-												.getGridObject()
-												.doesRowExist(
-														Main.designModeViewPointer
-																.getGridObject()
-																.getRowId(seqNo)) == false) {
-											var newId = (new Date()).valueOf();
-											Main.designModeViewPointer
-													.getGridObject().addRow(
-															newId, "");
+								// first use case : the source and target rows
+								// have values, shift the cells present in the
+								// target's column
+								// second use case : the source has value but
+								// target does not
+								// third use case : shifting within the same
+								// column
+								// first use case : they both have values
+
+								if (sourceValue != "" && targetValue != "") {
+									if (targetColumnIndex == sourceColumnIndex) {
+										// case 3
+
+										// case 3.1 where source > target
+
+										if (sourceRowIndex > targetRowIndex) {
+											var totalNumberOfRows = gridObject
+													.getRowsNum();
+
+											var buffer = targetValue;
+											var buffer1 = "";
+
+											targetCell.setValue(sourceValue);
+
+											sourceCell.setValue("");
+											DesignModeBizLogic.reArrangeRows(
+													targetRowIndex + 1,
+													sourceRowIndex,
+													targetValue,
+													targetColumnIndex, false);
+
+											/*
+											 * for ( var cntr = targetRowIndex +
+											 * 1; cntr <= sourceRowIndex;
+											 * cntr++) {
+											 * 
+											 * buffer1 = gridObject
+											 * .cellByIndex(cntr,
+											 * targetColumnIndex) .getValue();
+											 * 
+											 * gridObject.cellByIndex(cntr,
+											 * targetColumnIndex)
+											 * .setValue(buffer);
+											 * 
+											 * buffer = buffer1; }
+											 */
+										} else if (sourceRowIndex < targetRowIndex) {
+											// case 3.2
+											var buffer = targetValue;
+											var buffer1 = "";
+
+											targetCell.setValue(sourceValue);
+
+											sourceCell.setValue("");
+
+											DesignModeBizLogic.reArrangeRows(
+													targetRowIndex - 1,
+													sourceRowIndex,
+													targetValue,
+													targetColumnIndex, true);
+
+											/*
+											 * for ( var cntr = targetRowIndex -
+											 * 1; cntr >= sourceRowIndex;
+											 * cntr--) {
+											 * 
+											 * buffer1 = gridObject
+											 * .cellByIndex(cntr,
+											 * targetColumnIndex) .getValue();
+											 * 
+											 * gridObject.cellByIndex(cntr,
+											 * targetColumnIndex)
+											 * .setValue(buffer);
+											 * 
+											 * buffer = buffer1; }
+											 */
+
 										}
-										if (Main.designModeViewPointer
-												.getGridObject().cellByIndex(
-														seqNo, tInd).getValue() != '') {
-											var sourceValue = Main.designModeViewPointer
-													.getGridObject()
-													.cellByIndex(seqNo, tInd)
-													.getValue();
+									} else {
+										// case 1
+										// add a row and then shift all values
+										// downwards
+										gridObject.addRow(gridObject.uid(), "");
+										targetCell.setValue(sourceValue);
 
-											Main.designModeViewPoi
-											nter.getGridObject().cellByIndex(
-													seqNo, tInd).setValue(
-													targetValue);
-											Main.designModeViewPointer
-													.getGridObject()
-													.cellByIndex(seqNo, tInd)
-													.setAttribute("name",
-															targetName);
+										sourceCell.setValue("");
+										// later
+										var totalNumberOfRows = gridObject
+												.getRowsNum();
+										DesignModeBizLogic.reArrangeRows(
+												targetRowIndex + 1,
+												totalNumberOfRows - 1,
+												targetValue, targetColumnIndex,
+												false);
 
-											Main.designModeViewPointer
-													.updateControlObjectCollection(
-															targetName,
-															tInd + 1, seqNo + 1);
-											targetValue = sourceValue;
-										} else {
-											Main.designModeViewPointer
-													.getGridObject()
-													.cellByIndex(seqNo, tInd)
-													.setValue(targetValue);
-											Main.designModeViewPointer
-													.getGridObject()
-													.cellByIndex(seqNo, tInd)
-													.setAttribute("name",
-															targetName);
-
-											Main.designModeViewPointer
-													.updateControlObjectCollection(
-															targetName,
-															tInd + 1, seqNo + 1);
-											break;
-										}
-										rowId++;
+										/*
+										 * var totalNumberOfRows = gridObject
+										 * .getRowsNum();
+										 * 
+										 * var buffer = targetValue; var buffer1 =
+										 * "";
+										 * 
+										 * targetCell.setValue(sourceValue);
+										 * 
+										 * sourceCell.setValue("");
+										 * 
+										 * for ( var cntr = targetRowIndex + 1;
+										 * cntr < totalNumberOfRows; cntr++) {
+										 * 
+										 * buffer1 = gridObject.cellByIndex(
+										 * cntr, targetColumnIndex) .getValue();
+										 * 
+										 * gridObject.cellByIndex(cntr,
+										 * targetColumnIndex) .setValue(buffer);
+										 * 
+										 * buffer = buffer1;
+										 *  }
+										 */
 									}
 
-									Main.designModeViewPointer.getGridObject().rowToDragElement = function(
-											id) {
-										var text = Main.designModeViewPointer
-												.getGridObject().cells(sId,
-														sInd).getValue();
-										return text;
-									}
 								}
+								// second use case : target does not have value,
+								// source does
+								if (sourceValue != "" && targetValue == "") {
+									targetCell.setValue(sourceValue);
+									sourceCell.setValue("");
+								}
+
 							} catch (e) {
+								alert(e);
 							}
 						});
 	},

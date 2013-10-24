@@ -131,6 +131,10 @@ var Views = {
 				},
 
 				populateControlsInForm : function() {
+					
+					DesignModeBizLogic.populateControlPositions();
+					
+					
 					this.model.set({
 						controlCollection : new Array()
 					});
@@ -153,7 +157,7 @@ var Views = {
 										.get('controlsOrder');
 								var subFormControlObjectCollection = _subForm
 										.get('controlObjectCollection');
-								
+
 								_subForm.set({
 									controlCollection : new Array()
 								});
@@ -357,7 +361,9 @@ var Views = {
 				updateModel : function(event) {
 
 					var newModel = new Models.Field();
-					newModel.set({type : this.model.get('type')});
+					newModel.set({
+						type : this.model.get('type')
+					});
 
 					this.populateFieldsInModel(newModel);
 					var validationMessages = newModel.validate(newModel

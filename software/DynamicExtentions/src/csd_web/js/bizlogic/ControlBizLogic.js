@@ -654,8 +654,26 @@ var ControlBizLogic = {
 	 */
 
 	csdControlsTabSelectHandler : function(id) {
+		if(id != "designMode"){DesignModeBizLogic.populateControlPositions();}
 		if (id == "designMode") {
-			Routers.populateDesignModeTab();
+			DesignModeBizLogic.loadMatrixWithControls(Main.formView
+					.getFormModel().get('controlObjectCollection'), Main.formView
+					.getFormModel().get('controlsOrder'));
+			DesignModeBizLogic.populateLayoutGrid();
+			/*
+			 * var controlData = {}; var controlOrder = new Array();
+			 * 
+			 * for(var i = 0; i < 5; i++){ var control = new Models.Field(); var
+			 * controlName = 'ST' + i; control.set({sequenceNumber : 3 + i, xPos :
+			 * 1, controlName : controlName}); controlData[controlName] =
+			 * control; controlOrder.push(controlName); }
+			 * controlData['ST2'].set({sequenceNumber: 4, xPos : 5});
+			 * 
+			 * DesignModeBizLogic.loadMatrixWithControls(controlData,
+			 * controlOrder); DesignModeBizLogic.populateLayoutGrid();
+			 */
+
+			// Routers.populateDesignModeTab();
 		} else if (id == "previewTab") {
 			Main.formView.loadModelInSessionForPreview();
 		}

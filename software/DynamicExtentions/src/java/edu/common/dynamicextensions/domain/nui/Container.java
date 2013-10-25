@@ -479,7 +479,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			// the control type got changed -> remove old + add new
 			//
 			control.setId(++ctrlId);
-			control.setDbColumnName(String.format(columnNameFmt, ctrlId)); // Set DB name here
+			if (!(control instanceof MultiSelectControl)) {						// For MSCtrls Column name is "VALUE"
+				control.setDbColumnName(String.format(columnNameFmt, ctrlId)); 	// Set DB name here
+			}
 			
 			add(delLog, existingControl);			
 			add(addLog, control);

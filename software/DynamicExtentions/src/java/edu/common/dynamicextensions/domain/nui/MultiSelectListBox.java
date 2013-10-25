@@ -108,12 +108,12 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 		if (controlValue.getValue() != null) {
 			List<String> values = Arrays.asList((String[]) controlValue.getValue());
 			
-			if (values.contains(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))) {
+			if (values.contains(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue()))) {
 					isPVSelected = true;
 			}
 		} else if (getDefaultValue() != null) {
 			
-			if (getDefaultValue().getValue().equals(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))) {
+			if (getDefaultValue().getValue().equals(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue()))) {
 				isPVSelected = true;
 			}
 		}

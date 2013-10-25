@@ -114,10 +114,10 @@ public class ListBox extends SelectControl {
 					if (isPVSelected(controlValue, pv)) {
 						htmlString.append("<OPTION title='").append(pvValue).append("' value='").append(pvValue)
 								.append("' selected>")
-								.append(DynamicExtensionsUtility.getUnEscapedStringValue(pvValue));
+								.append(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pvValue));
 					} else {
 						htmlString.append("<OPTION value='").append(pvValue).append("'>")
-								.append(DynamicExtensionsUtility.getUnEscapedStringValue(pvValue));
+								.append(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pvValue));
 					}
 				}
 			}

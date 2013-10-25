@@ -549,7 +549,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			controlHTML.append("<td class='formRequiredLabel_withoutBorder'><div class='control_caption'>");
 		} else if (getxPos() == 1) {
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);
-			controlHTML.append("<td class='formRequiredLabel_withoutBorder' title='").append(toolTip)
+			controlHTML.append("<td class='formRequiredLabel_withoutBorder' width='40%' title='").append(toolTip)
 					.append("'><div class='control_caption'>");
 		} else {
 			updateRequiredFieldIndicator(isMandatory(), controlHTML);

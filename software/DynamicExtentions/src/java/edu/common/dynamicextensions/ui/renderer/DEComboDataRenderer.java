@@ -155,7 +155,7 @@ public class DEComboDataRenderer {
 		Locale locale = CommonServiceLocator.getInstance().getDefaultLocale();
 		for (NameValueBean nvb : nameValueBeans) {
 			if (isShowAll || nvb.getName().toLowerCase(locale).contains(query.toLowerCase(locale))) {
-				nvb.setName(DynamicExtensionsUtility.getUnEscapedStringValue(nvb.getName()));
+				nvb.setName(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(nvb.getName()));
 				querySpecificNVBeans.add(nvb);
 			}
 		}

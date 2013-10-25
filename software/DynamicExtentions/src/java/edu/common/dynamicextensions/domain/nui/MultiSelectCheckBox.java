@@ -175,7 +175,7 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 									+ identifier + "','" + getContainer().getId() + "');" : ""))
 							.append("\" /></td><td class='formRequiredLabel_withoutBorder'>").append("<label for=\"")
 							.append(controlName).append("\">")
-							.append(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))
+							.append(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue()))
 							.append("</label> </td>");
 				} else {
 					htmlString
@@ -203,7 +203,7 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 									+ identifier + "','" + getContainer().getId() + "');" : ""))
 							.append("\" /></td><td class='formRequiredLabel_withoutBorder' >").append("<label for=\"")
 							.append(controlName).append("\">")
-							.append(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue()))
+							.append(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue()))
 							.append("</label> </td>");
 				}
 				if (columnNum % optionsPerRow == optionsPerRow - 1) {

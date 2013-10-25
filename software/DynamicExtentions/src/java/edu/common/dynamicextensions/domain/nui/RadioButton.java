@@ -77,7 +77,7 @@ public class RadioButton extends SelectControl {
 					columnNum = 0;
 					htmlString.append("<tr>");
 				}
-				final String optionName = DynamicExtensionsUtility.getUnEscapedStringValue(nameValueBean.getValue());
+				final String optionName = DynamicExtensionsUtility.replaceHTMLSpecialCharacters(nameValueBean.getValue());
 				final String optionValue = nameValueBean.getValue();
 				if (optionValue.equals(displayValue)) {
 					htmlString.append("<td><input type='radio' onClick=\"").append(getOnchangeServerCall(controlName)).append("\""

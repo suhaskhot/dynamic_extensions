@@ -181,7 +181,7 @@ public class ComboBox extends SelectControl {
 		List<PermissibleValue> permissibleValues = getPVList(encounterDate, controlValue);
 		for (PermissibleValue pv : permissibleValues) {
 			pvDataString.append("[\"").append(pv.getValue()).append("\",\"")
-					.append(DynamicExtensionsUtility.getUnEscapedStringValue(pv.getValue())).append("\"],");
+					.append(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue())).append("\"],");
 		}
 
 		if (pvDataString.toString().endsWith(",")) {

@@ -216,9 +216,10 @@ public class FormData {
 				throw new RuntimeException("Invalid control name: " + controlName);
 			}
 			List<FormData> value = (List<FormData>) controlValue.getValue();
-			subFormData = value.get((rowNumber == null ? 0 : rowNumber - 1));
-			formData = subFormData;
-			
+			if ( value != null) {
+				subFormData = value.get((rowNumber == null ? 0 : rowNumber - 1));
+				formData = subFormData;
+			}
 		}
 		fieldValue = formData.getFieldValue(controlNameParts[controlNameParts.length-1]);
 		

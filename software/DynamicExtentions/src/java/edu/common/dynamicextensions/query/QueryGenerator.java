@@ -5,6 +5,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.CurrentDateNode;
@@ -320,7 +321,12 @@ public class QueryGenerator {
     }
         
     private String getFieldNodeSql(FieldNode field) {
-    	return field.getTabAlias() + "." + field.getCtrl().getDbColumnName();
+    	String column = field.getCtrl().getDbColumnName();
+    	if (field.getCtrl() instanceof FileUploadControl) {
+    		column += "_NAME";
+    	}
+    	
+    	return field.getTabAlias() + "." + column;
     }
     
     private String getLiteralValueNodeSql(LiteralValueNode value, DataType coercionType) {

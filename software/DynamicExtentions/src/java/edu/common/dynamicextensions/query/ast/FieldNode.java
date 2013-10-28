@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 
 public class FieldNode extends ExpressionNode {
 	private Control ctrl;
@@ -48,7 +49,12 @@ public class FieldNode extends ExpressionNode {
 
 	@Override
 	public DataType getType() {
-		return ctrl != null ? ctrl.getDataType() : null;
+		DataType type = ctrl != null ? ctrl.getDataType() : null;
+		if (ctrl instanceof FileUploadControl) {
+			type = DataType.STRING;
+		}
+		
+		return type;
 	}
 
 	@Override

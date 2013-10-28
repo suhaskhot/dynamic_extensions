@@ -12,6 +12,7 @@ import org.apache.commons.lang.WordUtils;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
@@ -114,8 +115,8 @@ public class SasProgramGenerator {
 			DataType type = null;
 			if (column.getExpression() instanceof FieldNode) {
 				ctrl = ((FieldNode)column.getExpression()).getCtrl();
-				varName = getUniqueName(varCountMap, formShortName + "_" + ctrl.getName());
-				type = ctrl.getDataType();
+				varName = getUniqueName(varCountMap, formShortName + "_" + ctrl.getUserDefinedName());
+				type = (ctrl instanceof FileUploadControl) ? DataType.STRING : ctrl.getDataType();
 			} else if (column.getExpression() instanceof LiteralValueNode) {
 				varName = captions[captions.length - 1];
 				type = column.getExpression().getType();

@@ -1099,7 +1099,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 
 			if (lastRow < control.getSequenceNumber()) {
 				//Do not add row close tag before first row.
-				if (lastControl != null) {
+				if (lastControl != null && !(lastControl instanceof SubFormControl && generateSubformHTML == false)) {
 					rowHTML.append(CLOSE_ROW_HTML);
 				}
 

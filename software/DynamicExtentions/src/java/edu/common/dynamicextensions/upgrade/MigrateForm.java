@@ -670,12 +670,14 @@ public class MigrateForm {
 	private RadioButton getNewRadioButton(RadioButtonInterface oldCtrl) {
 		RadioButton radioButton = new RadioButton();
 		setSelectProps(radioButton, oldCtrl);
+		radioButton.setOptionsPerRow(getOptionsPerRow(oldCtrl));
 		return radioButton;
 	}
 	
 	private MultiSelectCheckBox getNewMultiSelectCheckBox(MultiSelectCheckBoxInterface oldCtrl) {
 		MultiSelectCheckBox multiSelectCb = new MultiSelectCheckBox();
 		setSelectProps(multiSelectCb, oldCtrl);
+		multiSelectCb.setOptionsPerRow(getOptionsPerRow(oldCtrl));
 		return multiSelectCb;
 	}
 	
@@ -1109,6 +1111,30 @@ public class MigrateForm {
 		if (rule != null) {
 			newCtrl.addValidationRule("characterSet", null);
 		}		
+	}
+	
+	private int getOptionsPerRow(ControlInterface oldCtrl) {
+		BaseAbstractAttributeInterface battr = null;
+		if (oldCtrl != null) {
+			battr = oldCtrl.getBaseAbstractAttribute();
+		}
+		
+		String column = null;
+		if (battr != null) {
+			column = battr.getTaggedValue("column");
+		}
+		
+		int optionsPerRow = 3;
+		try {
+			if (column != null) {
+				optionsPerRow = Integer.parseInt(column);
+			}				
+		} catch (Exception e) {
+			optionsPerRow = 3;
+			logger.info("Parsing of string to integer failed for optionsPerRow", e);
+		}
+		
+		return optionsPerRow;
 	}
 		
 	/////////////////////////////////////////////////////////////////////////////////////////

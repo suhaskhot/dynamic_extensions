@@ -445,7 +445,7 @@ var Utility = {
 	checkNameForCorrectness : function(name) {
 		var isCorrect = true;
 		var charactersNotAllowed = [ "[", "+", "-", "/", "*", "(", ")", "{",
-				"}", "%", "]" ];
+				"}", "%", "]", "." ];
 		for ( var cntr = 0; cntr < charactersNotAllowed.length; cntr++) {
 			if (name.indexOf(charactersNotAllowed[cntr]) >= 0) {
 				isCorrect = false;

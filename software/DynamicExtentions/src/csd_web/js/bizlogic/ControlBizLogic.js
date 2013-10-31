@@ -278,6 +278,15 @@ var ControlBizLogic = {
 			return null;
 	},
 
+	getUDNFromControlName : function(controlName) {
+
+		if (controlName != undefined && controlName != null)
+			return ControlBizLogic.getControlFromControlName(controlName).get(
+					'userDefinedName');
+		else
+			return null;
+	},
+
 	getControlTypeFromControlName : function(controlName) {
 
 		if (controlName != undefined && controlName != null)
@@ -351,7 +360,8 @@ var ControlBizLogic = {
 						var id = ControlBizLogic.createTreeNode(selectedNodeId,
 								name, controlName, type);
 						model.set({
-							formTreeNodeId : id
+							formTreeNodeId : id,
+							xPos : GlobalMemory.nodeCounter
 						});
 					}
 					Main.formView.getFormModel().editControl(
@@ -547,7 +557,11 @@ var ControlBizLogic = {
 
 		// Populate pv grid
 		// reset the pv counter
+		ControlBizLogic.populatePvViewForControl(fieldModel);
 
+	},
+
+	populatePvViewForControl : function(fieldModel) {
 		switch (fieldModel.get('type')) {
 		case "radioButton":
 
@@ -654,11 +668,13 @@ var ControlBizLogic = {
 	 */
 
 	csdControlsTabSelectHandler : function(id) {
-		if(id != "designMode"){DesignModeBizLogic.populateControlPositions();}
+		if (id != "designMode") {
+			DesignModeBizLogic.populateControlPositions();
+		}
 		if (id == "designMode") {
 			DesignModeBizLogic.loadMatrixWithControls(Main.formView
-					.getFormModel().get('controlObjectCollection'), Main.formView
-					.getFormModel().get('controlsOrder'));
+					.getFormModel().get('controlObjectCollection'),
+					Main.formView.getFormModel().get('controlsOrder'));
 			DesignModeBizLogic.populateLayoutGrid();
 			/*
 			 * var controlData = {}; var controlOrder = new Array();
@@ -679,7 +695,7 @@ var ControlBizLogic = {
 		}
 
 		else if (id == "advancedControlPropertiesTab") {
-
+			GlobalMemory.skipRuleId = null;
 			Main.advancedControlsView.clearMessage();
 			Main.formView.loadModelInSession();
 			AdvancedControlPropertiesBizLogic.refreshListsWithControls();
@@ -850,7 +866,9 @@ var ControlBizLogic = {
 		Main.currentFieldView.destroy();
 		Main.currentFieldView = ControlBizLogic.changeControl(currentModel, $(
 				"#newControlType").val());
-		ControlBizLogic.populateViewWithControl(currentModel);
+		// ControlBizLogic.populateViewWithControl(currentModel);
+		ControlBizLogic.populatePvViewForControl(Main.currentFieldView
+				.getModel());
 
 		// edit the control if it has
 		// been already added

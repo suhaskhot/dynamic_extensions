@@ -52,6 +52,8 @@ var DesignModeBizLogic = {
 				for ( var columnCounter = 0; columnCounter < matrixRow.length; columnCounter++) {
 
 					var controlName = matrixRow[columnCounter];
+					var controlUDN = ControlBizLogic
+							.getUDNFromControlName(controlName);
 
 					if (controlName != undefined) {
 						// add column
@@ -66,7 +68,9 @@ var DesignModeBizLogic = {
 						// put control in grid
 
 						gridObject.cellByIndex(gridRowNum, gridColumnNum)
-								.setValue(controlName);
+								.setValue(controlUDN);
+						gridObject.cellByIndex(gridRowNum, gridColumnNum)
+								.setAttribute("name", controlName);
 						gridColumnNum++;
 					}
 				}
@@ -76,23 +80,41 @@ var DesignModeBizLogic = {
 
 	},
 
-	reArrangeRows : function(start, end, bufferValue, columnNum, up) {
+	reArrangeRows : function(start, end, bufferValue, nameBufferValue,
+			columnNum, up) {
 		var gridObject = Main.designModeViewPointer.getGridObject();
+
 		var buffer = bufferValue;
 		var buffer1 = "";
+
+		var nameBuffer = nameBufferValue;
+		var nameBuffer1 = "";
+
 		if (up) {
 			for ( var cntr = start; cntr >= end; cntr--) {
 
 				buffer1 = gridObject.cellByIndex(cntr, columnNum).getValue();
+				nameBuffer1 = gridObject.cellByIndex(cntr, columnNum)
+						.getAttribute("name");
+
 				gridObject.cellByIndex(cntr, columnNum).setValue(buffer);
+				gridObject.cellByIndex(cntr, columnNum).setAttribute("name",
+						nameBuffer);
+
 				buffer = buffer1;
+				nameBuffer = nameBuffer1;
 			}
 		} else {
 			for ( var cntr = start; cntr <= end; cntr++) {
 
 				buffer1 = gridObject.cellByIndex(cntr, columnNum).getValue();
+				nameBuffer1 = gridObject.cellByIndex(cntr, columnNum).getAttribute("name");
+				
 				gridObject.cellByIndex(cntr, columnNum).setValue(buffer);
+				gridObject.cellByIndex(cntr, columnNum).setAttribute("name", nameBuffer);
+				
 				buffer = buffer1;
+				nameBuffer = nameBuffer1;
 			}
 		}
 	},
@@ -109,7 +131,7 @@ var DesignModeBizLogic = {
 			for ( var columnCounter = 0; columnCounter < numberOfColumns; columnCounter++) {
 
 				var controlName = gridObject.cellByIndex(rowCounter,
-						columnCounter).getValue();
+						columnCounter).getAttribute("name");
 				var control = Main.formView.getFormModel().get(
 						'controlObjectCollection')[controlName];
 

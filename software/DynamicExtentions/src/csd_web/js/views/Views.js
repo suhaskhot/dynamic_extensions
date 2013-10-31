@@ -92,6 +92,11 @@ var Views = {
 										wait : true,
 										success : function(model, response) {
 											FormBizLogic.loadPreview();
+											$("#skipRulesTable tr:gt(0)")
+													.remove();
+											AdvancedControlPropertiesBizLogic
+													.loadSkipRules(Main.formView
+															.getFormModel());
 										},
 										error : function(model, response) {
 											$("#formWaitingImage").hide();
@@ -118,6 +123,11 @@ var Views = {
 										wait : true,
 										success : function(model, response) {
 											$("#formWaitingImage").hide();
+											$("#skipRulesTable tr:gt(0)")
+													.remove();
+											AdvancedControlPropertiesBizLogic
+													.loadSkipRules(Main.formView
+															.getFormModel());
 										},
 										error : function(model, response) {
 											$("#formWaitingImage").hide();
@@ -131,10 +141,9 @@ var Views = {
 				},
 
 				populateControlsInForm : function() {
-					
+
 					DesignModeBizLogic.populateControlPositions();
-					
-					
+
 					this.model.set({
 						controlCollection : new Array()
 					});
@@ -379,7 +388,7 @@ var Views = {
 					if (!ControlBizLogic.validateUserDefinedName(newModel)) {
 						validationMessages.push({
 							name : 'userDefinedName',
-							message : 'Attribute name should be unique.'
+							message : 'Attribute name is invalid.'
 						});
 					}
 
@@ -1148,6 +1157,13 @@ var Views = {
 							AdvancedControlPropertiesBizLogic
 									.populatePvSelectBoxWithControlNames(
 											'defaultPv', control);
+							// populate "none" as default
+							$("#defaultPv").append($("<option/>", {
+								value : "SELECT_VAL",
+								text : "",
+								title : ""
+							}));
+							$('#defaultPv').val("SELECT_VAL");
 
 							$("#subsetPvs").trigger("liszt:updated");
 
@@ -1267,6 +1283,10 @@ var Views = {
 					var pvSubSet = $('#subsetPvs').val();
 					var defaultPv = $('#defaultPv').val();
 
+					if (defaultPv == "SELECT_VAL") {
+						defaultPv = "";
+					}
+
 					// validate
 
 					var skipRule = this.generateSkipRuleFromData(
@@ -1274,12 +1294,28 @@ var Views = {
 							controllingConditon, controllingValues, action,
 							defaultPv, pvSubSet, pvSubsetFile, allAny);
 					var validationMessages = this.validateSkipRule(skipRule);
-
+					var currentSkipRuleId = GlobalMemory.skipRulesCounter;
 					if (validationMessages.length == 0) {
-						this.addSkipRuleToTable(skipRule,
-								GlobalMemory.skipRulesCounter);
+						if (GlobalMemory.skipRuleId == null) {
+							// add
+							this.addSkipRuleToTable(skipRule,
+									GlobalMemory.skipRulesCounter);
+						} else {
+							// edit
+							this.addSkipRuleToTable(skipRule,
+									GlobalMemory.skipRuleId);
+							currentSkipRuleId = GlobalMemory.skipRuleId;
+						}
+
 						AdvancedControlPropertiesBizLogic
-								.setSkipRuleForAttirbute(controlName, skipRule);
+								.setSkipRuleForAttirbute(controlName, skipRule,
+										currentSkipRuleId);
+
+						// increment counter if skip rule was added.
+						if (GlobalMemory.skipRuleId == null) {
+							GlobalMemory.skipRulesCounter++;
+						}
+						//
 						// clear components
 						$("select option").prop("selected", false);
 						$("#pvs").trigger("liszt:updated");
@@ -1304,6 +1340,8 @@ var Views = {
 											+ "<br>");
 						}
 					}
+
+					GlobalMemory.skipRuleId = null;
 
 				},
 
@@ -1488,6 +1526,7 @@ var Views = {
 				},
 
 				addSkipRuleToTable : function(skipRule, id) {
+
 					var _tr_element_start = "<tr id = '" + id + "'>";
 					var _tr_element_end = "</tr>";
 					var _td_element_start = "<td class = 'text_normal ";
@@ -1531,7 +1570,7 @@ var Views = {
 					if (this.doesRowExist(id, "skipRulesTable")) {
 						// edit
 
-						var skipRuleRowRow = $('#formulaTable')[0].rows[controlName];
+						var skipRuleRowRow = $('#skipRulesTable')[0].rows[id];
 						skipRuleRowRow.cells[1].innerHTML = ControlBizLogic
 								.getCaptionFromControlName(skipRule.controllingAttributes);
 						skipRuleRowRow.cells[2].innerHTML = controlledAttribsString;

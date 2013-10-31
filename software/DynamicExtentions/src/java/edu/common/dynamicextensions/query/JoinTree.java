@@ -23,6 +23,8 @@ public class JoinTree
 	
 	private JoinTree parent;
 	
+	private boolean innerJoin;
+	
 	private Map<String, JoinTree> children = new HashMap<String, JoinTree>();	
 
     public JoinTree() {
@@ -103,7 +105,15 @@ public class JoinTree
         this.parent = parent;
     }
 
-    public Collection<JoinTree> getChildren() {
+    public boolean isInnerJoin() {
+		return innerJoin;
+	}
+
+	public void setInnerJoin(boolean innerJoin) {
+		this.innerJoin = innerJoin;
+	}
+
+	public Collection<JoinTree> getChildren() {
         return children.values();
     }
 

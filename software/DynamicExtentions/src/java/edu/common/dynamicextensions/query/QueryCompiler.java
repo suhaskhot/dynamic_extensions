@@ -103,9 +103,11 @@ public class QueryCompiler
     }
     
     private void createPath(int queryId, JoinTree from, JoinTree to, Path path) {
-        JoinTree current = createPath(queryId, from, path.getStartField());
+        JoinTree current = createPath(queryId, from, path);
+    	//JoinTree current = from;
+        
         for (PathLink link : path.getLinks()) {
-            if (link.getRefTab() == null && to.getParent() == null) {
+            if (link.getRefTab() == null && to.getParent() == null) {            	
                 to.setParent(current);
                 to.setForeignKey(link.getRefTabKey());
                 to.setParentKey(link.getKey());
@@ -114,19 +116,23 @@ public class QueryCompiler
                 break;
             }
             
-            JoinTree child = current.getChild(link.getRefTab());
+            JoinTree child = current.getChild(link.getRefTab());            
             if(child == null) {
                 child = new JoinTree(link.getRefTab(), "t" + tabCnt++);
                 child.setParent(current);
                 child.setForeignKey(link.getRefTabKey());
                 child.setParentKey(link.getKey());
-                current.addChild(child.getAlias(), child); // Earlier: name = child.getTab()
+                current.addChild(child.getAlias(), child); // Earlier: name = child.getTab()                
             }
-            current = child;            
+            current = child;
         }
+        
+        current.setInnerJoin(path.isWildCard());
     }
 
-    private JoinTree createPath(int queryId, JoinTree formTree, String startField) {
+    private JoinTree createPath(int queryId, JoinTree formTree, Path path) {
+    	String startField = path.getStartField();
+    	
         if (startField == null) {
             return formTree;
         }
@@ -135,9 +141,9 @@ public class QueryCompiler
         for (int i = 0; i < fieldNameParts.length; i++) {
             JoinTree child = formTree.getChild(queryId + "." + fieldNameParts[i]);
             if (child == null) {
-                child = formTree.getChild("0." + fieldNameParts[i]);
-            }
-            
+            	child = formTree.getChild("0." + fieldNameParts[i]);
+            }            	
+
             if (child == null) {
             	SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControlByUdn(fieldNameParts[i]);
                 JoinTree sfTree = getSubFormTree(formTree, sfCtrl);

@@ -56,6 +56,9 @@ public class PathConfig {
 
             this.paths = new HashMap<String, Path>();
             for (Path path : paths) {
+            	if (path.getEndForm() == null) {
+            		path.setWildCard(true);
+            	}
             	this.paths.put(getPathStr(path.getStartForm(), path.getEndForm()), path);
             }
         } catch(Exception e) {

@@ -11,6 +11,8 @@ public class Path
     
     private String startField;
     
+    private boolean wildCard;
+    
     private List<PathLink> links = new ArrayList<PathLink>();
 	
 
@@ -55,5 +57,13 @@ public class Path
 
     public void setLinks(List<PathLink> links) {
         this.links = links;
+    }
+    
+    public boolean isWildCard() {
+    	return wildCard;
+    }
+    
+    public void setWildCard(boolean wildCard) {
+    	this.wildCard = wildCard;
     }
 }

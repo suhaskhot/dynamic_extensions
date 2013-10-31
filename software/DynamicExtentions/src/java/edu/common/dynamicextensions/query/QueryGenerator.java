@@ -65,10 +65,11 @@ public class QueryGenerator {
         String fromClause  = buildFromClause(joinTree);
         String whereClause = buildWhereClause(queryExpr.getFilterExpr());
         
-        return new StringBuilder("select ").append(selectClause)
+        String sql = new StringBuilder("select ").append(selectClause)
         	.append(" from ").append(fromClause)
         	.append(" where ").append(whereClause)
-        	.toString();
+        	.toString();        
+        return !wideRowSupport ? sql : addOrderBy(sql, joinTree);
     }
 
     public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree, int start, int numRows) {
@@ -76,13 +77,12 @@ public class QueryGenerator {
 
         String result = null;
         if(start == 0 && numRows == 0) {
-            result = dataSql;
+            result = dataSql;          
         } else {
-            String orderedQuery = new StringBuilder(dataSql)
-            	.append(" order by ")
-            	.append(joinTree.getAlias()).append(".").append(joinTree.getForm().getPrimaryKey())
-            	.toString();
-            
+        	String orderedQuery = dataSql;
+        	if (!wideRowSupport) {
+        		orderedQuery = addOrderBy(dataSql, joinTree);
+        	}
             result = String.format(LIMIT_QUERY, orderedQuery, start + numRows, start);
         }
         
@@ -155,7 +155,7 @@ public class QueryGenerator {
         JoinTree parentTree = joinTree.getParent();
         
         if(parentTree != null) {
-            from.append(" left join "); // TODO: left join is required only for outer join AQL.  
+        	from.append(parentTree.isInnerJoin() ? " inner join " : " left join ");
         }        
         from.append(joinTree.getTab()).append(" ").append(joinTree.getAlias()).append(" ");
         
@@ -212,6 +212,13 @@ public class QueryGenerator {
         }
 
         return exprStr;
+    }
+    
+    private String addOrderBy(String dataSql, JoinTree joinTree) {
+        return new StringBuilder(dataSql)
+        	.append(" order by ")
+        	.append(joinTree.getAlias()).append(".").append(joinTree.getForm().getPrimaryKey())
+        	.toString();	
     }
 
     private String buildFilter(FilterNode filter) {

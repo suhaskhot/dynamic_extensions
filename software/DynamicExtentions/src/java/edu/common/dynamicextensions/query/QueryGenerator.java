@@ -155,7 +155,7 @@ public class QueryGenerator {
         JoinTree parentTree = joinTree.getParent();
         
         if(parentTree != null) {
-        	from.append(parentTree.isInnerJoin() ? " inner join " : " left join ");
+        	from.append(" left join ");
         }        
         from.append(joinTree.getTab()).append(" ").append(joinTree.getAlias()).append(" ");
         

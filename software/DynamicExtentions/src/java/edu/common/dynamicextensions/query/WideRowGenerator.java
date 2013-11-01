@@ -100,7 +100,6 @@ public class WideRowGenerator {
                 
                 lastRootId = rootId;
             }
-            
         } catch (Exception e) {
             throw new RuntimeException("Error processing result for generating wide rows", e);
         }
@@ -150,7 +149,7 @@ public class WideRowGenerator {
     }
     
     private void incrTabRowCnt(String tabAlias) {
-        Integer count = currAliasRowCountMap.get(tabAlias);
+    	Integer count = currAliasRowCountMap.get(tabAlias);
         if (count == null) {
             count = 0;
         }
@@ -300,58 +299,73 @@ public class WideRowGenerator {
             return childrenRows;
         }
         
-        public List<ResultColumn> flatten(Map<String, Integer> tabRowCount) {
-            List<ResultColumn> result = new ArrayList<ResultColumn>();
-            
+        public List<ResultColumn> flatten(Map<String, Integer> maxRowCntMap) {
+        	Map<String, List<WideRowNode>> tabRowsMap = new HashMap<String, List<WideRowNode>>();
+        	buildTabRowMap(tabRowsMap);
+        	
+        	List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
+        	for (Map.Entry<String, List<WideRowNode>> tabRows : tabRowsMap.entrySet()) {
+        		Integer maxCount = maxRowCntMap.get(tabRows.getKey());
+        		if (maxCount == null) {
+        			maxCount = 0;
+        		}
+        		
+        		int rowCount = 0;
+        		for (WideRowNode row : tabRows.getValue()) {
+        			resultColumns.addAll(row.columns);
+        			++rowCount;
+        		}
+        		
+        		WideRowNode firstRow = tabRows.getValue().get(0);
+        		for (int i = 0; i < (maxCount - rowCount); ++i) {
+        			for (ResultColumn column : firstRow.columns) {
+        				resultColumns.add(new ResultColumn(column.getExpression(), null));
+        			}
+        		}
+        	}
+        	
+        	return resultColumns;
+        }
+        
+        public void buildTabRowMap(Map<String, List<WideRowNode>> tabRowsMap) {
+        	List<WideRowNode> tabRows = tabRowsMap.get(alias);
+        	if (tabRows == null && this.columns != null) {
+        		tabRows = new ArrayList<WideRowNode>();
+        		tabRowsMap.put(alias, tabRows);
+        	}
+        	
+        	if (this.columns != null) {
+        		tabRows.add(this);
+        	}
+        	
+        	
+        	for (Map.Entry<String, Map<String, WideRowNode>> childTabRows : childrenRowsMap.entrySet()) {
+        		assert(!childTabRows.getValue().isEmpty());
+        		for (WideRowNode childTabRow : childTabRows.getValue().values()) {
+        			childTabRow.buildTabRowMap(tabRowsMap);
+        		}
+        	}        	
+        }
+                
+        public List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<ExpressionNode>> fieldsMap) {
+            List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
+                        
             if (columns != null) {
-                result.addAll(columns);
-            }
-            
-            for (Map.Entry<String, Map<String, WideRowNode>> childTabRows : childrenRowsMap.entrySet()) {
-                assert(!childTabRows.getValue().isEmpty());                 
-                Integer maxRowsCount = tabRowCount.get(childTabRows.getKey());
-                int currRowCount = 0;
-                List<ResultColumn> lastChildTabRowCols = null;
-                for (WideRowNode childTabRow : childTabRows.getValue().values()) {
-                    List<ResultColumn> childTabRowColumns = childTabRow.flatten(tabRowCount);
-                    result.addAll(childTabRowColumns);
-                    lastChildTabRowCols = childTabRowColumns;
-                    ++currRowCount;
-                }    
-                    
-                int remaining = maxRowsCount - currRowCount;
-                for (int i = 0; i < remaining; ++i) {
-                	for (ResultColumn lastRowCol : lastChildTabRowCols) {
-                		result.add(new ResultColumn(lastRowCol.getExpression(), null));
-                	}
+                List<ExpressionNode> fields = fieldsMap.get(alias);
+                Integer count = maxCount.get(alias);
+                count = count == null ? 1 : count;
+                for (int i = 0; i < count; ++i) {
+                    for (ExpressionNode field : fields) {
+                        resultColumns.add(new ResultColumn(field, 0));
+                    }                	
                 }
             }
             
-            return result;          
-        }
-        
-        public List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<ExpressionNode>> fieldsMap) {
-            List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
-            
-            if (columns != null) {
-                List<ExpressionNode> fields = fieldsMap.get(alias);
-                for (ExpressionNode field : fields) {
-                    resultColumns.add(new ResultColumn(field, 0));
-                }               
-            }
-            
             for (Map.Entry<String, Map<String, WideRowNode>> childTabRows : childrenRowsMap.entrySet()) {
-                assert(!childTabRows.getValue().isEmpty());                 
-                    
+                assert(!childTabRows.getValue().isEmpty());                                     
                 WideRowNode childTabRow = childTabRows.getValue().values().iterator().next();
                 List<ResultColumn> childTabRowColumns = childTabRow.getTabColumns(maxCount, fieldsMap);
-                    
-                Integer count = maxCount.get(childTabRows.getKey());
-                for (int i = 0; i < count; ++i) {
-                    for (ResultColumn column : childTabRowColumns) {
-                        resultColumns.add(new ResultColumn(column.getExpression(), i));
-                    }                   
-                }                   
+                resultColumns.addAll(childTabRowColumns);                    
             }
             
             return resultColumns;

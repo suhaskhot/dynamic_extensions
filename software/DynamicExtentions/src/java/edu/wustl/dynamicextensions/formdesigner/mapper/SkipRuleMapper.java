@@ -241,7 +241,7 @@ public class SkipRuleMapper {
 			if (controllingField instanceof SelectControl) {
 				skipRuleProperties.put("controllingPvs", controllingValueStr);
 			} else {
-				skipRuleProperties.put("controllingValues", controllingValueStr);
+				skipRuleProperties.put("controllingValues", controllingValueStr.get(0));
 			}
 			String action = "";
 			List<SkipAction> skipActions = skipRule.getActions();

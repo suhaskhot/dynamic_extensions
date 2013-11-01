@@ -7,8 +7,9 @@ var AdvancedControlPropertiesBizLogic = {
 	 */
 	setFormulaForCalculatedAttirbute : function(selectionName, isCalc,
 			calcFormula) {
-		
-		AdvancedControlPropertiesBizLogic.addFormulaToMemory(selectionName, calcFormula);
+
+		AdvancedControlPropertiesBizLogic.addFormulaToMemory(selectionName,
+				calcFormula);
 
 		var controlNames = selectionName.split(".");
 		if (controlNames.length == 1) {
@@ -30,11 +31,11 @@ var AdvancedControlPropertiesBizLogic = {
 		}
 	},
 
-	setSkipRuleForAttirbute : function(selectionName, skipLogic) {
+	setSkipRuleForAttirbute : function(selectionName, skipLogic, id) {
 
-		Main.formView.getFormModel().get('skipRules')[GlobalMemory.skipRulesCounter] = skipLogic;
+		delete Main.formView.getFormModel().get('skipRules')[id];
+		Main.formView.getFormModel().get('skipRules')[id] = skipLogic;
 
-		GlobalMemory.skipRulesCounter++;
 	},
 
 	deleteSkipRule : function(id) {
@@ -90,10 +91,11 @@ var AdvancedControlPropertiesBizLogic = {
 			}));
 		}
 	},
-	
+
 	populateSkipLogicControllingFieldWithControlNames : function(selectTagId) {
 		$("#" + selectTagId).empty();
-		var controls = ControlBizLogic.getListOfControlsForSkipRuleControllingField();
+		var controls = ControlBizLogic
+				.getListOfControlsForSkipRuleControllingField();
 		for ( var key = 0; key < controls.length; key++) {
 			var control = controls[key];
 			$("#" + selectTagId).append($("<option/>", {
@@ -103,8 +105,6 @@ var AdvancedControlPropertiesBizLogic = {
 			}));
 		}
 	},
-	
-	
 
 	populatePvSelectBoxWithControlNames : function(selectTagId, control) {
 		$("#" + selectTagId).empty();
@@ -122,7 +122,7 @@ var AdvancedControlPropertiesBizLogic = {
 	loadSkipRules : function(model) {
 		// clear the table;
 		// $("#skipRulesTable tr:gt(0)").remove();
-		if(Main.advancedControlsView == null){
+		if (Main.advancedControlsView == null) {
 			Main.advancedControlsView = new Views.AdvancedPropertiesTabView({
 				el : $('#advancedControlProperties'),
 				model : null

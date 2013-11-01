@@ -20,5 +20,6 @@ var GlobalMemory = {
 	skipRulesCounter : 1,
 	editForm : false,
 	globalLabelPosition : "LEFT",
-	formulae : {}
+	formulae : {},
+	skipRuleId : null
 }

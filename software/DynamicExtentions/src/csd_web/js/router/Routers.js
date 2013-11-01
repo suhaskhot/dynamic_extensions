@@ -112,6 +112,11 @@ var Routers = {
 							$("#subsetPvs").chosen();
 							$('#subsetPvs').val(skipRule.pvSubSet);
 							$('#defaultPv').val(skipRule.defaultPv);
+							if (skipRule.defaultPv == undefined
+									|| skipRule.defaultPv == ""
+									|| skipRule.defaultPv == " ") {
+								$('#defaultPv').val("SELECT_VAL");
+							}
 							$("#subsetPvs").trigger("liszt:updated");
 						} else {
 							$('#pvSubSetDiv').hide();
@@ -144,6 +149,8 @@ var Routers = {
 						Routers.formEventsRouterPointer.navigate('clear', {
 							trigger : true
 						});
+						// set the skip rule id which is being edited
+						GlobalMemory.skipRuleId = id;
 
 					}
 				}
@@ -392,7 +399,7 @@ var Routers = {
 										'controlContainer');
 
 								var displayLabel = subControl.get('caption')
-										+ " (" + subControl.get('controlName')
+										+ " (" + subControl.get('userDefinedName')
 										+ ")";
 								var subFrmCntrlNodeId = GlobalMemory.nodeCounter;
 								Main.treeView.getTree().insertNewChild(
@@ -517,6 +524,11 @@ var Routers = {
 								var sourceValue = sourceCell.getValue();
 								var targetValue = targetCell.getValue();
 
+								var sourceName = sourceCell
+										.getAttribute("name");
+								var targetName = targetCell
+										.getAttribute("name");
+
 								// first use case : the source and target rows
 								// have values, shift the cells present in the
 								// target's column
@@ -536,63 +548,34 @@ var Routers = {
 											var totalNumberOfRows = gridObject
 													.getRowsNum();
 
-											var buffer = targetValue;
-											var buffer1 = "";
-
 											targetCell.setValue(sourceValue);
+											targetCell.setAttribute("name",
+													sourceName);
 
 											sourceCell.setValue("");
+											sourceCell.setAttribute("name", "");
+
 											DesignModeBizLogic.reArrangeRows(
 													targetRowIndex + 1,
 													sourceRowIndex,
-													targetValue,
+													targetValue, targetName,
 													targetColumnIndex, false);
 
-											/*
-											 * for ( var cntr = targetRowIndex +
-											 * 1; cntr <= sourceRowIndex;
-											 * cntr++) {
-											 * 
-											 * buffer1 = gridObject
-											 * .cellByIndex(cntr,
-											 * targetColumnIndex) .getValue();
-											 * 
-											 * gridObject.cellByIndex(cntr,
-											 * targetColumnIndex)
-											 * .setValue(buffer);
-											 * 
-											 * buffer = buffer1; }
-											 */
 										} else if (sourceRowIndex < targetRowIndex) {
 											// case 3.2
-											var buffer = targetValue;
-											var buffer1 = "";
 
 											targetCell.setValue(sourceValue);
+											targetCell.setAttribute("name",
+													sourceName);
 
 											sourceCell.setValue("");
+											sourceCell.setAttribute("name", "");
 
 											DesignModeBizLogic.reArrangeRows(
 													targetRowIndex - 1,
 													sourceRowIndex,
-													targetValue,
+													targetValue, targetName,
 													targetColumnIndex, true);
-
-											/*
-											 * for ( var cntr = targetRowIndex -
-											 * 1; cntr >= sourceRowIndex;
-											 * cntr--) {
-											 * 
-											 * buffer1 = gridObject
-											 * .cellByIndex(cntr,
-											 * targetColumnIndex) .getValue();
-											 * 
-											 * gridObject.cellByIndex(cntr,
-											 * targetColumnIndex)
-											 * .setValue(buffer);
-											 * 
-											 * buffer = buffer1; }
-											 */
 
 										}
 									} else {
@@ -609,32 +592,9 @@ var Routers = {
 										DesignModeBizLogic.reArrangeRows(
 												targetRowIndex + 1,
 												totalNumberOfRows - 1,
-												targetValue, targetColumnIndex,
-												false);
+												targetValue, targetName,
+												targetColumnIndex, false);
 
-										/*
-										 * var totalNumberOfRows = gridObject
-										 * .getRowsNum();
-										 * 
-										 * var buffer = targetValue; var buffer1 =
-										 * "";
-										 * 
-										 * targetCell.setValue(sourceValue);
-										 * 
-										 * sourceCell.setValue("");
-										 * 
-										 * for ( var cntr = targetRowIndex + 1;
-										 * cntr < totalNumberOfRows; cntr++) {
-										 * 
-										 * buffer1 = gridObject.cellByIndex(
-										 * cntr, targetColumnIndex) .getValue();
-										 * 
-										 * gridObject.cellByIndex(cntr,
-										 * targetColumnIndex) .setValue(buffer);
-										 * 
-										 * buffer = buffer1;
-										 *  }
-										 */
 									}
 
 								}
@@ -642,11 +602,14 @@ var Routers = {
 								// source does
 								if (sourceValue != "" && targetValue == "") {
 									targetCell.setValue(sourceValue);
+									targetCell.setAttribute("name", sourceName);
+
 									sourceCell.setValue("");
+									sourceCell.setAttribute("name", "");
 								}
 
 							} catch (e) {
-								alert(e);
+								alert("Error moving control.");
 							}
 						});
 	},

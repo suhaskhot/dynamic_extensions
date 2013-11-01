@@ -283,6 +283,10 @@ var Routers = {
 				},
 
 				loadFormSuccessHandler : function(model, response) {
+					var formId = model.get('id');
+					if (formId != undefined && formId != null) {
+						GlobalMemory.editForm = true;
+					}
 					Routers.formEventsRouterPointer.updateUI(model);
 					Routers.formEventsRouterPointer.loadFormulae(Main.formView
 							.getFormModel(), "", "");
@@ -399,7 +403,8 @@ var Routers = {
 										'controlContainer');
 
 								var displayLabel = subControl.get('caption')
-										+ " (" + subControl.get('userDefinedName')
+										+ " ("
+										+ subControl.get('userDefinedName')
 										+ ")";
 								var subFrmCntrlNodeId = GlobalMemory.nodeCounter;
 								Main.treeView.getTree().insertNewChild(

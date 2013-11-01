@@ -59,12 +59,19 @@ public class ContainerFacade {
 	 */
 	public static ContainerFacade loadContainer(Long id, UserContext userContext, boolean edit) {
 		Container newContainer = Container.getContainer(id);
+		if (newContainer.getCreatedBy().equals(userContext.getUserId())) {
+			edit = true;
+		}
 		if (!edit) {
 			Container containerReplica = newContainer.getReplica();
 			newContainer = containerReplica;
 		}
 		containerMapper.setRootContainer(newContainer);
 		return new ContainerFacade(newContainer, userContext);
+	}
+
+	public Long getCreatedBy() {
+		return container.getCreatedBy();
 	}
 
 	/**

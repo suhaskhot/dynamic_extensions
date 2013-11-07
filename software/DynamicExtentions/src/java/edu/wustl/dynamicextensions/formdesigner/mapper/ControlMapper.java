@@ -221,6 +221,8 @@ public class ControlMapper {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.TEXT_AREA);
 			getCommonProperties(controlProps, control);
+			getTextFieldProperties(controlProps, (TextField) control);
+			controlProps.setProperty("noOfRows", ((TextArea) control).getNoOfRows());
 			return controlProps;
 		}
 	}

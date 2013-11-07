@@ -132,8 +132,10 @@ public class Form {
 
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, container);
 			Properties containerProps = container.getProperties();
-			if (container.getCreatedBy().equals(userData.getUserId())) {
-				edit = true;
+			if (container.getCreatedBy() != null) {
+				if (container.getCreatedBy().equals(userData.getUserId())) {
+					edit = true;
+				}
 			}
 			if (edit) {
 				containerProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);

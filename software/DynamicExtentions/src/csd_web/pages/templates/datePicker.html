@@ -7,7 +7,20 @@
 			<input type = 'text' id = 'controlCaption' class = 'textBox' style = "width:99%" value = "{{caption}}">
 		</div>
 	</div>
-	
+	<div class = "propertiesContainer">
+		<div class = "propertiesCheckBoxLabelContainer" align = right >
+			<label class = 'text_normal'>HTML formatted label</label>
+		</div>
+		<div class = "propertiesCheckBoxContainer" align = left >
+			<input id = 'isHTMLLabel' type = 'checkbox'>			
+		</div>
+		<div class = "propertiesCheckBoxLabelContainer" align = right >
+			&nbsp;
+		</div>
+		<div class = "propertiesCheckBoxContainer" align = left >
+			&nbsp;
+		</div>	
+	</div>
 	<div class = "propertiesContainer">
 			<div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
 				<label class = 'text_normal'>Tooltip</label>
@@ -23,7 +36,7 @@
 		</div>	
 		<div class = "propertiesTextBoxContainer" align = right>
 			<label class = 'text_normal'>Format</label>
-			<select id = "format" class = 'textBoxSmall'>
+			<select id = "format" class = 'textDropDown'>
 				  <option value="DATE">Date Only</option>
 				  <option value="DATE AND TIME">Date and Time</option>
 				  <option value="MONTH AND YEAR">Month and Year</option>

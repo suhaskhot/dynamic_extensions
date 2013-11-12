@@ -34,11 +34,16 @@ public abstract class DefaultControlMapper {
 			control.setId(id);
 		}
 
+		Boolean isHTMLLabel = controlProps.getBoolean("isHTMLLabel");
 		String controlCaption = controlProps.getString(CSDConstants.CONTROL_CAPTION);
 		if (controlCaption != null) {
-			control.setCaption(controlCaption);
+			if (isHTMLLabel) {
+				control.setCustomLabel(controlCaption);
+			} else {
+				control.setCaption(controlCaption);
+			}
 		}
-		
+
 		String userDefinedName = controlProps.getString("userDefinedName");
 		if (controlCaption != null) {
 			control.setUserDefinedName(userDefinedName);
@@ -124,7 +129,17 @@ public abstract class DefaultControlMapper {
 	 * @param control
 	 */
 	protected void getCommonProperties(Properties controlProps, Control control) {
-		controlProps.setProperty(CSDConstants.CONTROL_CAPTION, control.getCaption());
+
+		String caption = "";
+		Boolean isHTMLLabel = false;
+		if (control.getCustomLabel() == null) {
+			caption = control.getCaption();
+		} else {
+			isHTMLLabel = true;
+			caption = control.getCustomLabel();
+		}
+		controlProps.setProperty("isHTMLLabel", isHTMLLabel);
+		controlProps.setProperty(CSDConstants.CONTROL_CAPTION, caption);
 		controlProps.setProperty(CSDConstants.CONTROL_NAME, control.getName());
 		controlProps.setProperty("id", control.getId());
 		controlProps.setProperty("isPHI", control.isPhi());

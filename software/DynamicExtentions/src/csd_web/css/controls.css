@@ -1,4 +1,4 @@
-.textBox,.textBoxSmall,.textBoxTiny {
+.textBox,.textBoxSmall,.textBoxTiny,.textDropDown {
 	font-size: 12px;
 	padding: 7px;
 	border: 1px solid #c0c0c0;
@@ -8,6 +8,10 @@
 
 .textBoxSmall{
 	width: 48%;
+}
+
+.textDropDown{
+	width: 52%;
 }
 
 .textBoxTiny{

@@ -495,6 +495,7 @@ var Views = {
 								dataType : $('#dataType').val(),
 								format : $('#format').val(),
 								isPHI : $('#isPHI').is(":checked"),
+								isHTMLLabel : $('#isHTMLLabel').is(":checked"),
 								isMandatory : $('#isMandatory').is(":checked"),
 								isAutoCalculate : $('#autoCalculate').is(
 										":checked"),
@@ -552,6 +553,7 @@ var Views = {
 								format : $('#format').val(),
 								isPHI : $('#isPHI').is(":checked"),
 								isMandatory : $('#isMandatory').is(":checked"),
+								isHTMLLabel : $('#isHTMLLabel').is(":checked"),
 								isAutoCalculate : $('#autoCalculate').is(
 										":checked"),
 								isChecked : $('#isChecked').is(":checked"),
@@ -639,11 +641,14 @@ var Views = {
 					$("#messagesDiv").html("");
 					$("#messagesDiv").removeClass('success');
 					$("#messagesDiv").removeClass('error');
+					$('#isHTMLLabel').prop('checked',
+							this.model.get('isHTMLLabel'));
 					$('#isPHI').prop('checked', this.model.get('isPHI'));
 					$('#isMandatory').prop('checked',
 							this.model.get('isMandatory'));
 					$('#autoCalculate').prop('checked',
 							this.model.get('isAutoCalculate'));
+					
 
 					// data type
 					$("#dataType").val(this.model.get('dataType')).prop(

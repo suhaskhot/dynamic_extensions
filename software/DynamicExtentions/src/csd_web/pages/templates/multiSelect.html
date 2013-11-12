@@ -7,6 +7,20 @@
 			<input type = 'text' id = 'controlCaption' class = 'textBox' style = "width:99%" value = "{{caption}}">
 		</div>
 	</div>
+	<div class = "propertiesContainer">
+		<div class = "propertiesCheckBoxLabelContainer" align = right >
+			<label class = 'text_normal'>HTML formatted label</label>
+		</div>
+		<div class = "propertiesCheckBoxContainer" align = left >
+			<input id = 'isHTMLLabel' type = 'checkbox'>			
+		</div>
+		<div class = "propertiesCheckBoxLabelContainer" align = right >
+			&nbsp;
+		</div>
+		<div class = "propertiesCheckBoxContainer" align = left >
+			&nbsp;
+		</div>	
+	</div>
 <div class = "propertiesContainer">
 	<div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
 		<label class = 'text_normal'>Tooltip</label>
@@ -22,7 +36,7 @@
 	</div>
 	<div class = "propertiesTextBoxContainer" align = "right">
 	<label class = 'text_normal'>Data Type</label>
-	<select id = "dataType" class = 'textBoxSmall'>
+	<select id = "dataType" class = 'textDropDown'>
 		  <option value="STRING">String</option>
 		  <option value="INTEGER">Integer</option>
 		  <option value="FLOAT">Float</option>
@@ -49,7 +63,7 @@
 <div class = "propertiesContainer">
 	<div class = "propertiesTextBoxContainer" align = "right">
 	<label class = 'text_normal'>Sorting Order</label>
-	<select id = "pvOrder" class = 'textBoxSmall'>
+	<select id = "pvOrder" class = 'textDropDown'>
 		  <option value="NONE">Unsorted</option>
 		  <option value="ASC">Ascending</option>
 		  <option value="DESC">Descending</option>	 

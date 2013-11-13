@@ -1,6 +1,5 @@
 <?xml version ="1.0"?>
 <project name="DynamicExtensions" default="compile">
-
 	<!--define require dir and Properties -->
 	<property file="src/conf/DynamicExtensions.properties" />
 	<property file="src/conf/db.properties" />

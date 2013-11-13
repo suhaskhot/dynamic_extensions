@@ -284,12 +284,16 @@ public class MigrateForm {
 	private FormMigrationCtxt getNewFormDefinition0(ContainerInterface oldForm) 
 	throws Exception {
 		if (oldForm.getAbstractEntity() instanceof EntityInterface) {
-			logger.warn("Container " + oldForm.getCaption() + " point to entity. Skipping migration!");
+			logger.warn("Container " + oldForm.getCaption() + " points to entity. Skipping migration!");
 			return null;
 		}
+				
+		CategoryEntityInterface catEntity = (CategoryEntityInterface)oldForm.getAbstractEntity();
+		CategoryInterface category = catEntity.getCategory();
+		String categoryName = (category != null) ? category.getName() : null;
 		
 		Container newForm = new Container();
-		newForm.setCaption(oldForm.getCaption());
+		newForm.setCaption(categoryName != null ? categoryName : oldForm.getCaption());
 		newForm.setName(getEntityName(oldForm.getAbstractEntity()));
 		
 		int seqOffset = 0;

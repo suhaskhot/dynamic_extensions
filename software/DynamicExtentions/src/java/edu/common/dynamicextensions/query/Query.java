@@ -23,6 +23,8 @@ public class Query {
     private boolean ic;
     
     private String dateFormat;
+    
+    private boolean vcEnabled;
         
     public static Query createQuery() {
         return new Query();
@@ -45,6 +47,11 @@ public class Query {
     	this.dateFormat = dateFormat;
     	return this;
     }
+    
+    public Query enableVersionedForms(boolean vcEnabled) {
+    	this.vcEnabled = vcEnabled;
+    	return this;
+    }
   
     public void compile(String rootFormName, String query) {
         compile(rootFormName, query, null);
@@ -52,7 +59,7 @@ public class Query {
     
     public void compile(String rootFormName, String query, String restriction) {
         QueryCompiler compiler = new QueryCompiler(rootFormName, query, restriction);
-        compiler.compile();
+        compiler.enabledVersionedForms(vcEnabled).compile();
         queryExpr     = compiler.getQueryExpr();
         queryJoinTree = compiler.getQueryJoinTree();        
     }

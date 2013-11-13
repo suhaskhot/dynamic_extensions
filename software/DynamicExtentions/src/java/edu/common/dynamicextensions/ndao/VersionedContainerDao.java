@@ -14,6 +14,20 @@ public class VersionedContainerDao {
 		this.jdbcDao = jdbcDao;
 	}
 	
+	public String getFormName(Long formId) {
+		ResultSet rs = null;
+		
+		try {
+			List<Long> params = Collections.singletonList(formId);
+			rs = jdbcDao.getResultSet(GET_FORM_NAME_BY_FORM_ID_SQL, params);
+			return rs.next() ? rs.getString("FORM_NAME") : null;
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining form name for id: " + formId, e);
+		} finally {
+			jdbcDao.close(rs);
+		}
+	}
+	
 	public Long getFormId(String formName) {
 		ResultSet rs = null;
 		
@@ -189,6 +203,9 @@ public class VersionedContainerDao {
 	
 	private final static String GET_FORM_ID_BY_FORM_NAME_SQL =
 			"SELECT IDENTIFIER FROM DYEXTN_FORMS WHERE FORM_NAME = ? ";
+	
+	private final static String GET_FORM_NAME_BY_FORM_ID_SQL =
+			"SELECT FORM_NAME FROM DYEXTN_FORMS WHERE IDENTIFIER = ?";
 	
 	private final static String GET_NEXT_ID_SQL = 
 			"SELECT DYEXTN_FORMS_SEQ.NEXTVAL FROM DUAL";

@@ -11,6 +11,8 @@ import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
+import edu.common.dynamicextensions.napi.VersionedContainer;
+import edu.common.dynamicextensions.napi.impl.VersionedContainerImpl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
@@ -38,6 +40,8 @@ public class QueryCompiler
     
     private int numQueries;
     
+    private boolean vcEnabled;
+    
     public QueryCompiler(String rootFormName, String query) {
         this(rootFormName, query, null);
     }
@@ -46,6 +50,11 @@ public class QueryCompiler
         this.rootFormName = rootFormName;
         this.query = query;
         this.restriction = restriction;
+    }
+    
+    public QueryCompiler enabledVersionedForms(boolean vcEnabled) {
+    	this.vcEnabled = vcEnabled;
+    	return this;
     }
     
     public void compile() {
@@ -79,8 +88,7 @@ public class QueryCompiler
         JoinTree rootTree = joinMap.get("0." + rootFormName);
         
         if (rootTree == null) {
-            Container rootForm = Container.getContainer(rootFormName);
-            //Container rootForm = QueryTester.getContainer(rootFormName);
+            Container rootForm = getContainer(rootFormName);
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
         
@@ -88,11 +96,14 @@ public class QueryCompiler
             if (formTreeEntry.getKey().equals("0." + rootFormName)) {
                 continue;
             }
-            
+          
+            String formLookupName = formTreeEntry.getKey();            
             JoinTree childTree = formTreeEntry.getValue();
-            Path path = PathConfig.getInstance().getPath(rootFormName, childTree.getFormName());
+            
+            String dest = formLookupName.substring(formLookupName.indexOf(".") + 1); // Earlier childTree.getFormName();
+            Path path = PathConfig.getInstance().getPath(rootFormName, dest);
             if (path == null) {
-                throw new RuntimeException("No path between root form " + rootFormName + " and " + childTree.getFormName());
+                throw new RuntimeException("No path between root form " + rootFormName + " and " + dest);
             }
             
             int queryId = Integer.parseInt(formTreeEntry.getKey().split("\\.")[0]);
@@ -325,8 +336,7 @@ public class QueryCompiler
         
         Container form = null;        
         if (formTree == null) {
-            form = Container.getContainer(formName); 
-            //form = QueryTester.getContainer(formName);
+            form = getContainer(formName);
             if(form == null) {
                 throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formName);
             }
@@ -393,4 +403,21 @@ public class QueryCompiler
         field.setNodeCaptions(captions);
         return true;
     }    
+    
+    private Container getContainer(String name) {
+    	Container container = null;
+    	
+    	if (vcEnabled) {
+    		// When VC enabled, name refers to the versioned form name 
+    		// i.e. form name field of dyextn_forms table
+    		VersionedContainer vc = new VersionedContainerImpl();
+    		container = vc.getContainer(name);
+    	} else {
+    		// otherwise, name refers to container name
+    		// i.e. name field of dyextn_containers
+    		container = Container.getContainer(name);
+    	}
+    	
+    	return container;
+    }
 }

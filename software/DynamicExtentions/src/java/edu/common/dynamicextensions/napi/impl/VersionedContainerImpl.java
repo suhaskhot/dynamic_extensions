@@ -26,6 +26,22 @@ public class VersionedContainerImpl implements VersionedContainer {
 	}
 	
 	@Override
+	public String getFormName(Long formId) {
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
+			return vdao.getFormName(formId);								
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining form name: " + formId, e);
+		} finally {
+			if (this.jdbcDao == null && jdbcDao != null) {
+				jdbcDao.close();
+			}
+		}
+	}
+	
+	@Override
 	public Long getContainerId(Long formId) {
 		JdbcDao jdbcDao = null;
 		try {

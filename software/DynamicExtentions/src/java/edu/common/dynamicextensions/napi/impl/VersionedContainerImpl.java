@@ -12,11 +12,13 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.VersionedContainerInfo;
+import edu.common.dynamicextensions.napi.FormPublishHook;
 import edu.common.dynamicextensions.napi.VersionedContainer;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.VersionedContainerDao;
 import edu.common.dynamicextensions.nutility.ContainerChangeLog;
 import edu.common.dynamicextensions.nutility.ContainerUtility;
+import edu.common.dynamicextensions.nutility.FormPublishHookMgr;
 
 public class VersionedContainerImpl implements VersionedContainer {
 	private JdbcDao jdbcDao;
@@ -391,6 +393,9 @@ public class VersionedContainerImpl implements VersionedContainer {
 				Container publishedContainer = Container.getContainer(jdbcDao, publishedIds.get(i));
 				applyChangeAndSave(jdbcDao, usrCtx, publishedContainer, changeLog);
 			}	
+			
+			runPostHooks(usrCtx, formId);
+
 		} catch (Exception e) {
 			throw new RuntimeException("Error publishing container retrospectively", e);
 		}
@@ -433,8 +438,15 @@ public class VersionedContainerImpl implements VersionedContainer {
 		VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
 		vdao.insertVersionedContainerInfo(vc);
 		
+		runPostHooks(usrCtx, formId);
 	}
 	
+	private void runPostHooks(UserContext usrCtx, Long formId) {
+		for (FormPublishHook hook : FormPublishHookMgr.getInstance().getPostPublishHooks()) {
+			hook.process(usrCtx, formId);
+		}
+	}
+
 	
 	private String getFormName(String formName, Date activationDate) {
 		SimpleDateFormat sf = new SimpleDateFormat("MMddyyyy_HHmmss");

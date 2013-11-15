@@ -2,12 +2,17 @@
 package edu.common.dynamicextensions.ui.webui.taglib;
 
 import java.io.IOException;
+import java.util.Stack;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.ReadOnlyFormRenderer;
+import edu.common.dynamicextensions.ui.webui.util.CacheManager;
+import edu.common.dynamicextensions.util.global.DEConstants;
 
 public class DynamicUIGeneratorTagFromId extends TagSupport {
 
@@ -35,14 +40,18 @@ public class DynamicUIGeneratorTagFromId extends TagSupport {
 	public int doEndTag() throws JspException {
 		try {
 			final JspWriter out = pageContext.getOut();
-			ReadOnlyFormRenderer formRenderer = new ReadOnlyFormRenderer();
+			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+			Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request, DEConstants.FORM_DATA_STACK);
 
+			containerId = formDataStack.peek().getContainer().getId();
+			
+			ReadOnlyFormRenderer formRenderer = new ReadOnlyFormRenderer();
 			out.println(formRenderer.render(containerId, formRecordId));
+			
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 
 		return super.doEndTag();
 	}
-
 }

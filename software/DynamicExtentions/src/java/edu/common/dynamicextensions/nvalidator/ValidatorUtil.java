@@ -9,7 +9,6 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.ValidationRule;
 import edu.common.dynamicextensions.exception.DynamicExtensionsValidationException;
 import edu.common.dynamicextensions.napi.ControlValue;
-import edu.common.dynamicextensions.ui.util.ControlConfigurationsFactory;
 import edu.wustl.common.util.global.ApplicationProperties;
 
 public class ValidatorUtil {
@@ -34,7 +33,7 @@ public class ValidatorUtil {
 
 			try {
 				String ruleName = rule.getName();
-				RuleValidator validatorRule = ControlConfigurationsFactory.getInstance().getValidatorRule(ruleName);
+				RuleValidator validatorRule = null;//ControlConfigurationsFactory.getInstance().getValidatorRule(ruleName);
 				validatorRule.validate(controlValue, rule.getParams());
 			} catch (DynamicExtensionsValidationException e) {
 				String errorMessage = ApplicationProperties.getValue(e.getErrorCode(), e.getPlaceHolderList());

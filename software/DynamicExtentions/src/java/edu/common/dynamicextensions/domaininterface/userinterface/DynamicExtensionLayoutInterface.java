@@ -1,8 +1,0 @@
-package edu.common.dynamicextensions.domaininterface.userinterface;
-
-import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
-
-public interface DynamicExtensionLayoutInterface extends
-		DynamicExtensionBaseDomainObjectInterface {
-
-}

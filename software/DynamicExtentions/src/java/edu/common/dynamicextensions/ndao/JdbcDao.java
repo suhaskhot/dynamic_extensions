@@ -12,9 +12,6 @@ import java.util.Stack;
 
 import javax.transaction.Transaction;
 
-import edu.common.dynamicextensions.entitymanager.DynamicExtensionBaseQueryBuilder;
-import edu.common.dynamicextensions.entitymanager.QueryBuilderFactory;
-import edu.common.dynamicextensions.entitymanager.persister.IdGenerator;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.dao.JDBCDAO;
@@ -145,23 +142,27 @@ public class JdbcDao {
 	}
 	
 	public void executeDDL(String ddl) {
-		try {
-			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
-			List<String> queryList = new ArrayList<String>();
-			queryList.add(ddl.toString());
-			List<String> revQueryList = new ArrayList<String>();
-
-			Stack<String> rlbkQryStack =  new Stack<String>();
-			queryBuilder.executeQueries(queryList, revQueryList, rlbkQryStack);
-		} catch (DynamicExtensionsSystemException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Error executing DDL query :: "+ddl.toString());
-		} 
-//		DAOUtility.getInstance().executeDDL(appName, ddl);
+		// TODO: using spring jdbc dao
+		
+//		try {
+//			DynamicExtensionBaseQueryBuilder queryBuilder = QueryBuilderFactory.getQueryBuilder();
+//			List<String> queryList = new ArrayList<String>();
+//			queryList.add(ddl.toString());
+//			List<String> revQueryList = new ArrayList<String>();
+//
+//			Stack<String> rlbkQryStack =  new Stack<String>();
+//			queryBuilder.executeQueries(queryList, revQueryList, rlbkQryStack);
+//		} catch (DynamicExtensionsSystemException e) {
+//			e.printStackTrace();
+//			throw new RuntimeException("Error executing DDL query :: "+ddl.toString());
+//		} 
+////		DAOUtility.getInstance().executeDDL(appName, ddl);
 	}
 	
 	public Long getNextId(String tableName) {
-		return IdGenerator.getInstance().getNextId(tableName);
+		//return IdGenerator.getInstance().getNextId(tableName);
+		return null;
+		// TODO: Using spring jdbc dao
 	}
 	
 		

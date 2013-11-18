@@ -19,8 +19,6 @@ import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
-import edu.common.dynamicextensions.ui.util.Constants;
-import edu.common.dynamicextensions.ui.util.ControlsUtility;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.util.global.DEConstants;
 import edu.wustl.common.util.global.CommonServiceLocator;
@@ -89,7 +87,7 @@ public class DEComboDataRenderer {
 		Stack<FormData> formDataStack = (Stack<FormData>) CacheManager.getObjectFromCache(request,
 				DEConstants.FORM_DATA_STACK);
 		ControlValue controlValue = formDataStack.peek().getFieldValueByHTMLName(request.getParameter(CONTROL_NAME));
-		Date encounterDate = ControlsUtility.getFormattedDate(request.getParameter(Constants.ENCOUNTER_DATE));
+		Date encounterDate = null;//ControlsUtility.getFormattedDate(request.getParameter(Constants.ENCOUNTER_DATE));
 		SelectControl control = (SelectControl) controlValue.getControl();
 		List<PermissibleValue> permissibleValues = control.getPVList(encounterDate, controlValue);
 

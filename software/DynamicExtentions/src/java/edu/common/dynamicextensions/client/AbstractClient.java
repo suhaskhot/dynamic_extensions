@@ -131,59 +131,6 @@ public abstract class AbstractClient
 		HTTPSConnection.getInstance().processResponse(servletConnection);
 	}
 
-	/**
-	 * This method will read the names of the category files mentioned in the
-	 * file "categoryListFileName" given in the arguments & create a string of category file
-	 * names separated with the '!=!' token.
-	 * @param listCatFileName name of the file in which category files path are mentioned.
-	 * @return the string formed from category file names with'!=!' in between.
-	 * @throws DynamicExtensionsSystemException Exception.
-	 * @throws IOException Exception.
-	 */
-	protected String getCategoryFilenameString(String listCatFileName)
-			throws DynamicExtensionsSystemException, IOException
-	{
-		File objFile = new File(listCatFileName);
-		BufferedReader bufRdr = null;
-		StringBuffer catFileNameString = new StringBuffer();
-		if (objFile.exists())
-		{
-			try
-			{
-				bufRdr = new BufferedReader(new FileReader(objFile));
-				String line = bufRdr.readLine();
-				//read each line of text file
-				while (line != null)
-				{
-					catFileNameString.append(line.trim()).append(
-							CategoryCreatorConstants.CAT_FILE_NAME_SEPARATOR);
-					line = bufRdr.readLine();
-				}
-			}
-			catch (IOException e)
-			{
-				LOGGER.info("IO Exception :: Could not read from file" + listCatFileName);
-				LOGGER.info("IO Exception :: " + e.getMessage());
-				throw new DynamicExtensionsSystemException("Can not read from file "
-						+ listCatFileName, e);
-			}
-			finally
-			{
-				if (bufRdr != null)
-				{
-					bufRdr.close();
-				}
-			}
-		}
-		else
-		{
-			LOGGER.info("Category names file not found at " + listCatFileName);
-			throw new DynamicExtensionsSystemException("Category names file not found at "
-					+ listCatFileName);
-		}
-		return catFileNameString.toString();
-	}
-
 	public Map<String, Object> getParamaterObjectMap()
 	{
 		return paramaterObjectMap;

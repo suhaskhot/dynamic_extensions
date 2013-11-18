@@ -1,19 +1,13 @@
 
 package edu.common.dynamicextensions.domain;
 
-import edu.common.dynamicextensions.domaininterface.DynamicExtensionBaseDomainObjectInterface;
-import edu.wustl.common.actionForm.AbstractActionForm;
-import edu.wustl.common.actionForm.IValueObject;
 import edu.wustl.common.domain.AbstractDomainObject;
-import edu.wustl.common.exception.AssignDataException;
 
 /**
  * This is base domain object for all the dynamic extension domain object
  * @author Rahul Ner
  */
 public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObject
-		implements
-			DynamicExtensionBaseDomainObjectInterface
 {
 
 	/**
@@ -25,22 +19,6 @@ public abstract class DynamicExtensionBaseDomainObject extends AbstractDomainObj
 	 * Internally generated identifier.
 	 */
 	protected Long id;
-
-	/** 
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.AbstractActionForm)
-	 */
-	public void setAllValues(AbstractActionForm arg0) throws AssignDataException
-	{
-		// TODO Auto-generated constructor stub
-	}
-
-	/* (non-Javadoc)
-	 * @see edu.wustl.common.domain.AbstractDomainObject#setAllValues(edu.wustl.common.actionForm.IValueObject)
-	 */
-	public void setAllValues(IValueObject arg0) throws AssignDataException
-	{
-		// TODO Auto-generated constructor stub
-	}
 
 	/** 
 	 * @see edu.wustl.common.domain.AbstractDomainObject#setId(java.lang.Long)

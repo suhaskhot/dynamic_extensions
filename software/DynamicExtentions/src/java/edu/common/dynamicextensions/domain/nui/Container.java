@@ -33,7 +33,6 @@ import edu.common.dynamicextensions.nutility.ContainerParser;
 import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
-import edu.common.dynamicextensions.util.IdGeneratorUtil;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 
 public class Container extends DynamicExtensionBaseDomainObject {	
@@ -981,7 +980,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	private Long getUniqueId() {
-		return IdGeneratorUtil.getNextUniqeId();
+		//return IdGeneratorUtil.getNextUniqeId();
+		// TODO: Fix me
+		return null;
 	}
 	
 	private void getAllControls(Container container, List<Control> controls) {	

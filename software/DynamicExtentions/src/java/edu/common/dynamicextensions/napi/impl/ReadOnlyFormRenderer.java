@@ -94,8 +94,7 @@ public class ReadOnlyFormRenderer {
 		StringBuilder controlHTML = new StringBuilder();
 
 		if (control instanceof CheckBox) {
-			controlHTML.append(String.format(CHECKBOX_HTML,
-					DynamicExtensionsUtility.getCheckboxSelectionValue((String) controlValue.getValue())));
+			controlHTML.append(String.format(CHECKBOX_HTML, "hello")); 
 		} else if (control instanceof MultiSelectControl) {
 			for (String pv : (String[]) controlValue.getValue()) {
 				controlHTML.append(pv).append(BR);

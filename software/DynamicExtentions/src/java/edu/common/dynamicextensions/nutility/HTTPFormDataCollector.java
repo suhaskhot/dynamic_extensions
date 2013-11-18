@@ -105,17 +105,18 @@ public class HTTPFormDataCollector extends AbstractFormDataCollector {
 		if (value == null) {
 			value = request.getParameter(controlName);
 		}
-		value = DynamicExtensionsUtility.getEscapedStringValue(value);
+		//value = DynamicExtensionsUtility.getEscapedStringValue(value);
 		return value;
 	}
 
 	private String getValueForCheckbox(String value) {
-		if (DynamicExtensionsUtility.isCheckBoxChecked(value)) {
+		/*if (DynamicExtensionsUtility.isCheckBoxChecked(value)) {
 			value = DynamicExtensionsUtility.getValueForCheckBox(true);
 		} else {
 			value = DynamicExtensionsUtility.getValueForCheckBox(false);
 		}
-		return value;
+		return value;*/
+		return null;
 	}
 
 	/**

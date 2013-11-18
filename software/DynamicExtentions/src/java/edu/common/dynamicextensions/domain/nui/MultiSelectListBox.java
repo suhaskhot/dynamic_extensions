@@ -119,9 +119,4 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 		}
 		return isPVSelected;
 	}
-
-	@Override
-	protected String getMultiselectString() {
-		return "MULTIPLE";
-	}
 }

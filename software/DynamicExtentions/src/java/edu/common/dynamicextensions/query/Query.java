@@ -1,12 +1,14 @@
 package edu.common.dynamicextensions.query;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
@@ -68,30 +70,18 @@ public class Query {
         QueryGenerator gen = new QueryGenerator(wideRows, ic);
         String countSql = gen.getCountSql(queryExpr, queryJoinTree);
 
-        long count = -1L;
-        JdbcDao jdbcDao = null;
-        ResultSet rs = null;
+        long t1 = System.currentTimeMillis();            
+        JdbcDao jdbcDao = new JdbcDao();
+        long count = jdbcDao.getResultSet(countSql, null, new ResultExtractor<Long>() {
+        	@Override
+        	public Long extract(ResultSet rs) throws SQLException {
+        		return rs.next() ? rs.getLong(1) : -1L;
+        	}
+        });
         
-        try {
-            long t1 = System.currentTimeMillis();
-            
-            jdbcDao = new JdbcDao();
-            rs = jdbcDao.getResultSet(countSql, null);
-            if (rs.next()) {
-                count = rs.getLong(1);
-            }
-            
-            long t2 = System.currentTimeMillis();
-            logger.info("Count SQL: " + countSql + "; Query Exec Time: " + (t2 - t1));            
-            return count;
-        } catch(Exception e) {
-            throw new RuntimeException("Error executing count query: " + countSql, e);
-        } finally {
-            if (jdbcDao != null) {
-                jdbcDao.close(rs);
-                jdbcDao.close();
-            }
-        }
+        long t2 = System.currentTimeMillis();
+        logger.info("Count SQL: " + countSql + "; Query Exec Time: " + (t2 - t1));            
+        return count;
     }
 
     public QueryResultData getData() {
@@ -99,41 +89,33 @@ public class Query {
     }
 
     public QueryResultData getData(int start, int numRows) {
-        String dataSql = getDataSql(wideRows, start, numRows);
-
-        JdbcDao jdbcDao = null;
-        ResultSet rs = null;        
-        try {
-            long t1 = System.currentTimeMillis();
-            
-            jdbcDao = new JdbcDao();            
-            rs = jdbcDao.getResultSet(dataSql, null);
-            
-            long t2 = System.currentTimeMillis();
-            
-            QueryResultData resultData = null;
-            if (wideRows) {
-                resultData = getWideRowData(rs);
-                if (resultData == null) {
-                    // this will ensure at least the header columns are populated
-                    resultData = new QueryResultData(getResultColumns(queryExpr), dateFormat);
-                }
-            } else {
-                resultData = getQueryResultData(rs);
-            }
-            
-            long t3 = System.currentTimeMillis();
-            logger.info("Data SQL: " + dataSql + "; Query Exec Time: " + (t2 - t1) + "; Result Prep Time: " + (t3 - t2));
-            
-            return resultData;            
-        } catch(Exception e) {
-            throw new RuntimeException("Error executing data query: " + dataSql, e);
-        } finally {
-            if (jdbcDao != null) {
-                jdbcDao.close(rs);
-                jdbcDao.close();
-            }
-        }
+        final String dataSql = getDataSql(wideRows, start, numRows);
+        
+        JdbcDao jdbcDao = new JdbcDao();
+        
+        final long t1 = System.currentTimeMillis();
+        return jdbcDao.getResultSet(dataSql, null, new ResultExtractor<QueryResultData>() {
+        	@Override
+        	public QueryResultData extract(ResultSet rs)
+        	throws SQLException {
+        		long t2 = System.currentTimeMillis();
+        		
+        		QueryResultData resultData = null;
+        		if (wideRows) {
+        			resultData = getWideRowData(rs);
+        			if (resultData == null) {
+        				// this will ensure at least the header columns are populated
+        				resultData = new QueryResultData(getResultColumns(queryExpr), dateFormat);
+        			}
+        		} else {
+        			resultData = getQueryResultData(rs);
+        		}
+        		
+        		long t3 = System.currentTimeMillis();
+        		logger.info("Data SQL: " + dataSql + "; Query Exec Time: " + (t2 - t1) + "; Result Prep Time: " + (t3 - t2));
+        		return resultData;
+        	}
+        });
     }
         
     public String getDataSql() {
@@ -146,7 +128,7 @@ public class Query {
     }
 
     private QueryResultData getQueryResultData(ResultSet rs)
-    throws Exception {
+    throws SQLException {
         List<ResultColumn> columns = getResultColumns(queryExpr);
         int columnCount = columns.size();
         

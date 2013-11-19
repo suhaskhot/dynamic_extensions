@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import edu.common.dynamicextensions.napi.FormAuditManager;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.common.beans.SessionDataBean;
 
@@ -142,56 +144,57 @@ public class FormDataManagerImpl implements FormDataManager {
 
 	}
 	
-	private List<FormData> getFormData(JdbcDao jdbcDao, Container container, String identifyingColumn, Long identifier) 
+	private List<FormData> getFormData(final JdbcDao jdbcDao, final Container container, String identifyingColumn, Long identifier) 
 	throws Exception {
-		List<Control> simpleCtrls = new ArrayList<Control>();
-		List<Control> multiSelectCtrls = new ArrayList<Control>();
-		List<Control> subFormCtrls = new ArrayList<Control>();
+		final List<Control> simpleCtrls = new ArrayList<Control>();
+		final List<Control> multiSelectCtrls = new ArrayList<Control>();
+		final List<Control> subFormCtrls = new ArrayList<Control>();
 		
 		segregateControls(container, simpleCtrls, multiSelectCtrls, subFormCtrls);
-				
-		List<FormData> formsData = new ArrayList<FormData>();		
-		ResultSet rs = null;		
-		try {
-			String query = buildQuery(simpleCtrls, container.getDbTableName(), identifyingColumn);
-			rs = jdbcDao.getResultSet(query, Collections.singletonList(identifier));
-			
-			while (rs.next()) {
-				Long recordId = rs.getLong("IDENTIFIER");
-				FormData formData = new FormData(container);
-				formData.setRecordId(recordId);
-				
-				for (Control ctrl : simpleCtrls) {
-					ControlValue ctrlValue = null;
-
-					if (ctrl instanceof FileUploadControl) {
-						String fileName = rs.getString(ctrl.getDbColumnName() + "_NAME");
-						if (fileName != null) {
-							String type = rs.getString(ctrl.getDbColumnName() + "_TYPE");
-							ctrlValue = new ControlValue(ctrl, new FileControlValue(fileName, type, recordId));
-						} else {
-							ctrlValue = new ControlValue(ctrl, null);
-						}
-
-					} else {
-						String value = ctrl.toString(rs.getObject(ctrl.getDbColumnName()));
-						ctrlValue = new ControlValue(ctrl, value);
-					}
+								
+		String query = buildQuery(simpleCtrls, container.getDbTableName(), identifyingColumn);
+		List<FormData> formsData = jdbcDao.getResultSet(query, Collections.singletonList(identifier), new ResultExtractor<List<FormData>>() {
+			@Override
+			public List<FormData> extract(ResultSet rs) 
+			throws SQLException {
+				List<FormData> formsData = new ArrayList<FormData>();
 					
-					formData.addFieldValue(ctrlValue);
+				while (rs.next()) {
+					Long recordId = rs.getLong("IDENTIFIER");
+					FormData formData = new FormData(container);
+					formData.setRecordId(recordId);
+						
+					for (Control ctrl : simpleCtrls) {
+						ControlValue ctrlValue = null;
+
+						if (ctrl instanceof FileUploadControl) {
+							String fileName = rs.getString(ctrl.getDbColumnName() + "_NAME");
+							if (fileName != null) {
+								String type = rs.getString(ctrl.getDbColumnName() + "_TYPE");
+								ctrlValue = new ControlValue(ctrl, new FileControlValue(fileName, type, recordId));
+							} else {
+								ctrlValue = new ControlValue(ctrl, null);
+							}
+						} else {
+							String value = ctrl.toString(rs.getObject(ctrl.getDbColumnName()));
+							ctrlValue = new ControlValue(ctrl, value);
+						}
+							
+						formData.addFieldValue(ctrlValue);
+					}
+						
+					for (Control ctrl : multiSelectCtrls) {
+						List<String> msValues = getMultiSelectValues(jdbcDao, ctrl, recordId);
+						ControlValue ctrlValue = new ControlValue(ctrl, msValues.toArray(new String[0]));					
+						formData.addFieldValue(ctrlValue);					
+					}
+						
+					formsData.add(formData);
 				}
-				
-				for (Control ctrl : multiSelectCtrls) {
-					List<String> msValues = getMultiSelectValues(jdbcDao, ctrl, recordId);
-					ControlValue ctrlValue = new ControlValue(ctrl, msValues.toArray(new String[0]));					
-					formData.addFieldValue(ctrlValue);					
-				}
-				
-				formsData.add(formData);
+					
+				return formsData;
 			}
-		} finally {
-			jdbcDao.close(rs);
-		}
+		});
 		
 		for (FormData formData : formsData) {
 			for (Control ctrl : subFormCtrls) {
@@ -222,44 +225,32 @@ public class FormDataManagerImpl implements FormDataManager {
 	}
 	
 	
-	private List<String> getMultiSelectValues(JdbcDao jdbcDao, Control ctrl, Long recordId) 
-	throws Exception {		
-		ResultSet rs = null;
-		
-		try {
-			MultiSelectControl msCtrl = (MultiSelectControl)ctrl;
-			String query = String.format(GET_MULTI_SELECT_VALUES_SQL, ctrl.getDbColumnName(), msCtrl.getTableName());
-			rs = jdbcDao.getResultSet(query, Collections.singletonList(recordId));
-			
-			List<String> result = new ArrayList<String>();
-			while (rs.next()) {
-				result.add(ctrl.toString(rs.getObject("VALUE")));
-			}
-			
-			return result;
-		} finally {
-			jdbcDao.close(rs);
-		}		
+	private List<String> getMultiSelectValues(final JdbcDao jdbcDao, final Control ctrl, Long recordId) 
+	throws SQLException {		
+		MultiSelectControl msCtrl = (MultiSelectControl)ctrl;
+		String query = String.format(GET_MULTI_SELECT_VALUES_SQL, ctrl.getDbColumnName(), msCtrl.getTableName());
+		return jdbcDao.getResultSet(query, Collections.singletonList(recordId), new ResultExtractor<List<String>>() {
+			@Override
+			public List<String> extract(ResultSet rs) throws SQLException {
+				List<String> result = new ArrayList<String>();
+				while (rs.next()) {
+					result.add(ctrl.toString(rs.getObject("VALUE")));
+				}
+				
+				return result;
+			}				
+		});
 	}
 	
-	public Blob getFileData(long recordId, FileUploadControl control) {
-
-		ResultSet rs = null;
-		Blob blob = null;
-		String query = String.format(GET_FILE_CONTENT, control.getDbColumnName(), control.getContainer()
-				.getDbTableName());
+	public Blob getFileData(final long recordId, final FileUploadControl control) {
+		String query = String.format(GET_FILE_CONTENT, control.getDbColumnName(), control.getContainer().getDbTableName());
 		JdbcDao dao = new JdbcDao();
-		try {
-			rs = dao.getResultSet(query, Collections.singletonList(recordId));
-			if (rs.next()) {
-				blob = rs.getBlob(control.getDbColumnName() + "_CONTENT");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("Error fetching file data.");
-		} finally {
-			dao.close(rs);
-		}
-		return blob;
+		return dao.getResultSet(query, Collections.singletonList(recordId), new ResultExtractor<Blob>() {
+			@Override
+			public Blob extract(ResultSet rs) throws SQLException {
+				return rs.next() ? rs.getBlob(control.getDbColumnName() + "_CONTENT") : null; 
+			}				
+		});
 	}
 
 	private Long saveOrUpdateFormData(JdbcDao jdbcDao, FormData formData, Long parentRecId)
@@ -499,23 +490,19 @@ public class FormDataManagerImpl implements FormDataManager {
 	}
 	
 	private Set<Long> getPersistedSfIds(JdbcDao jdbcDao, String dbTableName, Long parentRecId) {
-		ResultSet rs = null;
 		String selectSql = String.format(GET_SUB_FORM_IDS_SQL, dbTableName);
-		Set<Long> sfIds = new HashSet<Long>();
-		try {
-			rs = jdbcDao.getResultSet(selectSql, Collections.singletonList(parentRecId));
-			
-			while (rs.next()) {
-				sfIds.add(rs.getLong("IDENTIFIER"));
+		return jdbcDao.getResultSet(selectSql, Collections.singletonList(parentRecId), new ResultExtractor<Set<Long>>() {
+			@Override
+			public Set<Long> extract(ResultSet rs) throws SQLException {
+				Set<Long> sfIds = new HashSet<Long>();
+					
+				while (rs.next()) {
+					sfIds.add(rs.getLong("IDENTIFIER"));
+				}
+				
+				return sfIds;
 			}
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining identifier from table  data: " + dbTableName  + ", " +
-					"with Parent record id : " + parentRecId , e);
-		} finally {
-			jdbcDao.close(rs);
-		}
-		
-		return sfIds;
+		});			
 	}
 	
 	private void removeDeletedSfData(JdbcDao jdbcDao, String sfTableName, List<Long> toBeDeletedSfData) {

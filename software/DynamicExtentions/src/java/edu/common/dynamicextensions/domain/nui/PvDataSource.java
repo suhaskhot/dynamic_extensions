@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.domain.nui;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.ResultExtractor;
 
 public class PvDataSource {
 	public static enum Ordering {
@@ -133,33 +135,27 @@ public class PvDataSource {
 	}
 	
 	private List<PermissibleValue> getPvsFromDb(String sql) {
-		JdbcDao jdbcDao = null;
-		ResultSet rs = null;
-		
-		List<PermissibleValue> result = new ArrayList<PermissibleValue>();
-		try {
-			jdbcDao = new JdbcDao();
-			rs = jdbcDao.getResultSet(sql, null);
-			while (rs.next()) {
-				String value = rs.getString(1);
-				if (value == null || value.trim().isEmpty()) {
-					continue;
+		JdbcDao jdbcDao = new JdbcDao();
+		return jdbcDao.getResultSet(sql, null, new ResultExtractor<List<PermissibleValue>>() {
+			@Override
+			public List<PermissibleValue> extract(ResultSet rs)
+			throws SQLException {
+				List<PermissibleValue> result = new ArrayList<PermissibleValue>();
+					
+				while (rs.next()) {
+					String value = rs.getString(1);
+					if (value == null || value.trim().isEmpty()) {
+						continue;
+					}
+						
+					PermissibleValue pv = new PermissibleValue();
+					pv.setOptionName(value);
+					pv.setValue(value);
+					result.add(pv);
 				}
-				
-				PermissibleValue pv = new PermissibleValue();
-				pv.setOptionName(value);
-				pv.setValue(value);
-				result.add(pv);
+					
+				return result;
 			}
-			
-			return result;			
-		} catch (Exception e) {
-			throw new RuntimeException("Error executing SQL to obtain pvs: " + sql, e);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close(rs);
-				jdbcDao.close();
-			}
-		}
+		});
 	}
 }

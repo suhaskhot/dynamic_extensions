@@ -60,21 +60,19 @@ public class ContainerDao {
 	throws Exception {
 		String sql = String.format(GET_CONTAINER_IDS_SQL, numIds);		
 		logger.info("ContainerDao :: getContainerIds :: sql :: " + sql);
-						
-		ResultSet resultSet = null;		
-		try {
-			List<Long> ids = new ArrayList<Long>();
-			resultSet = jdbcDao.getResultSet(sql, null);
-			while (resultSet.next()){
-				Long value = resultSet.getLong("NEXTVAL");
-				ids.add(value);
-			}
-
-			logger.info("ContainerDao :: getContainerIds :: ids :: "+ids);
-			return ids;			
-		} finally {
-			jdbcDao.close(resultSet);
-		}				
+		return jdbcDao.getResultSet(sql, null, new ResultExtractor<List<Long>>() {
+			@Override
+			public List<Long> extract(ResultSet rs) throws SQLException {
+				List<Long> ids = new ArrayList<Long>();
+					
+				while (rs.next()){
+					Long value = rs.getLong("NEXTVAL");
+					ids.add(value);
+				}
+					
+				return ids;
+			}				
+		});
 	}
 	
 	public void insert(UserContext userCtxt, Container c) 
@@ -109,19 +107,21 @@ public class ContainerDao {
 		List<Object> params = new ArrayList<Object>();
 		params.add(id);
 
-		String xml = null;
-		ResultSet rs = null; 
-		try {
-			rs = jdbcDao.getResultSet(GET_CONTAINER_XML_BY_ID_SQL, params);
-			if (rs.next()) {
-				Blob xmlBlob = rs.getBlob("XML");
-				if (xmlBlob != null) {
-					int length = (int) xmlBlob.length();
-					xml = new String(xmlBlob.getBytes(1L, length));
+		return jdbcDao.getResultSet(GET_CONTAINER_XML_BY_ID_SQL, params, new ResultExtractor<Container>() {
+			@Override
+			public Container extract(ResultSet rs) throws SQLException {
+				if (!rs.next()) {
+					return null;
 				}
-			}			
-
-			if (xml != null) {
+								
+				Blob xmlBlob = rs.getBlob("XML");
+				if (xmlBlob == null) {
+					return null;
+				}
+				
+				int length = (int) xmlBlob.length();
+				String xml = new String(xmlBlob.getBytes(1L, length));
+						
 				Container container = Container.fromXml(xml);
 				container.setCreatedBy(rs.getLong("CREATED_BY"));
 				container.setCreationTime(rs.getTimestamp("CREATE_TIME"));
@@ -129,57 +129,52 @@ public class ContainerDao {
 				container.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
 				return container;
 			}
-		} finally {
-			jdbcDao.close(rs);
-		}
-
-		return null;
+		});
 	}
 	
 	public List<ContainerInfo> getContainerInfoByCreator(Long creatorId) 
 	throws SQLException {
 		List<Object> params = new ArrayList<Object>();
 		params.add(creatorId);
-		
-		ResultSet rs = null;
-		try {
-			List<ContainerInfo> result = new ArrayList<ContainerInfo>();
-			rs = jdbcDao.getResultSet(GET_CONTAINER_INFO_BY_CREATOR_SQL, params);
-			while (rs.next()) {
-				ContainerInfo containerInfo = new ContainerInfo();
-				containerInfo.setContainerId(rs.getLong("IDENTIFIER"));
-				containerInfo.setName(rs.getString("NAME"));
-				containerInfo.setCaption(rs.getString("CAPTION"));
-				containerInfo.setCreatedBy(rs.getLong("CREATED_BY"));
-				containerInfo.setCreationTime(rs.getTimestamp("CREATE_TIME"));
-				containerInfo.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
-				containerInfo.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
-				
-				result.add(containerInfo);				
-			}
-			
-			return result;
-		} finally {
-			jdbcDao.close(rs);
-		}
+		return jdbcDao.getResultSet(GET_CONTAINER_INFO_BY_CREATOR_SQL, params, new ResultExtractor<List<ContainerInfo>>() {
+			@Override
+			public List<ContainerInfo> extract(ResultSet rs)
+			throws SQLException {
+				List<ContainerInfo> result = new ArrayList<ContainerInfo>();
+					
+				while (rs.next()) {
+					ContainerInfo containerInfo = new ContainerInfo();
+					containerInfo.setContainerId(rs.getLong("IDENTIFIER"));
+					containerInfo.setName(rs.getString("NAME"));
+					containerInfo.setCaption(rs.getString("CAPTION"));
+					containerInfo.setCreatedBy(rs.getLong("CREATED_BY"));
+					containerInfo.setCreationTime(rs.getTimestamp("CREATE_TIME"));
+					containerInfo.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
+					containerInfo.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
+						
+					result.add(containerInfo);				
+				}
+					
+				return result;
+			}				
+		});
 	}
 
-	private void updateContainerXml(Long id, String xml) 
+	private void updateContainerXml(Long id, final String xml) 
 	throws SQLException  {
 		List<Object> params = new ArrayList<Object>();
 		params.add(id);
-		
-		ResultSet rs = null;		
-		try {
-			String selectXmlForUpdate = new StringBuilder(GET_CONTAINER_XML_BY_ID_SQL).append(" FOR UPDATE").toString();		
-			rs = jdbcDao.getResultSet(selectXmlForUpdate, params);		
-			rs.next();
-			
-			Blob blob = rs.getBlob("XML");
-			writeToBlob(blob, xml);			
-		} finally {
-			jdbcDao.close(rs);
-		}				
+
+		String selectXmlForUpdate = new StringBuilder(GET_CONTAINER_XML_BY_ID_SQL).append(" FOR UPDATE").toString();		
+		jdbcDao.getResultSet(selectXmlForUpdate, params, new ResultExtractor<Object>() {
+			@Override
+			public Object extract(ResultSet rs) throws SQLException {
+				rs.next();
+				Blob blob = rs.getBlob("XML");
+				writeToBlob(blob, xml);								
+				return null;
+			}				
+		});		
 	}
 	
 	private void writeToBlob(Blob blob, String xml) {
@@ -194,40 +189,37 @@ public class ContainerDao {
 
 	public List<NameValueBean> listAllContainerIdAndName() throws SQLException {
 		logger.info("containerDao: listAllContainer : " + LIST_ALL_CONTAINERS);
-		
-		ResultSet resultSet = null;
-		try {
-			resultSet = jdbcDao.getResultSet(LIST_ALL_CONTAINERS, null);
-			List<NameValueBean> beans = new ArrayList<NameValueBean>();
-			
-			while (resultSet.next()) {
-				beans.add(new NameValueBean(resultSet.getString("NAME"), resultSet.getLong("IDENTIFIER")));
-			}
-			
-			return beans;			
-		} finally {
-			jdbcDao.close(resultSet);
-		}
+		return jdbcDao.getResultSet(LIST_ALL_CONTAINERS, null, new ResultExtractor<List<NameValueBean>>() {
+			@Override
+			public List<NameValueBean> extract(ResultSet rs)
+			throws SQLException {
+				List<NameValueBean> beans = new ArrayList<NameValueBean>();					
+				while (rs.next()) {
+					beans.add(new NameValueBean(rs.getString("NAME"), rs.getLong("IDENTIFIER")));
+				}
+					
+				return beans;			
+			}				
+		});
 	}
 	
 	public Container getByName(String name) throws SQLException {
 		List<Object> params = new ArrayList<Object>();
 		params.add(name);
-			
-		String xml = null ;
-		ResultSet rs = null;		
-		try {
-			rs = jdbcDao.getResultSet(GET_CONTAINER_XML_BY_NAME_SQL, params);
-			
-			if (rs.next()) {
-				Blob xmlBlob = rs.getBlob("XML");			
-				if (xmlBlob != null) {
-					int length = (int) xmlBlob.length();
-					xml = new String(xmlBlob.getBytes(1L, length));
+		return jdbcDao.getResultSet(GET_CONTAINER_XML_BY_NAME_SQL, params, new ResultExtractor<Container>() {
+			@Override
+			public Container extract(ResultSet rs) throws SQLException {
+				if (!rs.next()) {
+					return null;
 				}
-			}
-
-			if (xml != null) {
+					
+				Blob xmlBlob = rs.getBlob("XML");			
+				if (xmlBlob == null) {
+					return null;
+				}
+					
+				int length = (int) xmlBlob.length();
+				String xml = new String(xmlBlob.getBytes(1L, length));
 				Container container = Container.fromXml(xml);
 				container.setCreatedBy(rs.getLong("CREATED_BY"));
 				container.setCreationTime(rs.getTimestamp("CREATE_TIME"));
@@ -235,36 +227,24 @@ public class ContainerDao {
 				container.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
 				return container;
 			}
-		} finally {
-			jdbcDao.close(rs);
-		}
-		
-
-		return null;
+		});
 	}
 	
 	public Date getLastUpdatedTime(Long id) throws SQLException {
-		Date lastUpdatedTime = null;
-		ResultSet rs = null;
-		try {
-			rs = jdbcDao.getResultSet(GET_LAST_UPDATED_TIME_SQL, Collections.singletonList(id));
-
-			if (rs.next()) {
-				lastUpdatedTime = rs.getTimestamp("LAST_MODIFY_TIME");
-			}
-			return lastUpdatedTime;
-		} finally {
-			jdbcDao.close(rs);
-		}
+		return jdbcDao.getResultSet(GET_LAST_UPDATED_TIME_SQL, Collections.singletonList(id), new ResultExtractor<Date>() {
+			@Override
+			public Date extract(ResultSet rs) throws SQLException {
+				return rs.next() ? rs.getTimestamp("LAST_MODIFY_TIME") : null;
+			}				
+		});
 	}
 
 	public String getNameById(Long id) throws SQLException {
-		ResultSet rs = null; 
-		try {
-			rs = jdbcDao.getResultSet(GET_CONTAINER_NAME_BY_ID, Collections.singletonList(id));
-			return rs.next() ? rs.getString("NAME") : null;
-		} finally {
-			jdbcDao.close(rs);
-		}
+		return jdbcDao.getResultSet(GET_CONTAINER_NAME_BY_ID, Collections.singletonList(id), new ResultExtractor<String>() {
+			@Override
+			public String extract(ResultSet rs) throws SQLException {
+				return rs.next() ? rs.getString("NAME") : null;
+			}				
+		});
 	}
 }

@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.ndao;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,103 +16,76 @@ public class VersionedContainerDao {
 	}
 	
 	public String getFormName(Long formId) {
-		ResultSet rs = null;
-		
-		try {
-			List<Long> params = Collections.singletonList(formId);
-			rs = jdbcDao.getResultSet(GET_FORM_NAME_BY_FORM_ID_SQL, params);
-			return rs.next() ? rs.getString("FORM_NAME") : null;
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining form name for id: " + formId, e);
-		} finally {
-			jdbcDao.close(rs);
-		}
+		List<Long> params = Collections.singletonList(formId);
+		return jdbcDao.getResultSet(GET_FORM_NAME_BY_FORM_ID_SQL, params, new ResultExtractor<String>() {
+			@Override
+			public String extract(ResultSet rs) throws SQLException {
+				return rs.next() ? rs.getString("FORM_NAME") : null;
+			}				
+		});
 	}
 	
 	public Long getFormId(String formName) {
-		ResultSet rs = null;
-		
-		try {
-			List<String> params = Collections.singletonList(formName);
-			rs = jdbcDao.getResultSet(GET_FORM_ID_BY_FORM_NAME_SQL, params);
-			return rs.next() ? rs.getLong("IDENTIFIER") : null;
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining form with name : " + formName, e);
-		} finally {
-			jdbcDao.close(rs);
-		}
+		List<String> params = Collections.singletonList(formName);
+		return jdbcDao.getResultSet(GET_FORM_ID_BY_FORM_NAME_SQL, params, new ResultExtractor<Long>() {
+			@Override
+			public Long extract(ResultSet rs) throws SQLException {
+				return rs.next() ? rs.getLong("IDENTIFIER") : null;
+			}			
+		});
 	}
 	
 	public Long getFormIdByDraftContainerId(Long draftContainerId) {
-		ResultSet rs = null;
-		Long formId = null;
-		
-		try {
-			List<Long> params = Collections.singletonList(draftContainerId);
-			rs = jdbcDao.getResultSet(GET_FORM_ID_BY_DRAFT_CONTAINER_ID_SQL, params);
-			if (rs.next()) {
-				formId = rs.getLong("IDENTIFIER");
-			}
-			
-			return formId;
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining form id: " + draftContainerId, e);
-		} finally {
-			jdbcDao.close(rs);
-		}
+		List<Long> params = Collections.singletonList(draftContainerId);
+		return jdbcDao.getResultSet(GET_FORM_ID_BY_DRAFT_CONTAINER_ID_SQL, params, new ResultExtractor<Long>() {
+			@Override
+			public Long extract(ResultSet rs) throws SQLException {
+				return rs.next() ? rs.getLong("IDENTIFIER") : null;
+			}				
+		});
 	}
 	
 	
-	public VersionedContainerInfo getDraftContainerInfo(Long formId) {
-		VersionedContainerInfo draftInfo = null;
-		ResultSet rs = null;
-		
-		try {
-			rs = jdbcDao.getResultSet(GET_DRAFT_CONTAINER_INFO_SQL, Collections.singletonList(formId));
-			if (rs.next()) {
-				draftInfo = getInfo(formId, "draft", rs);
-			}
-			
-			return draftInfo;
-		} catch (Exception e) {
-			throw new RuntimeException("Error getting draft container info for form: " + formId, e);
-		} finally {
-			jdbcDao.close(rs);
-		}		
+	public VersionedContainerInfo getDraftContainerInfo(final Long formId) {
+		return jdbcDao.getResultSet(GET_DRAFT_CONTAINER_INFO_SQL, Collections.singletonList(formId), 
+				new ResultExtractor<VersionedContainerInfo>() {
+					@Override
+					public VersionedContainerInfo extract(ResultSet rs)
+					throws SQLException {
+						return rs.next() ? getInfo(formId, "draft", rs) : null;
+					}			
+				});
 	}
 	
-	public List<VersionedContainerInfo> getPublishedContainersInfo(Long formId) {
-		List<VersionedContainerInfo> result = new ArrayList<VersionedContainerInfo>();
-		ResultSet rs = null;
-		try {
-			rs = jdbcDao.getResultSet(GET_PUBLISHED_CONTAINER_INFO_SQL, Collections.singletonList(formId));
-			while (rs.next()) {
-				result.add(getInfo(formId, "published", rs));
-			}
-			
-			return result;
-		} catch (Exception e) {
-			throw new RuntimeException("Error getting published container info: " + formId, e);
-		} finally {
-			jdbcDao.close(rs);
-		}
+	public List<VersionedContainerInfo> getPublishedContainersInfo(final Long formId) {
+		return jdbcDao.getResultSet(GET_PUBLISHED_CONTAINER_INFO_SQL, Collections.singletonList(formId),
+				new ResultExtractor<List<VersionedContainerInfo>>() {
+					@Override
+					public List<VersionedContainerInfo> extract(ResultSet rs)
+					throws SQLException {
+						List<VersionedContainerInfo> result = new ArrayList<VersionedContainerInfo>();
+						while (rs.next()) {
+							result.add(getInfo(formId, "published", rs));
+						}							
+						return result;
+					}				
+				});
 	}
 	
 	public List<VersionedContainerInfo> getPublishedContainersInfo(String formName) {
-		List<VersionedContainerInfo> result = new ArrayList<VersionedContainerInfo>();
-		ResultSet rs = null;
-		try {
-			rs = jdbcDao.getResultSet(GET_PUBLISHED_CONTAINER_INFO_BY_FORM_NAME_SQL, Collections.singletonList(formName));
-			while (rs.next()) {
-				result.add(getInfo(rs.getLong("IDENTIFIER"), "published", rs));
-			}
-			
-			return result;
-		} catch (Exception e) {
-			throw new RuntimeException("Error getting published container info: " + formName, e);
-		} finally {
-			jdbcDao.close(rs);
-		}
+		return jdbcDao.getResultSet(GET_PUBLISHED_CONTAINER_INFO_BY_FORM_NAME_SQL, Collections.singletonList(formName),
+				new ResultExtractor<List<VersionedContainerInfo>>() {
+					@Override
+					public List<VersionedContainerInfo> extract(ResultSet rs)
+					throws SQLException {
+						List<VersionedContainerInfo> result = new ArrayList<VersionedContainerInfo>();
+						while (rs.next()) {
+							result.add(getInfo(rs.getLong("IDENTIFIER"), "published", rs));
+						}
+							
+						return result;
+					}				
+				});			
 	}
 	
 	public void insertVersionedContainerInfo(VersionedContainerInfo info) {
@@ -137,7 +111,7 @@ public class VersionedContainerDao {
 	}
 	
 	private VersionedContainerInfo getInfo(Long formId, String status, ResultSet rs) 
-	throws Exception {
+	throws SQLException {
 		VersionedContainerInfo info = new VersionedContainerInfo();
 		info.setFormId(formId);
 		info.setContainerId(rs.getLong("CONTAINER_ID"));
@@ -149,30 +123,25 @@ public class VersionedContainerDao {
 	}
 		
 	public Long insertFormInfo(String formName) {
-		ResultSet rs = null;
-		Long formId = null;
 		try {
-			rs = jdbcDao.getResultSet(GET_NEXT_ID_SQL, null);
+			Long formId = jdbcDao.getResultSet(GET_NEXT_ID_SQL, null, new ResultExtractor<Long>() {
+				@Override
+				public Long extract(ResultSet rs) throws SQLException {
+					return rs.next() ? rs.getLong(1) : null;
+				}				
+			});
 		
-			if (rs.next()) {
-				formId = rs.getLong(1);
-			} else {
-				throw new RuntimeException("Failed to obtain next form id");
-			}
-			
 			List<Object> params = new ArrayList<Object>();
 			params.add(formId);
-			params.add(formName);
-			
+			params.add(formName);			
 			jdbcDao.executeUpdate(INSERT_FORM_INFO_SQL, params);
 			
 			return formId;
 		} catch (Exception e) {
 			throw new RuntimeException("Error inserting versioned container info", e);
-		} finally {
-			jdbcDao.close(rs);
 		}
 	}
+	
 	private final static String GET_DRAFT_CONTAINER_INFO_SQL = 
 			"SELECT CONTAINER_ID, ACTIVATION_DATE, CREATED_BY, CREATE_TIME " +
 			"FROM DYEXTN_VERSIONED_CONTAINERS " +

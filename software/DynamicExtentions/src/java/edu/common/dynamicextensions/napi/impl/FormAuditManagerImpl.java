@@ -27,6 +27,7 @@ import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormAuditManager;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.wustl.common.domain.AuditEvent;
 
 public class FormAuditManagerImpl implements FormAuditManager {
@@ -143,31 +144,24 @@ public class FormAuditManagerImpl implements FormAuditManager {
 	}
 
 
-	private Long insertAndRetrieveAuditEvent(AuditEvent auditEvent, JdbcDao jdbcDao) throws Exception {
-		Long auditId = null;
-		ResultSet rs = null;
-		
+	private Long insertAndRetrieveAuditEvent(AuditEvent auditEvent, JdbcDao jdbcDao) 
+	throws Exception {		
 		List<Object> params = new ArrayList<Object>();
 		params.add(auditEvent.getIpAddress());
 		params.add(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		params.add(auditEvent.getUserId());
 		params.add(auditEvent.getEventType());
-		
-		try {
-			rs = jdbcDao.executeUpdateAndGetResultSet(INSERT_AUDIT_EVENT_SQL, params, new String[]{"IDENTIFIER"});
-			
-			if(rs.next()) {
-				auditId = rs.getLong(1);
-			} 
-			
-		} finally {
-			jdbcDao.close(rs);
+
+		Long auditId = null;
+		Number key = jdbcDao.executeUpdateAndGetKey(INSERT_AUDIT_EVENT_SQL, params, "IDENTIFIER");
+		if (key != null) {
+			auditId = key.longValue();
 		}
-		
 		return auditId;
 	}
 
-	private void insertFormAuditEvent(FormAuditEvent formAuditEvent, JdbcDao jdbcDao) throws Exception {
+	private void insertFormAuditEvent(FormAuditEvent formAuditEvent, JdbcDao jdbcDao) 
+	throws Exception {
 		List<Object> params = new ArrayList<Object>();		
 		params.add(formAuditEvent.getIdentifier());
 		params.add(formAuditEvent.getFormName());
@@ -176,16 +170,17 @@ public class FormAuditManagerImpl implements FormAuditManager {
 		jdbcDao.executeUpdate(INSERT_FORM_AUDIT_SQL, params);	
 		params.clear();
 		params.add(formAuditEvent.getIdentifier());
-		ResultSet rs = null;	
-		try {
-			rs = jdbcDao.getResultSet(GET_AUDIT_XML_BY_ID_SQL, params);		
-			rs.next();
-			
-			Clob clob = rs.getClob("FORM_DATA_XML");
-			writeToClob(clob, formAuditEvent.getFormDataXml());			
-		} finally {
-			jdbcDao.close(rs);
-		}				
+		
+		Clob clob = jdbcDao.getResultSet(GET_AUDIT_XML_BY_ID_SQL, params, new ResultExtractor<Clob>() {
+			@Override
+			public Clob extract(ResultSet rs) 
+			throws SQLException {
+				rs.next();
+				return rs.getClob("FORM_DATA_XML");
+			}
+		});
+		
+		writeToClob(clob, formAuditEvent.getFormDataXml());			
 	}
 	
 	private void writeToClob(Clob clob, String auditXml) throws IOException {

@@ -1,6 +1,5 @@
 package edu.common.dynamicextensions.ndao;
 
-import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +15,7 @@ import org.apache.log4j.Logger;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.ContainerInfo;
 import edu.common.dynamicextensions.domain.nui.UserContext;
+import edu.common.dynamicextensions.nutility.IdGenerator;
 import edu.wustl.common.beans.NameValueBean;
 
 public class ContainerDao {
@@ -23,10 +23,10 @@ public class ContainerDao {
 	private static final Logger logger = Logger.getLogger(ContainerDao.class);
 	
 	private static final String INSERT_CONTAINER_SQL = 
-			"INSERT INTO DYEXTN_CONTAINERS (IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, XML) VALUES(?, ?, ?, ?, ?, empty_blob())";
+			"INSERT INTO DYEXTN_CONTAINERS (IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, XML) VALUES(?, ?, ?, ?, ?, ?)";
 
 	private static final String UPDATE_CONTAINER_SQL = 
-			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = empty_blob() " +
+			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = ? " +
 			"WHERE IDENTIFIER = ?";
 	
 	private static final String GET_CONTAINER_XML_BY_ID_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
@@ -35,9 +35,9 @@ public class ContainerDao {
 	private static final String GET_CONTAINER_XML_BY_NAME_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
 			+ " FROM DYEXTN_CONTAINERS WHERE NAME = ?";
 	
-	private static final String GET_CONTAINER_IDS_SQL =  
-			"SELECT DYEXTN_CONTAINERS_SEQ.NEXTVAL " +
-			"FROM (SELECT LEVEL FROM DUAL CONNECT BY LEVEL <= %d)";
+//	private static final String GET_CONTAINER_IDS_SQL =  
+//			"SELECT DYEXTN_CONTAINERS_SEQ.NEXTVAL " +
+//			"FROM (SELECT LEVEL FROM DUAL CONNECT BY LEVEL <= %d)";
 	
 	private static final String GET_CONTAINER_NAME_BY_ID =  
 			"SELECT NAME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
@@ -58,21 +58,27 @@ public class ContainerDao {
 	
 	public List<Long> getContainerIds(int numIds) 
 	throws Exception {
-		String sql = String.format(GET_CONTAINER_IDS_SQL, numIds);		
-		logger.info("ContainerDao :: getContainerIds :: sql :: " + sql);
-		return jdbcDao.getResultSet(sql, null, new ResultExtractor<List<Long>>() {
-			@Override
-			public List<Long> extract(ResultSet rs) throws SQLException {
-				List<Long> ids = new ArrayList<Long>();
-					
-				while (rs.next()){
-					Long value = rs.getLong("NEXTVAL");
-					ids.add(value);
-				}
-					
-				return ids;
-			}				
-		});
+		List<Long> ids = new ArrayList<Long>();
+		for (int i = 0; i < numIds; ++i) {
+			ids.add(IdGenerator.getInstance().getNextId("DYEXTN_CONTAINERS"));
+		}
+		
+		return ids;
+//		String sql = String.format(GET_CONTAINER_IDS_SQL, numIds);		
+//		logger.info("ContainerDao :: getContainerIds :: sql :: " + sql);
+//		return jdbcDao.getResultSet(sql, null, new ResultExtractor<List<Long>>() {
+//			@Override
+//			public List<Long> extract(ResultSet rs) throws SQLException {
+//				List<Long> ids = new ArrayList<Long>();
+//					
+//				while (rs.next()){
+//					Long value = rs.getLong("NEXTVAL");
+//					ids.add(value);
+//				}
+//					
+//				return ids;
+//			}				
+//		});
 	}
 	
 	public void insert(UserContext userCtxt, Container c) 
@@ -84,9 +90,10 @@ public class ContainerDao {
 		params.add(userCtxt != null ? userCtxt.getUserId() : null);
 		Timestamp createTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		params.add(createTime);
+		params.add(c.toXml());
 		
 		jdbcDao.executeUpdate(INSERT_CONTAINER_SQL, params);	
-		updateContainerXml(c.getId(), c.toXml());
+		//updateContainerXml(c.getId(), c.toXml());
 	}
 	
 	public void update(UserContext userCtxt, Container c) 
@@ -97,10 +104,11 @@ public class ContainerDao {
 		params.add(userCtxt != null ? userCtxt.getUserId() : null);
 		Timestamp updateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		params.add(updateTime);
+		params.add(c.toXml());
 		params.add(c.getId());
 		
 		jdbcDao.executeUpdate(UPDATE_CONTAINER_SQL, params);
-		updateContainerXml(c.getId(), c.toXml());
+		//updateContainerXml(c.getId(), c.toXml());
 	}
 	
 	public Container getById(Long id) throws SQLException {
@@ -160,32 +168,32 @@ public class ContainerDao {
 		});
 	}
 
-	private void updateContainerXml(Long id, final String xml) 
-	throws SQLException  {
-		List<Object> params = new ArrayList<Object>();
-		params.add(id);
-
-		String selectXmlForUpdate = new StringBuilder(GET_CONTAINER_XML_BY_ID_SQL).append(" FOR UPDATE").toString();		
-		jdbcDao.getResultSet(selectXmlForUpdate, params, new ResultExtractor<Object>() {
-			@Override
-			public Object extract(ResultSet rs) throws SQLException {
-				rs.next();
-				Blob blob = rs.getBlob("XML");
-				writeToBlob(blob, xml);								
-				return null;
-			}				
-		});		
-	}
+//	private void updateContainerXml(Long id, final String xml) 
+//	throws SQLException  {
+//		List<Object> params = new ArrayList<Object>();
+//		params.add(id);
+//
+//		String selectXmlForUpdate = new StringBuilder(GET_CONTAINER_XML_BY_ID_SQL).append(" FOR UPDATE").toString();		
+//		jdbcDao.getResultSet(selectXmlForUpdate, params, new ResultExtractor<Object>() {
+//			@Override
+//			public Object extract(ResultSet rs) throws SQLException {
+//				rs.next();
+//				Blob blob = rs.getBlob("XML");
+//				writeToBlob(blob, xml);								
+//				return null;
+//			}				
+//		});		
+//	}
 	
-	private void writeToBlob(Blob blob, String xml) {
-		try {
-			OutputStream blobOut = blob.setBinaryStream(0);		
-			blobOut.write(xml.getBytes());
-			blobOut.close();
-		} catch (Exception e) {
-			throw new RuntimeException("Error writing blob", e);
-		}
-	}
+//	private void writeToBlob(Blob blob, String xml) {
+//		try {
+//			OutputStream blobOut = blob.setBinaryStream(0);		
+//			blobOut.write(xml.getBytes());
+//			blobOut.close();
+//		} catch (Exception e) {
+//			throw new RuntimeException("Error writing blob", e);
+//		}
+//	}
 
 	public List<NameValueBean> listAllContainerIdAndName() throws SQLException {
 		logger.info("containerDao: listAllContainer : " + LIST_ALL_CONTAINERS);

@@ -67,7 +67,7 @@ public class StringTextField extends TextField {
 
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "VARCHAR2(4000)"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "VARCHAR(4000)"));
 	}
 	
 	@Override

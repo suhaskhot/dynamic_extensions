@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
 import javax.transaction.Transaction;
 
 import org.springframework.dao.DataAccessException;
@@ -23,12 +24,8 @@ public class JdbcDao {
 	
 	private Transaction suspendedTxn = null;
 	
-	public JdbcDao() {
-		// TODO: How to instantiate with appropriate data source
-	}
-	
-	public JdbcDao(JDBCDAO dao) {
-		// TODO: How to instantiate with appropriate data source
+	public JdbcDao(DataSource ds) {
+		jdbcTemplate = new JdbcTemplate(ds);
 	}
 	
 	public <T> T getResultSet(final String query, final List<?> params, final ResultExtractor<T> extractor) {

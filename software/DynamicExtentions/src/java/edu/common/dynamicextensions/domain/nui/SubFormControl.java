@@ -80,8 +80,8 @@ public class SubFormControl extends Control {
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
-		columnDefs.add(ColumnDef.get("RECORD_ID", "NUMBER"));
-		columnDefs.add(ColumnDef.get("SUB_FORM_RECORD_ID", "NUMBER"));
+		columnDefs.add(ColumnDef.get("RECORD_ID", "BIGINT"));
+		columnDefs.add(ColumnDef.get("SUB_FORM_RECORD_ID", "BIGINT"));
 		return columnDefs;
 	}
 

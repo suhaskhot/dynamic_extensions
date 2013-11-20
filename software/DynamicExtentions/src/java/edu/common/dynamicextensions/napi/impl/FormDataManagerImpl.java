@@ -27,6 +27,7 @@ import edu.common.dynamicextensions.napi.FormAuditManager;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.common.beans.SessionDataBean;
@@ -56,15 +57,13 @@ public class FormDataManagerImpl implements FormDataManager {
 	}
 		
 	@Override
-	public FormData getFormData(Long containerId, Long recordId) {
-		FormData result = null;
-		JdbcDao jdbcDao = null;
-		
+	public FormData getFormData(Long containerId, Long recordId) {		
 		try {
-			jdbcDao = new JdbcDao();
+			FormData result = null;
 			Container container = Container.getContainer(containerId);
+			
 			if (container != null) {
-				List<FormData> formsData = getFormData(jdbcDao, container, "IDENTIFIER", recordId);
+				List<FormData> formsData = getFormData(JdbcDaoFactory.getJdbcDao(), container, "IDENTIFIER", recordId);
 				if (formsData != null && !formsData.isEmpty()) {
 					result = formsData.get(0);
 				}
@@ -73,21 +72,14 @@ public class FormDataManagerImpl implements FormDataManager {
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining form data: [" + containerId + ", " + recordId  + "]", e);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}
 		}
 	}
 	
 	@Override
-	public FormData getFormData(Container container, Long recordId) {
-		FormData result = null;
-		JdbcDao jdbcDao = null;
-		
+	public FormData getFormData(Container container, Long recordId) {		
 		try {
-			jdbcDao = new JdbcDao();
-			List<FormData> formData = getFormData(jdbcDao, container, "IDENTIFIER", recordId);
+			FormData result = null;			
+			List<FormData> formData = getFormData(JdbcDaoFactory.getJdbcDao(), container, "IDENTIFIER", recordId);
 			if (formData != null && !formData.isEmpty()) {
 				result = formData.get(0);
 			}
@@ -95,28 +87,16 @@ public class FormDataManagerImpl implements FormDataManager {
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining form data: [" + container.getId() + ", " + recordId  + "]", e);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}		
+		}	
 	}
 
 	@Override
 	public Long saveOrUpdateFormData(UserContext userCtxt, FormData formData) {
-		JdbcDao jdbcDao = null;
-
 		try {
-			jdbcDao = new JdbcDao();
-			return saveOrUpdateFormData(userCtxt, formData, jdbcDao);
+			return saveOrUpdateFormData(userCtxt, formData, JdbcDaoFactory.getJdbcDao());
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving form data", e);
-		} finally {
-
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		} 
 	}
 
 	@Override
@@ -244,8 +224,7 @@ public class FormDataManagerImpl implements FormDataManager {
 	
 	public Blob getFileData(final long recordId, final FileUploadControl control) {
 		String query = String.format(GET_FILE_CONTENT, control.getDbColumnName(), control.getContainer().getDbTableName());
-		JdbcDao dao = new JdbcDao();
-		return dao.getResultSet(query, Collections.singletonList(recordId), new ResultExtractor<Blob>() {
+		return JdbcDaoFactory.getJdbcDao().getResultSet(query, Collections.singletonList(recordId), new ResultExtractor<Blob>() {
 			@Override
 			public Blob extract(ResultSet rs) throws SQLException {
 				return rs.next() ? rs.getBlob(control.getDbColumnName() + "_CONTENT") : null; 

@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 
 public class PvDataSource {
@@ -135,8 +136,7 @@ public class PvDataSource {
 	}
 	
 	private List<PermissibleValue> getPvsFromDb(String sql) {
-		JdbcDao jdbcDao = new JdbcDao();
-		return jdbcDao.getResultSet(sql, null, new ResultExtractor<List<PermissibleValue>>() {
+		return JdbcDaoFactory.getJdbcDao().getResultSet(sql, null, new ResultExtractor<List<PermissibleValue>>() {
 			@Override
 			public List<PermissibleValue> extract(ResultSet rs)
 			throws SQLException {

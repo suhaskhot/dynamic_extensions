@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
@@ -71,8 +71,7 @@ public class Query {
         String countSql = gen.getCountSql(queryExpr, queryJoinTree);
 
         long t1 = System.currentTimeMillis();            
-        JdbcDao jdbcDao = new JdbcDao();
-        long count = jdbcDao.getResultSet(countSql, null, new ResultExtractor<Long>() {
+        long count = JdbcDaoFactory.getJdbcDao().getResultSet(countSql, null, new ResultExtractor<Long>() {
         	@Override
         	public Long extract(ResultSet rs) throws SQLException {
         		return rs.next() ? rs.getLong(1) : -1L;
@@ -90,11 +89,8 @@ public class Query {
 
     public QueryResultData getData(int start, int numRows) {
         final String dataSql = getDataSql(wideRows, start, numRows);
-        
-        JdbcDao jdbcDao = new JdbcDao();
-        
         final long t1 = System.currentTimeMillis();
-        return jdbcDao.getResultSet(dataSql, null, new ResultExtractor<QueryResultData>() {
+        return JdbcDaoFactory.getJdbcDao().getResultSet(dataSql, null, new ResultExtractor<QueryResultData>() {
         	@Override
         	public QueryResultData extract(ResultSet rs)
         	throws SQLException {

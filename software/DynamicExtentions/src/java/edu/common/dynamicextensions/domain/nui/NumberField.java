@@ -100,7 +100,7 @@ public class NumberField extends TextField {
 
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "NUMBER"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "DECIMAL(19, 6)"));
 	}
 
 	@Override

@@ -14,46 +14,22 @@ import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.VersionedContainerInfo;
 import edu.common.dynamicextensions.napi.VersionedContainer;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.VersionedContainerDao;
 import edu.common.dynamicextensions.nutility.ContainerChangeLog;
 import edu.common.dynamicextensions.nutility.ContainerUtility;
 
 public class VersionedContainerImpl implements VersionedContainer {
-	private JdbcDao jdbcDao;
-	
-	public void setJdbcDao(JdbcDao jdbcDao) {
-		this.jdbcDao = jdbcDao;
-	}
-	
+
 	@Override
 	public String getFormName(Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			VersionedContainerDao vdao = new VersionedContainerDao(jdbcDao);
-			return vdao.getFormName(formId);								
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining form name: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		VersionedContainerDao vdao = new VersionedContainerDao(JdbcDaoFactory.getJdbcDao());
+		return vdao.getFormName(formId);								
 	}
 	
 	@Override
 	public Long getContainerId(Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainerId(jdbcDao, formId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container id: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}
+		return getContainerId(JdbcDaoFactory.getJdbcDao(), formId);		
 	}
 	
 	public Long getContainerId(JdbcDao jdbcDao, Long formId) {
@@ -62,17 +38,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Long getContainerId(Long formId, Date activationDate) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainerId(jdbcDao, formId, activationDate);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container id: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}		
+		return getContainerId(JdbcDaoFactory.getJdbcDao(), formId, activationDate);
 	}
 	
 	public Long getContainerId(JdbcDao jdbcDao, Long formId, Date activationDate) {
@@ -82,18 +48,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Container getContainer(Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainer(jdbcDao, formId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
-		
+		return getContainer(JdbcDaoFactory.getJdbcDao(), formId);
 	}
 	
 	public Container getContainer(JdbcDao jdbcDao, Long formId) {
@@ -102,17 +57,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Container getContainer(Long formId, Date activationDate) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainer(jdbcDao, formId, activationDate);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		return getContainer(JdbcDaoFactory.getJdbcDao(), formId, activationDate);
 	}
 	
 	public Container getContainer(JdbcDao jdbcDao, Long formId, Date activationDate) {		
@@ -135,17 +80,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public String getContainerName(Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainerName(jdbcDao, formId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container id: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}
+		return getContainerName(JdbcDaoFactory.getJdbcDao(), formId);
 	}
 	
 	public String getContainerName(JdbcDao jdbcDao, Long formId) {
@@ -154,17 +89,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public String getContainerName(Long formId, Date activationDate) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainerName(jdbcDao, formId, activationDate);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container id: " + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}		
+		return getContainerName(JdbcDaoFactory.getJdbcDao(), formId, activationDate);
 	}
 	
 	public String getContainerName(JdbcDao jdbcDao, Long formId, Date activationDate) {
@@ -174,18 +99,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Container getContainer(String formName) {
-		
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainer(jdbcDao, formName);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container: " + formName, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		return getContainer(JdbcDaoFactory.getJdbcDao(), formName);
 	}
 
 	public Container getContainer(JdbcDao jdbcDao,String formName) {
@@ -194,17 +108,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Container getContainer(String formName, Date activationDate) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getContainer(jdbcDao, formName, activationDate);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining container: " + formName, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		return getContainer(JdbcDaoFactory.getJdbcDao(), formName, activationDate);
 	}
 	
 	public Container getContainer(JdbcDao jdbcDao, String formName, Date activationDate) {		
@@ -266,17 +170,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Long getDraftContainerId(Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getDraftContainerId(jdbcDao, formId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining draft container:" + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}		
+		return getDraftContainerId(JdbcDaoFactory.getJdbcDao(), formId);
 	}
 	
 	public Long getDraftContainerId(JdbcDao jdbcDao, Long formId) {		
@@ -291,17 +185,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Container getDraftContainer(Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return getDraftContainer(jdbcDao, formId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error obtaining draft container:" + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		return getDraftContainer(JdbcDaoFactory.getJdbcDao(), formId);
 	}
 	
 	public Container getDraftContainer(JdbcDao jdbcDao, Long formId) {		
@@ -320,17 +204,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public Long saveAsDraft(UserContext usrCtx, Long draftContainerId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			return saveAsDraft(jdbcDao, usrCtx, draftContainerId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error saving draft container:" + draftContainerId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}		
+		return saveAsDraft(JdbcDaoFactory.getJdbcDao(), usrCtx, draftContainerId);
 	}
 	
 	public Long saveAsDraft(JdbcDao jdbcDao, UserContext usrCtx, Long draftContainerId) {
@@ -356,17 +230,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	
 	@Override
 	public void publishRetrospective(UserContext usrCtx, Long formId) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			publishRetrospective(jdbcDao, usrCtx, formId);
-		} catch (Exception e) {
-			throw new RuntimeException("Error saving container retrospectively:" + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}				
+		publishRetrospective(JdbcDaoFactory.getJdbcDao(), usrCtx, formId);
 	}
 	
 	public void publishRetrospective(JdbcDao jdbcDao, UserContext usrCtx, Long formId) {		
@@ -401,17 +265,7 @@ public class VersionedContainerImpl implements VersionedContainer {
 	//
 	@Override
 	public void publishProspective(UserContext usrCtx, Long formId, Date activationDate) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
-			publishProspective(jdbcDao, usrCtx, formId, activationDate);
-		} catch (Exception e) {
-			throw new RuntimeException("Error saving container prospectively:" + formId, e);
-		} finally {
-			if (this.jdbcDao == null && jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}						
+		publishProspective(JdbcDaoFactory.getJdbcDao(), usrCtx, formId, activationDate);
 	}
 		
 	public void publishProspective(JdbcDao jdbcDao, UserContext usrCtx, Long formId, Date activationDate) {

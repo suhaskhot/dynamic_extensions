@@ -22,9 +22,10 @@ public class CheckBox extends Control {
 		this.defaultValueChecked = defaultValueChecked;
 	}
 
+	// TODO: Be database agnostic
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "NUMBER"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "DECIMAL(19, 6)"));
 	}
 
 	@Override

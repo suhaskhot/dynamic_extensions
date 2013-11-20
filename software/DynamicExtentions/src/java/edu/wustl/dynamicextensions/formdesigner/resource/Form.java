@@ -39,6 +39,8 @@ import com.sun.jersey.multipart.FormDataParam;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.ndao.TransactionManager;
+import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.JDBCDAO;
@@ -79,6 +81,7 @@ public class Form {
 		JSONObject formJSON = new JSONObject();
 		String jsonResponseString = "";
 
+		Transaction txn = null;
 		try {
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
 			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
@@ -88,9 +91,9 @@ public class Form {
 			String save = formProps.getString("save");
 
 			if (save.equalsIgnoreCase("yes")) {
-				intializeDao();
+				txn = TransactionManager.getInstance().startTxn();
 				containerFacade.persistContainer();
-				commitDao();
+				TransactionManager.getInstance().commit(txn);
 			}
 
 			formProps = containerFacade.getProperties();
@@ -103,9 +106,10 @@ public class Form {
 			ex.printStackTrace();
 			formJSON.put("status", "error");
 			jsonResponseString = formJSON.toString();
-		} finally {
-			closeDao();
-		}
+			if (txn != null) {
+				TransactionManager.getInstance().rollback(txn);
+			}
+		} 
 
 		return jsonResponseString;
 

@@ -28,9 +28,13 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
+import edu.common.dynamicextensions.ndao.TransactionManager;
+import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.ContainerCache;
 import edu.common.dynamicextensions.nutility.ContainerParser;
 import edu.common.dynamicextensions.nutility.FormDataUtility;
+import edu.common.dynamicextensions.nutility.IdGenerator;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
@@ -565,7 +569,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	public Long save(UserContext userCtxt, boolean createTables) {
 		JdbcDao jdbcDao = null;		
 		try {
-			jdbcDao = new JdbcDao();
+			jdbcDao = JdbcDaoFactory.getJdbcDao();
 			return save(userCtxt, jdbcDao, createTables);
 		} finally {
 			if (jdbcDao != null) {
@@ -635,54 +639,20 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 				
 	public static Container getContainer(Long id) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = new JdbcDao();
-			return getContainer(jdbcDao, id);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}		
+		return getContainer(JdbcDaoFactory.getJdbcDao(), id);
 	}
 	
 	public static Container getContainer(JdbcDao jdbcDao, Long id) {
 		try {						
-			boolean isStale = true;
-			Container container = null; //ContainerCache.getInstance().get(id); //TODO:
-
-			ContainerDao containerDao = new ContainerDao(jdbcDao);
-			if (container != null) {
-				Date dbLastModifyTime = containerDao.getLastUpdatedTime(id);
-				Date cacheLastModifyTime = container.getLastUpdatedTime();
-				
-				if ((dbLastModifyTime == cacheLastModifyTime) ||
-					(dbLastModifyTime != null && dbLastModifyTime.equals(cacheLastModifyTime))) {
-					isStale = false;
-				} 
-			}
-				
-			if (isStale) {
-				container = containerDao.getById(id);				
-				ContainerCache.getInstance().put(id, container);
-			}
-				
-			return container;						
+			ContainerDao containerDao = new ContainerDao(jdbcDao);		
+			return containerDao.getById(id);				
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container: " + id, e);
 		}	
 	}
 	
 	public static Container getContainer(String name) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = new JdbcDao();
-			return getContainer(jdbcDao, name);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}		
+		return getContainer(JdbcDaoFactory.getJdbcDao(), name);
 	}
 	
 	public static Container getContainer(JdbcDao jdbcDao, String name) {
@@ -695,17 +665,11 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 		
 	public static List<ContainerInfo> getContainerInfoByCreator(Long creatorId) {
-		JdbcDao jdbcDao = null;
 		try {
-			jdbcDao = new JdbcDao();
-			ContainerDao dao = new ContainerDao(jdbcDao);
+			ContainerDao dao = new ContainerDao(JdbcDaoFactory.getJdbcDao());
 			return dao.getContainerInfoByCreator(creatorId);
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container info by creator id: " + creatorId, e);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}
 		}
 	}
 	
@@ -783,9 +747,14 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	
 	protected void executeDDLWithoutTxn(JdbcDao jdbcDao) 
 	throws Exception {
-//		jdbcDao.suspendTxn();
-		executeDDL(jdbcDao, null);
-//		jdbcDao.resumeTxn();
+		Transaction txn = TransactionManager.getInstance().newTxn();
+		try {
+			executeDDL(jdbcDao, null);
+		} finally {
+			if (txn != null) {
+				TransactionManager.getInstance().commit(txn);
+			}
+		}
 	}
 	
 
@@ -857,7 +826,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		ddl.append("CREATE TABLE ").append(tableName).append(" (");
 		
 		if (crtIdColumn) {
-			ddl.append("IDENTIFIER NUMBER PRIMARY KEY, ");
+			ddl.append("IDENTIFIER BIGINT PRIMARY KEY, ");
 		}
 		
 		for (ColumnDef columnDef : columnDefs) {
@@ -979,10 +948,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return String.format(tableNameFmt, getUniqueId());
 	}
 	
+	// TODO: Hard coded tab name
 	private Long getUniqueId() {
-		//return IdGeneratorUtil.getNextUniqeId();
-		// TODO: Fix me
-		return null;
+		return IdGenerator.getInstance().getNextId("DE_E_TNAMES");
 	}
 	
 	private void getAllControls(Container container, List<Control> controls) {	
@@ -1639,15 +1607,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	public static String getContainerNameById(Long id) {
-		JdbcDao jdbcDao = null;
-		try {
-			jdbcDao = new JdbcDao();
-			return getContainerNameById(jdbcDao, id);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}			
-		}		
+		return getContainerNameById(JdbcDaoFactory.getJdbcDao(), id);
 	}
 
 	public static String getContainerNameById(JdbcDao jdbcDao, Long id) {
@@ -1658,25 +1618,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error obtaining container name with id : " + id);
 		}
 	}
-	
-	private Container getExistingContainer (Long id) {
-		Container c = null;
-
-		if (this.getId().equals(id)) {
-			return this;
-		}
 		
-		for (Container subContainer : this.getSubContainers()) {
-			c = subContainer.getExistingContainer(id);
-			
-			if (c != null) {
-				return c;
-			}
-		}
-		
-		return null;
-	}	
-	
 	private static final String EMPTY_ROW_HTML = "<tr><td height='7'></td></tr>";
 
 	private static final String CLOSE_ROW_HTML = "</table></td></tr></tbody>";

@@ -114,13 +114,13 @@ public abstract class SelectControl extends Control {
 		String dbType;
 		switch (pvDataSource.getDataType()) {
 			case STRING:
-				dbType = "VARCHAR2(4000)";
+				dbType = "VARCHAR(4000)";
 				break;
 				
 			case INTEGER:
 			case FLOAT:
 			case BOOLEAN:
-				dbType = "NUMBER";
+				dbType = "DECIMAL(19, 6)";
 				break;
 				
 			case DATE:

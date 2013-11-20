@@ -27,6 +27,7 @@ import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormAuditManager;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.ndao.JdbcDao;
+import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.wustl.common.domain.AuditEvent;
 
@@ -36,18 +37,11 @@ public class FormAuditManagerImpl implements FormAuditManager {
 	
 	@Override
 	public void audit(UserContext userCtxt, FormData formData, String operation) {
-		JdbcDao jdbcDao = null;
-		
 		try {
-			jdbcDao = new JdbcDao();
-			audit(userCtxt, formData, operation, jdbcDao);
+			audit(userCtxt, formData, operation, JdbcDaoFactory.getJdbcDao());
 		} catch (Exception e) {
 			throw new RuntimeException("Error saving form audit data", e);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}
+		} 
 	}
 	@Override
 	public void audit(UserContext userCtxt, FormData formData, String operation, JdbcDao jdbcDao) {

@@ -20,8 +20,8 @@ public class FileUploadControl extends Control {
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columns = new ArrayList<ColumnDef>();
-		columns.add(ColumnDef.get(getDbColumnName() + "_NAME", "VARCHAR2(4000)"));
-		columns.add(ColumnDef.get(getDbColumnName() + "_TYPE", "VARCHAR2(4000)"));
+		columns.add(ColumnDef.get(getDbColumnName() + "_NAME", "VARCHAR(4000)"));
+		columns.add(ColumnDef.get(getDbColumnName() + "_TYPE", "VARCHAR(4000)"));
 		columns.add(ColumnDef.get(getDbColumnName() + "_CONTENT", "BLOB"));
 		return columns;
 	}

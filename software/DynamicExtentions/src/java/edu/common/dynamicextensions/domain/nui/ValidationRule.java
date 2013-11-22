@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 public class ValidationRule {	
 	private String name;
 	
-	private Map<String, String> params = new HashMap<String, String>(); 
+	private Map<String, String> params = new HashMap<String, String>();  // TODO: Make value from String -> Object
 	
 	public String getName() {
 		return name;

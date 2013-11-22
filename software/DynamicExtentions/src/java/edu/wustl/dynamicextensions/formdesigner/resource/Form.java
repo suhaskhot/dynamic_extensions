@@ -57,10 +57,6 @@ public class Form {
 
 	private static final String CONTAINER_SESSION_ATTR = "sessionContainer";
 
-	private JDBCDAO jdbcDao;
-
-	private HibernateDAO hibernateDao;
-
 	private static AtomicInteger formCnt = new AtomicInteger();
 
 	/**
@@ -129,8 +125,10 @@ public class Form {
 	public String getForm(@PathParam("id") String id, @PathParam("edit") boolean edit,
 			final @Context HttpServletRequest request, @Context HttpServletResponse response) throws JSONException {
 		System.out.println(id);
+		
+		Transaction txn = null;
 		try {
-			intializeDao();
+			txn = TransactionManager.getInstance().startTxn();
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
 			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id), userData, edit);
 
@@ -154,7 +152,9 @@ public class Form {
 			ex.printStackTrace();
 			return "{'status' : 'error'}";
 		} finally {
-			closeDao();
+			if (txn != null) {
+				TransactionManager.getInstance().rollback(txn);
+			}
 		}
 
 	}
@@ -205,26 +205,28 @@ public class Form {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String editForm(String formJson, final @Context HttpServletRequest request,
 			@Context HttpServletResponse response) {
+		
+		Transaction txn = null;
 		try {
 			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
 			String save = formProps.getString("save");
 			ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
 			container.updateContainer(formProps);
 			if (save.equalsIgnoreCase("yes")) {
-				intializeDao();
+				txn = TransactionManager.getInstance().startTxn();
 				container.persistContainer();
-				commitDao();
+				TransactionManager.getInstance().commit(txn);
 			}
 			Writer strWriter = new StringWriter();
 			new ObjectMapper().writeValue(strWriter, container.getProperties().getAllProperties());
 			return strWriter.toString();
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			if (txn != null) {
+				TransactionManager.getInstance().rollback(txn);
+			}
 			return "{'status' : 'error'}";
-		} finally {
-			closeDao();
-		}
-
+		} 
 	}
 
 	/**
@@ -296,7 +298,9 @@ public class Form {
 		JSONObject output = new JSONObject();
 
 		String tmpDirName = getTmpDirName();
-		Boolean createTables = false;
+		Boolean createTables = false;		
+		Transaction txn = null;
+		
 		try {
 
 			Utility.downloadFile(uploadedInputStream, tmpDirName, "forms.xml", false);
@@ -323,14 +327,14 @@ public class Form {
 			String formDirPath = new StringBuilder(tmpDir.getAbsolutePath()).append(File.separator).toString();
 			String pvDirPath = new StringBuilder(formDirPath).append("pvs").toString();
 			List<Long> containerIds = new ArrayList<Long>();
-			intializeDao();
+			txn = TransactionManager.getInstance().startTxn();
 			for (String formFile : formFileNames) {
 				String formFilePath = new StringBuilder(formDirPath).append(formFile).toString();
 
 				Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
 				containerIds.add(containerId);
 			}
-			commitDao();
+			TransactionManager.getInstance().commit(txn);
 			output.put("status", "success");
 			output.put("containerIds", containerIds);
 
@@ -338,41 +342,14 @@ public class Form {
 
 		} catch (Exception ex) {
 			output.put("status", "error");
-		} finally {
-			closeDao();
+			if (txn != null) {
+				TransactionManager.getInstance().rollback(txn);
+			}
 		}
 
 		return output.toString();
 	}
 
-	/**
-	 * @throws DAOException
-	 */
-	private void commitDao() throws DAOException {
-		try {
-			jdbcDao.commit();
-			hibernateDao.commit();
-		} finally {
-			closeDao();
-		}
-	}
-
-	/**
-	 * 
-	 */
-	private void closeDao() {
-		DynamicExtensionsUtility.closeDAO(jdbcDao, false);
-		DynamicExtensionsUtility.closeDAO(hibernateDao, false);
-	}
-
-	/**
-	 * @throws DynamicExtensionsSystemException
-	 */
-	@SuppressWarnings("deprecation")
-	private void intializeDao() throws DynamicExtensionsSystemException {
-		jdbcDao = DynamicExtensionsUtility.getJDBCDAO();
-		hibernateDao = DynamicExtensionsUtility.getHibernateDAO();
-	}
 
 	private String getTmpDirName() {
 		return new StringBuilder().append(System.getProperty("java.io.tmpdir")).append(File.separator)

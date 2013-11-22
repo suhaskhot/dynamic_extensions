@@ -81,6 +81,10 @@ public class NumberField extends TextField {
 
 		addValidationRule("range", Collections.singletonMap("min", minValue));
 	}
+	
+	public String getMinValue() {
+		return getValidationRuleParam("range", "min");
+	}
 
 	public void setMaxValue(String maxValue) {
 		if (StringUtils.isBlank(maxValue)) {
@@ -88,6 +92,10 @@ public class NumberField extends TextField {
 		}
 
 		addValidationRule("range", Collections.singletonMap("max", maxValue));
+	}
+	
+	public String getMaxValue() {
+		return getValidationRuleParam("range", "max");
 	}
 
 	public String getMeasurementUnits() {

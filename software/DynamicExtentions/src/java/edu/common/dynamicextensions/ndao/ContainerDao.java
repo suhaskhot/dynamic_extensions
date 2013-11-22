@@ -44,6 +44,10 @@ public class ContainerDao {
 	
 	private static final String LIST_ALL_CONTAINERS = "SELECT NAME,IDENTIFIER FROM DYEXTN_CONTAINERS ORDER BY NAME";
 	
+	private static final String GET_CONTAINER_INFO =
+			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
+			"FROM DYEXTN_CONTAINERS";
+	
 	private static final String GET_CONTAINER_INFO_BY_CREATOR_SQL = 
 			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
 			"FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ?";
@@ -140,32 +144,16 @@ public class ContainerDao {
 		});
 	}
 	
+	public List<ContainerInfo> getContainerInfo() 
+	throws SQLException {
+		return jdbcDao.getResultSet(GET_CONTAINER_INFO, null, containerInfoExtractor);
+	}
+	
 	public List<ContainerInfo> getContainerInfoByCreator(Long creatorId) 
 	throws SQLException {
 		List<Object> params = new ArrayList<Object>();
 		params.add(creatorId);
-		return jdbcDao.getResultSet(GET_CONTAINER_INFO_BY_CREATOR_SQL, params, new ResultExtractor<List<ContainerInfo>>() {
-			@Override
-			public List<ContainerInfo> extract(ResultSet rs)
-			throws SQLException {
-				List<ContainerInfo> result = new ArrayList<ContainerInfo>();
-					
-				while (rs.next()) {
-					ContainerInfo containerInfo = new ContainerInfo();
-					containerInfo.setContainerId(rs.getLong("IDENTIFIER"));
-					containerInfo.setName(rs.getString("NAME"));
-					containerInfo.setCaption(rs.getString("CAPTION"));
-					containerInfo.setCreatedBy(rs.getLong("CREATED_BY"));
-					containerInfo.setCreationTime(rs.getTimestamp("CREATE_TIME"));
-					containerInfo.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
-					containerInfo.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
-						
-					result.add(containerInfo);				
-				}
-					
-				return result;
-			}				
-		});
+		return jdbcDao.getResultSet(GET_CONTAINER_INFO_BY_CREATOR_SQL, params, containerInfoExtractor);
 	}
 
 //	private void updateContainerXml(Long id, final String xml) 
@@ -255,4 +243,27 @@ public class ContainerDao {
 			}				
 		});
 	}
+	
+	private static ResultExtractor<List<ContainerInfo>> containerInfoExtractor = new ResultExtractor<List<ContainerInfo>>() {
+		@Override
+		public List<ContainerInfo> extract(ResultSet rs)
+		throws SQLException {
+			List<ContainerInfo> result = new ArrayList<ContainerInfo>();
+				
+			while (rs.next()) {
+				ContainerInfo containerInfo = new ContainerInfo();
+				containerInfo.setContainerId(rs.getLong("IDENTIFIER"));
+				containerInfo.setName(rs.getString("NAME"));
+				containerInfo.setCaption(rs.getString("CAPTION"));
+				containerInfo.setCreatedBy(rs.getLong("CREATED_BY"));
+				containerInfo.setCreationTime(rs.getTimestamp("CREATE_TIME"));
+				containerInfo.setLastUpdatedBy(rs.getLong("LAST_MODIFIED_BY"));
+				containerInfo.setLastUpdatedTime(rs.getTimestamp("LAST_MODIFY_TIME"));
+					
+				result.add(containerInfo);				
+			}
+				
+			return result;
+		}				
+	};
 }

@@ -11,10 +11,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -361,6 +363,31 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return containers;
 	}
 	
+	public Collection<List<Control>> getControlsGroupedByRow() {
+		Map<Integer, List<Control>> rows = new TreeMap<Integer, List<Control>>();
+		
+		for (Control ctrl : controlsMap.values()) {
+			List<Control> row = rows.get(ctrl.getSequenceNumber());
+			if (row == null) {
+				row = new ArrayList<Control>();
+				rows.put(ctrl.getSequenceNumber(), row);
+			}
+			
+			int xPos = ctrl.getxPos();
+			int i;
+			for (i = 0; i < row.size(); ++i) {
+				if (row.get(i).getxPos() > xPos) {
+					break;
+				}
+			}
+			
+			row.add(i, ctrl);
+		}
+		
+		return rows.values();
+	}
+	
+	
 	public List<Container> getAllSubContainers() {
 		List<Container> result = new ArrayList<Container>();
 	
@@ -664,6 +691,15 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		}	
 	}
 		
+	public static List<ContainerInfo> getContainerInfo() {
+		try {
+			ContainerDao dao = new ContainerDao(JdbcDaoFactory.getJdbcDao());
+			return dao.getContainerInfo();
+		} catch (Exception e) {
+			throw new RuntimeException("Error obtaining container info", e);
+		}		
+	}
+	
 	public static List<ContainerInfo> getContainerInfoByCreator(Long creatorId) {
 		try {
 			ContainerDao dao = new ContainerDao(JdbcDaoFactory.getJdbcDao());
@@ -775,7 +811,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			dbTableName = getUniqueTableName();			
 
 			if (parentTableName != null) {
-				columnDefs.add(ColumnDef.get("PARENT_RECORD_ID", "NUMBER"));
+				columnDefs.add(ColumnDef.get("PARENT_RECORD_ID", "BIGINT"));
 			}
 			
 			createTable(jdbcDao, dbTableName, columnDefs, true);
@@ -890,6 +926,11 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return xstream.toXML(this);
 	}
 	
+	public String toJson() {
+		Gson gson = new Gson();
+		return gson.toJson(this);
+	}
+		
 	public static Container fromXml(String xml) {
 //		XStream xstream = new XStream(new KXml2Driver());
 		XStream xstream = new XStream(new DomDriver());

@@ -70,9 +70,6 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	private Container container;
 	
-	// temporary fix. should go away after 10/Jun/2013	
-	private transient boolean mandatory;
-
 	@Override
 	public Long getId() {
 		return id;

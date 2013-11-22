@@ -111,7 +111,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 	public void serializeView(Container container) {
 		emitContainerProps(container);
 		
-		Collection<List<Control>> rows = groupControlsByRow(container.getControls());		
+		Collection<List<Control>> rows = container.getControlsGroupedByRow();		
 		for (List<Control> rowCtrls : rows) {
 			if (rowCtrls.size() == 1 && rowCtrls.get(0) instanceof PageBreak) {
 				serializeControl(rowCtrls.get(0));				
@@ -141,30 +141,6 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		return serializer;
 	}
 	
-	private Collection<List<Control>> groupControlsByRow(Collection<Control> controls) {
-		Map<Integer, List<Control>> rows = new TreeMap<Integer, List<Control>>();
-		
-		for (Control ctrl : controls) {
-			List<Control> row = rows.get(ctrl.getSequenceNumber());
-			if (row == null) {
-				row = new ArrayList<Control>();
-				rows.put(ctrl.getSequenceNumber(), row);
-			}
-			
-			int xPos = ctrl.getxPos();
-			int i;
-			for (i = 0; i < row.size(); ++i) {
-				if (row.get(i).getxPos() > xPos) {
-					break;
-				}
-			}
-			
-			row.add(i, ctrl);
-		}
-		
-		return rows.values();
-	}
-
 	private void createOpDirectory(String outDir) {
 		File dirFile = new File(outDir);
 		

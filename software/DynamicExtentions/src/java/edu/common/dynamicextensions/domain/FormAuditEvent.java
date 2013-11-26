@@ -3,12 +3,6 @@
  */
 package edu.common.dynamicextensions.domain;
 
-import java.sql.Clob;
-
-/**
- * @author Vinayak Pawar
- *
- */
 public class FormAuditEvent {
 	private Long identifier;
 	

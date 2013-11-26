@@ -14,7 +14,6 @@ import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.napi.LayoutRenderer;
-import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.ui.util.Constants;
 import edu.common.dynamicextensions.ui.webui.util.CacheManager;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
@@ -59,7 +58,7 @@ public class FormRenderer implements LayoutRenderer {
 
 	@Override
 	public String render() {
-		FormDataUtility.evaluateSkipLogic(formDataStack.peek());
+		//FormDataUtility.evaluateSkipLogic(formDataStack.peek());
 		return container.render(contextParameter, formDataStack.peek());
 
 	}

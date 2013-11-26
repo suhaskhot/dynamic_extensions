@@ -35,7 +35,6 @@ import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.ContainerCache;
 import edu.common.dynamicextensions.nutility.ContainerParser;
-import edu.common.dynamicextensions.nutility.FormDataUtility;
 import edu.common.dynamicextensions.nutility.IdGenerator;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
@@ -1440,9 +1439,9 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		StringBuilder pages = new StringBuilder();
 		StringBuilder categoryHtml = new StringBuilder(renderHiddenInputs(contextParameter, formData));
 
-		for (Page p : getPages()) {
-			pages.append(String.format(pagediv, p.getId().longValue(), p.render(formData, contextParameter)));
-		}
+//		for (Page p : getPages()) {
+//			pages.append(String.format(pagediv, p.getId().longValue(), p.render(formData, contextParameter)));
+//		}
 
 		categoryHtml.append(String.format(categorydiv, pages.toString()));
 		return categoryHtml.toString();
@@ -1456,8 +1455,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		
 		String containerIdentifier = String.format(CONTAINER_ID, getId());
 		String formCaption = String.format(FORM_CAPTION, caption);
-		String controlsCount = String.format(CONTROL_COUNT, FormDataUtility.getFilledControlCount(formData));
-		String emptyControlsCount = String.format(EMPTY_CONTROL_COUNT, FormDataUtility.getEmptyControlCount(formData));
+		String controlsCount = "";//String.format(CONTROL_COUNT, FormDataUtility.getFilledControlCount(formData));
+		String emptyControlsCount = "";//String.format(EMPTY_CONTROL_COUNT, FormDataUtility.getEmptyControlCount(formData));
 		String displayPage = String.format(DISPLAY_PAGE, getFirstEmptyPage(formData));
 
 		StringBuilder results = new StringBuilder();

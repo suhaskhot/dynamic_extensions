@@ -19,7 +19,7 @@ public class SkipRulesEvaluator {
 	private Map<Control, Boolean> evaluatedTgtCtrls = new IdentityHashMap<Control, Boolean>();
 	
 	public void evaluate(FormData formData) {
-		Container form = formData.getContainer();
+		Container form = null;//formData.getContainer();
 		evaluateSkipRules(formData, getFormRules(form, form.getSkipRules()));
 		
 		for (ControlValue cv : formData.getFieldValues()) {
@@ -66,7 +66,7 @@ public class SkipRulesEvaluator {
 				continue;
 			}
 			
-			List<ControlValue> fieldValues = data.getFieldValue(action.getTargetCtrl());
+			List<ControlValue> fieldValues = new ArrayList<ControlValue>();//data.getFieldValue(action.getTargetCtrl());
 			if (fieldValues == null) {
 				continue;
 			}

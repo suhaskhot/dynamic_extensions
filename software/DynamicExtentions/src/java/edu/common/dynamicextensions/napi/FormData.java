@@ -1,17 +1,19 @@
 package edu.common.dynamicextensions.napi;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 
 public class FormData {
@@ -54,176 +56,86 @@ public class FormData {
 	}
 	
 	public ControlValue getFieldValue(String name) {
-		ControlValue cv = fieldValues.get(name);
-		if (cv == null) {
-			Control ctrl = container.getControl(name);
-			if (ctrl != null) {
-				cv = new ControlValue(ctrl, null);
-				fieldValues.put(name, cv);
-			}
-		}
-		
-		return cv;
+		return fieldValues.get(name);
 	}
 	
-
-	//
-	// Below this is everything needed for UI layer. This will be removed
-	// once new UI is in place
-	//
-	
-	//
-	// For sake of simplicity, DE supports only one level of sub-form
-	// Supporting multi-level sub-forms needs thorough thinking
-	//
-	public List<ControlValue> getFieldValue(Control tgtCtrl) {
-		if (container == tgtCtrl.getContainer()) {
-			return Collections.singletonList(getFieldValue(tgtCtrl.getName()));
-		} 
-		
-		List<ControlValue> ret = new ArrayList<ControlValue>();		
-		for (Control ctrl : container.getControls()) {
-			if (!(ctrl instanceof SubFormControl)) {
-				continue;
-			}
-			
-			SubFormControl sfCtrl = (SubFormControl)ctrl;			
-			if (sfCtrl.getSubContainer() != tgtCtrl.getContainer()) {
-				continue;
-			}
-			
-			ControlValue cv = getFieldValue(sfCtrl.getName());
-			List<FormData> subFormDataList = (List<FormData>)cv.getValue();
-			if (subFormDataList != null) {
-				for (FormData subFormData : subFormDataList) {
-					ret.add(subFormData.getFieldValue(tgtCtrl.getName()));
-				}
-			}
-						
-			break;
-		}
-		
-		return ret;		
+	public String toJson() {
+		return new Gson().toJson(getFieldNameValueMap());
 	}
 	
-	public ControlValue getFieldValue(Control control, Integer rowNumber) {
-		ControlValue fieldValue = null;
+	public static FormData fromJson(String json) {
+		Type type = new TypeToken<Map<String, Object>>() {}.getType();
+		Map<String, Object> valueMap = new Gson().fromJson(json, type);
+		if (valueMap.get("containerId") == null) {
+			throw new RuntimeException("Input JSON doesn't have mandatory property: containerId");
+		}
 		
-		if (getContainer().getId().equals(control.getContainer().getId())) {
-			fieldValue = getFieldValue(control.getName());
-		} else {
-			
-			for (Control ctl : getContainer().getControls()) {
-			
-				if (ctl instanceof SubFormControl) {
-					Object value = getFieldValue(ctl.getName()).getValue();
-					
-					if (value != null && ((List<FormData>) value).size() > 0) {
-						FormData subFormData = ((List<FormData>) value).get((rowNumber == null ? 0 : rowNumber));
+		long containerId = ((Double)valueMap.get("containerId")).longValue();
+		Container container = Container.getContainer(containerId);
+		if (container == null) {
+			throw new RuntimeException("Input JSON specifies invalid container id: " + containerId);
+		}
+		
+		return getFormData(container, valueMap);
+	}
+	
+	public static FormData getFormData(Container container, Map<String, Object> valueMap) {		
+		FormData formData = new FormData(container);
+		Double recordId = (Double)valueMap.get("id");
+		if (recordId != null) {
+			formData.setRecordId(recordId.longValue());
+		}
+		
+		for (Map.Entry<String, Object> fieldValue : valueMap.entrySet()) {
+			Control ctrl = container.getControl(fieldValue.getKey());
+			if (ctrl instanceof SubFormControl) {
+				SubFormControl sfCtrl = (SubFormControl)ctrl;
+				List<Map<String, Object>> subValueMapList = (List<Map<String, Object>>)fieldValue.getValue();
+				List<FormData> subFormData = new ArrayList<FormData>();
+				if (subValueMapList != null) {
+					for (Map<String, Object> subValueMap : subValueMapList) {
+						subFormData.add(getFormData(sfCtrl.getSubContainer(), subValueMap));
+					}
+				} 
 				
-						if (subFormData.getContainer().getId().equals(control.getContainer().getId())) {
-							fieldValue = subFormData.getFieldValue(control.getName());
-							break;
-						}
-					}
-				}
+				formData.addFieldValue(new ControlValue(ctrl, subFormData));
+			} else if (ctrl instanceof MultiSelectControl) {				
+				List<String> values = (List<String>)fieldValue.getValue();
+				formData.addFieldValue(new ControlValue(ctrl, values == null ? null : values.toArray(new String[0])));
+			} else {
+				formData.addFieldValue(new ControlValue(ctrl, fieldValue.getValue()));
 			}
 		}
-
-		return fieldValue;
+		
+		return formData;
 	}
-
-	public ControlValue getFieldValueByHTMLName(String htmlName) {
-		ControlValue controlValue = null;
-		int sequenceNumber = Control.getSequenceNumber(htmlName);
-		int xpos = Control.getXpos(htmlName);
-		String containerName = Control.getContainerName(htmlName);
+						
+	private Map<String, Object> getFieldNameValueMap() {
+		Map<String, Object> props = new HashMap<String, Object>();
+		props.put("containerId", container.getId());
+		props.put("id", recordId);
 		
-		if (StringUtils.deleteWhitespace(getContainer().getName()).equals(containerName)) {
-			controlValue = getControlValue(this, sequenceNumber, xpos);
-		} else {
-			for (Control control : getContainer().getControls()) {
-				if (control instanceof SubFormControl) {
-					SubFormControl subFormControl = (SubFormControl) control;
-					if (StringUtils.deleteWhitespace(subFormControl.getSubContainer().getName()).equals(containerName)) {
-						List<FormData> datas = (List<FormData>) getFieldValue(control.getName()).getValue();
-						if (subFormControl.isCardinalityOneToMany()) {
-							controlValue = getControlValue(datas.get(Control.getRowNumber(htmlName) - 1),
-									sequenceNumber,
-									xpos);
-
-						} else {
-							FormData formData = null;
-							if (datas == null || datas.isEmpty()) {
-								formData = new FormData(subFormControl.getSubContainer());
-								ControlValue subFormCv = new ControlValue(subFormControl, Arrays.asList(formData));
-								addFieldValue(subFormCv);
-
-							} else {
-								formData = datas.get(0);
-							}
-							controlValue = getControlValue(formData, sequenceNumber, xpos);
-
-						}
-						break;
-					}
-
-				}
-			}
-		}
-		return controlValue;
-	}
-
-	private ControlValue getControlValue(FormData formData, int sequenceNumber, int xpos) {
-		ControlValue controlValue = null;
-		for (Control control : formData.getContainer().getControls()) {
-
-			if (control.getSequenceNumber() == sequenceNumber && control.getxPos() == xpos) {
-				controlValue = formData.getFieldValue(control.getName());
-				break;
-			}
-		}
-		return controlValue;
-	}
-
-	/**
-	 * Search the form tree for the specified control name separated by '.'
-	 * @param controlName e.g Person.Address.city
-	 * @param rowNumber 
-	 * @return 
-	 */
-	public ControlValue getFieldValue(String controlName, Integer rowNumber) {
-		
-		
-		FormData formData = this;
-		ControlValue fieldValue = formData.getFieldValue(controlName);
-		if(fieldValue != null)
-		{
-			return fieldValue;
-		}
-		String[] controlNameParts = controlName.split("\\.");
-		
-		if (controlNameParts.length == 1) { 
-			throw new RuntimeException("Invalid control name: " + controlName);
-		}
-		
-		FormData subFormData = null;
-		for (int i = 0; i<controlNameParts.length-1;++i) {
+		for (ControlValue fieldValue : getFieldValues()) {
+			String fieldName = fieldValue.getControl().getName();
+			Object value = fieldValue.getValue();
 			
-			ControlValue controlValue = formData.getFieldValue(controlNameParts[i]);
-			if(controlValue == null)
-			{
-				throw new RuntimeException("Invalid control name: " + controlName);
-			}
-			List<FormData> value = (List<FormData>) controlValue.getValue();
-			if ( value != null) {
-				subFormData = value.get((rowNumber == null ? 0 : rowNumber - 1));
-				formData = subFormData;
-			}
+			if (value instanceof FileControlValue) {
+				String fileName = ((FileControlValue)value).getFileName();
+				props.put(fieldName, fileName);
+			} else if (value instanceof List) {
+				List<FormData> formDataList = (List<FormData>)value;
+				
+				List<Map<String, Object>> sfData = new ArrayList<Map<String, Object>>();
+				for (FormData formData : formDataList) {
+					sfData.add(formData.getFieldNameValueMap());
+				}
+				
+				props.put(fieldName, sfData);
+			} else if (value != null) {
+				props.put(fieldName, value);
+			}			
 		}
-		fieldValue = formData.getFieldValue(controlNameParts[controlNameParts.length-1]);
 		
-		return fieldValue;
-
+		return props;
 	}	
 }

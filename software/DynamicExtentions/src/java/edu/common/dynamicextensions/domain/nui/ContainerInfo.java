@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.util.Date;
 
 public class ContainerInfo {
-	private Long containerId;
+	private Long id;
 	
 	private String name;
 	
@@ -17,12 +17,12 @@ public class ContainerInfo {
 	
 	private Date lastUpdatedTime;
 	
-	public Long getContainerId() {
-		return containerId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setContainerId(Long containerId) {
-		this.containerId = containerId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

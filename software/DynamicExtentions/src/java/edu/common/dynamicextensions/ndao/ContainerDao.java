@@ -252,7 +252,7 @@ public class ContainerDao {
 				
 			while (rs.next()) {
 				ContainerInfo containerInfo = new ContainerInfo();
-				containerInfo.setContainerId(rs.getLong("IDENTIFIER"));
+				containerInfo.setId(rs.getLong("IDENTIFIER"));
 				containerInfo.setName(rs.getString("NAME"));
 				containerInfo.setCaption(rs.getString("CAPTION"));
 				containerInfo.setCreatedBy(rs.getLong("CREATED_BY"));

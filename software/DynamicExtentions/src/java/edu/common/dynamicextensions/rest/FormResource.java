@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.rest;
 
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -16,6 +17,9 @@ import javax.ws.rs.core.Response.Status;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.ContainerInfo;
+import edu.common.dynamicextensions.napi.FormData;
+import edu.common.dynamicextensions.napi.FormDataManager;
+import edu.common.dynamicextensions.napi.impl.FormDataManagerImpl;
 import edu.common.dynamicextensions.nutility.ContainerJsonSerializer;
 import edu.common.dynamicextensions.nutility.ContainerSerializer;
 
@@ -62,7 +66,9 @@ public class FormResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{formId}/data/{recordId}")
 	public Response getData(@PathParam("formId") Long formId, @PathParam("recordId") Long recordId) {
-		return Response.ok("Hello, world!").build();
+		FormDataManager formDataMgr = new FormDataManagerImpl();
+		FormData formData = formDataMgr.getFormData(formId, recordId);		
+		return Response.ok(formData.toJson()).build();
 	}
 	
 	@POST
@@ -70,7 +76,10 @@ public class FormResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{formId}/data")
 	public Response saveData(@PathParam("formId") Long formId, String formJson) {
-		return Response.ok("Hello, world!").build();
+		FormData formData = FormData.fromJson(formJson);
+		FormDataManager formDataMgr = new FormDataManagerImpl();
+		Long recordId = formDataMgr.saveOrUpdateFormData(null, formData);		
+		return Response.ok(Collections.singletonMap("id", recordId)).build();
 	}
 	
 	@PUT
@@ -78,6 +87,9 @@ public class FormResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{formId}/data")
 	public Response updateData(@PathParam("formId") Long formId, String formJson) {
-		return Response.ok("Hello, world!").build();
+		FormData formData = FormData.fromJson(formJson);
+		FormDataManager formDataMgr = new FormDataManagerImpl();
+		Long recordId = formDataMgr.saveOrUpdateFormData(null, formData);		
+		return Response.ok(Collections.singletonMap("id", recordId)).build();
 	}
 }

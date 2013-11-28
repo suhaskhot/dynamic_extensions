@@ -10,13 +10,20 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 import edu.common.dynamicextensions.domain.nui.CheckBox;
+import edu.common.dynamicextensions.domain.nui.ComboBox;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.Label;
+import edu.common.dynamicextensions.domain.nui.ListBox;
+import edu.common.dynamicextensions.domain.nui.MultiSelectCheckBox;
+import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
+import edu.common.dynamicextensions.domain.nui.PermissibleValue;
+import edu.common.dynamicextensions.domain.nui.PvVersion;
+import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
@@ -96,7 +103,7 @@ public class ContainerJsonSerializer implements ContainerSerializer {
 		if (ctrl instanceof TextField) {
 			putTextFieldProps((TextField)ctrl, ctrlProps);
 		} else if (ctrl instanceof SelectControl) {
-			
+			putSelectFieldProps((SelectControl)ctrl, ctrlProps);			
 		} else if (ctrl instanceof FileUploadControl) {
 			ctrlProps.put("type", "fileUpload");
 		} else if (ctrl instanceof DatePicker) {
@@ -127,6 +134,29 @@ public class ContainerJsonSerializer implements ContainerSerializer {
 		} else {
 			throw new RuntimeException("Unknown TextField type");
 		}
+	}
+	
+	private void putSelectFieldProps(SelectControl ctrl, Map<String, Object> ctrlProps) {
+		ctrlProps.put("dataType", ctrl.getPvDataSource().getDataType());
+		ctrlProps.put("dateFormat", ctrl.getPvDataSource().getDateFormat());
+		
+		List<PvVersion> pvVersions = ctrl.getPvDataSource().getPvVersions();
+		if (pvVersions != null) {
+			PvVersion pvVersion = pvVersions.get(0);
+			ctrlProps.put("pvs", pvVersion.getPermissibleValues());			
+		}
+		
+		if (ctrl instanceof ComboBox) {
+			ctrlProps.put("type", "combobox");			
+		} else if (ctrl instanceof RadioButton) {
+			ctrlProps.put("type", "radiobutton");
+		} else if (ctrl instanceof MultiSelectCheckBox) {
+			ctrlProps.put("type", "checkbox"); 
+		} else if (ctrl instanceof ListBox) {
+			ctrlProps.put("type", "listbox");
+		} else if (ctrl instanceof MultiSelectListBox) {
+			ctrlProps.put("type", "multiSelectListbox");
+		}				
 	}
 	
 	private void putStringTextFieldProps(StringTextField ctrl, Map<String, Object> ctrlProps) {

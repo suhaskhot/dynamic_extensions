@@ -70,12 +70,13 @@ public class FormData {
 			throw new RuntimeException("Input JSON doesn't have mandatory property: containerId");
 		}
 		
-		long containerId = ((Double)valueMap.get("containerId")).longValue();
+		long containerId = ((Double)valueMap.get("containerId")).longValue();		
 		Container container = Container.getContainer(containerId);
 		if (container == null) {
 			throw new RuntimeException("Input JSON specifies invalid container id: " + containerId);
 		}
 		
+		valueMap.remove("containerId");
 		return getFormData(container, valueMap);
 	}
 	
@@ -87,6 +88,10 @@ public class FormData {
 		}
 		
 		for (Map.Entry<String, Object> fieldValue : valueMap.entrySet()) {
+			if (fieldValue.getKey().equals("id")) {
+				continue;
+			}
+			
 			Control ctrl = container.getControl(fieldValue.getKey());
 			if (ctrl instanceof SubFormControl) {
 				SubFormControl sfCtrl = (SubFormControl)ctrl;
@@ -102,7 +107,7 @@ public class FormData {
 			} else if (ctrl instanceof MultiSelectControl) {				
 				List<String> values = (List<String>)fieldValue.getValue();
 				formData.addFieldValue(new ControlValue(ctrl, values == null ? null : values.toArray(new String[0])));
-			} else {
+			} else if (ctrl != null){
 				formData.addFieldValue(new ControlValue(ctrl, fieldValue.getValue()));
 			}
 		}

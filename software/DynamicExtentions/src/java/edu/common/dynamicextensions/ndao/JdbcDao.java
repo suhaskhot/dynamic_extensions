@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
-import edu.wustl.dao.JDBCDAO;
+import edu.common.dynamicextensions.nutility.IdGenerator;
 import edu.wustl.dao.util.DAOUtility;
 
 public class JdbcDao {
@@ -44,7 +44,7 @@ public class JdbcDao {
 			Object[] paramArray = params != null ? params.toArray() : new Object[0];
 			jdbcTemplate.update(updateSql, paramArray);
 		} catch (Exception e) {
-			throw new RuntimeException("Error executing the update dml: " + updateSql);
+			throw new RuntimeException("Error executing the update dml: " + updateSql, e);
 		}		
 	}
 	
@@ -126,8 +126,6 @@ public class JdbcDao {
 	}
 	
 	public Long getNextId(String tableName) {
-		//return IdGenerator.getInstance().getNextId(tableName);
-		return null;
-		// TODO: Using spring jdbc dao
+		return IdGenerator.getInstance().getNextId(tableName);
 	}		
 }

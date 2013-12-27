@@ -11,7 +11,7 @@
 	<property name="dhtmlx.js.dir" value="src/web/dhtmlx_suite/js"/>
 	<property name="test.dir" value="test" />
 	<property name="target.dir" value="binaries/classes" />
-	<property name="lib.dir" value="${base.dir}/lib/server" />
+	<property name="lib.dir" value="${base.dir}/lib" />
 	   <property name="client.lib.dir" value="${base.dir}/lib/client"/>
 	<property name="build.dir" value="${base.dir}/build" />
 	<property name="applet.dir" value="${base.dir}/src/web/Applet" />

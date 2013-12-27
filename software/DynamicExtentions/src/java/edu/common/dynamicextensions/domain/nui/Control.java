@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.nui.ValidationRuleNames;
-import edu.common.dynamicextensions.ui.util.Constants;
 
 public abstract class Control implements Comparable<Control> {
 	public static enum LabelPosition {
@@ -58,8 +57,6 @@ public abstract class Control implements Comparable<Control> {
 	private String conceptDefinitionSource;
 
 	private String conceptDefinition;
-
-	private String activityStatus = Constants.ACTIVE;
 
 	private Set<ValidationRule> validationRules = new HashSet<ValidationRule>();
 
@@ -196,14 +193,6 @@ public abstract class Control implements Comparable<Control> {
 
 	public void setShowInGrid(boolean showInGrid) {
 		this.showInGrid = showInGrid;
-	}
-
-	public String getActivityStatus() {
-		return activityStatus;
-	}
-
-	public void setActivityStatus(String activityStatus) {
-		this.activityStatus = activityStatus;
 	}
 
 	public String getDbColumnName() {
@@ -348,7 +337,6 @@ public abstract class Control implements Comparable<Control> {
 		result = prime * result	+ ((conceptPreferredName == null) ? 0 : conceptPreferredName.hashCode());
 		result = prime * result	+ ((conceptDefinitionSource == null) ? 0 : conceptDefinitionSource.hashCode());
 		result = prime * result	+ ((conceptDefinition == null) ? 0 : conceptDefinition.hashCode());		
-		result = prime * result + ((activityStatus == null) ? 0 : activityStatus.hashCode());
 		result = prime * result	+ ((validationRules == null) ? 0 : validationRules.hashCode());		
 		return result;
 	}
@@ -386,8 +374,7 @@ public abstract class Control implements Comparable<Control> {
 			!StringUtils.equals(conceptCode, ctrl.conceptCode) ||
 			!StringUtils.equals(conceptPreferredName, ctrl.conceptPreferredName) ||
 			!StringUtils.equals(conceptDefinitionSource, ctrl.conceptDefinitionSource) ||
-			!StringUtils.equals(conceptDefinition, ctrl.conceptDefinition) ||
-			!StringUtils.equals(activityStatus, ctrl.activityStatus)) {
+			!StringUtils.equals(conceptDefinition, ctrl.conceptDefinition)) {
 			return false;
 		}
 		

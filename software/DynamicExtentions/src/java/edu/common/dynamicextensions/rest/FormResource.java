@@ -47,7 +47,7 @@ public class FormResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getForms() {
 		List<ContainerInfo> forms = Container.getContainerInfo();
-		return Response.ok(forms).build();
+		return Response.ok(new Gson().toJson(forms)).build();
 	}
 	
 	@GET

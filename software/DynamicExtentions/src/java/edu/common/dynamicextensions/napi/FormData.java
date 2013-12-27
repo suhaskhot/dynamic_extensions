@@ -21,6 +21,8 @@ public class FormData {
 	
 	private Long recordId;
 	
+	private Map<String, Object> appData = new HashMap<String, Object>();
+	
 	private Map<String, ControlValue> fieldValues = new LinkedHashMap<String, ControlValue>();
 
 	public FormData(Container container) {
@@ -41,6 +43,14 @@ public class FormData {
 
 	public void setRecordId(Long recordId) {
 		this.recordId = recordId;
+	}
+
+	public Map<String, Object> getAppData() {
+		return appData;
+	}
+
+	public void setAppData(Map<String, Object> appData) {
+		this.appData = appData;
 	}
 
 	public Collection<ControlValue> getFieldValues() {
@@ -64,20 +74,35 @@ public class FormData {
 	}
 	
 	public static FormData fromJson(String json) {
+		return fromJson(json, null);
+	}
+
+	public static FormData fromJson(String json, Long containerId) {
 		Type type = new TypeToken<Map<String, Object>>() {}.getType();
 		Map<String, Object> valueMap = new Gson().fromJson(json, type);
-		if (valueMap.get("containerId") == null) {
+		if (valueMap.get("containerId") == null && containerId == null) {
 			throw new RuntimeException("Input JSON doesn't have mandatory property: containerId");
 		}
-		
-		long containerId = ((Double)valueMap.get("containerId")).longValue();		
+				
+		if (containerId == null) {
+			containerId = ((Double)valueMap.get("containerId")).longValue();		
+        }
+
 		Container container = Container.getContainer(containerId);
 		if (container == null) {
 			throw new RuntimeException("Input JSON specifies invalid container id: " + containerId);
 		}
 		
 		valueMap.remove("containerId");
-		return getFormData(container, valueMap);
+		FormData formData = getFormData(container, valueMap);
+		Map<String, Object> appData = (Map<String, Object>)valueMap.get("appData");
+		formData.setAppData(appData);		
+		
+		if (valueMap.get("recordId") != null) {
+			formData.setRecordId(((Double)valueMap.get("recordId")).longValue());
+		}
+		
+		return formData;
 	}
 	
 	public static FormData getFormData(Container container, Map<String, Object> valueMap) {		

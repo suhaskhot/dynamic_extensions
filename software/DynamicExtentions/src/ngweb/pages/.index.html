@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoResponse: Save time on interviews</title>
+    <link rel="stylesheet" href="/app/css/app.css">
+    <link rel="stylesheet" href="/external/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/external/bootstrap/css/bootstrap-responsive.min.css">
+    <script type="text/javascript" src="/external/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/external/raty/jquery.raty.min.js"></script>
+    <script type="text/javascript" src="/external/underscorejs/underscore-min.js"></script>
+    <script type="text/javascript" src="/external/backbonejs/backbone-min.js"></script>
+    <script type="text/javascript" src="/external/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/external/jwplayer/jwplayer.js"></script>
+    <script type="text/javascript" src="/external/notify/bootstrap-notify.min.js"></script>
+  </head>
+</html>
+<body>
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="vr-brand-img"><img src="/img/vr-logo.png" class="pull-left"></div>
+          <div class="vr-brand-name"><span>VideoResponse</span></div>
+          <div class="vr-session"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span2">
+        <div class="vr-sidebar"></div>
+      </div>
+      <div class="span10">
+        <div class="vr-board"></div>
+        <p class="vr-padding"></p>
+      </div>
+    </div>
+  </div>
+  <script type="text/template" class="template_session">
+    <div class="nav pull-right">
+      <li class="dropdown"><a data-toggle="dropdown" href="#" class="dropdown-toggle"><span><%- id %></span><i class="vr-user-icon pull-right icon-user"></i></a>
+        <ul role="menu" class="dropdown-menu">
+          <li class="signout"><a href="#">Sign out</a></li>
+        </ul>
+      </li>
+    </div>
+  </script>
+  <script type="text/template" class="template_sidebar">
+    <div class="search">
+      <input type="text" placeholder="Search" class="input-block-level">
+    </div>
+    <ul class="nav nav-list">
+      <li class="nav-header">Links</li>
+      <li class="links_new_interview"><a href="#post/new">Create</a></li>
+      <li class="links_inbox"><a href="#post?folder=inbox">Interviews</a></li>
+      <li class="links_draft"><a href="#post?folder=draft">Drafts</a></li>
+      <li class="links_activity"><a href="#activity">Activity</a></li>
+    </ul>
+  </script>
+  <script type="text/template" class="template_list_of_posts">
+    <div class="posts">
+      <div class="row-fluid header-search hidden"><strong>Search Results</strong></div>
+      <div class="row-fluid header-posts">
+        <div class="actions">
+          <button class="btn btn-default action refresh">Refresh</button>
+          <button class="btn btn-default action delete">Delete</button>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <hr class="vr-hr">
+      </div>
+      <div class="row-fluid">
+        <div class="list-of-posts"></div>
+      </div>
+      <div class="row-fluid no-posts-yet">
+        <p>No posts yet.</p>
+      </div>
+    </div>
+  </script>
+  <script type="text/template" class="template_post_summary">
+    <div id="<%- created_on %>" class="post-summary">
+      <div class="row-fluid">
+        <div class="span1">
+          <input id="<%- id %>" type="checkbox">
+        </div>
+        <div class="span11">
+          <div class="span2 vr-ellipsis"><span><%- creator %></span></div>
+          <div class="span8 vr-ellipsis"><span><%- subject %></span></div>
+          <div class="span2 desktop-only vr-ellipsis"><small class="muted"><% print(Help.readable_date(created_on)); %></small></div>
+        </div>
+      </div>
+    </div>
+    <hr class="vr-hr">
+  </script>
+  <script type="text/template" class="template_post_progress">
+    <div class="row-fluid responses-received">
+      <div class="span4"><span>Responses received</span></div>
+      <div class="span4">
+        <div class="progress progress-info">
+          <div style="width: 0%;" class="bar"><span class="percent">0%</span></div>
+        </div>
+      </div>
+      <div class="span4 desktop-only"><span class="label label-default">-</span></div>
+    </div>
+    <div class="row-fluid ratings-received">
+      <div class="span4"><span>Rated responses</span></div>
+      <div class="span4">
+        <div class="progress progress-info">
+          <div style="width: 0%;" class="bar"><span class="percent">0%</span></div>
+        </div>
+      </div>
+      <div class="span4 desktop-only"><span class="label label-default">-</span></div>
+    </div>
+    <div class="row-fluid views-received">
+      <div class="span4"><span>Viewed responses</span></div>
+      <div class="span4">
+        <div class="progress progress-info">
+          <div style="width: 0%;" class="bar"><span class="percent">0%</span></div>
+        </div>
+      </div>
+      <div class="span4 desktop-only"><span class="label label-default">-</span></div>
+    </div>
+    <div class="row-fluid comments-received">
+      <div class="span4"><span>Responses that received comments</span></div>
+      <div class="span4">
+        <div class="progress progress-info">
+          <div style="width: 0%;" class="bar"><span class="percent">0%</span></div>
+        </div>
+      </div>
+      <div class="span4 desktop-only"><span class="label label-default">-</span></div>
+    </div>
+    <hr class="vr-hr">
+  </script>
+  <script type="text/template" class="template_contact_collection">
+    <div class="row-fluid">
+      <div class="mode-edit hidden">
+        <div class="span12">
+          <input type="text" class="vr-clean-input input-contact input-block-level">
+        </div>
+      </div>
+      <div class="mode-view hidden">
+        <div class="toggle vr-cursor">
+          <div class="span11">
+            <p class="contact-collection-header"></p>
+          </div>
+          <div class="span1 desktop-only"><i class="icon-chevron-down showmore"></i><i class="icon-chevron-up showless hidden"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="contact-collection vr-ellipsis"></div>
+    </div>
+    <div class="row-fluid"></div>
+    <hr class="vr-hr">
+  </script>
+  <script type="text/template" class="template_contact"><span class="mode-edit hidden"><span class="label label-default contact"><%- id %><span id="<%- id %>" class="label label-important contact-remove">&times;</span></span></span><span class="mode-view hidden"><span class="label label-default contact"><%- id %></span></span></script>
+  <script type="text/template" class="template_interview">
+    <div class="interview-actions"></div>
+    <div class="interview-title"></div>
+    <div class="interview-interviewers"></div>
+    <div class="interview-reviewers"></div>
+    <div class="interview-responders"></div>
+    <div class="interview-questions"></div>
+    <div class="interview-progress"></div>
+    <div class="interview-responses"></div>
+  </script>
+  <script type="text/template" class="template_interview_actions">
+    <div class="row-fluid">
+      <div class="mode-edit hidden">
+        <div class="span12">
+          <button class="action save btn btn-info">Save</button>
+          <button class="action publish btn btn-danger">Publish</button>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid"></div>
+    <hr class="vr-hr">
+  </script>
+  <script type="text/template" class="template_interview_title">
+    <div class="row-fluid">
+      <div class="mode-edit hidden">
+        <div class="span10">
+          <input type="text" value="<%- subject %>" placeholder="Type your interview title here" class="vr-clean-input interview-title-input input-block-level">
+        </div>
+        <div class="span2 vr-ellipsis desktop-only"><span><% print(Help.readable_date(created_on)); %></span></div>
+      </div>
+      <div class="mode-view hidden">
+        <div class="span10 vr-ellipsis"><strong><%- subject %></strong></div>
+        <div class="span2 vr-ellipsis desktop-only"><span><% print(Help.readable_date(created_on)); %></span></div>
+      </div>
+    </div>
+    <div class="row-fluid"></div>
+    <hr class="vr-hr">
+  </script>
+  <script type="text/template" class="template_question_collection">
+    <div class="row-fluid">
+      <div class="mode-edit hidden">
+        <div class="row-fluid">
+          <div class="span12">
+            <textarea type="text" placeholder="Type your question here" class="vr-clean-input input-collection-question input-block-level"></textarea>
+          </div>
+        </div>
+        <div class="row-fluid"></div>
+        <hr class="vr-hr">
+      </div>
+      <div class="mode-view hidden">
+        <div class="toggle vr-cursor">
+          <div class="span11">
+            <p>Questions</p>
+          </div>
+          <div class="span1 desktop-only"><i class="icon-chevron-down showmore"></i><i class="icon-chevron-up showless hidden"></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <ol class="question-collection hidden"></ol>
+    </div>
+    <div class="mode-view hidden">
+      <div class="row-fluid"></div>
+      <hr class="vr-hr">
+    </div>
+  </script>
+  <script type="text/template" class="template_question">
+    <div class="mode-edit hidden">
+      <div class="row-fluid">
+        <div class="span11">
+          <textarea placeholder="Type your question here" class="vr-clean-input input-question input-block-level"><%- description %></textarea>
+        </div>
+        <div class="span1 question-remove"><span>&times;</span></div>
+      </div>
+      <div class="row-fluid"></div>
+      <hr class="vr-hr">
+    </div>
+    <div class="mode-view hidden">
+      <div class="row-fluid">
+        <li><%- description %></li><br>
+      </div>
+    </div>
+  </script>
+  <script type="text/template" class="template_list_of_responses">
+    <div class="row-fluid active">
+      <p>No responses yet.</p>
+    </div>
+    <div class="row-fluid hidden">
+      <div class="row-fluid">
+        <div class="span4">
+          <select class="filter-sortby input-block-level">
+            <option id="newest">Newest</option>
+            <option id="oldest">Oldest</option>
+            <option id="most-stars">Most stars</option>
+            <option id="most-comments">Most comments</option>
+            <option id="most-views">Most views</option>
+            <option id="least-stars">Least stars</option>
+            <option id="least-comments">Least comments</option>
+            <option id="least-views">Least Views</option>
+            <option id="longest">Longest</option>
+            <option id="shortest">Shortest</option>
+          </select>
+        </div>
+        <div class="span1 offset4 hidden-phone vr-ellipsis"><i class="icon-comment"></i></div>
+        <div class="span1 hidden-phone vr-ellipsis"><i class="icon-eye-open"></i></div>
+        <div class="span1 hidden-phone vr-ellipsis"><i class="icon-time"></i></div>
+      </div>
+      <div class="row-fluid">
+        <div class="vr-response-list"></div>
+      </div>
+    </div>
+  </script>
+  <script type="text/template" class="template_response_summary">
+    <div id="<%- id %>" class="response">
+      <div class="row-fluid">
+        <div class="span1"><img width="100%" src="<%- video.image %>"></div>
+        <div class="span3 vr-ellipsis"><span><%- responder %></span></div>
+        <div class="span4">
+          <div class="statistics-stars"></div>
+        </div>
+        <div class="span1"><span class="hidden-phone"><%- statistics.comments %></span><span class="visible-phone"><%- statistics.comments %> comments</span></div>
+        <div class="span1"><span class="hidden-phone"><%- statistics.views %></span><span class="visible-phone"><%- statistics.views %> views</span></div>
+        <div class="span1"><span><% var min = Math.floor(statistics.duration/60); var sec = statistics.duration%60; print(min + ":" + sec); %></span></div>
+        <div class="span1 desktop-only vr-ellipsis"><small class="muted"><% print(Help.readable_date(responded_on)); %></small></div>
+      </div>
+    </div>
+    <hr class="vr-hr">
+  </script>
+  <script type="text/template" class="template_response">
+    <div class="row-fluid">
+      <h5><%- responder %></h5>
+    </div>
+    <div class="row-fluid">
+      <div class="span6">
+        <div id="video"></div>
+        <div class="stars well"></div>
+        <div class="reviews"></div>
+      </div>
+      <div class="span6">
+        <blockquote>
+          <div class="interview-questions"></div>
+        </blockquote>
+      </div>
+    </div>
+  </script>
+  <script type="text/template" class="template_list_of_reviews">
+    <div class="addcomment"></div>
+    <hr>
+    <div class="comments"></div>
+  </script>
+  <script type="text/template" class="template_review_star">
+    <div class="span12">
+      <div class="span3"><span>Your rating: </span></div>
+      <div class="span9">
+        <div class="review-stars"></div>
+      </div>
+    </div>
+  </script>
+  <script type="text/template" class="template_review_comment">
+    <blockquote id="<%- reviewed_on %>" class="vr-review-comment"><span>	<%- review %><small><%- reviewer %> - <% print(Help.readable_date(reviewed_on)); %></small></span></blockquote>
+  </script>
+  <script type="text/template" class="template_review_addcomment">
+    <textarea id="addcomment" rows="3" class="review-comment input-block-level"></textarea>
+    <button disabled="disabled" class="post-comment btn btn-primary">Add comment</button>
+  </script>
+  <div class="template_message hidden">
+    <div class="error_404">404 </div>
+    <div class="error_post_delete">Error! Could not delete post. </div>
+    <div class="error_post_delete_permission_denied">Error! Permission denied. </div>
+    <div class="error_comment_create">Error! Could not add review. </div>
+    <div class="error_star_create">Error! Could not save your rating. </div>
+    <div class="interview_save_success">Saved.</div>
+    <div class="interview_save_error">Error! Could not save this interview.</div>
+    <div class="interview_publish_success">Published</div>
+    <div class="interview_publish_error">Error! Could not publish this interview</div>
+    <div class="interview_publish_nosubject">Error! Please enter a title for this interview</div>
+    <div class="interview_publish_noquestions">Error! Please add at least one question</div>
+    <div class="contact_input_placeholder_interviewers">Type email address of interviewer here</div>
+    <div class="contact_input_placeholder_reviewers">Type email address of reviewer here	</div>
+    <div class="contact_input_placeholder_responders">Type email address of interviewee/candidate here</div>
+    <div class="contact_header_interviewers">Interviewers</div>
+    <div class="contact_header_reviewers">Reviewers</div>
+    <div class="contact_header_responders">Interviewees/Candidates</div>
+  </div>
+  <script type="text/template" class="template_list_of_activity">
+    <div class="row-fluid"><strong>Recent Activity</strong></div>
+    <div class="row-fluid">
+      <hr class="vr-hr">
+    </div>
+    <div class="list-of-activity"></div>
+    <ul class="pager">
+      <li class="more-activity vr-cursor previous"><span>Older</span></li>
+    </ul>
+  </script>
+  <script type="text/template" class="template_activity_stared">
+    <div class="row-fluid vr-activity">
+      <div class="span1"><i class="icon-star"></i></div>
+      <div class="span2 vr-ellipsis"><span><%- activity_owner %></span></div>
+      <div class="span2 vr-ellipsis"><span>rated</span></div>
+      <div class="span6 vr-ellipsis"><a href="#post/<%- post_id %>/responses/<%- activity_data.response_id %>" class="label"><%- activity_data.subject %></a></div>
+      <div class="span1 vr-ellipsis"><small class="muted"><% print(Help.readable_date(activity_time)); %></small></div>
+    </div>
+    <div class="row-fluid">
+      <hr class="vr-hr">
+    </div>
+  </script>
+  <script type="text/template" class="template_activity_commented">
+    <div class="row-fluid vr-activity">
+      <div class="span1"><i class="icon-comment"></i></div>
+      <div class="span2 vr-ellipsis"><span><%- activity_owner %></span></div>
+      <div class="span2 vr-ellipsis"><span>commented on</span></div>
+      <div class="span6 vr-ellipsis"><a href="#post/<%- post_id %>/responses/<%- activity_data.response_id %>" class="label"><%- activity_data.subject %></a></div>
+      <div class="span1 vr-ellipsis"><small class="muted"><% print(Help.readable_date(activity_time)); %></small></div>
+    </div>
+    <div class="row-fluid">
+      <hr class="vr-hr">
+    </div>
+  </script>
+  <script type="text/template" class="template_activity_viewed">
+    <div class="row-fluid vr-activity">
+      <div class="span1"><i class="icon-eye-open"></i></div>
+      <div class="span2 vr-ellipsis"><span><%- activity_owner %></span></div>
+      <div class="span2 vr-ellipsis"><span>viewed</span></div>
+      <div class="span6 vr-ellipsis"><a href="#post/<%- post_id %>/responses/<%- activity_data.response_id %>" class="label"><%- activity_data.subject %></a></div>
+      <div class="span1 vr-ellipsis"><small class="muted"><% print(Help.readable_date(activity_time)); %></small></div>
+    </div>
+    <div class="row-fluid">
+      <hr class="vr-hr">
+    </div>
+  </script>
+  <script type="text/template" class="template_activity_response_completed">
+    <div class="row-fluid vr-activity">
+      <div class="span1"><i class="icon-user"></i></div>
+      <div class="span2 vr-ellipsis"><span><%- activity_owner %></span></div>
+      <div class="span2 vr-ellipsis"><span>completed</span></div>
+      <div class="span6 vr-ellipsis"><a href="#post/<%- post_id %>/responses/<%- activity_data.response_id %>" class="label"><%- activity_data.subject %></a></div>
+      <div class="span1 vr-ellipsis"><small class="muted"><% print(Help.readable_date(activity_time)); %></small></div>
+    </div>
+    <div class="row-fluid">
+      <hr class="vr-hr">
+    </div>
+  </script>
+  <script type="text/template" class="template_activity_post_created">
+    <div class="row-fluid vr-activity">
+      <div class="span1"><i class="icon-pencil"></i></div>
+      <div class="span2 vr-ellipsis"><span><%- activity_owner %></span></div>
+      <div class="span2 vr-ellipsis"><span>invited you</span></div>
+      <div class="span6 vr-ellipsis"><a href="#post/<%- post_id %>" class="label"><%- activity_data.subject %></a></div>
+      <div class="span1 vr-ellipsis"><small class="muted"><% print(Help.readable_date(activity_time)); %></small></div>
+    </div>
+    <div class="row-fluid">
+      <hr class="vr-hr">
+    </div>
+  </script>
+  <script type="text/javascript" src="/app/js/models.js"></script>
+  <script type="text/javascript" src="/app/js/views.js"></script>
+  <script type="text/javascript" src="/app/js/view_question.js"></script>
+  <script type="text/javascript" src="/app/js/view_contact.js"></script>
+  <script type="text/javascript" src="/app/js/view_interview.js"></script>
+  <script type="text/javascript" src="/app/js/collections.js"></script>
+  <script type="text/javascript" src="/app/js/router.js"></script>
+  <script type="text/javascript" src="/app/js/help.js"></script>
+  <script type="text/javascript" src="/app/js/app.js"></script>
+  <div class="notifications center"></div>
+</body>

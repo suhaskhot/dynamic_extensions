@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import edu.common.dynamicextensions.domain.FormAuditEvent;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
@@ -29,12 +27,8 @@ import edu.common.dynamicextensions.napi.FormData;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
-import edu.wustl.common.domain.AuditEvent;
 
-public class FormAuditManagerImpl implements FormAuditManager {
-	
-	private final Logger logger = Logger.getLogger(FormAuditManagerImpl.class);
-	
+public class FormAuditManagerImpl implements FormAuditManager {	
 	@Override
 	public void audit(UserContext userCtxt, FormData formData, String operation) {
 		try {
@@ -61,8 +55,11 @@ public class FormAuditManagerImpl implements FormAuditManager {
 		formAuditEvent.setFormName(formName);
 		formAuditEvent.setRecordId(recId);
 		formAuditEvent.setFormDataXml(xml.toString());
+		formAuditEvent.setIpAddress(userCtxt.getIpAddress());
+		formAuditEvent.setUserId(userCtxt.getUserId());
+		formAuditEvent.setOperation(operation != null ? operation : "");
 	
-		persist(userCtxt, formAuditEvent, operation, jdbcDao);
+		persist(formAuditEvent, jdbcDao);
 	}
 	
 	private String getFieldSetsXml(FormData formData) {
@@ -120,16 +117,9 @@ public class FormAuditManagerImpl implements FormAuditManager {
 		return xml.toString();
 	}
 	
-	private void persist(UserContext userCtxt, FormAuditEvent formAuditEvent, String operation, JdbcDao jdbcDao) {
-		AuditEvent auditEvent = new AuditEvent();
-	
-		auditEvent.setIpAddress((userCtxt != null) ? userCtxt.getIpAddress() : "no-ip");
-		auditEvent.setEventType((operation != null) ? operation : "");
-		auditEvent.setUserId((userCtxt != null) ? userCtxt.getUserId() : null);
-		
+	private void persist(FormAuditEvent formAuditEvent, JdbcDao jdbcDao) {		
 		try {
-			Long auditId = insertAndRetrieveAuditEvent(auditEvent, jdbcDao);
-
+			Long auditId = insertAndRetrieveAuditEvent(formAuditEvent, jdbcDao);
 			formAuditEvent.setIdentifier(auditId);
 			insertFormAuditEvent(formAuditEvent, jdbcDao);
 		} catch (Exception e) {
@@ -138,13 +128,13 @@ public class FormAuditManagerImpl implements FormAuditManager {
 	}
 
 
-	private Long insertAndRetrieveAuditEvent(AuditEvent auditEvent, JdbcDao jdbcDao) 
+	private Long insertAndRetrieveAuditEvent(FormAuditEvent auditEvent, JdbcDao jdbcDao) 
 	throws Exception {		
 		List<Object> params = new ArrayList<Object>();
 		params.add(auditEvent.getIpAddress());
 		params.add(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		params.add(auditEvent.getUserId());
-		params.add(auditEvent.getEventType());
+		params.add(auditEvent.getOperation());
 
 		Long auditId = null;
 		Number key = jdbcDao.executeUpdateAndGetKey(INSERT_AUDIT_EVENT_SQL, params, "IDENTIFIER");

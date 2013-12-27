@@ -1,18 +1,18 @@
 package edu.common.dynamicextensions.domain.nui;
 
-import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
-
-public class ValidationRuleParam extends DynamicExtensionBaseDomainObject {
-
-	private static final long serialVersionUID = 8316933933329823350L;
+public class ValidationRuleParam {
+	private Long id;
 	
 	private String name;
 	
 	private String value;
 
-	@Override
 	public Long getId() {
 		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	public String getName() {

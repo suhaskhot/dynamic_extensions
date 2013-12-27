@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.common.util.logger.LoggerConfig;
+import org.apache.log4j.Logger;
 
 /**
  * @author gaurav_mehta
@@ -20,13 +19,7 @@ import edu.wustl.common.util.logger.LoggerConfig;
  */
 public final class DirOperationsUtility
 {
-
-	static
-	{
-		LoggerConfig.configureLogger(System.getProperty("user.dir"));
-	}
-
-	private static final Logger LOGGER = Logger.getCommonLogger(DirOperationsUtility.class);
+	private static final Logger LOGGER = Logger.getLogger(DirOperationsUtility.class);
 
 	private static DirOperationsUtility dirOperations;
 

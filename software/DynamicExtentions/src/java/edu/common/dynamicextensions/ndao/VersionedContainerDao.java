@@ -89,7 +89,6 @@ public class VersionedContainerDao {
 	}
 	
 	public void insertVersionedContainerInfo(VersionedContainerInfo info) {
-		ResultSet rs = null;
 		
 		try {
 			List<Object> params = new ArrayList<Object>();
@@ -105,8 +104,6 @@ public class VersionedContainerDao {
 		
 		} catch (Exception e) {
 			throw new RuntimeException("Error inserting versioned container info", e);
-		} finally {
-			jdbcDao.close(rs);
 		}
 	}
 	

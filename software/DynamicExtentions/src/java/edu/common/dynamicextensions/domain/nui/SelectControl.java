@@ -15,9 +15,6 @@ import java.util.Set;
 import edu.common.dynamicextensions.napi.ControlValue;
 
 public abstract class SelectControl extends Control {
-	
-	private static final long serialVersionUID = 2286060335229542875L;
-	
 	private PvDataSource pvDataSource;
 	
 	public PvDataSource getPvDataSource() {

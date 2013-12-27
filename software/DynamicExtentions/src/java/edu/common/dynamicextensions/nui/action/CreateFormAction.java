@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.nui.action;
 
 import java.io.File;
+
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -12,19 +13,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.util.DirOperationsUtility;
 import edu.common.dynamicextensions.util.DownloadUtility;
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.dao.exception.DAOException;
-import edu.wustl.dao.newdao.ActionStatus;
 
 public class CreateFormAction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-	private static final Logger logger = Logger.getCommonLogger(CreateFormAction.class);
+	private static final Logger logger = Logger.getLogger(CreateFormAction.class);
 	
 	private static AtomicInteger formCnt = new AtomicInteger();
 
@@ -76,8 +75,6 @@ public class CreateFormAction extends HttpServlet {
 			
 			actionResponse = new ActionResponse();
 			actionResponse.setSuccess();
-			
-			httpReq.setAttribute(ActionStatus.ACTIONSTAUS, ActionStatus.SUCCESSFUL);
 		} catch (Exception e){
 			logger.error("Error creating forms. None of the forms are created.", e);
 			actionResponse = getActionResponse(e);
@@ -97,7 +94,7 @@ public class CreateFormAction extends HttpServlet {
 			response.setMessage("Input form definition XML is not well formed. Please correct it");
 		} else if (e instanceof IOException) {
 			response.setMessage("Create form action errored out during IO operation. Please retry again");
-		} else if (e instanceof DAOException || e instanceof SQLException) {
+		} else if (e instanceof SQLException) {
 			response.setMessage("Error doing DB operations. Please contact administrator");
 		} else {
 			response.setMessage("A runtime error occured. Please contact administrator");

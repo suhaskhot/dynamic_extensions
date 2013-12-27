@@ -11,10 +11,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.common.dynamicextensions.nutility.IoUtil;
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.common.util.logger.LoggerConfig;
+import org.apache.log4j.Logger;
 
+import edu.common.dynamicextensions.nutility.IoUtil;
 
 /**
  * @author gaurav_mehta
@@ -29,12 +28,7 @@ public final class DownloadUtility
 
 	}
 
-	static
-	{
-		LoggerConfig.configureLogger(System.getProperty("user.dir"));
-	}
-
-	private static final Logger LOGGER = Logger.getCommonLogger(ZipUtility.class);
+	private static final Logger LOGGER = Logger.getLogger(DownloadUtility.class);
 
 
 	/**

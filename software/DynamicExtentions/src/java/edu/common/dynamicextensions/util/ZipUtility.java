@@ -10,9 +10,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.log4j.Logger;
+
 import edu.common.dynamicextensions.nutility.IoUtil;
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.common.util.logger.LoggerConfig;
 
 /**
  * This class contains the utility method to create zip, extract zip etc.
@@ -27,12 +27,7 @@ public final class ZipUtility
 	{
 	}
 
-	static
-	{
-		LoggerConfig.configureLogger(System.getProperty("user.dir"));
-	}
-
-	private static final Logger LOGGER = Logger.getCommonLogger(ZipUtility.class);
+	private static final Logger LOGGER = Logger.getLogger(ZipUtility.class);
 
 	/**
 	 * This method will extract the given zip file in filename argument to the destination folder.

@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.nutility.FormDefinitionExporter;
 import edu.common.dynamicextensions.nutility.IoUtil;
-import edu.wustl.dao.newdao.ActionStatus;
 
 public class ExportFormAction  extends HttpServlet {
 	
@@ -42,8 +41,6 @@ public class ExportFormAction  extends HttpServlet {
 				
 			zipFileName = zipFiles(tmpDir);
 			sendFile(httpResp, zipFileName);
-			
-			httpReq.setAttribute(ActionStatus.ACTIONSTAUS, ActionStatus.SUCCESSFUL);
 		} catch (Exception e) {
 			throw new RuntimeException("Error occurred when exporting form", e);
 		} finally {

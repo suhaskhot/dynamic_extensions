@@ -8,9 +8,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 public class DatePicker extends Control {
-
-	private static final long serialVersionUID = -5384931060284698579L;
-
 	private static final String DEFAULT_FORMAT = "MM-dd-yyyy";
 	
 	public static enum DefaultDateType {

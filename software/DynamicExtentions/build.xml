@@ -64,9 +64,6 @@
 		<fileset dir="${lib.dir}">
 			<include name="*.jar" />
 		</fileset>
-		<fileset dir="${client.lib.dir}">
-			<include name="*.jar" />
-		</fileset>
 	</path>
 
 	<path id="xdoclet.classpath">
@@ -221,19 +218,9 @@
 		<delete dir="${temp.dir}" />
 		<mkdir dir="${temp.dir}" />
 		<mkdir dir="${temp.dir}/META-INF" />
-		<mkdir dir="${temp.dir}/db" />
-		<mkdir dir="${temp.dir}/lib" />
-		<mkdir dir="${temp.dir}/web" />
-		<mkdir dir="${temp.dir}/web/javascripts/de" />
-		<mkdir dir="${temp.dir}/web/stylesheets/de" />
-		<mkdir dir="${temp.dir}/web/images/de" />
-<!--	<mkdir dir="${temp.dir}/web/dhtml/de" /> -->
-		<mkdir dir="${temp.dir}/web/pages/de" />
-		<mkdir dir="${temp.dir}/web/taglibs" />
-		<mkdir dir="${temp.dir}/conf" />
 		<mkdir dir="${temp.dir}/binaries/DynamicExtensionsInterface" />
 		<mkdir dir="${temp.dir}/WEB-INF/classes" />
-		<mkdir dir="${temp.dir}/WEB-INf/lib" />
+		<mkdir dir="${temp.dir}/WEB-INF/lib" />
 
 		<copy todir="${temp.dir}/lib">
 			<fileset dir="${base.dir}/lib">

@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class RadioButton extends SelectControl {
-
-	private static final long serialVersionUID = -4795437046819612617L;
-	
 	private int optionsPerRow = 3;
 
 	public int getOptionsPerRow() {

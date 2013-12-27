@@ -10,17 +10,16 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.nui.ValidationRuleNames;
 import edu.common.dynamicextensions.ui.util.Constants;
 
-public abstract class Control extends DynamicExtensionBaseDomainObject implements Comparable<Control> {
+public abstract class Control implements Comparable<Control> {
 	public static enum LabelPosition {
 		LEFT_SIDE, TOP
 	};
-	
-	private static final long serialVersionUID = -6394740140841823297L;
+
+	private Long id;
 
 	private String name;
 	
@@ -66,12 +65,10 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 
 	private Container container;
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 
-	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}

@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class CheckBox extends Control {
-
-	private static final long serialVersionUID = 6546210572740818515L;
-
 	private boolean defaultValueChecked;
 
 	public boolean isDefaultValueChecked() {

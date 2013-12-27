@@ -9,9 +9,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 public class NumberField extends TextField {
-
-	private static final long serialVersionUID = -5232920418590091013L;
-
 	//
 	// TODO: noOfDigits and noOfDigitsAfterDecimal needs to be pushed
 	// to rule

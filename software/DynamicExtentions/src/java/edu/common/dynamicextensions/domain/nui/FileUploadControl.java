@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileUploadControl extends Control {
-
-	private static final long serialVersionUID = 7296131725212728756L;
-
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columns = new ArrayList<ColumnDef>();

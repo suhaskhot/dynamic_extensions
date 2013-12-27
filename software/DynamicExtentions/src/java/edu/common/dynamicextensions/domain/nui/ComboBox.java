@@ -2,9 +2,6 @@
 package edu.common.dynamicextensions.domain.nui;
 
 public class ComboBox extends SelectControl {
-
-	private static final long serialVersionUID = 6117463441002075089L;
-
 	private boolean lazyPvFetchingEnabled;
 
 	private int noOfColumns;

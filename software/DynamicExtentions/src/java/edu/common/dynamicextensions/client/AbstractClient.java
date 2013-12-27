@@ -8,9 +8,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import edu.common.dynamicextensions.utility.HTTPSConnection;
-import edu.wustl.common.util.logger.Logger;
-import edu.wustl.common.util.logger.LoggerConfig;
 
 /**
  * This class should be the parent of all the classes which needs to communicate to the server from
@@ -22,16 +22,10 @@ import edu.wustl.common.util.logger.LoggerConfig;
  */
 public abstract class AbstractClient
 {
-
-	static
-	{
-		LoggerConfig.configureLogger(System.getProperty("user.dir"));
-	}
-
 	/**
 	 * logger for information.
 	 */
-	protected static final Logger LOGGER = Logger.getCommonLogger(AbstractClient.class);
+	protected static final Logger LOGGER = Logger.getLogger(AbstractClient.class);
 
 	/**
 	 * Zip file which shoyld be uploaded

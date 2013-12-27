@@ -1,8 +1,6 @@
 
 package edu.common.dynamicextensions.processor;
 
-import edu.wustl.common.util.global.CommonServiceLocator;
-
 /**
  * @author preeti_munot
  */
@@ -45,12 +43,9 @@ public class ProcessorConstants
 	public static final String OPERATION_EDIT = "Edit";
 
 	// Date Formats.
-	public static final String DATE_SEPARATOR = CommonServiceLocator.getInstance()
-			.getDateSeparator();
-	public static final String DATE_ONLY_FORMAT = CommonServiceLocator.getInstance()
-			.getDatePattern();
-	public static final String DATE_TIME_FORMAT = CommonServiceLocator.getInstance()
-			.getTimeStampPattern();
+	public static final String DATE_SEPARATOR = "-";
+	public static final String DATE_ONLY_FORMAT = "MM-dd-yyyy";
+	public static final String DATE_TIME_FORMAT = "MM-dd-yyyy HH:mm";
 	public static final int DATE_TIME_FORMAT_ROUND_OFF = 12;
 	public static final String MONTH_YEAR_FORMAT = "MM" + DATE_SEPARATOR + "yyyy";
 	public static final String YEAR_ONLY_FORMAT = "yyyy";

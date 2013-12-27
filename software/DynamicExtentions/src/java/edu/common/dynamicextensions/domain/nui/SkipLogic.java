@@ -3,17 +3,18 @@ package edu.common.dynamicextensions.domain.nui;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
-
-public class SkipLogic extends DynamicExtensionBaseDomainObject {
-
-	private static final long serialVersionUID = -7591132951726233943L;
+public class SkipLogic {
 	
+	private Long id;
+
 	private Set<SkipRule> skipRules = new LinkedHashSet<SkipRule>();
 	
-	@Override
 	public Long getId() {
 		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Set<SkipRule> getSkipRules() {

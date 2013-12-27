@@ -16,7 +16,6 @@ import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.ContainerInfo;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.nutility.IdGenerator;
-import edu.wustl.common.beans.NameValueBean;
 
 public class ContainerDao {
 	
@@ -183,21 +182,21 @@ public class ContainerDao {
 //		}
 //	}
 
-	public List<NameValueBean> listAllContainerIdAndName() throws SQLException {
-		logger.info("containerDao: listAllContainer : " + LIST_ALL_CONTAINERS);
-		return jdbcDao.getResultSet(LIST_ALL_CONTAINERS, null, new ResultExtractor<List<NameValueBean>>() {
-			@Override
-			public List<NameValueBean> extract(ResultSet rs)
-			throws SQLException {
-				List<NameValueBean> beans = new ArrayList<NameValueBean>();					
-				while (rs.next()) {
-					beans.add(new NameValueBean(rs.getString("NAME"), rs.getLong("IDENTIFIER")));
-				}
-					
-				return beans;			
-			}				
-		});
-	}
+//	public List<NameValueBean> listAllContainerIdAndName() throws SQLException {
+//		logger.info("containerDao: listAllContainer : " + LIST_ALL_CONTAINERS);
+//		return jdbcDao.getResultSet(LIST_ALL_CONTAINERS, null, new ResultExtractor<List<NameValueBean>>() {
+//			@Override
+//			public List<NameValueBean> extract(ResultSet rs)
+//			throws SQLException {
+//				List<NameValueBean> beans = new ArrayList<NameValueBean>();					
+//				while (rs.next()) {
+//					beans.add(new NameValueBean(rs.getString("NAME"), rs.getLong("IDENTIFIER")));
+//				}
+//					
+//				return beans;			
+//			}				
+//		});
+//	}
 	
 	public Container getByName(String name) throws SQLException {
 		List<Object> params = new ArrayList<Object>();

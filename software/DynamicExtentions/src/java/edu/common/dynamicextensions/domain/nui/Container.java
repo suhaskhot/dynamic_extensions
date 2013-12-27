@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
 import edu.common.dynamicextensions.ndao.ContainerDao;
@@ -32,9 +31,7 @@ import edu.common.dynamicextensions.nutility.ContainerParser;
 import edu.common.dynamicextensions.nutility.IdGenerator;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 
-public class Container extends DynamicExtensionBaseDomainObject {	
-	private static final long serialVersionUID = 449976852456002554L;
-	
+public class Container {			
 	private static final String tableNameFmt = "DE_E_%d";
 	
 	private static final String columnNameFmt = "DE_A_%d";
@@ -43,6 +40,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	
 	private static Pattern notAllowed = Pattern.compile(specialChars, Pattern.CASE_INSENSITIVE);
 			
+	private Long id;
+	
 	private String name;
 
 	private String caption;
@@ -81,12 +80,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		this.isDto = true;
 	}
 	
-	@Override
 	public Long getId() {
 		return id;
 	}
 	
-	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -585,15 +582,8 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 	
 	public Long save(UserContext userCtxt, boolean createTables) {
-		JdbcDao jdbcDao = null;		
-		try {
-			jdbcDao = JdbcDaoFactory.getJdbcDao();
-			return save(userCtxt, jdbcDao, createTables);
-		} finally {
-			if (jdbcDao != null) {
-				jdbcDao.close();
-			}
-		}				
+		JdbcDao jdbcDao = JdbcDaoFactory.getJdbcDao();
+		return save(userCtxt, jdbcDao, createTables);
 	}
 	
 	public Long save(UserContext userCtxt, JdbcDao jdbcDao) {

@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class TextArea extends TextField {
-
-	private static final long serialVersionUID = 2084367923183300598L;
-
 	private int noOfRows;
 
 	public int getNoOfRows() {

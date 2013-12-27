@@ -30,7 +30,6 @@ import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 import edu.common.dynamicextensions.nutility.IoUtil;
-import edu.wustl.common.beans.SessionDataBean;
 
 public class FormDataManagerImpl implements FormDataManager {
 	
@@ -118,8 +117,7 @@ public class FormDataManagerImpl implements FormDataManager {
 	}
 	
 	@Override
-	public void deleteFormData(SessionDataBean sdb, Long containerId,
-			Long recordId) {
+	public void deleteFormData(UserContext userCtxt, Long containerId, Long recordId) {
 		// TODO Auto-generated method stub
 
 	}

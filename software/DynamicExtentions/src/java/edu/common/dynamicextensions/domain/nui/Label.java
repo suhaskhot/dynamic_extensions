@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class Label extends Control {
-
-	private static final long serialVersionUID = 2176449161292723498L;
-
 	private boolean note;
 
 	private boolean heading;

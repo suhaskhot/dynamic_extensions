@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class StringTextField extends TextField {
-
-	private static final long serialVersionUID = 7445421267574297134L;
-
 	private boolean url;
 
 	private boolean password;

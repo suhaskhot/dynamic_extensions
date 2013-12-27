@@ -2,9 +2,6 @@
 package edu.common.dynamicextensions.domain.nui;
 
 public class ListBox extends SelectControl {
-
-	private static final long serialVersionUID = 9190611588889454148L;
-
 	private int noOfRows;
 	
 	private boolean autoCompleteDropdownEnabled;

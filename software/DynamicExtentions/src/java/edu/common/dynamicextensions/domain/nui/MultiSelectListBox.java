@@ -7,9 +7,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 public class MultiSelectListBox extends ListBox implements MultiSelectControl {
-
-	private static final long serialVersionUID = 3003089628345200684L;
-
 	private String tableName;
 	
 	private String parentKeyColumn  = "IDENTIFIER";

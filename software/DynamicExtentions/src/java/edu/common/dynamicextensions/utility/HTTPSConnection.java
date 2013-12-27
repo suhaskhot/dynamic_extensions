@@ -20,13 +20,14 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
+import org.apache.log4j.Logger;
+
 import edu.common.dynamicextensions.client.CategoryClient.DerivedTrustManager;
-import edu.wustl.common.util.logger.Logger;
 
 public final class HTTPSConnection
 {
 
-	private static final Logger LOGGER = Logger.getCommonLogger(HTTPSConnection.class);
+	private static final Logger LOGGER = Logger.getLogger(HTTPSConnection.class);
 
 	private static HTTPSConnection httpsConn;
 

@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
-import javax.transaction.Transaction;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,12 +16,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import edu.common.dynamicextensions.nutility.IdGenerator;
-import edu.wustl.dao.util.DAOUtility;
 
 public class JdbcDao {
 	private JdbcTemplate jdbcTemplate;
-	
-	private Transaction suspendedTxn = null;
 	
 	public JdbcDao(DataSource ds) {
 		jdbcTemplate = new JdbcTemplate(ds);
@@ -68,58 +64,7 @@ public class JdbcDao {
 			
 		return keyHolder.getKey();
 	}
-		
-	public void close() {
-//		if (dao != null) {
-//			try {
-//				dao.closeSession();
-//			} catch (Exception e) {
-//				
-//			}			
-//		}
-	}
-	
-	public void close(ResultSet rs) {
-//		Statement stmt = null;
-//		
-//		if (rs != null) {
-//			try {
-//				stmt = rs.getStatement();
-//				rs.close();
-//			} catch (Exception e) {
-//			}
-//		}
-//		
-//		if (stmt != null) {
-//			try {
-//				stmt.close();				
-//			} catch (Exception e) {
-//				
-//			}
-//		}
-	}
-	
-	public void suspendTxn() {
-		if (suspendedTxn == null) {
-			try {
-				suspendedTxn = DAOUtility.getInstance().suspendTransaction();
-			} catch (Exception e) {
-				throw new RuntimeException("Error suspending transaction", e);
-			}			
-		}
-	}
-	
-	public void resumeTxn() {
-		if (suspendedTxn != null) {
-			try {
-				DAOUtility.getInstance().resumeTransaction(suspendedTxn);
-				suspendedTxn = null;
-			} catch (Exception e) {
-				throw new RuntimeException("Error resuming transction", e);
-			}			
-		}
-	}
-	
+					
 	public void executeDDL(String ddl) {
 		jdbcTemplate.execute(ddl);		
 		// TODO: DDL are transactions on their own. How to deal with this.		

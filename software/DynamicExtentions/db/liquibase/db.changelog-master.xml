@@ -5,9 +5,5 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd"> 
 
-	<include file="./detemp/db/liquibase/upgrade_db_from_DE_1.5.1_to_DE_1.6.0.xml"/> 
-	<include file="./detemp/db/liquibase/upgrade_db_from_DE_1.7.0_to_DE_1.9.0.xml"/> 
-	<include file="./detemp/db/liquibase/upgrade_db_from_DE_1.8.0_to_DE_1.9.0.xml"/> 
-	<include file="./detemp/db/liquibase/upgrade_db_from_DE_1.9.0_to_DE_2.0.0.xml"/> 
-	
+	<include file="./db/liquibase/db.changelog-2.0.xml"/>
 </databaseChangeLog> 

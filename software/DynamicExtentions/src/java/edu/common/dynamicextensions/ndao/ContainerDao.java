@@ -10,17 +10,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.ContainerInfo;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.nutility.IdGenerator;
 
-public class ContainerDao {
-	
-	private static final Logger logger = Logger.getLogger(ContainerDao.class);
-	
+public class ContainerDao {	
 	private static final String INSERT_CONTAINER_SQL = 
 			"INSERT INTO DYEXTN_CONTAINERS (IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, XML) VALUES(?, ?, ?, ?, ?, ?)";
 
@@ -34,15 +29,9 @@ public class ContainerDao {
 	private static final String GET_CONTAINER_XML_BY_NAME_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
 			+ " FROM DYEXTN_CONTAINERS WHERE NAME = ?";
 	
-//	private static final String GET_CONTAINER_IDS_SQL =  
-//			"SELECT DYEXTN_CONTAINERS_SEQ.NEXTVAL " +
-//			"FROM (SELECT LEVEL FROM DUAL CONNECT BY LEVEL <= %d)";
-	
 	private static final String GET_CONTAINER_NAME_BY_ID =  
 			"SELECT NAME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
-	
-	private static final String LIST_ALL_CONTAINERS = "SELECT NAME,IDENTIFIER FROM DYEXTN_CONTAINERS ORDER BY NAME";
-	
+		
 	private static final String GET_CONTAINER_INFO =
 			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
 			"FROM DYEXTN_CONTAINERS";
@@ -67,21 +56,6 @@ public class ContainerDao {
 		}
 		
 		return ids;
-//		String sql = String.format(GET_CONTAINER_IDS_SQL, numIds);		
-//		logger.info("ContainerDao :: getContainerIds :: sql :: " + sql);
-//		return jdbcDao.getResultSet(sql, null, new ResultExtractor<List<Long>>() {
-//			@Override
-//			public List<Long> extract(ResultSet rs) throws SQLException {
-//				List<Long> ids = new ArrayList<Long>();
-//					
-//				while (rs.next()){
-//					Long value = rs.getLong("NEXTVAL");
-//					ids.add(value);
-//				}
-//					
-//				return ids;
-//			}				
-//		});
 	}
 	
 	public void insert(UserContext userCtxt, Container c) 

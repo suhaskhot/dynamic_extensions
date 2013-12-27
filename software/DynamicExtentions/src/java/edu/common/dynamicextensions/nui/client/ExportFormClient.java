@@ -12,7 +12,6 @@ import java.net.URLConnection;
 import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.client.AbstractClient;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DirOperationsUtility;
@@ -46,7 +45,7 @@ public class ExportFormClient extends AbstractClient {
 
 
 	protected void initializeResources(String[] args) 
-	throws DynamicExtensionsSystemException, IOException {
+	{
 		
 		try	{
 			StringBuilder url = new StringBuilder()
@@ -64,7 +63,7 @@ public class ExportFormClient extends AbstractClient {
 			this.serverUrl = new URL(url.toString());
 		} catch (MalformedURLException e) {
 			logger.error("Encountered error while creating server URL", e);
-			throw new DynamicExtensionsSystemException("Encountered error while creating server URL", e);
+			throw new RuntimeException("Encountered error while creating server URL", e);
 		}
 	}
 
@@ -75,23 +74,23 @@ public class ExportFormClient extends AbstractClient {
 	 * @throws DynamicExtensionsSystemException exception
 	 */
 	protected void validate(String[] args) 
-	throws DynamicExtensionsSystemException {
+	{
 		if (args.length < 2 || args[1] == null || args[1].trim().isEmpty()) {
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Please specify identifier of form that is to be created");
 		}
 	}
 
 	@Override
 	protected void processResponse(URLConnection servletConnection)
-	throws DynamicExtensionsSystemException, IOException {
+	{
 		String formZipName = new StringBuilder("form-").append(formId).append(".zip").toString();
 		downloadZipFile(servletConnection, downloadPath, formZipName);
 	}
 	
 	public static void downloadZipFile(
 			URLConnection servletConnection, String tempDirName, String fileName) 
-	throws IOException, DynamicExtensionsSystemException {
+	{
 		
 		BufferedInputStream reader = null;
 		BufferedOutputStream fileWriter = null;
@@ -107,7 +106,7 @@ public class ExportFormClient extends AbstractClient {
 
 			IoUtil.copy(reader, fileWriter);
 		} catch (IOException e) {
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Error occured while downloading exported form zip from server", e);
 		} finally {
 			IoUtil.close(fileWriter);

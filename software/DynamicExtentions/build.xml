@@ -241,29 +241,6 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${temp.dir}/conf">
-			<fileset dir="${base.dir}/src/conf">
-				<include name="ApplicationDAOProperties.xml" />
-				<include name="DynamicExtensionsHibernate.cfg.xml" />
-				<include name="DynamicExtensionsHibernateWeb.cfg.xml" />
-				<include name="log4j.properties.template" />
-				<include name="DynamicExtensionsAuditMetadata.xml" />
-				<include name="metadataQuery.xml" />
-			</fileset>
-		</copy>
-		<copy todir="${temp.dir}/WEB-INF/classes">
-			<fileset dir="${base.dir}/src/resources/xml">
-				<include name="*DESql.xml" />
-			</fileset>
-		</copy>
-		<copy todir="${temp.dir}/WEB-INF/classes">
-			<fileset dir="${base.dir}/src/resources/jaxb/xsd">
-				<include name="*.xsd" />
-			</fileset>
-			<fileset dir="${base.dir}/src/resources/velocityTemplates">
-				<include name="*.vm" />
-			</fileset>
-		</copy>
 		<copy todir="${temp.dir}/WEB-INF/lib">
 			<fileset dir="${base.dir}/lib/server">
 				<include name="velocity-dep-1.5.jar"/>
@@ -281,42 +258,12 @@
 				<include name="META-INF/MANIFEST.MF" />
 			</fileset>
 		</copy>
-		<copy todir="${temp.dir}/web/stylesheets/de">
-			<fileset dir="src/web/stylesheets">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${temp.dir}/web/javascripts/de">
-			<fileset dir="src/web/javascripts">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${temp.dir}/web/images/de">
-			<fileset dir="src/web/images">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${temp.dir}/web/dhtmlxSuite_v35">
-			<fileset dir="src/web/dhtmlxSuite_v35">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-		<copy todir="${temp.dir}/web/pages/de">
-			<fileset dir="src/web/pages">
-				<include name="**/*" />
-			</fileset>
-		</copy>
 		<copy todir="${temp.dir}">
 		  <fileset dir="src">
 		  	<include name="csd_web/**"/> 
 		  </fileset>
 		</copy>
-		<!--<copy todir="${temp.dir}" file="deploy.xml" overwrite="true" />-->
-		<copy todir="${temp.dir}/web/conf" file="src/conf/dynamicextensions-struts-config.xml">
-		</copy>
 		<copy todir="${temp.dir}/META-INF" file="binaries/META-INF/MANIFEST.MF">
-		</copy>
-		<copy todir="${temp.dir}/web/taglibs" file="src/web/taglibs/dynamicExtensions.tld">
 		</copy>
 		<copy todir="${temp.dir}/binaries/DynamicExtensionsInterface" file="binaries/DynamicExtensionsInterface/DynamicExtensions.jar">
 		</copy>

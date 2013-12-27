@@ -9,7 +9,6 @@ import java.net.URLConnection;
 import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.client.AbstractClient;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.nui.action.ActionResponse;
 import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
 import edu.common.dynamicextensions.util.DirOperationsUtility;
@@ -28,7 +27,6 @@ public class CreateFormClient extends AbstractClient {
 	}
 
 	protected void initializeResources(String[] args) 
-	throws DynamicExtensionsSystemException, IOException
 	{
 		try	{
 			long halfGB = 500 * 1024 * 1024L;
@@ -45,7 +43,7 @@ public class CreateFormClient extends AbstractClient {
 			this.serverUrl = new URL(url);			
 			logger.info("Invoking create form action @ " + serverUrl);
 		} catch (MalformedURLException e) {
-			throw new DynamicExtensionsSystemException("Please provide correct application URL", e);
+			throw new RuntimeException("Please provide correct application URL", e);
 		}
 	}
 
@@ -56,16 +54,16 @@ public class CreateFormClient extends AbstractClient {
 	 * @throws DynamicExtensionsSystemException exception
 	 */
 	protected void validate(String[] args) 
-	throws DynamicExtensionsSystemException	{		
+	{		
 		if (args.length < 2 || args.length > 3 || args[1] == null || args[1].trim().isEmpty()) {
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Wrong number of arguments to command");
 		}
 	}
 
 	@Override
 	protected void processResponse(URLConnection servletConnection)
-	throws DynamicExtensionsSystemException, IOException {
+	throws IOException {
 		
 		ObjectInputStream inputFromServlet = null;
 		try	{
@@ -81,7 +79,7 @@ public class CreateFormClient extends AbstractClient {
 			}
 		} catch (Exception e) {
 			logger.error("Error reading response from server", e);
-			throw new DynamicExtensionsSystemException("Error reading response from server", e);
+			throw new RuntimeException("Error reading response from server", e);
 		} finally {
 			if (inputFromServlet != null) {
 				inputFromServlet.close();

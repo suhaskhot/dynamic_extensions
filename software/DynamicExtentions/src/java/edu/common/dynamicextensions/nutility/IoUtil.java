@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
@@ -54,6 +55,16 @@ public class IoUtil {
 		if (in != null) {
 			try {
 				in.close();
+			} catch (Exception e) {
+				logger.warn("Error closing an instance of input stream", e);
+			}
+		}
+	}
+	
+	public static void close(Reader reader) {
+		if (reader != null) {
+			try {
+				reader.close();
 			} catch (Exception e) {
 				logger.warn("Error closing an instance of input stream", e);
 			}

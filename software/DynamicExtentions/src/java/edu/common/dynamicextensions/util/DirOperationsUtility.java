@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 
@@ -117,35 +116,33 @@ public final class DirOperationsUtility
 	 * @throws DynamicExtensionsSystemException if the size of folder is greater than maxSize.
 	 */
 	public static void validateFolderSizeForUpload(String srcFolder, long maxSize)
-			throws DynamicExtensionsSystemException
 	{
 		File folder = new File(srcFolder);
 		if (!folder.exists() || !folder.isDirectory())
 		{
-			throw new DynamicExtensionsSystemException(srcFolder
+			throw new RuntimeException(srcFolder
 					+ "does not exist. Please specify correct path");
 		}
 		LOGGER.info("DirOpUtility :: validateFolderSizeForUpload :: Size :: "+getSize(folder));
 		if (maxSize < getSize(folder))
 		{
-			throw new DynamicExtensionsSystemException(srcFolder
+			throw new RuntimeException(srcFolder
 					+ "Exceeds the maximum file size. The folder size should be less than 500MB");
 		}
 	}
 
 	
 	public static void validateXMISizeForUpload(String srcFile, long maxSize)
-	throws DynamicExtensionsSystemException
 	{
 		File xmiFile = new File(srcFile);
 		if (!xmiFile.exists() || xmiFile.isDirectory())
 		{
-			throw new DynamicExtensionsSystemException(xmiFile
+			throw new RuntimeException(xmiFile
 					+ "does not exist. Please specify correct path");
 		}
 		if (maxSize < getSize(xmiFile))
 		{
-			throw new DynamicExtensionsSystemException(xmiFile
+			throw new RuntimeException(xmiFile
 					+ "Exceeds the maximum file size. The folder size should be less than 500MB");
 		}
 	}

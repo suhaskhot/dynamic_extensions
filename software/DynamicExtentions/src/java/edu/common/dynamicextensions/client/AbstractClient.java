@@ -1,18 +1,13 @@
 
 package edu.common.dynamicextensions.client;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.utility.HTTPSConnection;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
@@ -94,7 +89,7 @@ public abstract class AbstractClient
 	}
 
 	protected void performAction(HTTPSConnection httpsConnection, URLConnection servletConnection)
-			throws DynamicExtensionsSystemException, IOException
+	throws IOException
 	{
 		// upload the Zip file to server
 		httpsConnection.uploadFileToServer(servletConnection, zipFile);
@@ -105,28 +100,22 @@ public abstract class AbstractClient
 	 * This method will initialize all the instance veriabls required for the process to
 	 * complete.
 	 * @param args arguments array from to initilize the variables.
-	 * @throws DynamicExtensionsSystemException exception.
-	 * @throws IOException exception.
 	 */
-	protected abstract void initializeResources(String[] args)
-			throws DynamicExtensionsSystemException, IOException;
+	protected abstract void initializeResources(String[] args);
 
 	/**
 	 * It will validate weather the correct number of arguments are passed or not & then
 	 * throw exception accordingly.
 	 * @param args arguments
-	 * @throws DynamicExtensionsSystemException exception
 	 */
-	protected abstract void validate(String[] args) throws DynamicExtensionsSystemException;
+	protected abstract void validate(String[] args);
 
 	/**
 	 * This method will process the response recieved from the server .
 	 * @param servletConnection connection by which connected to server
-	 * @throws DynamicExtensionsSystemException exception.
-	 * @throws IOException exception.
 	 */
 	protected void processResponse(URLConnection servletConnection)
-			throws DynamicExtensionsSystemException, IOException
+	throws IOException
 	{
 		HTTPSConnection.getInstance().processResponse(servletConnection);
 	}
@@ -180,5 +169,4 @@ public abstract class AbstractClient
 			LOGGER.debug("Error while closing input stream ", e);
 		}
 	}
-
 }

@@ -10,7 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 
@@ -43,7 +43,6 @@ public final class ZipUtility
 	 * @throws IOException exception.
 	 */
 	public static void extractZipToDestination(String filename, String destination)
-			throws DynamicExtensionsSystemException, IOException
 	{
 		ZipInputStream zipinputstream = null;
 		try
@@ -59,15 +58,12 @@ public final class ZipUtility
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Can not extract the zip, zip may be currupted", e);
 		}
 		finally
 		{
-			if (zipinputstream != null)
-			{
-				zipinputstream.close();
-			}
+			IoUtil.close(zipinputstream);
 		}
 	}
 
@@ -79,7 +75,7 @@ public final class ZipUtility
 	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	private static void extractZip(ZipInputStream zipinputstream, String destinationPath)
-			throws IOException, DynamicExtensionsSystemException
+	throws IOException
 	{
 		ZipEntry zipentry = zipinputstream.getNextEntry();
 		while (zipentry != null)
@@ -104,8 +100,8 @@ public final class ZipUtility
 	 * @throws DynamicExtensionsSystemException exception
 	 */
 	private static void extractZipEntryToFile(String destinationPath,
-			ZipInputStream zipinputstream, String entryName) throws IOException,
-			DynamicExtensionsSystemException
+			ZipInputStream zipinputstream, String entryName)
+	throws IOException
 	{
 		byte[] buf = new byte[1024];
 		FileOutputStream fileoutputstream = null;
@@ -137,13 +133,12 @@ public final class ZipUtility
 	 * @throws DynamicExtensionsSystemException occured if make directories for parent fails.
 	 */
 	private static void createParentDirectories(File newFile)
-			throws DynamicExtensionsSystemException
 	{
 		File parentFile = newFile.getParentFile();
 		if (parentFile != null && !parentFile.exists() && !parentFile.mkdirs())
 		{
 			// this is condition when mkdirs is failed to create the directories
-			throw new DynamicExtensionsSystemException("Can not create directory " + parentFile);
+			throw new RuntimeException("Can not create directory " + parentFile);
 		}
 	}
 
@@ -157,7 +152,6 @@ public final class ZipUtility
 	 * @throws IOException Exception.
 	 */
 	public static File zipFolder(String srcFolder, String destZipFile)
-			throws DynamicExtensionsSystemException, IOException
 	{
 		ZipOutputStream zip = null;
 		FileOutputStream fileWriter = null;
@@ -176,25 +170,19 @@ public final class ZipUtility
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("Error occured while reading the folder", e);
+			throw new RuntimeException("Error occured while reading the folder", e);
 		}
 		finally
 		{
-			if (zip != null)
-			{
-				zip.close();
-			}
-			if (fileWriter != null)
-			{
-				fileWriter.close();
-			}
+			IoUtil.close(zip);
+			IoUtil.close(fileWriter);
 		}
 		return destZip;
 	}
 
 	
 	public static File zipFiles(List<String> filesToBeZipped, String destZipFile)
-	throws DynamicExtensionsSystemException, IOException
+	throws IOException
 	{
 		ZipOutputStream zip = null;
 		FileOutputStream fileWriter = null;
@@ -235,7 +223,7 @@ public final class ZipUtility
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException("Error occured while reading the folder", e);
+			throw new RuntimeException("Error occured while reading the folder", e);
 		}
 		finally
 		{
@@ -271,12 +259,11 @@ public final class ZipUtility
 	 * exist.
 	 */
 	private static void checkIfFolderExist(String srcFolder)
-			throws DynamicExtensionsSystemException
 	{
 		File folder = new File(srcFolder);
 		if (!folder.exists() || !folder.isDirectory())
 		{
-			throw new DynamicExtensionsSystemException(srcFolder
+			throw new RuntimeException(srcFolder
 					+ "does not exist. Please specify correct path");
 		}
 	}
@@ -290,8 +277,7 @@ public final class ZipUtility
 	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	private static void addFileToZip(String path, String srcFile, ZipOutputStream zip)
-			throws IOException, DynamicExtensionsSystemException
-
+			throws IOException
 	{
 
 		File folder = new File(srcFile);
@@ -335,7 +321,7 @@ public final class ZipUtility
 	 * @throws IOException Exception.
 	 */
 	private static void addFolderToZip(String path, String srcFolder, ZipOutputStream zip)
-			throws DynamicExtensionsSystemException, IOException
+			throws IOException
 	{
 		File folder = new File(srcFolder);
 

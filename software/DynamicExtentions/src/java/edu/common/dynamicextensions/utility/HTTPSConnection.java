@@ -21,7 +21,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 import edu.common.dynamicextensions.client.CategoryClient.DerivedTrustManager;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.wustl.common.util.logger.Logger;
 
 public final class HTTPSConnection
@@ -56,7 +55,7 @@ public final class HTTPSConnection
 	 * @throws DynamicExtensionsSystemException
 	 * @throws Exception
 	 */
-	public void acceptAllHttpsConnections() throws DynamicExtensionsSystemException
+	public void acceptAllHttpsConnections()
 	{
 		// Now telling the JRE to trust any https server.
 		// If you know the URL that you are connecting to then this should not be a problem
@@ -64,7 +63,7 @@ public final class HTTPSConnection
 		HttpsURLConnection.setDefaultHostnameVerifier(hostVerifier);
 	}
 
-	private void trustAllHttpsCertificates() throws DynamicExtensionsSystemException
+	private void trustAllHttpsCertificates()
 	{
 		//  Create a trust manager that does not validate certificate chains:
 		try
@@ -82,13 +81,11 @@ public final class HTTPSConnection
 		}
 		catch (NoSuchAlgorithmException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Error occured while accepting the server certificates", e);
+			throw new RuntimeException("Error occured while accepting the server certificates", e);
 		}
 		catch (KeyManagementException e)
 		{
-			throw new DynamicExtensionsSystemException(
-					"Error occured while accepting the server certificates", e);
+			throw new RuntimeException("Error occured while accepting the server certificates", e);
 		}
 	}
 
@@ -101,7 +98,6 @@ public final class HTTPSConnection
 	 * @throws IOException exception
 	 */
 	public URLConnection openServletConnection(URL serverUrl)
-			throws DynamicExtensionsSystemException
 	{
 		URLConnection servletConnection;
 		try
@@ -121,7 +117,7 @@ public final class HTTPSConnection
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Please verify the ApplicationURL and also verify that the server is running.",
 					e);
 		}
@@ -135,8 +131,8 @@ public final class HTTPSConnection
 	 * @throws IOException Exception.
 	 * @throws DynamicExtensionsSystemException Exception.
 	 */
-	public void uploadFileToServer(URLConnection servletConnection, File file) throws IOException,
-			DynamicExtensionsSystemException
+	public void uploadFileToServer(URLConnection servletConnection, File file)
+	throws IOException
 	{
 		if (file != null)
 		{
@@ -149,7 +145,7 @@ public final class HTTPSConnection
 			}
 			catch (IOException e)
 			{
-				throw new DynamicExtensionsSystemException(
+				throw new RuntimeException(
 						"Exception occured while uploading file", e);
 			}
 			finally
@@ -193,7 +189,6 @@ public final class HTTPSConnection
 	 * @throws DynamicExtensionsSystemException Exception.
 	 */
 	private BufferedOutputStream getServletWriter(URLConnection servletConnection)
-			throws DynamicExtensionsSystemException
 	{
 		try
 		{
@@ -201,7 +196,7 @@ public final class HTTPSConnection
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Please verify the Correct URL is specified & the server is running", e);
 		}
 	}
@@ -215,8 +210,8 @@ public final class HTTPSConnection
 	 * @throws DynamicExtensionsSystemException
 	 */
 	@SuppressWarnings("unchecked")
-	public void processResponse(URLConnection servletConnection) throws IOException,
-			DynamicExtensionsSystemException
+	public void processResponse(URLConnection servletConnection)
+	throws IOException
 	{
 		ObjectInputStream inputFromServlet = null;
 		try
@@ -231,12 +226,12 @@ public final class HTTPSConnection
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Can not connect to server, please verify server is running", e);
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Class not found " + e.getLocalizedMessage(), e);
 		}
 		finally
@@ -253,13 +248,13 @@ public final class HTTPSConnection
 	 * @param exceptionOccured exception to be displayed.
 	 * @throws DynamicExtensionsSystemException exception.
 	 */
-	private void printExceptionLog(Object exceptionOccured) throws DynamicExtensionsSystemException
+	private void printExceptionLog(Object exceptionOccured)
 	{
 		if (exceptionOccured instanceof Exception)
 		{
 			LOGGER.info("exception occured");
 			Exception serverException = (Exception) exceptionOccured;
-			throw new DynamicExtensionsSystemException(serverException.getLocalizedMessage(),
+			throw new RuntimeException(serverException.getLocalizedMessage(),
 					serverException);
 		}
 		else if (exceptionOccured instanceof Map)
@@ -327,11 +322,10 @@ public final class HTTPSConnection
 	 * @throws DynamicExtensionsSystemException exception.
 	 */
 	public static String getCorrectedApplicationURL(String appUrl)
-			throws DynamicExtensionsSystemException
 	{
 		if (appUrl.contains("\\"))
 		{
-			throw new DynamicExtensionsSystemException("In Application.url replace '\\' with '/'.");
+			throw new RuntimeException("In Application.url replace '\\' with '/'.");
 		}
 		if ('/' == appUrl.charAt(appUrl.length() - 1))
 		{

@@ -1,8 +1,6 @@
 
 package edu.common.dynamicextensions.nutility;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.napi.FormData;
 
 /**
@@ -20,5 +18,5 @@ public interface FormDataCollector
 	 * @throws DynamicExtensionsApplicationException 
 	 * @throws DynamicExtensionsSystemException
 	 */
-	FormData collectFormData() throws DynamicExtensionsApplicationException;
+	FormData collectFormData();
 }

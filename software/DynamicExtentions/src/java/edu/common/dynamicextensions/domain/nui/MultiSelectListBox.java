@@ -2,13 +2,9 @@
 package edu.common.dynamicextensions.domain.nui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-
-import edu.common.dynamicextensions.napi.ControlValue;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 
 public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 
@@ -99,24 +95,5 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl {
 		}
 
 		return true;
-	}
-
-	@Override
-	protected boolean isPVSelected(ControlValue controlValue, PermissibleValue pv) {
-		boolean isPVSelected = false;
-		
-		if (controlValue.getValue() != null) {
-			List<String> values = Arrays.asList((String[]) controlValue.getValue());
-			
-			if (values.contains(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue()))) {
-					isPVSelected = true;
-			}
-		} else if (getDefaultValue() != null) {
-			
-			if (getDefaultValue().getValue().equals(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(pv.getValue()))) {
-				isPVSelected = true;
-			}
-		}
-		return isPVSelected;
 	}
 }

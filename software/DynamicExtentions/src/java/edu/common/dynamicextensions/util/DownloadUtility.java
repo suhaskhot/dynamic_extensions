@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
+import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.common.util.logger.LoggerConfig;
 
@@ -46,7 +46,7 @@ public final class DownloadUtility
 	 * @throws DynamicExtensionsSystemException Exception
 	 */
 	public static void downloadZipFile(HttpServletRequest request, String tempDirName,
-			String fileName) throws IOException, DynamicExtensionsSystemException
+			String fileName)
 	{
 		BufferedInputStream reader = null;
 		BufferedOutputStream fileWriter = null;
@@ -74,21 +74,16 @@ public final class DownloadUtility
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Exception occured while downloading the zip on server", e);
 
 		}
 		finally
 		{
-			if (fileWriter != null)
-			{
-				fileWriter.close();
-			}
-			if (reader != null)
-			{
-				reader.close();
-			}
+			IoUtil.close(fileWriter);
+			IoUtil.close(reader);
 		}
+		
 		ZipUtility.extractZipToDestination(completeFileName, tempDirName);
 	}
 }

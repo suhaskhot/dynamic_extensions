@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -23,11 +22,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import edu.common.dynamicextensions.domain.DynamicExtensionBaseDomainObject;
 import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
-import edu.common.dynamicextensions.exception.DynamicExtensionsApplicationException;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.napi.ControlValue;
-import edu.common.dynamicextensions.napi.FormData;
-import edu.common.dynamicextensions.napi.impl.FormRenderer.ContextParameter;
 import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
@@ -36,8 +30,6 @@ import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.nutility.ContainerCache;
 import edu.common.dynamicextensions.nutility.ContainerParser;
 import edu.common.dynamicextensions.nutility.IdGenerator;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DynamicExtensionsUtility;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 
 public class Container extends DynamicExtensionBaseDomainObject {	
@@ -1016,61 +1008,6 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	}
 		
 	/**
-	 * @return container HTML
-	 */
-	public String render() {
-		Map<ContextParameter, String> contextParameter = new HashMap<ContextParameter, String>();
-		contextParameter.put(ContextParameter.MODE,
-				WebUIManagerConstants.EDIT_MODE);
-		return render(contextParameter, new FormData(this));
-	}
-
-	public String render(Map<ContextParameter, String> contextParameter, FormData formData) {
-		if (isSurveyForm()) {
-			return renderSurveyForm(contextParameter, formData);
-		}
-		
-		final StringBuffer containerHTML = new StringBuffer(128);
-		boolean addCaption = true;
-
-		containerHTML.append("<table summary='' cellpadding='3' cellspacing='0' align='center' width='100%'>");
-
-		updateWarningMessageHTML(contextParameter, containerHTML);
-		String caption = contextParameter.get(ContextParameter.FORM_LABEL);
-		if (StringUtils.isEmpty(caption)) {
-			caption = this.caption;
-		}
-		
-		String allControlHTML = generateContainerHTML(caption, addCaption, formData, contextParameter, true);
-		containerHTML.append(allControlHTML).append("</table>");
-		return containerHTML.toString();
-
-	}
-
-	private void updateWarningMessageHTML(Map<ContextParameter, String> contextParameter,
-			final StringBuffer containerHTML) {
-		boolean isShowRequiredFieldWarningMessage = Boolean.valueOf(contextParameter
-				.get(ContextParameter.MANDATORY_MESSAGE));
-		if (contextParameter.get(ContextParameter.MODE) != null
-				&& contextParameter.get(ContextParameter.MODE).equalsIgnoreCase(WebUIManagerConstants.EDIT_MODE)
-				&& isShowRequiredFieldWarningMessage) {
-
-			containerHTML.append("<tr><td class='formMessage' colspan='3'><span class='font_red'>")
-					.append(getRequiredFieldIndicatior()).append("&nbsp;</span><span class='font_gr_s'>")
-					.append(getRequiredFieldWarningMessage()).append("</span></td></tr><tr><td height='5'/></tr>");
-		}
-	}
-
-	/**
-	 * FIXME this is a temporary method, this field should be configurable as it was in the legacy model
-	 * @return
-	 */
-	private Object getRequiredFieldWarningMessage() {
-
-		return "indicates mandatory fields.";
-	}
-
-	/**
 	 * FIXME this is a temporary method, this field should be configurable as it was in the legacy model
 	 * @return
 	 */
@@ -1078,339 +1015,10 @@ public class Container extends DynamicExtensionBaseDomainObject {
 		return "*";
 	}
 
-	/**
-	 * @param generateSubformHTML 
-	 * @return return the HTML string for this type of a object
-	 * @throws DynamicExtensionsSystemException
-	 * @throws DynamicExtensionsApplicationException 
-	 */
-	public String generateContainerHTML(final String caption, boolean addCaption, FormData formData,
-			Map<ContextParameter, String> contextParameter, boolean generateSubformHTML) {
-		final StringBuffer rowHTML = new StringBuffer(108);
-		final List<Object> values = new ArrayList<Object>();
-		final List<Control> controls = getOrderedControlList();
-		int lastRow = 0;
-		Control lastControl = null;
-		addCaptionHTML(rowHTML, caption, values, addCaption, formData);
-
-		for (final Control control : controls) {
-			ControlValue fieldValue = formData.getFieldValue(control.getName());
-			String controlName = control.getControlName();
-			String controlHTML;
-
-			//TODO: needs a better way to handle for restricting form display up to two levels
-			if (control instanceof SubFormControl) {
-				controlHTML = ((SubFormControl) control).render(controlName, fieldValue, contextParameter,
-						generateSubformHTML);
-			} else {
-				controlHTML = control.render(fieldValue, contextParameter);
-			}
-
-			if (lastRow < control.getSequenceNumber()) {
-				//Do not add row close tag before first row.
-				if (lastControl != null && !(lastControl instanceof SubFormControl && generateSubformHTML == false)) {
-					rowHTML.append(CLOSE_ROW_HTML);
-				}
-
-				//No extra space should be added between control and a Note above it.
-				if (!fieldValue.isHidden() && !(lastControl instanceof Label)) {
-					rowHTML.append(EMPTY_ROW_HTML);
-				}
-
-				rowHTML.append(String.format(TBODY_TAG, controlName)).append(
-						String.format(CONTROL_ROW_HTML_START_TAG, getRowDisplay(fieldValue)));
-			} 
-			rowHTML.append(controlHTML);
-
-			if (control.isDynamic()) {
-				rowHTML.append("<input type='hidden' name='dynamicControl'  value = '").append(controlName)
-						.append("_tbody' />");
-			}
-			lastControl = control;
-			lastRow = control.getSequenceNumber();
-		}
-		rowHTML.append("</td></tr>");
-
-		return rowHTML.toString();
-	}
-
-	/**
-	 * This method is used for UI rendering
-	 */
-	private String getRowDisplay(ControlValue fieldValue) {
-		String rowDisplay = "display:row";
-
-		if (fieldValue != null && fieldValue.isHidden()) {
-			rowDisplay = "display:none";
-		}
-		return rowDisplay;
-	}
-
 	private List<Control> getOrderedControlList() {
 		final List<Control> controls = new ArrayList<Control>(getControls());
 		java.util.Collections.sort(controls);
 		return controls;
-	}
-
-	/**
-	 * @param captionHTML
-	 * @param caption in the format -- NewCaption:Main ContainerId
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private void addCaptionHTML(final StringBuffer captionHTML, final String caption, final List<Object> values,
-			boolean addCaption, FormData formData) {
-		// Check added for CSD project to ensure that HTML is generated for mock
-		// container with NULL id.
-		boolean isIdNull = false;
-		if (getId() == null) {
-			isIdNull = true;
-			setId(-1L);
-		}
-
-		//check if Id in caption matches current id - if yes then it is main form, so replace caption
-		if (caption == null || !caption.endsWith(getId().toString())) {
-			if (addCaption) // for subform
-			{
-				captionHTML.append("<tr ");
-				addDisplayOptionForRow(values, captionHTML, "_caption", formData);
-				captionHTML.append("<td class='td_color_6e81a6' colspan='100' align='left'>")
-						.append(DynamicExtensionsUtility.replaceHTMLSpecialCharacters(caption)).append("<tr ");
-				addDisplayOptionForRow(values, captionHTML, "_emptyrow", formData);
-				captionHTML.append("<td height='5'></td></tr>");
-			}
-		} else { // for Main form
-			captionHTML.append("<tr><td class='td_color_6e81a6_big' colspan='100' align='left'>").append(caption.substring(0, (caption.length() - 1 - getId().toString().length()))).append("<tr><td height='5'></td></tr>");
-		}
-
-		if (isIdNull) {
-			setId(null);
-		}
-	}
-
-	/**
-	 *
-	 * @param container
-	 * @param values
-	 * @param captionHTML
-	 * @throws DynamicExtensionsSystemException
-	 */
-	private void addDisplayOptionForRow(final List<Object> values, final StringBuffer captionHTML,
-			final String identifier, FormData formData) {
-		if (!getControls().isEmpty()) {
-			final Control control = getControls().iterator().next();
-			String controlName = control.getControlName();
-			captionHTML.append("id='" + controlName + identifier + "_container_div' name='" + controlName + identifier
-					+ "_container_div'");
-
-			values.clear();
-
-			if (doAllControlsHaveHideAction(formData)) {
-				captionHTML.append(" style='display:none' >");
-			} else {
-				captionHTML.append(" style='display:row' >");
-			}
-			captionHTML.append("<input type='hidden' name='skipLogicHideControls' id='skipLogicHideControls' value = '"
-					+ controlName + identifier + "_container_div' />");
-		}
-
-	}
-
-	private boolean doAllControlsHaveHideAction(FormData formData) {
-		boolean isAlltargetControls = true;
-		for (final Control control : getControls()) {
-			if (!control.isSkipLogicTargetControl() || !formData.getFieldValue(control.getName()).isHidden()) {
-				isAlltargetControls = false;
-				break;
-			}
-		}
-		return isAlltargetControls;
-	}
-
-	public String renderAsGrid(List<FormData> formDataList, Map<ContextParameter, String> contextParameter,
-			boolean isPasteEnable, boolean showCaption) {
-		StringBuffer htmlForGrid = new StringBuffer(1404);
-		htmlForGrid.append("<input type='hidden' name='");
-		htmlForGrid.append(name);
-		htmlForGrid.append("_rowCount' id= '");
-		htmlForGrid.append(name);
-		htmlForGrid.append("_rowCount' value='");
-		htmlForGrid.append((formDataList != null ? formDataList.size() : 0));
-		htmlForGrid.append("'/>");
-		//2: update sub form heading
-		htmlForGrid.append("<tr width='100%'> <td " + " colspan='100'"
-				+ " align='center'> <table cellpadding='3' cellspacing='0' " + "align='center' width='100%'>");
-
-		if (showCaption) {
-			htmlForGrid.append("<tr width='100%'><td class='td_color_6e81a6' " + "colspan='3' align='left'>")
-					.append(getCaption()).append("</td></tr>");
-		}
-
-		//3: configure paste button depending on flag
-		String dataEntryOperation = contextParameter.get(ContextParameter.MODE);
-		if (isPasteEnable && WebUIManagerConstants.EDIT_MODE.equals(dataEntryOperation)) {
-			htmlForGrid
-					.append("<tr><td colspan='3' width='100%' style='background-color:#E3E2E7;'><input type='button' ")
-					.append("style='border: 0px; background-image: url(images/de/b_paste.gif);height: 20px; ")
-					.append("width: 59px;' align='middle'  id='paste_").append(name).append("' onclick='pasteData(\"")
-					.append(name).append("\",\"many\")'/> </td>")
-					.append("</tr>");
-		}
-
-		List<Control> labels = new ArrayList<Control>();
-		List<Control> dataControls = new ArrayList<Control>();
-		segregateControls(dataControls, labels);
-
-		for (Control label : labels) {
-			htmlForGrid.append(" <tr width='100%'>").append(label.render(null, contextParameter))
-					.append("</table></tr>");
-		}
-		htmlForGrid
-				.append(" <tr width='100%'><td colspan='3' width='100%'><table id='")
-				.append(name)
-				.append("_table' cellpadding='3' cellspacing='3' border='0' align='center' width='100%'><tr width='100%' class='formLabel_withoutBorder'><th width='1%'>&nbsp;</th>");
-
-		//4: update table headings 
-		for (Control control : dataControls) {
-			htmlForGrid.append("<th>");
-
-			if (control.isMandatory()) {
-
-				htmlForGrid.append("<span class='font_red'>");
-				htmlForGrid.append(getRequiredFieldIndicatior());
-				htmlForGrid.append("</span>&nbsp;&nbsp;<span class='font_bl_nor'>");
-				htmlForGrid.append(control.getCaption());
-				htmlForGrid.append("</span>");
-			} else {
-				htmlForGrid.append("&nbsp;&nbsp;<span class='font_bl_nor'>");
-				htmlForGrid.append(control.getCaption());
-				htmlForGrid.append("</span>");
-			}
-
-			htmlForGrid.append("</th>");
-		}
-
-		htmlForGrid.append("</tr>");
-
-		//5: update data rows
-		if (formDataList != null) {
-			int index = 1;
-			for (FormData rowValueMap : formDataList) {
-				htmlForGrid.append(getContainerHTMLAsARow(dataControls, index, rowValueMap, contextParameter));
-				index++;
-			}
-		}
-
-		htmlForGrid.append("</table> <div id='wrapper_div_").append(name).append("' > &nbsp;</div>");
-
-		//6: add buttons to the grid
-		if (dataEntryOperation.equals("edit")) {
-			htmlForGrid
-					.append("<table cellpadding='3' cellspacing='0' align='center' width='100%' class='td_color_e3e2e7'><tr><td align='left'>"
-							+ "<input type='button' style='border: 0px; background-image: url(images/de/b_delete.gif); height: 20px; width: 59px;' align='middle' onClick=\"removeCheckedRow('")
-					.append(name)
-					.append("');" + "\" id='btnDelete")
-					.append(name)
-					.append("'/></td><td align='right'>"
-							+ "<input type='button' style='border: 0px; background-image: url(images/de/b_add_more.gif); height: 20px; width: 76px;' align='middle' onClick=\"addRow('")
-					.append(name).append("')\" id='btnAddMore").append(name).append("'/>" + "</td></tr></table>");
-
-		}
-
-		htmlForGrid.append("</td></tr>");
-
-		return htmlForGrid.toString();
-	}
-	
-	/**
-	 * This is used for UI rendering
-	 */
-	public String getContainerHTMLAsARow(int rowId, FormData formData, Map<ContextParameter, String> contextParameter) {
-		return getContainerHTMLAsARow(getDataControls(), rowId, formData, contextParameter);
-	}
-
-	/**
-	 * @param rowId
-	 * @param formData
-	 * @param contextParameter
-	 * @return
-	 */
-	public String getContainerHTMLAsARow(List<Control> controlList, int rowId, FormData formData,
-			Map<ContextParameter, String> contextParameter) {
-		StringBuffer contHtmlAsARow = new StringBuffer(96);
-
-		String rowClass = "formField_withoutBorder";
-		if (rowId % 2 == 0) {
-			rowClass = "td_color_f0f2f6";
-		}
-		contHtmlAsARow.append("<tr width='100%' class='").append(rowClass).append("'><td width='1%'>");
-
-		if (contextParameter != null
-				&& WebUIManagerConstants.EDIT_MODE.equals(contextParameter.get(ContextParameter.MODE))) {
-			contHtmlAsARow.append("<input type='checkbox' name='deleteRow' value='' " + "id='checkBox_")
-					.append(getId()).append('_').append(rowId).append("'/>");
-		} else {
-			contHtmlAsARow.append("&nbsp;");
-		}
-
-		contHtmlAsARow.append("</td>");
-		for (Control control : controlList) {
-			generateHTMLforControl(rowId, contHtmlAsARow, formData, control, contextParameter);
-		}
-
-		contHtmlAsARow.append("</tr>");
-
-		return contHtmlAsARow.toString();
-	}
-
-	/**
-	 * @param rowId
-	 * @param contHtmlAsARow
-	 * @param formData
-	 * @param control
-	 * @param contextParameter
-	 */
-	private void generateHTMLforControl(int rowId, StringBuffer contHtmlAsARow, FormData formData,
-			final Control control, Map<ContextParameter, String> contextParameter) {
-		String controlHTML = control.renderInGrid(rowId, formData.getFieldValue(control.getName()), contextParameter);
-
-		if (control.isDynamic()) {
-			String tbodyHTML = "<td valign='middle' NOWRAP='true' id='%stbody'> <input type='hidden' name='dynamicControl'  value = '%stbody' />";
-			tbodyHTML = String.format(tbodyHTML, control.getControlName(rowId), control.getControlName(rowId));
-			contHtmlAsARow.append(tbodyHTML).append(controlHTML.replaceAll("style='float:left'", "")).append("</td>");
-		} else {
-			contHtmlAsARow.append("<td valign='middle' NOWRAP='true'>")
-				.append(controlHTML.replaceAll("style='float:left'", "")).append("</td>");
-		}
-	}
-
-	/**
-	 * This is used for UI rendering
-	 */
-	private void segregateControls(List<Control> dataControls, List<Control> labels) {
-
-		for (Control control : getOrderedControlList()) {
-
-			if (control instanceof Label) {
-				labels.add(control);
-			} else {
-				dataControls.add(control);
-			}
-		}
-	}
-
-	/**
-	 * This is used for UI rendering
-	 */
-	private List<Control> getDataControls() {
-		List<Control> dataControls = new ArrayList<Control>();
-
-		for (Control control : getOrderedControlList()) {
-
-			if (!(control instanceof Label)) {
-				dataControls.add(control);
-			}
-		}
-		return dataControls;
 	}
 
 	private void initLogs() {
@@ -1431,61 +1039,7 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			}			
 		}		
 	}
-	
-	 
-	public String renderSurveyForm(Map<ContextParameter, String> contextParameter, FormData formData) {
-		String categorydiv = "<div><div id='sm-pages'>%s</div></div>";
-		String pagediv = "<div class='sm-page' id='%d' style='display:none'>%s</div>";
-		StringBuilder pages = new StringBuilder();
-		StringBuilder categoryHtml = new StringBuilder(renderHiddenInputs(contextParameter, formData));
-
-//		for (Page p : getPages()) {
-//			pages.append(String.format(pagediv, p.getId().longValue(), p.render(formData, contextParameter)));
-//		}
-
-		categoryHtml.append(String.format(categorydiv, pages.toString()));
-		return categoryHtml.toString();
-	}
-	
-	private String renderHiddenInputs(Map<ContextParameter, String> ctxParams, FormData formData) throws NumberFormatException {
-		String caption = ctxParams.get(ContextParameter.FORM_LABEL);
-		if (StringUtils.isEmpty(caption)) {
-			caption = getCaption();
-		}
-		
-		String containerIdentifier = String.format(CONTAINER_ID, getId());
-		String formCaption = String.format(FORM_CAPTION, caption);
-		String controlsCount = "";//String.format(CONTROL_COUNT, FormDataUtility.getFilledControlCount(formData));
-		String emptyControlsCount = "";//String.format(EMPTY_CONTROL_COUNT, FormDataUtility.getEmptyControlCount(formData));
-		String displayPage = String.format(DISPLAY_PAGE, getFirstEmptyPage(formData));
-
-		StringBuilder results = new StringBuilder();
-		results.append(containerIdentifier);
-		results.append(formCaption);
-		results.append(controlsCount);
-		results.append(emptyControlsCount);
-		results.append(displayPage);
-		return results.toString();
-	}
-	
-	private long getFirstEmptyPage(FormData data) {
-		long result = -1L, pageId = 0L;
-		for (Control ctrl : getOrderedControlList()) {
-			if (ctrl instanceof PageBreak) {
-				pageId++;
-				continue;
-			}
-			
-			ControlValue fieldValue = data.getFieldValue(ctrl.getName());
-			if(!fieldValue.isHidden() && !fieldValue.isReadOnly() && fieldValue.isEmpty() == true) {
-				result = pageId;
-				break;
-			}
-		}
-		
-		return result;
-	}
-	
+	 	
 	public List<Page> getPages() {
 		List<Page> pages = new ArrayList<Page>();		
 		Long pageId = 1L;
@@ -1630,7 +1184,6 @@ public class Container extends DynamicExtensionBaseDomainObject {
 	
 
 	public SubFormControl getSubFormControl(String name) {
-
 		SubFormControl subFormControl = null;
 		for (Control control : getControls()) {
 			if (!(control instanceof SubFormControl)) {
@@ -1658,23 +1211,4 @@ public class Container extends DynamicExtensionBaseDomainObject {
 			throw new RuntimeException("Error obtaining container name with id : " + id);
 		}
 	}
-		
-	private static final String EMPTY_ROW_HTML = "<tr><td height='7'></td></tr>";
-
-	private static final String CLOSE_ROW_HTML = "</table></td></tr></tbody>";
-
-	private static final String TBODY_TAG = "<tbody id='%s_tbody'>";
-
-	private static final String CONTROL_ROW_HTML_START_TAG = "<tr valign='center' style='%s'/>";
-	
-	private static final String CONTAINER_ID = "<input type='hidden' id='containerIdentifier' name='containerIdentifier'  value='%d'></input>";
-
-	private static final String FORM_CAPTION = "<input type='hidden' id='categoryName' value='%s'></input>";
-
-	private static final String CONTROL_COUNT = "<input type='hidden' id='controlsCount' value='%d'></input>";
-
-	private static final String EMPTY_CONTROL_COUNT = "<input type='hidden' id='emptyControlsCount' value='%d'></input>";
-
-	private static final String DISPLAY_PAGE = "<input type='hidden' id='displayPage' name='displayPage'  value='%d'></input>";
-
 }

@@ -88,11 +88,7 @@ public class ContainerFacade {
 	}
 
 	public String getHTML(HttpServletRequest request) {
-
-		Stack<FormData> formDataStack = new Stack<FormData>();
-		CacheManager.addObjectToCache(request, DEConstants.FORM_DATA_STACK, formDataStack);
-		formDataStack.push(new FormData(container));
-		return container.render();
+		return null;
 	}
 
 	public Properties getProperties() throws Exception {

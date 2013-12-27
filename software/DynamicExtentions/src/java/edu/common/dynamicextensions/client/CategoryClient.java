@@ -1,16 +1,6 @@
 
 package edu.common.dynamicextensions.client;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
-import edu.common.dynamicextensions.ui.webui.util.WebUIManagerConstants;
-import edu.common.dynamicextensions.util.DirOperationsUtility;
-import edu.common.dynamicextensions.util.ZipUtility;
-import edu.common.dynamicextensions.utility.HTTPSConnection;
-
 public class CategoryClient 
 {
 

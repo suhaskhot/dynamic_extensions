@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.FileUtils;
 
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.DirOperationsUtility;
 import edu.common.dynamicextensions.util.ZipUtility;
 
@@ -24,7 +23,7 @@ public class Utility {
 	}
 	
 	public static void downloadFile(InputStream inputStream, String tempDirName,
-			String fileName, boolean unZip) throws IOException, DynamicExtensionsSystemException
+			String fileName, boolean unZip) throws IOException
 	{
 		BufferedInputStream reader = null;
 		BufferedOutputStream fileWriter = null;
@@ -52,7 +51,7 @@ public class Utility {
 		}
 		catch (IOException e)
 		{
-			throw new DynamicExtensionsSystemException(
+			throw new RuntimeException(
 					"Exception occured while downloading the zip on server", e);
 
 		}

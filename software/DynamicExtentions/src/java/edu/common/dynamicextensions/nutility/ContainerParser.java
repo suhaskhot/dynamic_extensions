@@ -43,7 +43,6 @@ import edu.common.dynamicextensions.domain.nui.StringTextField;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.domain.nui.TextArea;
 import edu.common.dynamicextensions.domain.nui.TextField;
-import edu.common.dynamicextensions.exception.DynamicExtensionsSystemException;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 
 public class ContainerParser {
@@ -77,9 +76,7 @@ public class ContainerParser {
 	}
 
 
-	private void updateCalculatedSourceControls(Container container, Container rootContainer)
-			throws DynamicExtensionsSystemException {
-
+	private void updateCalculatedSourceControls(Container container, Container rootContainer) {
 		FormulaParser formulaParser = new FormulaParser();
 		for (Control control : container.getControls()) {
 			if (control instanceof NumberField && ((NumberField) control).isCalculated()) {
@@ -91,8 +88,7 @@ public class ContainerParser {
 		}
 	}
 
-	private void updateSourceCalculatedControls(Container rootContainer, FormulaParser formulaParser, Control control)
-			throws DynamicExtensionsSystemException {
+	private void updateSourceCalculatedControls(Container rootContainer, FormulaParser formulaParser, Control control) {
 		formulaParser.parseExpression(((NumberField) control).getFormula());
 		for (String symbol : formulaParser.getSymbols()) {
 			Control sourceControl = rootContainer.getControl(symbol,"\\.");

@@ -1,20 +1,12 @@
 <?xml version ="1.0"?>
 <project name="DynamicExtensions" default="compile">
-	<!--define require dir and Properties -->
-	<property file="src/conf/DynamicExtensions.properties" />
-	<property file="src/conf/db.properties" />
-
 	<import file="./binaries/DEDeploy.xml" />
 	<property name="base.dir" value="." />
 	<property name="src.dir" value="src/java" />
-	<property name="js.dir" value="src/web/javascripts"/>
-	<property name="dhtmlx.js.dir" value="src/web/dhtmlx_suite/js"/>
 	<property name="test.dir" value="test" />
 	<property name="target.dir" value="binaries/classes" />
 	<property name="lib.dir" value="${base.dir}/lib" />
-	   <property name="client.lib.dir" value="${base.dir}/lib/client"/>
 	<property name="build.dir" value="${base.dir}/build" />
-	<property name="applet.dir" value="${base.dir}/src/web/Applet" />
 	<property name="interface.dir" value="${base.dir}/binaries/DynamicExtensionsInterface" />
 	<property name="client.jar.dir" value="${base.dir}/binaries/Client" />
 	<property name="interface.src.dir" value="${base.dir}/binaries/DynamicExtensionsInterfaceSource" />
@@ -215,18 +207,10 @@
 		<mkdir dir="${temp.dir}" />
 		<mkdir dir="${temp.dir}/META-INF" />
 		<mkdir dir="${temp.dir}/binaries/DynamicExtensionsInterface" />
-		<mkdir dir="${temp.dir}/WEB-INF/classes" />
-		<mkdir dir="${temp.dir}/WEB-INF/lib" />
 
 		<copy todir="${temp.dir}/lib">
 			<fileset dir="${base.dir}/lib">
-				<include name="server/*" />
-			</fileset>
-		</copy>
-
-		<copy todir="${temp.dir}/WEB-INF/lib">
-			<fileset dir="${base.dir}/lib/server">
-				<include name="velocity-dep-1.5.jar"/>
+				<include name="**/*"/>
 			</fileset>
 		</copy>
 
@@ -241,9 +225,11 @@
 				<include name="META-INF/MANIFEST.MF" />
 			</fileset>
 		</copy>
+
 		<copy todir="${temp.dir}">
 		  <fileset dir="src">
 		  	<include name="csd_web/**"/> 
+		  	<include name="ngweb/**"/> 
 		  </fileset>
 		</copy>
 		<copy todir="${temp.dir}/META-INF" file="binaries/META-INF/MANIFEST.MF">

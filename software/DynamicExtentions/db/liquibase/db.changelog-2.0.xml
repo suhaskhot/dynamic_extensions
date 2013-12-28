@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <property name="int.type"       value="bigint"         dbms="mysql"/>
+  <property name="int.type"       value="number(19,0)"   dbms="oracle"/>
+  <property name="text.type"      value="varchar(1000)"  dbms="mysql"/>
+  <property name="text.type"      value="varchar2(1000)" dbms="oracle"/>
+  <property name="clob.type"      value="clob"           dbms="oracle"/>
+  <property name="clob.type"      value="longtext"       dbms="mysql"/>
+  <property name="blob.type"      value="blob"           dbms="oracle"/>
+  <property name="clob.type"      value="longtext"       dbms="mysql"/>
+  <property name="string.type"    value="varchar"        dbms="mysql" />
+  <property name="string.type"    value="varchar2"       dbms="oracle" />
+  <property name="timestamp.type" value="timestamp"      dbms="mysql" />
+  <property name="timestamp.type" value="timestamp"      dbms="oracle" />
+
+  <changeSet id="1" author="ka">
+    <createTable tableName="DYEXTN_CONTAINERS">
+      <column name="IDENTIFIER" type="${int.type}">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="NAME" type="${string.type}(64)">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="CAPTION" type="${string.type}(255)">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="CREATED_BY" type="${int.type}">
+      </column>
+
+      <column name="CREATE_TIME" type="${timestamp.type}">
+      </column>
+
+      <column name="LAST_MODIFIED_BY" type="${int.type}">
+      </column>
+
+      <column name="LAST_MODIFY_TIME" type="${timestamp.type}">
+      </column>
+
+      <column name="XML" type="${blob.type}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2" author="ka">
+    <createTable tableName="DYEXTN_ID_SEQ">
+      <column name="TABLE_NAME" type="${string.type}(64)">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="LAST_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="3" author="ka">
+    <sql>
+      insert into DYEXTN_ID_SEQ values('RECORD_ID_SEQ', 1)
+    </sql>
+  </changeSet>
+
+  <!-- changeSet id="-" author="pawarv">
+    <createTable tableName="DYEXTN_VERSIONED_CONTAINERS">
+      <column name="IDENTIFIER" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="CONTAINER_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="ACTIVATION_DATE" type="${timestamp.type}">
+      </column>
+
+      <column name="CREATED_BY" type="${int.type}">
+      </column>
+
+      <column name="CREATE_TIME" type="${timestamp.type}">
+      </column>
+
+      <column name="STATUS" type="${string.type}(16)">
+      </column>
+    </createTable>
+  </changeSet -->
+
+
+	
+  <!-- changeSet id="-" author="ka">
+    <createTable tableName="DYEXTN_FORMS">
+      <column name="IDENTIFIER" type="${int.type}">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+			
+      <column name="FORM_NAME" type="${text.type}">
+        <constraints nullable="false" unique="true"/>
+      </column>
+    </createTable>
+  </changeSet -->
+
+  <!-- changeSet id="-" author="ka">
+    <addForeignKeyConstraint constraintName="FK_VERS_CONTAINERS_ID"
+      baseTableName="DYEXTN_VERSIONED_CONTAINERS" baseColumnNames="IDENTIFIER"
+      referencedTableName="DYEXTN_FORMS" referencedColumnNames="IDENTIFIER"/>
+  </changeSet -->
+</databaseChangeLog>

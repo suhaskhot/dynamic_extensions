@@ -91,14 +91,22 @@ var Views = {
 									{
 										wait : true,
 										success : function(model, response) {
-											FormBizLogic.loadPreview();
-											$("#skipRulesTable tr:gt(0)")
-													.remove();
-											AdvancedControlPropertiesBizLogic
-													.loadSkipRules(Main.formView
-															.getFormModel());
+
+  $('#previewFrame').hide();
+  $('#preview').empty();
+  var deJson = getDEJson({json :response});
+  this.form = new edu.common.de.Form({
+          id           : null,
+          formDef      : deJson,
+          recordId     : null,
+          formDiv      : 'preview'
+        });
+  this.form.render();
+  $('#formWaitingImage').hide();
 										},
-										error : function(model, response) {
+
+
+									error : function(model, response) {
 											$("#formWaitingImage").hide();
 											$("#popupMessageText")
 													.html(
@@ -1896,4 +1904,119 @@ var Views = {
 		}
 	})
 
-}
+};
+
+var getDEJson = function (args) {
+  var rows = new Array();
+  var columns = null;
+  var prevRow = null;
+  var rowNo = 0;
+  var colNo = 0;
+ 
+ _.each(args.json.controlCollection, function(field) {
+    // Create NewField with appropriate new DE attributes
+    var newField = getNewField({field : field});
+  
+    // Adding control specific properties 
+    if (newField.type == 'numberField' || newField.type == 'stringTextField' || newField.type == 'textArea') {
+      newField['width'] = field.width;
+      newField['defaultValue'] = field.defaultValue;
+      if (newField.type == 'stringTextField') {
+        newField['url'] = field.url;
+        newField['password'] = field.password;
+      } else if (newField.type == 'numberField') {
+        newField['noOfDigits'] = field.noOfDigits;
+        newField['noOfDigitsAfterDecimal'] = field.noOfDigitsAfterDecimal;
+        newField['minValue'] = field.minValue;
+        newField['maxValue'] = field.maxValue;
+        newField['calculated'] = field.calculated;
+        newField['formula'] = field.formula;
+      } else {
+        newField['noOfRows'] = field.noOfRows;
+        newField['minLength'] = field.minLength;
+        newField['maxLength'] = field.maxLength;
+      }
+    } else if (newField.type == 'combobox' || newField.type == 'radiobutton' || newField.type == 'checkbox' || 
+      newField.type == 'listbox' || newField.type == 'multiSelectListbox') {
+      newField['dataType'] = field.dataType;
+      newField['dateFormat'] = field.dateFormat;
+      var pvs = new Array();
+      for (var i = 0 ; ; i++) {
+        var pv = eval("field.pvs.pv_" + i);
+        if (pv == undefined) {
+          break;
+        }
+        pvs[i] = pv;
+      }
+      newField['pvs'] = pvs;
+    } else if (newField.type == 'datePicker') {
+      newField['format'] = field.format;
+      newField['showCalendar'] = field.showCalendar;
+      newField['defaultType'] = field.defaultType;
+      newField['defaultValue'] = field.defaultValue;
+    } else if (newField.type == 'booleanCheckbox') {
+      newField['defaultChecked'] = field.defaultChecked;
+    } else if (newField.type == 'label') {
+      newField['heading'] = field.heading;
+      newField['note'] = field.note;
+    }    
+
+    if (prevRow == null || prevRow != field.sequenceNumber) {
+      columns = new Array();
+      colNo = 0;
+      rows[rowNo++] = columns;
+      prevRow = field.sequenceNumber;
+    }
+
+    columns[colNo++] = newField;
+  });
+  
+  var newJson = {};
+  newJson['name'] = args.json.formName;
+  newJson['caption'] = args.json.caption;
+  newJson['rows'] = rows;
+
+  return newJson;
+};
+
+var getNewField = function(args) { 
+  var field = args.field;
+  var newField = {};
+
+  newField['name'] = field.controlName;
+  newField['udn'] = field.userDefinedName;
+  newField['caption'] = field.caption;
+  newField['customLabel'] = field.customLabel;
+  newField['labelPosition'] = field.labelPosition;
+  newField['toolTip'] = field.toolTip;
+  newField['skipLogicSourceControl'] = field.skipLogicSourceControl;
+  newField['skipLogicTargetControl'] = field.skipLogicTargetControl;
+  newField['calculatedSourceControl'] = field.calculatedSourceControl;
+  newField['conceptCode'] = field.conceptCode;
+  newField['conceptPreferredName'] = field.conceptPreferredName;
+  newField['conceptDefinitionSource'] = field.conceptDefinitionSource;
+  newField['conceptDefinition'] = field.conceptDefinition;
+  newField['validationRules'] = field.validationRules;
+
+  // Correcting the type properties 
+  if (field.type == 'numericField') {
+    newField['type'] = 'numberField';
+  } else if (field.type == 'radioButton') {
+    newField['type'] = 'radiobutton';	
+  } else if (field.type == 'checkBox') {
+    newField['type'] = 'booleanCheckbox';	
+  } else if (field.type == 'multiselectBox' || field.type == 'listBox') {
+    newField['type']  = 'listbox';	
+  } else if (field.type == 'comboBox') {
+    newField['type'] = 'combobox'
+  } else if  (field.type == 'multiselectCheckBox') { 
+    newField['type'] = 'checkbox'
+  } else if (field.type == 'subForm') {
+    newField = new getDEJson({json :field.subForm});
+    newField['type'] = field.type;
+  } else {
+    newField['type']  = field.type;	
+  }
+
+  return newField;
+};

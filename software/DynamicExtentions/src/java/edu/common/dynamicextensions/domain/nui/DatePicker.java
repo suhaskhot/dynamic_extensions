@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class DatePicker extends Control {
 	private static final String DEFAULT_FORMAT = "MM-dd-yyyy";
 	
@@ -58,7 +60,7 @@ public class DatePicker extends Control {
 
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "DATE"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), ColumnTypeHelper.getDateColType()));
 	}
 	
 	

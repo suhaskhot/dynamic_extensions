@@ -7,13 +7,15 @@ package edu.common.dynamicextensions.domain.nui;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class FileUploadControl extends Control {
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columns = new ArrayList<ColumnDef>();
-		columns.add(ColumnDef.get(getDbColumnName() + "_NAME", "VARCHAR(4000)"));
-		columns.add(ColumnDef.get(getDbColumnName() + "_TYPE", "VARCHAR(4000)"));
-		columns.add(ColumnDef.get(getDbColumnName() + "_CONTENT", "BLOB"));
+		columns.add(ColumnDef.get(getDbColumnName() + "_NAME", ColumnTypeHelper.getStringColType()));
+		columns.add(ColumnDef.get(getDbColumnName() + "_TYPE", ColumnTypeHelper.getStringColType()));
+		columns.add(ColumnDef.get(getDbColumnName() + "_CONTENT", ColumnTypeHelper.getBlob()));
 		return columns;
 	}
 

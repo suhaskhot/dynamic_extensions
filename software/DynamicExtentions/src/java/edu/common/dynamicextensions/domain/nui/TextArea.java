@@ -4,6 +4,8 @@ package edu.common.dynamicextensions.domain.nui;
 import java.util.Collections;
 import java.util.List;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class TextArea extends TextField {
 	private int noOfRows;
 
@@ -45,7 +47,7 @@ public class TextArea extends TextField {
 
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "VARCHAR(4000)"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), ColumnTypeHelper.getStringColType()));
 	}
 
 	@Override

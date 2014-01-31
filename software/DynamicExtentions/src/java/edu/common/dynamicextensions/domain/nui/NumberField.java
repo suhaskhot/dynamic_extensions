@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class NumberField extends TextField {
 	//
 	// TODO: noOfDigits and noOfDigitsAfterDecimal needs to be pushed
@@ -95,7 +97,7 @@ public class NumberField extends TextField {
 
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "DECIMAL(19, 6)"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), ColumnTypeHelper.getFloatColType()));
 	}
 
 	@Override

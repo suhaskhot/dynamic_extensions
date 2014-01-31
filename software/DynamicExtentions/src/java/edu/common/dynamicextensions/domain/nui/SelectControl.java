@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import edu.common.dynamicextensions.napi.ControlValue;
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
 public abstract class SelectControl extends Control {
 	private PvDataSource pvDataSource;
@@ -111,17 +112,17 @@ public abstract class SelectControl extends Control {
 		String dbType;
 		switch (pvDataSource.getDataType()) {
 			case STRING:
-				dbType = "VARCHAR(4000)";
+				dbType = ColumnTypeHelper.getStringColType();
 				break;
 				
 			case INTEGER:
 			case FLOAT:
 			case BOOLEAN:
-				dbType = "DECIMAL(19, 6)";
+				dbType = ColumnTypeHelper.getFloatColType();
 				break;
 				
 			case DATE:
-				dbType = "DATE";
+				dbType = ColumnTypeHelper.getDateColType();
 				break;
 				
 			default:

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class SubFormControl extends Control {
 	private Container subContainer;
 
@@ -63,8 +65,8 @@ public class SubFormControl extends Control {
 	@Override
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
-		columnDefs.add(ColumnDef.get("RECORD_ID", "BIGINT"));
-		columnDefs.add(ColumnDef.get("SUB_FORM_RECORD_ID", "BIGINT"));
+		columnDefs.add(ColumnDef.get("RECORD_ID", ColumnTypeHelper.getIntegerColType()));
+		columnDefs.add(ColumnDef.get("SUB_FORM_RECORD_ID", ColumnTypeHelper.getIntegerColType()));
 		return columnDefs;
 	}
 

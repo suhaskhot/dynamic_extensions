@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class MultiSelectCheckBox extends SelectControl implements MultiSelectControl {
 	private String tableName;
 	
@@ -41,7 +43,7 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 	public List<ColumnDef> getColumnDefs() {
 		List<ColumnDef> columnDefs = new ArrayList<ColumnDef>();
 		columnDefs.add(ColumnDef.get(getDbColumnName(), getDbType()));
-		columnDefs.add(ColumnDef.get(foreignKeyColumn, "BIGINT"));
+		columnDefs.add(ColumnDef.get(foreignKeyColumn, ColumnTypeHelper.getIntegerColType()));
 
 		return columnDefs;
 	}

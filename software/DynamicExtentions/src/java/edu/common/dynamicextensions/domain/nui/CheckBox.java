@@ -4,6 +4,8 @@ package edu.common.dynamicextensions.domain.nui;
 import java.util.Collections;
 import java.util.List;
 
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+
 public class CheckBox extends Control {
 	private boolean defaultValueChecked;
 
@@ -18,7 +20,7 @@ public class CheckBox extends Control {
 	// TODO: Be database agnostic
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), "DECIMAL(19, 6)"));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), ColumnTypeHelper.getFloatColType()));
 	}
 
 	@Override

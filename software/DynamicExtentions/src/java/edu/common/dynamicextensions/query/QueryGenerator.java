@@ -8,20 +8,22 @@ import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
+import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
+import edu.common.dynamicextensions.query.ast.CountNode;
 import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
-import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
+import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
 import edu.common.dynamicextensions.query.ast.FilterNode;
+import edu.common.dynamicextensions.query.ast.FilterNode.RelationalOp;
+import edu.common.dynamicextensions.query.ast.LimitExprNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.Node;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
-import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
-import edu.common.dynamicextensions.query.ast.FilterNode.RelationalOp;
 
 public class QueryGenerator {
 	
@@ -68,8 +70,17 @@ public class QueryGenerator {
         String sql = new StringBuilder("select ").append(selectClause)
         	.append(" from ").append(fromClause)
         	.append(" where ").append(whereClause)
-        	.toString();        
-        return !wideRowSupport ? sql : addOrderBy(sql, joinTree);
+        	.toString();
+        
+        if (wideRowSupport) {
+        	sql = addOrderBy(sql, joinTree);
+        }
+        
+        if (queryExpr.getLimitExpr() != null) {
+        	sql = addLimitClause(sql, queryExpr.getLimitExpr());
+        }
+        
+        return sql;
     }
 
     public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree, int start, int numRows) {
@@ -322,6 +333,14 @@ public class QueryGenerator {
     		result = getDateDiffFuncNodeSql((DateDiffFuncNode)exprNode);
     	} else if (exprNode instanceof CurrentDateNode) {
     		result = "sysdate";
+    	} else if (exprNode instanceof CountNode) {
+    		CountNode countNode = (CountNode)exprNode;
+    		StringBuilder countSql = new StringBuilder("count(");
+    		if (countNode.isDistinct()) {
+    			countSql.append("distinct ");
+    		}
+    		countSql.append(getFieldNodeSql(countNode.getField())).append(")");
+    		result = countSql.toString();
     	}
     	
     	return result;
@@ -432,5 +451,9 @@ public class QueryGenerator {
 		}
     	    	
 		return result;
+    }    
+    
+    private String addLimitClause(String sql, LimitExprNode limitExpr) { // TODO: Add Oracle support
+    	return sql + " limit " + limitExpr.getStartAt() + ", " + limitExpr.getNumRecords();
     }
 }

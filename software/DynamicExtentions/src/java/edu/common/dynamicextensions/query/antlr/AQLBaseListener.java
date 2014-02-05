@@ -43,6 +43,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterLimitExpr(@NotNull AQLParser.LimitExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitLimitExpr(@NotNull AQLParser.LimitExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -316,6 +329,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -329,19 +355,6 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterLiteralVal(@NotNull AQLParser.LiteralValContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -349,6 +362,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitLiteralVal(@NotNull AQLParser.LiteralValContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

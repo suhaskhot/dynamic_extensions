@@ -8,6 +8,7 @@ import edu.common.dynamicextensions.query.antlr.AQLBaseVisitor;
 import edu.common.dynamicextensions.query.antlr.AQLParser;
 import edu.common.dynamicextensions.query.antlr.AQLParser.LiteralContext;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
+import edu.common.dynamicextensions.query.ast.CountNode;
 import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
@@ -16,6 +17,7 @@ import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.FilterNode;
 import edu.common.dynamicextensions.query.ast.FilterNodeMarker;
+import edu.common.dynamicextensions.query.ast.LimitExprNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.Node;
@@ -33,14 +35,19 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     @Override 
     public QueryExpressionNode visitQueryExpr(@NotNull AQLParser.QueryExprContext ctx) {  
     	QueryExpressionNode queryExpr = new QueryExpressionNode();
+
     	SelectListNode selectList = new SelectListNode();
-    	
     	if (ctx.select_list() != null) {
     		selectList = (SelectListNode)visit(ctx.select_list());
-    	}
-
-    	queryExpr.setSelectList(selectList);
+    	} 
+    	queryExpr.setSelectList(selectList);    	
     	queryExpr.setFilterExpr((FilterExpressionNode)visit(ctx.filter_expr()));
+    	
+    	if (ctx.limit_expr() != null) {
+    		LimitExprNode limitExpr = (LimitExprNode)visit(ctx.limit_expr());
+    		queryExpr.setLimitExpr(limitExpr);
+    	}
+    	
     	return queryExpr;
     }    
     
@@ -52,6 +59,19 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	}
     	
     	return list;  
+    }
+    
+    @Override
+    public LimitExprNode visitLimitExpr(@NotNull AQLParser.LimitExprContext ctx) {
+    	LimitExprNode limitExpr = new LimitExprNode();
+    	if (ctx.INT().size() == 2) {
+    		limitExpr.setStartAt(Integer.parseInt(ctx.INT(0).getText()));
+    		limitExpr.setNumRecords(Integer.parseInt(ctx.INT(1).getText()));
+    	} else {
+    		limitExpr.setNumRecords(Integer.parseInt(ctx.INT(0).getText()));
+    	}
+    	
+    	return limitExpr;
     }
     
     @Override
@@ -204,6 +224,19 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     @Override
     public CurrentDateNode visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) {
     	return new CurrentDateNode();
+    }
+    
+    @Override
+    public CountNode visitCountFunc(@NotNull AQLParser.CountFuncContext ctx) {
+    	CountNode countNode = new CountNode();
+    	if (ctx.DISTINCT() != null) {
+    		countNode.setDistinct(true);
+    	}
+    	
+    	FieldNode field = new FieldNode();
+    	field.setName(ctx.FIELD().getText());
+    	countNode.setField(field);    	
+    	return countNode; 
     }
     
     @Override 

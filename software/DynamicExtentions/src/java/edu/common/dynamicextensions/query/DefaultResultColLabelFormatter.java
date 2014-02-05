@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.query;
 
+import org.apache.commons.lang.WordUtils;
+
 public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatter {
 	private String separator = ": ";
 	
@@ -9,16 +11,16 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 
 	@Override
 	public String format(String[] nodeCaptions, int instance) {
-		StringBuilder heading = new StringBuilder(nodeCaptions[0]);
-		
-		for (int j = 1; j < nodeCaptions.length; ++j) {
-			heading.append(separator).append(nodeCaptions[j]);
-		}
+		StringBuilder heading = new StringBuilder();		
+		for (int j = 0; j < nodeCaptions.length - 1; ++j) {
+			heading.append(WordUtils.initials(nodeCaptions[j])).append(separator);
+		}		
+		heading.append(nodeCaptions[nodeCaptions.length - 1]);
 		
 		if (instance > 0) {
 			heading.append(" ").append(instance);
 		}
 		
 		return heading.toString();    	
-	}
+	}	
 }

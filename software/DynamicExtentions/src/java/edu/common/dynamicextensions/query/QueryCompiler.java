@@ -14,6 +14,7 @@ import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.VersionedContainer;
 import edu.common.dynamicextensions.napi.impl.VersionedContainerImpl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
+import edu.common.dynamicextensions.query.ast.CountNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
@@ -308,6 +309,8 @@ public class QueryCompiler
             return analyzeSelectArithExpressionNode(queryId, (ArithExpressionNode)exprNode, joinMap, failIfAbsent);
         } else if (exprNode instanceof DateDiffFuncNode) {
             return analyzeSelectDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap, failIfAbsent);
+        } else if (exprNode instanceof CountNode) {
+        	return analyzeField(queryId, ((CountNode)exprNode).getField(), joinMap, failIfAbsent);
         } else {
             return !failIfAbsent; // literal nodes
         }

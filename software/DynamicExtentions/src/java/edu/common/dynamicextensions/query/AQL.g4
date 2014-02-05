@@ -1,6 +1,6 @@
 grammar AQL;
 
-query         : (SELECT select_list WHERE)? filter_expr #QueryExpr
+query         : (SELECT select_list WHERE)? filter_expr limit_expr? #QueryExpr
               ;
       
 select_list   : select_element (',' select_element)* #SelectExpr
@@ -15,6 +15,9 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
               | LP filter_expr RP                    #ParensFilterExpr
               | NOT filter_expr                      #NotFilterExpr
               | filter                               #SimpleFilter
+              ;
+
+limit_expr    : LIMIT INT (',' INT)?                 #LimitExpr
               ;
      
 filter        : arith_expr  OP   arith_expr          #BasicFilter
@@ -38,7 +41,8 @@ arith_expr    : arith_expr ARITH_OP arith_expr               #ArithExpr
               | MTHS_BTWN LP arith_expr ',' arith_expr RP    #MonthsDiffFunc
               | YRS_BTWN LP arith_expr ',' arith_expr RP     #YearsDiffFunc
               | CURR_DATE LP RP                              #CurrentDateFunc
-              | FIELD                                        #Field
+              | COUNT LP DISTINCT? FIELD RP                  #CountFunc
+              | FIELD                                        #Field              
               | literal                                      #LiteralVal              
               ;	 
           
@@ -55,6 +59,9 @@ WHERE    : 'where';
 MTHS_BTWN: 'months_between';
 YRS_BTWN:  'years_between';
 CURR_DATE: 'current_date';
+COUNT    : 'count';
+DISTINCT : 'distinct';
+LIMIT    : 'limit';
 OR       : 'or';
 AND      : 'and';
 PAND     : 'pand';

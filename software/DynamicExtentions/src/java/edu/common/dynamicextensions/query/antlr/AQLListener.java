@@ -31,6 +31,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitBasicFilter(@NotNull AQLParser.BasicFilterContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#LimitExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLimitExpr(@NotNull AQLParser.LimitExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#LimitExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLimitExpr(@NotNull AQLParser.LimitExprContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#FloatLiteral}.
 	 * @param ctx the parse tree
 	 */
@@ -262,6 +273,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#CountFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#CountFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#DateIntervalExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -273,17 +295,6 @@ public interface AQLListener extends ParseTreeListener {
 	void exitDateIntervalExpr(@NotNull AQLParser.DateIntervalExprContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#ParensArithExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#ParensArithExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link AQLParser#LiteralVal}.
 	 * @param ctx the parse tree
 	 */
@@ -293,6 +304,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLiteralVal(@NotNull AQLParser.LiteralValContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#ParensArithExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#ParensArithExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#AndFilterExpr}.

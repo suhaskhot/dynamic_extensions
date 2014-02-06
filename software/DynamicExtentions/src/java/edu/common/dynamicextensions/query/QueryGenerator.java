@@ -7,6 +7,7 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
+import edu.common.dynamicextensions.ndao.DbSettingsFactory;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
 import edu.common.dynamicextensions.query.ast.CountNode;
@@ -360,9 +361,14 @@ public class QueryGenerator {
     	
         switch (value.getType()) {
     		case STRING:
-    			result = "'" + removeQuotes(value.getValues().get(0).toString()) + "'";        			
+    			result = "'" + removeQuotes(value.getValues().get(0).toString()) + "'";
     			if (coercionType == DataType.DATE) {
-    				result = "to_date(" + result + ", 'MM-DD-YYYY')";
+        			String dbProduct = DbSettingsFactory.getProduct().toLowerCase();
+        			if (dbProduct.equals("oracle")) {
+        				result = "to_date(" + result + ", 'MM-DD-YYYY')";
+        			} else if (dbProduct.equals("mysql")) {
+        				result = "str_to_date(" + result + ", '%m/%d/%Y')";
+        			}    				    				
     			}        		
     			break;
     			

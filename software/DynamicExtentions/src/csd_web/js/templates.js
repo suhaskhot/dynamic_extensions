@@ -11,139 +11,139 @@ var Templates = {
 		this.templateList = new Array();
 
 		var result = $.ajax({
-			url : "csd_web/pages/templates/bodyTemplate.html",
+			url : "../pages/templates/bodyTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['bodyTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/commonControlPropsTemplate.html",
+			url : "../pages/templates/commonControlPropsTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['commonControlPropsTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/controlTabTemplate.html",
+			url : "../pages/templates/controlTabTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['controlTabTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/formTemplate.html",
+			url : "../pages/templates/formTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['formTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/numericFieldTemplate.html",
+			url : "../pages/templates/numericFieldTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['numericFieldTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/stringTextFieldTemplate.html",
+			url : "../pages/templates/stringTextFieldTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['stringTextFieldTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/radioButton.html",
+			url : "../pages/templates/radioButton.html",
 			async : false
 		}).responseText;
 		this.templateList['radioButtonTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/checkBox.html",
+			url : "../pages/templates/checkBox.html",
 			async : false
 		}).responseText;
 		this.templateList['checkBoxTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/singleSelectDropdown.html",
+			url : "../pages/templates/singleSelectDropdown.html",
 			async : false
 		}).responseText;
 		this.templateList['singleSelectDropdownTemplate'] = result;
 
 		result = $.ajax({
-			url : "csd_web/pages/templates/multiSelect.html",
+			url : "../pages/templates/multiSelect.html",
 			async : false
 		}).responseText;
 		this.templateList['multiSelectDropdownTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/multiSelectCheckBox.html",
+			url : "../pages/templates/multiSelectCheckBox.html",
 			async : false
 		}).responseText;
 		this.templateList['multiSelectCheckBoxTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/textArea.html",
+			url : "../pages/templates/textArea.html",
 			async : false
 		}).responseText;
 		this.templateList['textAreaTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/datePicker.html",
+			url : "../pages/templates/datePicker.html",
 			async : false
 		}).responseText;
 		this.templateList['datePickerTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/fileUpload.html",
+			url : "../pages/templates/fileUpload.html",
 			async : false
 		}).responseText;
 		this.templateList['fileUploadTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/pvTemplate.html",
+			url : "../pages/templates/pvTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['pvTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/submitButtonTemplate.html",
+			url : "../pages/templates/submitButtonTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['submitButtonTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/subForm.html",
+			url : "../pages/templates/subForm.html",
 			async : false
 		}).responseText;
 		this.templateList['subFormTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/advancedPropertiesTemplate.html",
+			url : "../pages/templates/advancedPropertiesTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['advancedPropertiesTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/note.html",
+			url : "../pages/templates/note.html",
 			async : false
 		}).responseText;
 		this.templateList['noteTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/label.html",
+			url : "../pages/templates/label.html",
 			async : false
 		}).responseText;
 		this.templateList['labelTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/heading.html",
+			url : "../pages/templates/heading.html",
 			async : false
 		}).responseText;
 		this.templateList['headingTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/pageBreak.html",
+			url : "../pages/templates/pageBreak.html",
 			async : false
 		}).responseText;
 		this.templateList['pageBreakTemplate'] = result;
 		
 		result = $.ajax({
-			url : "csd_web/pages/templates/summaryTemplate.html",
+			url : "../pages/templates/summaryTemplate.html",
 			async : false
 		}).responseText;
 		this.templateList['summaryTemplate'] = result;

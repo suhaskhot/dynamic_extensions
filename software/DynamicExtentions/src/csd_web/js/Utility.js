@@ -453,6 +453,25 @@ var Utility = {
 			}
 		}
 		return isCorrect;
-	}
+	},
+
+notify: function(notifDiv, message, type, fade) {
+    fade = (typeof fade == 'undefined' || fade == null ) ? true : fade;
+    notifDiv.removeClass("alert alert-success alert-info alert-danger hidden");
+    notifDiv.html(message);
+    var alertClass;
+    if (type == 'success') {
+      alertClass = "alert alert-success";
+    } else if (type == 'error') {
+      alertClass = "alert alert-danger";
+    } else if (type == 'info') {
+      alertClass = "alert alert-info";
+    }
+
+    notifDiv.addClass(alertClass).show();
+    if (fade) {
+      notifDiv.delay(3000).fadeOut(300);
+    }
+  }
 
 }

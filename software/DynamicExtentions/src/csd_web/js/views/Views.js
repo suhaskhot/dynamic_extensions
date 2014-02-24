@@ -44,7 +44,7 @@ var Views = {
 												var message = model
 														.get('caption')
 														+ " was saved successfully.";
-												$("#popupMessageText").html(
+											/*	$("#popupMessageText").html(
 														message);
 												$("#dialog-message").dialog(
 														'open');
@@ -52,26 +52,31 @@ var Views = {
 														.getFormSummaryView()
 														.displayFormInfo(
 																model
-																		.getFormInformation());
+																		.getFormInformation());*/
+            Utility.notify($("#notifications"), message, "success");
+
 												// change from Save as to save
 												$('#saveForm').prop("value",
 														" Save  ")
 
 											} else {
 												$("#formWaitingImage").hide();
-												$("#popupMessageText")
+										/*		$("#popupMessageText")
 														.html(
 																"Could not save the form successfully.");
 												$("#dialog-message").dialog(
-														'open');
+														'open'); */
+            Utility.notify($("#notifications"), "Could not save the form successfully", "error");
+
 											}
 										},
 										error : function(model, response) {
 											$("#formWaitingImage").hide();
-											$("#popupMessageText")
+										/*	$("#popupMessageText")
 													.html(
 															"Could not save the form successfully.");
-											$("#dialog-message").dialog('open');
+											$("#dialog-message").dialog('open'); */
+            Utility.notify($("#notifications"), message, "success");
 										}
 
 									});
@@ -752,7 +757,7 @@ var Views = {
 
 					this.pvGrid = new dhtmlXGridObject('pvGrid');
 					this.pvGrid
-							.setImagePath("dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
+							.setImagePath("../dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
 					this.pvGrid
 							.setHeader("<span id = 'header1'>Value</span>,<span id='header2'>Numeric Code</span>,"
 									+ "<span id='header3'>Definition</span>,<span id='header4'>Definition Source</span>,"
@@ -900,7 +905,7 @@ var Views = {
 				render : function() {
 					var tree = new dhtmlXTreeObject(this.el, "100%", "100%", 0);
 					tree.setSkin('dhx_terrace');
-					tree.setImagePath("dhtmlxSuite_v35/dhtmlxTree/"
+					tree.setImagePath("../dhtmlxSuite_v35/dhtmlxTree/"
 							+ "codebase/imgs/csh_dhx_terrace/");
 					tree.enableDragAndDrop(false);
 					tree.enableTreeImages(false);
@@ -967,21 +972,21 @@ var Views = {
 					this.tab.setSkin('dhx_terrace');
 					// this.tab.setHrefMode("iframes-on-demand");
 					this.tab
-							.setImagePath("dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/");
-					this.tab.addTab("summaryTab", "Summary", "150px");
-					this.tab.addTab("controlTab", "Add/Edit Control", "150px");
-					this.tab.addTab("advancedControlPropertiesTab",
-							"Advanced Options", "150px");
-					this.tab.addTab("designMode", "Design", "150px");
-					this.tab.addTab("previewTab", "Preview", "150px");
+							.setImagePath("../dhtmlxSuite_v35/dhtmlxTabbar/codebase/imgs/");
+					this.tab.addTab("summaryTab", "Summary", "200px");
+					this.tab.addTab("controlTab", "Add/Edit Control", "200px");
+					//this.tab.addTab("advancedControlPropertiesTab",
+					//		"Advanced Options", "150px");
+					this.tab.addTab("designMode", "Design", "200px");
+					this.tab.addTab("previewTab", "Preview", "200px");
 					this.tab.setContent("summaryTab", "summary");
 					this.tab.setContent("controlTab", "control");
 					this.tab.setContent("designMode", "design");
 					this.tab.setContent("previewTab", "preview");
 					// this.tab.setContentHref("previewTab",
 					// "csd_web/pages/preview.html");
-					this.tab.setContent("advancedControlPropertiesTab",
-							"advancedControlProperties");
+					//this.tab.setContent("advancedControlPropertiesTab",
+					//		"advancedControlProperties");
 
 					this.tab.setTabActive("summaryTab");
 					this.tab.attachEvent("onSelect", function(id, last_id) {
@@ -1000,7 +1005,7 @@ var Views = {
 					if (formInfo.get('createdBy') == undefined
 							|| formInfo.get('createdBy') == "") {
 						var result = $.ajax({
-							url : "csdApi/form/currentuser",
+							url : "../../csdApi/form/currentuser",
 							async : false
 						}).responseText;
 
@@ -1779,8 +1784,10 @@ var Views = {
 					if (formCaption == undefined || formCaption == ""
 							|| formCaption == null) {
 						var message = "Please specify the form's name.";
-						$("#popupMessageText").html(message);
-						$("#dialog-message").dialog('open');
+					/*	$("#popupMessageText").html(message);
+						$("#dialog-message").dialog('open'); */
+                                        Utility.notify($("#notifications"), message, "error");
+
 					} else {
 
 						this.model.set({
@@ -1867,7 +1874,7 @@ var Views = {
 		initLayoutGrid : function() {
 			layoutGrid = new dhtmlXGridObject("layoutGrid");
 			layoutGrid
-					.setImagePath("dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
+					.setImagePath("../dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
 			layoutGrid.setHeader(" ");
 			layoutGrid.setInitWidths("300");
 			layoutGrid.setColAlign("center");

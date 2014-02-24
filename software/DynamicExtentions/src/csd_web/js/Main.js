@@ -49,3 +49,9 @@ var Main = {
 }
 
 Main.renderUI();
+var url = window.top.location.href;
+var fragIdx = url.indexOf("#");
+if (fragIdx != -1) {
+  Routers.formEventsRouterPointer.navigate(url.substring(fragIdx + 1), true);
+}
+

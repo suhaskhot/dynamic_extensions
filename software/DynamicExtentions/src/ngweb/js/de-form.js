@@ -59,6 +59,9 @@ edu.common.de.Form = function(args) {
   this.render0 = function() {
     var formCtrls = $("<div/>");
 
+    if (this.formDef.rows == undefined) {
+      this.formDef = JSON.parse(this.formDef);
+    }
     var rows = this.formDef.rows;
     for (var i = 0; i < rows.length; ++i) {
       formCtrls.append(this.rowCtrls(rows[i]));
@@ -69,7 +72,9 @@ edu.common.de.Form = function(args) {
     var panel = edu.common.de.Utility.panel(this.formDef.caption, formCtrls, 'default');
     this.formDiv.append(panel);
 
-    
+    if (this.formData != undefined) {
+      this.formData = JSON.parse(this.formData);
+    }
     for (var i = 0; i < this.fieldObjs.length; ++i) {
       if (this.formData) {
         this.fieldObjs[i].setValue(this.formData[this.fieldObjs[i].getName()]);
@@ -116,6 +121,7 @@ edu.common.de.Form = function(args) {
 
     var that = this;
     save.on("click", function() { that.save(); });
+    cancel.on("click", function() { that.cancel(); });
     return edu.common.de.Utility.row().append(btns.append(cancel).append(save));
   };
 
@@ -138,11 +144,14 @@ edu.common.de.Form = function(args) {
       formData[value.name] = value.value;
     }
  
+    var that = this;
     $.ajax({
       type: method,
       url: url,
       data: JSON.stringify(formData)
     }).done(function(data) { 
+      data = JSON.parse(data);
+      that.recordId = data.id;
       if (args.onSaveSuccess) {
         args.onSaveSuccess(data);     
       }
@@ -151,6 +160,12 @@ edu.common.de.Form = function(args) {
         args.onSaveError(data);
       }
     });
+  };
+
+  this.cancel = function() {
+    if (args.onCancel) {
+      args.onCancel();
+    }
   }
 };
 

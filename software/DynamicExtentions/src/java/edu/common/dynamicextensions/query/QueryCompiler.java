@@ -118,6 +118,19 @@ public class QueryCompiler
         JoinTree current = createPath(queryId, from, path);
     	//JoinTree current = from;
         
+        // direct named path i.e. start field specified and no links
+        // added in nextgen
+        if (path.getLinks() == null || path.getLinks().isEmpty()) { 
+        	JoinTree parentTree = current.getParent();
+        	parentTree.removeChild(current);
+        	to.setParent(parentTree);
+        	to.setForeignKey(current.getForeignKey());
+        	to.setParentKey(current.getParentKey());
+        	to.addChildrenOf(current);
+        	parentTree.addChild(queryId + "." + current.getFormName(), to);        	        	
+        	return;
+        }
+        
         for (PathLink link : path.getLinks()) {
             if (link.getRefTab() == null && to.getParent() == null) {            	
                 to.setParent(current);

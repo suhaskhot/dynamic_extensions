@@ -125,6 +125,31 @@ public class JoinTree
         children.put(name, child);
     }
     
+    public void removeChild(JoinTree child) {
+    	String key = null;
+    	for (Map.Entry<String, JoinTree> childEntry : children.entrySet()) {
+    		if (childEntry.getValue() == child) {
+    			key = childEntry.getKey();
+    			break;
+    		}    		
+    	}
+    	
+    	if (key != null) {
+    		children.remove(key);
+    	}
+    }
+    
+    public void addChildrenOf(JoinTree another) {
+    	for (Map.Entry<String, JoinTree> childEntry : another.children.entrySet()) {
+    		if (children.containsKey(childEntry.getKey())) {
+    			throw new RuntimeException("Bug! Bug!!!");
+    		}
+    		
+    		childEntry.getValue().setParent(this);
+    		children.put(childEntry.getKey(), childEntry.getValue());    		
+    	}
+    }
+    
     public JoinTree getNode(String alias) {
     	if (this.getAlias().equals(alias)) {
     		return this;

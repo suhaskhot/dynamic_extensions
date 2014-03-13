@@ -10,6 +10,7 @@ import java.util.Map;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
+import edu.common.dynamicextensions.domain.nui.ContainerInfo;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.domain.nui.VersionedContainerInfo;
 import edu.common.dynamicextensions.napi.FormPublishHook;
@@ -512,4 +513,33 @@ public class VersionedContainerImpl implements VersionedContainer {
 			}
 		}
 	}
+	
+	public List<ContainerInfo> getDraftContainerInfoByCreator(Long creatorId)
+	{
+		JdbcDao jdbcDao = null;
+		try {
+			jdbcDao = this.jdbcDao != null ? this.jdbcDao : new JdbcDao();
+			List localList = getDraftContainerInfoByCreator(jdbcDao, creatorId);
+	       return localList;
+	     }
+	     catch (Exception e)
+	     {
+	    	 throw new RuntimeException("Error occured while retrieving draft container info for the containers created by :" + creatorId, e);
+	     }
+	     finally {
+	    	 if ((this.jdbcDao == null) && (jdbcDao != null))
+	    		 jdbcDao.close(); 
+	     }
+	   }
+	 
+	   private List<ContainerInfo> getDraftContainerInfoByCreator(JdbcDao jdbcDao, Long creatorId)
+	   {
+	     try
+	     {
+	    	 VersionedContainerDao vDao = new VersionedContainerDao(jdbcDao);
+	    	 return vDao.getContainerInfoByCreator(creatorId, "draft"); } catch (Exception e) {
+	    		 throw new RuntimeException("Error occured while retrieving draft container info for the containers created by :" + creatorId, e);
+	     }
+	    
+	   }
 }

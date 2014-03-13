@@ -129,6 +129,9 @@ public class PvMapper {
 		if (!csvData[4].isEmpty()) {
 			pv.setConceptCode(csvData[4]);
 		}
+		if ((pv.getOptionName() == null) || (pv.getOptionName().trim().isEmpty())) {
+			pv.setOptionName(csvData[0]);
+		}
 		return pv;
 	}
 

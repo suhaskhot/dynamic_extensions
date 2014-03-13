@@ -1674,7 +1674,9 @@ public class MigrateForm {
 	private String[] getMultiSelectValues(List<Map<BaseAbstractAttributeInterface, Object>> msValuesMap) {
 		List<String> values = new ArrayList<String>();
 		
-		for (Object dataValue : msValuesMap) {
+		for (Iterator i$ = msValuesMap.iterator(); i$.hasNext(); ) 
+		{ 
+			Object dataValue = i$.next();
 			if (dataValue == null) {
 				continue;
 			}

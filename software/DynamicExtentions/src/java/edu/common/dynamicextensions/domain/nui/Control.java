@@ -576,7 +576,7 @@ public abstract class Control extends DynamicExtensionBaseDomainObject implement
 			controlHTML.append("<td><table><tr>");
 		}
 		controlHTML.append("<td class='formRequiredLabel_withoutBorder' id='").append(getControlName())
-				.append("_tbody' >").append(htmlString).append("</td>");
+				.append("_tdtbody' >").append(htmlString).append("</td>");
 
 
 		if (LabelPosition.TOP == labelPosition) {

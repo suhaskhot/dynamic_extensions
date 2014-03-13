@@ -1,8 +1,10 @@
 package edu.common.dynamicextensions.napi;
 
 import java.util.Date;
+import java.util.List;
 
 import edu.common.dynamicextensions.domain.nui.Container;
+import edu.common.dynamicextensions.domain.nui.ContainerInfo;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 
 public interface VersionedContainer {
@@ -35,4 +37,6 @@ public interface VersionedContainer {
 	public void publishProspective(UserContext usrCtx, Long formId, Date activationDate);
 	
 	public boolean isChangedSinceLastPublish(Long formId);
+	
+	public abstract List<ContainerInfo> getDraftContainerInfoByCreator(Long paramLong);
 }

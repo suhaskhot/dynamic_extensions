@@ -481,6 +481,7 @@ public class ClearSkipLogic {
 	private static void resetDependentAttributeValue(Map<BaseAbstractAttributeInterface, Object> objectValueState, 
 			CategoryAttributeInterface categoryAttribute, StringBuilder stringBuilder) throws ParseException
 	{
+		Iterator i$;
 		if (objectValueState.get(categoryAttribute) == null)
 		{
 			Set<Entry<BaseAbstractAttributeInterface, Object>> entrySet = objectValueState.entrySet();
@@ -525,8 +526,9 @@ public class ClearSkipLogic {
 	        		{
 	        			Map<BaseAbstractAttributeInterface, Object> objectValue = (Map<BaseAbstractAttributeInterface, Object>) list
                             .iterator().next();
-	        			for(Object value : objectValue.keySet())
-	        			{
+	        			for (i$ = objectValue.keySet().iterator(); i$.hasNext(); ) 
+	        			{ 
+	        				Object value = i$.next();
 	        				if(value instanceof String && !"".equals(value) && !SELECT.equalsIgnoreCase(value.toString()))
 	        				{
 	        					isMapUpdated = true;

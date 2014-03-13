@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.common.dynamicextensions.domain.nui.ContainerInfo;
 import edu.common.dynamicextensions.domain.nui.VersionedContainerInfo;
 
 public class VersionedContainerDao {
@@ -146,6 +147,23 @@ public class VersionedContainerDao {
 		info.setCreationTime(rs.getDate("CREATE_TIME"));		
 		info.setStatus(status);
 		return info;		
+	}
+	
+	public List<ContainerInfo> getContainerInfoByCreator(Long creatorId, String status) throws Exception
+	{
+		List params = new ArrayList();
+		params.add(status);
+		params.add(creatorId);
+		ResultSet rs = null;
+		try {
+			ContainerInfoExtractor extractor = new ContainerInfoExtractor();
+			List result = new ArrayList();
+			rs = this.jdbcDao.getResultSet("SELECT C.IDENTIFIER, C.NAME, C.CAPTION, C.CREATED_BY, C.CREATE_TIME,C.LAST_MODIFIED_BY, C.LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS C LEFT JOIN DYEXTN_VERSIONED_CONTAINERS VC ON VC.CONTAINER_ID = C.IDENTIFIER WHERE (VC.STATUS IS NULL OR VC.STATUS = ?) AND C.CREATED_BY = ?", params);
+			while (rs.next()) {
+				result.add(extractor.getContainerInfo(rs));
+			}
+			List localList1 = result;
+				return localList1; } finally { this.jdbcDao.close(rs); }
 	}
 		
 	public Long insertFormInfo(String formName) {

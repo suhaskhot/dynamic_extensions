@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.domain.nui;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.sql.ResultSetMetaData;
 import java.util.Date;
 import java.util.List;
 
@@ -77,7 +78,17 @@ public class PvDataSource {
 	}
 	
 	public PermissibleValue getDefaultValue(Date activationDate) {
-		return getPvVersion(activationDate).getDefaultValue();
+		if (this.sql != null) {
+			return null;
+		}
+		if (getPvVersion(activationDate) != null)
+		{
+			return getPvVersion(activationDate).getDefaultValue();
+		}
+		else {
+			return null;
+		}
+		
 	}
 	
 	@Override
@@ -140,12 +151,16 @@ public class PvDataSource {
 		try {
 			jdbcDao = new JdbcDao();
 			rs = jdbcDao.getResultSet(sql, null);
+			boolean doesNameValDiffer = rs.getMetaData().getColumnCount() > 1;
 			while (rs.next()) {
 				String value = rs.getString(1);
+				String optionName = value;
 				if (value == null || value.trim().isEmpty()) {
 					continue;
 				}
-				
+				if (doesNameValDiffer) {
+					value = rs.getString(2);
+				}
 				PermissibleValue pv = new PermissibleValue();
 				pv.setOptionName(value);
 				pv.setValue(value);

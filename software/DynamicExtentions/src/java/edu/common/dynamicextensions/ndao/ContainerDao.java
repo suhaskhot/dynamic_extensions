@@ -136,7 +136,7 @@ public class ContainerDao {
 		return null;
 	}
 	
-	public List<ContainerInfo> getContainerInfoByCreator(Long creatorId) 
+	public List<ContainerInfo> getContainerInfoByCreatorold(Long creatorId) 
 	throws SQLException {
 		List<Object> params = new ArrayList<Object>();
 		params.add(creatorId);
@@ -163,6 +163,29 @@ public class ContainerDao {
 			jdbcDao.close(rs);
 		}
 	}
+	
+	public List<ContainerInfo> getContainerInfoByCreator(Long creatorId) throws SQLException
+	{
+		List params = new ArrayList();
+		params.add(creatorId);
+		ResultSet rs = null;
+		try 
+		{
+			ContainerInfoExtractor extractor = new ContainerInfoExtractor();
+			List result = new ArrayList();
+			rs = this.jdbcDao.getResultSet("SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ?", params);
+			while (rs.next()) {
+				result.add(extractor.getContainerInfo(rs));
+			}
+	
+			List localList1 = result;
+			return localList1; 
+		} 
+		finally 
+		{ 
+			this.jdbcDao.close(rs); 
+		}
+	 }
 
 	private void updateContainerXml(Long id, String xml) 
 	throws SQLException  {

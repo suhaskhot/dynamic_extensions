@@ -34,7 +34,7 @@ public class MySqlSettings implements DbSettings {
 
 	@Override
 	public String getBlob() {
-		return "BLOB";
+		return "LONGBLOB";
 	}
 
 }

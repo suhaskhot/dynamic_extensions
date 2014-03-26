@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,8 +36,13 @@ public class CheckBox extends Control {
 	}
 	
 	@Override
-	public String toString(Object value) {
-		return (value == null || value.toString().equals("false") || value.toString().equals("0")) ? "0" : "1";
+	public String toString(Object value) { 
+		if (value instanceof BigDecimal) {
+			int val = ((BigDecimal)value).intValue();
+			return val == 0 ? "0" : "1";
+		} else {
+			return (value == null || value.toString().equals("false")) ? "0" : "1";
+		}		
 	}
 	
 	@Override

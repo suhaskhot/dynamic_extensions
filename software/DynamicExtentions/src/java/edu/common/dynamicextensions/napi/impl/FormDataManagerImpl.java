@@ -1,8 +1,7 @@
 package edu.common.dynamicextensions.napi.impl;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,8 +9,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
@@ -29,12 +26,10 @@ import edu.common.dynamicextensions.napi.FormDataManager;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
+import edu.common.dynamicextensions.nutility.DEApp;
 import edu.common.dynamicextensions.nutility.IoUtil;
 
 public class FormDataManagerImpl implements FormDataManager {
-	
-	private static final String GET_FILE_CONTENT = "SELECT %s_CONTENT from %s where IDENTIFIER=?";
-
 	private static final String GET_MULTI_SELECT_VALUES_SQL = "SELECT %s FROM %s WHERE RECORD_ID = ?";
 	
 	private static final String DELETE_MULTI_SELECT_VALUES_SQL = "DELETE FROM %s WHERE RECORD_ID = ?";
@@ -44,9 +39,10 @@ public class FormDataManagerImpl implements FormDataManager {
 	private static final String GET_SUB_FORM_IDS_SQL = "SELECT IDENTIFIER FROM %s WHERE PARENT_RECORD_ID = ?";
 
 	private static final String RECORD_ID_SEQ = "RECORD_ID_SEQ";
+	
+	private static final String GET_FILE_CONTROL_VALUES = "SELECT %s, %s, %s from %s where IDENTIFIER = ?";
 
 	private boolean auditEnable = true;
-	private final Logger logger = Logger.getLogger(FormDataManagerImpl.class);
 
 	public FormDataManagerImpl(boolean auditEnable) {
 		this.auditEnable = auditEnable;
@@ -146,10 +142,11 @@ public class FormDataManagerImpl implements FormDataManager {
 						ControlValue ctrlValue = null;
 
 						if (ctrl instanceof FileUploadControl) {
-							String fileName = rs.getString(ctrl.getDbColumnName() + "_NAME");
-							if (fileName != null) {
+							String filename = rs.getString(ctrl.getDbColumnName() + "_NAME");
+							if (filename != null) {
 								String type = rs.getString(ctrl.getDbColumnName() + "_TYPE");
-								ctrlValue = new ControlValue(ctrl, new FileControlValue(fileName, type, recordId));
+								String fileId = rs.getString(ctrl.getDbColumnName() + "_ID");
+								ctrlValue = new ControlValue(ctrl, new FileControlValue(filename, type, fileId));
 							} else {
 								ctrlValue = new ControlValue(ctrl, null);
 							}
@@ -190,7 +187,8 @@ public class FormDataManagerImpl implements FormDataManager {
 		for (Control ctrl : simpleCtrls) {
 			if (ctrl instanceof FileUploadControl) {
 				query.append(ctrl.getDbColumnName()).append("_NAME, ")
-					.append(ctrl.getDbColumnName()).append("_TYPE, ");				
+					.append(ctrl.getDbColumnName()).append("_TYPE, ")
+					.append(ctrl.getDbColumnName()).append("_ID, ");
 			} else {
 				query.append(ctrl.getDbColumnName()).append(", ");
 			}
@@ -220,14 +218,37 @@ public class FormDataManagerImpl implements FormDataManager {
 		});
 	}
 	
-	public Blob getFileData(final long recordId, final FileUploadControl control) {
-		String query = String.format(GET_FILE_CONTENT, control.getDbColumnName(), control.getContainer().getDbTableName());
-		return JdbcDaoFactory.getJdbcDao().getResultSet(query, Collections.singletonList(recordId), new ResultExtractor<Blob>() {
-			@Override
-			public Blob extract(ResultSet rs) throws SQLException {
-				return rs.next() ? rs.getBlob(control.getDbColumnName() + "_CONTENT") : null; 
-			}				
-		});
+	public FileControlValue getFileControlValue(Long formId, Long recordId, String ctrlName) {
+		Container form = Container.getContainer(formId);
+		if (form == null) {
+			return null;
+		}
+		
+		Control ctrl = form.getControl(ctrlName, "\\.");
+		if (!(ctrl instanceof FileUploadControl)) {
+			return null;
+		}
+		
+		FileUploadControl fileCtrl = (FileUploadControl)ctrl;
+		String dbTable = fileCtrl.getContainer().getDbTableName();
+		String column = fileCtrl.getDbColumnName();
+		
+		String query = String.format(GET_FILE_CONTROL_VALUES, column + "_NAME", column +"_TYPE", column + "_ID", dbTable);
+		return JdbcDaoFactory.getJdbcDao().getResultSet(
+				query, Collections.singletonList(recordId),
+				new ResultExtractor<FileControlValue>() {
+					@Override
+					public FileControlValue extract(ResultSet rs)
+					throws SQLException {
+						if (!rs.next()) {
+							return null;
+						}
+						
+						FileControlValue fcv = new FileControlValue(rs.getString(1), rs.getString(2), rs.getString(3));
+						fcv.setPath(DEApp.getFileUploadDir() + File.separator + fcv.getFileId());
+						return fcv;
+					}					
+				});		
 	}
 
 	private Long saveOrUpdateFormData(JdbcDao jdbcDao, FormData formData, Long parentRecId)
@@ -241,7 +262,7 @@ public class FormDataManagerImpl implements FormDataManager {
 		List<InputStream> inputStreams = new ArrayList<InputStream>();
 		
 		segregateControls(container, simpleCtrls, multiSelectCtrls, subFormCtrls);
-		removeUnchangedFileControls(formData, simpleCtrls);
+		
 		String upsertSql = buildUpsertSql(simpleCtrls, container.getDbTableName(), recordId, parentRecId);
 		List<Object> params = new ArrayList<Object>();
 
@@ -256,27 +277,15 @@ public class FormDataManagerImpl implements FormDataManager {
 						params.add(null);
 						params.add(null);
 					} else {
-						params.add(fcv.getFileName());
+						params.add(fcv.getFilename());
 						params.add(fcv.getContentType());
-						
-						if (fcv.getIn() != null) {
-							params.add(fcv.getIn());
-							inputStreams.add(fcv.getIn());
-						} else if (fcv.getFilePath() != null) {
-							InputStream fileIn = new FileInputStream(fcv.getFilePath());
-							params.add(fileIn);
-							inputStreams.add(fileIn);
-						} else {
-							params.add(null);
-						}
+						params.add(fcv.getFileId());
 					}
+				} else if (ctrlValue.getValue() == null || ctrlValue.getValue().toString().trim().isEmpty()) {
+					params.add(null);
 				} else {
-					if (ctrlValue.getValue() == null || ctrlValue.getValue().toString().trim().isEmpty()) {
-						params.add(null);
-					} else {
-						Object value = ctrl.fromString(ctrlValue.getValue().toString());
-						params.add(value);
-					}
+					Object value = ctrl.fromString(ctrlValue.getValue().toString());
+					params.add(value);
 				}
 			}
 
@@ -321,16 +330,17 @@ public class FormDataManagerImpl implements FormDataManager {
 					subFormData.setRecordId(subFormRecId);
 					currentSfIds.add(subFormRecId);
 				}
+		
 				Set<Long> persistedSfIds = getPersistedSfIds(jdbcDao, sfTableName, formData.getRecordId());
 				List<Long> deletedSfData = new ArrayList<Long>();
 				
 				for (Long persistedId : persistedSfIds) {
-					if (! currentSfIds.contains(persistedId)) {
+					if (!currentSfIds.contains(persistedId)) {
 						deletedSfData.add(persistedId);
 					}
 				}
 				
-				if (! deletedSfData.isEmpty()) {
+				if (!deletedSfData.isEmpty()) {
 					removeDeletedSfData(jdbcDao, sfTableName, deletedSfData);
 				}
 			}
@@ -341,21 +351,6 @@ public class FormDataManagerImpl implements FormDataManager {
 		}
 		
 		return recordId;		
-	}
-
-	//
-	// Note: This hack has been added for the old UI to work. Otherwise this is plain wrong
-	//
-	private void removeUnchangedFileControls(FormData formData, List<Control> simpleCtrls) {
-		for (ControlValue ctrlValue : formData.getFieldValues()) {
-			if (ctrlValue.getControl() instanceof FileUploadControl) {
-				FileControlValue controlValue = (FileControlValue) ctrlValue.getValue();
-				//If there has been no change in file value, do not include control in either insert or update query
-				if (controlValue != null && controlValue.getFilePath() == null && controlValue.getIn() == null) {
-					simpleCtrls.remove(ctrlValue.getControl());
-				}
-			}
-		}
 	}
 
 	private String buildUpsertSql(List<Control> simpleCtrls, String tableName, Long recordId, Long parentRecId) {
@@ -384,7 +379,7 @@ public class FormDataManagerImpl implements FormDataManager {
 				columnNames.append(ctrl.getDbColumnName()).append("_TYPE").append(", ");
 				bindVars.append("?, ");
 				
-				columnNames.append(ctrl.getDbColumnName()).append("_CONTENT").append(", ");
+				columnNames.append(ctrl.getDbColumnName()).append("_ID").append(", ");
 				bindVars.append("?, ");
 			} else {
 				columnNames.append(ctrl.getDbColumnName()).append(", ");
@@ -420,7 +415,7 @@ public class FormDataManagerImpl implements FormDataManager {
 			if (ctrl instanceof FileUploadControl) {
 				updateSql.append(ctrl.getDbColumnName()).append("_NAME = ?, ");
 				updateSql.append(ctrl.getDbColumnName()).append("_TYPE = ?, ");
-				updateSql.append(ctrl.getDbColumnName()).append("_CONTENT = ?, ");
+				updateSql.append(ctrl.getDbColumnName()).append("_ID = ?, ");
 			} else {
 				updateSql.append(ctrl.getDbColumnName()).append(" = ?, ");
 			}			

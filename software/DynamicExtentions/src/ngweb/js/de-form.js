@@ -1,7 +1,6 @@
 var edu = edu || {};
 edu.common = edu.common || {};
 edu.common.de = edu.common.de || {};
-
 edu.common.de.Form = function(args) {
   this.formDiv = $("#" + args.formDiv);
   this.fieldObjs = [];
@@ -16,6 +15,8 @@ edu.common.de.Form = function(args) {
   this.formDataUrl = args.formDataUrl;
   this.formDataXhr = null;
 
+  this.fileUploadUrl = args.fileUploadUrl;
+  this.fileDownloadUrl = args.fileDownloadUrl;
   this.appData = args.appData;
   
   if (!this.formDef && this.formDefUrl) {
@@ -52,6 +53,19 @@ edu.common.de.Form = function(args) {
     }
   };
 
+  this.processFormDef = function(prefix, rows) {
+    for (var i = 0; i < rows.length; ++i) {
+      var row = rows[i];
+      for (var j = 0; j < row.length; ++j) {
+        if (row[j].type == 'subForm') {
+          this.processFormDef(prefix + row[j].name + ".", row[j].rows);
+        } else {
+          row[j].fqn = prefix + row[j].name;
+        }
+      }
+    }
+  };
+        
   this.destroy = function() {
     this.formDiv.children().remove();
   };
@@ -62,7 +76,9 @@ edu.common.de.Form = function(args) {
     if (this.formDef.rows == undefined) {
       this.formDef = JSON.parse(this.formDef);
     }
+
     var rows = this.formDef.rows;
+    this.processFormDef("", rows);
     for (var i = 0; i < rows.length; ++i) {
       formCtrls.append(this.rowCtrls(rows[i]));
     }
@@ -75,9 +91,11 @@ edu.common.de.Form = function(args) {
     if (this.formData != undefined) {
       this.formData = JSON.parse(this.formData);
     }
+
     for (var i = 0; i < this.fieldObjs.length; ++i) {
       if (this.formData) {
-        this.fieldObjs[i].setValue(this.formData[this.fieldObjs[i].getName()]);
+        var recId = this.formData.id;
+        this.fieldObjs[i].setValue(recId, this.formData[this.fieldObjs[i].getName()]);
       }
       this.fieldObjs[i].postRender();
     }
@@ -103,7 +121,7 @@ edu.common.de.Form = function(args) {
     var id      = 'de-' + field.name
     var labelEl = this.fieldLabel(id, field.caption);
 
-    var fieldObj = edu.common.de.FieldFactory.getField(field);
+    var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
     this.fieldObjs.push(fieldObj);
 
     var fieldEl = fieldObj.render();
@@ -140,7 +158,8 @@ edu.common.de.Form = function(args) {
     }
 
     for (var i = 0; i < this.fieldObjs.length; ++i) {
-      var value = this.fieldObjs[i].getValue();
+      var field = this.fieldObjs[i];
+      var value = field.getValue();
       formData[value.name] = value.value;
     }
  
@@ -170,29 +189,32 @@ edu.common.de.Form = function(args) {
 };
 
 edu.common.de.FieldFactory = {
-  getField: function(field, idx) {
+  getField: function(field, idx, args) {
     var fieldObj;
     idx = idx || "";
+
     var id = 'de-' + field.name + "-" + idx;
 
     if (field.type == 'stringTextField') {
-      fieldObj = new edu.common.de.TextField(id, field);
+      fieldObj = new edu.common.de.TextField(id, field, args);
     } else if (field.type == 'numberField') {
-      fieldObj = new edu.common.de.NumberField(id, field);
+      fieldObj = new edu.common.de.NumberField(id, field, args);
     } else if (field.type == 'textArea') {
-      fieldObj = new edu.common.de.TextArea(id, field);
+      fieldObj = new edu.common.de.TextArea(id, field, args);
     } else if (field.type == 'datePicker') {
-      fieldObj = new edu.common.de.DatePicker(id, field);
+      fieldObj = new edu.common.de.DatePicker(id, field, args);
     } else if (field.type == 'booleanCheckbox') {
-      fieldObj = new edu.common.de.BooleanCheckbox(id, field);
+      fieldObj = new edu.common.de.BooleanCheckbox(id, field, args);
     } else if (field.type == 'combobox' || field.type == 'listbox') {
-      fieldObj = new edu.common.de.SelectField(id, field);
+      fieldObj = new edu.common.de.SelectField(id, field, args);
     } else if (field.type == 'radiobutton' || field.type == 'checkbox') {
-      fieldObj = new edu.common.de.GroupField(id, field);
+      fieldObj = new edu.common.de.GroupField(id, field, args);
     } else if (field.type == 'subForm') {
-      fieldObj = new edu.common.de.SubFormField(id, field);
+      fieldObj = new edu.common.de.SubFormField(id, field, args);
+    } else if (field.type == 'fileUpload') {
+      fieldObj = new edu.common.de.FileUploadField(id, field, args);
     } else {
-      fieldObj = new edu.common.de.UnknownField(id, field);
+      fieldObj = new edu.common.de.UnknownField(id, field, args);
     }
 
     return fieldObj;
@@ -203,7 +225,7 @@ edu.common.de.TextField = function(id, field) {
   this.inputEl = null;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text'}).addClass("form-control");
+    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
     return this.inputEl;
   };
 
@@ -214,12 +236,20 @@ edu.common.de.TextField = function(id, field) {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+	  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
     this.inputEl.val(value);
+  };
+  
+  this.validate = function() {
   };
 };
 
@@ -227,7 +257,7 @@ edu.common.de.NumberField = function(id, field) {
   this.inputEl = null;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'number'}).addClass("form-control");
+    this.inputEl = $("<input/>").prop({id: id, type: 'number', title: field.toolTip}).addClass("form-control");
     return this.inputEl;
   };
 
@@ -238,12 +268,20 @@ edu.common.de.NumberField = function(id, field) {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
     this.inputEl.val(value);
+  };
+  
+  this.validate = function() {
   };
 };
 
@@ -251,7 +289,7 @@ edu.common.de.TextArea = function(id, field) {
   this.inputEl = null;
 
   this.render = function() {
-    this.inputEl = $("<textarea/>").prop({id: id, rows: field.noOfRows}).addClass("form-control");
+    this.inputEl = $("<textarea/>").prop({id: id, rows: field.noOfRows, title: field.toolTip}).addClass("form-control");
     return this.inputEl;
   };
 
@@ -262,12 +300,20 @@ edu.common.de.TextArea = function(id, field) {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
     this.inputEl.val(value);
+  };
+  
+  this.validate = function() {
   };
 };
 
@@ -275,7 +321,7 @@ edu.common.de.DatePicker = function(id, field) {
   this.inputEl = null;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text'});
+    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip});
     this.inputEl.addClass("form-control de-date-picker");
 
     var format = field.format;
@@ -296,12 +342,20 @@ edu.common.de.DatePicker = function(id, field) {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+	  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
     this.inputEl.val(value);
+  };
+  
+  this.validate = function() {
   };
 };
 
@@ -309,7 +363,7 @@ edu.common.de.BooleanCheckbox = function(id, field) {
   this.inputEl = null;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({type: 'checkbox', id: id, value: 'true'}).addClass("form-control");
+    this.inputEl = $("<input/>").prop({type: 'checkbox', id: id, value: 'true', title: field.toolTip}).addClass("form-control");
     return this.inputEl;
   };
 
@@ -320,12 +374,27 @@ edu.common.de.BooleanCheckbox = function(id, field) {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+	  
   this.getValue = function() {
-    return {name: field.name, value: this.inputEl.val()};
+    var value = this.inputEl.prop('checked') ? "1" : "0";
+    return {name: field.name, value: value};
   };
 
-  this.setValue = function(value) {
-    this.inputEl.val(value);
+  this.setValue = function(recId, value) {
+    this.recId = recId; 
+    if (value == "1") {
+      this.inputEl.val("true");
+      this.inputEl.prop('checked', true);
+    } else {
+      this.inputEl.val("false");
+      this.inputEl.prop('checked', false);
+    }
+  };
+  
+  this.validate = function() {
   };
 };
 
@@ -333,8 +402,10 @@ edu.common.de.SelectField = function(id, field) {
   this.inputEl = null;
 
   this.render = function() {
-    this.inputEl = $("<select/>").prop({id: id, multiple: field.type == 'listbox'})
-                                 .addClass("form-control");
+    this.inputEl = $("<select/>")
+      .prop({id: id, multiple: field.type == 'listbox'})
+      .addClass("form-control")
+      .append($("<option/>"));
     for (var i = 0; i < field.pvs.length; ++i) {
       var pv = field.pvs[i];
       this.inputEl.append($("<option/>").prop("value", pv.value).append(pv.value));
@@ -343,19 +414,27 @@ edu.common.de.SelectField = function(id, field) {
   };
 
   this.postRender = function() {
-    this.inputEl.chosen({width: "100%"});
+    this.inputEl.chosen({width: "100%", allow_single_deselect: true});
   };
 
   this.getName = function() {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
     this.inputEl.val(value);
+  };
+  
+  this.validate = function() {
   };
 };
 
@@ -399,6 +478,10 @@ edu.common.de.GroupField = function(id, field) {
     return field.name;
   };
 
+  this.getCaption = function() {
+    return field.caption;
+  };
+	  
   this.getValue = function() {
     var checked = [];
     for (var i = 0; i < this.inputEls.length; ++i) {
@@ -415,7 +498,9 @@ edu.common.de.GroupField = function(id, field) {
     return {name: field.name, value: value};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
+
     var checked;
     if (field.type == 'radiobutton') {
       checked = [value];
@@ -429,14 +514,17 @@ edu.common.de.GroupField = function(id, field) {
       }
     }
   };
+  
+  this.validate = function() {
+  };
 };
 
-edu.common.de.SubFormField = function(id, sfField) {
+edu.common.de.SubFormField = function(id, sfField, args) {
   this.subFormEl = null;
   this.sfFieldsEl = null;
   this.rowIdx = 0;
   this.fieldObjsRows = [];
-
+  this.recIds = [];
   this.getFields = function() {
     var fields = [];
     for (var i = 0; i < sfField.rows.length; ++i) {
@@ -482,7 +570,7 @@ edu.common.de.SubFormField = function(id, sfField) {
     var values = [];
     for (var i in this.fieldObjsRows) {
       var fieldObjs = this.fieldObjsRows[i];
-      var sfInstance = {};
+      var sfInstance = {id: this.recIds[i]};
       for (var j = 0; j < fieldObjs.length; ++j) {
         var value = fieldObjs[j].getValue();
         sfInstance[value.name] = value.value;
@@ -493,18 +581,19 @@ edu.common.de.SubFormField = function(id, sfField) {
     return {name: sfField.name, value: values};
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+    this.recId = recId;
     this.sfFieldsEl.children().remove();
     this.fieldObjsRows = [];
 
     for (var i = 0; i < value.length; ++i) {
       var sfInst = value[i];
-      this.addSubFormFieldsRow(false);
+      this.addSubFormFieldsRow(false, sfInst.id);
       
       var fieldObjs = this.fieldObjsRows[i];
       for (var j = 0; j < fieldObjs.length; ++j) {
         var fieldValue = sfInst[fieldObjs[j].getName()];
-        fieldObjs[j].setValue(fieldValue);
+        fieldObjs[j].setValue(sfInst.id, fieldValue);
         fieldObjs[j].postRender();
       }
     }
@@ -533,20 +622,21 @@ edu.common.de.SubFormField = function(id, sfField) {
     var that = this;
     removeBtn.on("click", function() {
       rowDiv.remove();
-      delete that.fieldObjsMap["'" + rowIdx + "'"];
+      that.fieldObjsRows.splice(rowIdx, 1);
     });
 
     return removeBtn;
   };
 
-  this.addSubFormFieldsRow = function(postRender) {
+  this.addSubFormFieldsRow = function(postRender, recId) {
     var fieldObjs = [];
 
     var rowDiv = $("<div/>").addClass("form-group clearfix");
     for (var i = 0; i < this.fields.length; ++i) {
       var field = this.fields[i];
-      var fieldObj = edu.common.de.FieldFactory.getField(field, this.rowIdx);
-      rowDiv.append(this.cell(fieldObj.render()));
+      var fieldObj = edu.common.de.FieldFactory.getField(field, this.rowIdx, args);
+      var fieldEl = fieldObj.render();
+      rowDiv.append(this.cell(fieldEl));
       fieldObjs.push(fieldObj);
     }
 
@@ -563,6 +653,7 @@ edu.common.de.SubFormField = function(id, sfField) {
     }
 
     this.fieldObjsRows[this.rowIdx] = fieldObjs;
+    this.recIds[this.rowIdx] = recId;
     this.rowIdx++;
   };
 
@@ -573,7 +664,128 @@ edu.common.de.SubFormField = function(id, sfField) {
 
     return $("<div/>").css("width", width).addClass("form-inline de-sf-field").append(el);
   };
-}
+  
+  this.validate = function() {
+  };
+};
+
+
+edu.common.de.FileUploadField = function(id, field, args) {
+  this.value = {filename: undefined, contentType: undefined, fileId: undefined};
+
+  this.inputEl = null;       /** The outer div of file input element **/
+
+  this.uploadBtn = null;     /** The file upload button i.e. input[type=file] **/
+
+  this.removeBtn = null;     /** File remove button **/
+
+  this.fileNameSpan = null;  /** Span to contain name of uploaded file **/
+
+  this.progressBar = null;   /** Progress bar div **/
+
+  this.dirty = false;
+
+  this.render = function() {
+    var that = this;
+
+    this.inputEl  = $("<div/>").addClass("de-fileupload form-control clearfix");
+
+    this.fileNameSpan = $("<span/>");
+    this.inputEl.append(this.fileNameSpan);
+
+    this.removeBtn = $("<span/>").addClass("glyphicon glyphicon-remove de-input-addon hidden");
+    this.removeBtn.on("click", function() {
+      that.setValue(this.recId, {filename: undefined, contentType: undefined, fileId: undefined});
+    });
+
+    var uploadIcon = $("<span/>").addClass("glyphicon glyphicon-paperclip de-input-addon");
+    var uploadUrl
+    if (typeof args.fileUploadUrl == "function") {
+      uploadUrl = args.fileUploadUrl(id, field, args);
+    } else if (typeof args.fileUploadUrl == "string") {
+      uploadUrl = args.fileUploadUrl;
+    }
+
+    this.uploadBtn = $("<input/>").attr({name: "file", type: "file", 'data-url': uploadUrl});
+    uploadIcon.append(this.uploadBtn);
+    this.uploadBtn.fileupload({
+      dataType: 'json',
+
+      done: function(e, data) {
+        var value = {
+          filename: data.result.filename, 
+          contentType: data.result.contentType,
+          fileId: data.result.fileId
+        };
+        that.dirty = true;
+        that.setValue(that.recId, value);
+        that.progressBar.addClass("hidden");
+        that.fileNameSpan.removeClass("hidden");
+      },
+
+      progress: function(e, data) {
+        var pct = Math.floor(data.loaded / data.total * 100);
+        if (pct != 100) {
+          that.fileNameSpan.addClass("hidden");
+          that.progressBar.removeClass("hidden");
+          that.progressBar.children().css('width', pct + '%');
+        }
+      }
+    });
+
+    this.progressBar  = $("<div/>").addClass("progress pull-left hidden").css('width', '90%');
+    this.progressBar.append($("<div/>").addClass("progress-bar progress-bar-default"));
+
+    var btns = $("<div/>").addClass("pull-right").append(uploadIcon).append(this.removeBtn);
+    return this.inputEl.append(this.progressBar).append(btns);
+  };
+
+  this.postRender = function() {
+    
+  };
+
+  this.getName = function() {
+    return field.name
+  };
+
+  this.getCaption = function() {
+    return field.caption;
+  };
+	  
+  this.getValue = function() {
+    return {name: field.name, value: this.value}; 
+  };
+  
+  this.setValue = function(recId, value) {
+    this.recId = recId;
+    this.value = value;
+
+    if (this.value && this.value.filename) {
+      if (this.dirty) {
+        this.fileNameSpan.text(this.value.filename);
+      } else {
+        var url = "#";
+        if (typeof args.fileDownloadUrl == "function") {
+          url = args.fileDownloadUrl(args.id, this.recId, field.fqn);
+        } else {
+          url = args.fileDownloadUrl;
+        }
+        var link = $("<a/>").attr("href", url).text(this.value.filename);
+        this.fileNameSpan.append(link);
+      }
+      this.removeBtn.removeClass("hidden");
+    } else {
+      this.fileNameSpan.text("");
+      this.fileNameSpan.children().remove();
+      this.removeBtn.addClass("hidden");
+    }
+    return this;
+  };
+
+  this.validate = function() {
+  };
+};
+
 
 edu.common.de.UnknownField = function(id, field) {
   this.inputEl = $("<div/>").append("Field type " + field.get('type') + " under known");
@@ -592,7 +804,10 @@ edu.common.de.UnknownField = function(id, field) {
   this.getValue = function(value) {
   };
 
-  this.setValue = function(value) {
+  this.setValue = function(recId, value) {
+  };
+  
+  this.validate = function() {
   };
 };
 

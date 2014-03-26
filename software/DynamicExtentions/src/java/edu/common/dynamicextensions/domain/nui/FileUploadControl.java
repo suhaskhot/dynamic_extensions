@@ -15,7 +15,7 @@ public class FileUploadControl extends Control {
 		List<ColumnDef> columns = new ArrayList<ColumnDef>();
 		columns.add(ColumnDef.get(getDbColumnName() + "_NAME", ColumnTypeHelper.getStringColType()));
 		columns.add(ColumnDef.get(getDbColumnName() + "_TYPE", ColumnTypeHelper.getStringColType()));
-		columns.add(ColumnDef.get(getDbColumnName() + "_CONTENT", ColumnTypeHelper.getBlob()));
+		columns.add(ColumnDef.get(getDbColumnName() + "_ID", ColumnTypeHelper.getStringColType()));
 		return columns;
 	}
 

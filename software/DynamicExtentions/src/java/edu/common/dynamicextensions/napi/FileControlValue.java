@@ -1,88 +1,85 @@
 
 package edu.common.dynamicextensions.napi;
 
-import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
-public class FileControlValue
-{
+public class FileControlValue {
+	private String filename;
 
-	/**
-	 * this is the name of the file 
-	 */
-	private String fileName;
-
-	/**
-	 * file content e.g. MIME text etc.
-	 */
 	private String contentType;
-
-	private Long recordId;
 	
-	private String filePath;
+	private String fileId;
 	
-	private InputStream in;
+	private String path;
 
 	public FileControlValue() {
 		
 	}
 	
-	public FileControlValue(String fileName, String contentType, Long recordId) {
-		this.fileName = fileName;
+	public FileControlValue(String filename, String contentType, String fileId) {
+		this.filename = filename;
 		this.contentType = contentType;
-		this.recordId = recordId;
+		this.fileId = fileId;
 	}
 
-	public String getFileName()
-	{
-		return fileName;
+	public String getFilename() {
+		return filename;
 	}
 
-	public void setFileName(String fileName)
-	{
-		this.fileName = fileName;
+	public void setFileName(String fileName) {
+		this.filename = fileName;
 	}
 
-	public String getContentType()
-	{
+	public String getContentType() {
 		return contentType;
 	}
 
-	public void setContentType(String contentType)
-	{
+	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
 
-	public Long getRecordId()
-	{
-		return recordId;
+	public String getFileId() {
+		return fileId;
 	}
 
-	public void setRecordId(Long recordId)
-	{
-		this.recordId = recordId;
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
 	}
 
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString()
-	{
-		return this.fileName;
+	public String getPath() {
+		return path;
 	}
 
-	public String getFilePath() {
-		return filePath;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public String toString() {
+		return this.filename;
 	}
-
-	public InputStream getIn() {
-		return in;
+	
+	public Map<String, String> toValueMap() {
+		if (filename == null || fileId == null || contentType == null) {
+			return null;
+		}
+		
+		Map<String, String> valueMap = new HashMap<String, String>();
+		valueMap.put("filename", getFilename());
+		valueMap.put("fileId", getFileId());
+		valueMap.put("contentType", getContentType());		
+		return valueMap;
 	}
-
-	public void setIn(InputStream in) {
-		this.in = in;
+	
+	public static FileControlValue fromValueMap(Map<String, String> valueMap) {
+		String filename = valueMap.get("filename");
+		String fileId = valueMap.get("fileId");
+		String contentType = valueMap.get("contentType");
+		
+		if (filename == null || fileId == null || contentType == null) {
+			return null;
+		}
+		
+		return new FileControlValue(filename, contentType, fileId);  
 	}
 }

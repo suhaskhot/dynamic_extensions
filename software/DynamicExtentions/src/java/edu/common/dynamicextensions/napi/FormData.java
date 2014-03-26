@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 
@@ -77,6 +78,7 @@ public class FormData {
 		return fromJson(json, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static FormData fromJson(String json, Long containerId) {
 		Type type = new TypeToken<Map<String, Object>>() {}.getType();
 		Map<String, Object> valueMap = new Gson().fromJson(json, type);
@@ -94,6 +96,7 @@ public class FormData {
 		}
 		
 		valueMap.remove("containerId");
+		
 		FormData formData = getFormData(container, valueMap);
 		Map<String, Object> appData = (Map<String, Object>)valueMap.get("appData");
 		formData.setAppData(appData);		
@@ -105,6 +108,7 @@ public class FormData {
 		return formData;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static FormData getFormData(Container container, Map<String, Object> valueMap) {		
 		FormData formData = new FormData(container);
 		Double recordId = (Double)valueMap.get("id");
@@ -132,6 +136,13 @@ public class FormData {
 			} else if (ctrl instanceof MultiSelectControl) {				
 				List<String> values = (List<String>)fieldValue.getValue();
 				formData.addFieldValue(new ControlValue(ctrl, values == null ? null : values.toArray(new String[0])));
+			} else if (ctrl instanceof FileUploadControl) {
+				FileControlValue fcv = null; 				
+				if (fieldValue.getValue() instanceof Map) {
+					fcv = FileControlValue.fromValueMap((Map<String, String>)fieldValue.getValue());
+				}
+				
+				formData.addFieldValue(new ControlValue(ctrl,fcv));
 			} else if (ctrl != null){
 				formData.addFieldValue(new ControlValue(ctrl, fieldValue.getValue()));
 			}
@@ -150,8 +161,8 @@ public class FormData {
 			Object value = fieldValue.getValue();
 			
 			if (value instanceof FileControlValue) {
-				String fileName = ((FileControlValue)value).getFileName();
-				props.put(fieldName, fileName);
+				FileControlValue fcv = (FileControlValue)value;
+				props.put(fieldName, fcv.toValueMap());
 			} else if (value instanceof List) {
 				List<FormData> formDataList = (List<FormData>)value;
 				

@@ -1,9 +1,6 @@
 package edu.common.dynamicextensions.napi;
 
-import java.sql.Blob;
-
 import edu.common.dynamicextensions.domain.nui.Container;
-import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 
@@ -21,5 +18,5 @@ public interface FormDataManager {
 
 	public void deleteFormData(UserContext userCtxt, Long containerId, Long recordId);
 
-	public Blob getFileData(long recordId, FileUploadControl control);
+	public FileControlValue getFileControlValue(Long formId, Long recordId, String ctrlName);
 }

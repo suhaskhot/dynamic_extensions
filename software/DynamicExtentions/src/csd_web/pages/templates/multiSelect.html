@@ -7,20 +7,6 @@
 			<input type = 'text' id = 'controlCaption' class = 'textBox' style = "width:99%" value = "{{caption}}">
 		</div>
 	</div>
-	<div class = "propertiesContainer">
-		<div class = "propertiesCheckBoxLabelContainer" align = right >
-			<label class = 'text_normal'>HTML formatted label</label>
-		</div>
-		<div class = "propertiesCheckBoxContainer" align = left >
-			<input id = 'isHTMLLabel' type = 'checkbox'>			
-		</div>
-		<div class = "propertiesCheckBoxLabelContainer" align = right >
-			&nbsp;
-		</div>
-		<div class = "propertiesCheckBoxContainer" align = left >
-			&nbsp;
-		</div>	
-	</div>
 <div class = "propertiesContainer">
 	<div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
 		<label class = 'text_normal'>Tooltip</label>
@@ -60,17 +46,16 @@
 		<input id = 'isMandatory' type = 'checkbox'>		
 	</div>
 </div>
-<div class = "propertiesContainer">
-	<div style = 'width: 44%' class = "propertiesContainerCell" align = "right">
-	<label class = 'text_normal'>Sorting Order</label>
-	<select id = "pvOrder" class = 'textDropDown'>
-		  <option value="NONE">Unsorted</option>
-		  <option value="ASC">Ascending</option>
-		  <option value="DESC">Descending</option>	 
-	</select>
-	</div>
-	<div class = "propertiesTextBoxContainer" align = right>	
-	</div>
+
+<div class="propertiesContainer">
+  <div style="width: 24%" class="propertiesContainerCell" align="right">
+    <label class="text_normal">Sorting Order</label>
+  </div>
+  <div id="pvOrder" style="width: 76%;" class="propertiesContainerCell" align="left">
+    <input name="sortOrder" type="radio" value="NONE">Unsorted
+    <input name="sortOrder" type="radio" value="ASC">Ascending
+    <input name="sortOrder" type="radio" value="DESC">Descending
+  </div>
 </div>
 	
 	

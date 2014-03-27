@@ -89,6 +89,10 @@ edu.common.de.FieldValidator = function(rules, field, dataEl) {
   }
 
   var validators = [];
+  if (!rules) {
+    rules = [];
+  }
+
   for (var i = 0; i < rules.length; ++i) {
     var validator;
     if (rules[i].name == 'required') {
@@ -245,13 +249,18 @@ edu.common.de.Form = function(args) {
 
   this.getFieldEl = function(field) {
     var id      = 'de-' + field.name
-    var labelEl = this.fieldLabel(id, field.caption);
+    var labelEl = field.type != 'label' ? this.fieldLabel(id, field.caption) : undefined;
 
     var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
+    var inputEl = fieldObj.render();
     this.fieldObjs.push(fieldObj);
 
-    var fieldEl = fieldObj.render();
-    return $("<div/>").addClass("form-group").append(labelEl).append(fieldEl);
+    var fieldEl = $("<div/>").addClass("form-group");
+    if (labelEl) {
+      fieldEl.append(labelEl);
+    }
+  
+    return fieldEl.append(inputEl);
   };
 
   this.fieldLabel = function(name, label) {
@@ -292,6 +301,11 @@ edu.common.de.Form = function(args) {
     for (var i = 0; i < this.fieldObjs.length; ++i) {
       var field = this.fieldObjs[i];
       var value = field.getValue();
+
+      if (!value) { // note doesn't have value;
+        continue;
+      }
+
       formData[value.name] = value.value;
     }
  
@@ -356,6 +370,8 @@ edu.common.de.FieldFactory = {
       fieldObj = new edu.common.de.SubFormField(id, field, args);
     } else if (field.type == 'fileUpload') {
       fieldObj = new edu.common.de.FileUploadField(id, field, args);
+    } else if (field.type == 'label' && field.note) {
+      fieldObj = new edu.common.de.Note(id, field, args);
     } else {
       fieldObj = new edu.common.de.UnknownField(id, field, args);
     }
@@ -767,6 +783,9 @@ edu.common.de.SubFormField = function(id, sfField, args) {
       var sfInstance = {id: this.recIds[i]};
       for (var j = 0; j < fieldObjs.length; ++j) {
         var value = fieldObjs[j].getValue();
+        if (!value) { // note doesn't have value
+          continue;
+        }
         sfInstance[value.name] = value.value;
       }
 
@@ -1009,8 +1028,43 @@ edu.common.de.FileUploadField = function(id, field, args) {
   };
 };
 
+edu.common.de.Note = function(id, field) {
+  this.inputEl = null;
+
+  this.render = function() {
+    this.inputEl = $("<div/>").html(field.caption);
+    return this.inputEl;
+  };
+
+  this.postRender = function() {
+  };
+
+  this.getName = function() {
+    return field.name;
+  };
+
+  this.getCaption = function() {
+    return field.caption;
+  };
+
+  this.getTooltip = function() {
+    return "";
+  };
+	  
+  this.getValue = function() {
+    return undefined;
+  };
+
+  this.setValue = function(value) {
+  };
+  
+  this.validate = function() {
+    return true;
+  };
+};
+
 edu.common.de.UnknownField = function(id, field) {
-  this.inputEl = $("<div/>").append("Field type " + field.get('type') + " under known");
+  this.inputEl = $("<div/>").append("Field type " + field.type + " unknown");
 
   this.render = function() {
     return this.inputEl;

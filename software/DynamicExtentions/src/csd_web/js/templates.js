@@ -17,12 +17,6 @@ var Templates = {
 		this.templateList['bodyTemplate'] = result;
 
 		result = $.ajax({
-			url : "../pages/templates/commonControlPropsTemplate.html",
-			async : false
-		}).responseText;
-		this.templateList['commonControlPropsTemplate'] = result;
-
-		result = $.ajax({
 			url : "../pages/templates/controlTabTemplate.html",
 			async : false
 		}).responseText;

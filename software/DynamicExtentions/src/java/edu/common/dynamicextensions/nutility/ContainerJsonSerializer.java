@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.nutility;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import edu.common.dynamicextensions.domain.nui.MultiSelectListBox;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
+import edu.common.dynamicextensions.domain.nui.PvDataSource;
+import edu.common.dynamicextensions.domain.nui.PvDataSource.Ordering;
 import edu.common.dynamicextensions.domain.nui.PvVersion;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
@@ -137,13 +140,23 @@ public class ContainerJsonSerializer implements ContainerSerializer {
 	}
 	
 	private void putSelectFieldProps(SelectControl ctrl, Map<String, Object> ctrlProps) {
-		ctrlProps.put("dataType", ctrl.getPvDataSource().getDataType());
-		ctrlProps.put("dateFormat", ctrl.getPvDataSource().getDateFormat());
+		PvDataSource pvDataSrc =  ctrl.getPvDataSource();
+		ctrlProps.put("dataType", pvDataSrc.getDataType());
+		ctrlProps.put("dateFormat", pvDataSrc.getDateFormat());
 		
-		List<PvVersion> pvVersions = ctrl.getPvDataSource().getPvVersions();
+		List<PvVersion> pvVersions =pvDataSrc.getPvVersions();
+		Ordering ordering = pvDataSrc.getOrdering();
+
 		if (pvVersions != null) {
 			PvVersion pvVersion = pvVersions.get(0);
-			ctrlProps.put("pvs", pvVersion.getPermissibleValues());			
+			List<PermissibleValue> permissibleValues = pvVersion.getPermissibleValues();
+			if(ordering.equals(Ordering.ASC)) {
+				Collections.sort(permissibleValues);
+			} else if (ordering.equals(Ordering.DESC)) {
+				Collections.sort(permissibleValues);
+				Collections.reverse(permissibleValues);
+			} 
+			ctrlProps.put("pvs", permissibleValues);		
 		}
 		
 		if (ctrl instanceof ComboBox) {

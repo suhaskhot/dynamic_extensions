@@ -2,7 +2,7 @@ package edu.common.dynamicextensions.domain.nui;
 
 import org.apache.commons.lang.StringUtils;
 
-public class PermissibleValue {
+public class PermissibleValue  implements Comparable<PermissibleValue>{
 	private String optionName;
 	
 	private Long numericCode;
@@ -90,5 +90,10 @@ public class PermissibleValue {
 		}
 
 		return true;
+	}
+
+	@Override
+	public int compareTo(PermissibleValue obj) {
+		return this.value.compareToIgnoreCase(obj.value);
 	}
 }

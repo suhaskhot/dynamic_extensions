@@ -147,6 +147,7 @@
 	height: auto;
 }
 
+
 .propertiesContainerCell,.propertiesCheckBoxContainer,.propertiesTextBoxContainer,.propertiesCheckBoxLabelContainer
 	{
 	padding: 3px;
@@ -162,6 +163,7 @@
 
 .propertiesCheckBoxLabelContainer {
 	width: 24%;
+	padding-top: 12px;
 }
 
 .propertiesTextBoxContainer {

@@ -514,7 +514,7 @@ var Views = {
 										":checked"),
 								isChecked : $('#isChecked').is(":checked"),
 								optionsPerRow : $('#optionsPerRow').val(),
-								pvOrder : $('#pvOrder').val(),
+								pvOrder  :$("input:radio[name=sortOrder]:checked" ).val(),
 								toolTip : $('#toolTip').val(),
 								labelPosition : labelPos,
 								subFormName : $('#subFormName').val()
@@ -571,7 +571,7 @@ var Views = {
 										":checked"),
 								isChecked : $('#isChecked').is(":checked"),
 								optionsPerRow : $('#optionsPerRow').val(),
-								pvOrder : $('#pvOrder').val(),
+								pvOrder : $("input:radio[name=sortOrder]:checked" ).val(),
 								toolTip : $('#toolTip').val(),
 								labelPosition : labelPos,
 								subFormName : $('#subFormName').val()
@@ -603,6 +603,7 @@ var Views = {
 				},
 
 				showMessages : function(validationMessages, status) {
+					$('html, body').animate({scrollTop: 0}, 300);
 
 					if (validationMessages.length == 0) {
 
@@ -667,8 +668,15 @@ var Views = {
 					$("#dataType").val(this.model.get('dataType')).prop(
 							'selected', true);
 					// pv order
-					$("#pvOrder").val(this.model.get('pvOrder')).prop(
-							'selected', true);
+					var pvVal = this.model.get('pvOrder');
+					if (pvVal == "ASC") {
+						$('input:radio[name=sortOrder][value="ASC"]').prop('checked', true);
+					} else if (pvVal == "DESC") {
+						$('input:radio[name=sortOrder][value="DESC"]').prop('checked', true);
+					} else {
+						$('input:radio[name=sortOrder][value="NONE"]').prop('checked', true);
+					}
+
 					// format
 					$("#format").val(this.model.get('format')).prop('selected',
 							true);
@@ -2003,7 +2011,7 @@ var getNewField = function(args) {
   newField['conceptPreferredName'] = field.conceptPreferredName;
   newField['conceptDefinitionSource'] = field.conceptDefinitionSource;
   newField['conceptDefinition'] = field.conceptDefinition;
-  newField['validationRules'] = field.validationRules;
+  newField['validationRules'] = field.validationRules || [];
 
   // Correcting the type properties 
   if (field.type == 'numericField') {
@@ -2021,8 +2029,11 @@ var getNewField = function(args) {
   } else if (field.type == 'subForm') {
     newField = new getDEJson({json :field.subForm});
     newField['type'] = field.type;
+  } else if (field.type == 'note') {
+    newField['type']  = 'label';
+    newField['note'] = true;
   } else {
-    newField['type']  = field.type;	
+    newField['type'] = field.type;
   }
 
   return newField;

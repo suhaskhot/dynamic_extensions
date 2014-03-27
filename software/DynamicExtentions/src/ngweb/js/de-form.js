@@ -1,6 +1,136 @@
 var edu = edu || {};
 edu.common = edu.common || {};
 edu.common.de = edu.common.de || {};
+
+edu.common.de.RequiredValidator = function(field, dataEl) {
+  this.validate = function() {
+    var valid = false;
+    var el;
+
+    if (dataEl instanceof Array) { // GroupField
+      for (var i = 0; i < dataEl.length; ++i) {
+        if (dataEl[i].prop('checked')) {
+          valid = true;
+          break;
+        }
+      }
+      el = field.clusterEl;
+    } else {
+      if (dataEl.prop('type') == 'checkbox') {
+        valid = dataEl.prop('checked');
+      } else {
+        valid = !!dataEl.val();
+      }
+      el = field.inputEl;
+    }
+
+    if (!valid) {
+      edu.common.de.Utility.highlightError(el, field.getCaption() + ' is required field');
+    } else {
+      edu.common.de.Utility.unHighlightError(el, field.getTooltip());
+    }
+
+    return valid;
+  };
+};
+
+edu.common.de.RangeValidator = function(field, dataEl, params) {
+  this.validate = function() {
+    var val = dataEl.val();
+    if (val) {
+      var number = Number(val);
+      if (isNaN(number)) {
+        return false;
+      }
+
+      if (params.min != null && params.min != undefined && params.min.length > 0 && number < Number(params.min)) {
+        edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be less than " + params.min);
+        return false;
+      } else if (params.max != null && params.max != undefined && params.max.length > 0 && number > Number(params.max)) {
+        edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be more than " + params.max);
+        return false;
+      } else {
+        edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
+        return true;
+      }
+    }
+
+    return true;
+  };
+};
+
+edu.common.de.NumericValidator = function(field, dataEl, params) {
+  this.validate = function() {
+    var val = dataEl.val();
+    if (val) {
+      var number = Number(val);
+      if (isNaN(number)) {
+        edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " must be a numeric");
+        return false;
+      }
+
+      var numberParts = val.split(".");
+      var noOfDigits = params.noOfDigitsAfterDecimal;
+      if (numberParts.length > 1 && noOfDigits != null && noOfDigits != undefined) {
+        var realPart = numberParts[1];
+        if (realPart.length > noOfDigits) {
+          edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot have more than " + noOfDigits + " digits after decimal point");
+          return false;
+        }
+      } else {
+        edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
+        return true;
+      }
+    }
+
+    return true;
+  };
+};
+
+edu.common.de.FieldValidator = function(rules, field, dataEl) {
+  if (!dataEl) {
+    dataEl = field.inputEl;
+  }
+
+  var validators = [];
+  for (var i = 0; i < rules.length; ++i) {
+    var validator;
+    if (rules[i].name == 'required') {
+      validator = new edu.common.de.RequiredValidator(field, dataEl, rules[i].params);
+    } else if (rules[i].name == 'range') {
+      validator = new edu.common.de.RangeValidator(field, dataEl, rules[i].params);
+    } else if (rules[i].name == 'numeric') {
+      validator = new edu.common.de.NumericValidator(field, dataEl, rules[i].params);
+    }
+
+    if (validator) {
+      validators.push(validator);
+    }
+  }
+
+  this.validate = function() {
+    var valid = true;
+    for (var i = 0; i < validators.length; ++i) {
+      if (!validators[i].validate()) {
+        valid = false;
+        break;
+      }
+    }
+
+    return valid;
+  } 
+
+  if (dataEl instanceof Array) {
+    for (var i = 0; i < dataEl.length; ++i) {
+      dataEl[i].change(this.validate);
+    }
+    field.clusterEl.focusout(this.validate);
+  } else {
+    dataEl.change(this.validate);
+    dataEl.focusout(this.validate);
+  }
+};
+
 edu.common.de.Form = function(args) {
   this.formDiv = $("#" + args.formDiv);
   this.fieldObjs = [];
@@ -144,8 +274,14 @@ edu.common.de.Form = function(args) {
   };
 
   this.save = function() {
-    var formData = {appData: this.appData};
+    if (!this.validate()) {
+      if (args.onValidationError) {
+        args.onValidationError();
+      }
+      return;
+    }
 
+    var formData = {appData: this.appData};
     var url = this.formDataUrl.replace(":formId", this.formId);
     var method;
     if (this.recordId) {
@@ -185,7 +321,18 @@ edu.common.de.Form = function(args) {
     if (args.onCancel) {
       args.onCancel();
     }
-  }
+  };
+
+  this.validate = function() {
+    var valid = true;
+    for (var i = 0; i < this.fieldObjs.length; ++i) {
+      if (!this.fieldObjs[i].validate()) { // validate all fields
+        valid = false;
+      }
+    }
+
+    return valid;
+  };
 };
 
 edu.common.de.FieldFactory = {
@@ -223,9 +370,11 @@ edu.common.de.FieldFactory = {
 
 edu.common.de.TextField = function(id, field) {
   this.inputEl = null;
+  this.validator;
 
   this.render = function() {
     this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;
   };
 
@@ -238,6 +387,10 @@ edu.common.de.TextField = function(id, field) {
 
   this.getCaption = function() {
     return field.caption;
+  };
+
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
   };
 	  
   this.getValue = function() {
@@ -250,14 +403,18 @@ edu.common.de.TextField = function(id, field) {
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
 edu.common.de.NumberField = function(id, field) {
   this.inputEl = null;
+  this.validator;
 
   this.render = function() {
     this.inputEl = $("<input/>").prop({id: id, type: 'number', title: field.toolTip}).addClass("form-control");
+    var rules = field.validationRules.concat({name: 'numeric', params: {noOfDigitsAfterDecimal: field.noOfDigitsAfterDecimal}});
+    this.validator = new edu.common.de.FieldValidator(rules, this);
     return this.inputEl;
   };
 
@@ -272,6 +429,10 @@ edu.common.de.NumberField = function(id, field) {
     return field.caption;
   };
 
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
+  };
+	  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
@@ -282,14 +443,17 @@ edu.common.de.NumberField = function(id, field) {
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
 edu.common.de.TextArea = function(id, field) {
   this.inputEl = null;
+  this.validator;
 
   this.render = function() {
     this.inputEl = $("<textarea/>").prop({id: id, rows: field.noOfRows, title: field.toolTip}).addClass("form-control");
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;
   };
 
@@ -304,6 +468,10 @@ edu.common.de.TextArea = function(id, field) {
     return field.caption;
   };
   
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
+  };
+	  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
@@ -314,15 +482,18 @@ edu.common.de.TextArea = function(id, field) {
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
 edu.common.de.DatePicker = function(id, field) {
   this.inputEl = null;
+  this.validator;
 
   this.render = function() {
     this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip});
     this.inputEl.addClass("form-control de-date-picker");
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
 
     var format = field.format;
     if (format && format.length != 0) {
@@ -346,6 +517,10 @@ edu.common.de.DatePicker = function(id, field) {
     return field.caption;
   };
 	  
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
+  };
+	  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
@@ -356,14 +531,19 @@ edu.common.de.DatePicker = function(id, field) {
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
 edu.common.de.BooleanCheckbox = function(id, field) {
   this.inputEl = null;
+  this.dataEl = null;
+  this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({type: 'checkbox', id: id, value: 'true', title: field.toolTip}).addClass("form-control");
+    this.dataEl = $("<input/>").prop({type: 'checkbox', id: id, value: 'true', title: field.toolTip});
+    this.inputEl = $("<div/>").append(this.dataEl).css("padding", "6px 0px");
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.dataEl);
     return this.inputEl;
   };
 
@@ -378,34 +558,41 @@ edu.common.de.BooleanCheckbox = function(id, field) {
     return field.caption;
   };
 	  
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
+  };
+	  
   this.getValue = function() {
-    var value = this.inputEl.prop('checked') ? "1" : "0";
+    var value = this.dataEl.prop('checked') ? "1" : "0";
     return {name: field.name, value: value};
   };
 
   this.setValue = function(recId, value) {
     this.recId = recId; 
     if (value == "1") {
-      this.inputEl.val("true");
-      this.inputEl.prop('checked', true);
+      this.dataEl.val("true");
+      this.dataEl.prop('checked', true);
     } else {
-      this.inputEl.val("false");
-      this.inputEl.prop('checked', false);
+      this.dataEl.val("false");
+      this.dataEl.prop('checked', false);
     }
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
 edu.common.de.SelectField = function(id, field) {
   this.inputEl = null;
+  this.validator;
 
   this.render = function() {
     this.inputEl = $("<select/>")
       .prop({id: id, multiple: field.type == 'listbox'})
       .addClass("form-control")
       .append($("<option/>"));
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     for (var i = 0; i < field.pvs.length; ++i) {
       var pv = field.pvs[i];
       this.inputEl.append($("<option/>").prop("value", pv.value).append(pv.value));
@@ -425,6 +612,10 @@ edu.common.de.SelectField = function(id, field) {
     return field.caption;
   };
   
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
+  };
+	  
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
@@ -435,6 +626,7 @@ edu.common.de.SelectField = function(id, field) {
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
@@ -468,6 +660,7 @@ edu.common.de.GroupField = function(id, field) {
 
     this.clusterEl.push(currentDiv);
     this.clusterEl = $("<div/>").addClass("form-inline").append(this.clusterEl);
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.inputEls);
     return this.clusterEl;
   };
 
@@ -480,6 +673,10 @@ edu.common.de.GroupField = function(id, field) {
 
   this.getCaption = function() {
     return field.caption;
+  };
+	  
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
   };
 	  
   this.getValue = function() {
@@ -516,6 +713,7 @@ edu.common.de.GroupField = function(id, field) {
   };
   
   this.validate = function() {
+    return this.validator.validate();
   };
 };
 
@@ -623,6 +821,8 @@ edu.common.de.SubFormField = function(id, sfField, args) {
     removeBtn.on("click", function() {
       rowDiv.remove();
       that.fieldObjsRows.splice(rowIdx, 1);
+      that.recIds.splice(rowIdx, 1);
+      that.rowIdx--;
     });
 
     return removeBtn;
@@ -666,12 +866,24 @@ edu.common.de.SubFormField = function(id, sfField, args) {
   };
   
   this.validate = function() {
+    var valid = true;
+    for (var i = 0; i < this.fieldObjsRows.length; ++i) {
+      var fieldObjs = this.fieldObjsRows[i];
+      for (var j = 0; j < fieldObjs.length; ++j) {
+        if (!fieldObjs[j].validate()) {
+          valid = false;
+        }
+      }
+    }
+
+    return valid;
   };
 };
 
-
 edu.common.de.FileUploadField = function(id, field, args) {
   this.value = {filename: undefined, contentType: undefined, fileId: undefined};
+
+  this.validator;
 
   this.inputEl = null;       /** The outer div of file input element **/
 
@@ -683,6 +895,8 @@ edu.common.de.FileUploadField = function(id, field, args) {
 
   this.progressBar = null;   /** Progress bar div **/
 
+  this.fileNameInput = null;
+
   this.dirty = false;
 
   this.render = function() {
@@ -692,6 +906,9 @@ edu.common.de.FileUploadField = function(id, field, args) {
 
     this.fileNameSpan = $("<span/>");
     this.inputEl.append(this.fileNameSpan);
+
+    this.fileNameInput = $("<input/>").prop({type: 'text'}).addClass("hidden");
+    this.inputEl.append(this.fileNameInput);
 
     this.removeBtn = $("<span/>").addClass("glyphicon glyphicon-remove de-input-addon hidden");
     this.removeBtn.on("click", function() {
@@ -737,6 +954,7 @@ edu.common.de.FileUploadField = function(id, field, args) {
     this.progressBar.append($("<div/>").addClass("progress-bar progress-bar-default"));
 
     var btns = $("<div/>").addClass("pull-right").append(uploadIcon).append(this.removeBtn);
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.fileNameInput);
     return this.inputEl.append(this.progressBar).append(btns);
   };
 
@@ -750,6 +968,10 @@ edu.common.de.FileUploadField = function(id, field, args) {
 
   this.getCaption = function() {
     return field.caption;
+  };
+	  
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
   };
 	  
   this.getValue = function() {
@@ -773,19 +995,23 @@ edu.common.de.FileUploadField = function(id, field, args) {
         var link = $("<a/>").attr("href", url).text(this.value.filename);
         this.fileNameSpan.append(link);
       }
+
       this.removeBtn.removeClass("hidden");
+      this.fileNameInput.val(this.value.filename).change();
     } else {
       this.fileNameSpan.text("");
       this.fileNameSpan.children().remove();
       this.removeBtn.addClass("hidden");
+      this.fileNameInput.val("").change();
     }
+
     return this;
   };
 
   this.validate = function() {
+    return this.validator.validate();
   };
 };
-
 
 edu.common.de.UnknownField = function(id, field) {
   this.inputEl = $("<div/>").append("Field type " + field.get('type') + " under known");
@@ -808,6 +1034,7 @@ edu.common.de.UnknownField = function(id, field) {
   };
   
   this.validate = function() {
+    return false;
   };
 };
 
@@ -845,5 +1072,13 @@ edu.common.de.Utility = {
   iconButton: function(options) {
     return $("<button/>").addClass(options.btnClass)
              .append($("<span/>").addClass("glyphicon glyphicon-" + options.icon));
+  },
+
+  highlightError: function(el, tooltip) {
+    el.addClass('de-input-error').attr('title', tooltip);
+  },
+
+  unHighlightError: function(el, tooltip) {
+    el.removeClass('de-input-error').attr('title', tooltip);
   }
 };

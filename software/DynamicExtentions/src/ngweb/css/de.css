@@ -23,6 +23,10 @@
   height: 100%;
 }
 
+.de-input-error {
+  border: 1px solid #cc0000;
+}
+
 select.form-control + .chosen-container.chosen-container-single .chosen-single {
   display: block;
   width: 100%;
@@ -174,3 +178,12 @@ select.form-control + .chosen-container-multi .chosen-results li.result-selected
   cursor: default;
   background-color: white;
 }
+
+select.form-control.de-input-error + .chosen-container.chosen-container-single .chosen-single {
+  border: 1px solid #cc0000!important;
+}
+
+select.form-control.de-input-error + .chosen-container-multi .chosen-choices {
+  border: 1px solid #cc0000!important;
+}
+

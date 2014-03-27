@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import au.com.bytecode.opencsv.CSVReader;
@@ -203,7 +204,7 @@ public class PvMapper {
 	 * @return
 	 */
 	public static void pVDataSourcetoProperties(PvDataSource pvDataSource, Properties controlProps) {
-		Map<String, Object> pvMap = new HashMap<String, Object>();
+		Map<String, Object> pvMap = new LinkedHashMap<String, Object>();
 		String pvKey = "pv_";
 		Integer pvKeyNum = 0;
 		List<PermissibleValue> pvs = pvDataSource.getPermissibleValues(new Date());
@@ -217,12 +218,7 @@ public class PvMapper {
 			controlProps.setProperty("defaultPv", pvToProperties(defaultPv));
 		}
 
-		if (pvDataSource.getOrdering() == Ordering.ASC) {
-			controlProps.setProperty("pvOrder", "ASC");
-		} else if (pvDataSource.getOrdering() == Ordering.DESC) {
-			controlProps.setProperty("pvOrder", "DESC");
-		}
-
+		controlProps.setProperty("pvOrder", pvDataSource.getOrdering().name());
 		controlProps.setProperty("pvs", pvMap);
 		controlProps.setProperty("dataType", pvDataSource.getDataType().toString());
 	}

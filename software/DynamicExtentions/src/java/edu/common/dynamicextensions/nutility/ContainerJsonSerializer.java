@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.nutility;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +24,6 @@ import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.PageBreak;
 import edu.common.dynamicextensions.domain.nui.PermissibleValue;
 import edu.common.dynamicextensions.domain.nui.PvDataSource;
-import edu.common.dynamicextensions.domain.nui.PvDataSource.Ordering;
-import edu.common.dynamicextensions.domain.nui.PvVersion;
 import edu.common.dynamicextensions.domain.nui.RadioButton;
 import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.StringTextField;
@@ -53,8 +51,7 @@ public class ContainerJsonSerializer implements ContainerSerializer {
 
 	@Override
 	public void serialize() {
-		Map<String, Object> containerProps = new HashMap<String, Object>();
-		
+		Map<String, Object> containerProps = new HashMap<String, Object>();		
 		containerProps.put("name", container.getName());
 		containerProps.put("caption", container.getCaption());
 		putControls(container, containerProps);
@@ -144,20 +141,9 @@ public class ContainerJsonSerializer implements ContainerSerializer {
 		ctrlProps.put("dataType", pvDataSrc.getDataType());
 		ctrlProps.put("dateFormat", pvDataSrc.getDateFormat());
 		
-		List<PvVersion> pvVersions =pvDataSrc.getPvVersions();
-		Ordering ordering = pvDataSrc.getOrdering();
-
-		if (pvVersions != null) {
-			PvVersion pvVersion = pvVersions.get(0);
-			List<PermissibleValue> permissibleValues = pvVersion.getPermissibleValues();
-			if(ordering.equals(Ordering.ASC)) {
-				Collections.sort(permissibleValues);
-			} else if (ordering.equals(Ordering.DESC)) {
-				Collections.sort(permissibleValues);
-				Collections.reverse(permissibleValues);
-			} 
-			ctrlProps.put("pvs", permissibleValues);		
-		}
+		List<PermissibleValue> pvs = pvDataSrc.getPermissibleValues(Calendar.getInstance().getTime());
+		ctrlProps.put("pvs", pvs);
+		ctrlProps.put("pvOrdering", pvDataSrc.getOrdering().name());
 		
 		if (ctrl instanceof ComboBox) {
 			ctrlProps.put("type", "combobox");			

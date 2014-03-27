@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import edu.common.dynamicextensions.ndao.ResultExtractor;
 
 public class PvDataSource {
 	public static enum Ordering {
-		ASC, DESC
+		NONE, ASC, DESC
 	}
 	
 	private List<PvVersion> pvVersions = new ArrayList<PvVersion>();
@@ -22,7 +23,7 @@ public class PvDataSource {
 	
 	private String dateFormat;
 	
-	private Ordering ordering = Ordering.ASC;
+	private Ordering ordering = Ordering.NONE;
 	
 	private String sql;
 
@@ -73,6 +74,20 @@ public class PvDataSource {
 			pvs = getPvsFromDb(sql);
 		} else {
 			pvs = getPvVersion(activationDate).getPermissibleValues();
+		}
+		
+		switch (ordering) {
+			case ASC:
+				Collections.sort(pvs);
+				break;
+				
+			case DESC:
+				Collections.sort(pvs, Collections.reverseOrder());
+				break;				
+				
+			default:
+				// do nothing
+				break;
 		}
 		
 		return pvs;

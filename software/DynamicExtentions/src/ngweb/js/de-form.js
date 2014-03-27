@@ -37,12 +37,8 @@ edu.common.de.RequiredValidator = function(field, dataEl) {
 edu.common.de.RangeValidator = function(field, dataEl, params) {
   this.validate = function() {
     var val = dataEl.val();
-    if (val) {
+    if (val && !isNaN(Number(val))) {
       var number = Number(val);
-      if (isNaN(number)) {
-        return false;
-      }
-
       if (params.min != null && params.min != undefined && params.min.length > 0 && number < Number(params.min)) {
         edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be less than " + params.min);
         return false;

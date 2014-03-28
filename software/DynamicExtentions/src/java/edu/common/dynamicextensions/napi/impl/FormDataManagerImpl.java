@@ -271,7 +271,7 @@ public class FormDataManagerImpl implements FormDataManager {
 				ControlValue ctrlValue = formData.getFieldValue(ctrl.getName());
 
 				if (ctrl instanceof FileUploadControl) {
-					FileControlValue fcv = (FileControlValue) ctrlValue.getValue();
+					FileControlValue fcv = ctrlValue != null ? (FileControlValue) ctrlValue.getValue() : null;
 					if (fcv == null) {
 						params.add(null);
 						params.add(null);

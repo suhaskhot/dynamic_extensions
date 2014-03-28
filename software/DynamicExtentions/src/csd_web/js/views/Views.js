@@ -15,7 +15,7 @@ var Views = {
 							+ $('#formCaption').val(), true);
 
 				},
-				saveForm : function() {
+				saveForm : function(showMessage) {
 
 					// Save Model
 					// alert(JSON.stringify(this.model.toJSON()));
@@ -53,7 +53,9 @@ var Views = {
 														.displayFormInfo(
 																model
 																		.getFormInformation());*/
-            Utility.notify($("#notifications"), message, "success");
+			if (showMessage) {
+				Utility.notify($("#notifications"), message, "success");
+			}
 
 												// change from Save as to save
 												$('#saveForm').prop("value",
@@ -458,7 +460,7 @@ var Views = {
 										"controlName",
 										this.model.get('controlName'));
 							}
-
+							Main.formView.saveForm(false);
 						}
 
 						// add page break
@@ -497,7 +499,7 @@ var Views = {
 										.val(),
 								conceptPreferredName : $(
 										'#conceptPreferredName').val(),
-								noOfDigits : $('#noOfDigits').val(),
+								noOfDigits :  $('#noOfDigits').val() == undefined ? 6 : $('#noOfDigits').val(),
 								noOfDigitsAfterDecimal : $(
 										'#noOfDigitsAfterDecimal').val(),
 								maximumValue : $('#maximumValue').val(),
@@ -554,7 +556,7 @@ var Views = {
 										.val(),
 								conceptPreferredName : $(
 										'#conceptPreferredName').val(),
-								noOfDigits : $('#noOfDigits').val(),
+								noOfDigits : $('#noOfDigits').val() == undefined ? 6 : $('#noOfDigits').val(),
 								noOfDigitsAfterDecimal : $(
 										'#noOfDigitsAfterDecimal').val(),
 								maximumValue : $('#maximumValue').val(),
@@ -607,7 +609,12 @@ var Views = {
 
 					if (validationMessages.length == 0) {
 
-						if (status == "save" || status == "update") {
+						if (status == "update") {
+							this.setSuccessMessageHeader();
+							$("#messagesDiv").append(Utility.messageSpace
+							+ this.model.get('caption')
+							+ " updated successfully in the form");
+						} else if (status == "save") {
 							this.setSuccessMessageHeader();
 							$("#messagesDiv")
 									.append(
@@ -956,8 +963,9 @@ var Views = {
 							: (pos % 7) + 8) : pos;
 
 					Main.carousel.tinycarousel_move(displacement);
-					$('#' + Main.currentFieldView.getModel().get('type')).css(
-							'background-color', '#F0F0F0 ');
+					$('#' + Main.currentFieldView.getModel().get('type'))
+						.css('background-color', '#F0F0F0 ')
+						.css('box-shadow','2px 2px 2px 0px rgba(171, 171, 210, 0.51)');
 				},
 
 				selectTab : function(tab) {
@@ -1672,8 +1680,9 @@ var Views = {
 			var displacement = (pos > 7) ? ((pos < 14) ? (pos % 7) + 1
 					: (pos % 7) + 8) : pos;
 			Main.carousel.tinycarousel_move(displacement);
-			$('#' + Main.currentFieldView.getModel().get('type')).css(
-					'background-color', '#F0F0F0 ');
+			$('#' + Main.currentFieldView.getModel().get('type'))
+				.css('background-color', '#F0F0F0 ')
+				.css('box-shadow','2px 2px 2px 0px rgba(171, 171, 210, 0.51)');
 
 		}
 
@@ -1803,7 +1812,7 @@ var Views = {
 							caption : formCaption
 						});
 
-						Main.formView.saveForm();
+						Main.formView.saveForm(true);
 
 					}
 

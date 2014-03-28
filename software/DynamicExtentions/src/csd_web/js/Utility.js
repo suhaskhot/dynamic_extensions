@@ -16,7 +16,10 @@ var Utility = {
 				"heading", "subForm", "label", "comboBox" ];
 
 		for ( var cntr = 0; cntr < controlTypes.length; cntr++) {
-			$('#' + controlTypes[cntr]).css('background-color', '#FFFFFF ');
+			$('#' + controlTypes[cntr])
+			.css('background-color', '#FFFFFF ')
+			.css('box-shadow','0px 0px 0px 0px')
+			.css('border','1px solid #c0c0c0');
 		}
 
 	},

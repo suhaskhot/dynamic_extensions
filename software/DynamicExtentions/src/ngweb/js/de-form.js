@@ -1125,10 +1125,16 @@ edu.common.de.Utility = {
   },
 
   highlightError: function(el, tooltip) {
+    if (el.is('select')) {
+      el.next().attr('title', tooltip);
+    }
     el.addClass('de-input-error').attr('title', tooltip);
   },
 
   unHighlightError: function(el, tooltip) {
+    if (el.is('select')) {
+      el.next().attr('title', tooltip);
+    }
     el.removeClass('de-input-error').attr('title', tooltip);
   }
 };

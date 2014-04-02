@@ -6,40 +6,37 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import com.google.gson.Gson;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.ndao.TransactionManager;
 import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
+import edu.common.dynamicextensions.nutility.IoUtil;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 import edu.wustl.dynamicextensions.formdesigner.resource.facade.ContainerFacade;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.AppUserContextProvider;
@@ -47,35 +44,26 @@ import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
 import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 import edu.wustl.dynamicextensions.formdesigner.utility.Utility;
 
-@Path("/form")
+@Controller
+@RequestMapping("/de-forms")
 public class Form {
 
+	@Autowired
+	private HttpServletRequest request;
+	
 	private static final String CONTAINER_SESSION_ATTR = "sessionContainer";
 
 	private static AtomicInteger formCnt = new AtomicInteger();
 
-	/**
-	 * Create a new Form
-	 * @param formJson
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws JSONException
-	 */
-	@SuppressWarnings("unchecked")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String createForm(String formJson, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) throws JSONException {
-
-		JSONObject formJSON = new JSONObject();
-		String jsonResponseString = "";
-
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public Map<String, Object> createForm(@RequestBody Map<String, Object> propertiesMap) throws JSONException {
 		Transaction txn = null;
 		try {
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
-			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
+			Properties formProps = new Properties(propertiesMap);
+
 			ContainerFacade containerFacade = ContainerFacade.createContainer(formProps, userData);
 			request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, containerFacade);
@@ -89,37 +77,24 @@ public class Form {
 
 			formProps = containerFacade.getProperties();
 			formProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
-			Writer strWriter = new StringWriter();
-			new ObjectMapper().writeValue(strWriter, formProps.getAllProperties());
-			jsonResponseString = strWriter.toString();
-
+			return formProps.getAllProperties();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			formJSON.put("status", "error");
-			jsonResponseString = formJSON.toString();
+			propertiesMap.put("status", "error");
 			if (txn != null) {
 				TransactionManager.getInstance().rollback(txn);
 			}
+			
+			return propertiesMap;
 		} 
-
-		return jsonResponseString;
-
 	}
 
-	/**
-	 * Retrieve a Form
-	 * @param id
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws JSONException
-	 */
-	@Path("/{id}/{edit}")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getForm(@PathParam("id") String id, @PathParam("edit") boolean edit,
-			final @Context HttpServletRequest request, @Context HttpServletResponse response) throws JSONException {
-		System.out.println(id);
+	@RequestMapping(method = RequestMethod.GET, value="{id}/{edit}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public void getForm(
+			@PathVariable(value="id") String id,
+			@PathVariable(value="edit") boolean edit, Writer writer) {
 		
 		Transaction txn = null;
 		try {
@@ -140,12 +115,11 @@ public class Form {
 				containerProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_NEW);
 			}
 
-			Writer strWriter = new StringWriter();
-			new ObjectMapper().writeValue(strWriter, containerProps.getAllProperties());
-			return strWriter.toString();
+			String json = new Gson().toJson(containerProps.getAllProperties());
+			writer.write(json);
+			writer.flush();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return "{'status' : 'error'}";
 		} finally {
 			if (txn != null) {
 				TransactionManager.getInstance().rollback(txn);
@@ -154,18 +128,11 @@ public class Form {
 
 	}
 
-	/**
-	 * Renders preview
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws JSONException
-	 */
-	@Path("/preview")
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String getPreview(final @Context HttpServletRequest request, @Context HttpServletResponse response)
-			throws JSONException {
+	
+	@RequestMapping(method = RequestMethod.GET, value="preview")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String getPreview() {
 		try {
 			ContainerFacade containerFacade = (ContainerFacade) request.getSession().getAttribute(
 					CONTAINER_SESSION_ATTR);
@@ -187,23 +154,14 @@ public class Form {
 		}
 	}
 
-	/**
-	 * Edit a Form
-	 * @param formJson
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String editForm(String formJson, final @Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
+	@RequestMapping(method = RequestMethod.PUT)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String  editForm(@RequestBody Map<String, Object> propertiesMap) {
 		
 		Transaction txn = null;
 		try {
-			Properties formProps = new Properties(new ObjectMapper().readValue(formJson, HashMap.class));
+			Properties formProps = new Properties(propertiesMap);
 			String save = formProps.getString("save");
 			ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
 			container.updateContainer(formProps);
@@ -212,36 +170,28 @@ public class Form {
 				container.persistContainer();
 				TransactionManager.getInstance().commit(txn);
 			}
-			Writer strWriter = new StringWriter();
-			new ObjectMapper().writeValue(strWriter, container.getProperties().getAllProperties());
-			return strWriter.toString();
+			formProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
+			return formProps.getAllProperties().toString();
 		} catch (Exception ex) {
+			propertiesMap.put("status", "error");
 			ex.printStackTrace();
 			if (txn != null) {
 				TransactionManager.getInstance().rollback(txn);
 			}
-			return "{'status' : 'error'}";
+			return propertiesMap.toString();
 		} 
 	}
 
-	/**
-	 * upload permissible values
-	 * @param uploadedInputStream
-	 * @param fileDetail
-	 * @return
-	 */
-	@POST
-	@Path("/permissibleValues")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String uploadFile(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+	@RequestMapping(method = RequestMethod.POST, value="permissibleValues")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String uploadFile(@PathVariable("file") MultipartFile file) {
 		String output = "{\"status\" : \"error\"}";
 		try {
 			// get temp location programatically.
-			if (fileDetail.getFileName() != null) {
-				String uploadedFileLocation = "/tmp/" + new Date().getTime() + fileDetail.getFileName();
-				Utility.saveStreamToFileInTemp(uploadedInputStream, uploadedFileLocation);
+			if (file.getOriginalFilename() != null) {
+				String uploadedFileLocation = "/tmp/" + new Date().getTime() + file.getOriginalFilename();
+				Utility.saveStreamToFileInTemp(file.getInputStream(), uploadedFileLocation);
 				output = "{\"status\": \"saved\", \"file\" : \"" + uploadedFileLocation + "\"}";
 			}
 		} catch (Exception ex) {
@@ -252,11 +202,10 @@ public class Form {
 
 	}
 
-	@GET
-	@Path("/currentuser")
-	@Produces(MediaType.APPLICATION_JSON)
-	public String getCurrentUser(@Context HttpServletRequest request, @Context HttpServletResponse response)
-			throws IOException, JSONException {
+	@RequestMapping(method = RequestMethod.GET, value="currentuser")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String getCurrentUser() throws Exception {
 		AppUserContextProvider contextProvider = CSDProperties.getInstance().getUserContextProvider();
 		JSONObject responseJSON = new JSONObject();
 		responseJSON.put("userName",
@@ -266,30 +215,32 @@ public class Form {
 
 	}
 
-	@GET
-	@Path("/permissibleValues/{controlName}")
-	@Produces("text/plain")
-	public Response getPermissibleValues(@PathParam("controlName") String controlName,
-			@Context HttpServletRequest request, @Context HttpServletResponse response) throws IOException {
+	@RequestMapping(method = RequestMethod.GET, value="permissibleValues/{controlName}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public void getPermissibleValues(@PathVariable(value="controlName") String controlName,
+			HttpServletResponse response) throws IOException {
 
 		ContainerFacade container = (ContainerFacade) request.getSession().getAttribute(CONTAINER_SESSION_ATTR);
 		File pvFile = container.getPvFile(controlName);
-		if (pvFile == null) {
-			return Response.serverError().build();
-		} else {
-			ResponseBuilder fileResponse = Response.ok((Object) pvFile);
-			fileResponse.header("Content-Disposition", "attachment; filename=\"" + pvFile.getName() + "\"");
-			return fileResponse.build();
+		
+		response.setHeader("Content-Disposition", "attachment;filename=" + pvFile.getName());
+			
+		InputStream in = null;
+		try {
+			in = new FileInputStream(pvFile.getPath());
+			IoUtil.copy(in, response.getOutputStream());
+		} catch (IOException e) {
+			throw new RuntimeException("Error sending file", e);
+		} finally {
+			IoUtil.close(in);
 		}
-
 	}
 
-	@POST
-	@Path("/formxml")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String importForm(@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) throws JSONException {
+	@RequestMapping(method = RequestMethod.POST, value="formxml")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public String importForm(@PathVariable("file") MultipartFile file) throws JSONException {
 		JSONObject output = new JSONObject();
 
 		String tmpDirName = getTmpDirName();
@@ -298,7 +249,7 @@ public class Form {
 		
 		try {
 
-			Utility.downloadFile(uploadedInputStream, tmpDirName, "forms.xml", false);
+			Utility.downloadFile(file.getInputStream(), tmpDirName, "forms.xml", false);
 
 			//
 			// Once the zip is extracted, following will be directory layout
@@ -325,8 +276,8 @@ public class Form {
 			txn = TransactionManager.getInstance().startTxn();
 			for (String formFile : formFileNames) {
 				String formFilePath = new StringBuilder(formDirPath).append(formFile).toString();
-
-				Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
+				UserContext userCtxt = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
+				Long containerId = Container.createContainer(userCtxt, formFilePath, pvDirPath, createTables);
 				containerIds.add(containerId);
 			}
 			TransactionManager.getInstance().commit(txn);

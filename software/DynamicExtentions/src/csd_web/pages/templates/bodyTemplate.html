@@ -15,7 +15,7 @@
 	<div id="content" style="width:75%;float:left;height:576px;">
 			<div id = 'rightSide' style = 'height:576px; overflow: auto'>
 				<div id = 'csdOperationsContainer' style = 'height:575px;'>
-					<div id ='summary' style="height: 100%; overflow-y:auto;">
+					<div id ='summary' style="height: 100%;">
 						<div id = "formSummaryContainer" style = "width : 100%; height: 100%"></div>
 					</div>
 					<div id ='control' style="height: 100%; overflow-y:auto;"></div>
@@ -45,7 +45,7 @@
 		
 		<div id="form-import-dialog" title="Import Form">
 			<div style = 'width: 100%; float: left'>	
-				<form action="../../csdApi/form/formxml" method="post" enctype="multipart/form-data" id = 'importForm'>
+				<form action="../../rest/ng/de-forms/formxml" method="post" enctype="multipart/form-data" id = 'importForm'>
 				   <label class = 'text_normal'>Select a File to import</label><br><br>
 				   <input type="file" name="file" id = 'fileID'/>
 				   <input type="submit" value="Upload" class = 'btn'/><img src = "../../csd_web/icons/loader.gif" id = "importFileWaitingImage">

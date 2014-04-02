@@ -194,7 +194,7 @@ var Routers = {
 					});
 					GlobalMemory.editForm = (edit == "true");
 					Main.formView.getFormModel().fetch({
-						url : '../../csdApi/form/' + _id + "/" + edit,
+						url : '../../rest/ng/de-forms/' + _id + "/" + edit,
 						success : this.loadFormSuccessHandler
 					});
 					// save as

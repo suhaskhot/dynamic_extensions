@@ -89,7 +89,6 @@ var Views = {
 					this.populateControlsInForm();
 					this.model.setFormInformation(Main.mainTabBarView
 							.getFormSummaryView().getModel());
-
 					this.model
 							.save(
 									{
@@ -198,13 +197,13 @@ var Views = {
 												subFormControl.toJSON());
 									}
 								}
-
+								
 								// set sub form
 								control.set({
 									subForm : _subForm
 								});
 							}
-
+                            
 							// set control json
 							this.model.get('controlCollection').push(
 									control.toJSON());
@@ -1021,7 +1020,7 @@ var Views = {
 					if (formInfo.get('createdBy') == undefined
 							|| formInfo.get('createdBy') == "") {
 						var result = $.ajax({
-							url : "../../csdApi/form/currentuser",
+							url : "../../rest/ng/de-forms/currentuser",
 							async : false
 						}).responseText;
 
@@ -1153,7 +1152,7 @@ var Views = {
 								.getControlFromControlName($('#controlledField')
 										.val()
 										+ "");
-						location.href = "/csdApi/form/permissibleValues/"
+						location.href = "/rest/ng/de-form/permissibleValues/"
 								+ control.get('controlName');
 					}
 				},
@@ -1719,7 +1718,7 @@ var Views = {
 						$("#popupMessageText").html(message);
 						$("#dialog-message").dialog('open');
 					} else {
-						location.href = "ExportFormAction.de?containerId="
+						location.href = "../../ExportFormAction.de?containerId="
 								+ formId;
 					}
 
@@ -1763,8 +1762,7 @@ var Views = {
 											$("#importFileWaitingImage").show();
 										},
 										complete : function(xhr) {
-											var receivedData = $
-													.parseJSON(xhr.responseText);
+											var receivedData = JSON.parse($.parseJSON(xhr.responseText));
 											$("#importFileWaitingImage").hide();
 											if (receivedData.status == "success") {
 												Routers.formEventsRouterPointer

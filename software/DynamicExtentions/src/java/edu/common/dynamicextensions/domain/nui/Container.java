@@ -696,6 +696,11 @@ public class Container {
 	}
 	
 	public static Long createContainer(String formXml, String pvDir, boolean createTables)
+			throws Exception {
+		return createContainer(null, formXml, pvDir, createTables);
+	}
+	
+	public static Long createContainer(UserContext ctxt, String formXml, String pvDir, boolean createTables)
 	throws Exception {
 		ContainerParser parser = new ContainerParser(formXml, pvDir);
 		Container parsedContainer = parser.parse();
@@ -713,7 +718,7 @@ public class Container {
 			container = fromDto(parsedContainer);
 		}
 		
-		return container.save(null, createTables);
+		return container.save(ctxt, createTables);
 	}
 				
 	public void editContainer(Container newContainer) {

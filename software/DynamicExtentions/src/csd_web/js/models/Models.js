@@ -10,7 +10,7 @@ var Models = {
 				},
 
 				url : function() {
-					return "../../csdApi/form";
+					return "../../rest/ng/de-forms";
 				},
 
 				initialize : function() {
@@ -191,7 +191,7 @@ var Models = {
 				},
 
 				url : function() {
-					return "../../csdApi/form/control";
+					return "../../rest/ng/de-forms/control";
 				},
 
 				initialize : function() {

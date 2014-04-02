@@ -246,7 +246,13 @@ public class WideRowGenerator {
                 ++i;
             }
             
-            exprNode.setPos(i);
+            if (fields.isEmpty()) {
+            	exprNode.setPos(i);
+            } else if (i != fields.get(0).getPos()){
+            	exprNode.setPos(++i);            	
+            } else {
+            	exprNode.setPos(i);
+            }
             fields.add(exprNode);
         }
         

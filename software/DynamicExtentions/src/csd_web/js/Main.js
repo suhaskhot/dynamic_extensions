@@ -39,11 +39,11 @@ var Main = {
 			model : null
 		});
 		// init design mode
-		Main.designModeViewPointer = new Views.DesignMode({
-			el : $("#design")
-		});
-		Routers.designModeOnBeforeDragEvent();
-		Routers.designModeOnDragEvent();
+//		Main.designModeViewPointer = new Views.DesignMode({
+//			el : $("#design")
+//		});
+//		Routers.designModeOnBeforeDragEvent();
+//		Routers.designModeOnDragEvent();
 
 	}
 }

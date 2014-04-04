@@ -89,37 +89,17 @@ var Views = {
 					this.populateControlsInForm();
 					this.model.setFormInformation(Main.mainTabBarView
 							.getFormSummaryView().getModel());
-					this.model
-							.save(
-									{
-										save : "no"
-									},
-									{
-										wait : true,
-										success : function(model, response) {
-
-  $('#previewFrame').hide();
-  $('#preview').empty();
-  var deJson = getDEJson({json :response});
-  this.form = new edu.common.de.Form({
-          id           : null,
-          formDef      : deJson,
-          recordId     : null,
-          formDiv      : 'preview'
-        });
-  this.form.render();
-  $('#formWaitingImage').hide();
-										},
-
-
-									error : function(model, response) {
-											$("#formWaitingImage").hide();
-											$("#popupMessageText")
-													.html(
-															"Could not process the form successfully.");
-											$("#dialog-message").dialog('open');
-										}
-									});
+					  $('#previewFrame').hide();
+					  $('#preview').empty();
+					  var deJson = getDEJson({json: this.model});
+					  this.form = new edu.common.de.Form({
+					          id           : null,
+					          formDef      : deJson,
+					          recordId     : null,
+					          formDiv      : 'preview'
+					        });
+					  this.form.render();
+					  $('#formWaitingImage').hide();
 				},
 
 				loadModelInSession : function() {
@@ -1935,9 +1915,10 @@ var getDEJson = function (args) {
   var rowNo = 0;
   var colNo = 0;
  
- _.each(args.json.controlCollection, function(field) {
-    // Create NewField with appropriate new DE attributes
-    var newField = getNewField({field : field});
+  _.each(args.json.attributes.controlObjectCollection, function(field) {
+	    // Create NewField with appropriate new DE attributes
+    field = field.attributes;
+	var newField = getNewField({field : field});
   
     // Adding control specific properties 
     if (newField.type == 'numberField' || newField.type == 'stringTextField' || newField.type == 'textArea') {

@@ -357,18 +357,20 @@ public class ShallowWideRowGenerator {
             				}
             			}
             			
-            			if (childTabRows.getValue().isEmpty()) {
-                			List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
-                			if (tabFields == null) {
-                				tabFields = Collections.emptyList();
-                			}
+            			if (!childTabRows.getValue().isEmpty()) {
+            				continue;
+            			}
+            			
+                		List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
+                		if (tabFields == null) {
+                			tabFields = Collections.emptyList();
+                		}
                 			
-                			List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
-                			for (ExpressionNode fieldExpr : tabFields) {
-                				row.add(new ResultColumn(fieldExpr, 0));
-                			}                			
-                			currentRows.add(row);
-        				}
+                		List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
+                		for (ExpressionNode fieldExpr : tabFields) {
+                			row.add(new ResultColumn(fieldExpr, 0));
+                		}                			
+                		currentRows.add(row);
         			}
         		} else { // sub-form or multi-valued and deep
         			for (List<ResultColumn> existingRow : rows) {

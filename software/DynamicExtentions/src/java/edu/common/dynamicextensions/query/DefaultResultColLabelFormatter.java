@@ -3,7 +3,7 @@ package edu.common.dynamicextensions.query;
 import org.apache.commons.lang.WordUtils;
 
 public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatter {
-	private String separator = ": ";
+	private String separator = "# ";
 	
 	public DefaultResultColLabelFormatter(String separator) {
 		this.separator = separator;

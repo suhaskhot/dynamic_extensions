@@ -271,11 +271,14 @@ edu.common.de.Form = function(args) {
     var btns =   $("<div/>").addClass("modal-footer");
     var save =   $("<button/>").attr({"type": "button", "id": "saveForm"}).addClass("btn btn-primary").append("Save");
     var cancel = $("<button/>").attr({"type": "button", "id": "cancelForm"}).addClass("btn btn-default").append("Cancel");
-
+    var deleteForm = $("<button/>").attr({"type": "button", "id": "deleteForm"}).addClass("btn btn-warning").append("Delete");
+    
     var that = this;
     save.on("click", function() { that.save(); });
     cancel.on("click", function() { that.cancel(); });
-    return edu.common.de.Utility.row().append(btns.append(cancel).append(save));
+    deleteForm.on("click", function() { that.deleteForm(); });
+
+    return edu.common.de.Utility.row().append(btns.append(deleteForm).append(cancel).append(save));
   };
 
   this.save = function() {
@@ -333,6 +336,12 @@ edu.common.de.Form = function(args) {
     }
   };
 
+  this.deleteForm = function() {
+    if (args.onDelete) {
+      args.onDelete();
+    }
+  };
+  
   this.validate = function() {
     var valid = true;
     for (var i = 0; i < this.fieldObjs.length; ++i) {

@@ -29,6 +29,11 @@ public class SubFormControl extends Control {
 	// Foreign key column specifies DB column referring to parent table
 	//
 	private String foreignKeyColumn = "PARENT_RECORD_ID";
+	
+	//
+	// Used in AQ. Specifies whether this sub-form exists purely to specify path
+	//
+	private boolean pathLink;
 
 	public Container getSubContainer() {
 		return subContainer;
@@ -102,6 +107,14 @@ public class SubFormControl extends Control {
 		this.foreignKeyColumn = foreignKeyColumn;
 	}
 	
+	public boolean isPathLink() {
+		return pathLink;
+	}
+
+	public void setPathLink(boolean pathLink) {
+		this.pathLink = pathLink;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -113,6 +126,7 @@ public class SubFormControl extends Control {
 		result = prime * result	+ ((tableName == null) ? 0 : tableName.hashCode());
 		result = prime * result	+ ((parentKeyColumn == null) ? 0 : parentKeyColumn.hashCode());
 		result = prime * result	+ ((foreignKeyColumn == null) ? 0 : foreignKeyColumn.hashCode());
+		result = prime * result + (pathLink ? 1231 : 1237);
 		return result;
 	}
 
@@ -134,7 +148,8 @@ public class SubFormControl extends Control {
 			pasteButtonEnabled != other.pasteButtonEnabled ||
 			!StringUtils.equals(tableName, other.tableName) ||
 			!StringUtils.equals(parentKeyColumn, other.parentKeyColumn) ||
-			!StringUtils.equals(foreignKeyColumn, other.foreignKeyColumn)) {
+			!StringUtils.equals(foreignKeyColumn, other.foreignKeyColumn) || 
+			pathLink != other.pathLink) {
 			
 			return false;
 		}

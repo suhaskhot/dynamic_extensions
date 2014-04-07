@@ -409,8 +409,7 @@ var Routers = {
 								var subFrmCntrlNodeId = GlobalMemory.nodeCounter;
 								Main.treeView.getTree().insertNewChild(
 										controlNodeId, subFrmCntrlNodeId,
-										displayLabel, 0, 0, 0, 0,
-										"SELECT,CALL,CHILD,CHECKED");
+										displayLabel, 0, 0, 0, 0);
 								Main.treeView.getTree().setUserData(
 										subFrmCntrlNodeId, "controlName",
 										subControl.get('controlName'));
@@ -466,7 +465,7 @@ var Routers = {
 						displayLabel, type) {
 					var id = GlobalMemory.nodeCounter;
 					Main.treeView.getTree().insertNewChild(1, id, displayLabel,
-							0, 0, 0, 0, "SELECT,CALL,CHILD,CHECKED");
+							0, 0, 0, 0);
 					Main.treeView.getTree().setUserData(id, "controlName",
 							controlName);
 					Main.treeView.getTree()

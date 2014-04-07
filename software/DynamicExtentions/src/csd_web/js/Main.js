@@ -24,7 +24,7 @@ var Main = {
 			model : null
 		});
 
-		this.treeView.getTree().attachEvent("onDblClick",
+		this.treeView.getTree().attachEvent("onClick",
 				ControlBizLogic.formTreeNodeClickHandler);
 
 		this.mainTabBarView = new Views.TabBarView({

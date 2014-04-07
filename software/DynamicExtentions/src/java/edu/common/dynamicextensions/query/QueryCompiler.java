@@ -172,6 +172,7 @@ public class QueryCompiler
             if (child == null) {
             	SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControlByUdn(fieldNameParts[i]);
                 JoinTree sfTree = getSubFormTree(formTree, sfCtrl);
+                sfTree.setSubForm(false); // TODO: This is quick fix. Need to be thought out
                 formTree.addChild("0." + fieldNameParts[i], sfTree); // PAND fix "0."
                 formTree = sfTree;
             } else {
@@ -190,6 +191,7 @@ public class QueryCompiler
         sfTree.setAlias((new StringBuilder()).append("t").append(tabCnt++).toString());
         sfTree.setParentKey(sfCtrl.getParentKey());
         sfTree.setForeignKey(sfCtrl.getForeignKey());
+        sfTree.setSubForm(true);
         return sfTree;
     }
 

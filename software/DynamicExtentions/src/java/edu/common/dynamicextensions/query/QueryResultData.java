@@ -6,16 +6,14 @@ import java.util.Date;
 import java.util.List;
 
 public class QueryResultData {
-    private ResultColumnLabelFormatter formatter = new DefaultResultColLabelFormatter(": ");
+    private ResultColumnLabelFormatter formatter = new DefaultResultColLabelFormatter("# ");
     
     private List<ResultColumn> resultColumns;
     
     private List<Object[]> rows = new ArrayList<Object[]>();
     
     private SimpleDateFormat sdf = null;
-    
-    
-    	
+        	
     public QueryResultData(List<ResultColumn> resultColumns, String dateFormat) {
         this.resultColumns = resultColumns;
         if (dateFormat != null) {

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -60,10 +61,10 @@ public class Form {
 	@ResponseBody
 	public Map<String, Object> createForm(@RequestBody Map<String, Object> propertiesMap) throws JSONException {
 		Transaction txn = null;
+		Properties formProps = new Properties(propertiesMap);		
 		try {
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
-			Properties formProps = new Properties(propertiesMap);
-
+			
 			ContainerFacade containerFacade = ContainerFacade.createContainer(formProps, userData);
 			request.getSession().removeAttribute(CONTAINER_SESSION_ATTR);
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, containerFacade);
@@ -119,11 +120,11 @@ public class Form {
 			return containerProps.getAllProperties();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			containerProps.getAllProperties().put("status", "error");
+			return Collections.<String, Object>singletonMap("status", "error");
+		} finally {
 			if (txn != null) {
 				TransactionManager.getInstance().rollback(txn);
 			}
-			return containerProps.getAllProperties();
 		}
 
 	}

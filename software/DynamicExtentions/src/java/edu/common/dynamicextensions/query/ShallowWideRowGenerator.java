@@ -279,7 +279,13 @@ public class ShallowWideRowGenerator {
                     
         for (Map.Entry<String, List<ExpressionNode>> tabFields : tabFieldsMap.entrySet()) {
         	String alias = tabFields.getKey();
-        	Integer count = tabFormTypeMap.get(alias) ? 1 : maxCount.get(alias);
+        	Integer count = null;
+        	if (tabFormTypeMap.get(alias)) {
+        		count = 1;
+        	} else {
+        		count = maxCount.get(alias);
+        	}
+        	
         	if (count == null || count == 0) {
         		count = 1;
         	}
@@ -341,7 +347,7 @@ public class ShallowWideRowGenerator {
         		List<List<ResultColumn>> currentRows = new ArrayList<List<ResultColumn>>();
         		
         		if (tabFormTypeMap.get(childTabRows.getKey())) {
-        			for (List<ResultColumn> existingRow : rows) {        				
+        			for (List<ResultColumn> existingRow : rows) {
             			for (Map.Entry<String, WideRowNode> childRow : childTabRows.getValue().entrySet()) {
             				List<List<ResultColumn>> flattenedChildRows = childRow.getValue().flatten(maxRowCntMap);            				            			
             				for (List<ResultColumn> flattenedChildRow : flattenedChildRows) {
@@ -349,7 +355,20 @@ public class ShallowWideRowGenerator {
             					row.addAll(flattenedChildRow);
             					currentRows.add(row);
             				}
-            			}        				
+            			}
+            			
+            			if (childTabRows.getValue().isEmpty()) {
+                			List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
+                			if (tabFields == null) {
+                				tabFields = Collections.emptyList();
+                			}
+                			
+                			List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
+                			for (ExpressionNode fieldExpr : tabFields) {
+                				row.add(new ResultColumn(fieldExpr, 0));
+                			}                			
+                			currentRows.add(row);
+        				}
         			}
         		} else { // sub-form or multi-valued and deep
         			for (List<ResultColumn> existingRow : rows) {

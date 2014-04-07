@@ -669,13 +669,13 @@ var ControlBizLogic = {
 
 	csdControlsTabSelectHandler : function(id) {
 		if (id != "designMode") {
-			DesignModeBizLogic.populateControlPositions();
+//			DesignModeBizLogic.populateControlPositions();
 		}
 		if (id == "designMode") {
-			DesignModeBizLogic.loadMatrixWithControls(Main.formView
-					.getFormModel().get('controlObjectCollection'),
-					Main.formView.getFormModel().get('controlsOrder'));
-			DesignModeBizLogic.populateLayoutGrid();
+//			DesignModeBizLogic.loadMatrixWithControls(Main.formView
+//					.getFormModel().get('controlObjectCollection'),
+//					Main.formView.getFormModel().get('controlsOrder'));
+//			DesignModeBizLogic.populateLayoutGrid();
 			/*
 			 * var controlData = {}; var controlOrder = new Array();
 			 * 

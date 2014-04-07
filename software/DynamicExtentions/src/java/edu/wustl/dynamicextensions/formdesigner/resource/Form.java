@@ -92,18 +92,19 @@ public class Form {
 	@RequestMapping(method = RequestMethod.GET, value="{id}/{edit}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public void getForm(
+	public Map<String, Object> getForm(
 			@PathVariable(value="id") String id,
-			@PathVariable(value="edit") boolean edit, Writer writer) {
+			@PathVariable(value="edit") boolean edit) {
 		
 		Transaction txn = null;
+		Properties containerProps = null;
 		try {
 			txn = TransactionManager.getInstance().startTxn();
 			UserContext userData = CSDProperties.getInstance().getUserContextProvider().getUserContext(request);
 			ContainerFacade container = ContainerFacade.loadContainer(Long.valueOf(id), userData, edit);
 
 			request.getSession().setAttribute(CONTAINER_SESSION_ATTR, container);
-			Properties containerProps = container.getProperties();
+			containerProps = container.getProperties();
 			if (container.getCreatedBy() != null) {
 				if (container.getCreatedBy().equals(userData.getUserId())) {
 					edit = true;
@@ -115,15 +116,14 @@ public class Form {
 				containerProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_NEW);
 			}
 
-			String json = new Gson().toJson(containerProps.getAllProperties());
-			writer.write(json);
-			writer.flush();
+			return containerProps.getAllProperties();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		} finally {
+			containerProps.getAllProperties().put("status", "error");
 			if (txn != null) {
 				TransactionManager.getInstance().rollback(txn);
 			}
+			return containerProps.getAllProperties();
 		}
 
 	}

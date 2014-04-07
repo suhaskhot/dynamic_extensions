@@ -556,6 +556,7 @@ edu.common.de.BooleanCheckbox = function(id, field) {
     this.dataEl = $("<input/>").prop({type: 'checkbox', id: id, value: 'true', title: field.toolTip});
     this.inputEl = $("<div/>").append(this.dataEl).css("padding", "6px 0px");
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.dataEl);
+    this.setValue(undefined, field.defaultChecked)
     return this.inputEl;
   };
 
@@ -581,7 +582,7 @@ edu.common.de.BooleanCheckbox = function(id, field) {
 
   this.setValue = function(recId, value) {
     this.recId = recId; 
-    if (value == "1") {
+    if (value == "1" || value == true) {
       this.dataEl.val("true");
       this.dataEl.prop('checked', true);
     } else {

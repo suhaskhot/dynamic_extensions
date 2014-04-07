@@ -89,37 +89,17 @@ var Views = {
 					this.populateControlsInForm();
 					this.model.setFormInformation(Main.mainTabBarView
 							.getFormSummaryView().getModel());
-					this.model
-							.save(
-									{
-										save : "no"
-									},
-									{
-										wait : true,
-										success : function(model, response) {
-
-  $('#previewFrame').hide();
-  $('#preview').empty();
-  var deJson = getDEJson({json :response});
-  this.form = new edu.common.de.Form({
-          id           : null,
-          formDef      : deJson,
-          recordId     : null,
-          formDiv      : 'preview'
-        });
-  this.form.render();
-  $('#formWaitingImage').hide();
-										},
-
-
-									error : function(model, response) {
-											$("#formWaitingImage").hide();
-											$("#popupMessageText")
-													.html(
-															"Could not process the form successfully.");
-											$("#dialog-message").dialog('open');
-										}
-									});
+					  $('#previewFrame').hide();
+					  $('#preview').empty();
+					  var deJson = getDEJson({json: this.model});
+					  this.form = new edu.common.de.Form({
+					          id           : null,
+					          formDef      : deJson,
+					          recordId     : null,
+					          formDiv      : 'preview'
+					        });
+					  this.form.render();
+					  $('#formWaitingImage').hide();
 				},
 
 				loadModelInSession : function() {
@@ -156,7 +136,7 @@ var Views = {
 
 				populateControlsInForm : function() {
 
-					DesignModeBizLogic.populateControlPositions();
+//					DesignModeBizLogic.populateControlPositions();
 
 					this.model.set({
 						controlCollection : new Array()
@@ -992,11 +972,11 @@ var Views = {
 					this.tab.addTab("controlTab", "Add/Edit Control", "200px");
 					//this.tab.addTab("advancedControlPropertiesTab",
 					//		"Advanced Options", "150px");
-					this.tab.addTab("designMode", "Design", "200px");
+					//this.tab.addTab("designMode", "Design", "200px");
 					this.tab.addTab("previewTab", "Preview", "200px");
 					this.tab.setContent("summaryTab", "summary");
 					this.tab.setContent("controlTab", "control");
-					this.tab.setContent("designMode", "design");
+					//this.tab.setContent("designMode", "design");
 					this.tab.setContent("previewTab", "preview");
 					// this.tab.setContentHref("previewTab",
 					// "csd_web/pages/preview.html");
@@ -1865,66 +1845,66 @@ var Views = {
 	/*
 	 * Design Mode View
 	 */
-	DesignMode : Backbone.View.extend({
-		layoutGrid : undefined,
-		initialize : function() {
-			$(this.el).unbind("click");// will avoid calling the click event
-			// multiple time on single click
-			_.bindAll(this, 'render');
-			this.render();
-		},
-
-		render : function() {
-			var template = _.template($("#designModeView").html(), {});
-			this.$el.html(template);
-			this.initLayoutGrid();
-
-		},
-
-		events : {
-			"click #addRow" : "addRow",
-			"click #addColumn" : "addColumn"
-		},
-
-		initLayoutGrid : function() {
-			layoutGrid = new dhtmlXGridObject("layoutGrid");
-			layoutGrid
-					.setImagePath("../dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
-			layoutGrid.setHeader(" ");
-			layoutGrid.setInitWidths("300");
-			layoutGrid.setColAlign("center");
-			// layoutGrid.setColSorting(",connector");
-			layoutGrid.setSkin("kspl_csdDesignMode");
-			layoutGrid.setColTypes("ro");
-			layoutGrid._drag_validate = true;
-			layoutGrid.enableDragAndDrop(true);
-			layoutGrid.enableAutoWidth(true, 900, 300);
-			layoutGrid.init();
-		},
-
-		updateControlObjectCollection : function(name, xPosition, seqNumber) {
-			Main.formView.getFormModel().get('controlObjectCollection')[name]
-					.set({
-						xPos : xPosition,
-						sequenceNumber : seqNumber
-					});
-		},
-
-		addRow : function() {
-			var newId = (new Date()).valueOf();
-			Main.designModeViewPointer.getGridObject().addRow(newId, "");
-		},
-		addColumn : function() {
-			var colNum = Main.designModeViewPointer.getGridObject()
-					.getColumnsNum();
-			Main.designModeViewPointer.getGridObject().insertColumn(colNum, '',
-					'ro', '300', '', 'center');
-		},
-
-		getGridObject : function() {
-			return layoutGrid;
-		}
-	})
+//	DesignMode : Backbone.View.extend({
+//		layoutGrid : undefined,
+//		initialize : function() {
+//			$(this.el).unbind("click");// will avoid calling the click event
+//			// multiple time on single click
+//			_.bindAll(this, 'render');
+//			this.render();
+//		},
+//
+//		render : function() {
+//			var template = _.template($("#designModeView").html(), {});
+//			this.$el.html(template);
+//			this.initLayoutGrid();
+//
+//		},
+//
+//		events : {
+//			"click #addRow" : "addRow",
+//			"click #addColumn" : "addColumn"
+//		},
+//
+//		initLayoutGrid : function() {
+//			layoutGrid = new dhtmlXGridObject("layoutGrid");
+//			layoutGrid
+//					.setImagePath("../dhtmlxSuite_v35/dhtmlxGrid/codebase/imgs/");
+//			layoutGrid.setHeader(" ");
+//			layoutGrid.setInitWidths("300");
+//			layoutGrid.setColAlign("center");
+//			// layoutGrid.setColSorting(",connector");
+//			layoutGrid.setSkin("kspl_csdDesignMode");
+//			layoutGrid.setColTypes("ro");
+//			layoutGrid._drag_validate = true;
+//			layoutGrid.enableDragAndDrop(true);
+//			layoutGrid.enableAutoWidth(true, 900, 300);
+//			layoutGrid.init();
+//		},
+//
+//		updateControlObjectCollection : function(name, xPosition, seqNumber) {
+//			Main.formView.getFormModel().get('controlObjectCollection')[name]
+//					.set({
+//						xPos : xPosition,
+//						sequenceNumber : seqNumber
+//					});
+//		},
+//
+//		addRow : function() {
+//			var newId = (new Date()).valueOf();
+//			Main.designModeViewPointer.getGridObject().addRow(newId, "");
+//		},
+//		addColumn : function() {
+//			var colNum = Main.designModeViewPointer.getGridObject()
+//					.getColumnsNum();
+//			Main.designModeViewPointer.getGridObject().insertColumn(colNum, '',
+//					'ro', '300', '', 'center');
+//		},
+//
+//		getGridObject : function() {
+//			return layoutGrid;
+//		}
+//	})
 
 };
 
@@ -1935,9 +1915,10 @@ var getDEJson = function (args) {
   var rowNo = 0;
   var colNo = 0;
  
- _.each(args.json.controlCollection, function(field) {
-    // Create NewField with appropriate new DE attributes
-    var newField = getNewField({field : field});
+  _.each(args.json.attributes.controlObjectCollection, function(field) {
+	    // Create NewField with appropriate new DE attributes
+    field = field.attributes;
+	var newField = getNewField({field : field});
   
     // Adding control specific properties 
     if (newField.type == 'numberField' || newField.type == 'stringTextField' || newField.type == 'textArea') {

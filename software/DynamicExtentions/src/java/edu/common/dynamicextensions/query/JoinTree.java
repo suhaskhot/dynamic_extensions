@@ -25,6 +25,8 @@ public class JoinTree
 	
 	private boolean innerJoin;
 	
+	private boolean subForm;
+	
 	private Map<String, JoinTree> children = new HashMap<String, JoinTree>();	
 
     public JoinTree() {
@@ -111,6 +113,14 @@ public class JoinTree
 
 	public void setInnerJoin(boolean innerJoin) {
 		this.innerJoin = innerJoin;
+	}
+
+	public boolean isSubForm() {
+		return subForm;
+	}
+
+	public void setSubForm(boolean subForm) {
+		this.subForm = subForm;
 	}
 
 	public Collection<JoinTree> getChildren() {
@@ -207,6 +217,10 @@ public class JoinTree
     	JoinTree tree1Parent = getNonLinkParentNode(tree1);
     	JoinTree tree2Parent = getNonLinkParentNode(tree2);
     	return getCommonAncestor(tree1Parent, tree2Parent);
+    }
+    
+    public boolean isSubFormOrMultiSelect() {
+    	return field != null || subForm;
     }
     
     private JoinTree getNonLinkParentNode(JoinTree joinTree) {

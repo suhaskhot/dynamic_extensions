@@ -142,7 +142,7 @@ public class Query {
     }
     
     private QueryResultData getWideRowData(ResultSet rs) {
-        WideRowGenerator wideRowGenerator = new WideRowGenerator(queryJoinTree, queryExpr);
+        ShallowWideRowGenerator wideRowGenerator = new ShallowWideRowGenerator(queryJoinTree, queryExpr);
         wideRowGenerator.dateFormat(dateFormat);
         wideRowGenerator.start();
         wideRowGenerator.processResultSet(rs);

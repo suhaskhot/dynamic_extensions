@@ -14,14 +14,17 @@ import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 
-public class WideRowGenerator {     
+public class ShallowWideRowGenerator {     
     private Map<String, WideRowNode> wideRows = new LinkedHashMap<String, WideRowNode>();
     
     private Map<String, String[]> tabJoinPath = new HashMap<String, String[]>();
     
     private Map<String, Integer> aliasRowCountMap = new HashMap<String, Integer>();
-    
-    private Map<String, Integer> currAliasRowCountMap = new HashMap<String, Integer>(); 
+       
+    private Map<String, List<ExpressionNode>> tabFieldsMap = new HashMap<String, List<ExpressionNode>>();
+   
+    // false if form is either subform or multiselect. true otherwise
+    private Map<String, Boolean> tabFormTypeMap = new HashMap<String, Boolean>(); 
     
     private String rootTabAlias = null;
     
@@ -33,7 +36,7 @@ public class WideRowGenerator {
     
     private String dateFormat;
     
-    public WideRowGenerator(JoinTree queryJoinTree, QueryExpressionNode queryExpr) {
+    public ShallowWideRowGenerator(JoinTree queryJoinTree, QueryExpressionNode queryExpr) {
         this.queryExpr = queryExpr;
         this.queryJoinTree = queryJoinTree;
         this.rootTabAlias = queryJoinTree.getAlias();
@@ -43,11 +46,12 @@ public class WideRowGenerator {
     public void start() {
         wideRows.clear();
         aliasRowCountMap.clear();
-        currAliasRowCountMap.clear();
+        aliasRowCountMap.put(rootTabAlias, 1);    
+        tabFieldsMap = getTabFieldsMap();
         lastRootId = null;
     }
     
-    public WideRowGenerator dateFormat(String dateFormat) {
+    public ShallowWideRowGenerator dateFormat(String dateFormat) {
     	this.dateFormat = dateFormat;
     	return this;
     }
@@ -65,7 +69,9 @@ public class WideRowGenerator {
                     rootTabRow = new WideRowNode(rootTabAlias, rootId);
                     rootTabRow.setColumns(tabAliasColValuesMap.get(rootTabAlias));
                     wideRows.put(rootId, rootTabRow);
-                    mergeCounts();
+                    if (lastRootId != null) {
+                    	mergeCounts(wideRows.get(lastRootId));
+                    }                    
                 }
                 
                 for (Map.Entry<String, String> tabAliasId : tabAliasIdMap.entrySet()) {
@@ -81,17 +87,21 @@ public class WideRowGenerator {
                             childTabRows = wideRow.initChildrenRows(joinNodes[j]);
                         }
                         
-                        String id = tabAliasIdMap.get(joinNodes[j]);
-                        if (id == null) {
-                            id = "-1";
+                        String id = "-1";
+                        if (tabAliasIdMap.containsKey(joinNodes[j])) {
+                        	id = tabAliasIdMap.get(joinNodes[j]);
                         }
                         
+                    	if (id == null) {
+                    		break;
+                    	}                        
+                                                
                         WideRowNode childRow = childTabRows.get(id);
                         if (childRow == null) {
                             childRow = new WideRowNode(joinNodes[j], id);
                             childRow.setColumns(tabAliasColValuesMap.get(joinNodes[j]));
                             childTabRows.put(id, childRow);
-                            incrTabRowCnt(joinNodes[j]);
+                           	//incrTabRowCnt(joinNodes[j]);                            
                         }
                         
                         wideRow = childRow;
@@ -106,7 +116,9 @@ public class WideRowGenerator {
     }
     
     public void end() {
-        mergeCounts();
+    	if (lastRootId != null) {
+    		mergeCounts(wideRows.get(lastRootId));
+    	}        
     }
     
     public QueryResultData getQueryResultData() {
@@ -116,64 +128,60 @@ public class WideRowGenerator {
                 resultData = initQueryResultData(wideRow);
             }
             
-            List<ResultColumn> columns = wideRow.flatten(aliasRowCountMap);
-            Collections.sort(columns, new Comparator<ResultColumn>() {
-            	@Override
-            	public int compare(ResultColumn arg0, ResultColumn arg1) {
-            		return arg0.getExpression().getPos() - arg1.getExpression().getPos();
-            	}
-            });
-            
-            Object[] values = new Object[columns.size()];
-            int i = 0;
-            for (ResultColumn col : columns) {
-            	values[i++] = col.getValue();
-            }
-            
-            resultData.addRow(values);
+            List<List<ResultColumn>> rows = wideRow.flatten(aliasRowCountMap);
+            for (List<ResultColumn> row : rows) {
+                Collections.sort(row, new Comparator<ResultColumn>() {
+                	@Override
+                	public int compare(ResultColumn arg0, ResultColumn arg1) {
+                		return arg0.getExpression().getPos() - arg1.getExpression().getPos();
+                	}
+                });
+                
+                Object[] values = new Object[row.size()];
+                int i = 0;
+                for (ResultColumn col : row) {
+                	values[i++] = col.getValue();
+                }
+                
+                resultData.addRow(values);                
+            }            
         }
         
         return resultData;      
     }
     
-    private void mergeCounts() {
-        for (Map.Entry<String, Integer> curAliasCnt : currAliasRowCountMap.entrySet()) {
-            Integer count = curAliasCnt.getValue();
-            Integer actual = aliasRowCountMap.get(curAliasCnt.getKey());
-            if (actual == null || actual < count) {
-                aliasRowCountMap.put(curAliasCnt.getKey(), count);
-            }
-        }
-        
-        currAliasRowCountMap.clear();
+    private void mergeCounts(WideRowNode wideRow) {
+    	if (wideRow.childrenRowsMap == null) {
+    		return;
+    	}
+    	
+    	for (Map.Entry<String, Map<String, WideRowNode>> childTable : wideRow.childrenRowsMap.entrySet()) {
+    		Integer count = childTable.getValue().size();
+    		Integer actual = aliasRowCountMap.get(childTable.getKey());
+    		if (actual == null || actual < count) {
+    			aliasRowCountMap.put(childTable.getKey(), count);
+    		}
+    		
+    		for (WideRowNode childTableRow : childTable.getValue().values()) {
+    			mergeCounts(childTableRow);
+    		}
+    	}
     }
-    
-    private void incrTabRowCnt(String tabAlias) {
-    	Integer count = currAliasRowCountMap.get(tabAlias);
-        if (count == null) {
-            count = 0;
-        }
         
-        currAliasRowCountMap.put(tabAlias, count + 1);
-    }
-    
     private void initTableJoinPath(JoinTree queryJoinTree) {
-        Map<String, String> pathMap = new HashMap<String, String>();
-        initTableJoinPath(queryJoinTree, "" , pathMap);
-        
         tabJoinPath.clear();
-        for (Map.Entry<String, String> path : pathMap.entrySet()) {
-            tabJoinPath.put(path.getKey(), path.getValue().split(","));
-        }
+        initTableJoinPath(queryJoinTree, new ArrayList<String>());        
     }
     
-    private void initTableJoinPath(JoinTree joinTree, String path, Map<String, String> pathMap) {
+    private void initTableJoinPath(JoinTree joinTree, List<String> path) {
         String tabAlias = joinTree.getAlias();
-        path = path.length() == 0 ? tabAlias : path + "," + tabAlias;
-        pathMap.put(tabAlias, path);
+        path = new ArrayList<String>(path);
+        path.add(tabAlias);
         
+        tabJoinPath.put(tabAlias, path.toArray(new String[0]));
+        tabFormTypeMap.put(tabAlias, !joinTree.isSubFormOrMultiSelect());
         for (JoinTree childTree : joinTree.getChildren()) {
-            initTableJoinPath(childTree, path, pathMap);
+            initTableJoinPath(childTree, path);
         }
     }
     
@@ -181,11 +189,8 @@ public class WideRowGenerator {
     throws Exception {
         Map<String, String> tabAliasIdMap = new LinkedHashMap<String, String>();
         
-        List<ExpressionNode> selectElements = queryExpr.getSelectList().getElements();
-        int numCols = rs.getMetaData().getColumnCount();
-        int startIdx = selectElements.size() + 1;
-        
         int cols = 0;
+        List<ExpressionNode> selectElements = queryExpr.getSelectList().getElements();        
         for (ExpressionNode element : selectElements) {
             ++cols;
             
@@ -194,15 +199,13 @@ public class WideRowGenerator {
             }
             
             FieldNode field = (FieldNode)element;
-            String tabAlias = field.getTabAlias();
             if (field.getCtrl() instanceof MultiSelectControl) {
-                tabAliasIdMap.put(tabAlias, rs.getString(cols));
-            } /*else if (!tabAliasIdMap.containsKey(tabAlias)) {
-                tabAliasIdMap.put(tabAlias, getTabAliasId(rs, tabAlias, startIdx, numCols));
-            }*/         
+                tabAliasIdMap.put(field.getTabAlias(), rs.getString(cols));
+            }         
         }
         
-        for (int i = startIdx; i <= numCols; i += 2) {
+        int numCols = rs.getMetaData().getColumnCount();
+        for (int i = selectElements.size() + 1; i <= numCols; i += 2) {
             tabAliasIdMap.put(rs.getString(i), rs.getString(i + 1));
         }
         
@@ -249,7 +252,7 @@ public class WideRowGenerator {
             if (fields.isEmpty()) {
             	exprNode.setPos(i);
             } else if (i != fields.get(0).getPos()){
-            	exprNode.setPos(++i);
+            	exprNode.setPos(++i);            	
             } else {
             	exprNode.setPos(i);
             }
@@ -260,18 +263,38 @@ public class WideRowGenerator {
     }
     
     private QueryResultData initQueryResultData(WideRowNode wideRow) {
-        Map<String, List<ExpressionNode>> fieldsMap = getTabFieldsMap();
-        List<ResultColumn> columns = wideRow.getTabColumns(aliasRowCountMap, fieldsMap);
+        List<ResultColumn> columns = getTabColumns(aliasRowCountMap, tabFieldsMap);
         Collections.sort(columns, new Comparator<ResultColumn>() {
         	@Override
         	public int compare(ResultColumn arg0, ResultColumn arg1) {
         		return arg0.getExpression().getPos() - arg1.getExpression().getPos();
         	}
         });
-        
+                
         return new QueryResultData(columns, dateFormat);
     }
-            
+    
+    private List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<ExpressionNode>> tabFieldsMap) {
+        List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
+                    
+        for (Map.Entry<String, List<ExpressionNode>> tabFields : tabFieldsMap.entrySet()) {
+        	String alias = tabFields.getKey();
+        	Integer count = tabFormTypeMap.get(alias) ? 1 : maxCount.get(alias);
+        	if (count == null || count == 0) {
+        		count = 1;
+        	}
+        	
+        	List<ExpressionNode> fields = tabFieldsMap.get(alias);
+        	for (int i = 0; i < count; ++i) {
+        		for (ExpressionNode field : fields) {
+        			resultColumns.add(new ResultColumn(field, i));
+        		}
+        	}
+        }
+                    
+        return resultColumns;
+    }
+    
     private class WideRowNode {
         private String alias;
         
@@ -305,76 +328,66 @@ public class WideRowGenerator {
             return childrenRows;
         }
         
-        public List<ResultColumn> flatten(Map<String, Integer> maxRowCntMap) {
-        	Map<String, List<WideRowNode>> tabRowsMap = new HashMap<String, List<WideRowNode>>();
-        	buildTabRowMap(tabRowsMap);
-        	
-        	List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
-        	for (Map.Entry<String, List<WideRowNode>> tabRows : tabRowsMap.entrySet()) {
-        		Integer maxCount = maxRowCntMap.get(tabRows.getKey());
-        		if (maxCount == null) {
-        			maxCount = 0;
-        		}
-        		
-        		int rowCount = 0;
-        		for (WideRowNode row : tabRows.getValue()) {
-        			resultColumns.addAll(row.columns);
-        			++rowCount;
-        		}
-        		
-        		WideRowNode firstRow = tabRows.getValue().get(0);
-        		for (int i = 0; i < (maxCount - rowCount); ++i) {
-        			for (ResultColumn column : firstRow.columns) {
-        				resultColumns.add(new ResultColumn(column.getExpression(), null));
-        			}
-        		}
-        	}
-        	
-        	return resultColumns;
-        }
-        
-        public void buildTabRowMap(Map<String, List<WideRowNode>> tabRowsMap) {
-        	List<WideRowNode> tabRows = tabRowsMap.get(alias);
-        	if (tabRows == null && this.columns != null) {
-        		tabRows = new ArrayList<WideRowNode>();
-        		tabRowsMap.put(alias, tabRows);
-        	}
-        	
+        public List<List<ResultColumn>> flatten(Map<String, Integer> maxRowCntMap) {        	        	        	
+        	List<ResultColumn> currentRow = new ArrayList<ResultColumn>();
         	if (this.columns != null) {
-        		tabRows.add(this);
+        		currentRow.addAll(this.columns);
         	}
         	
+        	List<List<ResultColumn>> rows = new ArrayList<List<ResultColumn>>();
+        	rows.add(currentRow);
         	
         	for (Map.Entry<String, Map<String, WideRowNode>> childTabRows : childrenRowsMap.entrySet()) {
-        		assert(!childTabRows.getValue().isEmpty());
-        		for (WideRowNode childTabRow : childTabRows.getValue().values()) {
-        			childTabRow.buildTabRowMap(tabRowsMap);
+        		List<List<ResultColumn>> currentRows = new ArrayList<List<ResultColumn>>();
+        		
+        		if (tabFormTypeMap.get(childTabRows.getKey())) {
+        			for (List<ResultColumn> existingRow : rows) {        				
+            			for (Map.Entry<String, WideRowNode> childRow : childTabRows.getValue().entrySet()) {
+            				List<List<ResultColumn>> flattenedChildRows = childRow.getValue().flatten(maxRowCntMap);            				            			
+            				for (List<ResultColumn> flattenedChildRow : flattenedChildRows) {
+            					List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
+            					row.addAll(flattenedChildRow);
+            					currentRows.add(row);
+            				}
+            			}        				
+        			}
+        		} else { // sub-form or multi-valued and deep
+        			for (List<ResultColumn> existingRow : rows) {
+            			List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
+            			for (Map.Entry<String, WideRowNode> childRow : childTabRows.getValue().entrySet()) {
+            				List<List<ResultColumn>> flattenedChildRows = childRow.getValue().flatten(maxRowCntMap);
+            				for (List<ResultColumn> flattenedChildRow : flattenedChildRows) {
+            					row.addAll(flattenedChildRow);
+            				}   
+            			}
+            			
+            			int rowCount = childTabRows.getValue().size();
+            			Integer maxCount = maxRowCntMap.get(childTabRows.getKey());
+            			if (maxCount == null) {
+            				maxCount = 0;
+            			} else if (maxCount == 0) {
+            				maxCount = 1;
+            			}
+            			            			
+            			List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
+            			if (tabFields == null) {
+            				tabFields = Collections.emptyList();
+            			}
+            			            			
+                		for (int i = rowCount; i < maxCount; ++i) {
+                			for (ExpressionNode fieldExpr : tabFields) {
+                				row.add(new ResultColumn(fieldExpr, i));
+                			}
+                		}
+                		
+                		currentRows.add(row);        				
+        			}
         		}
-        	}        	
-        }
-                
-        public List<ResultColumn> getTabColumns(Map<String, Integer> maxCount, Map<String, List<ExpressionNode>> fieldsMap) {
-            List<ResultColumn> resultColumns = new ArrayList<ResultColumn>();
-                        
-            if (columns != null) {
-                List<ExpressionNode> fields = fieldsMap.get(alias);
-                Integer count = maxCount.get(alias);
-                count = count == null ? 1 : count;
-                for (int i = 0; i < count; ++i) {
-                    for (ExpressionNode field : fields) {
-                        resultColumns.add(new ResultColumn(field, 0));
-                    }                	
-                }
-            }
-            
-            for (Map.Entry<String, Map<String, WideRowNode>> childTabRows : childrenRowsMap.entrySet()) {
-                assert(!childTabRows.getValue().isEmpty());                                     
-                WideRowNode childTabRow = childTabRows.getValue().values().iterator().next();
-                List<ResultColumn> childTabRowColumns = childTabRow.getTabColumns(maxCount, fieldsMap);
-                resultColumns.addAll(childTabRowColumns);                    
-            }
-            
-            return resultColumns;
-        }       
+        		
+        		rows = currentRows;
+        	}
+        	
+        	return rows;
+        }        
     }
 }

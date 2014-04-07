@@ -210,6 +210,7 @@ public class ContainerParser {
 		subForm.setPasteButtonEnabled(getBooleanValue(subFormEle, "pasteButtonEnabled"));
 		subForm.setParentKey(getTextValue(subFormEle, "parentKey"));
 		subForm.setForeignKey(getTextValue(subFormEle, "foreignKey"));
+		subForm.setPathLink(getBooleanValue(subFormEle, "pathLink"));
 
 		Container subContainer = parseContainer(subFormEle, false);
 		subForm.setSubContainer(subContainer);

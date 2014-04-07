@@ -28,6 +28,10 @@ public class ResultColumn {
 		return value;
 	}
 	
+	public String getColumnLabel() {
+		return getColumnLabel(null);
+	}
+	
 	public String getColumnLabel(ResultColumnLabelFormatter formatter) {
 		String[] captions;
 		if (columnExpr.getLabel() != null) {
@@ -38,7 +42,7 @@ public class ResultColumn {
 			captions = ((FieldNode)columnExpr).getNodeCaptions();
 		}
 		
-		return formatter.format(captions, instance);		
+		return format(formatter, captions, instance);		
 	}
 	
 	public String[] getCaptions() {
@@ -47,5 +51,23 @@ public class ResultColumn {
 		}
 		
 		return ((FieldNode)columnExpr).getNodeCaptions();
+	}
+	
+	public String toString() {
+		return getColumnLabel();
+	}
+	
+	private String format(ResultColumnLabelFormatter formatter, String[] captions, int instance) {
+		if (formatter != null) {
+			return formatter.format(captions, instance);
+		} 
+		
+		StringBuilder result = new StringBuilder();
+		for (String caption : captions) {
+			result.append(caption).append("#");
+		}
+		
+		result.append(instance);
+		return result.toString();
 	}
 }

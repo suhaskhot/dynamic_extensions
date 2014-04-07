@@ -213,7 +213,11 @@ edu.common.de.Form = function(args) {
       formCtrls.append(this.rowCtrls(rows[i]));
     }
 
-    formCtrls.append(this.getActionButtons());
+    if (args.showActionBtns === undefined || 
+        args.showActionBtns === null || 
+        args.showActionBtns === true) {
+      formCtrls.append(this.getActionButtons());
+    }
 
     var panel = edu.common.de.Utility.panel(this.formDef.caption, formCtrls, 'default');
     this.formDiv.append(panel);

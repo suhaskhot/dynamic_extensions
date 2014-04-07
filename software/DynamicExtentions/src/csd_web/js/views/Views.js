@@ -93,11 +93,10 @@ var Views = {
 					  $('#preview').empty();
 					  var deJson = getDEJson({json: this.model});
 					  this.form = new edu.common.de.Form({
-					          id           : null,
-					          formDef      : deJson,
-					          recordId     : null,
-					          formDiv      : 'preview'
-					        });
+						formDef       : deJson,
+						formDiv       : 'preview',
+						showActionBtns: false
+					  });
 					  this.form.render();
 					  $('#formWaitingImage').hide();
 				},

@@ -1974,8 +1974,8 @@ var getDEJson = function (args) {
   });
   
   var newJson = {};
-  newJson['name'] = args.json.formName;
-  newJson['caption'] = args.json.caption;
+  newJson['name'] = args.json.attributes.formName;
+  newJson['caption'] = args.json.attributes.caption;
   newJson['rows'] = rows;
 
   return newJson;

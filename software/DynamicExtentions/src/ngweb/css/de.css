@@ -26,6 +26,19 @@
 .de-input-error {
   border: 1px solid #cc0000;
 }
+.de-print-label {
+  vertical-align: middle;
+  width: 30%;
+  text-align: right;
+  padding-left: 20px;
+}
+
+.de-print-val {
+  vertical-align: middle;
+  width: 70%;
+  text-align: left;
+  padding-left: 20px;
+}
 
 select.form-control + .chosen-container.chosen-container-single .chosen-single {
   display: block;

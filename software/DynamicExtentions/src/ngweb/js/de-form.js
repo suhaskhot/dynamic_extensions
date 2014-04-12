@@ -272,12 +272,12 @@ edu.common.de.Form = function(args) {
   };
 
   this.getActionButtons = function() {
-    var btns =   $("<div/>").addClass("modal-footer col-xs-12");
+    var btns =   $("<div/>").addClass("modal-footer");
     
-    var save =   $("<button/>").attr({"type": "button", "id": "saveForm"}).addClass("btn btn-primary").append("Save");
-    var cancel = $("<button/>").attr({"type": "button", "id": "cancelForm"}).addClass("btn btn-default").append("Cancel");
+    var save       = $("<button/>").attr({"type": "button", "id": "saveForm"}).addClass("btn btn-primary").append("Save");
+    var cancel     = $("<button/>").attr({"type": "button", "id": "cancelForm"}).addClass("btn btn-default").append("Cancel");
     var deleteForm = $("<button/>").attr({"type": "button", "id": "deleteForm"}).addClass("btn btn-warning").append("Delete");
-    var print = $("<button/>").attr({"type": "button", "id": "print"}).addClass("btn btn-info").append("Print");
+    var print      = $("<button/>").attr({"type": "button", "id": "print"}).addClass("btn btn-info").append("Print");
 
     var that = this;
     save.on("click", function() { that.save(); });
@@ -345,82 +345,80 @@ edu.common.de.Form = function(args) {
 
   this.print = function() {
     if (args.onPrint) {
-      args.onPrint(this.getFormHtml());
+      args.onPrint(this.getFormPrintHtml());
     }
   };
 
-  this.getFormHtml = function() {
+  this.getFormPrintHtml = function() {
     var formCtrls = $("<tbody/>");
-
     for (var i = 0; i < this.formDef.rows.length; ++i) {
       formCtrls.append(this.readOnlyCtrls(this.formDef.rows[i]));
     }
 
-    return $("<table/>").addClass("table table-bordered").css("width", "100%").append(formCtrls);
+    return $("<table/>").addClass("table table-condensed table-bordered").css("width", "100%").append(formCtrls);
   };
 
-this.readOnlyCtrls = function(fields) {
-  var trs = [];
-  for (var i = 0; i < fields.length; ++i) {
-    var tr = $("<tr/>");
-    tr.append($("<td/>").addClass("de-print-label")
-                        .append($("<label/>").append(fields[i].caption)));
+  this.readOnlyCtrls = function(fields) {
+    var trs = [];
+    for (var i = 0; i < fields.length; ++i) {
+      var tr = $("<tr/>");
+      tr.append($("<td/>").addClass("de-print-label")
+        .append($("<label/>").append(fields[i].caption)));
 
-    if (fields[i].type != 'subForm') {
-      var val = this.formData[fields[i].name];
-      if (val == undefined || val == null) {
-        val = "N/A";
-      } 
+      if (fields[i].type != 'subForm') {
+        var val = this.formData[fields[i].name];
+        if (val == undefined || val == null) {
+          val = "N/A";
+        } 
     
-      if (val instanceof Array) { 
-        val = val.join();
-      }
-
-      tr.append($("<td/>").addClass("de-print-val").append(val));
-  } else {
-      var subFormData = this.formData[fields[i].name];
-      var subFormDef = fields[i];
-
-      var tableEl = $("<table/>").addClass("table");
-      var thEl = $("<tr/>");
-     
-      var fieldNames = [];
-      for (var j = 0; j < subFormDef.rows.length; ++j) {
-        for (var k = 0; k < subFormDef.rows[j].length; ++k) {
-          thEl.append($("<th/>").append(subFormDef.rows[j][k].caption));          
-          fieldNames.push(subFormDef.rows[j][k].name);
-        }        
-      }
-      tableEl.append($("<thead/>").append(thEl));
-
-      var tbodyEl = $("<tbody/>");
-      tableEl.append(tbodyEl);
-
-      for (var j = 0; j < subFormData.length; ++j) {
-        var trEl = $("<tr/>");
-        for (var k = 0; k < fieldNames.length; ++k) {
-          var val = subFormData[j][fieldNames[k]];
-          if (val == undefined || val == null) {
-            val = "N/A";
-          }
-
-          if (val instanceof Array) {
-            val = val.join();
-          }
-
-          trEl.append($("<td/>").append(val));
+        if (val instanceof Array) { 
+          val = val.join();
         }
-        tbodyEl.append(trEl);
+
+        tr.append($("<td/>").addClass("de-print-value").append(val));
+      } else {
+        var subFormData = this.formData[fields[i].name];
+        var subFormDef = fields[i];
+
+        var tableEl = $("<table/>").addClass("table table-condensed");
+        var thEl = $("<tr/>");
+     
+        var fieldNames = [];
+        for (var j = 0; j < subFormDef.rows.length; ++j) {
+          for (var k = 0; k < subFormDef.rows[j].length; ++k) {
+            thEl.append($("<th/>").append(subFormDef.rows[j][k].caption));          
+            fieldNames.push(subFormDef.rows[j][k].name);
+          }        
+        }
+        tableEl.append($("<thead/>").append(thEl));
+
+        var tbodyEl = $("<tbody/>");
+        tableEl.append(tbodyEl);
+
+        for (var j = 0; j < subFormData.length; ++j) {
+          var trEl = $("<tr/>");
+          for (var k = 0; k < fieldNames.length; ++k) {
+            var val = subFormData[j][fieldNames[k]];
+            if (val == undefined || val == null) {
+              val = "N/A";
+            }
+
+            if (val instanceof Array) {
+              val = val.join();
+            }
+
+            trEl.append($("<td/>").append(val));
+          }
+          tbodyEl.append(trEl);
+        }
+
+        tr.append($("<td/>").addClass("de-print-value").append(tableEl));    
       }
       
-
-      tr.append($("<td/>").addClass("de-print-val").append(tableEl));    
-  }
-  trs.push(tr);
-
-}
-  return trs;
-    };
+      trs.push(tr);
+    }
+    return trs;
+  };
 
   this.deleteForm = function() {
     if (args.onDelete) {

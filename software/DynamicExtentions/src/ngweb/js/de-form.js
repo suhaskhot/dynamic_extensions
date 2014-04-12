@@ -925,7 +925,7 @@ edu.common.de.SubFormField = function(id, sfField, args) {
   };
 
   this.getRemoveButton = function(rowDiv, rowIdx) {
-    var removeBtn = edu.common.de.Utility.iconButton({btnClass: 'btn btn-default form-control', icon: 'trash'});
+    var removeBtn = edu.common.de.Utility.iconButton({btnClass: 'btn btn-default', icon: 'trash'});
     var that = this;
     removeBtn.on("click", function() {
       rowDiv.remove();

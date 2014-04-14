@@ -16,7 +16,10 @@ var Views = {
 
 				},
 				saveForm : function(showMessage) {
-
+					if (!Utility.checkNameForCorrectness($('#formName').val())) {
+					  Utility.notify($("#notifications"), "Form Name should not contain special characters and white spaces", "error");
+					  return;
+					}
 					// Save Model
 					// alert(JSON.stringify(this.model.toJSON()));
 					this.populateControlsInForm();
@@ -1683,7 +1686,7 @@ var Views = {
 
 				displayFormInfo : function(formInfo) {
 					$("#formCaption").val(formInfo.get('caption'));
-					$("#formName").val(formInfo.get('formName'));
+					$("#formName").val(formInfo.get('formName')).attr('readOnly', 'readOnly');
 					$("#createdBy").text(formInfo.get('createdBy'));
 					$("#createdOn").text(formInfo.get('createdOn'));
 					$("#lastModifiedBy").text(formInfo.get('lastModifiedBy'));
@@ -1798,8 +1801,10 @@ var Views = {
 				setCaptionAndName : function(event) {
 					Main.treeView.getTree().setItemText(1,
 							$('#formCaption').val(), '');
-					$('#formName').val(
-							Utility.toCamelCase($('#formCaption').val()));
+					var formName = Main.formView.getFormModel().getFormInformation().get('formName');
+					if (formName == undefined) {
+					  $('#formName').val(Utility.toCamelCase($('#formCaption').val()));
+					}
 
 				},
 

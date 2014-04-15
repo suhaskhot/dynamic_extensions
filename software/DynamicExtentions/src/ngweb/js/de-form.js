@@ -355,7 +355,7 @@ edu.common.de.Form = function(args) {
       formCtrls.append(this.readOnlyCtrls(this.formDef.rows[i]));
     }
 
-    return $("<table/>").addClass("table table-condensed table-bordered").css("width", "100%").append(formCtrls);
+    return $("<div>").append($("<table/>").addClass("table table-condensed table-bordered").css("width", "100%").append(formCtrls));
   };
 
   this.readOnlyCtrls = function(fields) {

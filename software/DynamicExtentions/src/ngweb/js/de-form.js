@@ -366,7 +366,12 @@ edu.common.de.Form = function(args) {
         .append($("<label/>").append(fields[i].caption)));
 
       if (fields[i].type != 'subForm') {
-        var val = this.formData[fields[i].name];
+        var val = undefined;
+        if (fields[i].type == 'fileUpload') {
+          val = this.formData[fields[i].name].filename;
+        } else {
+          val = this.formData[fields[i].name];
+        }
         if (val == undefined || val == null) {
           val = "N/A";
         } 

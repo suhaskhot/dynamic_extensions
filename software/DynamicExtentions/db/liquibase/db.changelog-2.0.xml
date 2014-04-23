@@ -13,7 +13,7 @@
   <property name="clob.type"        value="clob"           dbms="oracle"/>
   <property name="clob.type"        value="longtext"       dbms="mysql"/>
   <property name="blob.type"        value="blob"           dbms="oracle"/>
-  <property name="blob.type"        value="blob"           dbms="mysql"/>
+  <property name="blob.type"        value="longblob"       dbms="mysql"/>
   <property name="clob.type"        value="longtext"       dbms="mysql"/>
   <property name="string.type"      value="varchar"        dbms="mysql" />
   <property name="string.type"      value="varchar2"       dbms="oracle" />

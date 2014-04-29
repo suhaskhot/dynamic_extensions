@@ -21,6 +21,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 import edu.common.dynamicextensions.ndao.ContainerDao;
 import edu.common.dynamicextensions.ndao.JdbcDao;
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
@@ -797,7 +798,7 @@ public class Container {
 			dbTableName = getUniqueTableName();			
 
 			if (parentTableName != null) {
-				columnDefs.add(ColumnDef.get("PARENT_RECORD_ID", "BIGINT"));
+				columnDefs.add(ColumnDef.get("PARENT_RECORD_ID", ColumnTypeHelper.getIntegerColType()));
 			}
 			
 			createTable(jdbcDao, dbTableName, columnDefs, true);
@@ -848,7 +849,7 @@ public class Container {
 		ddl.append("CREATE TABLE ").append(tableName).append(" (");
 		
 		if (crtIdColumn) {
-			ddl.append("IDENTIFIER BIGINT PRIMARY KEY, ");
+			ddl.append("IDENTIFIER ").append(ColumnTypeHelper.getIntegerColType()).append(" PRIMARY KEY, ");
 		}
 		
 		for (ColumnDef columnDef : columnDefs) {

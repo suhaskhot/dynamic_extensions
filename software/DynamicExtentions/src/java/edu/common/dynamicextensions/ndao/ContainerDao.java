@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.ndao;
 
+import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,11 +17,19 @@ import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.nutility.IdGenerator;
 
 public class ContainerDao {	
-	private static final String INSERT_CONTAINER_SQL = 
+	private static final String INSERT_CONTAINER_SQL_MYSQL = 
 			"INSERT INTO DYEXTN_CONTAINERS (IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, XML) VALUES(?, ?, ?, ?, ?, ?)";
 
-	private static final String UPDATE_CONTAINER_SQL = 
+	private static final String INSERT_CONTAINER_SQL_ORACLE = 
+			"INSERT INTO DYEXTN_CONTAINERS (IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, XML) " +
+			"VALUES(?, ?, ?, ?, ?, empty_blob())";
+
+	private static final String UPDATE_CONTAINER_SQL_MYSQL = 
 			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = ? " +
+			"WHERE IDENTIFIER = ?";
+	
+	private static final String UPDATE_CONTAINER_SQL_ORACLE = 
+			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = empty_blob() " +
 			"WHERE IDENTIFIER = ?";
 	
 	private static final String GET_CONTAINER_XML_BY_ID_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
@@ -60,18 +69,22 @@ public class ContainerDao {
 	
 	public void insert(UserContext userCtxt, Container c) 
 	throws SQLException {
-		List<Object> params = new ArrayList<Object>();		
+		List<Object> params = new ArrayList<Object>();	
 		params.add(c.getId());
 		params.add(c.getName());
 		params.add(c.getCaption());
 		params.add(userCtxt != null ? userCtxt.getUserId() : null);
 		Timestamp createTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		params.add(createTime);
-		params.add(c.toXml());
-		
-		jdbcDao.executeUpdate(INSERT_CONTAINER_SQL, params);	
-		//updateContainerXml(c.getId(), c.toXml());
+		if (DbSettingsFactory.getProduct().equals("Oracle")) {
+			jdbcDao.executeUpdate(INSERT_CONTAINER_SQL_ORACLE, params);	
+			updateContainerXml(c.getId(), c.toXml());
+		} else {
+			params.add(c.toXml());
+			jdbcDao.executeUpdate(INSERT_CONTAINER_SQL_MYSQL, params);	
+		}
 	}
+	
 	
 	public void update(UserContext userCtxt, Container c) 
 	throws SQLException {		
@@ -81,11 +94,16 @@ public class ContainerDao {
 		params.add(userCtxt != null ? userCtxt.getUserId() : null);
 		Timestamp updateTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 		params.add(updateTime);
-		params.add(c.toXml());
-		params.add(c.getId());
 		
-		jdbcDao.executeUpdate(UPDATE_CONTAINER_SQL, params);
-		//updateContainerXml(c.getId(), c.toXml());
+		if (DbSettingsFactory.getProduct().equals("Oracle")) {
+			params.add(c.getId());
+			jdbcDao.executeUpdate(UPDATE_CONTAINER_SQL_ORACLE, params);
+			updateContainerXml(c.getId(), c.toXml());
+		} else {
+			params.add(c.toXml());
+			params.add(c.getId());
+			jdbcDao.executeUpdate(UPDATE_CONTAINER_SQL_MYSQL, params);	
+		}
 	}
 	
 	public Container getById(Long id) throws SQLException {
@@ -129,32 +147,32 @@ public class ContainerDao {
 		return jdbcDao.getResultSet(GET_CONTAINER_INFO_BY_CREATOR_SQL, params, containerInfoExtractor);
 	}
 
-//	private void updateContainerXml(Long id, final String xml) 
-//	throws SQLException  {
-//		List<Object> params = new ArrayList<Object>();
-//		params.add(id);
-//
-//		String selectXmlForUpdate = new StringBuilder(GET_CONTAINER_XML_BY_ID_SQL).append(" FOR UPDATE").toString();		
-//		jdbcDao.getResultSet(selectXmlForUpdate, params, new ResultExtractor<Object>() {
-//			@Override
-//			public Object extract(ResultSet rs) throws SQLException {
-//				rs.next();
-//				Blob blob = rs.getBlob("XML");
-//				writeToBlob(blob, xml);								
-//				return null;
-//			}				
-//		});		
-//	}
+	private void updateContainerXml(Long id, final String xml) 
+	throws SQLException  {
+		List<Object> params = new ArrayList<Object>();
+		params.add(id);
+
+		String selectXmlForUpdate = new StringBuilder(GET_CONTAINER_XML_BY_ID_SQL).append(" FOR UPDATE").toString();		
+		jdbcDao.getResultSet(selectXmlForUpdate, params, new ResultExtractor<Object>() {
+			@Override
+			public Object extract(ResultSet rs) throws SQLException {
+				rs.next();
+				Blob blob = rs.getBlob("XML");
+				writeToBlob(blob, xml);								
+				return null;
+			}				
+		});		
+	}
 	
-//	private void writeToBlob(Blob blob, String xml) {
-//		try {
-//			OutputStream blobOut = blob.setBinaryStream(0);		
-//			blobOut.write(xml.getBytes());
-//			blobOut.close();
-//		} catch (Exception e) {
-//			throw new RuntimeException("Error writing blob", e);
-//		}
-//	}
+	private void writeToBlob(Blob blob, String xml) {
+		try {
+			OutputStream blobOut = blob.setBinaryStream(0);		
+			blobOut.write(xml.getBytes());
+			blobOut.close();
+		} catch (Exception e) {
+			throw new RuntimeException("Error writing blob", e);
+		}
+	}
 
 //	public List<NameValueBean> listAllContainerIdAndName() throws SQLException {
 //		logger.info("containerDao: listAllContainer : " + LIST_ALL_CONTAINERS);

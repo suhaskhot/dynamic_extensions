@@ -1,7 +1,6 @@
 package edu.common.dynamicextensions.nui.action;
 
 import java.io.File;
-
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -17,8 +16,10 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domain.nui.Container;
+import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.common.dynamicextensions.util.DirOperationsUtility;
 import edu.common.dynamicextensions.util.DownloadUtility;
+import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
 
 public class CreateFormAction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -37,6 +38,8 @@ public class CreateFormAction extends HttpServlet {
 			DownloadUtility.downloadZipFile(httpReq, tmpDirName, "forms.zip");
 			logger.info("Download input forms zip file to " + tmpDirName);
 			String createTablesParam = httpReq.getParameter("create_tables");
+			final String loginName = httpReq.getParameter("login_name");
+
 			boolean createTables = true;
 			if (createTablesParam != null && createTablesParam.equals("false")) {
 				createTables = false;
@@ -68,7 +71,9 @@ public class CreateFormAction extends HttpServlet {
 				for(String formFile : formFileNames) {
 					logger.info("Create form using definition in " + formFile);
 					String formFilePath = new StringBuilder(formDirPath).append(formFile).toString(); 
-					Long containerId = Container.createContainer(formFilePath, pvDirPath, createTables);
+					UserContext ctxt = CSDProperties.getInstance().getUserContextProvider().getUserContext(loginName);
+
+					Long containerId = Container.createContainer(ctxt, formFilePath, pvDirPath, createTables);
 					logger.info("Form for definition in " + formFile + " created. Id = " + containerId);
 				}				
 			}

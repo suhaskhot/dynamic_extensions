@@ -12,4 +12,5 @@ public interface AppUserContextProvider {
 
 	public UserContext getUserContext(HttpServletRequest request);
 	public String getUserNameById(Long userId);
+	public UserContext getUserContext(final String userName);
 }

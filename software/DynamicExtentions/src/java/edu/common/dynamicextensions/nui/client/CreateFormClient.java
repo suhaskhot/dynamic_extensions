@@ -42,8 +42,8 @@ public class CreateFormClient extends AbstractClient {
 				firstParam = false;
 			}
 			if (args.length > 3 && !args[3].isEmpty() && !args.equals("${username}")) {
-				String urlJoner = firstParam ? "?" : "&";
-				url = url + urlJoner+ "login_name=" + args[3];
+				String urlJoiner = firstParam ? "?" : "&";
+				url = url + urlJoiner+ "login_name=" + args[3];
 			}
 			
 			this.serverUrl = new URL(url);			

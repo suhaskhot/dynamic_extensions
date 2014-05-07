@@ -3,6 +3,7 @@
  */
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,7 +16,9 @@ import java.util.Set;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public abstract class SelectControl extends Control {
+public abstract class SelectControl extends Control implements Serializable {
+	private static final long serialVersionUID = 7354155108839121342L;
+	
 	private PvDataSource pvDataSource;
 	
 	public PvDataSource getPvDataSource() {

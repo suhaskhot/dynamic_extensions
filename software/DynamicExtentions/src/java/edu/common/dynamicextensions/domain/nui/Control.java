@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,7 +14,9 @@ import org.apache.commons.lang.StringUtils;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.nui.ValidationRuleNames;
 
-public abstract class Control implements Comparable<Control> {
+public abstract class Control implements Comparable<Control>, Serializable {
+	private static final long serialVersionUID = -1079013546686251896L;
+
 	public static enum LabelPosition {
 		LEFT_SIDE, TOP
 	};

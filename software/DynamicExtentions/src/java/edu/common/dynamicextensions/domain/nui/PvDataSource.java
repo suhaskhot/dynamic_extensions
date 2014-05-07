@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +13,9 @@ import org.apache.commons.lang.StringUtils;
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
 
-public class PvDataSource {
+public class PvDataSource implements Serializable {
+	private static final long serialVersionUID = 276983397161935250L;
+
 	public static enum Ordering {
 		NONE, ASC, DESC
 	}

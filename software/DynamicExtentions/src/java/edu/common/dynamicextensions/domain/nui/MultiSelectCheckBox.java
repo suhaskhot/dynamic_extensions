@@ -1,14 +1,16 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class MultiSelectCheckBox extends SelectControl implements MultiSelectControl {
+public class MultiSelectCheckBox extends SelectControl implements MultiSelectControl, Serializable {
+	private static final long serialVersionUID = -4034417032056077586L;
+
 	private String tableName;
 	
 	private int optionsPerRow = 3;

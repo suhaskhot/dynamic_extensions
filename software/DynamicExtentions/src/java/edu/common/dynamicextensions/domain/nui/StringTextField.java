@@ -1,12 +1,13 @@
-
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class StringTextField extends TextField {
+public class StringTextField extends TextField implements Serializable {
+	private static final long serialVersionUID = -7400829341249457422L;
+
 	private boolean url;
 
 	private boolean password;

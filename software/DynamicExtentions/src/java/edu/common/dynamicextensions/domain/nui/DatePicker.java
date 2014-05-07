@@ -1,15 +1,17 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class DatePicker extends Control {
+public class DatePicker extends Control implements Serializable {
+	private static final long serialVersionUID = 6046956576964435896L;
+
 	private static final String DEFAULT_FORMAT = "MM-dd-yyyy";
 	
 	public static enum DefaultDateType {

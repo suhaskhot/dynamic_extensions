@@ -1,12 +1,15 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 
-public class FieldNode extends ExpressionNode {
+public class FieldNode extends ExpressionNode implements Serializable {
+	private static final long serialVersionUID = -1438504214260687216L;
+
 	private Control ctrl;
 	
 	private String name;

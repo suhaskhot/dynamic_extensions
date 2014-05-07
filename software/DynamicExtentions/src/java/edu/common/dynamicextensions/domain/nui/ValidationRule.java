@@ -1,11 +1,14 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ValidationRule {	
+public class ValidationRule implements Serializable {	
+	private static final long serialVersionUID = -5874184770973835862L;
+
 	private String name;
 	
 	private Map<String, String> params = new HashMap<String, String>();  // TODO: Make value from String -> Object

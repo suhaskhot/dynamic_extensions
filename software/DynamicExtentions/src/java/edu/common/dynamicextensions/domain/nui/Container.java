@@ -1,5 +1,6 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,9 @@ import edu.common.dynamicextensions.nutility.ContainerParser;
 import edu.common.dynamicextensions.nutility.IdGenerator;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 
-public class Container {			
+public class Container implements Serializable {			
+	private static final long serialVersionUID = -6178237643696575798L;
+
 	private static final String tableNameFmt = "DE_E_%d";
 	
 	private static final String columnNameFmt = "DE_A_%d";

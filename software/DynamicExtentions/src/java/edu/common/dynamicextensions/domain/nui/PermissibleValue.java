@@ -1,8 +1,12 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 
-public class PermissibleValue  implements Comparable<PermissibleValue>{
+public class PermissibleValue  implements Comparable<PermissibleValue>, Serializable{
+	private static final long serialVersionUID = -2798378925431518758L;
+
 	private String optionName;
 	
 	private Long numericCode;

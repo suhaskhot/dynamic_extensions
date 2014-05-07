@@ -1,7 +1,11 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
-public class ComboBox extends SelectControl {
+import java.io.Serializable;
+
+public class ComboBox extends SelectControl implements Serializable {
+	private static final long serialVersionUID = 6015502487841170385L;
+
 	private boolean lazyPvFetchingEnabled;
 
 	private int noOfColumns;

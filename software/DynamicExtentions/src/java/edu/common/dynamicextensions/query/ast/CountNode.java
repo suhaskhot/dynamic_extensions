@@ -1,8 +1,11 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class CountNode extends ExpressionNode {	
+public class CountNode extends ExpressionNode implements Serializable {	
+	private static final long serialVersionUID = 2686666253832434643L;
+
 	private boolean distinct;
 	
 	private FieldNode field;

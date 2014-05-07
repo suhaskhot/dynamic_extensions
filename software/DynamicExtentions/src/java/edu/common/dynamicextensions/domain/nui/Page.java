@@ -1,9 +1,12 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Page {
+public class Page implements Serializable {
+	private static final long serialVersionUID = 5552295077941247997L;
+
 	private Long id;
 	
 	private List<Control> controls = new ArrayList<Control>();

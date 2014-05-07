@@ -1,7 +1,11 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
-public class ColumnDef {
+import java.io.Serializable;
+
+public class ColumnDef implements Serializable {
+	private static final long serialVersionUID = -4514209229731927120L;
+
 	private String columnName;
 	
 	private String dbType;

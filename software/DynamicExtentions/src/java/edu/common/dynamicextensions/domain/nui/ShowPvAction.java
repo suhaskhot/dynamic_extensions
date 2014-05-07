@@ -1,11 +1,14 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.napi.ControlValue;
 
-public class ShowPvAction extends SkipAction {
+public class ShowPvAction extends SkipAction implements Serializable {
+	private static final long serialVersionUID = 1683054969541760054L;
+
 	private List<PermissibleValue> listOfPvs = new ArrayList<PermissibleValue>();
 	
 	private PermissibleValue defaultPv;

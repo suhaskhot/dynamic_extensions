@@ -1,10 +1,13 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class Label extends Control {
+public class Label extends Control implements Serializable {
+	private static final long serialVersionUID = 5717603046743274148L;
+
 	private boolean note;
 
 	private boolean heading;

@@ -1,9 +1,12 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SkipRule {
+public class SkipRule implements Serializable {
+	private static final long serialVersionUID = -267620889178734818L;
+
 	public static enum LogicalOp {
 		AND, OR
 	}

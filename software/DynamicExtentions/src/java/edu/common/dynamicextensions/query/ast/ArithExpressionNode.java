@@ -1,8 +1,11 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class ArithExpressionNode extends ExpressionNode {
+public class ArithExpressionNode extends ExpressionNode implements Serializable {
+	private static final long serialVersionUID = -274162789478308346L;
+
 	public static enum ArithOp {
 		PLUS("+"), MINUS("-"), MUL("*"), DIV("/");
 		

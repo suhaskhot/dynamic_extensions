@@ -1,8 +1,11 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ContainerInfo {
+public class ContainerInfo implements Serializable {
+	private static final long serialVersionUID = 6407284386263770469L;
+
 	private Long id;
 	
 	private String name;

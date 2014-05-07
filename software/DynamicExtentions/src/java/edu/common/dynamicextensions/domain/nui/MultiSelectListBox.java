@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,9 @@ import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class MultiSelectListBox extends ListBox implements MultiSelectControl {
+public class MultiSelectListBox extends ListBox implements MultiSelectControl, Serializable {
+	private static final long serialVersionUID = 2117234602017344729L;
+
 	private String tableName;
 	
 	private String parentKeyColumn  = "IDENTIFIER";

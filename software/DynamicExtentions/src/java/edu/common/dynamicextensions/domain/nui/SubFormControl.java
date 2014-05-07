@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,9 @@ import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class SubFormControl extends Control {
+public class SubFormControl extends Control implements Serializable {
+	private static final long serialVersionUID = 8920374924982826593L;
+
 	private Container subContainer;
 
 	private int noOfEntries;

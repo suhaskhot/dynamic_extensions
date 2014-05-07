@@ -1,11 +1,14 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.nui.SkipCondition.RelationalOp;
 import edu.common.dynamicextensions.domain.nui.SkipRule.LogicalOp;
 
-public class SkipRuleBuilder {
+public class SkipRuleBuilder implements Serializable {
+	private static final long serialVersionUID = 7311929396358174753L;
+
 	private Container container;
 	
 	private Container condContainer;

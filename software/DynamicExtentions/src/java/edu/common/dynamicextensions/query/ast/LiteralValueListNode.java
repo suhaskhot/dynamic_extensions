@@ -1,11 +1,14 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class LiteralValueListNode extends ExpressionNode {
+public class LiteralValueListNode extends ExpressionNode implements Serializable {
+	private static final long serialVersionUID = 4108477895530979428L;
+	
 	private List<LiteralValueNode> literalVals = new ArrayList<LiteralValueNode>();
 
 	@Override

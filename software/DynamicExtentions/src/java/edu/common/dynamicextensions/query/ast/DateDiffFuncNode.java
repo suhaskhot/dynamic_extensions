@@ -1,8 +1,11 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class DateDiffFuncNode extends ExpressionNode {
+public class DateDiffFuncNode extends ExpressionNode implements Serializable {
+	private static final long serialVersionUID = 4943379159084480011L;
+
 	public static enum DiffType {
 		DAY, MONTH, YEAR
 	}

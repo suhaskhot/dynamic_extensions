@@ -1,9 +1,13 @@
 package edu.common.dynamicextensions.query;
 
+import java.io.Serializable;
+
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 
-public class ResultColumn {
+public class ResultColumn implements Serializable {
+	private static final long serialVersionUID = 9037400363981158491L;
+
 	private ExpressionNode columnExpr;
 	
 	private int instance;

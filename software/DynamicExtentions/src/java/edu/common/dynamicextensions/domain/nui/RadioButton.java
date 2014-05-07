@@ -1,10 +1,13 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-public class RadioButton extends SelectControl {
+public class RadioButton extends SelectControl implements Serializable {
+	private static final long serialVersionUID = -1336506050252009947L;
+	
 	private int optionsPerRow = 3;
 
 	public int getOptionsPerRow() {

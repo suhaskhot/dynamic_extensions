@@ -1,6 +1,10 @@
 package edu.common.dynamicextensions.domain.nui;
 
-public class ValidationRuleParam {
+import java.io.Serializable;
+
+public class ValidationRuleParam implements Serializable {
+	private static final long serialVersionUID = 1839278430589136841L;
+
 	private Long id;
 	
 	private String name;

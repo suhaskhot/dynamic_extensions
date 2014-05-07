@@ -1,8 +1,12 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
+
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public abstract class ExpressionNode implements Node {
+public abstract class ExpressionNode implements Node, Serializable {
+	private static final long serialVersionUID = -4913352175312731795L;
+
 	private int pos;
 	
 	private String label;

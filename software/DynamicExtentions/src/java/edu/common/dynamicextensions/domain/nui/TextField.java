@@ -3,9 +3,13 @@
  */
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 
-public abstract class TextField extends Control {
+public abstract class TextField extends Control implements Serializable {
+	private static final long serialVersionUID = 5296516560573054446L;
+
 	private int noOfColumns;
 	
 	private String defaultValue = "";

@@ -1,7 +1,11 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
-public class ListBox extends SelectControl {
+import java.io.Serializable;
+
+public class ListBox extends SelectControl implements Serializable {
+	private static final long serialVersionUID = -5758511918989339406L;
+
 	private int noOfRows;
 	
 	private boolean autoCompleteDropdownEnabled;

@@ -1,8 +1,13 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
+
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class DateIntervalNode extends ExpressionNode {
+public class DateIntervalNode extends ExpressionNode implements Serializable {
+
+	private static final long serialVersionUID = 1775518489015543756L;
+	
 	private int years, months, days;
 	
 	@Override

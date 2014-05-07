@@ -1,12 +1,15 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class TextArea extends TextField {
+public class TextArea extends TextField implements Serializable {
+	private static final long serialVersionUID = 1215698978305864499L;
+	
 	private int noOfRows;
 
 	public int getNoOfRows() {

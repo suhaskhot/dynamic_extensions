@@ -1,13 +1,16 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class CheckBox extends Control {
+public class CheckBox extends Control implements Serializable {
+	private static final long serialVersionUID = -2448001564822140677L;
+	
 	private boolean defaultValueChecked;
 
 	public boolean isDefaultValueChecked() {

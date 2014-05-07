@@ -1,10 +1,12 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class SkipLogic {
-	
+public class SkipLogic implements Serializable {
+	private static final long serialVersionUID = 8304778004821290621L;
+
 	private Long id;
 
 	private Set<SkipRule> skipRules = new LinkedHashSet<SkipRule>();

@@ -1,6 +1,7 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
@@ -10,7 +11,9 @@ import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
-public class NumberField extends TextField {
+public class NumberField extends TextField implements Serializable {
+	private static final long serialVersionUID = 1205899623349158320L;
+
 	//
 	// TODO: noOfDigits and noOfDigitsAfterDecimal needs to be pushed
 	// to rule

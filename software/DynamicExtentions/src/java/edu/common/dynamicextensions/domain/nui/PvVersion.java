@@ -1,9 +1,12 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class PvVersion {
+public class PvVersion implements Serializable {
+	private static final long serialVersionUID = -6241553745219532731L;
+
 	private Date activationDate;
 	
 	private List<PermissibleValue> permissibleValues;

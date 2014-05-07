@@ -1,10 +1,13 @@
 package edu.common.dynamicextensions.query.ast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+public class SelectListNode implements Node, Serializable {
 
-public class SelectListNode implements Node {
+	private static final long serialVersionUID = -3175328287644413811L;
+	
 	private List<ExpressionNode> elements = new ArrayList<ExpressionNode>();
 	
 	public void addElement(ExpressionNode element) {

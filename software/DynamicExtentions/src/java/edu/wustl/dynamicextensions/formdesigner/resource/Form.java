@@ -245,7 +245,7 @@ public class Form {
 		JSONObject output = new JSONObject();
 
 		String tmpDirName = getTmpDirName();
-		Boolean createTables = false;		
+		Boolean createTables = true;		
 		Transaction txn = null;
 		
 		try {

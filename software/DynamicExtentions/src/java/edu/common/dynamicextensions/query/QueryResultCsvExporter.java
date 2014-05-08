@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.query;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Iterator;
 
 import edu.common.dynamicextensions.nutility.IoUtil;
 
@@ -23,10 +24,17 @@ public class QueryResultCsvExporter implements QueryResultExporter {
 	}
 
 	@Override
-	public void export(OutputStream out, Query query) {
-		QueryResultData data = query.getData();
-		data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
-		export(out, data);
+	public void export(OutputStream out, Query query) {		
+		QueryResultData data = null;
+		try {
+			data = query.getData();
+			data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
+			export(out, data);
+		} finally {
+			if (data != null) {
+				data.close();
+			}
+		}
 	}
 
 	@Override
@@ -35,10 +43,12 @@ public class QueryResultCsvExporter implements QueryResultExporter {
 
 		try {
 			csvWriter = getCsvWriter(out);			
-			csvWriter.writeNext(result.getColumnLabels());			
-			for (int i = 0; i < result.rowCount(); ++i) {
-				csvWriter.writeNext(result.stringifiedRow(i));
-			}						
+			csvWriter.writeNext(result.getColumnLabels());
+
+			Iterator<String[]> iterator = result.stringifiedRowIterator();
+			while (iterator.hasNext()) {
+				csvWriter.writeNext(iterator.next());
+			}			
 		} catch (Exception e) {
 			throw new RuntimeException("Error writing query result data to CSV file", e);
 		} finally {

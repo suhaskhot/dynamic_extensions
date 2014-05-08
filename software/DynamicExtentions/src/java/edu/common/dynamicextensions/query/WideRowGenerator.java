@@ -109,32 +109,32 @@ public class WideRowGenerator {
         mergeCounts();
     }
     
-    public QueryResultData getQueryResultData() {
-        QueryResultData resultData = null;
-        for (WideRowNode wideRow : wideRows.values()) {
-            if (resultData == null) {
-                resultData = initQueryResultData(wideRow);
-            }
-            
-            List<ResultColumn> columns = wideRow.flatten(aliasRowCountMap);
-            Collections.sort(columns, new Comparator<ResultColumn>() {
-            	@Override
-            	public int compare(ResultColumn arg0, ResultColumn arg1) {
-            		return arg0.getExpression().getPos() - arg1.getExpression().getPos();
-            	}
-            });
-            
-            Object[] values = new Object[columns.size()];
-            int i = 0;
-            for (ResultColumn col : columns) {
-            	values[i++] = col.getValue();
-            }
-            
-            resultData.addRow(values);
-        }
-        
-        return resultData;      
-    }
+//    public QueryResultData getQueryResultData() {
+//        QueryResultData resultData = null;
+//        for (WideRowNode wideRow : wideRows.values()) {
+//            if (resultData == null) {
+//                resultData = initQueryResultData(wideRow);
+//            }
+//            
+//            List<ResultColumn> columns = wideRow.flatten(aliasRowCountMap);
+//            Collections.sort(columns, new Comparator<ResultColumn>() {
+//            	@Override
+//            	public int compare(ResultColumn arg0, ResultColumn arg1) {
+//            		return arg0.getExpression().getPos() - arg1.getExpression().getPos();
+//            	}
+//            });
+//            
+//            Object[] values = new Object[columns.size()];
+//            int i = 0;
+//            for (ResultColumn col : columns) {
+//            	values[i++] = col.getValue();
+//            }
+//            
+//            resultData.addRow(values);
+//        }
+//        
+//        return resultData;      
+//    }
     
     private void mergeCounts() {
         for (Map.Entry<String, Integer> curAliasCnt : currAliasRowCountMap.entrySet()) {

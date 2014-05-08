@@ -19,7 +19,7 @@ public class Query {
     private JoinTree queryJoinTree;
 
     private QueryExpressionNode queryExpr;
-        
+
     private boolean wideRows;
     
     private boolean ic;
@@ -34,7 +34,7 @@ public class Query {
     
     private Query() {
     }
-        
+            
     public Query wideRows(boolean wideRows) {
         this.wideRows = wideRows;
         return this;
@@ -94,26 +94,16 @@ public class Query {
         	@Override
         	public QueryResultData extract(ResultSet rs)
         	throws SQLException {
-        		long t2 = System.currentTimeMillis();
-        		
-        		QueryResultData resultData = null;
-        		if (wideRows) {
-        			resultData = getWideRowData(rs);
-        			if (resultData == null) {
-        				// this will ensure at least the header columns are populated
-        				resultData = new QueryResultData(getResultColumns(queryExpr), dateFormat);
-        			}
-        		} else {
-        			resultData = getQueryResultData(rs);
-        		}
-        		
+        		long t2 = System.currentTimeMillis();        		
+        		QueryResultData resultData = wideRows ? getWideRowData(rs) : getQueryResultData(rs);
         		long t3 = System.currentTimeMillis();
+        		
         		logger.info("Data SQL: " + dataSql + "; Query Exec Time: " + (t2 - t1) + "; Result Prep Time: " + (t3 - t2));
         		return resultData;
         	}
         });
     }
-        
+            
     public String getDataSql() {
         return getDataSql(false, 0, 0);
     }
@@ -125,31 +115,22 @@ public class Query {
 
     private QueryResultData getQueryResultData(ResultSet rs)
     throws SQLException {
-        List<ResultColumn> columns = getResultColumns(queryExpr);
-        int columnCount = columns.size();
-        
-        QueryResultData queryResult = new QueryResultData(columns, dateFormat);
-        while (rs.next()) {
-            Object[] row = new Object[columnCount];
-            for (int i = 0; i < columnCount; ++i) {
-                row[i] = rs.getObject(i + 1);
-            }
-            
-            queryResult.addRow(row);
-        }
-
+        QueryResultData queryResult = new QueryResultData(getResultColumns(queryExpr), dateFormat);
+        queryResult.dataSource(rs);
         return queryResult;
     }
-    
+        
     private QueryResultData getWideRowData(ResultSet rs) {
         ShallowWideRowGenerator wideRowGenerator = new ShallowWideRowGenerator(queryJoinTree, queryExpr);
-        wideRowGenerator.dateFormat(dateFormat);
         wideRowGenerator.start();
         wideRowGenerator.processResultSet(rs);
         wideRowGenerator.end();
-        return wideRowGenerator.getQueryResultData();
+        
+        QueryResultData qrd = new QueryResultData(wideRowGenerator.getResultColumns(), dateFormat);
+        qrd.dataSource(wideRowGenerator);
+        return qrd;
     }
-           
+    
     private List<ResultColumn> getResultColumns(QueryExpressionNode queryExpr) {
         SelectListNode selectList = queryExpr.getSelectList();
         List<ResultColumn> columns = new ArrayList<ResultColumn>();

@@ -1,8 +1,10 @@
 package edu.common.dynamicextensions.query;
 
+import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class QueryResultData {
@@ -10,8 +12,10 @@ public class QueryResultData {
     
     private List<ResultColumn> resultColumns;
     
-    private List<Object[]> rows = new ArrayList<Object[]>();
+    private List<Object[]> rows = null;
     
+    private ShallowWideRowGenerator rowGen = null;
+            
     private SimpleDateFormat sdf = null;
         	
     public QueryResultData(List<ResultColumn> resultColumns, String dateFormat) {
@@ -38,21 +42,77 @@ public class QueryResultData {
     public List<ResultColumn> getResultColumns() {
     	return resultColumns;
     }
-
-    public int rowCount() {
-        return rows.size();
+       
+    public void dataSource(ResultSet rs) {
+    	List<Object[]> rows = new ArrayList<Object[]>();
+    	
+    	try {
+        	int columnCount = rs.getMetaData().getColumnCount();    	
+            while (rs.next()) {
+                Object[] row = new Object[columnCount];
+                for (int i = 0; i < columnCount; ++i) {
+                    row[i] = rs.getObject(i + 1);
+                }
+                
+                rows.add(row);
+            }    		
+    	} catch (Exception e) {
+    		throw new RuntimeException("Error traversing result set", e);
+    	}
+    	
+    	this.rows = rows;
+    }
+    
+    public void dataSource(ShallowWideRowGenerator rowGen) {
+    	this.rowGen = rowGen;
     }
 
-    public Object[] row(int i) {
-        if(i < 0 || i > rows.size()) {
-            throw new IllegalArgumentException("Row index out of bounds: index: " + i + " size: " + rows.size());
-        } else {
-            return rows.get(i);
+    public List<Object[]> getRows() {
+        if (rows != null) {
+        	return rows;
         }
+        
+        List<Object[]> rows = new ArrayList<Object[]>();
+        Iterator<Object[]> rowsIter = rowGen.iterator();
+        while (rowsIter.hasNext()) {
+        	rows.add(rowsIter.next());
+        }
+        
+        return rows;
     }
-
-    public String[] stringifiedRow(int i) {
-        Object row[] = row(i);
+    
+    public Iterator<Object[]> rowIterator() {
+    	if (rows != null) {
+    		return rows.iterator();
+    	} else if (rowGen != null) {
+    		return rowGen.iterator();
+    	}
+    	
+    	return null;
+    }
+    
+    public Iterator<String[]> stringifiedRowIterator() {
+    	Iterator<Object[]> iter = null;
+    	if (rows != null) {
+    		iter = rows.iterator();
+    	} else if (rowGen != null) {
+    		iter = rowGen.iterator();
+    	}
+    	
+    	return stringifiedRowIterator(iter);
+    }
+    
+    public void close() {
+    	if (rowGen != null) {
+    		rowGen.cleanup();
+    	}
+    	
+    	if (rows != null) {
+    		rows = null;
+    	}
+    }
+    
+    public String[] stringifyRow(Object[] row) {
         String result[] = new String[row.length];
         
         for(int j = 0; j < row.length; j++) {
@@ -67,21 +127,24 @@ public class QueryResultData {
 
         return result;
     }
+    
+    private Iterator<String[]> stringifiedRowIterator(final Iterator<Object[]> iter) {
+    	return new Iterator<String[]>() {
+			@Override
+			public boolean hasNext() {					
+				return iter.hasNext();
+			}
 
-    public void createRow() {
-        Object row[] = new Object[resultColumns.size()];
-        rows.add(row);
-    }
+			@Override
+			public String[] next() {
+				return stringifyRow(iter.next());
+			}
 
-    public void addRow(Object row[]) {
-        rows.add(row);
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}    			
+   		};
     }
-
-    public List<Object[]> getRows() {
-        return rows;
-    }
-
-    public void setRows(List<Object[]> rows) {
-        this.rows = rows;
-    }
+    
 }

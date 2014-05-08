@@ -17,6 +17,8 @@ public class QueryResultData {
     private ShallowWideRowGenerator rowGen = null;
             
     private SimpleDateFormat sdf = null;
+    
+    private QueryResultScreener screener;
         	
     public QueryResultData(List<ResultColumn> resultColumns, String dateFormat) {
         this.resultColumns = resultColumns;
@@ -25,14 +27,27 @@ public class QueryResultData {
         }
     }
     
+    public QueryResultScreener getScreener() {
+        return screener;
+    }
+
+    public void setScreener(QueryResultScreener screener) {
+        this.screener = screener;
+    }
+
     public void setColumnLabelFormatter(ResultColumnLabelFormatter formatter) {
     	this.formatter = formatter;
     }
 
     public String[] getColumnLabels() {
-        String[] labels = new String[resultColumns.size()];
+        List<ResultColumn> screenedCols = resultColumns;
+        if (screener != null) {
+            screenedCols = screener.getScreenedResultColumns(resultColumns);
+        }
+
+        String[] labels = new String[screenedCols.size()];
         int i = 0;
-        for (ResultColumn column : resultColumns) {
+        for (ResultColumn column : screenedCols) {
         	labels[i++] = column.getColumnLabel(formatter);
         }
         
@@ -40,7 +55,7 @@ public class QueryResultData {
     }
     
     public List<ResultColumn> getResultColumns() {
-    	return resultColumns;
+    	return screener != null ? screener.getScreenedResultColumns(resultColumns) : resultColumns;
     }
        
     public void dataSource(ResultSet rs) {
@@ -52,6 +67,10 @@ public class QueryResultData {
                 Object[] row = new Object[columnCount];
                 for (int i = 0; i < columnCount; ++i) {
                     row[i] = rs.getObject(i + 1);
+                }
+                
+                if (screener != null) {
+                	row = screener.getScreenedRowData(resultColumns, row);
                 }
                 
                 rows.add(row);
@@ -75,7 +94,12 @@ public class QueryResultData {
         List<Object[]> rows = new ArrayList<Object[]>();
         Iterator<Object[]> rowsIter = rowGen.iterator();
         while (rowsIter.hasNext()) {
-        	rows.add(rowsIter.next());
+        	Object[] row = rowsIter.next();
+        	if (screener != null) {
+        		row = screener.getScreenedRowData(resultColumns, row);
+        	}
+        	
+        	rows.add(row);
         }
         
         return rows;
@@ -85,7 +109,7 @@ public class QueryResultData {
     	if (rows != null) {
     		return rows.iterator();
     	} else if (rowGen != null) {
-    		return rowGen.iterator();
+    		return rowIterator(rowGen.iterator());
     	}
     	
     	return null;
@@ -96,7 +120,7 @@ public class QueryResultData {
     	if (rows != null) {
     		iter = rows.iterator();
     	} else if (rowGen != null) {
-    		iter = rowGen.iterator();
+    		iter = rowIterator(rowGen.iterator());
     	}
     	
     	return stringifiedRowIterator(iter);
@@ -126,6 +150,30 @@ public class QueryResultData {
         }
 
         return result;
+    }
+    
+    private Iterator<Object[]> rowIterator(final Iterator<Object[]> iter) {
+    	return new Iterator<Object[]>() {
+			@Override
+			public boolean hasNext() {
+				return iter.hasNext();
+			}
+
+			@Override
+			public Object[] next() {
+				Object[] row = iter.next();
+				if (screener != null) {
+					row = screener.getScreenedRowData(resultColumns, row);
+				}
+				
+				return row;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();				
+			}    		
+    	};
     }
     
     private Iterator<String[]> stringifiedRowIterator(final Iterator<Object[]> iter) {

@@ -22,24 +22,35 @@ public class QueryResultSasExporter implements QueryResultExporter {
 
 	@Override
 	public void export(String exportPath, Query query) {
+		export(exportPath, query, null);
+	}
+	
+	@Override
+	public void export(String exportPath, Query query, QueryResultScreener screener) {
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(exportPath);
-			export(out, query);
+			export(out, query, screener);
 		} catch (Exception e) {
 			throw new RuntimeException("Error exporting SAS program for query results", e);
 		} finally {
 			IoUtil.close(out);
 		}
 	}
-
+	
 	@Override
 	public void export(OutputStream out, Query query) {
+		export(out, query, null);
+	}
+	
+	@Override
+	public void export(OutputStream out, Query query, QueryResultScreener screener) {
 		QueryResultData data = query.getData();
+		data.setScreener(screener);
 		data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
 		export(out, data);
 	}
-
+	
 	@Override
 	public void export(OutputStream out, QueryResultData result) {
 		String ioDir = getIoDir();

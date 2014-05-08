@@ -732,8 +732,7 @@ var Views = {
 											$("#pvFileWaitingImage").show();
 										},
 										complete : function(xhr) {
-											var receivedData = $
-													.parseJSON(xhr.responseText);
+											var receivedData = $.parseJSON($.parseJSON(xhr.responseText));
 											$("#pvFileWaitingImage").hide();
 											if (receivedData.status == "saved") {
 												ControlBizLogic

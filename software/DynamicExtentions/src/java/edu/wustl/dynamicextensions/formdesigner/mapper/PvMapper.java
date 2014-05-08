@@ -84,9 +84,23 @@ public class PvMapper {
 		List<PermissibleValue> pvList = new ArrayList<PermissibleValue>();
 		if (pvFile != null) {
 			CSVReader csvReader = new CSVReader(new FileReader(new File(pvFile)));
-			String[] csvData;
-			while ((csvData = csvReader.readNext()) != null) {
-				pvList.add(getPvFromFileData(csvData));
+			String[] option;
+			
+			// Escape the header Row
+			csvReader.readNext();
+			
+			while ((option = csvReader.readNext()) != null) {
+				PermissibleValue pv = new PermissibleValue();
+				pv.setValue(option[0].isEmpty() ? null : option[0]);
+				pv.setNumericCode(option[1].isEmpty() ? null : Long.parseLong(option[1]));
+				pv.setConceptCode(option[2].isEmpty() ? null : option[2]);
+				pv.setDefinitionSource(option[3].isEmpty() ? null : option[3]);
+			
+				// TODO :: Need to check the validity of optionName 
+				// Now optionName = value
+				pv.setOptionName(pv.getValue());
+				
+				pvList.add(pv);
 			}
 		}
 		return pvList;
@@ -105,32 +119,6 @@ public class PvMapper {
 		csvWriter.close();
 
 		return file;
-	}
-
-	/**
-	 * @param csvData
-	 * @return
-	 * @throws NumberFormatException
-	 */
-	private static PermissibleValue getPvFromFileData(String[] csvData) throws NumberFormatException {
-		PermissibleValue pv = new PermissibleValue();
-		if (!csvData[0].isEmpty()) {
-			pv.setValue(csvData[0]);
-		}
-		// add validation check for is a number
-		if (!csvData[1].isEmpty()) {
-			pv.setNumericCode(Long.parseLong(csvData[1]));
-		}
-		if (!csvData[2].isEmpty()) {
-			pv.setOptionName(csvData[2]);
-		}
-		if (!csvData[3].isEmpty()) {
-			pv.setDefinitionSource(csvData[3]);
-		}
-		if (!csvData[4].isEmpty()) {
-			pv.setConceptCode(csvData[4]);
-		}
-		return pv;
 	}
 
 	private static String[] getPvTuple(PermissibleValue pv) throws NumberFormatException {

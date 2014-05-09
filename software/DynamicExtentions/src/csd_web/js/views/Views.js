@@ -757,7 +757,7 @@ var Views = {
 							.setHeader("<span id = 'header1'>Value</span>,<span id='header2'>Numeric Code</span>,"
 									+ "<span id='header3'>Definition</span>,<span id='header4'>Definition Source</span>,"
 									+ "<span id='header5'>Concept Code</span>,<span id='header6'>Default</span>,status");
-					this.pvGrid.setInitWidths("100,100,150,130,*,70,0");
+					this.pvGrid.setInitWidths("300,0,0,0,0,117,0");
 					// this.pvGrid.setColAlign("right,left");
 					this.pvGrid.setColTypes("ed,ed,ed,ed,ed,ro,ro");
 					this.pvGrid.enableMultiselect(true);

@@ -14,20 +14,20 @@
 	</div>
 </div> -->
 	<div style = 'width: 82%; padding: 3px; margin: 3px;' align = "right">
-		<div id = 'pvGrid' style = 'width : 85%; height : 200px;'>
+		<div id = 'pvGrid' style = 'width : 60%; height : 200px; float:left;'>
 		</div>
-		<div id="recinfoArea"></div>
+		<div id="recinfoArea" style="width: 60%; right: 45%; position: relative; clear: both;"></div>
 	</div>
-	<div align = "right" style = 'width: 80%; float: left'>
-		<div style = 'width: 35%; float: left'>
-			<input type = 'button' value = 'Add PV' class = 'btn' id = 'addPv'>
-			<input type = 'button' value = 'Delete PV' class = 'btn' id = 'deletePv'> 
+	<div align = "right" style = 'width: 80%; float: left;'>
+		<div style = 'width: 35%; float: left;  right: 23%; position: relative;'>
+			<input type = 'button' value = 'Add' class = 'button' id = 'addPv' style="padding: 2px;">
+			<input type = 'button' value = 'Delete' class = 'button' id = 'deletePv' style="padding: 2px; margin: 0px -14px 0px 6px;"> 
 		</div>
-		<div style = 'width: 65%; float: left'>	
+		<div style = 'width: 36%; float: left; position: relative; right: 16%;'>	
 			<form action="../../rest/ng/de-forms/permissibleValues" method="post" enctype="multipart/form-data" id = 'permissibleValuesForm'>
-			   <label class = 'text_normal'>Select a File</label>
 			   <input type="file" name="file" id = 'fileID'/>
-			   <input type="submit" value="Upload"/><img src = "../../csd_web/icons/loader.gif" id = "pvFileWaitingImage">
+			   <input type="submit" style="position: relative; bottom: 23px; left: 9%;"
+			     value="Upload"/><img src = "../../csd_web/icons/loader.gif" id = "pvFileWaitingImage">
 		   	</form>
 		</div>
 	</div>

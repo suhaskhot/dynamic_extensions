@@ -506,18 +506,18 @@ public class ContainerParser {
 			String[] option = null;
 
 			// Escape the header Row
-			csvReader.readNext();
+//			csvReader.readNext();
 			
 			while ((option = csvReader.readNext()) != null) {
 				PermissibleValue pv = new PermissibleValue();
 				pv.setValue(option[0].isEmpty() ? null : option[0]);
-				pv.setNumericCode(option[1].isEmpty() ? null : Long.parseLong(option[1]));
-				pv.setConceptCode(option[2].isEmpty() ? null : option[2]);
-				pv.setDefinitionSource(option[3].isEmpty() ? null : option[3]);
-			
-				// TODO :: Need to check the validity of optionName 
-				// Now optionName = value
-				pv.setOptionName(pv.getValue());
+//				pv.setNumericCode(option[1].isEmpty() ? null : Long.parseLong(option[1]));
+//				pv.setConceptCode(option[2].isEmpty() ? null : option[2]);
+//				pv.setDefinitionSource(option[3].isEmpty() ? null : option[3]);
+//			
+//				// TODO :: Need to check the validity of optionName 
+//				// Now optionName = value
+//				pv.setOptionName(pv.getValue());
 				
 				
 				pvs.add(pv);

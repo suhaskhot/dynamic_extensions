@@ -16,7 +16,15 @@ import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.cachestore.LinkedEhCacheMap;
 
-public class ShallowWideRowGenerator {     
+public class ShallowWideRowGenerator {
+	private static final Comparator<ResultColumn> RESULT_COL_SORTER = 
+		new Comparator<ResultColumn>() {
+			@Override
+			public int compare(ResultColumn arg0, ResultColumn arg1) {
+				return arg0.getExpression().getPos() - arg1.getExpression().getPos();
+			}
+    	};
+    
     private LinkedEhCacheMap<String, WideRowNode> wideRows = new LinkedEhCacheMap<String, WideRowNode>();
     
     private Map<String, String[]> tabJoinPath = new HashMap<String, String[]>();
@@ -121,14 +129,17 @@ public class ShallowWideRowGenerator {
     }
     
     public List<ResultColumn> getResultColumns() {
-        List<ResultColumn> columns = getTabColumns(aliasRowCountMap, tabFieldsMap);
-        Collections.sort(columns, new Comparator<ResultColumn>() {
-        	@Override
-        	public int compare(ResultColumn arg0, ResultColumn arg1) {
-        		return arg0.getExpression().getPos() - arg1.getExpression().getPos();
-        	}
-        });
-        
+    	List<ResultColumn> columns = null;
+    	
+    	Iterator<WideRowNode> iter = wideRows.iterator();
+    	if (iter != null && iter.hasNext()) {
+    		List<List<ResultColumn>> resultCols = iter.next().flatten(aliasRowCountMap, tabFormTypeMap, tabFieldsMap);
+    		columns = resultCols.iterator().next();
+    	} else {
+    		columns = getTabColumns(aliasRowCountMap, tabFieldsMap);
+    	}
+
+    	Collections.sort(columns, RESULT_COL_SORTER);        
         return columns;    	
     }
     
@@ -187,13 +198,7 @@ public class ShallowWideRowGenerator {
     	
         List<List<ResultColumn>> rows = wideRow.flatten(aliasRowCountMap, tabFormTypeMap, tabFieldsMap);        
         for (List<ResultColumn> row : rows) {
-            Collections.sort(row, new Comparator<ResultColumn>() {
-            	@Override
-            	public int compare(ResultColumn col1, ResultColumn col2) {
-            		return col1.getExpression().getPos() - col2.getExpression().getPos();
-            	}
-            });
-            
+            Collections.sort(row, RESULT_COL_SORTER);            
             Object[] values = new Object[row.size()];
             int i = 0;
             for (ResultColumn col : row) {
@@ -235,7 +240,7 @@ public class ShallowWideRowGenerator {
         path.add(tabAlias);
         
         tabJoinPath.put(tabAlias, path.toArray(new String[0]));
-        tabFormTypeMap.put(tabAlias, !joinTree.isSubFormOrMultiSelect());
+        tabFormTypeMap.put(tabAlias, !(joinTree.isSubFormOrMultiSelect() || joinTree.isExtensionForm()));
         for (JoinTree childTree : joinTree.getChildren()) {
             initTableJoinPath(childTree, path);
         }

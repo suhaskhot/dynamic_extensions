@@ -192,6 +192,7 @@ public class QueryCompiler
         sfTree.setParentKey(sfCtrl.getParentKey());
         sfTree.setForeignKey(sfCtrl.getForeignKey());
         sfTree.setSubForm(true);
+        sfTree.setExtnFk(sfCtrl.getExtnFkColumn());
         return sfTree;
     }
 
@@ -336,92 +337,154 @@ public class QueryCompiler
     }
     
     private boolean analyzeField(int queryId, FieldNode field, Map<String, JoinTree> joinMap, boolean failIfAbsent) {
-        String formLookupName = "";
         String[] fieldNameParts = field.getName().split("\\.");
         String[] captions = new String[fieldNameParts.length];
         
         String formName = fieldNameParts[0];
-        if (formName.equals(rootFormName)) {
-            formLookupName = "0." + formName;
-        } else {
-            formLookupName = queryId + "." + formName;
-        }
-                
-        JoinTree formTree = joinMap.get(formLookupName);
-        if (formTree == null && failIfAbsent) {
-            return false;
-        }
-        
-        Container form = null;        
-        if (formTree == null) {
-            form = getContainer(formName);
-            if(form == null) {
-                throw new RuntimeException("Invalid field " + field.getName() + " referring to non-existing form: " + formName);
-            }
-                        
-            formTree = new JoinTree(form, "t" + tabCnt++);
-            joinMap.put(formLookupName, formTree);
-        } else {
-            form = formTree.getForm();
-        }        
+    	String formLookupName = formName.equals(rootFormName) ? "0." + formName : queryId + "." + formName;    	
+    	JoinTree formTree = joinMap.get(formLookupName);
+    	if (formTree == null && failIfAbsent) {
+    		return false;
+    	}
+    	
+    	Container form = null;
+    	if (formTree == null) {
+    		form = getContainer(formName);
+    		if (form == null) {
+    			throw new RuntimeException("Invalid form name: " + formName);
+    		}
+    		
+    		formTree = new JoinTree(form, "t" + tabCnt++);
+    		joinMap.put(formLookupName, formTree);
+    	}
+    	                
         captions[0] = form.getCaption();
-                
+        
         Control ctrl = form.getControlByUdn(fieldNameParts[1]);
-        if(ctrl instanceof SubFormControl && fieldNameParts.length > 2) {
-            for(int i = 1; i < fieldNameParts.length - 1; i++) {
-                ctrl = form.getControlByUdn(fieldNameParts[i]);
-                
-                if(!(ctrl instanceof SubFormControl)) {
-                    throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
-                }
-                
-                SubFormControl sfCtrl = (SubFormControl)ctrl;
-                JoinTree sfTree = formTree.getChild(queryId + "." + sfCtrl.getName());
-                if (sfTree == null && failIfAbsent) {
-                    return false;
-                }
-                
-                if(sfTree == null) {
-                    sfTree = getSubFormTree(formTree, sfCtrl);
-                    formTree.addChild(queryId + "." + sfCtrl.getName(), sfTree);
-                }
-                
-                formTree = sfTree;
-                form = sfCtrl.getSubContainer();
-                captions[i] = form.getCaption();
-            }
-
-            ctrl = form.getControlByUdn(fieldNameParts[fieldNameParts.length - 1]);
+        if (ctrl == null) {
+        	throw new RuntimeException("Invalid field name: " + fieldNameParts[1]);
         }
         
+        if (!fieldNameParts[1].equals("extensions") && (ctrl instanceof SubFormControl) && fieldNameParts.length > 2) {
+        	formTree = analyzeSubFormFields(queryId, formTree, fieldNameParts, 1, captions, failIfAbsent);
+        } else if (fieldNameParts[1].equals("extensions") && (ctrl instanceof SubFormControl) && fieldNameParts.length > 3) {
+        	formTree = analyzeExtensionFields(queryId, joinMap, formTree, fieldNameParts, captions, failIfAbsent);
+        }
+        
+        if (formTree == null && failIfAbsent) {
+        	return false;
+        }
+        
+        if (formTree == null) {
+        	throw new RuntimeException("Invalid field: " + field.getName());
+        }
+        
+        form = formTree.getForm();
+        ctrl = form.getControlByUdn(fieldNameParts[fieldNameParts.length - 1]);
         if(ctrl == null) {
-            throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
+        	throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
         }
         
         String tabAlias = formTree.getAlias();
         if (ctrl instanceof MultiSelectControl) {
-            JoinTree fieldTree = formTree.getChild(queryId + "." + ctrl.getName());
-            if (fieldTree == null && failIfAbsent) {
-                return false;
-            }
-            
-            if (fieldTree == null) {
-                MultiSelectControl msField = (MultiSelectControl)ctrl;
-                fieldTree = getFieldTree(formTree, msField);
-                formTree.addChild(queryId + "." + ctrl.getName(), fieldTree);
-            }
-            
-            tabAlias = fieldTree.getAlias();
+        	JoinTree fieldTree = formTree.getChild(queryId + "." + ctrl.getName());
+        	if (fieldTree == null && failIfAbsent) {
+        		return false;
+        	}
+        	
+        	if (fieldTree == null) {
+        		MultiSelectControl msField = (MultiSelectControl)ctrl;
+        		fieldTree = getFieldTree(formTree, msField);
+        		formTree.addChild(queryId + "." + ctrl.getName(), fieldTree);
+        	}
+        	
+        	tabAlias = fieldTree.getAlias();
         }
         
         captions[captions.length - 1] = ctrl.getCaption();
-        
         field.setCtrl(ctrl);
         field.setTabAlias(tabAlias);
         field.setNodeCaptions(captions);
         return true;
     }    
+        
+    private JoinTree getSubFormTree(int queryId, JoinTree formTree, String fieldName, boolean failIfAbsent) {
+    	Container form = formTree.getForm();
+    	Control ctrl = form.getControlByUdn(fieldName);
+    	
+    	if (!(ctrl instanceof SubFormControl)) {
+    		throw new RuntimeException("Invalid field name: " + fieldName);
+    	}
+    	
+    	SubFormControl sfCtrl = (SubFormControl)ctrl;
+    	JoinTree sfTree = formTree.getChild(queryId + "." + sfCtrl.getName());
+    	if (sfTree == null && failIfAbsent) {
+    		return null;
+    	}
+    	
+    	if (sfTree == null) {
+    		sfTree = getSubFormTree(formTree, sfCtrl);
+    		formTree.addChild(queryId + "." + sfCtrl.getName(), sfTree);
+    	}
+    	
+    	return sfTree;
+    }
     
+    
+    private JoinTree analyzeSubFormFields(
+    		int queryId, 
+    		JoinTree formTree, 
+    		String[] fieldNameParts, int startIdx, String[] captions, 
+    		boolean failIfAbsent) {
+    	
+    	JoinTree sfTree = formTree;
+    	for (int i = startIdx; i < fieldNameParts.length - 1; i++) {
+    		sfTree = getSubFormTree(queryId, formTree, fieldNameParts[i], failIfAbsent);
+    		if (sfTree == null) {
+    			return null;
+    		}
+    		
+    		formTree = sfTree;
+    		captions[i] = sfTree.getForm().getCaption();
+    	}
+    	
+    	return sfTree;
+    }
+    
+    private JoinTree analyzeExtensionFields(
+    		int queryId, 
+    		Map<String, JoinTree> joinMap, JoinTree formTree, 
+    		String[] fieldNameParts, String[] captions, 
+    		boolean failIfAbsent) {
+    	
+    	JoinTree extensionTree = getSubFormTree(queryId, formTree, fieldNameParts[1], failIfAbsent);
+    	if (extensionTree == null) {
+    		return null;    		
+    	}
+    	
+    	JoinTree extensionFormTree = extensionTree.getChild(queryId + "." + fieldNameParts[2]);
+    	if (extensionFormTree == null && failIfAbsent) {
+    		return null;
+    	}
+    	
+    	if (extensionFormTree == null) {
+    		Container extensionForm = getContainer(fieldNameParts[2]);
+    		if (extensionForm == null) {
+    			throw new RuntimeException("Invalid form name: " + fieldNameParts[2]);
+    		}
+    		
+    		extensionFormTree = new JoinTree(extensionForm, "t" + tabCnt++);    		
+    		extensionFormTree.setParent(extensionTree);
+    		extensionFormTree.setExtensionForm(true);
+    		
+    		extensionTree.addChild(queryId + "." + fieldNameParts[2], extensionFormTree);    		
+    	}
+    	
+    	captions[1] = extensionTree.getForm().getCaption(); 
+    	captions[2] = extensionFormTree.getForm().getCaption();
+    	return analyzeSubFormFields(queryId, extensionFormTree, fieldNameParts, 3, captions, failIfAbsent);
+    }
+       
     private Container getContainer(String name) {
     	Container container = null;
     	

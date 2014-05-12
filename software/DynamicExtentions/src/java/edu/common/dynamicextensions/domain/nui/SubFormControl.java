@@ -37,6 +37,13 @@ public class SubFormControl extends Control implements Serializable {
 	// Used in AQ. Specifies whether this sub-form exists purely to specify path
 	//
 	private boolean pathLink;
+		
+	//
+	// If this sub-form is used as an entry point into extensions,
+	// then this attribute specifies DB column to use for indexing into
+	// extension form data table
+	//
+	private String extnFkColumn;
 
 	public Container getSubContainer() {
 		return subContainer;
@@ -118,6 +125,14 @@ public class SubFormControl extends Control implements Serializable {
 		this.pathLink = pathLink;
 	}
 
+	public String getExtnFkColumn() {
+		return extnFkColumn;
+	}
+
+	public void setExtnFkColumn(String extnFkColumn) {
+		this.extnFkColumn = extnFkColumn;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -130,6 +145,7 @@ public class SubFormControl extends Control implements Serializable {
 		result = prime * result	+ ((parentKeyColumn == null) ? 0 : parentKeyColumn.hashCode());
 		result = prime * result	+ ((foreignKeyColumn == null) ? 0 : foreignKeyColumn.hashCode());
 		result = prime * result + (pathLink ? 1231 : 1237);
+		result = prime * result + (extnFkColumn == null ? 0 : extnFkColumn.hashCode());
 		return result;
 	}
 
@@ -152,7 +168,8 @@ public class SubFormControl extends Control implements Serializable {
 			!StringUtils.equals(tableName, other.tableName) ||
 			!StringUtils.equals(parentKeyColumn, other.parentKeyColumn) ||
 			!StringUtils.equals(foreignKeyColumn, other.foreignKeyColumn) || 
-			pathLink != other.pathLink) {
+			pathLink != other.pathLink ||
+			!StringUtils.equals(extnFkColumn, other.extnFkColumn)) {
 			
 			return false;
 		}

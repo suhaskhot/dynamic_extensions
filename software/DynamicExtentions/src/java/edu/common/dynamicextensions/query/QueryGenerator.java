@@ -166,14 +166,17 @@ public class QueryGenerator {
         StringBuilder from = new StringBuilder();
         JoinTree parentTree = joinTree.getParent();
         
-        if(parentTree != null) {
+        if (parentTree != null) {
         	from.append(" left join ");
         }        
         from.append(joinTree.getTab()).append(" ").append(joinTree.getAlias()).append(" ");
         
-        if(parentTree != null) {
+        if (!joinTree.isExtensionForm() && parentTree != null) {
             from.append(" on ").append(joinTree.getAlias()).append(".").append(joinTree.getForeignKey())
                 .append(" = ").append(parentTree.getAlias()).append(".").append(joinTree.getParentKey());
+        } else if (joinTree.isExtensionForm() && parentTree != null) {
+        	from.append(" on ").append(joinTree.getAlias()).append(".").append(joinTree.getForm().getPrimaryKey())
+        		.append(" = ").append(parentTree.getAlias()).append(".").append(parentTree.getExtnFk());
         }
         
         for (JoinTree child : joinTree.getChildren()) {

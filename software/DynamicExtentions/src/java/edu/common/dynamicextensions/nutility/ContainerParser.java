@@ -211,6 +211,7 @@ public class ContainerParser {
 		subForm.setParentKey(getTextValue(subFormEle, "parentKey"));
 		subForm.setForeignKey(getTextValue(subFormEle, "foreignKey"));
 		subForm.setPathLink(getBooleanValue(subFormEle, "pathLink"));
+		subForm.setExtnFkColumn(getTextValue(subFormEle, "extnFkCol"));
 
 		Container subContainer = parseContainer(subFormEle, false);
 		subForm.setSubContainer(subContainer);

@@ -27,6 +27,10 @@ public class JoinTree
 	
 	private boolean subForm;
 	
+	private boolean extensionForm;
+	
+	private String extnFk;
+	
 	private Map<String, JoinTree> children = new HashMap<String, JoinTree>();	
 
     public JoinTree() {
@@ -121,6 +125,22 @@ public class JoinTree
 
 	public void setSubForm(boolean subForm) {
 		this.subForm = subForm;
+	}
+
+	public boolean isExtensionForm() {
+		return extensionForm;
+	}
+
+	public void setExtensionForm(boolean extensionForm) {
+		this.extensionForm = extensionForm;
+	}
+
+	public String getExtnFk() {
+		return extnFk;
+	}
+
+	public void setExtnFk(String extnFk) {
+		this.extnFk = extnFk;
 	}
 
 	public Collection<JoinTree> getChildren() {

@@ -356,8 +356,9 @@ public class QueryCompiler
     		
     		formTree = new JoinTree(form, "t" + tabCnt++);
     		joinMap.put(formLookupName, formTree);
-    	}
-    	                
+    	} else {
+    		form = formTree.getForm();
+    	}    	                
         captions[0] = form.getCaption();
         
         Control ctrl = form.getControlByUdn(fieldNameParts[1]);

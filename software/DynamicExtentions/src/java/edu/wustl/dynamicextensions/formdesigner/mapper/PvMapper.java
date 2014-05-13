@@ -164,22 +164,22 @@ public class PvMapper {
 	 */
 	private static PermissibleValue propertiesToPv(Properties properties) {
 		PermissibleValue pv = new PermissibleValue();
-		String conceptCode = properties.getString("conceptCode");
-		if (conceptCode != null) {
-			pv.setConceptCode(conceptCode);
-		}
-		String definitionSource = properties.getString("definitionSource");
-		if (definitionSource != null) {
-			pv.setDefinitionSource(definitionSource);
-		}
-		Long numericCode = properties.getLong("numericCode");
-		if (numericCode != null) {
-			pv.setNumericCode(numericCode);
-		}
-		String definition = properties.getString("definition");
-		if (definition != null) {
-			pv.setOptionName(definition);
-		}
+//		String conceptCode = properties.getString("conceptCode");
+//		if (conceptCode != null) {
+//			pv.setConceptCode(conceptCode);
+//		}
+//		String definitionSource = properties.getString("definitionSource");
+//		if (definitionSource != null) {
+//			pv.setDefinitionSource(definitionSource);
+//		}
+//		Long numericCode = properties.getLong("numericCode");
+//		if (numericCode != null) {
+//			pv.setNumericCode(numericCode);
+//		}
+//		String definition = properties.getString("definition");
+//		if (definition != null) {
+//			pv.setOptionName(definition);
+//		}
 		String value = properties.getString("value");
 		if (value != null) {
 			pv.setValue(value.trim());

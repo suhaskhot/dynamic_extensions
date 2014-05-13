@@ -475,13 +475,13 @@ public class ContainerParser {
 				
 				PermissibleValue pv = new PermissibleValue();
 				pv.setValue(getTextValue(optionEle, "value"));
-				pv.setNumericCode(getLongValue(optionEle, "numericCode"));
-				pv.setConceptCode(getTextValue(optionEle, "conceptCode"));
-				pv.setDefinitionSource(getTextValue(optionEle, "definitionSource"));
-
-				// TODO :: Need to check the validity of optionName 
-				// Now optionName = value
-				pv.setOptionName(pv.getValue());
+//				pv.setNumericCode(getLongValue(optionEle, "numericCode"));
+//				pv.setConceptCode(getTextValue(optionEle, "conceptCode"));
+//				pv.setDefinitionSource(getTextValue(optionEle, "definitionSource"));
+//
+//				// TODO :: Need to check the validity of optionName 
+//				// Now optionName = value
+//				pv.setOptionName(pv.getValue());
 				
 				if (pv.getValue() != null) {
 					pvs.add(pv);

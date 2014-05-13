@@ -452,6 +452,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			writeElementStart(writer, "subForm");			
 			writeElement(writer, "maxEntries", 		   sfCtrl.getNoOfEntries());		
 			writeElement(writer, "showAddMoreLink",    sfCtrl.showAddMoreLink());	
+			writeElement(writer, "udn",                sfCtrl.getUserDefinedName());	
 			writeElement(writer, "pasteButtonEnabled", sfCtrl.isPasteButtonEnabled());			
 
 			serializeView(sfCtrl.getSubContainer());			
@@ -549,9 +550,9 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 				writeElementStart(writer, "option");
 				
 				writeElement(writer, "value", pv.getValue());
-				writeElement(writer, "numericCode", pv.getNumericCode());
-				writeElement(writer, "conceptCode", pv.getConceptCode());
-				writeElement(writer, "definitionSource", pv.getDefinitionSource());
+//				writeElement(writer, "numericCode", pv.getNumericCode());
+//				writeElement(writer, "conceptCode", pv.getConceptCode());
+//				writeElement(writer, "definitionSource", pv.getDefinitionSource());
 
 				writeElementEnd(writer,"option");
 
@@ -602,11 +603,12 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			
 			for(PermissibleValue pv : permissibleValues) {
 				String val = pv.getValue() != null ? pv.getValue() : "";
-				String numericCode = pv.getNumericCode() != null ? pv.getNumericCode().toString() : "";
-				String conceptCode = pv.getConceptCode() != null ? pv.getConceptCode() : "";
-				String defSrc = pv.getDefinitionSource() != null ? pv.getDefinitionSource() : "";
+//				String numericCode = pv.getNumericCode() != null ? pv.getNumericCode().toString() : "";
+//				String conceptCode = pv.getConceptCode() != null ? pv.getConceptCode() : "";
+//				String defSrc = pv.getDefinitionSource() != null ? pv.getDefinitionSource() : "";
 
-				String[] pvDetails = {val, numericCode, conceptCode, defSrc};
+//				String[] pvDetails = {val, numericCode, conceptCode, defSrc};
+				String[] pvDetails = {val};
 				csvWriter.writeNext(pvDetails);
 			}
 			

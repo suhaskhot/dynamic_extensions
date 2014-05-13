@@ -16,9 +16,13 @@ public class OracleSettings implements DbSettings {
 	
 	@Override
 	public String getStringColType() {
-		return "VARCHAR2(4000)";
+		return "VARCHAR2(255)";
 	}
 
+	@Override
+	public String getTextColType() {
+		return "VARCHAR2(4000)";
+	}
 	@Override
 	public String getFloatColType() {
 		return "NUMBER(19, 6)";

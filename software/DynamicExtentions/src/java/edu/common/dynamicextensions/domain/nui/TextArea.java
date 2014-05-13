@@ -50,7 +50,7 @@ public class TextArea extends TextField implements Serializable {
 
 	@Override
 	public List<ColumnDef> getColumnDefs() {
-		return Collections.singletonList(ColumnDef.get(getDbColumnName(), ColumnTypeHelper.getStringColType()));
+		return Collections.singletonList(ColumnDef.get(getDbColumnName(), ColumnTypeHelper.getTextColType()));
 	}
 
 	@Override

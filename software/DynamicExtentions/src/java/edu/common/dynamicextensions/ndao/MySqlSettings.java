@@ -14,7 +14,12 @@ public class MySqlSettings implements DbSettings {
 	
 	@Override
 	public String getStringColType() {
-		return "VARCHAR(4000)";
+		return "VARCHAR(255)";
+	}
+	
+	@Override
+	public String getTextColType() {
+		return "TEXT";
 	}
 
 	@Override

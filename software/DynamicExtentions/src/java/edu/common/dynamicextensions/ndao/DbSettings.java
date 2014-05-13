@@ -4,6 +4,8 @@ public interface DbSettings {
 	
 	public String getStringColType();
 	
+	public String getTextColType();
+
 	public String getFloatColType();
 	
 	public String getIntegerColType();
@@ -11,4 +13,5 @@ public interface DbSettings {
 	public String getDateColType();
 
 	public String getBlob();
+
 }

@@ -5,6 +5,10 @@ public class ColumnTypeHelper {
 	public static String getStringColType() {
 		return DbSettingsFactory.getDbSettings().getStringColType();
 	}
+	
+	public static String getTextColType() {
+		return DbSettingsFactory.getDbSettings().getTextColType();
+	}
 		
 	public static String getFloatColType() {
 		return DbSettingsFactory.getDbSettings().getFloatColType();

@@ -317,7 +317,7 @@ public class FormDataManagerImpl implements FormDataManager {
 			for (Control sfCtrl : subFormCtrls) {
 				SubFormControl subFormCtrl = (SubFormControl) sfCtrl;
 				ControlValue subFormVal = formData.getFieldValue(subFormCtrl.getName());
-				List<FormData> subFormsData = (List<FormData>) subFormVal.getValue();
+				List<FormData> subFormsData = subFormVal != null ? (List<FormData>) subFormVal.getValue() : null;
 				
 				if (subFormsData == null) {
 					continue;

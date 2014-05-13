@@ -281,7 +281,7 @@ public class FormDataManagerImpl implements FormDataManager {
 						params.add(fcv.getContentType());
 						params.add(fcv.getFileId());
 					}
-				} else if (ctrlValue.getValue() == null || ctrlValue.getValue().toString().trim().isEmpty()) {
+				} else if (ctrlValue == null || ctrlValue.getValue() == null || ctrlValue.getValue().toString().trim().isEmpty()) {
 					params.add(null);
 				} else {
 					Object value = ctrl.fromString(ctrlValue.getValue().toString());

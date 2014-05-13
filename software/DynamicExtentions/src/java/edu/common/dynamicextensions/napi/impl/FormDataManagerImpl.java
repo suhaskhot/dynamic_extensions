@@ -428,11 +428,13 @@ public class FormDataManagerImpl implements FormDataManager {
 	
 	private void updateMultiSelectValues(JdbcDao jdbcDao, ControlValue msCtrlValue, Long recordId) 
 	throws Exception {
-		String[] strValues = (String[])msCtrlValue.getValue();
-		MultiSelectControl msCtrl = (MultiSelectControl)msCtrlValue.getControl();
+		String[] strValues =  msCtrlValue != null ? (String[])msCtrlValue.getValue() : null;
+		MultiSelectControl msCtrl = msCtrlValue != null ? (MultiSelectControl)msCtrlValue.getControl() : null;
 			
-		String deleteSql = String.format(DELETE_MULTI_SELECT_VALUES_SQL, msCtrl.getTableName());		
-		jdbcDao.executeUpdate(deleteSql, Collections.singletonList(recordId));
+		if (msCtrl != null) {
+			String deleteSql = String.format(DELETE_MULTI_SELECT_VALUES_SQL, msCtrl.getTableName());		
+			jdbcDao.executeUpdate(deleteSql, Collections.singletonList(recordId));
+		}
 		
 		if (strValues != null) {
 			String insertSql = String.format(INSERT_MULTI_SELECT_VALUES_SQL, msCtrl.getTableName());

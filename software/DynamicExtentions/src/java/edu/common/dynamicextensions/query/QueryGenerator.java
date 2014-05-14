@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
 import edu.common.dynamicextensions.query.ast.CountNode;
 import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
+import edu.common.dynamicextensions.query.ast.DateDiffFuncNode.DiffType;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
@@ -336,7 +337,7 @@ public class QueryGenerator {
     	} else if (exprNode instanceof DateDiffFuncNode) {
     		result = getDateDiffFuncNodeSql((DateDiffFuncNode)exprNode);
     	} else if (exprNode instanceof CurrentDateNode) {
-    		result = "sysdate";
+    		result = getCurrentDateSql();
     	} else if (exprNode instanceof CountNode) {
     		CountNode countNode = (CountNode)exprNode;
     		StringBuilder countSql = new StringBuilder("count(");
@@ -440,29 +441,63 @@ public class QueryGenerator {
 		return "(" + expr + ")";    	
     }
     
-    private String getDateDiffFuncNodeSql(DateDiffFuncNode dateDiff) {
-    	String result = "";
+    private String getDateDiffFuncNodeSql(DateDiffFuncNode dateDiff) {    	
     	String loperand = getExpressionNodeSql(dateDiff.getLeftOperand(), DataType.DATE);
 		String roperand = getExpressionNodeSql(dateDiff.getRightOperand(), DataType.DATE);
-		
-		switch (dateDiff.getDiffType()) {
-			case YEAR:
-				result = "(months_between(" + loperand + ", " + roperand + ") / 12)";
-				break;
-				
-			case MONTH:
-				result = "months_between(" + loperand + ", " + roperand + ")";
-				break;
-				
-			case DAY:
-				result = "(" + loperand + " - " + roperand + ")";
-				break;    			
-		}
-    	    	
-		return result;
-    }    
+		return getDateDiffSql(dateDiff.getDiffType(), loperand, roperand);
+    }
+    
+    private String getCurrentDateSql() {
+    	if (DbSettingsFactory.getProduct().equals("Oracle")) {
+    		return "sysdate";
+    	} else if (DbSettingsFactory.getProduct().equals("MySQL")) {
+    		return "current_date()";
+    	}
+    	
+    	throw new RuntimeException("Unknown product type: " + DbSettingsFactory.getProduct());
+    }
     
     private String addLimitClause(String sql, LimitExprNode limitExpr) { // TODO: Add Oracle support
     	return sql + " limit " + limitExpr.getStartAt() + ", " + limitExpr.getNumRecords();
+    }
+    
+    private String getDateDiffSql(DiffType diffType, String loperand, String roperand) {
+    	if (DbSettingsFactory.getProduct().equals("Oracle")) {
+    		return getOracleDateDiffSql(diffType, loperand, roperand);
+    	} else if (DbSettingsFactory.getProduct().equals("MySQL")) {
+    		return getMySQLDateDiffSql(diffType, loperand, roperand);
+    	}
+    	
+    	throw new RuntimeException("Unknown product type: " + DbSettingsFactory.getProduct());
+    }
+    
+    private String getOracleDateDiffSql(DiffType diffType, String loperand, String roperand) {
+    	switch (diffType) {
+    		case YEAR:
+    			return "(months_between(" + loperand + ", " + roperand + ") / 12)";
+			
+    		case MONTH:
+    			return "months_between(" + loperand + ", " + roperand + ")";
+			
+    		case DAY:
+    			return "(" + loperand + " - " + roperand + ")";    			    	
+    	}
+    	
+    	return "";
+    }
+    
+    private String getMySQLDateDiffSql(DiffType diffType, String loperand, String roperand) {
+    	switch (diffType) {
+    		case YEAR:
+    			return "timestampdiff(YEAR, " + roperand + ", " + loperand + ")";
+    			
+    		case MONTH:
+    			return "timestampdiff(MONTH, " + roperand + ", " + loperand + ")";
+    			
+    		case DAY:
+    			return "(" + loperand + " - " + roperand + ")";
+    	}
+    	
+    	return "";    	
     }
 }

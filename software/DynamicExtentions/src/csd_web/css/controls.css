@@ -399,4 +399,9 @@ label {
   font-weight: normal;
 }
 
+.dialog-btn {
+  height: 25px;
+  padding-top: 0px;
+}
+
 

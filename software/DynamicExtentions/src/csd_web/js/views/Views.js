@@ -1707,13 +1707,13 @@ var Views = {
 
 				importForm : function(event) {
 
-					$("#form-import-dialog").dialog({
-						buttons : {
-							Cancel : function() {
-								$(this).dialog("close");
-							}
-						}
-					});
+//					$("#form-import-dialog").dialog({
+//						buttons : {
+//							Cancel : function() {
+//								$(this).dialog("close");
+//							}
+//						}
+//					});
 					$("#form-import-dialog").dialog("open");
 				},
 
@@ -1729,7 +1729,7 @@ var Views = {
 					$("#form-import-dialog").dialog({
 						modal : true,
 						autoOpen : false
-					}).css("font-size", "10px");
+					}).css("font-size", "15px");
 
 					$("#control-change-dialog").dialog({
 						modal : true,

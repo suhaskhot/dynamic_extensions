@@ -700,9 +700,10 @@ edu.common.de.SelectField = function(id, field) {
 
   this.render = function() {
     this.inputEl = $("<select/>")
-      .prop({id: id, multiple: field.type == 'listbox'})
+      .prop({id: id, multiple: field.type == 'listbox', title: field.toolTip})
       .addClass("form-control")
       .append($("<option/>"));
+
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     for (var i = 0; i < field.pvs.length; ++i) {
       var pv = field.pvs[i];
@@ -762,8 +763,8 @@ edu.common.de.GroupField = function(id, field) {
 
         currentDiv = $("<div/>");
       }
-
-      var btn = $("<input/>").prop({type: type, name: field.name, value: pv.value});
+      
+      var btn = $("<input/>").prop({type: type, name: field.name, value: pv.value, title: field.toolTip});
       currentDiv.append($("<label/>").addClass(typeclass).append(btn).append(pv.value).css("width", width));
       this.inputEls.push(btn);
       ++count;
@@ -860,7 +861,7 @@ edu.common.de.SubFormField = function(id, sfField, args) {
 
   this.render = function() {
     this.sfFieldsEl = $("<div/>");
-    this.subFormEl = $("<div/>").prop({id: id})
+    this.subFormEl = $("<div/>").prop({id: id, title: sfField.toolTip})
                        .append(this.getHeading())
                        .append(this.sfFieldsEl)
                        .append(this.getAddButton());
@@ -1016,7 +1017,8 @@ edu.common.de.FileUploadField = function(id, field, args) {
   this.render = function() {
     var that = this;
 
-    this.inputEl  = $("<div/>").addClass("de-fileupload form-control clearfix");
+    this.inputEl  = $("<div/>").prop({title: field.toolTip})
+    	.addClass("de-fileupload form-control clearfix");
 
     this.fileNameSpan = $("<span/>");
     this.inputEl.append(this.fileNameSpan);

@@ -351,7 +351,7 @@ public class QueryCompiler
     	if (formTree == null) {
     		form = getContainer(formName);
     		if (form == null) {
-    			throw new RuntimeException("Invalid form name: " + formName);
+    			throw new IllegalArgumentException("Invalid form in field: " + field.getName());
     		}
     		
     		formTree = new JoinTree(form, "t" + tabCnt++);
@@ -363,7 +363,7 @@ public class QueryCompiler
         
         Control ctrl = form.getControlByUdn(fieldNameParts[1]);
         if (ctrl == null) {
-        	throw new RuntimeException("Invalid field name: " + fieldNameParts[1]);
+        	throw new IllegalArgumentException("Field doesn't exists: " + field.getName());
         }
         
         if (!fieldNameParts[1].equals("extensions") && (ctrl instanceof SubFormControl) && fieldNameParts.length > 2) {
@@ -377,13 +377,13 @@ public class QueryCompiler
         }
         
         if (formTree == null) {
-        	throw new RuntimeException("Invalid field: " + field.getName());
+        	throw new IllegalArgumentException("Invalid field: " + field.getName());
         }
         
         form = formTree.getForm();
         ctrl = form.getControlByUdn(fieldNameParts[fieldNameParts.length - 1]);
         if(ctrl == null) {
-        	throw new RuntimeException("Invalid filter referring to invalid field: " + field.getName());
+        	throw new IllegalArgumentException("Invalid field: " + field.getName());
         }
         
         String tabAlias = formTree.getAlias();
@@ -414,7 +414,7 @@ public class QueryCompiler
     	Control ctrl = form.getControlByUdn(fieldName);
     	
     	if (!(ctrl instanceof SubFormControl)) {
-    		throw new RuntimeException("Invalid field name: " + fieldName);
+    		throw new IllegalArgumentException("Field is not sub-form:" + fieldName);
     	}
     	
     	SubFormControl sfCtrl = (SubFormControl)ctrl;
@@ -471,7 +471,7 @@ public class QueryCompiler
     	if (extensionFormTree == null) {
     		Container extensionForm = getContainer(fieldNameParts[2]);
     		if (extensionForm == null) {
-    			throw new RuntimeException("Invalid form name: " + fieldNameParts[2]);
+    			throw new IllegalArgumentException("Invalid extension form name: " + fieldNameParts[2]);
     		}
     		
     		extensionFormTree = new JoinTree(extensionForm, "t" + tabCnt++);    		

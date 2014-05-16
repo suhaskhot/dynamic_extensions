@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +30,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.Gson;
+import com.java.common.CacheControl;
+import com.java.common.CachePolicy;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.UserContext;
@@ -92,6 +92,7 @@ public class Form {
 
 	@RequestMapping(method = RequestMethod.GET, value="{id}/{edit}")
 	@ResponseStatus(HttpStatus.OK)
+	@CacheControl(policy = {CachePolicy.NO_STORE, CachePolicy.NO_CACHE})
 	@ResponseBody
 	public Map<String, Object> getForm(
 			@PathVariable(value="id") String id,
@@ -132,6 +133,7 @@ public class Form {
 	
 	@RequestMapping(method = RequestMethod.GET, value="preview")
 	@ResponseStatus(HttpStatus.OK)
+	@CacheControl(policy = {CachePolicy.NO_STORE, CachePolicy.NO_CACHE})
 	@ResponseBody
 	public String getPreview() {
 		try {
@@ -205,6 +207,7 @@ public class Form {
 
 	@RequestMapping(method = RequestMethod.GET, value="currentuser")
 	@ResponseStatus(HttpStatus.OK)
+	@CacheControl(policy = {CachePolicy.NO_STORE, CachePolicy.NO_CACHE})
 	@ResponseBody
 	public String getCurrentUser() throws Exception {
 		AppUserContextProvider contextProvider = CSDProperties.getInstance().getUserContextProvider();
@@ -218,6 +221,7 @@ public class Form {
 
 	@RequestMapping(method = RequestMethod.GET, value="permissibleValues/{controlName}")
 	@ResponseStatus(HttpStatus.OK)
+	@CacheControl(policy = {CachePolicy.NO_STORE, CachePolicy.NO_CACHE})
 	@ResponseBody
 	public void getPermissibleValues(@PathVariable(value="controlName") String controlName,
 			HttpServletResponse response) throws IOException {

@@ -208,7 +208,7 @@ public class QueryGenerator {
                 break;
                     
             case NOT:
-            	exprStr = new StringBuilder("NOT (").append(lhs).append(")").toString();
+            	exprStr = new StringBuilder("NOT(").append(lhs).append(")").toString();
             	break;
             		
             case PARENTHESIS:
@@ -267,9 +267,9 @@ public class QueryGenerator {
             default:
             	rhs = getExpressionNodeSql(filter.getRhs(), filter.getLhs().getType());            	
             	if (filter.getLhs().isString() && ic) {
-            		lhs = "upper (" + lhs + ")";
+            		lhs = "upper(" + lhs + ")";
             		if (filter.getRhs() instanceof FieldNode) {
-            			rhs = "upper (" + rhs + ")";
+            			rhs = "upper(" + rhs + ")";
             		} else {
             			rhs = rhs.toUpperCase();
             		}

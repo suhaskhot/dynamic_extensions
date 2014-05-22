@@ -21,16 +21,16 @@ public class QueryResultSasExporter implements QueryResultExporter {
 	}
 
 	@Override
-	public void export(String exportPath, Query query) {
-		export(exportPath, query, null);
+	public QueryResponse export(String exportPath, Query query) {
+		return export(exportPath, query, null);
 	}
 	
 	@Override
-	public void export(String exportPath, Query query, QueryResultScreener screener) {
+	public QueryResponse export(String exportPath, Query query, QueryResultScreener screener) {
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(exportPath);
-			export(out, query, screener);
+			return export(out, query, screener);
 		} catch (Exception e) {
 			throw new RuntimeException("Error exporting SAS program for query results", e);
 		} finally {
@@ -39,16 +39,28 @@ public class QueryResultSasExporter implements QueryResultExporter {
 	}
 	
 	@Override
-	public void export(OutputStream out, Query query) {
-		export(out, query, null);
+	public QueryResponse export(OutputStream out, Query query) {
+		return export(out, query, null);
 	}
 	
 	@Override
-	public void export(OutputStream out, Query query, QueryResultScreener screener) {
-		QueryResultData data = query.getData();
-		data.setScreener(screener);
-		data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
-		export(out, data);
+	public QueryResponse export(OutputStream out, Query query, QueryResultScreener screener) {
+		QueryResultData data = null;
+		
+		try {
+			QueryResponse resp = query.getData();
+			
+			data = resp.getResultData();
+			data.setScreener(screener);
+			data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
+			export(out, data);
+			return resp;
+		} finally {
+			if (data != null) {
+				data.close();
+			}
+		}
+
 	}
 	
 	@Override

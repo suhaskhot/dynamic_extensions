@@ -6,48 +6,50 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 
 import edu.common.dynamicextensions.nutility.IoUtil;
-
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class QueryResultCsvExporter implements QueryResultExporter {
 	
 	@Override
-	public void export(String exportPath, Query query) {
-		export(exportPath, query, null);
+	public QueryResponse export(String exportPath, Query query) {
+		return export(exportPath, query, null);
 	}
 	
 	@Override
-	public void export(String exportPath, Query query, QueryResultScreener screener) {
+	public QueryResponse export(String exportPath, Query query, QueryResultScreener screener) {
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(exportPath);
-			export(out, query, screener);
+			return export(out, query, screener);
 		} catch (Exception e) {
 			throw new RuntimeException("Error exporting CSV file", e);
 		} finally {
 			IoUtil.close(out);
-		}		
+		}
 	}
 	
 
 	@Override
-	public void export(OutputStream out, Query query) {
-		export(out, query, null);
+	public QueryResponse export(OutputStream out, Query query) {
+		return export(out, query, null);
 	}
 	
 	@Override
-	public void export(OutputStream out, Query query, QueryResultScreener screener) {
+	public QueryResponse export(OutputStream out, Query query, QueryResultScreener screener) {		
 		QueryResultData data = null;
 		try {
-			data = query.getData();
+			QueryResponse resp = query.getData();
+			
+			data =  resp.getResultData();
 			data.setScreener(screener);
 			data.setColumnLabelFormatter(new DefaultResultColLabelFormatter("_"));
 			export(out, data);
+			return resp;
 		} finally {
 			if (data != null) {
 				data.close();
 			}
-		}		
+		}
 	}
 	
 

@@ -3,15 +3,18 @@ package edu.common.dynamicextensions.query;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
+import edu.common.dynamicextensions.query.QueryResponse;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
+import edu.common.dynamicextensions.query.QueryResponse;
 
 public class Query {
     private static final Logger logger = Logger.getLogger(Query.class);
@@ -83,23 +86,33 @@ public class Query {
         return count;
     }
 
-    public QueryResultData getData() {
+    public QueryResponse getData() {
         return getData(0, 0);
     }
 
-    public QueryResultData getData(int start, int numRows) {
-        final String dataSql = getDataSql(wideRows, start, numRows);
-        final long t1 = System.currentTimeMillis();
-        return JdbcDaoFactory.getJdbcDao().getResultSet(dataSql, null, new ResultExtractor<QueryResultData>() {
+    public QueryResponse getData(int start, int numRows) {
+        final String dataSql = getDataSql(wideRows, start, numRows);        
+        final long t1 = System.currentTimeMillis();        
+        return JdbcDaoFactory.getJdbcDao().getResultSet(dataSql, null, new ResultExtractor<QueryResponse>() {
         	@Override
-        	public QueryResultData extract(ResultSet rs)
+        	public QueryResponse extract(ResultSet rs)
         	throws SQLException {
         		long t2 = System.currentTimeMillis();        		
         		QueryResultData resultData = wideRows ? getWideRowData(rs) : getQueryResultData(rs);
         		long t3 = System.currentTimeMillis();
         		
         		logger.info("Data SQL: " + dataSql + "; Query Exec Time: " + (t2 - t1) + "; Result Prep Time: " + (t3 - t2));
-        		return resultData;
+        		
+        		QueryResponse resp = new QueryResponse();
+        		resp.setSql(dataSql);
+        		resp.setResultData(resultData);
+        		resp.setExecutionTime(t2 - t1);
+        		resp.setPostExecutionTime(t3 - t2);
+        		
+        		Calendar cal = Calendar.getInstance();
+        		cal.setTimeInMillis(t1);
+        		resp.setTimeOfExecution(cal.getTime());
+        		return resp;
         	}
         });
     }

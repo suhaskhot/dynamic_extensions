@@ -96,7 +96,8 @@ public class QueryGenerator {
         	if (!wideRowSupport) {
         		orderedQuery = addOrderBy(dataSql, joinTree);
         	}
-            result = String.format(LIMIT_QUERY, orderedQuery, start + numRows, start);
+        	
+        	result = addLimitClause(orderedQuery, start, numRows);
         }
         
         return result;
@@ -457,8 +458,16 @@ public class QueryGenerator {
     	throw new RuntimeException("Unknown product type: " + DbSettingsFactory.getProduct());
     }
     
-    private String addLimitClause(String sql, LimitExprNode limitExpr) { // TODO: Add Oracle support
-    	return sql + " limit " + limitExpr.getStartAt() + ", " + limitExpr.getNumRecords();
+    private String addLimitClause(String sql, LimitExprNode limitExpr) {
+    	return addLimitClause(sql, limitExpr.getStartAt(), limitExpr.getNumRecords());
+    }
+    
+    private String addLimitClause(String sql, int start, int numRows) {    	
+    	if (DbSettingsFactory.getProduct().equals("Oracle")) {
+    		return String.format(LIMIT_QUERY, sql, start + numRows, start);
+    	} else {
+    		return sql + " limit " + start + ", " + numRows;
+    	}
     }
     
     private String getDateDiffSql(DiffType diffType, String loperand, String roperand) {

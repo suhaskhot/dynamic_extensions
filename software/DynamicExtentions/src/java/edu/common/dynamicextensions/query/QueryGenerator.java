@@ -29,7 +29,7 @@ import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryGenerator {
 	
-	private static String LIMIT_QUERY = "select * from (select rownum rnum, tab.* from (%s) tab where rownum < %d) where rnum >= %d";
+	private static String LIMIT_QUERY = "select * from (select tab.*, rownum rnum from (%s) tab where rownum < %d) where rnum >= %d";
 	
 	private boolean wideRowSupport;
 	
@@ -104,9 +104,12 @@ public class QueryGenerator {
     }
     
     private String buildSelectClause(SelectListNode selectList, JoinTree joinTree) {
+    	int colCnt = 0;
     	StringBuilder select = new StringBuilder();
     	for (ExpressionNode element : selectList.getElements()) { 
-    		select.append(getExpressionNodeSql(element, element.getType())).append(", ");
+    		select.append(getExpressionNodeSql(element, element.getType()))
+    		  .append(" as c").append(colCnt).append(", ");
+    		colCnt++;
     	}
     	
     	if (select.length() == 0) {
@@ -148,8 +151,10 @@ public class QueryGenerator {
     		}
     	}
     	
+    	int colCnt = 0;
     	for (String column : wideRowMarkerColumns) {
-    		select.append(column).append(", ");
+    		select.append(column).append(" as mc").append(colCnt).append(", ");
+    		colCnt++;
     	}    	
     }
     

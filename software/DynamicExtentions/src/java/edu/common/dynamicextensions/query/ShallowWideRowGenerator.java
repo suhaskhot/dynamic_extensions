@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
+import edu.common.dynamicextensions.ndao.DbSettingsFactory;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
@@ -266,6 +267,10 @@ public class ShallowWideRowGenerator {
         }
         
         int numCols = rs.getMetaData().getColumnCount();
+        if (queryExpr.getLimitExpr() != null && DbSettingsFactory.isOracle()) {
+        	numCols--;        	
+        }
+        
         for (int i = selectElements.size() + 1; i <= numCols; i += 2) {
             tabAliasIdMap.put(rs.getString(i), rs.getString(i + 1));
         }

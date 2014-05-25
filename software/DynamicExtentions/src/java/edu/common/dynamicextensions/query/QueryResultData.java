@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import edu.common.dynamicextensions.ndao.DbSettingsFactory;
+
 public class QueryResultData {
     private ResultColumnLabelFormatter formatter = new DefaultResultColLabelFormatter("# ");
     
@@ -62,7 +64,11 @@ public class QueryResultData {
     	List<Object[]> rows = new ArrayList<Object[]>();
     	
     	try {
-        	int columnCount = rs.getMetaData().getColumnCount();    	
+        	int columnCount = rs.getMetaData().getColumnCount();
+        	if (columnCount == resultColumns.size() + 1 && DbSettingsFactory.isOracle()) {
+        		columnCount--;
+        	}
+        	
             while (rs.next()) {
                 Object[] row = new Object[columnCount];
                 for (int i = 0; i < columnCount; ++i) {

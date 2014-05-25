@@ -23,4 +23,12 @@ public class DbSettingsFactory {
 		return product;
 	}
 	
+	public static boolean isOracle() {
+		return product.equals("Oracle");
+	}
+	
+	public static boolean isMySQL() {
+		return product.equals("MySQL");
+	}
+	
 }

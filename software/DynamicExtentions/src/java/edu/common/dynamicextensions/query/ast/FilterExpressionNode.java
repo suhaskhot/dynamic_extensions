@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FilterExpressionNode implements FilterNodeMarker {
 	public static enum Op {
-		AND, OR, NOT, PAND, PARENTHESIS, IDENTITY;
+		AND, OR, NOT, PAND, PARENTHESIS, IDENTITY, NTHCHILD;
 	}
 	
 	private List<FilterNodeMarker> operands = new ArrayList<FilterNodeMarker>();
@@ -51,6 +51,10 @@ public class FilterExpressionNode implements FilterNodeMarker {
         return makeExpression(Op.PARENTHESIS, new FilterNodeMarker[] {operand});
     }
     
+    public static FilterExpressionNode nthChildExpr(FilterNodeMarker operand)  {
+        return makeExpression(Op.NTHCHILD, new FilterNodeMarker[] {operand});
+    }
+
     public static FilterExpressionNode identity(FilterNodeMarker operand) {
     	return makeExpression(Op.IDENTITY, new FilterNodeMarker[] {operand});
     }

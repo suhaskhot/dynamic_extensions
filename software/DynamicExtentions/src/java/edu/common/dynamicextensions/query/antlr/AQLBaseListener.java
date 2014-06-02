@@ -134,6 +134,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterNthChildFilterExpr(@NotNull AQLParser.NthChildFilterExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitNthChildFilterExpr(@NotNull AQLParser.NthChildFilterExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -303,6 +316,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -323,19 +349,6 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

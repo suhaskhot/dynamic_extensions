@@ -108,6 +108,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#NthChildFilterExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNthChildFilterExpr(@NotNull AQLParser.NthChildFilterExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#NthChildFilterExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNthChildFilterExpr(@NotNull AQLParser.NthChildFilterExprContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
 	 * @param ctx the parse tree
 	 */
@@ -251,6 +262,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#CountFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#CountFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#literal_values}.
 	 * @param ctx the parse tree
 	 */
@@ -271,17 +293,6 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link AQLParser#CountFunc}.
-	 * @param ctx the parse tree
-	 */
-	void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#CountFunc}.
-	 * @param ctx the parse tree
-	 */
-	void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#DateIntervalExpr}.

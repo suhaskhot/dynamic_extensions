@@ -1,6 +1,10 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import edu.common.dynamicextensions.domain.nui.DataType;
 
 public class ArithExpressionNode extends ExpressionNode implements Serializable {
@@ -102,6 +106,14 @@ public class ArithExpressionNode extends ExpressionNode implements Serializable 
 		return copy;
 	}
 	
+	@Override
+	public String[] getFormNames() {
+		Set<String> formNames = new HashSet<String>();
+		formNames.addAll(Arrays.asList(leftOperand.getFormNames()));
+		formNames.addAll(Arrays.asList(rightOperand.getFormNames()));
+		return formNames.toArray(new String[0]);
+	}
+		
 	@Override
 	public int hashCode() {
 		final int prime = 31;

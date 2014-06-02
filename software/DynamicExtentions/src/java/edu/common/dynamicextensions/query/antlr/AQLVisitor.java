@@ -1,5 +1,6 @@
 // Generated from AQL.g4 by ANTLR 4.1
 package edu.common.dynamicextensions.query.antlr;
+// Generated from AQL.g4 by ANTLR 4.1
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -73,6 +74,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDate_interval(@NotNull AQLParser.Date_intervalContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#NthChildFilterExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNthChildFilterExpr(@NotNull AQLParser.NthChildFilterExprContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#MonthsDiffFunc}.
@@ -166,6 +174,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#CountFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCountFunc(@NotNull AQLParser.CountFuncContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#literal_values}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -178,13 +193,6 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#CountFunc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCountFunc(@NotNull AQLParser.CountFuncContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#DateIntervalExpr}.

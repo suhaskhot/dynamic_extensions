@@ -53,6 +53,12 @@ public class Container implements Serializable {
 	private String dbTableName;
 	
 	private String primaryKey = "IDENTIFIER";
+	
+	private String hierarchyTable;
+	
+	private String hierarchyAncestorCol;
+	
+	private String hierarchyDescendentCol;
    	
 	private int sequenceNo;
 
@@ -128,6 +134,30 @@ public class Container implements Serializable {
 		this.primaryKey = primaryKey;
 	}
 	
+	public String getHierarchyTable() {
+		return hierarchyTable;
+	}
+
+	public void setHierarchyTable(String hierarchyTable) {
+		this.hierarchyTable = hierarchyTable;
+	}
+
+	public String getHierarchyAncestorCol() {
+		return hierarchyAncestorCol;
+	}
+
+	public void setHierarchyAncestorCol(String hierarchyAncestorCol) {
+		this.hierarchyAncestorCol = hierarchyAncestorCol;
+	}
+
+	public String getHierarchyDescendentCol() {
+		return hierarchyDescendentCol;
+	}
+
+	public void setHierarchyDescendentCol(String hierarchyDescendentCol) {
+		this.hierarchyDescendentCol = hierarchyDescendentCol;
+	}
+
 	public int getSequenceNo() {
 		return sequenceNo;
 	}
@@ -298,6 +328,10 @@ public class Container implements Serializable {
 		result = prime * result	+ ((controlsMap == null) ? 0 : controlsMap.hashCode());
 		result = prime * result + (int) (ctrlId ^ (ctrlId >>> 32));
 		result = prime * result	+ ((dbTableName == null) ? 0 : dbTableName.hashCode());
+		result = prime * result + ((primaryKey == null ? 0 : primaryKey.hashCode()));
+		result = prime * result + ((hierarchyTable == null ? 0 : hierarchyTable.hashCode()));
+		result = prime * result + ((hierarchyAncestorCol == null ? 0 : hierarchyAncestorCol.hashCode()));
+		result = prime * result + ((hierarchyDescendentCol == null ? 0 : hierarchyDescendentCol.hashCode()));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + sequenceNo;
 		result = prime * result	+ ((skipRules == null) ? 0 : skipRules.hashCode());
@@ -324,6 +358,10 @@ public class Container implements Serializable {
 			controlsMap.equals(other.controlsMap) ||
 			ctrlId != other.ctrlId ||
 			!StringUtils.equals(dbTableName, other.dbTableName) ||
+			!StringUtils.equals(primaryKey, other.primaryKey) ||
+			!StringUtils.equals(hierarchyTable, other.hierarchyTable) ||
+			!StringUtils.equals(hierarchyAncestorCol, other.hierarchyAncestorCol) ||
+			!StringUtils.equals(hierarchyDescendentCol, other.hierarchyDescendentCol) ||
 			!StringUtils.equals(name, other.name) ||
 			sequenceNo != other.sequenceNo ||
 			(skipRules == null && other.skipRules != null) ||
@@ -737,6 +775,10 @@ public class Container implements Serializable {
 			this.setPrimaryKey(newContainer.getPrimaryKey());
 		}
 		
+		setHierarchyTable(newContainer.getHierarchyTable());
+		setHierarchyAncestorCol(newContainer.getHierarchyAncestorCol());
+		setHierarchyDescendentCol(newContainer.getHierarchyDescendentCol());
+		
 		for (Control  ctrl : newContainer.getControls()) {
 			if (getControl(ctrl.getName()) == null) {
 				addControl(ctrl);
@@ -938,6 +980,9 @@ public class Container implements Serializable {
 		container.setCaption(dtoContainer.getCaption());
 		container.setDbTableName(dtoContainer.getDbTableName());
 		container.setPrimaryKey(dtoContainer.getPrimaryKey());
+		container.setHierarchyTable(dtoContainer.getHierarchyTable());
+		container.setHierarchyAncestorCol(dtoContainer.getHierarchyAncestorCol());
+		container.setHierarchyDescendentCol(dtoContainer.getHierarchyDescendentCol());
 		
 		for (Control ctrl : dtoContainer.addLog) {
 			container.addControl(ctrl);

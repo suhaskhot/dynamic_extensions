@@ -1,12 +1,13 @@
 package edu.common.dynamicextensions.query;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-//import edu.QueryTester;
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
@@ -16,13 +17,13 @@ import edu.common.dynamicextensions.napi.impl.VersionedContainerImpl;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.CountNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
-import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
+import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
+import edu.common.dynamicextensions.query.ast.FilterExpressionNode.Op;
 import edu.common.dynamicextensions.query.ast.FilterNode;
 import edu.common.dynamicextensions.query.ast.FilterNodeMarker;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
-import edu.common.dynamicextensions.query.ast.FilterExpressionNode.Op;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryCompiler
@@ -92,7 +93,7 @@ public class QueryCompiler
             Container rootForm = getContainer(rootFormName);
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
-        
+
         for (Map.Entry<String, JoinTree> formTreeEntry : joinMap.entrySet()) {
             if (formTreeEntry.getKey().equals("0." + rootFormName)) {
                 continue;
@@ -195,7 +196,7 @@ public class QueryCompiler
         sfTree.setExtnFk(sfCtrl.getExtnFkColumn());
         return sfTree;
     }
-
+    
     private JoinTree getFieldTree(JoinTree parentNode, MultiSelectControl field) {
         JoinTree fieldTree = new JoinTree();
         fieldTree.setField(field);
@@ -220,17 +221,66 @@ public class QueryCompiler
             analyzeFilterNode(queryId, filter, joinMap);
         } else {
             FilterExpressionNode subExpr = (FilterExpressionNode)expr;
-            for (FilterNodeMarker childExpr : subExpr.getOperands()) {
-                if (subExpr.getOperator() == Op.PAND) {
-                    queryId++;
-                    this.numQueries++;
-                }
-                
-                analyzeFilterNodeMarker(queryId, childExpr, joinMap);
+            
+            if (subExpr.getOperator() == Op.NTHCHILD) {
+            	analyzeNthChildFilterNodeMarker(queryId, subExpr, joinMap);
+            } else {
+            	analyzeFilterExprNode(queryId, subExpr, joinMap);
             }
+            
         }
     }
+    
+    private void analyzeFilterExprNode(int queryId, FilterExpressionNode filterExpr, Map<String, JoinTree> joinMap) {
+        for (FilterNodeMarker childExpr : filterExpr.getOperands()) {
+            if (filterExpr.getOperator() == Op.PAND) {
+                queryId++;
+                this.numQueries++;
+            } 
+            
+            analyzeFilterNodeMarker(queryId, childExpr, joinMap);                
+        }                	
+    }
+    
+    private void analyzeNthChildFilterNodeMarker(int queryId, FilterExpressionNode expr, Map<String, JoinTree> joinMap) {
+    	this.numQueries++;
+    	
+    	analyzeFilterExprNode(queryId + 1, expr, joinMap);
+    	
+    	String[] formNames = getFormNames(expr);
+    	if (formNames.length != 1) {
+    		throw new IllegalArgumentException("nth-child refers to more than one-form");
+    	}
+       	
+        JoinTree childTree = joinMap.remove((queryId + 1) + "." + formNames[0]);
+        String treeTable = childTree.getForm().getHierarchyTable();
+        String ancestorCol = childTree.getForm().getHierarchyAncestorCol();
+        String descendentCol = childTree.getForm().getHierarchyDescendentCol();
+        
+        if (treeTable == null || ancestorCol == null || descendentCol == null) {
+        	throw new IllegalArgumentException("nth-child form do not have relation hierarchy table defined");
+        }
+        		
+        JoinTree parentTree = joinMap.get(queryId + "." + formNames[0]);
+        if (parentTree == null) {
+        	Container form = getContainer(formNames[0]);
+        	parentTree = new JoinTree(form, "t" + tabCnt++);
+        	joinMap.put(queryId + "." + formNames[0], parentTree);                		
+        }
 
+        JoinTree relationLink = new JoinTree(treeTable, "t" + tabCnt++);
+        relationLink.setForeignKey(ancestorCol);
+        relationLink.setParentKey(parentTree.getForm().getPrimaryKey());
+        relationLink.setParent(parentTree);
+        
+        childTree.setForeignKey(childTree.getForm().getPrimaryKey());
+        childTree.setParentKey(descendentCol);
+        childTree.setParent(relationLink);
+        
+        relationLink.addChild((queryId + 1) + "." + formNames[0], childTree);        
+        parentTree.addChild((queryId + 1) + ".hierarchy", relationLink);
+    }
+    
     private void analyzeFilterNode(int queryId, FilterNode filter, Map<String, JoinTree> joinMap) {
         analyzeExpressionNode(queryId, filter.getLhs(), joinMap);
         analyzeExpressionNode(queryId, filter.getRhs(), joinMap);       
@@ -343,6 +393,21 @@ public class QueryCompiler
         String formName = fieldNameParts[0];
     	String formLookupName = formName.equals(rootFormName) ? "0." + formName : queryId + "." + formName;    	
     	JoinTree formTree = joinMap.get(formLookupName);
+    	
+    	if (formTree == null) {
+    		for (Map.Entry<String, JoinTree> jt : joinMap.entrySet()) {
+    			if (!jt.getKey().endsWith("." + formName)) {
+    				continue;
+    			}
+    			
+    			JoinTree relLink = jt.getValue().getChild(queryId + ".hierarchy");
+    			if (relLink != null) {
+    				formTree = relLink.getChild(queryId + "." + formName);
+    				break;
+    			}
+    		}
+    	}
+    	
     	if (formTree == null && failIfAbsent) {
     		return false;
     	}
@@ -502,4 +567,22 @@ public class QueryCompiler
     	
     	return container;
     }
+    
+    private String[] getFormNames(FilterNodeMarker filterMarker) {
+    	Set<String> formNames = new HashSet<String>();
+    	
+    	if (filterMarker instanceof FilterNode) {
+    		FilterNode node = (FilterNode)filterMarker;
+    		formNames.addAll(Arrays.asList(node.getLhs().getFormNames()));
+    		formNames.addAll(Arrays.asList(node.getRhs().getFormNames()));
+    	} else {
+    		FilterExpressionNode filterExpr = (FilterExpressionNode)filterMarker;
+    		
+    		for (FilterNodeMarker subExpr : filterExpr.getOperands()) {
+    			formNames.addAll(Arrays.asList(getFormNames(subExpr)));
+    		}    		
+    	}
+    	
+    	return formNames.toArray(new String[0]);    	
+    }    
 }

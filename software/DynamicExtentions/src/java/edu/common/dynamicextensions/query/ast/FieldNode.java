@@ -77,6 +77,12 @@ public class FieldNode extends ExpressionNode implements Serializable {
 	}	
 	
 	@Override
+	public String[] getFormNames() {
+		String[] fieldNameParts = name.split("\\.");
+		return new String[] {fieldNameParts[0]};
+	}	
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -121,5 +127,5 @@ public class FieldNode extends ExpressionNode implements Serializable {
 		}
 		
 		return true;
-	}	
+	}
 }

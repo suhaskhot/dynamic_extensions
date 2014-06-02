@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+
 import edu.common.dynamicextensions.domain.nui.DataType;
 
 public class CurrentDateNode extends ExpressionNode implements Serializable {
@@ -14,5 +15,10 @@ public class CurrentDateNode extends ExpressionNode implements Serializable {
 	@Override
 	public ExpressionNode copy() {
 		return new CurrentDateNode();
+	}
+
+	@Override
+	public String[] getFormNames() {
+		return new String[0];
 	}
 }

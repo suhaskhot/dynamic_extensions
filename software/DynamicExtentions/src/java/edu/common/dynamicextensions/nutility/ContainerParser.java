@@ -148,6 +148,9 @@ public class ContainerParser {
 		}
 		
 		container.setPrimaryKey(getTextValue(viewElement, "primaryKey", "IDENTIFIER"));
+		container.setHierarchyTable(getTextValue(viewElement, "hierarchyTable"));
+		container.setHierarchyAncestorCol(getTextValue(viewElement,"hierarchyAncestorColumn"));
+		container.setHierarchyDescendentCol(getTextValue(viewElement,"hierarchyDescendentColumn"));
 	}
 	
 	private List<Control> parseFormRow(Node row, int currentRow) {
@@ -189,7 +192,6 @@ public class ContainerParser {
 			} else if (ctrlName.equals("subForm")) {
 				ctrl = parseSubForm(ctrlEle, currentRow, xpos);
 			}
-			
 			controls.add(ctrl);
 		}
 		
@@ -217,7 +219,7 @@ public class ContainerParser {
 		subForm.setSubContainer(subContainer);
 		return subForm;
 	}
-
+	
 	private Control parseRadioButton(Element radioEle, int currentRow, int i) {
 		RadioButton radioButton = new RadioButton();
 		setSelectProps(radioButton, radioEle, currentRow, i);

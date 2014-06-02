@@ -25,6 +25,11 @@ public class DateIntervalNode extends ExpressionNode implements Serializable {
 		return copy;
 	}
 	
+	@Override
+	public String[] getFormNames() {
+		return new String[0];
+	}	
+	
 	public int getYears() {
 		return years;
 	}
@@ -71,5 +76,5 @@ public class DateIntervalNode extends ExpressionNode implements Serializable {
 		
 		DateIntervalNode other = (DateIntervalNode) obj;
 		return days == other.days && months == other.months && years == other.years;
-	}	
+	}
 }

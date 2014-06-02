@@ -117,6 +117,11 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     }
     
     @Override
+    public FilterExpressionNode visitNthChildFilterExpr(@NotNull AQLParser.NthChildFilterExprContext ctx) { 
+        return FilterExpressionNode.nthChildExpr((FilterNodeMarker)visit(ctx.filter_expr()));
+    }
+
+    @Override
     public FilterExpressionNode visitSimpleFilter(@NotNull AQLParser.SimpleFilterContext ctx) {
     	return FilterExpressionNode.identity((FilterNodeMarker)visit(ctx.filter()));
     }

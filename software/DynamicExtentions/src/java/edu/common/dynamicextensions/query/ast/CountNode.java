@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+
 import edu.common.dynamicextensions.domain.nui.DataType;
 
 public class CountNode extends ExpressionNode implements Serializable {	
@@ -38,5 +39,10 @@ public class CountNode extends ExpressionNode implements Serializable {
 		copy.setField(field.copy());
 		copy.setLabel(this.getLabel());		
 		return copy;
+	}
+
+	@Override
+	public String[] getFormNames() {
+		return field.getFormNames();
 	}
 }

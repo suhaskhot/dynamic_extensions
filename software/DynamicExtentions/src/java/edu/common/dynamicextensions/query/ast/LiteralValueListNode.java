@@ -31,6 +31,11 @@ public class LiteralValueListNode extends ExpressionNode implements Serializable
 		return copy;
 	}
 	
+	@Override
+	public String[] getFormNames() {
+		return new String[0];
+	}
+	
 	public void addLiteralVal(LiteralValueNode literal) {
 		this.literalVals.add(literal);
 	}

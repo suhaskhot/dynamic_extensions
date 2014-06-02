@@ -108,7 +108,7 @@ public class QueryGenerator {
     	StringBuilder select = new StringBuilder();
     	for (ExpressionNode element : selectList.getElements()) { 
     		select.append(getExpressionNodeSql(element, element.getType()))
-    		  .append(" as c").append(colCnt).append(", ");
+    			.append(" as c").append(colCnt).append(", ");
     		colCnt++;
     	}
     	
@@ -184,8 +184,8 @@ public class QueryGenerator {
         } else if (joinTree.isExtensionForm() && parentTree != null) {
         	from.append(" on ").append(joinTree.getAlias()).append(".").append(joinTree.getForm().getPrimaryKey())
         		.append(" = ").append(parentTree.getAlias()).append(".").append(parentTree.getExtnFk());
-        }
-        
+        } 
+
         for (JoinTree child : joinTree.getChildren()) {
         	from.append(buildFromClause(child));
         }
@@ -218,6 +218,7 @@ public class QueryGenerator {
             	break;
             		
             case PARENTHESIS:
+            case NTHCHILD:
             	exprStr = new StringBuilder("(").append(lhs).append(")").toString();
             	break;
             		
@@ -467,7 +468,7 @@ public class QueryGenerator {
     	return addLimitClause(sql, limitExpr.getStartAt(), limitExpr.getNumRecords());
     }
     
-    private String addLimitClause(String sql, int start, int numRows) {    	
+    private String addLimitClause(String sql, int start, int numRows) {
     	if (DbSettingsFactory.getProduct().equals("Oracle")) {
     		return String.format(LIMIT_QUERY, sql, start + numRows, start);
     	} else {

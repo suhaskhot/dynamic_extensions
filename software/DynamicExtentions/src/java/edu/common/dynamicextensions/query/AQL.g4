@@ -13,6 +13,7 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
               | filter_expr OR  filter_expr          #OrFilterExpr
               | filter_expr PAND filter_expr         #PandFilterExpr
               | LP filter_expr RP                    #ParensFilterExpr
+              | NTHCHILD LP filter_expr RP           #NthChildFilterExpr
               | NOT filter_expr                      #NotFilterExpr
               | filter                               #SimpleFilter
               ;
@@ -56,6 +57,7 @@ WS       : [ \t\n\r]+ -> skip;
 
 SELECT   : 'select';
 WHERE    : 'where';
+NTHCHILD : 'nthchild';
 MTHS_BTWN: 'months_between';
 YRS_BTWN:  'years_between';
 CURR_DATE: 'current_date';

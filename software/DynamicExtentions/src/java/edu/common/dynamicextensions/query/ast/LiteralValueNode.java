@@ -39,6 +39,11 @@ public class LiteralValueNode extends ExpressionNode implements Serializable  {
 	}	
 	
 	@Override
+	public String[] getFormNames() {
+		return new String[0];
+	}
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

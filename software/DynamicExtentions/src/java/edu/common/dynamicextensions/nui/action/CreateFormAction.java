@@ -17,6 +17,8 @@ import org.xml.sax.SAXException;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.UserContext;
+import edu.common.dynamicextensions.ndao.TransactionManager;
+import edu.common.dynamicextensions.ndao.TransactionManager.Transaction;
 import edu.common.dynamicextensions.util.DirOperationsUtility;
 import edu.common.dynamicextensions.util.DownloadUtility;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
@@ -34,6 +36,7 @@ public class CreateFormAction extends HttpServlet {
 		ActionResponse actionResponse = null;
 		
 		String tmpDirName = getTmpDirName();
+		Transaction txn = TransactionManager.getInstance().newTxn();
 		try	{			
 			DownloadUtility.downloadZipFile(httpReq, tmpDirName, "forms.zip");
 			logger.info("Download input forms zip file to " + tmpDirName);
@@ -86,6 +89,9 @@ public class CreateFormAction extends HttpServlet {
 		} finally {
 			sendResponse(httpResp, actionResponse);
 			DirOperationsUtility.getInstance().deleteDirectory(new File(tmpDirName));
+			if (txn != null) {
+				TransactionManager.getInstance().commit(txn);
+			}
 			
 		}
 	}

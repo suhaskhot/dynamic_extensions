@@ -522,7 +522,7 @@ edu.common.de.NumberField = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'number', title: field.toolTip}).addClass("form-control");
+    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
     var rules = field.validationRules.concat({name: 'numeric', params: {noOfDigitsAfterDecimal: field.noOfDigitsAfterDecimal}});
     this.validator = new edu.common.de.FieldValidator(rules, this);
     return this.inputEl;

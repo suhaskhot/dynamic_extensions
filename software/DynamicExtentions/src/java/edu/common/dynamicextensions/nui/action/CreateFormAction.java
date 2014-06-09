@@ -80,13 +80,10 @@ public class CreateFormAction extends HttpServlet {
 						txn = TransactionManager.getInstance().newTxn();
 						Long containerId = Container.createContainer(ctxt, formFilePath, pvDirPath, createTables);
 						logger.info("Form for definition in " + formFile + " created. Id = " + containerId);
+						TransactionManager.getInstance().commit(txn);
 					} catch (Exception e) {
 						TransactionManager.getInstance().rollback(txn);
-					} finally {
-						if (txn != null) {
-							TransactionManager.getInstance().commit(txn);
-						}
-					}
+					} 
 				}
 				actionResponse = new ActionResponse();
 				actionResponse.setSuccess();

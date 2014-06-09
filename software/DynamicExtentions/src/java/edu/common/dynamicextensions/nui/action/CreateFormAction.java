@@ -36,7 +36,6 @@ public class CreateFormAction extends HttpServlet {
 		ActionResponse actionResponse = null;
 		
 		String tmpDirName = getTmpDirName();
-		Transaction txn = TransactionManager.getInstance().newTxn();
 		try	{			
 			DownloadUtility.downloadZipFile(httpReq, tmpDirName, "forms.zip");
 			logger.info("Download input forms zip file to " + tmpDirName);
@@ -75,24 +74,29 @@ public class CreateFormAction extends HttpServlet {
 					logger.info("Create form using definition in " + formFile);
 					String formFilePath = new StringBuilder(formDirPath).append(formFile).toString(); 
 					UserContext ctxt = CSDProperties.getInstance().getUserContextProvider().getUserContext(loginName);
+					Transaction txn = null;
 
-					Long containerId = Container.createContainer(ctxt, formFilePath, pvDirPath, createTables);
-					logger.info("Form for definition in " + formFile + " created. Id = " + containerId);
-				}				
-			}
-			
-			actionResponse = new ActionResponse();
-			actionResponse.setSuccess();
-		} catch (Exception e){
+					try {
+						txn = TransactionManager.getInstance().newTxn();
+						Long containerId = Container.createContainer(ctxt, formFilePath, pvDirPath, createTables);
+						logger.info("Form for definition in " + formFile + " created. Id = " + containerId);
+					} catch (Exception e) {
+						TransactionManager.getInstance().rollback(txn);
+					} finally {
+						if (txn != null) {
+							TransactionManager.getInstance().commit(txn);
+						}
+					}
+				}
+				actionResponse = new ActionResponse();
+				actionResponse.setSuccess();
+			} 
+		}catch (Exception e){
 			logger.error("Error creating forms. None of the forms are created.", e);
 			actionResponse = getActionResponse(e);
 		} finally {
 			sendResponse(httpResp, actionResponse);
 			DirOperationsUtility.getInstance().deleteDirectory(new File(tmpDirName));
-			if (txn != null) {
-				TransactionManager.getInstance().commit(txn);
-			}
-			
 		}
 	}
 	

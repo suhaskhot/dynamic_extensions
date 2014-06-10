@@ -141,6 +141,8 @@ public interface WebUIManagerConstants
 
 	public static String CREATE_FORM_ACTION = "/CreateFormAction.de";
 	
+	public static String CREATE_AQ_FORM_ACTION = "/CreateAQFormAction.de";
+	
 	public static String EXPORT_FORM_ACTION = "/ExportFormAction.de";
 
 	public static final String SURVEY_MODE_JSP = "surveyModePage";

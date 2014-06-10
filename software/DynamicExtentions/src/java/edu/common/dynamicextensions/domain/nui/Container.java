@@ -752,6 +752,12 @@ public class Container implements Serializable {
 			existingContainer = getContainer(parsedContainer.getId());
 		}
 		
+		if (existingContainer == null) { 
+			if (parsedContainer.getName() != null) {
+				existingContainer = getContainer(parsedContainer.getName());
+			}
+		}
+		
 		Container container = null;
 		if (existingContainer != null) {
 			existingContainer.editContainer(parsedContainer);

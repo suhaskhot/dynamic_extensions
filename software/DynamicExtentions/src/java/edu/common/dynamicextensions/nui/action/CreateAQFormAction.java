@@ -113,7 +113,7 @@ public class CreateAQFormAction extends HttpServlet {
 						Integer sortOrder;
 						
 						try {
-							String sortOrderId = sortOrderProperties.getProperty(formName).toString().replace(" ", "");
+							String sortOrderId = sortOrderProperties.getProperty(formName).trim();
 							
 							if (sortOrderId == null) {
 								throw new RuntimeException("Sort order is not provided for the form: " + formName);

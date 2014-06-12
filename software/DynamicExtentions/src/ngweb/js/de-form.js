@@ -824,6 +824,8 @@ edu.common.de.GroupField = function(id, field) {
     for (var i = 0; i < this.inputEls.length; ++i) {
       if ($.inArray(this.inputEls[i].val(), checked) != -1) {
         this.inputEls[i].prop('checked', true);
+      } else {
+          this.inputEls[i].prop('checked', false);
       }
     }
   };

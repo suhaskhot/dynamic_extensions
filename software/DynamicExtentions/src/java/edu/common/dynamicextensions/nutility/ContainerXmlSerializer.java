@@ -212,7 +212,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 		
 		protected void serializeSelectCtrlProps(SelectControl ctrl) {
 			serializeControlProps(ctrl);
-			
+			writeElement(writer, "defaultValue", ctrl.getDefaultValue());
 			writeElementStart(writer, "options");
 			PvDataSource pvDataSource = ctrl.getPvDataSource();
 			String sql = pvDataSource.getSql();

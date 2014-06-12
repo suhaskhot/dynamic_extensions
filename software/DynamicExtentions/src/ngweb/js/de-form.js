@@ -468,7 +468,7 @@ edu.common.de.FieldFactory = {
       fieldObj = new edu.common.de.SubFormField(id, field, args);
     } else if (field.type == 'fileUpload') {
       fieldObj = new edu.common.de.FileUploadField(id, field, args);
-    } else if (field.type == 'label' && field.note) {
+    } else if (field.type == 'label') {
       fieldObj = new edu.common.de.Note(id, field, args);
     } else {
       fieldObj = new edu.common.de.UnknownField(id, field, args);
@@ -483,7 +483,7 @@ edu.common.de.TextField = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
+    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip, value: field.defaultValue}).addClass("form-control");
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;
   };
@@ -522,7 +522,7 @@ edu.common.de.NumberField = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
+    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip, value: field.defaultValue}).addClass("form-control");
     var rules = field.validationRules.concat({name: 'numeric', params: {noOfDigitsAfterDecimal: field.noOfDigitsAfterDecimal}});
     this.validator = new edu.common.de.FieldValidator(rules, this);
     return this.inputEl;
@@ -562,7 +562,7 @@ edu.common.de.TextArea = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<textarea/>").prop({id: id, rows: field.noOfRows, title: field.toolTip}).addClass("form-control");
+    this.inputEl = $("<textarea/>").prop({id: id, rows: field.noOfRows, title: field.toolTip, value: field.defaultValue}).addClass("form-control");
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;
   };
@@ -756,6 +756,7 @@ edu.common.de.GroupField = function(id, field) {
 
     for (var i = 0; i < field.pvs.length; ++i) {
       var pv = field.pvs[i];
+      var defaultVal = false;
       if (count % optionsPerRow == 0) {
         if (currentDiv) {
           this.clusterEl.push(currentDiv);
@@ -764,7 +765,10 @@ edu.common.de.GroupField = function(id, field) {
         currentDiv = $("<div/>");
       }
       
-      var btn = $("<input/>").prop({type: type, name: field.name, value: pv.value, title: field.toolTip});
+      if (field.defaultValue != undefined &&  field.defaultValue.value == pv.value) {
+        defaultVal = true;
+      }
+      var btn = $("<input/>").prop({type: type, name: field.name, value: pv.value, title: field.toolTip, checked: defaultVal});
       currentDiv.append($("<label/>").addClass(typeclass).append(btn).append(pv.value).css("width", width));
       this.inputEls.push(btn);
       ++count;

@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.nutility;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -140,7 +142,7 @@ public class ContainerJsonSerializer implements ContainerSerializer {
 		PvDataSource pvDataSrc =  ctrl.getPvDataSource();
 		ctrlProps.put("dataType", pvDataSrc.getDataType());
 		ctrlProps.put("dateFormat", pvDataSrc.getDateFormat());
-		
+		ctrlProps.put("defaultValue", ctrl.getDefaultValue());
 		List<PermissibleValue> pvs = pvDataSrc.getPermissibleValues(Calendar.getInstance().getTime());
 		ctrlProps.put("pvs", pvs);
 		ctrlProps.put("pvOrdering", pvDataSrc.getOrdering().name());

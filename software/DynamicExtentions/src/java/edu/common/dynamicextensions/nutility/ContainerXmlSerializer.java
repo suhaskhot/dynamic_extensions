@@ -317,6 +317,7 @@ public class ContainerXmlSerializer implements ContainerSerializer  {
 			
 			writeElementStart(writer, "label");
 			writeElement(writer, "name", ctrl.getName());
+			writeElement(writer, "udn", ctrl.getUserDefinedName());
 
 			if (label.isHeading()) {
 				writeElement(writer, "heading", label.getCaption());

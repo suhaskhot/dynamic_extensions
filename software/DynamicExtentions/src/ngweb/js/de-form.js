@@ -143,6 +143,7 @@ edu.common.de.Form = function(args) {
   this.recordId = args.recordId;
   this.formData = args.formData;
   this.formDataUrl = args.formDataUrl;
+  this.formSaveUrl = args.formSaveUrl;
   this.formDataXhr = null;
 
   this.fileUploadUrl = args.fileUploadUrl;
@@ -297,7 +298,7 @@ edu.common.de.Form = function(args) {
     }
 
     var formData = {appData: this.appData};
-    var url = this.formDataUrl.replace(":formId", this.formId);
+    var url = this.formSaveUrl.replace(":formId", this.formId);
     var method;
     if (this.recordId) {
       url = url.replace(":recordId", this.recordId);

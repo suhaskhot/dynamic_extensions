@@ -768,7 +768,7 @@ edu.common.de.GroupField = function(id, field) {
       if (field.defaultValue != undefined &&  field.defaultValue.value == pv.value) {
         defaultVal = true;
       }
-      var btn = $("<input/>").prop({type: type, name: field.name, value: pv.value, title: field.toolTip, checked: defaultVal});
+      var btn = $("<input/>").prop({type: type, name: field.name + id, value: pv.value, title: field.toolTip, checked: defaultVal});
       currentDiv.append($("<label/>").addClass(typeclass).append(btn).append(pv.value).css("width", width));
       this.inputEls.push(btn);
       ++count;

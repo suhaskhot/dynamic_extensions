@@ -720,7 +720,7 @@ edu.common.de.SelectField = function(id, field) {
   this.getName = function() {
     return field.name;
   };
-
+  
   this.getCaption = function() {
     return field.caption;
   };
@@ -734,6 +734,7 @@ edu.common.de.SelectField = function(id, field) {
   };
 
   this.setValue = function(recId, value) {
+    value = edu.common.de.Utility.getValueByDataType(field, value);
     this.recId = recId;
     this.inputEl.val(value);
   };
@@ -814,7 +815,7 @@ edu.common.de.GroupField = function(id, field) {
 
   this.setValue = function(recId, value) {
     this.recId = recId;
-
+    value = edu.common.de.Utility.getValueByDataType(field, value);
     var checked;
     if (field.type == 'radiobutton') {
       checked = [value];
@@ -1244,5 +1245,32 @@ edu.common.de.Utility = {
       el.next().attr('title', tooltip);
     }
     el.removeClass('de-input-error').attr('title', tooltip);
+  },
+  
+  getValueByDataType: function(field, value) {
+    if (value == undefined) {
+      return value;
+    }
+	
+    var parsedVal;
+    if (value instanceof Array) {
+      parsedVal = [];
+      for (var i = 0 ; i < value.length ; i++) {
+        if (field.dataType == "INTEGER") {
+          parsedVal[i] = parseInt(value[i]).toString();
+        } else if (field.dataType == "FLOAT") {
+          parsedVal[i] = parseFloat(value[i]).toString();
+        }
+	  }
+    } else {
+      if (field.dataType == "INTEGER") {
+        parsedVal = parseInt(value);
+      } else if (field.dataType == "FLOAT") {
+        parsedVal = parseFloat(value);
+      }
+      parsedVal = parsedVal.toString();
+    }
+    return parsedVal;
   }
+	  
 };

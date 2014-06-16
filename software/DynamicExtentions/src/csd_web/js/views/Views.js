@@ -389,6 +389,14 @@ var Views = {
 					}
 
 					var status = "error";
+		
+					if (newModel.attributes.dataType == 'INTEGER' || 
+						newModel.attributes.dataType == 'FLOAT') {
+					  validationMessages = this.validatePvDataType(newModel, "number")
+					} else if (newModel.attributes.dataType == 'BOOLEAN') {
+					  validationMessages = this.validatePvDataType(newModel, "boolean")
+				    }
+					
 					if (validationMessages.length == 0) {
 						this.populateFields();
 						var displayLabel = $('#controlCaption').val() + " ("
@@ -456,9 +464,43 @@ var Views = {
 					}
 
 					this.showMessages(validationMessages, status);
-
 				},
 
+				validatePvDataType : function (newModel, dataType) {
+				  var validationMessages = newModel.validate(newModel.toJSON());
+				  for (var i = GlobalMemory.pvCounter -1 ; i > -1 ; i--) {
+				    var pv = eval("newModel.attributes.pvs.pv_" + i);
+					
+					if (pv == undefined) {
+					  break;
+					}
+					
+					var isValid = true;
+					
+					switch (dataType) {
+					  case "number" :
+						if (isNaN(pv.value)) {
+					      isValid = false;
+						}
+						break;
+					  case "boolean" :
+						if (!(pv.value == "true" || pv.value == "false")) {
+     					  isValid = false;
+						}
+						break;
+					}
+                    
+					if (! isValid) {
+					  validationMessages.push({
+						name : 'datatype',
+						message : 'Permissible value does not match with given data type ' + dataType
+					  });
+					  break;
+					}
+				  }
+				  return validationMessages;
+				 },
+				
 				populateFields : function() {
 					var labelPos = $('input[name=labelAlignment]:radio:checked')
 							.prop('id');

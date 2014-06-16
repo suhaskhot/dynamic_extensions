@@ -14,7 +14,6 @@ var Models = {
 				},
 
 				initialize : function() {
-					console.log("Form Model created");
 					this.set({
 						// controlCollection : new Array(),
 						controlObjectCollection : {},
@@ -154,7 +153,6 @@ var Models = {
 		},
 
 		initialize : function() {
-			console.log("Form Info Model created");
 		}
 
 	}),
@@ -195,7 +193,6 @@ var Models = {
 				},
 
 				initialize : function() {
-					console.log("FieldControl Model created");
 				},
 
 				addCalculationFormula : function(cFormula) {

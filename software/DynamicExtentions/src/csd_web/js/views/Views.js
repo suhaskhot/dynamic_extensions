@@ -394,7 +394,7 @@ var Views = {
 					  validationMessages = this.validatePvDataType(newModel, "INTEGER")
 					  
 					} else if (newModel.attributes.dataType == 'FLOAT') {
-                      validationMessages = this.validatePvDataType(newModel, "INTEGER")
+                      validationMessages = this.validatePvDataType(newModel, "FLOAT")
 					} else if (newModel.attributes.dataType == 'BOOLEAN') {
 					  validationMessages = this.validatePvDataType(newModel, "BOOLEAN")
 				    }

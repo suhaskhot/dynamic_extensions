@@ -22,6 +22,9 @@ var Models = {
 				},
 
 				getControl : function(name) {
+					if (name == undefined) {
+						return;
+					}
 					var controlName = name.split(".");
 					if (controlName.length == 1) {
 						return this.get('controlObjectCollection')[name];

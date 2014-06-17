@@ -518,6 +518,10 @@ var ControlBizLogic = {
 		// Get the relevant model
 		var fieldModel = ControlBizLogic.getSelectedModelFromTree(id);
 
+		if (fieldModel == undefined) {
+			return false;
+		}
+
 		ControlBizLogic.populateViewWithControl(fieldModel);
 		// Select the carousel's control #FFFFFF
 		Main.mainTabBarView.highlightSelectedControlType();
@@ -583,6 +587,10 @@ var ControlBizLogic = {
 		var parentId = Main.treeView.getTree().getParentId(id);
 		var controlName = Main.treeView.getTree()
 				.getUserData(id, "controlName");
+
+		if (controlName == undefined) {
+			return;
+		}
 
 		var controlType = Main.treeView.getTree()
 				.getUserData(id, "controlType");

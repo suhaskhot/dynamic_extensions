@@ -390,11 +390,13 @@ var Views = {
 
 					var status = "error";
 		
-					if (newModel.attributes.dataType == 'INTEGER' || 
-						newModel.attributes.dataType == 'FLOAT') {
-					  validationMessages = this.validatePvDataType(newModel, "number")
+					if (newModel.attributes.dataType == 'INTEGER') {
+					  validationMessages = this.validatePvDataType(newModel, "INTEGER")
+					  
+					} else if (newModel.attributes.dataType == 'FLOAT') {
+                      validationMessages = this.validatePvDataType(newModel, "INTEGER")
 					} else if (newModel.attributes.dataType == 'BOOLEAN') {
-					  validationMessages = this.validatePvDataType(newModel, "boolean")
+					  validationMessages = this.validatePvDataType(newModel, "BOOLEAN")
 				    }
 					
 					if (validationMessages.length == 0) {
@@ -478,12 +480,19 @@ var Views = {
 					var isValid = true;
 					
 					switch (dataType) {
-					  case "number" :
+					  case "INTEGER" :
+						if (isNaN(pv.value)) {
+					      isValid = false;
+						} else if (parseInt(pv.value) != parseFloat(pv.value)) {
+					      isValid = false;
+						}
+						break;
+					  case "FLOAT" :
 						if (isNaN(pv.value)) {
 					      isValid = false;
 						}
 						break;
-					  case "boolean" :
+					  case "BOOLEAN" :
 						if (!(pv.value == "true" || pv.value == "false")) {
      					  isValid = false;
 						}

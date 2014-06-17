@@ -782,8 +782,9 @@ var Views = {
 										beforeSend : function() {
 											$("#pvFileWaitingImage").show();
 										},
-										complete : function(xhr) {
-											var receivedData = $.parseJSON($.parseJSON(xhr.responseText));
+										success : function(data) {
+											var receivedData = JSON.parse(data);
+
 											$("#pvFileWaitingImage").hide();
 											if (receivedData.status == "saved") {
 												ControlBizLogic
@@ -1252,9 +1253,9 @@ var Views = {
 											$("#pvSubSetFileWaitingImage")
 													.show();
 										},
-										complete : function(xhr) {
-											var receivedData = $
-													.parseJSON(xhr.responseText);
+										success : function(data) {
+											var receivedData = JSON.parse(data);
+
 											$("#pvSubSetFileWaitingImage")
 													.hide();
 											if (receivedData.status == "saved") {
@@ -1793,8 +1794,8 @@ var Views = {
 										beforeSend : function() {
 											$("#importFileWaitingImage").show();
 										},
-										complete : function(xhr) {
-											var receivedData = JSON.parse($.parseJSON(xhr.responseText));
+										success : function(data) {
+											var receivedData = JSON.parse(data);
 											$("#importFileWaitingImage").hide();
 											if (receivedData.status == "success") {
 												Routers.formEventsRouterPointer

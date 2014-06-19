@@ -1248,7 +1248,7 @@ edu.common.de.Utility = {
   },
   
   getValueByDataType: function(field, value) {
-    if (value == undefined) {
+    if (value == undefined || field.dataType == "STRING" || field.dataType == "BOOLEAN") {
       return value;
     }
 	

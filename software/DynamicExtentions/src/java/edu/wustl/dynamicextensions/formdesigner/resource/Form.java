@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.common.dynamicextensions.nutility.BOUtil;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -174,7 +175,11 @@ public class Form {
 				TransactionManager.getInstance().commit(txn);
 			}
 			formProps.setProperty(CSDConstants.STATUS, CSDConstants.STATUS_SAVED);
-			return formProps.getAllProperties().toString();
+
+            Integer containerId = (Integer) propertiesMap.get("id");
+            BOUtil.getInstance().getGenerator().update(containerId.longValue());
+
+            return formProps.getAllProperties().toString();
 		} catch (Exception ex) {
 			propertiesMap.put("status", "error");
 			ex.printStackTrace();

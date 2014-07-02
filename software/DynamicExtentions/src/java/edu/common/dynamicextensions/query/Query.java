@@ -10,11 +10,9 @@ import org.apache.log4j.Logger;
 
 import edu.common.dynamicextensions.ndao.JdbcDaoFactory;
 import edu.common.dynamicextensions.ndao.ResultExtractor;
-import edu.common.dynamicextensions.query.QueryResponse;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
-import edu.common.dynamicextensions.query.QueryResponse;
 
 public class Query {
     private static final Logger logger = Logger.getLogger(Query.class);
@@ -27,7 +25,7 @@ public class Query {
     
     private boolean ic;
     
-    private String dateFormat;
+    private String dateFormat = "MM-dd-yyyy";
     
     private boolean vcEnabled;
         
@@ -70,7 +68,7 @@ public class Query {
     }
 
     public long getCount() {
-        QueryGenerator gen = new QueryGenerator(wideRows, ic);
+        QueryGenerator gen = new QueryGenerator(wideRows, ic, dateFormat);
         String countSql = gen.getCountSql(queryExpr, queryJoinTree);
 
         long t1 = System.currentTimeMillis();            
@@ -122,7 +120,7 @@ public class Query {
     }
     
     private String getDataSql(boolean wideRows, int start, int numRows) {
-        QueryGenerator gen = new QueryGenerator(wideRows, ic);
+        QueryGenerator gen = new QueryGenerator(wideRows, ic, dateFormat);
         return gen.getDataSql(queryExpr, queryJoinTree, start, numRows);        
     }
 

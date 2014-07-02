@@ -1,5 +1,7 @@
 package edu.common.dynamicextensions.query;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -35,12 +37,17 @@ public class QueryGenerator {
 	
 	private boolean ic;
 
+	private String dateFormat;
+
+	private String dbDateFormat = "MM-dd-yyyy";
+
     public QueryGenerator() {
     }
     
-    public QueryGenerator(boolean wideRowSupport, boolean ic) {
+    public QueryGenerator(boolean wideRowSupport, boolean ic, String dateFormat) {
     	this.wideRowSupport = wideRowSupport;
     	this.ic = ic;
+        this.dateFormat = dateFormat;
     }
    
     public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
@@ -372,15 +379,19 @@ public class QueryGenerator {
     	
         switch (value.getType()) {
     		case STRING:
-    			result = "'" + removeQuotes(value.getValues().get(0).toString()) + "'";
+    			result = removeQuotes(value.getValues().get(0).toString());
     			if (coercionType == DataType.DATE) {
+                                result = "'" + getDateInDbFormat(result) + "'";
+
         			String dbProduct = DbSettingsFactory.getProduct().toLowerCase();
         			if (dbProduct.equals("oracle")) {
         				result = "to_date(" + result + ", 'MM-DD-YYYY')";
         			} else if (dbProduct.equals("mysql")) {
-        				result = "str_to_date(" + result + ", '%m/%d/%Y')";
+        				result = "str_to_date(" + result + ", '%m-%d-%Y')";
         			}    				    				
-    			}        		
+    			} else {
+                                result = "'" + result + "'";
+                        }
     			break;
     			
     		case BOOLEAN:
@@ -515,4 +526,15 @@ public class QueryGenerator {
     	
     	return "";    	
     }
+
+	private String getDateInDbFormat(String date) {
+		try {
+			SimpleDateFormat appSdf = new SimpleDateFormat(dateFormat);
+			SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat);
+
+			return dbSdf.format(appSdf.parse(date));
+		} catch (ParseException pe) {
+			throw new IllegalArgumentException("Invalid date: " + date, pe);
+		}
+	}
 }

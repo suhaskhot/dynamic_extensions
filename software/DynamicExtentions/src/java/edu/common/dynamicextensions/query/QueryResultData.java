@@ -110,6 +110,16 @@ public class QueryResultData {
         
         return rows;
     }
+
+	public List<String[]> getStringifiedRows() {
+		List<String[]> rows = new ArrayList<String[]>();
+		Iterator<String[]> iter = stringifiedRowIterator();
+		while (iter.hasNext()) {
+			rows.add(iter.next());
+		}
+
+		return rows;
+	}
     
     public Iterator<Object[]> rowIterator() {
     	if (rows != null) {

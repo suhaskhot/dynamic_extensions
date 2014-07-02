@@ -1,7 +1,5 @@
 package edu.common.dynamicextensions.query;
 
-import org.apache.commons.lang.WordUtils;
-
 public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatter {
 	private String separator = "# ";
 	
@@ -13,7 +11,7 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 	public String format(String[] nodeCaptions, int instance) {
 		StringBuilder heading = new StringBuilder();		
 		for (int j = 0; j < nodeCaptions.length - 1; ++j) {
-			heading.append(WordUtils.initials(nodeCaptions[j])).append(separator);
+			heading.append(nodeCaptions[j]).append(separator);
 		}		
 		heading.append(nodeCaptions[nodeCaptions.length - 1]);
 		

@@ -28,6 +28,7 @@ import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.Node;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
+import org.apache.commons.lang.StringEscapeUtils;
 
 public class QueryGenerator {
 	
@@ -390,7 +391,7 @@ public class QueryGenerator {
         				result = "str_to_date(" + result + ", '%m-%d-%Y')";
         			}    				    				
     			} else {
-                                result = "'" + result + "'";
+                                result = "'" + StringEscapeUtils.escapeSql(result) + "'";
                         }
     			break;
     			

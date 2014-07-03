@@ -1,7 +1,12 @@
 package edu.common.dynamicextensions.query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatter {
 	private String separator = "# ";
+
+	private Map<String, Integer> instanceCntMap = new HashMap<String, Integer>();
 	
 	public DefaultResultColLabelFormatter(String separator) {
 		this.separator = separator;
@@ -14,11 +19,19 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 			heading.append(nodeCaptions[j]).append(separator);
 		}		
 		heading.append(nodeCaptions[nodeCaptions.length - 1]);
-		
-		if (instance > 0) {
-			heading.append(" ").append(instance);
+
+		String headingStr = heading.toString();
+		Integer instanceCnt = instanceCntMap.get(headingStr);
+		if (instanceCnt == null) {
+			instanceCnt = 0;
+		}
+
+		String result = headingStr;
+		if (instanceCnt > 0) {
+			result += separator + instanceCnt;
 		}
 		
-		return heading.toString();    	
-	}	
+		instanceCntMap.put(headingStr, instanceCnt + 1);
+		return result;
+	}
 }

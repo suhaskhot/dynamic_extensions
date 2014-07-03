@@ -18,6 +18,14 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
+	@Override public T visitMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
 	@Override public T visitField(@NotNull AQLParser.FieldContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -50,7 +58,7 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { return visitChildren(ctx); }
+	@Override public T visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -58,7 +66,7 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
-	@Override public T visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

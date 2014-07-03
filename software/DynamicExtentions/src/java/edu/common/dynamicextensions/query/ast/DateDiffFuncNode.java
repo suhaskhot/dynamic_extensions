@@ -11,7 +11,7 @@ public class DateDiffFuncNode extends ExpressionNode implements Serializable {
 	private static final long serialVersionUID = 4943379159084480011L;
 
 	public static enum DiffType {
-		DAY, MONTH, YEAR
+		MINUTES, DAY, MONTH, YEAR
 	}
 	
 	private DiffType diffType;

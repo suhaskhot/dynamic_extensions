@@ -17,6 +17,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterField(@NotNull AQLParser.FieldContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -69,19 +82,6 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
 	@Override public void enterCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -89,6 +89,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

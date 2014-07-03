@@ -1,6 +1,5 @@
 // Generated from AQL.g4 by ANTLR 4.1
 package edu.common.dynamicextensions.query.antlr;
-// Generated from AQL.g4 by ANTLR 4.1
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -12,6 +11,13 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * operations with no return type.
  */
 public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#MinsDiffFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx);
+
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#Field}.
 	 * @param ctx the parse tree
@@ -41,18 +47,18 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#MvFilter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link AQLParser#CurrentDateFunc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#MvFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#IntLiteral}.

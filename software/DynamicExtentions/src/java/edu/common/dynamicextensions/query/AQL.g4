@@ -41,6 +41,7 @@ arith_expr    : arith_expr ARITH_OP arith_expr               #ArithExpr
               | LP arith_expr RP                             #ParensArithExpr
               | MTHS_BTWN LP arith_expr ',' arith_expr RP    #MonthsDiffFunc
               | YRS_BTWN LP arith_expr ',' arith_expr RP     #YearsDiffFunc
+              | MINS_BTWN LP arith_expr ',' arith_expr RP    #MinsDiffFunc
               | CURR_DATE LP RP                              #CurrentDateFunc
               | COUNT LP DISTINCT? FIELD RP                  #CountFunc
               | FIELD                                        #Field              
@@ -61,6 +62,7 @@ NTHCHILD : 'nthchild';
 MTHS_BTWN: 'months_between';
 YRS_BTWN:  'years_between';
 CURR_DATE: 'current_date';
+MINS_BTWN: 'minutes_between';
 COUNT    : 'count';
 DISTINCT : 'distinct';
 LIMIT    : 'limit';

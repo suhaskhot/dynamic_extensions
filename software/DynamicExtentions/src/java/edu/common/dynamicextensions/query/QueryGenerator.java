@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -40,15 +41,21 @@ public class QueryGenerator {
 
 	private String dateFormat;
 
-	private String dbDateFormat = "MM-dd-yyyy";
+	private String timeFormat;
+
+	private String dateTimeFormat;
+
+	private String dbDateFormat = "MM-dd-yyyy HH:mm";
 
     public QueryGenerator() {
     }
     
-    public QueryGenerator(boolean wideRowSupport, boolean ic, String dateFormat) {
+    public QueryGenerator(boolean wideRowSupport, boolean ic, String dateFormat, String timeFormat) {
     	this.wideRowSupport = wideRowSupport;
     	this.ic = ic;
         this.dateFormat = dateFormat;
+        this.timeFormat = timeFormat;
+        this.dateTimeFormat = dateFormat + " " + timeFormat;
     }
    
     public String getCountSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
@@ -386,9 +393,9 @@ public class QueryGenerator {
 
         			String dbProduct = DbSettingsFactory.getProduct().toLowerCase();
         			if (dbProduct.equals("oracle")) {
-        				result = "to_date(" + result + ", 'MM-DD-YYYY')";
+        				result = "to_date(" + result + ", 'MM-DD-YYYY HH24:MI')";
         			} else if (dbProduct.equals("mysql")) {
-        				result = "str_to_date(" + result + ", '%m-%d-%Y')";
+        				result = "str_to_date(" + result + ", '%m-%d-%Y %H:%i')";
         			}    				    				
     			} else {
                                 result = "'" + StringEscapeUtils.escapeSql(result) + "'";
@@ -507,7 +514,10 @@ public class QueryGenerator {
     			return "months_between(" + loperand + ", " + roperand + ")";
 			
     		case DAY:
-    			return "(" + loperand + " - " + roperand + ")";    			    	
+    			return "(" + loperand + " - " + roperand + ")";
+
+                case MINUTES:
+                        return "(round(1440 * (" + loperand + " - " + roperand + "), 2))";
     	}
     	
     	return "";
@@ -523,6 +533,9 @@ public class QueryGenerator {
     			
     		case DAY:
     			return "(" + loperand + " - " + roperand + ")";
+
+                case MINUTES:
+                        return "timestampdiff(MINUTE, " + roperand + ", " + loperand + ")";
     	}
     	
     	return "";    	
@@ -530,10 +543,15 @@ public class QueryGenerator {
 
 	private String getDateInDbFormat(String date) {
 		try {
-			SimpleDateFormat appSdf = new SimpleDateFormat(dateFormat);
-			SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat);
+			Date appDate = null;
+			try {
+				appDate = new SimpleDateFormat(dateTimeFormat).parse(date);
+			} catch (ParseException pe) {
+				appDate = new SimpleDateFormat(dateFormat).parse(date);
+			}
 
-			return dbSdf.format(appSdf.parse(date));
+			SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat);
+			return dbSdf.format(appDate);
 		} catch (ParseException pe) {
 			throw new IllegalArgumentException("Invalid date: " + date, pe);
 		}

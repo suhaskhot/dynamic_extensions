@@ -225,6 +225,13 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	ExpressionNode rightOperand = (ExpressionNode)visit(ctx.arith_expr(1));
     	return getDateDiffFuncNode(DiffType.YEAR, leftOperand, rightOperand);
     }
+
+	@Override
+	public DateDiffFuncNode visitMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx) {
+		ExpressionNode leftOperand = (ExpressionNode)visit(ctx.arith_expr(0));
+		ExpressionNode rightOperand = (ExpressionNode)visit(ctx.arith_expr(1));
+		return getDateDiffFuncNode(DiffType.MINUTES, leftOperand, rightOperand);
+	}
     
     @Override
     public CurrentDateNode visitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx) {

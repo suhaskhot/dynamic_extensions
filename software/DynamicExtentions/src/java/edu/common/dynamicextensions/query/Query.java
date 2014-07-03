@@ -75,7 +75,7 @@ public class Query {
     }
 
     public long getCount() {
-        QueryGenerator gen = new QueryGenerator(wideRows, ic, dateFormat);
+        QueryGenerator gen = new QueryGenerator(wideRows, ic, dateFormat, timeFormat);
         String countSql = gen.getCountSql(queryExpr, queryJoinTree);
 
         long t1 = System.currentTimeMillis();            
@@ -127,7 +127,7 @@ public class Query {
     }
     
     private String getDataSql(boolean wideRows, int start, int numRows) {
-        QueryGenerator gen = new QueryGenerator(wideRows, ic, dateFormat);
+        QueryGenerator gen = new QueryGenerator(wideRows, ic, dateFormat, timeFormat);
         return gen.getDataSql(queryExpr, queryJoinTree, start, numRows);        
     }
 

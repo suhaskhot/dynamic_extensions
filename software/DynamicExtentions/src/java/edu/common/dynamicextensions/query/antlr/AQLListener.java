@@ -9,6 +9,17 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface AQLListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#MinsDiffFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#MinsDiffFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitMinsDiffFunc(@NotNull AQLParser.MinsDiffFuncContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#Field}.
 	 * @param ctx the parse tree
 	 */
@@ -53,17 +64,6 @@ public interface AQLListener extends ParseTreeListener {
 	void exitFloatLiteral(@NotNull AQLParser.FloatLiteralContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link AQLParser#MvFilter}.
-	 * @param ctx the parse tree
-	 */
-	void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link AQLParser#MvFilter}.
-	 * @param ctx the parse tree
-	 */
-	void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link AQLParser#CurrentDateFunc}.
 	 * @param ctx the parse tree
 	 */
@@ -73,6 +73,17 @@ public interface AQLListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCurrentDateFunc(@NotNull AQLParser.CurrentDateFuncContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link AQLParser#MvFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterMvFilter(@NotNull AQLParser.MvFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#MvFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitMvFilter(@NotNull AQLParser.MvFilterContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link AQLParser#IntLiteral}.

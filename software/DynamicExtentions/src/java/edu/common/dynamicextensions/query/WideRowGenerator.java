@@ -32,6 +32,8 @@ public class WideRowGenerator {
     private JoinTree queryJoinTree;
     
     private String dateFormat;
+
+    private String timeFormat;
     
     public WideRowGenerator(JoinTree queryJoinTree, QueryExpressionNode queryExpr) {
         this.queryExpr = queryExpr;
@@ -50,6 +52,11 @@ public class WideRowGenerator {
     public WideRowGenerator dateFormat(String dateFormat) {
     	this.dateFormat = dateFormat;
     	return this;
+    }
+
+    public WideRowGenerator timeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+        return this;
     }
     
     public void processResultSet(ResultSet rs) {
@@ -269,7 +276,7 @@ public class WideRowGenerator {
         	}
         });
         
-        return new QueryResultData(columns, dateFormat);
+        return new QueryResultData(columns, dateFormat, timeFormat);
     }
             
     private class WideRowNode {

@@ -26,6 +26,8 @@ public class Query {
     private boolean ic;
     
     private String dateFormat = "MM-dd-yyyy";
+
+    private String timeFormat = "HH:mm";
     
     private boolean vcEnabled;
         
@@ -49,6 +51,11 @@ public class Query {
     public Query dateFormat(String dateFormat) {
     	this.dateFormat = dateFormat;
     	return this;
+    }
+
+    public Query timeFormat(String timeFormat) {
+        this.timeFormat = timeFormat;
+        return this;
     }
     
     public Query enableVersionedForms(boolean vcEnabled) {
@@ -126,7 +133,7 @@ public class Query {
 
     private QueryResultData getQueryResultData(ResultSet rs)
     throws SQLException {
-        QueryResultData queryResult = new QueryResultData(getResultColumns(queryExpr), dateFormat);
+        QueryResultData queryResult = new QueryResultData(getResultColumns(queryExpr), dateFormat, timeFormat);
         queryResult.dataSource(rs);
         return queryResult;
     }
@@ -137,7 +144,7 @@ public class Query {
         wideRowGenerator.processResultSet(rs);
         wideRowGenerator.end();
         
-        QueryResultData qrd = new QueryResultData(wideRowGenerator.getResultColumns(), dateFormat);
+        QueryResultData qrd = new QueryResultData(wideRowGenerator.getResultColumns(), dateFormat, timeFormat);
         qrd.dataSource(wideRowGenerator);
         return qrd;
     }

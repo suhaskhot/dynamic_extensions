@@ -30,7 +30,7 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 		if (instanceCnt > 0) {
 			result += separator + instanceCnt;
 		}
-		
+
 		instanceCntMap.put(headingStr, instanceCnt + 1);
 		return result;
 	}

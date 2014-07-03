@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.query;
 
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,13 +20,19 @@ public class QueryResultData {
     private ShallowWideRowGenerator rowGen = null;
             
     private SimpleDateFormat sdf = null;
+
+    private SimpleDateFormat tsf = null;
     
     private QueryResultScreener screener;
         	
-    public QueryResultData(List<ResultColumn> resultColumns, String dateFormat) {
+    public QueryResultData(List<ResultColumn> resultColumns, String dateFormat, String timeFormat) {
         this.resultColumns = resultColumns;
         if (dateFormat != null) {
         	sdf = new SimpleDateFormat(dateFormat);
+
+                if (timeFormat != null) {
+                        tsf = new SimpleDateFormat(dateFormat + " " + timeFormat);
+                }
         }
     }
     
@@ -156,8 +163,10 @@ public class QueryResultData {
         String result[] = new String[row.length];
         
         for(int j = 0; j < row.length; j++) {
-            if(row[j] == null) {
+            if (row[j] == null) {
                 result[j] = null;
+            } else if (row[j] instanceof Timestamp && tsf != null) {
+                result[j] = tsf.format(row[j]);
             } else if (row[j] instanceof Date && sdf != null){
                 result[j] = sdf.format(row[j]);
             } else {

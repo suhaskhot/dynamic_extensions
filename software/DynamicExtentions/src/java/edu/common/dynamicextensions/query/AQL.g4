@@ -25,6 +25,7 @@ filter        : arith_expr  OP   arith_expr          #BasicFilter
               | arith_expr  MOP  literal_values      #MvFilter
               | FIELD       SOP  SLITERAL            #StringCompFilter
               | FIELD       EOP                      #ExistsFilter
+              | FIELD       BETWEEN LP arith_expr ',' arith_expr RP #BetweenFilter
               ;
               
 literal_values: '(' literal (',' literal)* ')'
@@ -59,6 +60,7 @@ WS       : [ \t\n\r]+ -> skip;
 SELECT   : 'select';
 WHERE    : 'where';
 NTHCHILD : 'nthchild';
+BETWEEN  : 'between';
 MTHS_BTWN: 'months_between';
 YRS_BTWN:  'years_between';
 CURR_DATE: 'current_date';

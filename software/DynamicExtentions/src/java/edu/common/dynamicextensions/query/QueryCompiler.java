@@ -14,17 +14,8 @@ import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.VersionedContainer;
 import edu.common.dynamicextensions.napi.impl.VersionedContainerImpl;
-import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
-import edu.common.dynamicextensions.query.ast.CountNode;
-import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
-import edu.common.dynamicextensions.query.ast.ExpressionNode;
-import edu.common.dynamicextensions.query.ast.FieldNode;
-import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
+import edu.common.dynamicextensions.query.ast.*;
 import edu.common.dynamicextensions.query.ast.FilterExpressionNode.Op;
-import edu.common.dynamicextensions.query.ast.FilterNode;
-import edu.common.dynamicextensions.query.ast.FilterNodeMarker;
-import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
-import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryCompiler
 {
@@ -295,6 +286,12 @@ public class QueryCompiler
         analyzeExpressionNode(queryId, dateDiff.getLeftOperand(), joinMap);
         analyzeExpressionNode(queryId, dateDiff.getRightOperand(), joinMap);
     }
+
+	private void analyzeBetweenNode(int queryId, BetweenNode between, Map<String, JoinTree> joinMap) {
+		analyzeField(queryId, between.getLhs(), joinMap);
+		analyzeExpressionNode(queryId, between.getMinNode(), joinMap);
+		analyzeExpressionNode(queryId, between.getMaxNode(), joinMap);
+	}
     
     private void analyzeExpressionNode(int queryId, ExpressionNode exprNode, Map<String, JoinTree> joinMap) {
         if (exprNode instanceof FieldNode) {
@@ -303,7 +300,9 @@ public class QueryCompiler
             analyzeArithExpressionNode(queryId, (ArithExpressionNode)exprNode, joinMap);
         } else if (exprNode instanceof DateDiffFuncNode) {
             analyzeDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap);
-        }       
+        } else if (exprNode instanceof BetweenNode) {
+			analyzeBetweenNode(queryId, (BetweenNode)exprNode, joinMap);
+		}
     }
     
     private SelectListNode analyzeSelectList(SelectListNode selectList, Map<String, JoinTree> joinMap) {

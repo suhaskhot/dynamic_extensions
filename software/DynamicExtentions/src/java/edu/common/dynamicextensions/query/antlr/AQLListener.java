@@ -229,6 +229,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#BetweenFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterBetweenFilter(@NotNull AQLParser.BetweenFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#BetweenFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitBetweenFilter(@NotNull AQLParser.BetweenFilterContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#SimpleFilter}.
 	 * @param ctx the parse tree
 	 */

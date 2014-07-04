@@ -15,7 +15,8 @@ public class FilterNode implements FilterNodeMarker {
         ENDS_WITH("ends with"),
         CONTAINS("contains"),
         EXISTS("exists"),
-        NOT_EXISTS("not exists");
+        NOT_EXISTS("not exists"),
+        BETWEEN("between");
         
         
         private String symbol;

@@ -277,6 +277,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterBetweenFilter(@NotNull AQLParser.BetweenFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitBetweenFilter(@NotNull AQLParser.BetweenFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterSimpleFilter(@NotNull AQLParser.SimpleFilterContext ctx) { }
 	/**
 	 * {@inheritDoc}

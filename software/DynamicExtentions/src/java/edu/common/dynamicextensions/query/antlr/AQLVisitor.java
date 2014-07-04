@@ -152,6 +152,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitOrFilterExpr(@NotNull AQLParser.OrFilterExprContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#BetweenFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBetweenFilter(@NotNull AQLParser.BetweenFilterContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#SimpleFilter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

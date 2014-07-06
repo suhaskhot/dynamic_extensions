@@ -6,16 +6,33 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
+import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.ndao.DbSettingsFactory;
-import edu.common.dynamicextensions.query.ast.*;
+import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
+import edu.common.dynamicextensions.query.ast.BetweenNode;
+import edu.common.dynamicextensions.query.ast.CountNode;
+import edu.common.dynamicextensions.query.ast.CurrentDateNode;
+import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode.DiffType;
+import edu.common.dynamicextensions.query.ast.DateIntervalNode;
+import edu.common.dynamicextensions.query.ast.ExpressionNode;
+import edu.common.dynamicextensions.query.ast.FieldNode;
+import edu.common.dynamicextensions.query.ast.FilterExpressionNode;
+import edu.common.dynamicextensions.query.ast.FilterNode;
 import edu.common.dynamicextensions.query.ast.FilterNode.RelationalOp;
-import org.apache.commons.lang.StringEscapeUtils;
+import edu.common.dynamicextensions.query.ast.LimitExprNode;
+import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
+import edu.common.dynamicextensions.query.ast.LiteralValueNode;
+import edu.common.dynamicextensions.query.ast.Node;
+import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
+import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryGenerator {
 	
@@ -50,7 +67,9 @@ public class QueryGenerator {
     	if (wideRowSupport) {
         	String fromClause  = buildFromClause(joinTree);
         	String whereClause = buildWhereClause(queryExpr.getFilterExpr());
-    		
+        	String activeClause = buildActiveCond(joinTree);
+        	whereClause = and(whereClause, activeClause);
+        	
         	String alias = joinTree.getAlias();
         	String pk = joinTree.getForm().getPrimaryKey();
     		countSql.append("select count(distinct ")
@@ -68,8 +87,10 @@ public class QueryGenerator {
     public String getDataSql(QueryExpressionNode queryExpr, JoinTree joinTree) {
     	String selectClause = buildSelectClause(queryExpr.getSelectList(), joinTree);
         String fromClause  = buildFromClause(joinTree);
-        String whereClause = buildWhereClause(queryExpr.getFilterExpr());
+        String whereClause = buildWhereClause(queryExpr.getFilterExpr());        
+        String activeClause = buildActiveCond(joinTree);        
         
+        whereClause = and(whereClause, activeClause);        
         String sql = new StringBuilder("select ").append(selectClause)
         	.append(" from ").append(fromClause)
         	.append(" where ").append(whereClause)
@@ -236,6 +257,31 @@ public class QueryGenerator {
         }
 
         return exprStr;
+    }
+    
+    private String buildActiveCond(JoinTree joinTree) {
+    	StringBuilder clause = new StringBuilder();
+    	
+    	Container form = joinTree.getForm();
+    	if (form != null && form.getActiveCond() != null) {
+    		clause.append(joinTree.getAlias()).append(".").append(form.getActiveCond());
+    	}
+    	
+    	for (JoinTree childTree : joinTree.getChildren()) {
+    		String childActiveCond = buildActiveCond(childTree);
+    		
+    		if (childActiveCond.isEmpty()) {
+    			continue;
+    		}
+    		    		
+    		if (clause.length() != 0) {
+    			clause.append(" AND ");
+    		}
+    		
+    		clause.append(childActiveCond);
+    	}
+    	
+    	return clause.toString();
     }
     
     private String addOrderBy(String dataSql, JoinTree joinTree) {
@@ -554,5 +600,15 @@ public class QueryGenerator {
 		} catch (ParseException pe) {
 			throw new IllegalArgumentException("Invalid date: " + date, pe);
 		}
+	}
+	
+	private String and(String clause1, String clause2) {
+		if (clause2 == null || clause2.isEmpty()) {
+			return clause1;
+		}
+		
+		return new StringBuilder().append("(").append(clause1).append(")")
+				.append(" AND ").append("(").append(clause2).append(")")
+				.toString();		
 	}
 }

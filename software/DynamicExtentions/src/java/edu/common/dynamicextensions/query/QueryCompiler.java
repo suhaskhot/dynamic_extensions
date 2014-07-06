@@ -1,10 +1,15 @@
 package edu.common.dynamicextensions.query;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,21 +90,29 @@ public class QueryCompiler
             rootTree = new JoinTree(rootForm, "t" + tabCnt++);
         }
 
-        for (Map.Entry<String, JoinTree> formTreeEntry : joinMap.entrySet()) {
-            if (formTreeEntry.getKey().equals("0." + rootFormName)) {
+        List<String> lookupNames = new ArrayList<String>(joinMap.keySet());
+        Collections.sort(lookupNames, new Comparator<String>() {
+        	public int compare(String arg0, String arg1) {
+        		Integer query0 = Integer.parseInt(arg0.split("\\.")[0]);
+        		Integer query1 = Integer.parseInt(arg1.split("\\.")[0]);
+        		return query0.compareTo(query1);
+        	}
+        });
+        
+        for (String formLookupName : lookupNames) {
+        	if (formLookupName.equals("0." + rootFormName)) {
                 continue;
             }
-          
-            String formLookupName = formTreeEntry.getKey();            
-            JoinTree childTree = formTreeEntry.getValue();
+                     
+            JoinTree childTree = joinMap.get(formLookupName);
             
-            String dest = formLookupName.substring(formLookupName.indexOf(".") + 1); // Earlier childTree.getFormName();
+            String dest = formLookupName.substring(formLookupName.indexOf(".") + 1); 
             Path path = PathConfig.getInstance().getPath(rootFormName, dest);
             if (path == null) {
                 throw new RuntimeException("No path between root form " + rootFormName + " and " + dest);
             }
             
-            int queryId = Integer.parseInt(formTreeEntry.getKey().split("\\.")[0]);
+            int queryId = Integer.parseInt(formLookupName.split("\\.")[0]);
             createPath(queryId, rootTree, childTree, path);
         }
 
@@ -157,7 +170,7 @@ public class QueryCompiler
         String fieldNameParts[] = startField.split("\\.");
         for (int i = 0; i < fieldNameParts.length; i++) {
             JoinTree child = formTree.getChild(queryId + "." + fieldNameParts[i]);
-            if (child == null) {
+            if (child == null) { // TODO: should this be done?
             	child = formTree.getChild("0." + fieldNameParts[i]);
             }            	
 
@@ -165,7 +178,7 @@ public class QueryCompiler
             	SubFormControl sfCtrl = (SubFormControl)formTree.getForm().getControlByUdn(fieldNameParts[i]);
                 JoinTree sfTree = getSubFormTree(formTree, sfCtrl);
                 sfTree.setSubForm(false); // TODO: This is quick fix. Need to be thought out
-                formTree.addChild("0." + fieldNameParts[i], sfTree); // PAND fix "0."
+                formTree.addChild(queryId + "." + fieldNameParts[i], sfTree); // PAND fix "0."
                 formTree = sfTree;
             } else {
                 formTree = child;

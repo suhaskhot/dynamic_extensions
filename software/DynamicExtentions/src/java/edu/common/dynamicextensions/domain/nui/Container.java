@@ -59,6 +59,8 @@ public class Container implements Serializable {
 	private String hierarchyAncestorCol;
 	
 	private String hierarchyDescendentCol;
+	
+	private String activeCond;
    	
 	private int sequenceNo;
 
@@ -156,6 +158,14 @@ public class Container implements Serializable {
 
 	public void setHierarchyDescendentCol(String hierarchyDescendentCol) {
 		this.hierarchyDescendentCol = hierarchyDescendentCol;
+	}
+
+	public String getActiveCond() {
+		return activeCond;
+	}
+
+	public void setActiveCond(String activeCond) {
+		this.activeCond = activeCond;
 	}
 
 	public int getSequenceNo() {
@@ -332,6 +342,7 @@ public class Container implements Serializable {
 		result = prime * result + ((hierarchyTable == null ? 0 : hierarchyTable.hashCode()));
 		result = prime * result + ((hierarchyAncestorCol == null ? 0 : hierarchyAncestorCol.hashCode()));
 		result = prime * result + ((hierarchyDescendentCol == null ? 0 : hierarchyDescendentCol.hashCode()));
+		result = prime * result + ((activeCond == null ? 0 : activeCond.hashCode()));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + sequenceNo;
 		result = prime * result	+ ((skipRules == null) ? 0 : skipRules.hashCode());
@@ -362,6 +373,7 @@ public class Container implements Serializable {
 			!StringUtils.equals(hierarchyTable, other.hierarchyTable) ||
 			!StringUtils.equals(hierarchyAncestorCol, other.hierarchyAncestorCol) ||
 			!StringUtils.equals(hierarchyDescendentCol, other.hierarchyDescendentCol) ||
+			!StringUtils.equals(activeCond, other.activeCond) ||
 			!StringUtils.equals(name, other.name) ||
 			sequenceNo != other.sequenceNo ||
 			(skipRules == null && other.skipRules != null) ||
@@ -784,6 +796,7 @@ public class Container implements Serializable {
 		setHierarchyTable(newContainer.getHierarchyTable());
 		setHierarchyAncestorCol(newContainer.getHierarchyAncestorCol());
 		setHierarchyDescendentCol(newContainer.getHierarchyDescendentCol());
+		setActiveCond(newContainer.getActiveCond());
 		
 		for (Control  ctrl : newContainer.getControls()) {
 			if (getControl(ctrl.getName()) == null) {
@@ -989,6 +1002,7 @@ public class Container implements Serializable {
 		container.setHierarchyTable(dtoContainer.getHierarchyTable());
 		container.setHierarchyAncestorCol(dtoContainer.getHierarchyAncestorCol());
 		container.setHierarchyDescendentCol(dtoContainer.getHierarchyDescendentCol());
+		container.setActiveCond(dtoContainer.getActiveCond());
 		
 		for (Control ctrl : dtoContainer.addLog) {
 			container.addControl(ctrl);

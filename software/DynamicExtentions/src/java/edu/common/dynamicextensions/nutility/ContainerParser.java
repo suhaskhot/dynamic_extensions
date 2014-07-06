@@ -151,6 +151,7 @@ public class ContainerParser {
 		container.setHierarchyTable(getTextValue(viewElement, "hierarchyTable"));
 		container.setHierarchyAncestorCol(getTextValue(viewElement,"hierarchyAncestorColumn"));
 		container.setHierarchyDescendentCol(getTextValue(viewElement,"hierarchyDescendentColumn"));
+		container.setActiveCond(getTextValue(viewElement, "activeCondition"));
 	}
 	
 	private List<Control> parseFormRow(Node row, int currentRow) {

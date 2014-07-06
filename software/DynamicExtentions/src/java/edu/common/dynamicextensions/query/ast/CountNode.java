@@ -45,4 +45,39 @@ public class CountNode extends ExpressionNode implements Serializable {
 	public String[] getFormNames() {
 		return field.getFormNames();
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (distinct ? 1231 : 1237);
+		result = prime * result + ((field == null) ? 0 : field.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+			
+		CountNode other = (CountNode) obj;
+		if (distinct != other.distinct) {
+			return false;
+		} 
+		
+		if (field == null) {
+			if (other.field != null) {
+				return false;
+			}
+		} else if (!field.equals(other.field)) {
+			return false;
+		}
+		
+		return true;
+	}	
 }

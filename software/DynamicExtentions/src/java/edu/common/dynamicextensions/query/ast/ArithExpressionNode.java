@@ -153,4 +153,9 @@ public class ArithExpressionNode extends ExpressionNode implements Serializable 
 		
 		return true;
 	}
+
+	@Override
+	public boolean isPhi() {
+		return (leftOperand != null && leftOperand.isPhi()) || (rightOperand != null && rightOperand.isPhi());
+	}
 }

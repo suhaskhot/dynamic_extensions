@@ -128,4 +128,9 @@ public class FieldNode extends ExpressionNode implements Serializable {
 		
 		return true;
 	}
+
+	@Override
+	public boolean isPhi() {
+		return ctrl.isPhi();
+	}
 }

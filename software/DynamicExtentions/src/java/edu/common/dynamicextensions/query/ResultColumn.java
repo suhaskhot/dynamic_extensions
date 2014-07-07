@@ -57,6 +57,10 @@ public class ResultColumn implements Serializable {
 		return ((FieldNode)columnExpr).getNodeCaptions();
 	}
 	
+	public boolean isPhi() {
+		return columnExpr.isPhi();
+	}
+	
 	public String toString() {
 		return getColumnLabel();
 	}

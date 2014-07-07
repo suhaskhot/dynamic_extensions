@@ -17,6 +17,8 @@ public abstract class ExpressionNode implements Node, Serializable {
 	
 	public abstract String[] getFormNames();
 	
+	public abstract boolean isPhi();
+	
 	public int getPos() {
 		return pos;
 	}

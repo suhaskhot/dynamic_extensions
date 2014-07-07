@@ -79,5 +79,10 @@ public class CountNode extends ExpressionNode implements Serializable {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public boolean isPhi() {
+		return field != null && field.isPhi();
 	}	
 }

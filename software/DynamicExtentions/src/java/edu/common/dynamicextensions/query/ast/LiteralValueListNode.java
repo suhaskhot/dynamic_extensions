@@ -71,4 +71,9 @@ public class LiteralValueListNode extends ExpressionNode implements Serializable
 		
 		return true;
 	}
+
+	@Override
+	public boolean isPhi() {
+		return false;
+	}
 }

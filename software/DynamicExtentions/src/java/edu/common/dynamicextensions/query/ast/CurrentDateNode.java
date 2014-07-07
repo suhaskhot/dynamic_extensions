@@ -21,4 +21,9 @@ public class CurrentDateNode extends ExpressionNode implements Serializable {
 	public String[] getFormNames() {
 		return new String[0];
 	}
+
+	@Override
+	public boolean isPhi() {
+		return false;
+	}
 }

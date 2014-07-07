@@ -77,4 +77,9 @@ public class DateIntervalNode extends ExpressionNode implements Serializable {
 		DateIntervalNode other = (DateIntervalNode) obj;
 		return days == other.days && months == other.months && years == other.years;
 	}
+
+	@Override
+	public boolean isPhi() {
+		return false;
+	}
 }

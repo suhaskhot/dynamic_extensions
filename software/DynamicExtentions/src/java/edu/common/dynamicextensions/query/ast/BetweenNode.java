@@ -82,4 +82,9 @@ public class BetweenNode extends ExpressionNode implements Serializable {
 		result = 31 * result + maxNode.hashCode();
 		return result;
 	}
+
+	@Override
+	public boolean isPhi() {
+		return lhs.isPhi() || minNode.isPhi() || maxNode.isPhi();
+	}
 }

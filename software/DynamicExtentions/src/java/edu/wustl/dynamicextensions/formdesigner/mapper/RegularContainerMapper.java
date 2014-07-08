@@ -25,7 +25,6 @@ public class RegularContainerMapper extends ContainerMapper {
 
 	public Container propertiesToContainer(Properties properties, UserContext userContext) throws Exception {
 		Container container = new Container();
-		container.useAsDto();
 		propertiesToContainer(properties, container, userContext);
 		return container;
 	}
@@ -34,7 +33,11 @@ public class RegularContainerMapper extends ContainerMapper {
 			throws Exception {
 		container.setName(formProperties.getString("formName"));
 		container.setCaption(formProperties.getString("caption"));
-		container.setId(formProperties.getLong("id"));
+		Long containerId = formProperties.getLong("id");
+		if (containerId != null) {
+			container.useAsDto();
+		}
+		container.setId(containerId);
 
 		if (userContext != null) {
 			container.setLastUpdatedBy(userContext.getUserId());

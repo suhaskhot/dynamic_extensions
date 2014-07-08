@@ -34,7 +34,7 @@ public class RegularContainerMapper extends ContainerMapper {
 		container.setName(formProperties.getString("formName"));
 		container.setCaption(formProperties.getString("caption"));
 		Long containerId = formProperties.getLong("id");
-		if (containerId != null || (this.getRootContainer() != null && this.getRootContainer().getId() != null)) {
+		if (containerId != null ) {
 			container.useAsDto();
 		}
 		container.setId(containerId);

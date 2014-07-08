@@ -25,6 +25,7 @@ public class RegularContainerMapper extends ContainerMapper {
 
 	public Container propertiesToContainer(Properties properties, UserContext userContext) throws Exception {
 		Container container = new Container();
+		container.useAsDto();
 		propertiesToContainer(properties, container, userContext);
 		return container;
 	}

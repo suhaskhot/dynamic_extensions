@@ -369,7 +369,7 @@ edu.common.de.Form = function(args) {
 
       if (fields[i].type != 'subForm') {
         var val = this.formData[fields[i].name];
-        if (fields[i].type == 'fileUpload' && !val) {
+        if (fields[i].type == 'fileUpload' && !val && val != undefined) {
           val = val.filename;
         } 
 

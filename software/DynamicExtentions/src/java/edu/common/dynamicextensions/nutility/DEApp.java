@@ -10,8 +10,10 @@ import edu.common.dynamicextensions.ndao.TransactionManager;
 
 public class DEApp {
 	private static String fileUploadDir;
-	
-	public static void init(DataSource ds, String fileUploadDir) {
+
+	private static String dateFormat;
+
+	public static void init(DataSource ds, String fileUploadDir, String dateFormat) {
 		JdbcDaoFactory.setDataSource(ds);
         TransactionManager.getInstance(ds);
         try {
@@ -20,11 +22,16 @@ public class DEApp {
 		} catch (SQLException e) {
 			throw new RuntimeException("Error while retrieving the Db type from Datasource " + e);
 		}
-        
-        DEApp.fileUploadDir = fileUploadDir;
+
+		DEApp.fileUploadDir = fileUploadDir;
+		DEApp.dateFormat = dateFormat != null ? dateFormat : "MM/dd/yyyy";
 	}
-	
+
 	public static String getFileUploadDir() {
 		return fileUploadDir;
+	}
+
+	public static String getDateFormat() {
+		return dateFormat;
 	}
 }

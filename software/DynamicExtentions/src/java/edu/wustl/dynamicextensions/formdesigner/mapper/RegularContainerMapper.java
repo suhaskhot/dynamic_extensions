@@ -16,6 +16,7 @@ import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.NumberField;
 import edu.common.dynamicextensions.domain.nui.SkipRule;
 import edu.common.dynamicextensions.domain.nui.UserContext;
+import edu.common.dynamicextensions.nutility.DEApp;
 import edu.common.dynamicextensions.util.parser.FormulaParser;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.AppUserContextProvider;
 import edu.wustl.dynamicextensions.formdesigner.usercontext.CSDProperties;
@@ -102,7 +103,7 @@ public class RegularContainerMapper extends ContainerMapper {
 	 */
 	@Override
 	public Properties containerToProperties(Container container) {
-		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat dateFormat = new SimpleDateFormat(DEApp.getDateFormat());
 		Map<String, Object> propertiesMap = new HashMap<String, Object>();
 		propertiesMap.put("formName", container.getName());
 		propertiesMap.put("caption", container.getCaption());

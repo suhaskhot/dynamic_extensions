@@ -149,6 +149,7 @@ edu.common.de.Form = function(args) {
   this.fileUploadUrl = args.fileUploadUrl;
   this.fileDownloadUrl = args.fileDownloadUrl;
   this.appData = args.appData;
+  this.dateFormat = args.dateFormat;
   
   if (!this.formDef && this.formDefUrl) {
     var url = this.formDefUrl.replace(":formId", this.formId);
@@ -607,13 +608,25 @@ edu.common.de.DatePicker = function(id, field) {
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
 
     var format = field.format;
+    // minViewMode = 0/days
+    // minViewMode = 1/months
+    // minViewMode = 2/years
     if (format && format.length != 0) {
-      format = format.toLowerCase();
+      format = format.toUpperCase();
+      if (format.indexOf("D") != -1 && format.indexOf("M") != -1 && format.indexOf("Y") != -1) {
+        format = 0;
+      } else if (format.indexOf("M") != -1 && format.indexOf("Y") != -1) {
+        format = 1;
+      } else if (format.indexOf("Y") != -1) {
+        format = 2;
+      } else {
+        format = 0;
+      }
     } else {
-      format = "mm-dd-yyyy";
+      format = 0; // minViewMode = 0 days
     }
 
-    this.inputEl.datepicker({format: format, autoclose: true});
+    this.inputEl.datepicker({format: dateFormat, autoclose: true, minViewMode: format});
     return this.inputEl;
   };
 

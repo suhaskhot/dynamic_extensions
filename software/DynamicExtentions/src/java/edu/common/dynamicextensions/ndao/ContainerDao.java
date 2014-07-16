@@ -50,6 +50,8 @@ public class ContainerDao {
 			"FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ?";
 	
 	private static final String GET_LAST_UPDATED_TIME_SQL = "SELECT LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+	
+	private static final String DELETE_CONTAINER_SQL = "DELETE FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
 
 	private JdbcDao jdbcDao = null;
 	
@@ -103,6 +105,20 @@ public class ContainerDao {
 			params.add(c.toXml());
 			params.add(c.getId());
 			jdbcDao.executeUpdate(UPDATE_CONTAINER_SQL_MYSQL, params);	
+		}
+	}
+	
+	public void delete(Long id) { 
+		Integer rowsDeleted = null;
+		
+		try { 
+			rowsDeleted = jdbcDao.executeUpdate(DELETE_CONTAINER_SQL, Collections.singletonList(id));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
+		if (rowsDeleted == null || rowsDeleted != 1) {
+			throw new RuntimeException("Deletion of container failed!, The container with id: " + id + " was not found!");
 		}
 	}
 	

@@ -699,6 +699,11 @@ public class Container implements Serializable {
 			throw new RuntimeException("Error saving container", e);
 		} 
 	}
+	
+	public static void deleteContainer(Long id) {
+		ContainerDao dao = new ContainerDao(JdbcDaoFactory.getJdbcDao());
+		dao.delete(id);
+	}
 				
 	public static Container getContainer(Long id) {
 		return getContainer(JdbcDaoFactory.getJdbcDao(), id);

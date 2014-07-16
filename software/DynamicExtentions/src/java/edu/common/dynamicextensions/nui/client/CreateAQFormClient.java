@@ -36,14 +36,9 @@ public class CreateAQFormClient extends AbstractClient {
 			this.zipFile = ZipUtility.zipFolder(args[1], "forms.zip");
 
 			String url = HTTPSConnection.getCorrectedApplicationURL(args[0]) +	WebUIManagerConstants.CREATE_AQ_FORM_ACTION;			
-			boolean firstParam = true;;
-			if (args.length > 2 && args[2].equals("false")) {
-				url = url + "?create_tables=false";
-				firstParam = false;
-			}
-			if (args.length > 3 && !args[3].isEmpty() && !args.equals("${username}")) {
-				String urlJoner = firstParam ? "?" : "&";
-				url = url + urlJoner+ "login_name=" + args[3];
+
+			if (args.length > 2 && !args[2].isEmpty() && !args.equals("${username}")) {
+				url = url + "?login_name=" + args[2];
 			}
 			
 			this.serverUrl = new URL(url);			
@@ -61,7 +56,7 @@ public class CreateAQFormClient extends AbstractClient {
 	 */
 	protected void validate(String[] args) 
 	{		
-		if (args.length < 2 || args.length > 4 || args[1] == null || args[1].trim().isEmpty()) {
+		if (args.length < 2 || args.length > 3 || args[1] == null || args[1].trim().isEmpty()) {
 			throw new RuntimeException(
 					"Wrong number of arguments to command");
 		}

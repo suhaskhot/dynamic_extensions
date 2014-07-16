@@ -35,10 +35,10 @@ public class JdbcDao {
 		});
 	}
 	
-	public void executeUpdate(String updateSql, List<?> params) {
+	public int executeUpdate(String updateSql, List<?> params) {
 		try {
 			Object[] paramArray = params != null ? params.toArray() : new Object[0];
-			jdbcTemplate.update(updateSql, paramArray);
+			return jdbcTemplate.update(updateSql, paramArray);
 		} catch (Exception e) {
 			throw new RuntimeException("Error executing the update dml: " + updateSql, e);
 		}		

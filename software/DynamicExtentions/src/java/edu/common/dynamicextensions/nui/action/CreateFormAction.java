@@ -83,6 +83,7 @@ public class CreateFormAction extends HttpServlet {
 						TransactionManager.getInstance().commit(txn);
 					} catch (Exception e) {
 						TransactionManager.getInstance().rollback(txn);
+						logger.error("Error creating form: " + formFile , e);
 					} 
 				}
 				actionResponse = new ActionResponse();

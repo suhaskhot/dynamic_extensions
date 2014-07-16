@@ -1,17 +1,13 @@
 package edu.common.dynamicextensions.nui.action;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Properties;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletException;
@@ -50,14 +46,31 @@ public class CreateAQFormAction extends HttpServlet {
 		try	{			
 			DownloadUtility.downloadZipFile(httpReq, tmpDirName, "forms.zip");
 			logger.info("Download input forms zip file to " + tmpDirName);
-			String createTablesParam = httpReq.getParameter("create_tables");
 			final String loginName = httpReq.getParameter("login_name");
-
-			boolean createTables = true;
-			if (createTablesParam != null && createTablesParam.equals("false")) {
-				createTables = false;
+			
+			FormPostProcessor formPostProcessor = FormProperties.getInstance().getPostProcessor();	
+			List<Long> queryForms = formPostProcessor.getQueryForms();
+			Transaction trxn = null;
+			
+			logger.info("Found Form Contexts: " + queryForms.size());
+			for (Long formId : queryForms) {
+				try {
+					trxn = TransactionManager.getInstance().newTxn();
+					logger.info("Deleting form.");
+					formPostProcessor.deleteQueryForm(formId);
+					
+					if (Container.getContainer(formId)!=null) {
+						logger.info("Container found, deleting container!");
+						Container.deleteContainer(formId);
+					}
+					TransactionManager.getInstance().commit(trxn);
+				} catch (Exception e) {
+					logger.error("Exception caught! rolling back!");
+					TransactionManager.getInstance().rollback(trxn);
+					throw new RuntimeException(e);
+				}
 			}
-
+			
 			//
 			// Once the zip is extracted, following will be directory layout
 			// temp-dir
@@ -100,11 +113,12 @@ public class CreateAQFormAction extends HttpServlet {
 					
 					try {
 						txn = TransactionManager.getInstance().newTxn();
-						containerId = Container.createContainer(ctxt, formFilePath, pvDirPath, createTables);
+						containerId = Container.createContainer(ctxt, formFilePath, pvDirPath, false);
 						logger.info("Form for definition in " + formFile + " created. Id = " + containerId);
 						TransactionManager.getInstance().commit(txn);
 					} catch (Exception e) {
 						TransactionManager.getInstance().rollback(txn);
+						logger.error("Error creating form: " + formFile , e);
 					} 
 					
 					if (containerId != null) {

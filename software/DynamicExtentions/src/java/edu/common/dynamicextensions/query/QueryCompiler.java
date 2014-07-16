@@ -2,7 +2,6 @@ package edu.common.dynamicextensions.query;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -328,7 +327,7 @@ public class QueryCompiler
         for (ExpressionNode element : selectElementMap.keySet()) {
               for (int i = 0; i <= numQueries; ++i) {
                   ExpressionNode selectNode = element.copy();
-                  if (analyzeSelectExpressionNode(i, selectNode, joinMap, true)) {
+                  if (analyzeSelectExpressionNode(i, selectNode, joinMap, true)) { // TODO: Fix area
                       selectElementMap.get(element).add(selectNode);
                   }              
               }
@@ -517,7 +516,10 @@ public class QueryCompiler
     	
     	JoinTree sfTree = formTree;
     	for (int i = startIdx; i < fieldNameParts.length - 1; i++) {
-    		sfTree = getSubFormTree(queryId, formTree, fieldNameParts[i], failIfAbsent);
+    		//sfTree = getSubFormTree(queryId, formTree, fieldNameParts[i], failIfAbsent);
+    		sfTree = getSubFormTree(
+    				queryId, formTree, fieldNameParts[i], 
+    				!failIfAbsent ? false : i == startIdx ? failIfAbsent : false);
     		if (sfTree == null) {
     			return null;
     		}
@@ -586,7 +588,9 @@ public class QueryCompiler
     	if (filterMarker instanceof FilterNode) {
     		FilterNode node = (FilterNode)filterMarker;
     		formNames.addAll(Arrays.asList(node.getLhs().getFormNames()));
-    		formNames.addAll(Arrays.asList(node.getRhs().getFormNames()));
+    		if (node.getRhs() != null) {
+    			formNames.addAll(Arrays.asList(node.getRhs().getFormNames()));
+    		}    		
     	} else {
     		FilterExpressionNode filterExpr = (FilterExpressionNode)filterMarker;
     		

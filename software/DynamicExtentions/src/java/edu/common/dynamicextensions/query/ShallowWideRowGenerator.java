@@ -22,7 +22,20 @@ public class ShallowWideRowGenerator {
 		new Comparator<ResultColumn>() {
 			@Override
 			public int compare(ResultColumn arg0, ResultColumn arg1) {
-				return arg0.getExpression().getPos() - arg1.getExpression().getPos();
+				//return arg0.getExpression().getPos() - arg1.getExpression().getPos();
+				
+				// fixed
+				ExpressionNode expr0 = arg0.getExpression();
+				ExpressionNode expr1 = arg1.getExpression();
+				
+				String[] forms0 = expr0.getFormNames();
+				String[] forms1 = expr1.getFormNames();
+				
+				if (forms0.length != forms1.length || forms0.length != 1 || !forms0[0].equals(forms1[0])) {
+					return arg0.getExpression().getPos() - arg1.getExpression().getPos();
+				}
+				
+				return (arg0.getInstance() * 100 + expr0.getPos()) - (arg1.getInstance() * 100 + expr1.getPos());
 			}
     	};
     
@@ -96,9 +109,9 @@ public class ShallowWideRowGenerator {
                         	id = tabAliasIdMap.get(joinNodes[j]);
                         }
                         
-                    	if (id == null) {
-                    		break;
-                    	}                        
+//                    	if (id == null) {
+//                    		break;
+//                    	}                        
                                                 
                         WideRowNode childRow = childTabRows.get(id);
                         if (childRow == null) {

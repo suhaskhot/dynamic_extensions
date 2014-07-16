@@ -28,6 +28,14 @@ public class ResultColumn implements Serializable {
 		return columnExpr;
 	}
 	
+	public int getInstance() {
+		return instance;
+	}
+	
+	public void setInstance(int instance) {
+		this.instance = instance;
+	}
+	
 	public Object getValue() {
 		return value;
 	}

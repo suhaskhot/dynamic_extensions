@@ -3,9 +3,11 @@ package edu.common.dynamicextensions.query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 
@@ -90,11 +92,20 @@ public class WideRowNode implements Serializable {
     		} else { // sub-form or multi-valued and deep
     			for (List<ResultColumn> existingRow : rows) {
         			List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
+        			WideRowNode childNode = null;
+        			int instance = 0;
         			for (Map.Entry<String, WideRowNode> childRow : childTabRows.getValue().entrySet()) {
-        				List<List<ResultColumn>> flattenedChildRows = childRow.getValue().flatten(maxRowCntMap, tabFormTypeMap, tabFieldsMap);
+        				childNode = childRow.getValue();
+        				List<List<ResultColumn>> flattenedChildRows = childNode.flatten(maxRowCntMap, tabFormTypeMap, tabFieldsMap);
         				for (List<ResultColumn> flattenedChildRow : flattenedChildRows) {
-        					row.addAll(flattenedChildRow);
+        					for (ResultColumn col : flattenedChildRow) {
+        						col.setInstance(instance);
+        						row.add(col);
+        					}
+//        					row.addAll(flattenedChildRow);
         				}   
+        				
+        				++instance;
         			}
         			
         			int rowCount = childTabRows.getValue().size();
@@ -104,8 +115,19 @@ public class WideRowNode implements Serializable {
         			} else if (maxCount == 0) {
         				maxCount = 1;
         			}
-        			            			
-        			List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
+        			
+        			if (rowCount == maxCount) {
+        				currentRows.add(row);
+        				continue;
+        			}
+        			            			        			
+        			List<ExpressionNode> tabFields = null;
+        			if (childNode != null) {
+        				tabFields = getTabFieldsMap(tabFieldsMap, childNode.getAliases());
+        			} else {
+        				tabFields = tabFieldsMap.get(childTabRows.getKey()); // not sure when this condition occurs
+        			}
+        			
         			if (tabFields == null) {
         				tabFields = Collections.emptyList();
         			}
@@ -124,5 +146,36 @@ public class WideRowNode implements Serializable {
     	}
     	
     	return rows;
-    }        
+    }
+    
+    
+    private Set<String> getAliases() {   	
+		Set<String> aliases = new HashSet<String>();
+		aliases.add(alias);
+
+		for (Map<String, WideRowNode> childrenRows : childrenRowsMap.values()) {
+			for (Map.Entry<String, WideRowNode> wideRow : childrenRows
+					.entrySet()) {
+				if (wideRow.getValue() != null) {
+					aliases.addAll(wideRow.getValue().getAliases());
+					break;
+				}
+			}
+		}
+
+		return aliases;
+    }
+    
+    private List<ExpressionNode> getTabFieldsMap(Map<String, List<ExpressionNode>> tabFieldsMap, Set<String> aliases) {
+		List<ExpressionNode> tabFields = new ArrayList<ExpressionNode>();
+		for (String alias : aliases) {
+			List<ExpressionNode> fields = tabFieldsMap.get(alias);
+			if (fields == null) {
+				continue;
+			}
+			tabFields.addAll(fields);
+		}
+
+		return tabFields;
+    }    
 }

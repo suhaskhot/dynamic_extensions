@@ -1,13 +1,12 @@
 package edu.common.dynamicextensions.domain.nui;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import edu.common.dynamicextensions.ndao.*;
+import edu.common.dynamicextensions.nutility.*;
+import org.apache.commons.lang.*;
 
-import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 
 public class DatePicker extends Control implements Serializable {
 	private static final long serialVersionUID = 6046956576964435896L;
@@ -79,11 +78,11 @@ public class DatePicker extends Control implements Serializable {
 		}
 		
 		try {			
-			String fmt = format;
+			String fmt = DEApp.getDateFormat();
 			if (fmt == null) {
 				fmt = DEFAULT_FORMAT;
 			}
-			
+
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fmt);
 			simpleDateFormat.setLenient(false);
 			return simpleDateFormat.parse(value);
@@ -99,7 +98,7 @@ public class DatePicker extends Control implements Serializable {
 		}
 		
 		try {
-			String fmt = format;
+			String fmt = DEApp.getDateFormat();
 			if (fmt == null) {
 				fmt = DEFAULT_FORMAT;
 			}

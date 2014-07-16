@@ -48,6 +48,13 @@ public class CreateAQFormAction extends HttpServlet {
 			logger.info("Download input forms zip file to " + tmpDirName);
 			final String loginName = httpReq.getParameter("login_name");
 			
+			UserContext userContext = CSDProperties.getInstance().getUserContextProvider().getUserContext(loginName);
+			
+			if (userContext == null || userContext.getUserId() == null) {
+				System.out.println("Error Usercontext is null");
+				throw new RuntimeException("Invalid username provided! Please provide a valid username e.g. -Dusername=\"admin@admin.com\"");
+			} 
+			
 			FormPostProcessor formPostProcessor = FormProperties.getInstance().getPostProcessor();	
 			List<Long> queryForms = formPostProcessor.getQueryForms();
 			Transaction trxn = null;

@@ -77,6 +77,10 @@ public class CreateAQFormClient extends AbstractClient {
 				logger.info("Encountered errors creating forms");
 				logger.info("Message: " + actionResponse.getMessage());
 				logger.info("Error:   " + actionResponse.getErrorMessage());
+				
+				System.out.println("Encountered errors creating AQ forms");
+				System.out.println("Message: " + actionResponse.getMessage());
+				System.out.println("Error:   " + actionResponse.getErrorMessage());
 			}
 		} catch (Exception e) {
 			logger.error("Error reading response from server", e);

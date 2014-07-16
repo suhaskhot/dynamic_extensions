@@ -190,7 +190,7 @@ public class Form {
 		} 
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value="permissibleValues")
+	@RequestMapping(method = RequestMethod.POST, value="permissibleValues", produces="text/plain")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public String uploadFile(@PathVariable("file") MultipartFile file) {

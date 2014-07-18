@@ -35,7 +35,21 @@ public class ShallowWideRowGenerator {
 					return arg0.getExpression().getPos() - arg1.getExpression().getPos();
 				}
 				
-				return (arg0.getInstance() * 100 + expr0.getPos()) - (arg1.getInstance() * 100 + expr1.getPos());
+				int pos0 = getPos(arg0.getInstance(), expr0);
+				int pos1 = getPos(arg1.getInstance(), expr1);
+				return pos0 - pos1;
+			}
+			
+			private int getPos(int instance, ExpressionNode exprNode) {
+				int pos = instance * 100 + exprNode.getPos();
+				if (exprNode instanceof FieldNode) {
+					FieldNode field = (FieldNode)exprNode;
+					if (field.getCtrl() instanceof MultiSelectControl) {
+						pos = exprNode.getPos();
+					}
+				}
+				
+				return pos;				
 			}
     	};
     

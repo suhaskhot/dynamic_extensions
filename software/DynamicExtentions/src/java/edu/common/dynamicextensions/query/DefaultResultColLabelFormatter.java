@@ -14,7 +14,8 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 
 	@Override
 	public String format(String[] nodeCaptions, int instance) {
-		StringBuilder heading = new StringBuilder();		
+		StringBuilder heading = new StringBuilder();
+
 		for (int j = 0; j < nodeCaptions.length - 1; ++j) {
 			heading.append(nodeCaptions[j]).append(separator);
 		}		
@@ -26,7 +27,7 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 			instanceCnt = 0;
 		}
 
-		String result = headingStr;
+		String result = nodeCaptions[nodeCaptions.length - 1];
 		if (instanceCnt > 0) {
 			result += separator + instanceCnt;
 		}

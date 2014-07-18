@@ -85,7 +85,7 @@ YEAR     : DIGIT+ ('y'|'Y');
 MONTH    : DIGIT+ ('m'|'M');
 DAY      : DIGIT+ ('d'|'D');
 DIGIT    : ('0'..'9');
-ID       : ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_')*;
+ID       : ('a'..'z'|'A'..'Z'|'_')('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'?')*;
 FIELD    : (INT|ID) '.' ID ('.' ID)*;
 SLITERAL : '"' SGUTS '"';
 ESC      : '\\' ('\\' | '"');

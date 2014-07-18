@@ -314,6 +314,8 @@ public class QueryCompiler
             analyzeDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap);
         } else if (exprNode instanceof BetweenNode) {
 			analyzeBetweenNode(queryId, (BetweenNode)exprNode, joinMap);
+		} else if (exprNode instanceof RoundOffNode) {
+			analyzeExpressionNode(queryId, ((RoundOffNode)exprNode).getExprNode(), joinMap);
 		}
     }
     
@@ -388,6 +390,8 @@ public class QueryCompiler
             return analyzeSelectDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap, failIfAbsent);
         } else if (exprNode instanceof CountNode) {
         	return analyzeField(queryId, ((CountNode)exprNode).getField(), joinMap, failIfAbsent);
+        } else if (exprNode instanceof RoundOffNode) {
+        	return analyzeSelectExpressionNode(queryId, ((RoundOffNode)exprNode).getExprNode(), joinMap, failIfAbsent);
         } else {
             return !failIfAbsent; // literal nodes
         }
@@ -541,7 +545,7 @@ public class QueryCompiler
     	if (extensionTree == null) {
     		return null;    		
     	}
-    	
+    																																										
     	JoinTree extensionFormTree = extensionTree.getChild(queryId + "." + fieldNameParts[2]);
     	if (extensionFormTree == null && failIfAbsent) {
     		return null;

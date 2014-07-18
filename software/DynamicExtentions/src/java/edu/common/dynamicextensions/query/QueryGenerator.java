@@ -32,6 +32,7 @@ import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.Node;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
+import edu.common.dynamicextensions.query.ast.RoundOffNode;
 import edu.common.dynamicextensions.query.ast.SelectListNode;
 
 public class QueryGenerator {
@@ -412,6 +413,15 @@ public class QueryGenerator {
 					.append(getExpressionNodeSql(betweenNode.getMinNode(), betweenNode.getType()))
 					.append(" and ")
 					.append(getExpressionNodeSql(betweenNode.getMaxNode(), betweenNode.getType()))
+					.toString();
+		} else if (exprNode instanceof RoundOffNode) {
+			RoundOffNode roundOffNode = (RoundOffNode)exprNode;
+			result = new StringBuilder()
+					.append(" round(")
+					.append(getExpressionNodeSql(roundOffNode.getExprNode(), roundOffNode.getType()))
+					.append(", ")
+					.append(roundOffNode.getNoOfDigitsAfterDecimal())
+					.append(")")
 					.toString();
 		}
     	

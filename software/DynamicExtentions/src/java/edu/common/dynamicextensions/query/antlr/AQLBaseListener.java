@@ -420,6 +420,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterRoundFunc(@NotNull AQLParser.RoundFuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitRoundFunc(@NotNull AQLParser.RoundFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterAndFilterExpr(@NotNull AQLParser.AndFilterExprContext ctx) { }
 	/**
 	 * {@inheritDoc}

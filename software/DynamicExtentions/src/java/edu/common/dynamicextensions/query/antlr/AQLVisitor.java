@@ -229,6 +229,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#RoundFunc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRoundFunc(@NotNull AQLParser.RoundFuncContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#AndFilterExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

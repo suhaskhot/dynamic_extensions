@@ -252,6 +252,13 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	return countNode; 
     }
     
+    public RoundOffNode visitRoundFunc(@NotNull AQLParser.RoundFuncContext ctx) {
+    	RoundOffNode node = new RoundOffNode();
+    	node.setExprNode((ExpressionNode)visit(ctx.arith_expr()));
+    	node.setNoOfDigitsAfterDecimal(Integer.parseInt(ctx.INT().getText()));
+    	return node;
+    }
+    
     @Override 
     public FieldNode visitField(@NotNull AQLParser.FieldContext ctx) {
     	FieldNode field = new FieldNode();

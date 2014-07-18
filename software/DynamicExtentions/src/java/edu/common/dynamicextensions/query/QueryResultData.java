@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.ndao.DbSettingsFactory;
+import edu.common.dynamicextensions.query.ast.FieldNode;
 
 public class QueryResultData {
     private ResultColumnLabelFormatter formatter = new DefaultResultColLabelFormatter("# ");
@@ -48,6 +49,24 @@ public class QueryResultData {
     	this.formatter = formatter;
     }
 
+    public Integer[] getColumnIndices(String name) {
+    	List<Integer> indices = new ArrayList<Integer>();
+    	
+    	int i = 0;
+    	for (ResultColumn column : getResultColumns()) {
+    		if (column.getExpression() instanceof FieldNode) {
+    			FieldNode node = (FieldNode)column.getExpression();
+    			if (node.getName().equals(name)) {
+    				indices.add(i);
+    			}    			
+    		}
+    		
+    		++i;
+    	}
+    	
+    	return indices.toArray(new Integer[0]);
+    }
+    
     public String[] getColumnLabels() {
         List<ResultColumn> screenedCols = resultColumns;
         if (screener != null) {

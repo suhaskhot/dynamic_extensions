@@ -45,6 +45,7 @@ arith_expr    : arith_expr ARITH_OP arith_expr               #ArithExpr
               | MINS_BTWN LP arith_expr ',' arith_expr RP    #MinsDiffFunc
               | CURR_DATE LP RP                              #CurrentDateFunc
               | COUNT LP DISTINCT? FIELD RP                  #CountFunc
+              | ROUND LP arith_expr ',' INT RP               #RoundFunc
               | FIELD                                        #Field              
               | literal                                      #LiteralVal              
               ;	 
@@ -72,6 +73,7 @@ OR       : 'or';
 AND      : 'and';
 PAND     : 'pand';
 NOT      : 'not';
+ROUND    : 'round';
 LP       : '(';
 RP       : ')';
 MOP      : ('in'|'not in');

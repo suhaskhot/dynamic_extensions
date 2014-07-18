@@ -350,6 +350,17 @@ public interface AQLListener extends ParseTreeListener {
 	void exitParensArithExpr(@NotNull AQLParser.ParensArithExprContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link AQLParser#RoundFunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterRoundFunc(@NotNull AQLParser.RoundFuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link AQLParser#RoundFunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitRoundFunc(@NotNull AQLParser.RoundFuncContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link AQLParser#AndFilterExpr}.
 	 * @param ctx the parse tree
 	 */

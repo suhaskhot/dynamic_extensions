@@ -9,6 +9,7 @@ import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueListNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
+import edu.common.dynamicextensions.query.ast.RoundOffNode;
 
 public class WideRowUtil {
 	// returns {tabAlias, pk}
@@ -30,6 +31,8 @@ public class WideRowUtil {
     	} else if (exprNode instanceof ArithExpressionNode) {
     		ArithExpressionNode arithExprNode = (ArithExpressionNode)exprNode;
     		return getTabAliasPk(rootNode, arithExprNode.getLeftOperand(), arithExprNode.getRightOperand());    		
+    	} else if (exprNode instanceof RoundOffNode) {
+    		return getTabAliasPk(rootNode, ((RoundOffNode)exprNode).getExprNode());
     	}
     	
     	throw new RuntimeException("Unknown expression node type: " + exprNode);

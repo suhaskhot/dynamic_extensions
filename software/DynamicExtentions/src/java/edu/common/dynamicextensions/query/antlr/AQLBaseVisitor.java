@@ -266,5 +266,13 @@ public class AQLBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements AQ
 	 * The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.
 	 */
+	@Override public T visitRoundFunc(@NotNull AQLParser.RoundFuncContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.
+	 */
 	@Override public T visitAndFilterExpr(@NotNull AQLParser.AndFilterExprContext ctx) { return visitChildren(ctx); }
 }

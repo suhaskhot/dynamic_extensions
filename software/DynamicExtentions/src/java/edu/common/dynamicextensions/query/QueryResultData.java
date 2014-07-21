@@ -25,6 +25,8 @@ public class QueryResultData {
     private SimpleDateFormat tsf = null;
     
     private QueryResultScreener screener;
+    
+    private int dbRowsCount;
         	
     public QueryResultData(List<ResultColumn> resultColumns, String dateFormat, String timeFormat) {
         this.resultColumns = resultColumns;
@@ -112,6 +114,7 @@ public class QueryResultData {
     	}
     	
     	this.rows = rows;
+    	this.dbRowsCount = this.rows.size();
     }
     
     public void dataSource(ShallowWideRowGenerator rowGen) {
@@ -136,6 +139,14 @@ public class QueryResultData {
         
         return rows;
     }
+
+	public int getDbRowsCount() {
+		return dbRowsCount;
+	}
+
+	public void setDbRowsCount(int dbRowsCount) {
+		this.dbRowsCount = dbRowsCount;
+	}
 
 	public List<String[]> getStringifiedRows() {
 		List<String[]> rows = new ArrayList<String[]>();

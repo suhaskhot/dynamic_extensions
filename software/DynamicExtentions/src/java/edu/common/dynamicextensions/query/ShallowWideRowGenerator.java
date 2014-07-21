@@ -87,9 +87,12 @@ public class ShallowWideRowGenerator {
         lastRootId = null;
     }
     
-    public void processResultSet(ResultSet rs) {
-        try {
+    public int processResultSet(ResultSet rs) {
+    	int rowCount = 0;
+        try {        	
             while (rs.next()) {
+            	++rowCount;
+            	
                 Map<String, String> tabAliasIdMap = getTabAliasIdMap(rs);
                 Map<String, List<ResultColumn>> tabAliasColValuesMap = getTabAliasColumnValuesMap(rs);
                 
@@ -144,6 +147,8 @@ public class ShallowWideRowGenerator {
         } catch (Exception e) {
             throw new RuntimeException("Error processing result for generating wide rows", e);
         }
+        
+        return rowCount;
     }
     
     public void end() {

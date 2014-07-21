@@ -141,11 +141,12 @@ public class Query {
     private QueryResultData getWideRowData(ResultSet rs) {
         ShallowWideRowGenerator wideRowGenerator = new ShallowWideRowGenerator(queryJoinTree, queryExpr);
         wideRowGenerator.start();
-        wideRowGenerator.processResultSet(rs);
+        int dbRowsCount = wideRowGenerator.processResultSet(rs);
         wideRowGenerator.end();
         
         QueryResultData qrd = new QueryResultData(wideRowGenerator.getResultColumns(), dateFormat, timeFormat);
         qrd.dataSource(wideRowGenerator);
+        qrd.setDbRowsCount(dbRowsCount);
         return qrd;
     }
     

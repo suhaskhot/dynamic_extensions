@@ -26,8 +26,20 @@ public class DefaultResultColLabelFormatter implements ResultColumnLabelFormatte
 		if (instanceCnt == null) {
 			instanceCnt = 0;
 		}
-
-		String result = nodeCaptions[nodeCaptions.length - 1];
+		
+		String result = "";
+		if (nodeCaptions.length > 0) {
+			result = nodeCaptions[0];
+		}
+		
+		if (nodeCaptions.length > 1 && nodeCaptions[1].startsWith("$$_") && nodeCaptions[1].endsWith("_$$")) {
+			result += separator + nodeCaptions[2];
+		}
+		
+		if (nodeCaptions.length > 1) {
+			result += separator + nodeCaptions[nodeCaptions.length - 1];
+		}
+				
 		if (instanceCnt > 0) {
 			result += separator + instanceCnt;
 		}

@@ -564,7 +564,7 @@ public class QueryCompiler
     		extensionTree.addChild(queryId + "." + fieldNameParts[2], extensionFormTree);    		
     	}
     	
-    	captions[1] = extensionTree.getForm().getCaption(); 
+    	captions[1] = "$$_" + extensionTree.getForm().getCaption() + "_$$"; 
     	captions[2] = extensionFormTree.getForm().getCaption();
     	return analyzeSubFormFields(queryId, extensionFormTree, fieldNameParts, 3, captions, failIfAbsent);
     }

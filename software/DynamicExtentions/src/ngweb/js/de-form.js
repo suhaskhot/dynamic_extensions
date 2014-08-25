@@ -445,6 +445,211 @@ edu.common.de.Form = function(args) {
   };
 };
 
+edu.common.de.DataTable = function(args) {
+  this.formDiv = $("#" + args.formDiv);
+  this.formId = args.formId;
+  this.formDef = args.formDef;
+  this.formDefUrl = args.formDefUrl;
+  this.tableData = args.tableData;
+  this.mode = args.mode;
+
+  this.tableRowsData = [];
+  this.fieldObjs = [];
+  this.formDefXhr = null;
+  this.tableDataXhr = null;
+
+  this.setMode = function(mode) {
+    this.mode = mode;
+  }
+
+  this.getMode = function() {
+      return this.mode;
+  }
+
+  this.clear = function() {
+    this.formDiv.empty();
+  }
+
+  if (!this.formDef && this.formDefUrl) {
+     var url = this.formDefUrl.replace(":formId", this.formId);
+     this.formDefXhr = $.ajax({type: 'GET', url: url});
+  }
+
+  this.render = function() {
+    var that = this;
+    if (this.formDefXhr) {
+      this.formDefXhr.then(function(formDef) {
+        that.formDef = formDef;
+        if(tableData != null && tableData != undefined) {
+          this.render0();
+        }
+      });
+    } else {
+      if(tableData != null && tableData != undefined) {
+        this.render0();
+      }
+    }
+  };
+
+  this.render0 = function() {
+    this.formDiv.empty();
+    this.tableRowsData = [];
+    var trs = [];
+    // Render Table Header Part
+    if (this.formDef.rows == undefined) {
+      this.formDef = JSON.parse(this.formDef);
+    }
+    var rows = this.formDef.rows;
+    var tr = $("<tr/>");
+
+    var th = $("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "200px");
+    if(rows.length > 5) {
+      th.css("width", "200px")
+    }
+    tr.append(th);
+
+    for(var j =0 ; j < rows.length; j++) {
+      var row = rows[j];
+      for(k = 0 ; k < row.length; k++ ) {
+        tr.append($("<th/>").append(row[k].caption).css("width", "200px"));
+      }
+    }
+    var tableHeader = $("<thead/>");
+    tableHeader.append(tr);
+
+    for(var l = 0; l< this.tableData.length; l++ ) {
+      var tr = this.renderFormRecords(this.tableData[l]);
+      trs = trs.concat(tr);
+    }
+
+    var formCtrls = $("<tbody/>");
+    formCtrls.append(trs);
+
+    var tableWidth = "100%";
+    if(this.formDef.rows.length > 5) {
+      var width = 200 * rows.length;
+      tableWidth = width.toString().concat("px");
+    }
+    var tbl = $("<div/>").css("width", tableWidth)
+    tbl.append(
+               $("<table/>").addClass("table table-striped table-bordered").append(tableHeader).append(formCtrls));
+    this.formDiv.append(tbl);
+
+  };
+
+  this.renderFormRecords = function(dataTableRow) {
+    var trs = [];
+    var formDataRecords = dataTableRow.records;
+    if(formDataRecords.length > 0) {
+      for(var i = 0; i< formDataRecords.length; i++) {
+        trs.push( this.renderTableRow(this.mode, dataTableRow.key, formDataRecords[i]) );
+      }
+    } else {
+      trs.push( this.renderTableRow(this.mode, dataTableRow.key, null) );
+    }
+    return trs;
+  }
+
+  this.renderTableRow = function(mode, key, formData) {
+    this.fieldObjs = [];
+    var tr = $("<tr/>");
+    tr.append($("<td/>").append(key.label));
+    var rows = this.formDef.rows;
+    for(var j = 0; j < rows.length; j++) {
+      var row = rows[j];
+      for(k = 0; k < row.length; k++ ) {
+        tr.append($("<td/>").append(this.createFieldEl(mode, row[k], formData)));
+      }
+    }
+
+    for (var i = 0; i < this.fieldObjs.length; ++i) {
+      this.fieldObjs[i].postRender();
+    }
+
+    var recordId = (formData != undefined && formData != null) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
+    this.tableRowsData.push({fieldObjs:this.fieldObjs, recordId:recordId, rowId:key.id });
+    return tr;
+  }
+
+  this.createFieldEl = function(mode, field, formData) {
+      if (field.type == 'checkbox') { field.type = 'listbox'; }
+      if (field.type == 'radiobutton') {field.type = 'combobox';}
+      var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
+      var inputEl = fieldObj.render();
+      this.fieldObjs.push(fieldObj);
+      var recId = (formData != null && formData != undefined) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
+      var value = (formData != null && formData != undefined) ? formData[field.name] : null;
+      fieldObj.setValue(recId,value);
+      if(mode == 'edit') {
+        return inputEl;
+      } else {
+        var fieldValue = formData[field.name];
+        return (fieldValue instanceof Array) ? fieldValue.join().substring(1) : fieldValue;
+      }
+  }
+
+  this.setData = function(tableData) {
+   this.tableData =  tableData;
+   this.render0();
+  }
+
+  this.getData = function() {
+    var tblRowsFormData = [];
+    for(var i = 0; i< this.tableRowsData.length; i++) {
+      var fieldObjs = this.tableRowsData[i].fieldObjs;
+
+      var appData = $.extend({},args.appData);
+      appData.id = this.tableRowsData[i].rowId;
+
+      if (!this.validate(fieldObjs)) {
+        return {status:'error',data:[]};
+      }
+
+      var formData = {appData: appData};
+      var recordId = this.tableRowsData[i].recordId;
+      if (recordId) {
+        formData.recordId = recordId;
+      }
+
+      for (var j = 0; j < fieldObjs.length; ++j) {
+        var field = fieldObjs[j];
+        var value = field.getValue();
+        if (!value) { // note doesn't have value;
+          continue;
+        }
+        formData[value.name] = value.value;
+      }
+        tblRowsFormData.push(formData);
+    }
+    return {status:'success',data:tblRowsFormData};
+  }
+
+  this.validate = function(fieldObjs) {
+    var valid = true;
+    for (var i = 0; i < fieldObjs.length; ++i) {
+      if (!fieldObjs[i].validate()) { // validate all fields
+        valid = false;
+      }
+    }
+      return valid;
+  };
+
+  this.copyFirstToAll = function() {
+    var firstRowFieldObjs = this.tableRowsData[0].fieldObjs;
+    for(var i = 1; i< this.tableRowsData.length; i++) {
+        var fieldObjs = this.tableRowsData[i].fieldObjs;
+        var recordId = this.tableRowsData[i].recordId;
+        for(var j =0; j < fieldObjs.length; j++) {
+          var value = firstRowFieldObjs[j].getValue();
+          if(value != undefined) {
+             fieldObjs[j].setValue(recordId, value.value);
+          }
+        }
+    }
+  }
+};
+
+
 edu.common.de.FieldFactory = {
   getField: function(field, idx, args) {
     var fieldObj;
@@ -750,6 +955,7 @@ edu.common.de.SelectField = function(id, field) {
     value = edu.common.de.Utility.getValueByDataType(field, value);
     this.recId = recId;
     this.inputEl.val(value);
+    this.inputEl.trigger("chosen:updated");
   };
   
   this.validate = function() {

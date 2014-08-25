@@ -1,6 +1,6 @@
 grammar AQL;
 
-query         : (SELECT select_list WHERE)? filter_expr limit_expr? #QueryExpr
+query         : (SELECT select_list WHERE)? filter_expr limit_expr? (crosstab_expr | ID)? #QueryExpr
               ;
       
 select_list   : select_element (',' select_element)* #SelectExpr
@@ -20,7 +20,10 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
 
 limit_expr    : LIMIT INT (',' INT)?                 #LimitExpr
               ;
-     
+
+crosstab_expr : CROSSTAB LP LP INT (',' INT)* RP ',' INT ',' INT (',' RU_TYPE)? RP #CrossTabExpr
+              ;
+
 filter        : arith_expr  OP   arith_expr          #BasicFilter
               | arith_expr  MOP  literal_values      #MvFilter
               | FIELD       SOP  SLITERAL            #StringCompFilter
@@ -44,11 +47,14 @@ arith_expr    : arith_expr ARITH_OP arith_expr               #ArithExpr
               | YRS_BTWN LP arith_expr ',' arith_expr RP     #YearsDiffFunc
               | MINS_BTWN LP arith_expr ',' arith_expr RP    #MinsDiffFunc
               | CURR_DATE LP RP                              #CurrentDateFunc
-              | COUNT LP DISTINCT? FIELD RP                  #CountFunc
+              | agg_expr                                     #AggExpr
               | ROUND LP arith_expr ',' INT RP               #RoundFunc
               | FIELD                                        #Field              
               | literal                                      #LiteralVal              
               ;	 
+
+agg_expr      : (COUNT|SUM|MIN|MAX|AVG) LP DISTINCT? FIELD RP #AggFunc
+              ;
           
 date_interval : YEAR MONTH? DAY?
               | YEAR? MONTH DAY?
@@ -67,8 +73,13 @@ YRS_BTWN:  'years_between';
 CURR_DATE: 'current_date';
 MINS_BTWN: 'minutes_between';
 COUNT    : 'count';
+SUM      : 'sum';
+MIN      : 'min';
+MAX      : 'max';
+AVG      : 'avg';
 DISTINCT : 'distinct';
 LIMIT    : 'limit';
+CROSSTAB : 'crosstab';
 OR       : 'or';
 AND      : 'and';
 PAND     : 'pand';
@@ -79,6 +90,7 @@ RP       : ')';
 MOP      : ('in'|'not in');
 SOP      : ('contains'|'starts with'|'ends with');
 EOP      : ('exists'|'not exists');
+RU_TYPE  : ('rollup'|'powerset');
 OP       : ('>'|'<'|'>='|'<='|'='|'!='|'like');
 INT      : '-'? DIGIT+;
 FLOAT    : '-'? DIGIT+ '.' DIGIT+;

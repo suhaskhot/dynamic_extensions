@@ -2,6 +2,8 @@ package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
@@ -63,7 +65,7 @@ public class FieldNode extends ExpressionNode implements Serializable {
 	@Override
 	public FieldNode copy() {
 		FieldNode copy = new FieldNode();
-		copy.setLabel(this.getLabel());
+		super.copy(this, copy);
 		copy.setCtrl(ctrl);
 		copy.setName(name);
 		copy.setTabAlias(tabAlias);
@@ -132,5 +134,10 @@ public class FieldNode extends ExpressionNode implements Serializable {
 	@Override
 	public boolean isPhi() {
 		return ctrl.isPhi();
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		return Collections.singleton(this);
 	}
 }

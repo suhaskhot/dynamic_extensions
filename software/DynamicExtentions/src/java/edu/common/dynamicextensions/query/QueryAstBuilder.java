@@ -1,6 +1,10 @@
 package edu.common.dynamicextensions.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.common.dynamicextensions.query.ast.*;
+
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -8,6 +12,7 @@ import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.query.antlr.AQLBaseVisitor;
 import edu.common.dynamicextensions.query.antlr.AQLParser;
 import edu.common.dynamicextensions.query.antlr.AQLParser.LiteralContext;
+import edu.common.dynamicextensions.query.ast.AggregateNode.AGG_FN;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode.DiffType;
 import edu.common.dynamicextensions.query.ast.FilterNode.RelationalOp;
@@ -33,6 +38,13 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     		queryExpr.setLimitExpr(limitExpr);
     	}
     	
+    	if (ctx.crosstab_expr() != null) {
+    		CrosstabNode crosstabSpec = (CrosstabNode)visit(ctx.crosstab_expr());
+    		queryExpr.setCrosstabSpec(crosstabSpec);
+    	} else if (ctx.ID() != null) {
+    		queryExpr.setResultPostProc(ctx.ID().getText());
+    	}
+    	    	    	
     	return queryExpr;
     }    
     
@@ -240,8 +252,27 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     }
     
     @Override
-    public CountNode visitCountFunc(@NotNull AQLParser.CountFuncContext ctx) {
-    	CountNode countNode = new CountNode();
+    public AggregateNode visitAggExpr(@NotNull AQLParser.AggExprContext ctx) {
+    	return (AggregateNode)visit(ctx.agg_expr());
+    }
+    
+    @Override
+    public AggregateNode visitAggFunc(@NotNull AQLParser.AggFuncContext ctx) {
+    	AggregateNode countNode = new AggregateNode();
+    	if (ctx.COUNT() != null) {
+    		countNode.setAggFn(AGG_FN.COUNT);
+    	} else if (ctx.SUM() != null) {
+    		countNode.setAggFn(AGG_FN.SUM);
+    	} else if (ctx.MIN() != null) {
+    		countNode.setAggFn(AGG_FN.MIN);
+    	} else if (ctx.MAX() != null) {
+    		countNode.setAggFn(AGG_FN.MAX);
+    	} else if (ctx.AVG() != null) {
+    		countNode.setAggFn(AGG_FN.AVG);
+    	} else {
+    		throw new IllegalArgumentException("Unknown aggregate function");
+    	}
+    	    	
     	if (ctx.DISTINCT() != null) {
     		countNode.setDistinct(true);
     	}
@@ -303,7 +334,28 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	di.setYears(diPart(ctx.YEAR()));
     	return di;    	
     }
-
+    
+    @Override
+    public CrosstabNode visitCrossTabExpr(@NotNull AQLParser.CrossTabExprContext ctx) {
+    	CrosstabNode crosstabSpec = new CrosstabNode();
+    	crosstabSpec.setName(ctx.CROSSTAB().getText());
+    	
+    	int size = ctx.INT().size();    	
+    	List<Integer> rowGrpCols = new ArrayList<Integer>();
+    	for (int i = 0; i < size - 2; i++) {
+    		rowGrpCols.add(getInt(ctx.INT(i)));
+    	}
+    	crosstabSpec.setRowGroupByColumns(rowGrpCols);
+    	
+    	crosstabSpec.setColGroupByColumn(getInt(ctx.INT(size - 2)));
+    	crosstabSpec.setMeasureColumn(getInt(ctx.INT(size - 1)));
+    	
+    	if (ctx.RU_TYPE() != null) {
+    		crosstabSpec.setRollupType(ctx.RU_TYPE().getText());
+    	}    	
+    	return crosstabSpec; 
+    }    
+    
     private DateDiffFuncNode getDateDiffFuncNode(DiffType diffType, ExpressionNode leftOperand, ExpressionNode rightOperand) {
     	DateDiffFuncNode diff = new DateDiffFuncNode();
     	diff.setDiffType(diffType);    	
@@ -321,5 +373,9 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	}
     	
     	return result;
+    }
+    
+    private int getInt(TerminalNode node) {
+    	return Integer.parseInt(node.getText());
     }
 }

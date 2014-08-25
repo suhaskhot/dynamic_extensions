@@ -30,6 +30,8 @@ public class Query {
     private String timeFormat = "HH:mm";
     
     private boolean vcEnabled;
+    
+    private ResultPostProc resultPostProc;
         
     public static Query createQuery() {
         return new Query();
@@ -71,7 +73,13 @@ public class Query {
         QueryCompiler compiler = new QueryCompiler(rootFormName, query, restriction);
         compiler.enabledVersionedForms(vcEnabled).compile();
         queryExpr     = compiler.getQueryExpr();
-        queryJoinTree = compiler.getQueryJoinTree();        
+        queryJoinTree = compiler.getQueryJoinTree();
+        
+        if (queryExpr.hasResultPostProc()) {
+        	String procName = queryExpr.getResultPostProc();
+        	ResultPostProcFactory factory = ResultPostProcManager.getInstance().getFactory(procName);
+        	resultPostProc = factory.create(queryExpr);
+        }        
     }
 
     public long getCount() {
@@ -96,20 +104,32 @@ public class Query {
     }
 
     public QueryResponse getData(int start, int numRows) {
-        final String dataSql = getDataSql(wideRows, start, numRows);        
+    	final boolean wideRowSupport = 
+    			wideRows && 
+    			!queryExpr.isAggregateQuery() &&
+    			!queryExpr.hasResultPostProc();
+    	
+        final String dataSql = getDataSql(wideRowSupport, start, numRows);        
         final long t1 = System.currentTimeMillis();        
         return JdbcDaoFactory.getJdbcDao().getResultSet(dataSql, null, new ResultExtractor<QueryResponse>() {
         	@Override
         	public QueryResponse extract(ResultSet rs)
         	throws SQLException {
-        		long t2 = System.currentTimeMillis();        		
-        		QueryResultData resultData = wideRows ? getWideRowData(rs) : getQueryResultData(rs);
-        		long t3 = System.currentTimeMillis();
+        		long t2 = System.currentTimeMillis();
+        		QueryResultData resultData = null;
+        		if (wideRowSupport) {
+        			resultData = getWideRowData(rs);
+        		} else if (resultPostProc != null) {
+        			resultData = getProcessedData(rs);
+        		} else {
+        			resultData = getQueryResultData(rs);
+        		}
         		
+        		long t3 = System.currentTimeMillis();        		
         		logger.info("Data SQL: " + dataSql + "; Query Exec Time: " + (t2 - t1) + "; Result Prep Time: " + (t3 - t2));
         		
         		QueryResponse resp = new QueryResponse();
-        		resp.setSql(dataSql);
+        		resp.setSql(dataSql);																																																																																										
         		resp.setResultData(resultData);
         		resp.setExecutionTime(t2 - t1);
         		resp.setPostExecutionTime(t3 - t2);
@@ -131,13 +151,6 @@ public class Query {
         return gen.getDataSql(queryExpr, queryJoinTree, start, numRows);        
     }
 
-    private QueryResultData getQueryResultData(ResultSet rs)
-    throws SQLException {
-        QueryResultData queryResult = new QueryResultData(getResultColumns(queryExpr), dateFormat, timeFormat);
-        queryResult.dataSource(rs);
-        return queryResult;
-    }
-        
     private QueryResultData getWideRowData(ResultSet rs) {
         ShallowWideRowGenerator wideRowGenerator = new ShallowWideRowGenerator(queryJoinTree, queryExpr);
         wideRowGenerator.start();
@@ -150,6 +163,21 @@ public class Query {
         return qrd;
     }
     
+    private QueryResultData getProcessedData(ResultSet rs) {
+    	int dbRowsCount = resultPostProc.processResultSet(rs);
+    	QueryResultData qrd = new QueryResultData(resultPostProc.getResultColumns(), dateFormat, timeFormat);
+    	qrd.setDbRowsCount(dbRowsCount);
+    	qrd.dataSource(resultPostProc.getRows());
+    	return qrd;
+    }
+
+    private QueryResultData getQueryResultData(ResultSet rs)
+    throws SQLException {
+        QueryResultData queryResult = new QueryResultData(getResultColumns(queryExpr), dateFormat, timeFormat);
+        queryResult.dataSource(rs);
+        return queryResult;
+    }
+            
     private List<ResultColumn> getResultColumns(QueryExpressionNode queryExpr) {
         SelectListNode selectList = queryExpr.getSelectList();
         List<ResultColumn> columns = new ArrayList<ResultColumn>();

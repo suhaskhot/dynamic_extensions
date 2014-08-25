@@ -28,7 +28,7 @@ public class DateDiffFuncNode extends ExpressionNode implements Serializable {
 	@Override
 	public DateDiffFuncNode copy() {
 		DateDiffFuncNode copy = new DateDiffFuncNode();
-		copy.setLabel(this.getLabel());
+		super.copy(this, copy);
 		copy.setDiffType(diffType);
 		copy.setLeftOperand(leftOperand.copy());
 		copy.setRightOperand(rightOperand.copy());
@@ -112,5 +112,19 @@ public class DateDiffFuncNode extends ExpressionNode implements Serializable {
 	public boolean isPhi() {
 		return (leftOperand != null && leftOperand.isPhi()) || 
 				(rightOperand != null && rightOperand.isPhi());
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		Set<FieldNode> fields = new HashSet<FieldNode>();
+		if (leftOperand != null) {
+			fields.addAll(leftOperand.getFields());
+		}
+		
+		if (rightOperand != null) {
+			fields.addAll(rightOperand.getFields());
+		}
+		
+		return fields;
 	}
 }

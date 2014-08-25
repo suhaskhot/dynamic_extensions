@@ -96,11 +96,25 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitMonthsDiffFunc(@NotNull AQLParser.MonthsDiffFuncContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link AQLParser#CrossTabExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCrossTabExpr(@NotNull AQLParser.CrossTabExprContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link AQLParser#BoolLiteral}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#AggExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAggExpr(@NotNull AQLParser.AggExprContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#SelectExpr}.
@@ -187,18 +201,11 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	T visitExistsFilter(@NotNull AQLParser.ExistsFilterContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link AQLParser#CountFunc}.
+	 * Visit a parse tree produced by {@link AQLParser#AggFunc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCountFunc(@NotNull AQLParser.CountFuncContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link AQLParser#literal_values}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx);
+	T visitAggFunc(@NotNull AQLParser.AggFuncContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#YearsDiffFunc}.
@@ -206,6 +213,13 @@ public interface AQLVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link AQLParser#literal_values}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link AQLParser#DateIntervalExpr}.

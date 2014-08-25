@@ -173,6 +173,19 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
+	@Override public void enterCrossTabExpr(@NotNull AQLParser.CrossTabExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitCrossTabExpr(@NotNull AQLParser.CrossTabExprContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
 	@Override public void enterBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -180,6 +193,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitBoolLiteral(@NotNull AQLParser.BoolLiteralContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterAggExpr(@NotNull AQLParser.AggExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitAggExpr(@NotNull AQLParser.AggExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -342,26 +368,13 @@ public class AQLBaseListener implements AQLListener {
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void enterCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
+	@Override public void enterAggFunc(@NotNull AQLParser.AggFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 * <p/>
 	 * The default implementation does nothing.
 	 */
-	@Override public void exitCountFunc(@NotNull AQLParser.CountFuncContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void enterLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 * <p/>
-	 * The default implementation does nothing.
-	 */
-	@Override public void exitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
+	@Override public void exitAggFunc(@NotNull AQLParser.AggFuncContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -375,6 +388,19 @@ public class AQLBaseListener implements AQLListener {
 	 * The default implementation does nothing.
 	 */
 	@Override public void exitYearsDiffFunc(@NotNull AQLParser.YearsDiffFuncContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void enterLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 * <p/>
+	 * The default implementation does nothing.
+	 */
+	@Override public void exitLiteral_values(@NotNull AQLParser.Literal_valuesContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

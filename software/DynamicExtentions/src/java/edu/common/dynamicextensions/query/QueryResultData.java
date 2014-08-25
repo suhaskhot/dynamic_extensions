@@ -87,6 +87,10 @@ public class QueryResultData {
     public List<ResultColumn> getResultColumns() {
     	return screener != null ? screener.getScreenedResultColumns(resultColumns) : resultColumns;
     }
+    
+    public void dataSource(List<Object[]> rows) {
+    	this.rows = rows;
+    }
        
     public void dataSource(ResultSet rs) {
     	List<Object[]> rows = new ArrayList<Object[]>();

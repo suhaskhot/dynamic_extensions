@@ -2,7 +2,9 @@ package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
@@ -33,7 +35,7 @@ public class LiteralValueNode extends ExpressionNode implements Serializable  {
 	@Override
 	public LiteralValueNode copy() {
 		LiteralValueNode copy = new LiteralValueNode(literalType);
-		copy.setLabel(this.getLabel());
+		super.copy(this, copy);
 		copy.getValues().addAll(getValues()); // Assume literals are immutable
 		return copy;
 	}	
@@ -79,5 +81,10 @@ public class LiteralValueNode extends ExpressionNode implements Serializable  {
 	@Override
 	public boolean isPhi() {
 		return false;
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		return Collections.emptySet();
 	}	
 }

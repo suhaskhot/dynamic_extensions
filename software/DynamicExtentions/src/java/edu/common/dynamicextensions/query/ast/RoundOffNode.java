@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
@@ -35,8 +36,7 @@ public class RoundOffNode extends ExpressionNode implements Serializable {
 	@Override
 	public ExpressionNode copy() {
 		RoundOffNode node = new RoundOffNode();
-		node.setLabel(getLabel());
-		node.setPos(getPos());
+		super.copy(this, node);
 		node.setExprNode(exprNode.copy());
 		node.setNoOfDigitsAfterDecimal(noOfDigitsAfterDecimal);
 		return node;
@@ -50,5 +50,10 @@ public class RoundOffNode extends ExpressionNode implements Serializable {
 	@Override
 	public boolean isPhi() {
 		return exprNode.isPhi();
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		return exprNode.getFields();
 	}
 }

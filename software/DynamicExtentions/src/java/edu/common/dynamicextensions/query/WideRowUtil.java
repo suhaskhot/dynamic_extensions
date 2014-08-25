@@ -1,7 +1,7 @@
 package edu.common.dynamicextensions.query;
 
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
-import edu.common.dynamicextensions.query.ast.CountNode;
+import edu.common.dynamicextensions.query.ast.AggregateNode;
 import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateIntervalNode;
@@ -25,9 +25,9 @@ public class WideRowUtil {
     	} else if (exprNode instanceof DateDiffFuncNode) {
     		DateDiffFuncNode dateDiffNode = (DateDiffFuncNode)exprNode;
     		return getTabAliasPk(rootNode, dateDiffNode.getLeftOperand(), dateDiffNode.getRightOperand());
-    	} else if (exprNode instanceof CountNode) {
-    		CountNode countNode = (CountNode)exprNode;
-    		return getTabAliasPk(rootNode, countNode.getField());
+    	} else if (exprNode instanceof AggregateNode) {
+    		AggregateNode aggNode = (AggregateNode)exprNode;
+    		return getTabAliasPk(rootNode, aggNode.getField());
     	} else if (exprNode instanceof ArithExpressionNode) {
     		ArithExpressionNode arithExprNode = (ArithExpressionNode)exprNode;
     		return getTabAliasPk(rootNode, arithExprNode.getLeftOperand(), arithExprNode.getRightOperand());    		

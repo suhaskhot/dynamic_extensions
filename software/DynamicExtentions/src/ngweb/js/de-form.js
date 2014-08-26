@@ -602,7 +602,10 @@ edu.common.de.DataTable = function(args) {
       appData.id = this.tableRowsData[i].rowId;
 
       if (!this.validate(fieldObjs)) {
-        return {status:'error',data:[]};
+        if (args.onValidationError) {
+          args.onValidationError();
+        }
+        return;
       }
 
       var formData = {appData: appData};
@@ -621,7 +624,7 @@ edu.common.de.DataTable = function(args) {
       }
         tblRowsFormData.push(formData);
     }
-    return {status:'success',data:tblRowsFormData};
+    return tblRowsFormData;
   }
 
   this.validate = function(fieldObjs) {

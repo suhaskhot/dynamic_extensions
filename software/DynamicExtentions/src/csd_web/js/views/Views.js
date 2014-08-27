@@ -33,6 +33,16 @@ var Views = {
 
                                         var ctrlColl = this.model.get('controlObjectCollection');
                                         this.model.attributes = _.omit(this.model.attributes, ['controlObjectCollection']);
+                                        var sfCtrlColl = {};
+                                        for (var i = 0; i < this.model.get('controlCollection').length; ++i) {
+                                          var ctrl = this.model.get('controlCollection')[i];
+                                          if (ctrl.type == 'subForm') {
+                                            var sf = ctrl.subForm;
+                                            sfCtrlColl[ctrl.controlName] = sf.get('controlObjectCollection');
+                                            sf.attributes = _.omit(sf.attributes, ['controlObjectCollection']);
+                                          }
+                                        }
+                                       
 					this.model
 							.save(
 									{
@@ -88,6 +98,13 @@ var Views = {
 
 									});
                                         this.model.set('controlObjectCollection', ctrlColl);
+                                        for (var i = 0; i < this.model.get('controlCollection').length; ++i) {
+                                          var ctrl = this.model.get('controlCollection')[i];
+                                          if (ctrl.type == 'subForm') {
+                                            var sf = ctrl.subForm;
+                                            sf.set('controlObjectCollection', sfCtrlColl[ctrl.controlName]);
+                                          }
+                                        }
 				},
 
 				loadModelInSessionForPreview : function() {

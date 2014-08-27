@@ -31,6 +31,8 @@ var Views = {
 						formulae : GlobalMemory.formulae
 					});
 
+                                        var ctrlColl = this.model.get('controlObjectCollection');
+                                        this.model.attributes = _.omit(this.model.attributes, ['controlObjectCollection']);
 					this.model
 							.save(
 									{
@@ -85,6 +87,7 @@ var Views = {
 										}
 
 									});
+                                        this.model.set('controlObjectCollection', ctrlColl);
 				},
 
 				loadModelInSessionForPreview : function() {
@@ -176,7 +179,7 @@ var Views = {
 									} else {
 										// set control json
 										_subForm.get('controlCollection').push(
-												subFormControl.toJSON());
+												_.omit(subFormControl.attributes, ['template']));
 									}
 								}
 								
@@ -187,8 +190,7 @@ var Views = {
 							}
                             
 							// set control json
-							this.model.get('controlCollection').push(
-									control.toJSON());
+							this.model.get('controlCollection').push(_.omit(control.attributes, ['template']));
 
 						}
 					}
@@ -1999,13 +2001,12 @@ var getDEJson = function (args) {
       newField['dataType'] = field.dataType;
       newField['dateFormat'] = field.dateFormat;
       var pvs = new Array();
-      for (var i = 0 ; ; i++) {
-        var pv = eval("field.pvs.pv_" + i);
-        if (pv == undefined) {
-          break;
+      if (field.pvs) {
+        for (var pv in field.pvs) {
+          pvs.push(field.pvs[pv]);
         }
-        pvs[i] = pv;
       }
+
       newField['pvs'] = pvs;
     } else if (newField.type == 'datePicker') {
       newField['format'] = field.format;

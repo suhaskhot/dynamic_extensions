@@ -161,7 +161,7 @@ public class Form {
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public String  editForm(@RequestBody Map<String, Object> propertiesMap) {
+	public Map<String, Object>  editForm(@RequestBody Map<String, Object> propertiesMap) {
 		
 		Transaction txn = null;
 		try {
@@ -179,14 +179,14 @@ public class Form {
             Integer containerId = (Integer) propertiesMap.get("id");
             BOUtil.getInstance().getGenerator().update(containerId.longValue());
 
-            return formProps.getAllProperties().toString();
+            return formProps.getAllProperties();
 		} catch (Exception ex) {
 			propertiesMap.put("status", "error");
 			ex.printStackTrace();
 			if (txn != null) {
 				TransactionManager.getInstance().rollback(txn);
 			}
-			return propertiesMap.toString();
+			return propertiesMap;
 		} 
 	}
 

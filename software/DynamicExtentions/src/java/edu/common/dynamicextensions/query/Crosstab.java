@@ -3,7 +3,9 @@ package edu.common.dynamicextensions.query;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,8 +13,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
+import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.query.ast.CrosstabNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
+import edu.common.dynamicextensions.query.ast.FieldNode;
 import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 
@@ -73,10 +77,17 @@ public class Crosstab implements ResultPostProc {
 		}
 		
 		ExpressionNode colExpr = selectList.get(ctSpec.getColGroupByColumn() - 1);
+		String dateFormat = getDateFormat(colExpr);
+		SimpleDateFormat sdf = dateFormat != null ? new SimpleDateFormat(dateFormat) : null;
+
 		for (Object colKey : dynamicCols) {
 			ExpressionNode colExprClone = colExpr.copy();
-			colExprClone.setLabel(colKey.toString());
-			
+			if (sdf != null) {
+				colExprClone.setLabel(sdf.format((Date)colKey));
+			} else {
+				colExprClone.setLabel(colKey.toString());
+			}
+						
 			columns.add(new ResultColumn(colExprClone, 0));
 		}
 		
@@ -111,7 +122,6 @@ public class Crosstab implements ResultPostProc {
 			if (rollup) {
 				values.add(sum);
 			}			
-
 			result.add(values.toArray(new Object[0]));
 		}
 		
@@ -242,5 +252,26 @@ public class Crosstab implements ResultPostProc {
 		}
 		
 		return result;
+	}
+	
+	private boolean isDateField(ExpressionNode expr) {
+		if (expr instanceof FieldNode) {
+			FieldNode f = (FieldNode)expr;
+			return f.getCtrl() instanceof DatePicker;
+		}
+		
+		return false;
+	}
+	
+	private String getDateFormat(ExpressionNode expr) {
+		if (expr instanceof FieldNode) {
+			FieldNode f = (FieldNode)expr;
+                        if (f.getCtrl() instanceof DatePicker) {
+				DatePicker dp = (DatePicker)f.getCtrl();
+				return dp.getFormat();
+			}
+		}
+		
+		return null;		
 	}
 }

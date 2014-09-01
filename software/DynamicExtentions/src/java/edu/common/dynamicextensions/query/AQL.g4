@@ -21,7 +21,7 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
 limit_expr    : LIMIT INT (',' INT)?                 #LimitExpr
               ;
 
-crosstab_expr : CROSSTAB LP LP INT (',' INT)* RP ',' INT ',' INT (',' RU_TYPE)? RP #CrossTabExpr
+crosstab_expr : CROSSTAB LP LP row+=INT (',' row+=INT)* RP ',' col=INT ',' LP value+=INT (',' value+=INT)* RP (',' RU_TYPE)? RP #CrossTabExpr
               ;
 
 filter        : arith_expr  OP   arith_expr          #BasicFilter

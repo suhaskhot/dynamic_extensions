@@ -11,7 +11,7 @@ public class CrosstabNode implements Node, Serializable {
 	
 	private int colGroupByColumn = -1;
 	
-	private int measureColumn = -1;
+	private List<Integer> measureColumns = new ArrayList<Integer>();
 	
 	private String rollupType;
 
@@ -39,12 +39,12 @@ public class CrosstabNode implements Node, Serializable {
 		this.colGroupByColumn = colGroupByColumn;
 	}
 
-	public int getMeasureColumn() {
-		return measureColumn;
+	public List<Integer> getMeasureColumns() {
+		return measureColumns;
 	}
 
-	public void setMeasureColumn(int measureColumn) {
-		this.measureColumn = measureColumn;
+	public void setMeasureColumns(List<Integer> measureColumns) {
+		this.measureColumns = measureColumns;
 	}
 
 	public String getRollupType() {
@@ -59,7 +59,7 @@ public class CrosstabNode implements Node, Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = prime * 1 + colGroupByColumn;
-		result = prime * result + measureColumn;
+		result = prime * result + measureColumns.hashCode();
 		result = prime * result	+ rowGroupByColumns.hashCode();
 		return result;
 	}
@@ -79,7 +79,11 @@ public class CrosstabNode implements Node, Serializable {
 			return false;
 		}
 		
-		if (measureColumn != other.measureColumn) {
+		if (measureColumns == null) {
+			if (other.measureColumns != null) {
+				return false;
+			}
+		} else if (!measureColumns.equals(other.measureColumns)){
 			return false;
 		}
 		

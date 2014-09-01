@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +29,8 @@ public class Crosstab implements ResultPostProc {
 	
 	private Set<Object> dynamicCols = new TreeSet<Object>();
 	
+	private Set<String> measureCols = new LinkedHashSet<String>();
+	
 	private boolean rollup;
 	
 	private boolean numericMeasure;
@@ -38,16 +42,24 @@ public class Crosstab implements ResultPostProc {
 
 		String rollupType = ctSpec.getRollupType();
 		rollup = rollupType != null && !rollupType.trim().isEmpty();
-				
-		ExpressionNode column = queryExpr
-				.getSelectList()
-				.getElements()
-				.get(ctSpec.getMeasureColumn() - 1);
-		numericMeasure = column.getType() == DataType.INTEGER || column.getType() == DataType.FLOAT;
+		
+		numericMeasure = true;
+		for (int valIdx : ctSpec.getMeasureColumns()) {
+			ExpressionNode column = queryExpr
+					.getSelectList()
+					.getElements()
+					.get(valIdx - 1);
+			
+			if (column.getType() != DataType.INTEGER && column.getType() != DataType.FLOAT) {
+				numericMeasure = false;				
+			}
+			
+			measureCols.add(getMeasureColumnLabel(column));
+		}
 		
 		if (rollup && !numericMeasure) {
 			throw new IllegalArgumentException("Roll up can be done only on numeric measure columns");			
-		}
+		}				
 	}
 	
 	@Override
@@ -74,6 +86,12 @@ public class Crosstab implements ResultPostProc {
 		List<ResultColumn> columns = new ArrayList<ResultColumn>();		
 		for (int idx : ctSpec.getRowGroupByColumns()) {
 			columns.add(new ResultColumn(selectList.get(idx - 1), 0));			
+		}
+		
+		if (ctSpec.getMeasureColumns().size() > 1) {
+			ExpressionNode valueType = new LiteralValueNode(DataType.STRING);			
+			valueType.setLabel("Value Type");			
+			columns.add(new ResultColumn(valueType, 0));
 		}
 		
 		ExpressionNode colExpr = selectList.get(ctSpec.getColGroupByColumn() - 1);
@@ -105,24 +123,30 @@ public class Crosstab implements ResultPostProc {
 		List<Object[]> result = new ArrayList<Object[]>();
 		
 		for (Row row : rows.values()) {
-			BigDecimal sum = BigDecimal.ZERO;
-			
-			List<Object> values = new ArrayList<Object>();
-			values.addAll(row.getRowKeyValues());
-			
-			for (Object colKey : dynamicCols) {
-				Object measure = row.getColValue(colKey);
-				values.add(measure);
+			for (String measureCol : measureCols) {
+				List<Object> values = new ArrayList<Object>(row.getRowKeyValues());
+				BigDecimal sum = BigDecimal.ZERO;
 				
-				if (numericMeasure) {
-					sum = sum.add(new BigDecimal(measure.toString()));
+				if (measureCols.size() > 1) {
+					values.add(measureCol);
 				}
+				
+				for (Object colKey : dynamicCols) {
+					Map<String, Object> measureMap = row.getColValue(colKey);
+					Object measure = measureMap.get(measureCol);
+					values.add(measure);
+					
+					if (numericMeasure) {
+						sum = sum.add(new BigDecimal(measure.toString()));
+					}
+				}
+				
+				if (rollup) {
+					values.add(sum);
+				}
+				
+				result.add(values.toArray(new Object[0]));								
 			}
-			
-			if (rollup) {
-				values.add(sum);
-			}			
-			result.add(values.toArray(new Object[0]));
 		}
 		
 		return result;
@@ -145,7 +169,12 @@ public class Crosstab implements ResultPostProc {
 		Object colKeyVal = rs.getObject(ctSpec.getColGroupByColumn());
 		colKeyVal = colKeyVal == null ? "" : colKeyVal;
 		
-		Object measure = rs.getObject(ctSpec.getMeasureColumn());
+		Map<String, Object> measureMap = new LinkedHashMap<String, Object>();
+		for (int idx : ctSpec.getMeasureColumns()) {
+			ExpressionNode node = queryExpr.getSelectList().getElements().get(idx - 1);
+			String label = getMeasureColumnLabel(node);
+			measureMap.put(label, rs.getObject(idx));
+		}
 		
 		List<List<Object>> rowGrps = new ArrayList<List<Object>>();
 		if (!rollup) {
@@ -164,7 +193,7 @@ public class Crosstab implements ResultPostProc {
 				rows.put(key, row);
 			}
 			
-			row.addColValue(colKeyVal, measure);					
+			row.addColValue(colKeyVal, measureMap);					
 		}
 		
 		dynamicCols.add(colKeyVal);
@@ -185,7 +214,7 @@ public class Crosstab implements ResultPostProc {
 		
 		private List<Object> rowKeyValues;
 		
-		private Map<Object, Object> colKeyValueMap = new TreeMap<Object, Object>();
+		private Map<Object, Map<String, Object>> colKeyValueMap = new TreeMap<Object, Map<String, Object>>();
 		
 		public Row(String key, List<Object> rowKeyValues) {
 			this.key = key;
@@ -196,27 +225,40 @@ public class Crosstab implements ResultPostProc {
 			return rowKeyValues;
 		}
 
-		public void addColValue(Object columnKey, Object measure) {
-			Object existing = colKeyValueMap.get(columnKey);
-			if (existing == null || !rollup) {
-				colKeyValueMap.put(columnKey, measure);
+		public void addColValue(Object columnKey, Map<String, Object> measureMap) {
+			Map<String, Object> existingMeasures = colKeyValueMap.get(columnKey);
+			if (existingMeasures == null || !rollup) {
+				colKeyValueMap.put(columnKey, new LinkedHashMap<String, Object>(measureMap));
 			} else {
-				BigDecimal val = new BigDecimal(existing.toString());
-				val = val.add(measure != null ? new BigDecimal(measure.toString()) : BigDecimal.ZERO);
-				colKeyValueMap.put(columnKey, val);
+				for (Map.Entry<String, Object> measure : measureMap.entrySet()) {
+					BigDecimal existingMeasure = (BigDecimal)existingMeasures.get(measure.getKey());
+					if (existingMeasure == null) {
+						existingMeasure = BigDecimal.ZERO;
+					}
+					
+					BigDecimal val = BigDecimal.ZERO;
+					if (measure.getValue() != null) {
+						val = new BigDecimal(measure.getValue().toString());
+					}
+					
+					existingMeasures.put(measure.getKey(), existingMeasure.add(val));					
+				}
 			}
 		}
 		
-		public Object getColValue(Object columnKey) {
-			Object measure = colKeyValueMap.get(columnKey);
-			if (measure == null && numericMeasure) {
-				return BigDecimal.ZERO;
-			} 
+		public Map<String, Object> getColValue(Object columnKey) {
+			Map<String, Object> measureMap = colKeyValueMap.get(columnKey);
+			if (measureMap == null && numericMeasure) {
+				measureMap = new LinkedHashMap<String, Object>();
+				for (String measureCol : measureCols) {
+					measureMap.put(measureCol, BigDecimal.ZERO);
+				}
+			}
 			
-			return measure;
+			return measureMap;
 		}
 	}
-
+	
 	private List<List<Object>> rollup(List<Object> input) {
 		List<List<Object>> result = new ArrayList<List<Object>>();
 		result.add(input);
@@ -266,12 +308,23 @@ public class Crosstab implements ResultPostProc {
 	private String getDateFormat(ExpressionNode expr) {
 		if (expr instanceof FieldNode) {
 			FieldNode f = (FieldNode)expr;
-                        if (f.getCtrl() instanceof DatePicker) {
+			if (f.getCtrl() instanceof DatePicker) {
 				DatePicker dp = (DatePicker)f.getCtrl();
 				return dp.getFormat();
 			}
 		}
 		
 		return null;		
+	}
+	
+	private String getMeasureColumnLabel(ExpressionNode node) {
+		if (node.getLabel() != null) {
+			return node.getLabel();
+		} else if (node instanceof FieldNode) {
+			String[] captions = ((FieldNode) node).getNodeCaptions();
+			return captions[captions.length - 1];
+		} else {
+			return "Unknown";
+		}
 	}
 }

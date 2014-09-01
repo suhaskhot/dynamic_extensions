@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.common.dynamicextensions.query.ast.*;
 
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -340,16 +341,20 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	CrosstabNode crosstabSpec = new CrosstabNode();
     	crosstabSpec.setName(ctx.CROSSTAB().getText());
     	
-    	int size = ctx.INT().size();    	
-    	List<Integer> rowGrpCols = new ArrayList<Integer>();
-    	for (int i = 0; i < size - 2; i++) {
-    		rowGrpCols.add(getInt(ctx.INT(i)));
+    	List<Integer> rowCols = new ArrayList<Integer>();
+    	for (Token rowIdx : ctx.row) {
+    		rowCols.add(getInt(rowIdx));
+    	}    	
+    	crosstabSpec.setRowGroupByColumns(rowCols);
+    	
+    	crosstabSpec.setColGroupByColumn(getInt(ctx.col));
+
+    	List<Integer> valCols = new ArrayList<Integer>();
+    	for (Token valIdx : ctx.value) {
+    		valCols.add(getInt(valIdx));
     	}
-    	crosstabSpec.setRowGroupByColumns(rowGrpCols);
-    	
-    	crosstabSpec.setColGroupByColumn(getInt(ctx.INT(size - 2)));
-    	crosstabSpec.setMeasureColumn(getInt(ctx.INT(size - 1)));
-    	
+    	crosstabSpec.setMeasureColumns(valCols);
+
     	if (ctx.RU_TYPE() != null) {
     		crosstabSpec.setRollupType(ctx.RU_TYPE().getText());
     	}    	
@@ -375,7 +380,11 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     	return result;
     }
     
-    private int getInt(TerminalNode node) {
-    	return Integer.parseInt(node.getText());
+//    private int getInt(TerminalNode node) {
+//    	return Integer.parseInt(node.getText());
+//    }
+    
+    private int getInt(Token token) {
+    	return Integer.parseInt(token.getText());
     }
 }

@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class RadioButton extends SelectControl implements Serializable {
 	private static final long serialVersionUID = -1336506050252009947L;
@@ -47,4 +48,10 @@ public class RadioButton extends SelectControl implements Serializable {
 	public List<ColumnDef> getColumnDefs() {
 		return Collections.singletonList(ColumnDef.get(getDbColumnName(), getDbType()));
 	}	
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		super.getProps(props);
+		props.put("type", "radiobutton");
+	}
 }

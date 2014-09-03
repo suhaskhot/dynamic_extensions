@@ -4,8 +4,10 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
 public class MultiSelectCheckBox extends SelectControl implements MultiSelectControl, Serializable {
@@ -108,5 +110,11 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 		}
 
 		return true;
+	}
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		super.getProps(props);
+		props.put("type", "checkbox"); 
 	}
 }

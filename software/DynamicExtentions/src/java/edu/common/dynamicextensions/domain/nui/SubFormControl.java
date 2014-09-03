@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -185,5 +186,11 @@ public class SubFormControl extends Control implements Serializable {
 	@Override
 	public <T> T fromString(String value) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void getProps(Map<String, Object> props) {
+		props.put("type", "subForm");
+		props.putAll(getSubContainer().getProps());
 	}
 }

@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -165,5 +166,17 @@ public class NumberField extends TextField implements Serializable {
 			numberValue = numberValue.setScale(noOfDigitsAfterDecimal, RoundingMode.HALF_UP).stripTrailingZeros();
 		}
 		return numberValue.toPlainString();
+	}
+
+	@Override
+	public void getProps(Map<String, Object> props) {
+		super.getProps(props);
+		props.put("type", "numberField");
+		props.put("noOfDigits", getNoOfDigits());
+		props.put("noOfDigitsAfterDecimal", getNoOfDigitsAfterDecimal());
+		props.put("minValue", getMinValue());
+		props.put("maxValue", getMaxValue());
+		props.put("calculated", isCalculated());
+		props.put("formula", getFormula());		
 	}
 }

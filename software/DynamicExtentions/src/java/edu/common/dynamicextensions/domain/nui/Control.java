@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.domain.nui;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -424,4 +425,27 @@ public abstract class Control implements Comparable<Control>, Serializable {
 		}
 		return Collections.emptySet();
 	}
+	
+	public Map<String, Object> getProps() {
+		Map<String, Object> ctrlProps = new HashMap<String, Object>();		
+		ctrlProps.put("name", getName());
+		ctrlProps.put("udn", getUserDefinedName());
+		ctrlProps.put("caption", getCaption());
+		ctrlProps.put("customLabel", getCustomLabel());
+		ctrlProps.put("labelPosition", getLabelPosition());
+		ctrlProps.put("toolTip", getToolTip());
+		ctrlProps.put("skipLogicSourceControl", isSkipLogicSourceControl());
+		ctrlProps.put("skipLogicTargetControl", isSkipLogicTargetControl());
+		ctrlProps.put("calculatedSourceControl", isCalculatedSourceControl());
+		ctrlProps.put("conceptCode", getConceptCode());
+		ctrlProps.put("conceptPreferredName", getConceptPreferredName());
+		ctrlProps.put("conceptDefinitionSource", getConceptDefinitionSource());
+		ctrlProps.put("conceptDefinition", getConceptDefinition());
+		ctrlProps.put("validationRules", getValidationRules());
+		
+		getProps(ctrlProps);
+		return ctrlProps;
+	}
+	
+	public abstract void getProps(Map<String, Object> props);
 }

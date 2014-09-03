@@ -16,6 +16,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
 
+import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class IoUtil {
@@ -25,6 +26,16 @@ public class IoUtil {
 		if (writer != null) {
 			try {
 				writer.close();
+			} catch (Exception e) {
+				logger.warn("Error closing an instance of writer", e);
+			}
+		}
+	}
+
+	public static void close(CSVReader reader) {
+		if (reader != null) {
+			try {
+				reader.close();
 			} catch (Exception e) {
 				logger.warn("Error closing an instance of writer", e);
 			}

@@ -681,7 +681,11 @@ edu.common.de.FieldFactory = {
     } else if (field.type == 'label') {
       fieldObj = new edu.common.de.Note(id, field, args);
     } else {
-      fieldObj = new edu.common.de.UnknownField(id, field, args);
+      var params = {id: id, field: field, args: args};
+      fieldObj = edu.common.de.FieldManager.getInstance().getField(field.type, params);
+      if (!fieldObj) {
+        fieldObj = new edu.common.de.UnknownField(id, field, args);
+      }
     }
 
     return fieldObj;

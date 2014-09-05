@@ -626,7 +626,11 @@ edu.common.de.DatePicker = function(id, field) {
       format = 0; // minViewMode = 0 days
     }
 
-    this.inputEl.datepicker({format: format, autoclose: true, minViewMode: format});
+    this.inputEl.datepicker({
+      format: typeof dateFormat == "undefined" ? format : dateFormat, 
+      autoclose: true, 
+      minViewMode: format});
+
     return this.inputEl;
   };
 

@@ -25,8 +25,10 @@ public class CSDConstants {
 	public static final String STATUS_SAVED = "saved";
 	public static final String STATUS_NEW = "new";
 	public static final String STATUS_ERROR = "error";
+	public static final String FANCY_CONTROL = "fancyControl";
+	public static final String FANCY_CONTROL_TYPE = "fancyControlType";
 	public static final String STATUS = "status";
-
+	
 	public static final String[] PV_HEADERS = {"Value", "Numeric Code", "Option Name", "Definition Source",
 			"Concept Code"};
 }

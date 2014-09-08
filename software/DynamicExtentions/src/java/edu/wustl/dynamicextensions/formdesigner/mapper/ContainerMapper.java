@@ -6,7 +6,7 @@ import edu.common.dynamicextensions.domain.nui.UserContext;
 
 public abstract class ContainerMapper {
 
-	protected static ControlMapper controlMapper = new ControlMapper();
+	protected ControlMapper controlMapper = ControlMapper.getInstance();
 	protected Container rootContainer = null;
 
 	public Container getRootContainer() {

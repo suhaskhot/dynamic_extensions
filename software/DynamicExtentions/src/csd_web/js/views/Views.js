@@ -36,7 +36,7 @@ var Views = {
 					this.model
 							.save(
 									{
-										save : "yes"
+								    		save : "yes"
 									},
 									{
 										wait : true,
@@ -108,35 +108,29 @@ var Views = {
 				},
 
 				loadModelInSession : function() {
-					$("#formWaitingImage").show();
-					this.populateControlsInForm();
-					this.model.setFormInformation(Main.mainTabBarView
-							.getFormSummaryView().getModel());
+				  $("#formWaitingImage").show();
+				  this.populateControlsInForm();
+				  this.model.setFormInformation(Main.mainTabBarView.getFormSummaryView().getModel());
+				  this.model.save(
+				    {
+					  save : "no"
+					},
 
-					this.model
-							.save(
-									{
-										save : "no"
-									},
-									{
-										wait : true,
-										success : function(model, response) {
-											$("#formWaitingImage").hide();
-											$("#skipRulesTable tr:gt(0)")
-													.remove();
-											AdvancedControlPropertiesBizLogic
-													.loadSkipRules(Main.formView
-															.getFormModel());
-										},
-										error : function(model, response) {
-											$("#formWaitingImage").hide();
-											$("#popupMessageText")
-													.html(
-															"Could not process the form successfully.");
-											$("#dialog-message").dialog('open');
-										}
-									});
+					{
+					  wait : true,
+					  success : function(model, response) {
+					    $("#formWaitingImage").hide();
+					    $("#skipRulesTable tr:gt(0)").remove();
+					    AdvancedControlPropertiesBizLogic.loadSkipRules(Main.formView.getFormModel());
+					  },
 
+					  error : function(model, response) {
+					    $("#formWaitingImage").hide();
+						$("#popupMessageText").html("Could not process the form successfully.");
+						$("#dialog-message").dialog('open');
+					  }
+					}
+				  );
 				},
 
 				populateControlsInForm : function() {
@@ -188,10 +182,8 @@ var Views = {
 									subForm : _subForm
 								});
 							}
-                            
 							// set control json
 							this.model.get('controlCollection').push(_.omit(control.attributes, ['template']));
-
 						}
 					}
 
@@ -407,9 +399,13 @@ var Views = {
 								+ $('#userDefinedName').val() + ")";
 
 						if (this.model.get('editName') == undefined) {
+						    var controlType = this.model.get('type');
+						    if(controlType == 'fancyControl') {
+						      controlType =  newModel.attributes.fancyControlType;
+						    }
 							status = ControlBizLogic.createControlNode(
 									displayLabel, $('#controlName').val(),
-									this.model.get('type'), this.model,
+									controlType, this.model,
 									this.model.get('copy'));
 
 						} else {
@@ -553,7 +549,8 @@ var Views = {
 								pvOrder  :$("input:radio[name=sortOrder]:checked" ).val(),
 								toolTip : $('#toolTip').val(),
 								labelPosition : labelPos,
-								subFormName : $('#subFormName').val()
+								subFormName : $('#subFormName').val(),
+								fancyControlType : $('#fancyControlType').val()
 							});
 
 					// set pvs
@@ -578,8 +575,7 @@ var Views = {
 						labelPos = "TOP"
 					}
 
-					model
-							.set({
+					model.set({
 								caption : $('#controlCaption').val(),
 								defaultValue : $('#defaultValue').val(),
 								controlName : $('#controlName').val(),
@@ -610,7 +606,8 @@ var Views = {
 								pvOrder : $("input:radio[name=sortOrder]:checked" ).val(),
 								toolTip : $('#toolTip').val(),
 								labelPosition : labelPos,
-								subFormName : $('#subFormName').val()
+								subFormName : $('#subFormName').val(),
+								fancyControlType : $('#fancyControlType').val()
 							});
 
 					// set pvs
@@ -743,6 +740,12 @@ var Views = {
 					case "multiselectCheckBox":
 						this.renderPvUI();
 						break;
+
+					case "fancyControl":
+					    this.populateFancyControls();
+						$("#fancyControlType").val(this.model.get('fancyControlType'))
+						  .prop('selected', true);
+						break;
 					default:
 					}
 					// init page break
@@ -775,6 +778,14 @@ var Views = {
 						});
 					});
 
+				},
+
+				populateFancyControls : function() {
+				   var fieldList = edu.common.de.FieldManager.getInstance().getFieldList();
+				   for(var i=0; i<fieldList.length; i++) {
+				     $('#fancyControlType').append($("<option/>").prop("value", fieldList[i].name).append(fieldList[i].displayName));
+				   }
+				   //$('#fancyControlType').chosen({width: "100%", allow_single_deselect: true});
 				},
 
 				renderPvUI : function() {
@@ -1697,7 +1708,7 @@ var Views = {
 		},
 
 		events : {
-			"click a" : "createControl"
+			"click a.link" : "createControl"
 		},
 
 		createControl : function(event) {
@@ -1836,19 +1847,14 @@ var Views = {
 						var message = "Please specify the form's name.";
 					/*	$("#popupMessageText").html(message);
 						$("#dialog-message").dialog('open'); */
-                                        Utility.notify($("#notifications"), message, "error");
-
+						Utility.notify($("#notifications"), message, "error");
 					} else {
-
 						this.model.set({
 							formName : $('#formName').val(),
 							caption : formCaption
 						});
-
 						Main.formView.saveForm(true);
-
 					}
-
 				},
 
 				setCaptionAndName : function(event) {
@@ -1971,7 +1977,7 @@ var getDEJson = function (args) {
   var prevRow = null;
   var rowNo = 0;
   var colNo = 0;
- 
+
   _.each(args.json.attributes.controlObjectCollection, function(field) {
 	    // Create NewField with appropriate new DE attributes
     field = field.attributes;
@@ -2018,7 +2024,9 @@ var getDEJson = function (args) {
     } else if (newField.type == 'label') {
       newField['heading'] = field.heading;
       newField['note'] = field.note;
-    }    
+    } else if (newField.type == 'fancyControl') {
+      newField['type'] = newField.fancyControlType;
+    }
 
     if (prevRow == null || prevRow != field.sequenceNumber) {
       columns = new Array();
@@ -2056,6 +2064,7 @@ var getNewField = function(args) {
   newField['conceptDefinitionSource'] = field.conceptDefinitionSource;
   newField['conceptDefinition'] = field.conceptDefinition;
   newField['validationRules'] = field.validationRules || [];
+  newField['fancyControlType'] = field.fancyControlType;
 
   // Correcting the type properties 
   if (field.type == 'numericField') {

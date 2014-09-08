@@ -13,7 +13,7 @@ var Utility = {
 		var controlTypes = [ "stringTextField", "numericField", "textArea",
 				"radioButton", "checkBox", "listBox", "multiselectBox",
 				"multiselectCheckBox", "datePicker", "fileUpload", "note",
-				"heading", "subForm", "label", "comboBox" ];
+				"heading", "subForm", "label", "comboBox", "fancyControl" ];
 
 		for ( var cntr = 0; cntr < controlTypes.length; cntr++) {
 			$('#' + controlTypes[cntr])
@@ -27,7 +27,6 @@ var Utility = {
 	messageSpace : "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
 
 	getControlIndexForCarousel : function(controlType) {
-
 		switch (controlType) {
 
 		case "stringTextField":
@@ -74,24 +73,28 @@ var Utility = {
 			return 11;
 			break;
 
-		case "note":
+		case "fancyControl":
 			return 12;
 			break;
 
-		case "heading":
+		case "note":
 			return 13;
 			break;
 
-		case "subForm":
+		case "heading":
 			return 14;
 			break;
 
-		case "label":
+		case "subForm":
 			return 15;
 			break;
 
-		case "pageBreak":
+		case "label":
 			return 16;
+			break;
+
+		case "pageBreak":
+			return 17;
 			break;
 
 		default:
@@ -146,6 +149,10 @@ var Utility = {
 
 		case "fileUpload":
 			shortCode = "FU" + GlobalMemory.nodeCounter;
+			break;
+
+		case "fancyControl":
+			shortCode = "FC" + GlobalMemory.nodeCounter;
 			break;
 
 		case "note":
@@ -207,6 +214,18 @@ var Utility = {
 			return Views.showControl(container, controlModel);
 		else
 			return controlModel;
+	},
+
+	addFancyControl : function(controlModel, show, container) {
+	  controlModel.set({
+                         template : Templates.templateList['fancyControlTemplate']
+			 + Templates.templateList['submitButtonTemplate']
+		      });
+
+	  if (show)
+	    return Views.showControl(container, controlModel);
+	  else
+	    return controlModel;
 	},
 
 	addNumericField : function(controlModel, show, container) {
@@ -423,6 +442,7 @@ var Utility = {
 		this.addFieldHandlerMap['heading'] = this.addHeading;
 		this.addFieldHandlerMap['label'] = this.addLabel;
 		this.addFieldHandlerMap['subForm'] = this.addSubForm;
+		this.addFieldHandlerMap['fancyControl'] = this.addFancyControl;
 		this.addFieldHandlerMap['pageBreak'] = this.addPageBreak;
 	},
 

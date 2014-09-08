@@ -208,7 +208,6 @@ edu.common.de.Form = function(args) {
     if (this.formDef.rows == undefined) {
       this.formDef = JSON.parse(this.formDef);
     }
-
     var rows = this.formDef.rows;
     this.processFormDef("", rows);
     for (var i = 0; i < rows.length; ++i) {
@@ -572,8 +571,10 @@ edu.common.de.DataTable = function(args) {
   }
 
   this.createFieldEl = function(mode, field, formData) {
+
       if (field.type == 'checkbox') { field.type = 'listbox'; }
       if (field.type == 'radiobutton') {field.type = 'combobox';}
+
       var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
       var inputEl = fieldObj.render();
       this.fieldObjs.push(fieldObj);
@@ -583,8 +584,7 @@ edu.common.de.DataTable = function(args) {
       if(mode == 'edit') {
         return inputEl;
       } else {
-        var fieldValue = formData[field.name];
-        return (fieldValue instanceof Array) ? fieldValue.join().substring(1) : fieldValue;
+        return fieldObj.getDisplayValue().value;
       }
   }
 
@@ -652,8 +652,8 @@ edu.common.de.DataTable = function(args) {
   }
 };
 
-
 edu.common.de.FieldFactory = {
+
   getField: function(field, idx, args) {
     var fieldObj;
     idx = idx || "";
@@ -670,7 +670,7 @@ edu.common.de.FieldFactory = {
       fieldObj = new edu.common.de.DatePicker(id, field, args);
     } else if (field.type == 'booleanCheckbox') {
       fieldObj = new edu.common.de.BooleanCheckbox(id, field, args);
-    } else if (field.type == 'combobox' || field.type == 'listbox') {
+    } else if (field.type == 'combobox' || field.type == 'listbox' || field.type == 'multiSelectListbox') {
       fieldObj = new edu.common.de.SelectField(id, field, args);
     } else if (field.type == 'radiobutton' || field.type == 'checkbox') {
       fieldObj = new edu.common.de.GroupField(id, field, args);
@@ -725,6 +725,10 @@ edu.common.de.TextField = function(id, field) {
     this.recId = recId;
     this.inputEl.val(value);
   };
+
+  this.getDisplayValue = function() {
+    return {name: field.name, value: this.inputEl.val()};
+  };
   
   this.validate = function() {
     return this.validator.validate();
@@ -765,6 +769,10 @@ edu.common.de.NumberField = function(id, field) {
     this.recId = recId;
     this.inputEl.val(value);
   };
+
+  this.getDisplayValue = function() {
+    return {name: field.name, value: this.inputEl.val()};
+  };
   
   this.validate = function() {
     return this.validator.validate();
@@ -799,6 +807,11 @@ edu.common.de.TextArea = function(id, field) {
   this.getValue = function() {
     return {name: field.name, value: this.inputEl.val()};
   };
+
+  this.getDisplayValue = function() {
+    return {name: field.name, value: this.inputEl.val()};
+  }
+
 
   this.setValue = function(recId, value) {
     this.recId = recId;
@@ -838,7 +851,10 @@ edu.common.de.DatePicker = function(id, field) {
       format = 0; // minViewMode = 0 days
     }
 
-    this.inputEl.datepicker({format: dateFormat, autoclose: true, minViewMode: format});
+    this.inputEl.datepicker({
+      format: typeof dateFormat == "undefined" ? format : dateFormat,
+      autoclose: true,
+      minViewMode: format});
     return this.inputEl;
   };
 
@@ -865,6 +881,10 @@ edu.common.de.DatePicker = function(id, field) {
     this.recId = recId;
     this.inputEl.val(value);
   };
+
+  this.getDisplayValue = function() {
+    return {name: field.name, value: this.inputEl.val()};
+  }
   
   this.validate = function() {
     return this.validator.validate();
@@ -914,6 +934,11 @@ edu.common.de.BooleanCheckbox = function(id, field) {
       this.dataEl.prop('checked', false);
     }
   };
+
+  this.getDisplayValue = function() {
+    var value = this.dataEl.prop('checked') ? "true" : "false";
+    return {name: field.name, value: value};
+  };
   
   this.validate = function() {
     return this.validator.validate();
@@ -926,7 +951,7 @@ edu.common.de.SelectField = function(id, field) {
 
   this.render = function() {
     this.inputEl = $("<select/>")
-      .prop({id: id, multiple: field.type == 'listbox', title: field.toolTip})
+      .prop({id: id, multiple: (field.type == 'listbox' || field.type == 'multiSelectListbox'), title: field.toolTip})
       .addClass("form-control")
       .append($("<option/>"));
 
@@ -963,6 +988,12 @@ edu.common.de.SelectField = function(id, field) {
     this.recId = recId;
     this.inputEl.val(value);
     this.inputEl.trigger("chosen:updated");
+  };
+
+  this.getDisplayValue = function() {
+    var value = this.inputEl.val();
+    value = (value instanceof Array) ? value.join().substring(1) : value;
+    return {name: field.name, value: value};
   };
   
   this.validate = function() {
@@ -1057,6 +1088,12 @@ edu.common.de.GroupField = function(id, field) {
       }
     }
   };
+
+  this.getDisplayValue = function() {
+    var value = this.getValue().value;
+    value = (value instanceof Array) ? value.join().substring(1) : value;
+    return {name: field.name, value: value};
+  };
   
   this.validate = function() {
     return this.validator.validate();
@@ -1144,6 +1181,10 @@ edu.common.de.SubFormField = function(id, sfField, args) {
         fieldObjs[j].postRender();
       }
     }
+  };
+
+  this.getDisplayValue = function() {
+    return sfField.name;
   };
 
   this.getHeading = function() {
@@ -1356,6 +1397,10 @@ edu.common.de.FileUploadField = function(id, field, args) {
     }
 
     return this;
+  };
+
+  this.getDisplayValue = function() {
+    return {name: field.name, value: this.value};
   };
 
   this.validate = function() {

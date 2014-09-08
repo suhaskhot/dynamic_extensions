@@ -13,9 +13,11 @@ import edu.common.dynamicextensions.domain.nui.SelectControl;
 import edu.common.dynamicextensions.domain.nui.UserContext;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ContainerMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.ControlMapper;
+import edu.wustl.dynamicextensions.formdesigner.mapper.DefaultControlMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.Properties;
 import edu.wustl.dynamicextensions.formdesigner.mapper.PvMapper;
 import edu.wustl.dynamicextensions.formdesigner.mapper.RegularContainerMapper;
+import edu.wustl.dynamicextensions.formdesigner.utility.CSDConstants;
 
 public class ContainerFacade {
 
@@ -38,6 +40,7 @@ public class ContainerFacade {
 	 */
 	public static ContainerFacade createContainer(Properties containerProps, UserContext userContext) throws Exception {
 		Container container = containerMapper.propertiesToContainer(containerProps, userContext);
+		
 		containerMapper.setRootContainer(container);
 		return new ContainerFacade(container, userContext);
 	}
@@ -75,7 +78,11 @@ public class ContainerFacade {
 	 * @throws Exception 
 	 */
 	public void createControl(Properties controlProps) throws Exception {
-		Control control = new ControlMapper().propertiesToControl(controlProps, null);
+		String type = controlProps.getString(CSDConstants.CONTROL_TYPE);
+		if(type.equals(CSDConstants.FANCY_CONTROL)) {
+			type = controlProps.getString(CSDConstants.FANCY_CONTROL_TYPE);
+		}
+		Control control = ((DefaultControlMapper)ControlMapper.getInstance().getControlMapper(type)).propertiesToControl(controlProps, null);
 		container.addControl(control);
 	}
 

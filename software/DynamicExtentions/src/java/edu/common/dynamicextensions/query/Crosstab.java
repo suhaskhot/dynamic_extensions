@@ -231,16 +231,8 @@ public class Crosstab implements ResultPostProc {
 				colKeyValueMap.put(columnKey, new LinkedHashMap<String, Object>(measureMap));
 			} else {
 				for (Map.Entry<String, Object> measure : measureMap.entrySet()) {
-					BigDecimal existingMeasure = (BigDecimal)existingMeasures.get(measure.getKey());
-					if (existingMeasure == null) {
-						existingMeasure = BigDecimal.ZERO;
-					}
-					
-					BigDecimal val = BigDecimal.ZERO;
-					if (measure.getValue() != null) {
-						val = new BigDecimal(measure.getValue().toString());
-					}
-					
+					BigDecimal existingMeasure = getBigDecimal(existingMeasures.get(measure.getKey()));
+					BigDecimal val = getBigDecimal(measure.getValue());
 					existingMeasures.put(measure.getKey(), existingMeasure.add(val));					
 				}
 			}
@@ -326,5 +318,14 @@ public class Crosstab implements ResultPostProc {
 		} else {
 			return "Unknown";
 		}
+	}
+	
+	private BigDecimal getBigDecimal(Object val) {
+		BigDecimal ret = BigDecimal.ZERO;
+		if (val != null) {
+			ret = new BigDecimal(val.toString());
+		}
+		
+		return ret;
 	}
 }

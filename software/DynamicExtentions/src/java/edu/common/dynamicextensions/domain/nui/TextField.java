@@ -4,6 +4,7 @@
 package edu.common.dynamicextensions.domain.nui;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -57,4 +58,9 @@ public abstract class TextField extends Control implements Serializable {
 		
 		return true;
 	}		
+	
+	public void getProps(Map<String, Object> props) {
+		props.put("width", getNoOfColumns());
+		props.put("defaultValue", getDefaultValue());		
+	}
 }

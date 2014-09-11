@@ -1,6 +1,7 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
@@ -11,6 +12,8 @@ public abstract class ExpressionNode implements Node, Serializable {
 	
 	private String label;
 	
+	private String columnAlias;
+	
 	public abstract DataType getType();
 	
 	public abstract ExpressionNode copy();
@@ -18,6 +21,18 @@ public abstract class ExpressionNode implements Node, Serializable {
 	public abstract String[] getFormNames();
 	
 	public abstract boolean isPhi();
+	
+	public abstract Set<FieldNode> getFields();
+	
+	public void copy(ExpressionNode from, ExpressionNode to) {
+		to.setPos(from.getPos());
+		to.setLabel(from.getLabel());
+		to.setColumnAlias(from.getColumnAlias());
+	}
+	
+	public boolean isAggregateExpression() {
+		return false;
+	}
 	
 	public int getPos() {
 		return pos;
@@ -35,6 +50,14 @@ public abstract class ExpressionNode implements Node, Serializable {
 		return label;
 	}
 	
+	public String getColumnAlias() {
+		return columnAlias;
+	}
+
+	public void setColumnAlias(String columnAlias) {
+		this.columnAlias = columnAlias;
+	}
+
 	public boolean isDate() {
 		return getType() == DataType.DATE;
 	}

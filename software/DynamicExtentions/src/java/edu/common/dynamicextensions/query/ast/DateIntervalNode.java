@@ -1,6 +1,8 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
@@ -18,7 +20,7 @@ public class DateIntervalNode extends ExpressionNode implements Serializable {
 	@Override
 	public DateIntervalNode copy() {
 		DateIntervalNode copy = new DateIntervalNode();
-		copy.setLabel(this.getLabel());
+		super.copy(this, copy);
 		copy.setYears(years);
 		copy.setMonths(months);
 		copy.setDays(days);
@@ -81,5 +83,10 @@ public class DateIntervalNode extends ExpressionNode implements Serializable {
 	@Override
 	public boolean isPhi() {
 		return false;
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		return Collections.emptySet(); 
 	}
 }

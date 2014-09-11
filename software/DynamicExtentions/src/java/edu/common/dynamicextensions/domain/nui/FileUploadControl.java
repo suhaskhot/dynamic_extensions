@@ -7,6 +7,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
@@ -40,5 +41,10 @@ public class FileUploadControl extends Control implements Serializable {
 	@Override
 	public boolean equals(Object other) {
 		return super.equals(other);
+	}
+
+	@Override
+	public void getProps(Map<String, Object> props) {
+		props.put("type", "fileUpload");		
 	}	
 }

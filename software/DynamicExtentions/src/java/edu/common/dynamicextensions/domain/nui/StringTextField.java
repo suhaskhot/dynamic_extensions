@@ -3,6 +3,8 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
 public class StringTextField extends TextField implements Serializable {
@@ -97,5 +99,13 @@ public class StringTextField extends TextField implements Serializable {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		super.getProps(props);
+		props.put("type", "stringTextField");
+		props.put("url", isUrl());
+		props.put("password", isPassword());		
 	}
 }

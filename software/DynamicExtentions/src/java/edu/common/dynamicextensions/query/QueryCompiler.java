@@ -316,6 +316,8 @@ public class QueryCompiler
 			analyzeBetweenNode(queryId, (BetweenNode)exprNode, joinMap);
 		} else if (exprNode instanceof RoundOffNode) {
 			analyzeExpressionNode(queryId, ((RoundOffNode)exprNode).getExprNode(), joinMap);
+		} else if (exprNode instanceof AggregateNode) {
+			analyzeField(queryId, ((AggregateNode)exprNode).getField(), joinMap);
 		}
     }
     
@@ -388,8 +390,8 @@ public class QueryCompiler
             return analyzeSelectArithExpressionNode(queryId, (ArithExpressionNode)exprNode, joinMap, failIfAbsent);
         } else if (exprNode instanceof DateDiffFuncNode) {
             return analyzeSelectDateDiffFuncNode(queryId, (DateDiffFuncNode)exprNode, joinMap, failIfAbsent);
-        } else if (exprNode instanceof CountNode) {
-        	return analyzeField(queryId, ((CountNode)exprNode).getField(), joinMap, failIfAbsent);
+        } else if (exprNode instanceof AggregateNode) {
+        	return analyzeField(queryId, ((AggregateNode)exprNode).getField(), joinMap, failIfAbsent);
         } else if (exprNode instanceof RoundOffNode) {
         	return analyzeSelectExpressionNode(queryId, ((RoundOffNode)exprNode).getExprNode(), joinMap, failIfAbsent);
         } else {

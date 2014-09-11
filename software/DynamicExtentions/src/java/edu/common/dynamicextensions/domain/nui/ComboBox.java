@@ -2,6 +2,7 @@
 package edu.common.dynamicextensions.domain.nui;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class ComboBox extends SelectControl implements Serializable {
 	private static final long serialVersionUID = 6015502487841170385L;
@@ -64,5 +65,11 @@ public class ComboBox extends SelectControl implements Serializable {
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		super.getProps(props);
+		props.put("type", "combobox");		
 	}
 }

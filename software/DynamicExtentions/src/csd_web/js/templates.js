@@ -141,5 +141,11 @@ var Templates = {
 			async : false
 		}).responseText;
 		this.templateList['summaryTemplate'] = result;
+
+		result = $.ajax({
+			url : "../pages/templates/fancyControlTemplate.html",
+			async : false
+		}).responseText;
+		this.templateList['fancyControlTemplate'] = result;
 	}
 }

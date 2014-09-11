@@ -18,4 +18,14 @@ public class SelectListNode implements Node, Serializable {
 		return elements;
 	}
 	
+	public boolean hasAggregateExpr() {
+		for (ExpressionNode element : elements) {
+			if (element.isAggregateExpression()) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 }

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.common.dynamicextensions.napi.ControlValue;
@@ -213,5 +214,16 @@ public abstract class SelectControl extends Control implements Serializable {
 		}
 		return pvString;
 
+	}
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		PvDataSource pvDataSrc =  getPvDataSource();
+		props.put("dataType", pvDataSrc.getDataType());
+		props.put("dateFormat", pvDataSrc.getDateFormat());
+		props.put("defaultValue", getDefaultValue());
+		List<PermissibleValue> pvs = pvDataSrc.getPermissibleValues(Calendar.getInstance().getTime());
+		props.put("pvs", pvs);
+		props.put("pvOrdering", pvDataSrc.getOrdering().name());		
 	}
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
@@ -72,5 +73,11 @@ public class CheckBox extends Control implements Serializable {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public void getProps(Map<String, Object> props) {
+		props.put("type", "booleanCheckbox");
+		props.put("defaultChecked", isDefaultValueChecked());		
 	}	
 }

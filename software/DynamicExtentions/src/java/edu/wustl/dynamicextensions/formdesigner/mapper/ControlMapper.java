@@ -39,30 +39,41 @@ public class ControlMapper {
 	public void setRootContainer(Container rootContainer) {
 		this.rootContainer = rootContainer;
 	}
+	
+	private Map<String, DefaultControlMapper> controlMapperMap = new HashMap<String, DefaultControlMapper>();
 
-	private final Map<String, DefaultControlMapper> CONTROL_MAPPER_MAP = new HashMap<String, DefaultControlMapper>() {
-
-		private static final long serialVersionUID = 1252410916139427174L;
-
-		{
-			put(CSDConstants.STRING_TEXT_FIELD, new StringTextFieldMapper());
-			put(CSDConstants.NUMERIC_FIELD, new NumericFieldMapper());
-			put(CSDConstants.TEXT_AREA, new TextAreaMapper());
-			put(CSDConstants.RADIO_BUTTON, new RadioButtonMapper());
-			put(CSDConstants.CHECK_BOX, new CheckBoxMapper());
-			put(CSDConstants.LIST_BOX, new MultiSelectBoxMapper());
-			put(CSDConstants.MULTISELECT_BOX, new MultiSelectBoxMapper());
-			put(CSDConstants.MULTISELECT_CHECK_BOX, new MultiSelectCheckBoxMapper());
-			put(CSDConstants.DATE_PICKER, new DatePickerMapper());
-			put(CSDConstants.FILE_UPLOAD, new FileUploadMapper());
-			put(CSDConstants.NOTE, new NoteMapper());
-			put(CSDConstants.HEADING, new HeadingMapper());
-			put(CSDConstants.SUB_FORM, new SubFormMapper());
-			put(CSDConstants.LABEL, new LabelMapper());
-			put(CSDConstants.PAGE_BREAK, new PageBreakMapper());
-			put(CSDConstants.COMBO_BOX, new ComboBoxMapper());
-		}
-	};
+	private static ControlMapper instance = new ControlMapper();
+	
+	public static ControlMapper getInstance() {
+		return instance;
+	}
+	
+	private ControlMapper() {
+		registerControlMapper(CSDConstants.STRING_TEXT_FIELD, new StringTextFieldMapper());
+		registerControlMapper(CSDConstants.NUMERIC_FIELD, new NumericFieldMapper());
+		registerControlMapper(CSDConstants.TEXT_AREA, new TextAreaMapper());
+		registerControlMapper(CSDConstants.RADIO_BUTTON, new RadioButtonMapper());
+		registerControlMapper(CSDConstants.CHECK_BOX, new CheckBoxMapper());
+		registerControlMapper(CSDConstants.LIST_BOX, new MultiSelectBoxMapper());
+		registerControlMapper(CSDConstants.MULTISELECT_BOX, new MultiSelectBoxMapper());
+		registerControlMapper(CSDConstants.MULTISELECT_CHECK_BOX, new MultiSelectCheckBoxMapper());
+		registerControlMapper(CSDConstants.DATE_PICKER, new DatePickerMapper());
+		registerControlMapper(CSDConstants.FILE_UPLOAD, new FileUploadMapper());
+		registerControlMapper(CSDConstants.NOTE, new NoteMapper());
+		registerControlMapper(CSDConstants.HEADING, new HeadingMapper());
+		registerControlMapper(CSDConstants.SUB_FORM, new SubFormMapper());
+		registerControlMapper(CSDConstants.LABEL, new LabelMapper());
+		registerControlMapper(CSDConstants.PAGE_BREAK, new PageBreakMapper());
+		registerControlMapper(CSDConstants.COMBO_BOX, new ComboBoxMapper());
+    }
+	
+	public void registerControlMapper(String controlType, DefaultControlMapper mapper) {
+		controlMapperMap.put(controlType, mapper);
+	}
+	
+	public DefaultControlMapper getControlMapper(String controlType){
+		return controlMapperMap.get(controlType);
+	}
 
 	/**
 	 * derives the type of control from the instance
@@ -103,24 +114,30 @@ public class ControlMapper {
 			type = CSDConstants.SUB_FORM;
 		} else if (control instanceof PageBreak) {
 			type = CSDConstants.PAGE_BREAK;
+		}else {
+			Map<String, Object> props = control.getProps();
+			type = props.get("type").toString();
 		}
 		return type;
 	}
 
 	public Control propertiesToControl(Properties controlProps, Container container) throws Exception {
-
 		String type = controlProps.getString(CSDConstants.CONTROL_TYPE);
-		return ((DefaultControlMapper) CONTROL_MAPPER_MAP.get(type)).propertiesToControl(controlProps, container);
+		if(type.equals(CSDConstants.FANCY_CONTROL)) {
+			type = controlProps.getString(CSDConstants.FANCY_CONTROL_TYPE);
+		}
+		return ((DefaultControlMapper)getControlMapper(type)).propertiesToControl(controlProps, container);
 	}
 
 	public Properties controlToProperties(Control control, Container container) {
-		return CONTROL_MAPPER_MAP.get(getControlType(control)).controlToProperties(control, container);
+//		return CONTROL_MAPPER_MAP.get(getControlType(control)).controlToProperties(control, container);
+		return getControlMapper(getControlType(control)).controlToProperties(control, container);
 	}
 
 	/**
 	 * Mapper for String Text Field
 	 */
-	private class StringTextFieldMapper extends TextFieldControlMapper {
+	public class StringTextFieldMapper extends TextFieldControlMapper {
 
 		@Override
 		public Control propertiesToControl(Properties controlProps, Container container) {
@@ -610,3 +627,4 @@ public class ControlMapper {
 		}
 	}
 }
+

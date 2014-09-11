@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.query;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -14,10 +15,10 @@ import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.ndao.DbSettingsFactory;
+import edu.common.dynamicextensions.query.ast.AggregateNode;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode;
 import edu.common.dynamicextensions.query.ast.ArithExpressionNode.ArithOp;
 import edu.common.dynamicextensions.query.ast.BetweenNode;
-import edu.common.dynamicextensions.query.ast.CountNode;
 import edu.common.dynamicextensions.query.ast.CurrentDateNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode;
 import edu.common.dynamicextensions.query.ast.DateDiffFuncNode.DiffType;
@@ -89,15 +90,17 @@ public class QueryGenerator {
     	String selectClause = buildSelectClause(queryExpr.getSelectList(), joinTree);
         String fromClause  = buildFromClause(joinTree);
         String whereClause = buildWhereClause(queryExpr.getFilterExpr());        
-        String activeClause = buildActiveCond(joinTree);        
+        String activeClause = buildActiveCond(joinTree);
+        String groupBy = buildGroupBy(queryExpr.getSelectList());
         
         whereClause = and(whereClause, activeClause);        
         String sql = new StringBuilder("select ").append(selectClause)
         	.append(" from ").append(fromClause)
         	.append(" where ").append(whereClause)
+        	.append(groupBy.isEmpty() ? "" : " group by ").append(groupBy)
         	.toString();
         
-        if (wideRowSupport) {
+        if (wideRowSupport && groupBy.isEmpty()) {
         	sql = addOrderBy(sql, joinTree);
         }
         
@@ -129,10 +132,13 @@ public class QueryGenerator {
     private String buildSelectClause(SelectListNode selectList, JoinTree joinTree) {
     	int colCnt = 0;
     	StringBuilder select = new StringBuilder();
-    	for (ExpressionNode element : selectList.getElements()) { 
+    	for (ExpressionNode element : selectList.getElements()) {
+    		String colAlias = "c" + colCnt;
+    		element.setColumnAlias(colAlias);
+    		
     		select.append(getExpressionNodeSql(element, element.getType()))
-    			.append(" as c").append(colCnt).append(", ");
-    		colCnt++;
+    			.append(" as ").append(colAlias).append(", ");
+    		colCnt++;    		    		
     	}
     	
     	if (select.length() == 0) {
@@ -285,6 +291,32 @@ public class QueryGenerator {
     	return clause.toString();
     }
     
+    private String buildGroupBy(SelectListNode selectList) {
+    	StringBuilder groupBy = new StringBuilder();
+    	if (!selectList.hasAggregateExpr()) {
+    		return groupBy.toString();
+    	}
+    	
+    	Set<ExpressionNode> nodes = new HashSet<ExpressionNode>();
+    	for (ExpressionNode node : selectList.getElements()) {
+    		if (node.isAggregateExpression()) {
+    			continue;
+    		}
+    		
+    		nodes.add(node);    		
+    	}
+    	
+    	for (ExpressionNode node : nodes) {
+    		groupBy.append(node.getColumnAlias()).append(", ");
+    	}
+    	
+    	if (groupBy.length() != 0) {
+    		groupBy.delete(groupBy.length() - 2, groupBy.length());
+    	}
+    	
+    	return groupBy.toString(); 
+    }
+    
     private String addOrderBy(String dataSql, JoinTree joinTree) {
         return new StringBuilder(dataSql)
         	.append(" order by ")
@@ -397,14 +429,8 @@ public class QueryGenerator {
     		result = getDateDiffFuncNodeSql((DateDiffFuncNode)exprNode);
     	} else if (exprNode instanceof CurrentDateNode) {
     		result = getCurrentDateSql();
-    	} else if (exprNode instanceof CountNode) {
-    		CountNode countNode = (CountNode)exprNode;
-    		StringBuilder countSql = new StringBuilder("count(");
-    		if (countNode.isDistinct()) {
-    			countSql.append("distinct ");
-    		}
-    		countSql.append(getFieldNodeSql(countNode.getField())).append(")");
-    		result = countSql.toString();
+    	} else if (exprNode instanceof AggregateNode) {
+    		result = getAggregateSql((AggregateNode)exprNode);
     	} else if (exprNode instanceof BetweenNode) {
 			BetweenNode betweenNode = (BetweenNode)exprNode;
 			result = new StringBuilder()
@@ -536,6 +562,38 @@ public class QueryGenerator {
     	}
     	
     	throw new RuntimeException("Unknown product type: " + DbSettingsFactory.getProduct());
+    }
+    
+    private String getAggregateSql(AggregateNode aggNode) {
+		StringBuilder aggSql = new StringBuilder();
+		switch (aggNode.getAggFn()) {
+			case COUNT:
+				aggSql.append("count(");
+				break;
+
+			case SUM:
+				aggSql.append("sum(");
+				break;
+
+			case MIN:
+				aggSql.append("min(");
+				break;
+
+			case MAX:
+				aggSql.append("max(");
+				break;
+
+			case AVG:
+				aggSql.append("avg(");
+				break;
+		}
+
+		if (aggNode.isDistinct()) {
+			aggSql.append("distinct ");
+		}
+
+		aggSql.append(getFieldNodeSql(aggNode.getField())).append(")");
+		return aggSql.toString();
     }
     
     private String addLimitClause(String sql, LimitExprNode limitExpr) {

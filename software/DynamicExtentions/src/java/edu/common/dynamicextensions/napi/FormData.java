@@ -153,6 +153,7 @@ public class FormData {
 						
 	private Map<String, Object> getFieldNameValueMap() {
 		Map<String, Object> props = new HashMap<String, Object>();
+		props.put("appData",getAppData());
 		props.put("containerId", container.getId());
 		props.put("id", recordId);
 		
@@ -176,7 +177,6 @@ public class FormData {
 				props.put(fieldName, value);
 			}			
 		}
-		
 		return props;
 	}	
 }

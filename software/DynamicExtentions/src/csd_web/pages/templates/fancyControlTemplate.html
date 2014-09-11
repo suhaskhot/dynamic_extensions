@@ -1,0 +1,53 @@
+<div class = "controlHeaders"><label class = 'text_bold'>General Properties</label></div>
+
+<div class = "propertiesContainer">
+  <div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
+    <label class = 'text_normal'>Fancy Control</label>
+  </div>
+  <div style = "padding:9px;width:101%" class = "propertiesContainerCell" >
+    <select id = "fancyControlType" style="width:99%" class = 'textDropDown'>
+        <option></option>
+    </select>
+  </div>
+</div>
+
+<div class = "propertiesContainer">
+  <div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
+    <label class = 'text_normal'>Field Name</label>
+  </div>
+  <div class = "propertiesContainerCell" align = right >
+    <input type = 'text' id = 'controlCaption' class = 'textBox' style = "width:99%" value = "{{caption}}">
+  </div>
+</div>
+
+<div class = "propertiesContainer">
+  <div style = 'width: 24%;' class = "propertiesContainerCell" align = right>
+    <label class = 'text_normal'>Tooltip</label>
+  </div>
+  <div style = 'width: 76%;' class = "propertiesContainerCell" align = right >
+    <input type = 'text' id = 'toolTip' class = 'textBox' style = "width:99%" value = "{{toolTip}}">
+  </div>
+</div>
+
+<div class = "propertiesContainer">
+  <div style = 'width: 38.5%;' class = "propertiesContainerCell" align = right>
+    <label class = 'text_normal'>Attribute Name</label>
+    <input id = 'userDefinedName' type = 'text' value = '{{userDefinedName}}' class = 'textBoxSmall'><input id = 'controlName' type = 'hidden' value = '{{controlName}}'>
+  </div>
+  <div class = "propertiesTextBoxContainer"></div>
+</div>
+
+<div class = "propertiesContainer">
+  <div class = "propertiesCheckBoxLabelContainer" align = right >
+    <label class = 'text_normal'>PHI</label>
+  </div>
+  <div class = "propertiesCheckBoxContainer" align = left >
+    <input id = 'isPHI' type = 'checkbox'>
+  </div>
+  <div class = "propertiesCheckBoxLabelContainer" align = right style="width:23%;">
+    <label class = 'text_normal'>Mandatory</label>
+  </div>
+  <div class = "propertiesCheckBoxContainer" align = left style="width:27%;padding-left:0px;">
+    <input id = 'isMandatory' type = 'checkbox'>
+  </div>
+</div>

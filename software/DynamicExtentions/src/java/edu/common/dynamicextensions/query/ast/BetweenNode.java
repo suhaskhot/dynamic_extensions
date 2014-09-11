@@ -22,6 +22,7 @@ public class BetweenNode extends ExpressionNode implements Serializable {
 	@Override
 	public ExpressionNode copy() {
 		BetweenNode copy = new BetweenNode();
+		super.copy(this, copy);
 		copy.setLhs(lhs.copy());
 		copy.setMinNode(minNode.copy());
 		copy.setMaxNode(maxNode.copy());
@@ -86,5 +87,14 @@ public class BetweenNode extends ExpressionNode implements Serializable {
 	@Override
 	public boolean isPhi() {
 		return lhs.isPhi() || minNode.isPhi() || maxNode.isPhi();
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		Set<FieldNode> fields = new HashSet<FieldNode>();
+		fields.add(lhs);
+		fields.addAll(minNode.getFields());
+		fields.addAll(maxNode.getFields());
+		return fields;
 	}
 }

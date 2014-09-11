@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1279,5 +1280,27 @@ public class Container implements Serializable {
 		} catch (Exception e) {
 			throw new RuntimeException("Error obtaining container name with id : " + id);
 		}
+	}
+	
+	public Map<String, Object> getProps() {
+		Map<String, Object> props = new HashMap<String, Object>();		
+		props.put("name", getName());
+		props.put("caption", getCaption());
+		putControls(props);
+		return props;
+	}
+			
+	private void putControls(Map<String, Object> containerProps) {
+		List<List<Map<String, Object>>> rows = new ArrayList<List<Map<String, Object>>>();
+		containerProps.put("rows", rows);
+		
+		for (List<Control> rowCtrls : getControlsGroupedByRow()) {
+			List<Map<String, Object>> row = new ArrayList<Map<String, Object>>();
+			for (Control ctrl : rowCtrls) {
+				row.add(ctrl.getProps());
+			}
+			
+			rows.add(row);
+		}		
 	}
 }

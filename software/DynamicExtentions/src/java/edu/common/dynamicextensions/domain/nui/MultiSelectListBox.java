@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -97,5 +98,11 @@ public class MultiSelectListBox extends ListBox implements MultiSelectControl, S
 		}
 
 		return true;
+	}
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		super.getProps(props);
+		props.put("type", "multiSelectListbox");
 	}
 }

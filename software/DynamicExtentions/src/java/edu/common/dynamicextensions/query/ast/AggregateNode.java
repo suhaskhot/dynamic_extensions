@@ -1,15 +1,36 @@
 package edu.common.dynamicextensions.query.ast;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 
-public class CountNode extends ExpressionNode implements Serializable {	
+public class AggregateNode extends ExpressionNode implements Serializable {	
 	private static final long serialVersionUID = 2686666253832434643L;
+	
+	public static enum AGG_FN {
+		COUNT, SUM, MIN, MAX, AVG
+	};
+	
+	private AGG_FN aggFn;
 
 	private boolean distinct;
 	
 	private FieldNode field;
+	
+	@Override
+	public boolean isAggregateExpression() {
+		return true;
+	}	
+	
+	public AGG_FN getAggFn() {
+		return aggFn;
+	}
+
+	public void setAggFn(AGG_FN aggFn) {
+		this.aggFn = aggFn;
+	}
 	
 	public boolean isDistinct() {
 		return distinct;
@@ -34,10 +55,11 @@ public class CountNode extends ExpressionNode implements Serializable {
 
 	@Override
 	public ExpressionNode copy() {
-		CountNode copy = new CountNode();
+		AggregateNode copy = new AggregateNode();
+		super.copy(this, copy);
+		copy.setAggFn(this.getAggFn());
 		copy.setDistinct(distinct);
-		copy.setField(field.copy());
-		copy.setLabel(this.getLabel());		
+		copy.setField(field.copy());	
 		return copy;
 	}
 
@@ -50,6 +72,7 @@ public class CountNode extends ExpressionNode implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((aggFn == null) ? 0 : (aggFn.ordinal() + 1));
 		result = prime * result + (distinct ? 1231 : 1237);
 		result = prime * result + ((field == null) ? 0 : field.hashCode());
 		return result;
@@ -65,7 +88,15 @@ public class CountNode extends ExpressionNode implements Serializable {
 			return false;
 		}
 			
-		CountNode other = (CountNode) obj;
+		AggregateNode other = (AggregateNode) obj;
+		if (aggFn == null) {
+			if (other.aggFn != null) {
+				return false;
+			}			
+		} else if (!aggFn.equals(other.aggFn)) {
+			return false;
+		}
+		
 		if (distinct != other.distinct) {
 			return false;
 		} 
@@ -84,5 +115,10 @@ public class CountNode extends ExpressionNode implements Serializable {
 	@Override
 	public boolean isPhi() {
 		return field != null && field.isPhi();
+	}
+
+	@Override
+	public Set<FieldNode> getFields() {
+		return Collections.singleton(field);
 	}	
 }

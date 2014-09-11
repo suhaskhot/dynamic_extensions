@@ -4,6 +4,7 @@ package edu.common.dynamicextensions.domain.nui;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Label extends Control implements Serializable {
 	private static final long serialVersionUID = 5717603046743274148L;
@@ -68,5 +69,12 @@ public class Label extends Control implements Serializable {
 	@Override
 	public <T> T fromString(String value) {
 		return null;
+	}
+	
+	@Override
+	public void getProps(Map<String, Object> props) {
+		props.put("type", "label");
+		props.put("heading", isHeading());
+		props.put("note", isNote());		
 	}
 }

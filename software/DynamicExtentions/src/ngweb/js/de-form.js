@@ -462,7 +462,7 @@ edu.common.de.DataTable = function(args) {
   }
 
   this.getMode = function() {
-      return this.mode;
+    return this.mode;
   }
 
   this.clear = function() {
@@ -470,8 +470,8 @@ edu.common.de.DataTable = function(args) {
   }
 
   if (!this.formDef && this.formDefUrl) {
-     var url = this.formDefUrl.replace(":formId", this.formId);
-     this.formDefXhr = $.ajax({type: 'GET', url: url});
+    var url = this.formDefUrl.replace(":formId", this.formId);
+    this.formDefXhr = $.ajax({type: 'GET', url: url});
   }
 
   this.render = function() {
@@ -485,9 +485,9 @@ edu.common.de.DataTable = function(args) {
       });
     } else {
       if(tableData != null && tableData != undefined) {
-        this.render0();
-      }
-    }
+	    this.render0();
+	  }
+	}
   };
 
   this.render0 = function() {
@@ -498,40 +498,37 @@ edu.common.de.DataTable = function(args) {
     if (this.formDef.rows == undefined) {
       this.formDef = JSON.parse(this.formDef);
     }
-    var rows = this.formDef.rows;
     var tr = $("<tr/>");
-
-    var th = $("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "200px");
-    if(rows.length > 5) {
-      th.css("width", "200px")
+    if(this.mode == 'add') {
+      tr.append($("<th/>").append().addClass("table-th").css("width", "20px"));
     }
-    tr.append(th);
 
+    tr.append($("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "200px"));
+    for(var i = 0; i < args.extraCols.length; i++ ) {
+      tr.append($("<th/>").append(args.extraCols[i]).addClass("table-th").css("width", "200px"));
+    }
+
+    var rows = this.formDef.rows;
     for(var j =0 ; j < rows.length; j++) {
       var row = rows[j];
       for(k = 0 ; k < row.length; k++ ) {
         tr.append($("<th/>").append(row[k].caption).css("width", "200px"));
       }
     }
-    var tableHeader = $("<thead/>");
-    tableHeader.append(tr);
+    var tableHeader = $("<thead/>").append(tr);
 
     for(var l = 0; l< this.tableData.length; l++ ) {
       var tr = this.renderFormRecords(this.tableData[l]);
       trs = trs.concat(tr);
     }
 
-    var formCtrls = $("<tbody/>");
-    formCtrls.append(trs);
-
-    var tableWidth = "100%";
-    if(this.formDef.rows.length > 5) {
-      var width = 200 * rows.length;
-      tableWidth = width.toString().concat("px");
-    }
-    var tbl = $("<div/>").css("width", tableWidth)
-    tbl.append(
-               $("<table/>").addClass("table table-striped table-bordered").append(tableHeader).append(formCtrls));
+    var tableBody = $("<tbody/>").append(trs);
+    var tableWidth = rows.length > 5 ? (200 * rows.length).toString().concat("px") : "100%";
+    var tbl = $("<div/>").css("width", tableWidth);
+    tbl.append($("<table/>")
+    		.addClass("table table-striped table-bordered")
+    		.append(tableHeader)
+    		.append(tableBody));
     this.formDiv.append(tbl);
 
   };
@@ -541,24 +538,39 @@ edu.common.de.DataTable = function(args) {
     var formDataRecords = dataTableRow.records;
     if(formDataRecords.length > 0) {
       for(var i = 0; i< formDataRecords.length; i++) {
-        trs.push( this.renderTableRow(this.mode, dataTableRow.key, formDataRecords[i]) );
+        trs.push( this.renderTableRow(this.mode, dataTableRow.static, formDataRecords[i]) );
       }
     } else {
-      trs.push( this.renderTableRow(this.mode, dataTableRow.key, null) );
+      trs.push( this.renderTableRow(this.mode, dataTableRow.static, null) );
     }
     return trs;
   }
 
-  this.renderTableRow = function(mode, key, formData) {
+  this.renderTableRow = function(mode, static, formData) {
     this.fieldObjs = [];
     var tr = $("<tr/>");
-    tr.append($("<td/>").append(key.label));
+    if(this.mode == 'add') {
+      var deleteChkBox = $("<input/>").prop({type : 'checkbox', name: 'deleteRow', value: static.key.id , title: static.key.label });
+      deleteChkBox.on("click", function() {
+        if (args.onRowSelect) {
+          args.onRowSelect();
+        }
+      });
+      tr.append($("<td/>").append(deleteChkBox));
+    }
+    tr.append($("<td/>").append(static.key.label));
+
+    $.each(static, function(key, value){
+      if(key != 'key') {
+        tr.append($("<td/>").append(value));
+      }
+    });
     var rows = this.formDef.rows;
     for(var j = 0; j < rows.length; j++) {
-      var row = rows[j];
-      for(k = 0; k < row.length; k++ ) {
-        tr.append($("<td/>").append(this.createFieldEl(mode, row[k], formData)));
-      }
+       var row = rows[j];
+       for(k = 0; k < row.length; k++ ) {
+         tr.append($("<td/>").append(this.createFieldEl(mode, row[k], formData)));
+       }
     }
 
     for (var i = 0; i < this.fieldObjs.length; ++i) {
@@ -566,31 +578,30 @@ edu.common.de.DataTable = function(args) {
     }
 
     var recordId = (formData != undefined && formData != null) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
-    this.tableRowsData.push({fieldObjs:this.fieldObjs, recordId:recordId, rowId:key.id });
+    this.tableRowsData.push({fieldObjs:this.fieldObjs, recordId:recordId, rowId:static.key.id, rowLabel:static.key.label });
     return tr;
   }
 
   this.createFieldEl = function(mode, field, formData) {
+    if (field.type == 'checkbox') { field.type = 'listbox'; }
+    if (field.type == 'radiobutton') {field.type = 'combobox';}
 
-      if (field.type == 'checkbox') { field.type = 'listbox'; }
-      if (field.type == 'radiobutton') {field.type = 'combobox';}
-
-      var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
-      var inputEl = fieldObj.render();
-      this.fieldObjs.push(fieldObj);
-      var recId = (formData != null && formData != undefined) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
-      var value = (formData != null && formData != undefined) ? formData[field.name] : null;
-      fieldObj.setValue(recId,value);
-      if(mode == 'edit') {
-        return inputEl;
-      } else {
-        return fieldObj.getDisplayValue().value;
-      }
+    var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
+    var inputEl = fieldObj.render();
+    this.fieldObjs.push(fieldObj);
+    var recId = (formData != null && formData != undefined) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
+    var value = (formData != null && formData != undefined) ? formData[field.name] : null;
+    fieldObj.setValue(recId,value);
+    if(mode == 'view') {
+      return fieldObj.getDisplayValue().value;
+    } else {
+      return inputEl;
+    }
   }
 
   this.setData = function(tableData) {
-   this.tableData =  tableData;
-   this.render0();
+    this.tableData =  tableData;
+    this.render0();
   }
 
   this.getData = function() {
@@ -600,6 +611,7 @@ edu.common.de.DataTable = function(args) {
 
       var appData = $.extend({},args.appData);
       appData.id = this.tableRowsData[i].rowId;
+      appData.label = this.tableRowsData[i].rowLabel;
 
       if (!this.validate(fieldObjs)) {
         if (args.onValidationError) {
@@ -622,7 +634,7 @@ edu.common.de.DataTable = function(args) {
         }
         formData[value.name] = value.value;
       }
-        tblRowsFormData.push(formData);
+      tblRowsFormData.push(formData);
     }
     return tblRowsFormData;
   }
@@ -634,22 +646,63 @@ edu.common.de.DataTable = function(args) {
         valid = false;
       }
     }
-      return valid;
+    return valid;
   };
 
   this.copyFirstToAll = function() {
     var firstRowFieldObjs = this.tableRowsData[0].fieldObjs;
     for(var i = 1; i< this.tableRowsData.length; i++) {
-        var fieldObjs = this.tableRowsData[i].fieldObjs;
-        var recordId = this.tableRowsData[i].recordId;
-        for(var j =0; j < fieldObjs.length; j++) {
-          var value = firstRowFieldObjs[j].getValue();
-          if(value != undefined) {
-             fieldObjs[j].setValue(recordId, value.value);
-          }
+      var fieldObjs = this.tableRowsData[i].fieldObjs;
+      var recordId = this.tableRowsData[i].recordId;
+      for(var j =0; j < fieldObjs.length; j++) {
+        var value = firstRowFieldObjs[j].getValue();
+        if(value != undefined) {
+          fieldObjs[j].setValue(recordId, value.value);
         }
+      }
     }
   }
+
+  this.deleteRows = function() {
+    var checked = [];
+    jQuery("input[name='deleteRow']").each(function() {
+      if(this.checked) {
+        checked.push(this.value);
+      }
+    });
+    var tableRows =this.getData();
+    var tblData = [];
+    for(var i = 0; i< tableRows.length; i++) {
+      var records = [];
+      var id = tableRows[i].appData.id;
+      if($.inArray(id,checked) == -1) {
+        records.push(tableRows[i]);
+        var staticData = this.getStaticData(id);
+        var tableRec = {static: staticData, records: records };
+        tblData.push(tableRec);
+      }
+    }
+    this.setData(tblData);
+  }
+
+  this.getStaticData = function(id) {
+    for(var i =0; i < this.tableData.length; i++) {
+      if(this.tableData[i].static.key.id == id) {
+        return this.tableData[i].static;
+      }
+    }
+  }
+
+  this.isRowSelected = function() {
+    var checked = [];
+    jQuery("input[name='deleteRow']").each(function() {
+      if(this.checked) {
+        checked.push(this.value);
+      }
+    });
+    return (checked.length == 0) ? false : true;
+  }
+
 };
 
 edu.common.de.FieldFactory = {

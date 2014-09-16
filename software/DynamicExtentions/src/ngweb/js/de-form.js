@@ -450,6 +450,7 @@ edu.common.de.DataTable = function(args) {
   this.formDef = args.formDef;
   this.formDefUrl = args.formDefUrl;
   this.tableData = args.tableData;
+  this.appColumns = args.appColumns;
   this.mode = args.mode;
 
   this.tableRowsData = [];
@@ -457,34 +458,34 @@ edu.common.de.DataTable = function(args) {
   this.formDefXhr = null;
   this.tableDataXhr = null;
 
+  if (!this.formDef && this.formDefUrl) {
+    var url = this.formDefUrl.replace(":formId", this.formId);
+    this.formDefXhr = $.ajax({type: 'GET', url: url});
+  }
+
   this.setMode = function(mode) {
     this.mode = mode;
   }
 
   this.getMode = function() {
     return this.mode;
-  }
+  };
 
   this.clear = function() {
     this.formDiv.empty();
-  }
-
-  if (!this.formDef && this.formDefUrl) {
-    var url = this.formDefUrl.replace(":formId", this.formId);
-    this.formDefXhr = $.ajax({type: 'GET', url: url});
-  }
+  };
 
   this.render = function() {
     var that = this;
     if (this.formDefXhr) {
       this.formDefXhr.then(function(formDef) {
-        that.formDef = formDef;
-        if(tableData != null && tableData != undefined) {
-          this.render0();
-        }
+      that.formDef = formDef;
+      if(tableData != null && tableData != undefined) {
+        this.render0();
+      }
       });
     } else {
-      if(tableData != null && tableData != undefined) {
+	  if(tableData != null && tableData != undefined) {
 	    this.render0();
 	  }
 	}
@@ -504,8 +505,8 @@ edu.common.de.DataTable = function(args) {
     }
 
     tr.append($("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "200px"));
-    for(var i = 0; i < args.extraCols.length; i++ ) {
-      tr.append($("<th/>").append(args.extraCols[i]).addClass("table-th").css("width", "200px"));
+    for(var i = 0; i < this.appColumns.length; i++) {
+      tr.append($("<th/>").append(this.appColumns[i].label).addClass("table-th").css("width", "200px"));
     }
 
     var rows = this.formDef.rows;
@@ -525,12 +526,9 @@ edu.common.de.DataTable = function(args) {
     var tableBody = $("<tbody/>").append(trs);
     var tableWidth = rows.length > 5 ? (200 * rows.length).toString().concat("px") : "100%";
     var tbl = $("<div/>").css("width", tableWidth);
-    tbl.append($("<table/>")
-    		.addClass("table table-striped table-bordered")
-    		.append(tableHeader)
-    		.append(tableBody));
+    tbl.append(
+	               $("<table/>").addClass("table table-striped table-bordered").append(tableHeader).append(tableBody));
     this.formDiv.append(tbl);
-
   };
 
   this.renderFormRecords = function(dataTableRow) {
@@ -538,39 +536,36 @@ edu.common.de.DataTable = function(args) {
     var formDataRecords = dataTableRow.records;
     if(formDataRecords.length > 0) {
       for(var i = 0; i< formDataRecords.length; i++) {
-        trs.push( this.renderTableRow(this.mode, dataTableRow.static, formDataRecords[i]) );
+        trs.push( this.renderTableRow(this.mode, dataTableRow.key, dataTableRow.appColumnsData, formDataRecords[i]) );
       }
     } else {
-      trs.push( this.renderTableRow(this.mode, dataTableRow.static, null) );
+      trs.push( this.renderTableRow(this.mode, dataTableRow.key, dataTableRow.appColumnsData, null) );
     }
     return trs;
-  }
+  };
 
-  this.renderTableRow = function(mode, static, formData) {
+  this.renderTableRow = function(mode, key, appColumnsData, formData) {
     this.fieldObjs = [];
     var tr = $("<tr/>");
+    var that = this;
     if(this.mode == 'add') {
-      var deleteChkBox = $("<input/>").prop({type : 'checkbox', name: 'deleteRow', value: static.key.id , title: static.key.label });
-      deleteChkBox.on("click", function() {
-        if (args.onRowSelect) {
-          args.onRowSelect();
-        }
-      });
+      var deleteChkBox = $("<input/>").prop({type : 'checkbox', name: 'deleteRow', value: key.id , title: key.label });
+      deleteChkBox.on("click", function() { that.onRowSelect();});
       tr.append($("<td/>").append(deleteChkBox));
     }
-    tr.append($("<td/>").append(static.key.label));
+    tr.append($("<td/>").append(key.label));
 
-    $.each(static, function(key, value){
-      if(key != 'key') {
-        tr.append($("<td/>").append(value));
+    var appColumns = this.appColumns;
+    for(var i = 0; i < appColumns.length; i++) {
+      tr.append($("<td/>").append(appColumnsData[appColumns[i].id]));
+    }
+
+	var rows = this.formDef.rows;
+	for(var j = 0; j < rows.length; j++) {
+	  var row = rows[j];
+	  for(k = 0; k < row.length; k++ ) {
+        tr.append($("<td/>").append(this.createFieldEl(mode, row[k], formData)));
       }
-    });
-    var rows = this.formDef.rows;
-    for(var j = 0; j < rows.length; j++) {
-       var row = rows[j];
-       for(k = 0; k < row.length; k++ ) {
-         tr.append($("<td/>").append(this.createFieldEl(mode, row[k], formData)));
-       }
     }
 
     for (var i = 0; i < this.fieldObjs.length; ++i) {
@@ -578,13 +573,13 @@ edu.common.de.DataTable = function(args) {
     }
 
     var recordId = (formData != undefined && formData != null) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
-    this.tableRowsData.push({fieldObjs:this.fieldObjs, recordId:recordId, rowId:static.key.id, rowLabel:static.key.label });
-    return tr;
-  }
+    this.tableRowsData.push({fieldObjs:this.fieldObjs, recordId:recordId, rowId:key.id, rowLabel:key.label, appColumnsData:appColumnsData });
+   return tr;
+  };
 
   this.createFieldEl = function(mode, field, formData) {
     if (field.type == 'checkbox') { field.type = 'listbox'; }
-    if (field.type == 'radiobutton') {field.type = 'combobox';}
+    if (field.type == 'radiobutton') { field.type = 'combobox'; }
 
     var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
     var inputEl = fieldObj.render();
@@ -597,12 +592,12 @@ edu.common.de.DataTable = function(args) {
     } else {
       return inputEl;
     }
-  }
+  };
 
   this.setData = function(tableData) {
     this.tableData =  tableData;
     this.render0();
-  }
+  };
 
   this.getData = function() {
     var tblRowsFormData = [];
@@ -637,7 +632,7 @@ edu.common.de.DataTable = function(args) {
       tblRowsFormData.push(formData);
     }
     return tblRowsFormData;
-  }
+  };
 
   this.validate = function(fieldObjs) {
     var valid = true;
@@ -661,47 +656,36 @@ edu.common.de.DataTable = function(args) {
         }
       }
     }
-  }
+  };
 
   this.deleteRows = function() {
-    var checked = [];
+    var that = this;
     jQuery("input[name='deleteRow']").each(function() {
       if(this.checked) {
-        checked.push(this.value);
+        selectedCheckbox = this;
+        for(var i = 0; i< that.tableRowsData.length; i++) {
+          var rowId = that.tableRowsData[i].rowId;
+          if(rowId == selectedCheckbox.value) {
+            that.tableRowsData.splice(i,1);
+            var tr = $(selectedCheckbox).closest("tr").remove();
+          }
+        }
       }
     });
-    var tableRows =this.getData();
-    var tblData = [];
-    for(var i = 0; i< tableRows.length; i++) {
-      var records = [];
-      var id = tableRows[i].appData.id;
-      if($.inArray(id,checked) == -1) {
-        records.push(tableRows[i]);
-        var staticData = this.getStaticData(id);
-        var tableRec = {static: staticData, records: records };
-        tblData.push(tableRec);
-      }
-    }
-    this.setData(tblData);
-  }
+  };
 
-  this.getStaticData = function(id) {
-    for(var i =0; i < this.tableData.length; i++) {
-      if(this.tableData[i].static.key.id == id) {
-        return this.tableData[i].static;
-      }
+  this.onRowSelect = function() {
+    if(args.onRowSelect) {
+      var checked = [];
+      jQuery("input[name='deleteRow']").each(function() {
+        if(this.checked) {
+          checked.push(this.value);
+        }
+      });
+      isRowSelected = (checked.length == 0) ? false : true;
+      args.onRowSelect(isRowSelected);
     }
-  }
-
-  this.isRowSelected = function() {
-    var checked = [];
-    jQuery("input[name='deleteRow']").each(function() {
-      if(this.checked) {
-        checked.push(this.value);
-      }
-    });
-    return (checked.length == 0) ? false : true;
-  }
+  };
 
 };
 

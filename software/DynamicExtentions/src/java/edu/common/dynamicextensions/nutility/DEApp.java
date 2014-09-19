@@ -12,8 +12,10 @@ public class DEApp {
 	private static String fileUploadDir;
 
 	private static String dateFormat;
+	
+	private static String timeFormat;
 
-	public static void init(DataSource ds, String fileUploadDir, String dateFormat) {
+	public static void init(DataSource ds, String fileUploadDir, String dateFormat, String timeFormat) {
 		JdbcDaoFactory.setDataSource(ds);
         TransactionManager.getInstance(ds);
         try {
@@ -25,6 +27,7 @@ public class DEApp {
 
 		DEApp.fileUploadDir = fileUploadDir;
 		DEApp.dateFormat = dateFormat != null ? dateFormat : "MM/dd/yyyy";
+		DEApp.timeFormat = timeFormat !=null ? timeFormat : "HH:mm";
 	}
 
 	public static String getFileUploadDir() {
@@ -34,4 +37,9 @@ public class DEApp {
 	public static String getDateFormat() {
 		return dateFormat;
 	}
+
+	public static String getTimeFormat() {
+		return timeFormat;
+	}
+	
 }

@@ -527,7 +527,7 @@ edu.common.de.DataTable = function(args) {
     var tableWidth = rows.length > 5 ? (200 * rows.length).toString().concat("px") : "100%";
     var tbl = $("<div/>").css("width", tableWidth);
     tbl.append(
-	               $("<table/>").addClass("table table-striped table-bordered").append(tableHeader).append(tableBody));
+	               $("<table/>").attr({"id": "data-table"}).addClass("table table-striped table-bordered").append(tableHeader).append(tableBody));
     this.formDiv.append(tbl);
   };
 
@@ -849,7 +849,6 @@ edu.common.de.TextArea = function(id, field) {
     return {name: field.name, value: this.inputEl.val()};
   }
 
-
   this.setValue = function(recId, value) {
     this.recId = recId;
     this.inputEl.val(value);
@@ -862,17 +861,31 @@ edu.common.de.TextArea = function(id, field) {
 
 edu.common.de.DatePicker = function(id, field) {
   this.inputEl = null;
+  this.date = null;
+  this.time = null;
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip});
-    this.inputEl.addClass("form-control de-date-picker");
-    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
+
+    this.date = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
+    var dateField = $("<div/>").addClass("plus-addon plus-addon-input-right de-date-picker");
+    dateField.append(this.date).append($("<span/>").addClass("glyphicon glyphicon-calendar"));
+
+    var dateTime = $("<div/>");
+    dateTime.append(dateField);
 
     var format = field.format;
-    // minViewMode = 0/days
-    // minViewMode = 1/months
-    // minViewMode = 2/years
+    if(format.indexOf('HH:mm') != -1) {
+      dateFmt = dateFormat.concat(" HH:mm");
+      this.time = $("<input/>").prop({id: 'time', type: 'text', title: field.toolTip}).addClass("form-control");
+      var timeField = $("<div/>").addClass("plus-addon plus-addon-input-right de-time-picker");
+      timeField.append(this.time).append($("<span/>").addClass("glyphicon glyphicon-time"));
+      dateTime.append(timeField);
+    }
+
+    this.inputEl = dateTime;
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.date);
+
     if (format && format.length != 0) {
       format = format.toUpperCase();
       if (format.indexOf("D") != -1 && format.indexOf("M") != -1 && format.indexOf("Y") != -1) {
@@ -888,11 +901,17 @@ edu.common.de.DatePicker = function(id, field) {
       format = 0; // minViewMode = 0 days
     }
 
-    this.inputEl.datepicker({
-      format: typeof dateFormat == "undefined" ? format : dateFormat, 
-      autoclose: true, 
+    this.date.datepicker({
+      format: typeof dateFormat == "undefined" ? format : dateFormat,
+      autoclose: true,
       minViewMode: format});
 
+    if(this.time != null ) {
+      this.time.timepicker({
+        defaultTime: false,
+        showMeridian: false
+      });
+    }
     return this.inputEl;
   };
 
@@ -912,16 +931,28 @@ edu.common.de.DatePicker = function(id, field) {
   };
 	  
   this.getValue = function() {
-    return {name: field.name, value: this.inputEl.val()};
+    var date = this.date.val();
+    var value = (this.time == null) ? date : date.concat(" ").concat(this.time.val());
+    return {name: field.name, value: value};
   };
 
   this.setValue = function(recId, value) {
     this.recId = recId;
-    this.inputEl.val(value);
+    if(value != null && value != undefined) {
+      var format = field.format;
+      if(format.indexOf('HH:mm') != -1) {
+        var dateTime = value.split(" ");
+        this.date.val(dateTime[0]);
+        this.time.val(dateTime[1]);
+      } else {
+        this.date.val(value);
+      }
+    }
   };
 
   this.getDisplayValue = function() {
-    return {name: field.name, value: this.inputEl.val()};
+    var value = (this.time == null) ? this.date.val() : this.date.val().concat(" ").concat(this.time.val());
+    return {name: field.name, value: value};
   }
   
   this.validate = function() {

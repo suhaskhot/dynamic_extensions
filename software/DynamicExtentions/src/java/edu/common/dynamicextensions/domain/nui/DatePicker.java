@@ -1,3 +1,4 @@
+
 package edu.common.dynamicextensions.domain.nui;
 
 import edu.common.dynamicextensions.ndao.*;
@@ -12,7 +13,9 @@ import java.util.*;
 public class DatePicker extends Control implements Serializable {
 	private static final long serialVersionUID = 6046956576964435896L;
 
-	private static final String DEFAULT_FORMAT = "MM-dd-yyyy";
+	private static final String DEFAULT_DATE_FORMAT = "MM-dd-yyyy";
+	
+	private static final String DEFAULT_TIME_FORMAT = "HH:mm";
 	
 	public static enum DefaultDateType {
 		PREDEFINED,
@@ -20,7 +23,7 @@ public class DatePicker extends Control implements Serializable {
 		NONE
 	};
 
-	private String format = DEFAULT_FORMAT;
+	private String format = DEFAULT_DATE_FORMAT;
 	
 	private boolean showCalendar = true;
 	
@@ -81,7 +84,12 @@ public class DatePicker extends Control implements Serializable {
 		try {			
 			String fmt = DEApp.getDateFormat();
 			if (fmt == null) {
-				fmt = DEFAULT_FORMAT;
+				fmt = DEFAULT_DATE_FORMAT;
+			}
+			
+			if(format.contains("HH:mm")) {
+				String timeFormat = DEApp.getTimeFormat() == null ? DEFAULT_TIME_FORMAT : DEApp.getTimeFormat(); 
+				fmt = fmt.concat(" "+ timeFormat);
 			}
 
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(fmt);
@@ -101,7 +109,12 @@ public class DatePicker extends Control implements Serializable {
 		try {
 			String fmt = DEApp.getDateFormat();
 			if (fmt == null) {
-				fmt = DEFAULT_FORMAT;
+				fmt = DEFAULT_DATE_FORMAT;
+			}
+			
+			if(format.contains("HH:mm")) {
+				String timeFormat = DEApp.getTimeFormat() == null ? DEFAULT_TIME_FORMAT : DEApp.getTimeFormat(); 
+				fmt = fmt.concat(" "+ timeFormat);
 			}
 			
 			return new SimpleDateFormat(fmt).format((Date)value);

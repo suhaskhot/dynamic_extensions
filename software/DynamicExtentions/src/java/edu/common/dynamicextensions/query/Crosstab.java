@@ -256,7 +256,7 @@ public class Crosstab implements ResultPostProc {
 		}
 		result.add(grandTotal);
 		
-		if (!includeSubTotals) {
+		if (!includeSubTotals || input.size() == 1) {
 			return result;
 		}
 		

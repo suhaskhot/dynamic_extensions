@@ -23,6 +23,8 @@ import edu.common.dynamicextensions.query.ast.LiteralValueNode;
 import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 
 public class Crosstab implements ResultPostProc {
+	private static final String NULL_STR_MARKER = "\0\0\0\0\0";
+	
 	private QueryExpressionNode queryExpr;
 	
 	private Map<String, Row> rows = new TreeMap<String, Row>();
@@ -31,8 +33,6 @@ public class Crosstab implements ResultPostProc {
 	
 	private Set<String> measureCols = new LinkedHashSet<String>();
 	
-	private boolean rollup;
-	
 	private boolean numericMeasure;
 			
 	public Crosstab(QueryExpressionNode queryExpr) {
@@ -40,9 +40,6 @@ public class Crosstab implements ResultPostProc {
 		
 		CrosstabNode ctSpec = queryExpr.getCrosstabSpec();
 
-		String rollupType = ctSpec.getRollupType();
-		rollup = rollupType != null && !rollupType.trim().isEmpty();
-		
 		numericMeasure = true;
 		for (int valIdx : ctSpec.getMeasureColumns()) {
 			ExpressionNode column = queryExpr
@@ -57,13 +54,13 @@ public class Crosstab implements ResultPostProc {
 			measureCols.add(getMeasureColumnLabel(column));
 		}
 		
-		if (rollup && !numericMeasure) {
-			throw new IllegalArgumentException("Roll up can be done only on numeric measure columns");			
+		if (ctSpec.isIncludeSubTotals() && !numericMeasure) {
+			throw new IllegalArgumentException("Sub totals can be done only on numeric measure columns");			
 		}				
 	}
 	
 	@Override
-	public int  processResultSet(ResultSet rs) {
+	public int processResultSet(ResultSet rs) {
 		try {
 			int rowCount = 0;
 						
@@ -109,10 +106,10 @@ public class Crosstab implements ResultPostProc {
 			columns.add(new ResultColumn(colExprClone, 0));
 		}
 		
-		if (rollup) { // TODO: Change this to SumNode
+		if (numericMeasure) {
 			ExpressionNode total = new LiteralValueNode(DataType.INTEGER);			
 			total.setLabel("Total");
-			columns.add(new ResultColumn(total, 0));
+			columns.add(new ResultColumn(total, 0));			
 		}
 		
 		return columns;		
@@ -141,7 +138,7 @@ public class Crosstab implements ResultPostProc {
 					}
 				}
 				
-				if (rollup) {
+				if (numericMeasure) {
 					values.add(sum);
 				}
 				
@@ -177,12 +174,10 @@ public class Crosstab implements ResultPostProc {
 		}
 		
 		List<List<Object>> rowGrps = new ArrayList<List<Object>>();
-		if (!rollup) {
+		if (!numericMeasure) {
 			rowGrps.add(rowKeyValues);
-		} else if (ctSpec.getRollupType().equals("powerset")) {
-			rowGrps.addAll(powerset(rowKeyValues));
-		} else if (ctSpec.getRollupType().equals("rollup")) {
-			rowGrps.addAll(rollup(rowKeyValues));
+		} else {
+			rowGrps.addAll(subtotals(ctSpec.isIncludeSubTotals(), rowKeyValues));
 		}
 
 		for (List<Object> rowGrp : rowGrps) {
@@ -227,7 +222,7 @@ public class Crosstab implements ResultPostProc {
 
 		public void addColValue(Object columnKey, Map<String, Object> measureMap) {
 			Map<String, Object> existingMeasures = colKeyValueMap.get(columnKey);
-			if (existingMeasures == null || !rollup) {
+			if (existingMeasures == null || !numericMeasure) {
 				colKeyValueMap.put(columnKey, new LinkedHashMap<String, Object>(measureMap));
 			} else {
 				for (Map.Entry<String, Object> measure : measureMap.entrySet()) {
@@ -250,53 +245,36 @@ public class Crosstab implements ResultPostProc {
 			return measureMap;
 		}
 	}
-	
-	private List<List<Object>> rollup(List<Object> input) {
+			
+	private List<List<Object>> subtotals(boolean includeSubTotals, List<Object> input) {
 		List<List<Object>> result = new ArrayList<List<Object>>();
 		result.add(input);
 		
-		for (int i = 1; i <= input.size(); ++i) {
-			List<Object> elem = new ArrayList<Object>(input.subList(0, input.size() - i));
-			for (int j = input.size() - i; j < input.size(); ++j) {
-				elem.add(null);
-			}
-			result.add(elem);
+		List<Object> grandTotal = new ArrayList<Object>();	
+		for (int i = 0; i < input.size(); ++i) {
+			grandTotal.add(NULL_STR_MARKER);
 		}
+		result.add(grandTotal);
 		
-		return result;		
-	}
-	
-	private List<List<Object>> powerset(List<Object> input) {
-		List<List<Object>> result = new ArrayList<List<Object>>();
-		if (input.isEmpty()) {
-			result.add(new ArrayList<Object>());
+		if (!includeSubTotals) {
 			return result;
 		}
 		
-		Object first = input.get(0);
-		List<Object> rest = new ArrayList<Object>(input.subList(1, input.size()));
-		for (List<Object> subset : powerset(rest)) {
-			List<Object> newList = new ArrayList<Object>();
-			newList.add(first);
-			newList.addAll(subset);			
-			result.add(newList);
-			
-			subset.add(0, null);
-			result.add(subset);
+		for (int i = 0; i < input.size(); ++i) {
+			List<Object> elem = new ArrayList<Object>();
+			for (int j = 0; j < input.size(); ++j) {
+				if (i == j) {
+					elem.add(input.get(i));
+				} else {
+					elem.add(NULL_STR_MARKER);
+				}
+			}
+			result.add(elem);
 		}
-		
+				
 		return result;
 	}
-	
-	private boolean isDateField(ExpressionNode expr) {
-		if (expr instanceof FieldNode) {
-			FieldNode f = (FieldNode)expr;
-			return f.getCtrl() instanceof DatePicker;
-		}
 		
-		return false;
-	}
-	
 	private String getDateFormat(ExpressionNode expr) {
 		if (expr instanceof FieldNode) {
 			FieldNode f = (FieldNode)expr;
@@ -327,5 +305,5 @@ public class Crosstab implements ResultPostProc {
 		}
 		
 		return ret;
-	}
+	}	
 }

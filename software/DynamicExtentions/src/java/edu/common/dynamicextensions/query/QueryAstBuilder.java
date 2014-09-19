@@ -354,10 +354,10 @@ public class QueryAstBuilder extends AQLBaseVisitor<Node> {
     		valCols.add(getInt(valIdx));
     	}
     	crosstabSpec.setMeasureColumns(valCols);
-
-    	if (ctx.RU_TYPE() != null) {
-    		crosstabSpec.setRollupType(ctx.RU_TYPE().getText());
-    	}    	
+    	if (ctx.BOOL() != null) {
+    		crosstabSpec.setIncludeSubTotals(Boolean.parseBoolean(ctx.BOOL().getText()));
+    	}
+    	
     	return crosstabSpec; 
     }    
     

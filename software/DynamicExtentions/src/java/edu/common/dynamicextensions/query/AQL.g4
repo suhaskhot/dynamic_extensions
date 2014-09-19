@@ -21,7 +21,7 @@ filter_expr   : filter_expr AND filter_expr          #AndFilterExpr
 limit_expr    : LIMIT INT (',' INT)?                 #LimitExpr
               ;
 
-crosstab_expr : CROSSTAB LP LP row+=INT (',' row+=INT)* RP ',' col=INT ',' LP value+=INT (',' value+=INT)* RP (',' RU_TYPE)? RP #CrossTabExpr
+crosstab_expr : CROSSTAB LP LP row+=INT (',' row+=INT)* RP ',' col=INT ',' LP value+=INT (',' value+=INT)* RP (',' BOOL)? RP #CrossTabExpr
               ;
 
 filter        : arith_expr  OP   arith_expr          #BasicFilter
@@ -90,11 +90,10 @@ RP       : ')';
 MOP      : ('in'|'not in');
 SOP      : ('contains'|'starts with'|'ends with');
 EOP      : ('exists'|'not exists');
-RU_TYPE  : ('rollup'|'powerset');
+BOOL     : ('true'|'false');
 OP       : ('>'|'<'|'>='|'<='|'='|'!='|'like');
 INT      : '-'? DIGIT+;
 FLOAT    : '-'? DIGIT+ '.' DIGIT+;
-BOOL     : ('true'|'false');
 YEAR     : DIGIT+ ('y'|'Y');
 MONTH    : DIGIT+ ('m'|'M');
 DAY      : DIGIT+ ('d'|'D');

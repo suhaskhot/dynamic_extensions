@@ -18,16 +18,16 @@ public class AQLParser extends Parser {
 		T__1=1, T__0=2, WS=3, SELECT=4, WHERE=5, NTHCHILD=6, BETWEEN=7, MTHS_BTWN=8, 
 		YRS_BTWN=9, CURR_DATE=10, MINS_BTWN=11, COUNT=12, SUM=13, MIN=14, MAX=15, 
 		AVG=16, DISTINCT=17, LIMIT=18, CROSSTAB=19, OR=20, AND=21, PAND=22, NOT=23, 
-		ROUND=24, LP=25, RP=26, MOP=27, SOP=28, EOP=29, RU_TYPE=30, OP=31, INT=32, 
-		FLOAT=33, BOOL=34, YEAR=35, MONTH=36, DAY=37, DIGIT=38, ID=39, FIELD=40, 
-		SLITERAL=41, ESC=42, ARITH_OP=43, ERROR=44, QUOTE=45;
+		ROUND=24, LP=25, RP=26, MOP=27, SOP=28, EOP=29, BOOL=30, OP=31, INT=32, 
+		FLOAT=33, YEAR=34, MONTH=35, DAY=36, DIGIT=37, ID=38, FIELD=39, SLITERAL=40, 
+		ESC=41, ARITH_OP=42, ERROR=43, QUOTE=44;
 	public static final String[] tokenNames = {
 		"<INVALID>", "'as'", "','", "WS", "'select'", "'where'", "'nthchild'", 
 		"'between'", "'months_between'", "'years_between'", "'current_date'", 
 		"'minutes_between'", "'count'", "'sum'", "'min'", "'max'", "'avg'", "'distinct'", 
 		"'limit'", "'crosstab'", "'or'", "'and'", "'pand'", "'not'", "'round'", 
-		"'('", "')'", "MOP", "SOP", "EOP", "RU_TYPE", "OP", "INT", "FLOAT", "BOOL", 
-		"YEAR", "MONTH", "DAY", "DIGIT", "ID", "FIELD", "SLITERAL", "ESC", "ARITH_OP", 
+		"'('", "')'", "MOP", "SOP", "EOP", "BOOL", "OP", "INT", "FLOAT", "YEAR", 
+		"MONTH", "DAY", "DIGIT", "ID", "FIELD", "SLITERAL", "ESC", "ARITH_OP", 
 		"ERROR", "'\"'"
 	};
 	public static final int
@@ -656,7 +656,7 @@ public class AQLParser extends Parser {
 		public List<Token> row = new ArrayList<Token>();
 		public Token col;
 		public List<Token> value = new ArrayList<Token>();
-		public TerminalNode RU_TYPE() { return getToken(AQLParser.RU_TYPE, 0); }
+		public TerminalNode BOOL() { return getToken(AQLParser.BOOL, 0); }
 		public TerminalNode LP(int i) {
 			return getToken(AQLParser.LP, i);
 		}
@@ -742,7 +742,7 @@ public class AQLParser extends Parser {
 			if (_la==2) {
 				{
 				setState(111); match(2);
-				setState(112); match(RU_TYPE);
+				setState(112); match(BOOL);
 				}
 			}
 
@@ -1505,9 +1505,9 @@ public class AQLParser extends Parser {
 				setState(194); match(FIELD);
 				}
 				break;
+			case BOOL:
 			case INT:
 			case FLOAT:
-			case BOOL:
 			case SLITERAL:
 				{
 				_localctx = new LiteralValContext(_localctx);
@@ -1785,7 +1785,7 @@ public class AQLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3/\u00f3\4\2\t\2\4"+
+		"\3\uacf5\uee8c\u4f5d\u8b0d\u4a45\u78bd\u1b2f\u3378\3.\u00f3\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\3\2\3\2\3\2\3\2\5\2\37\n\2\3\2\3\2\5\2#\n\2\3\2\3"+
 		"\2\5\2\'\n\2\3\3\3\3\3\3\7\3,\n\3\f\3\16\3/\13\3\3\4\3\4\3\4\5\4\64\n"+
@@ -1807,10 +1807,10 @@ public class AQLParser extends Parser {
 		"\16\u008c\3\2\2\2\20\u008e\3\2\2\2\22\u009d\3\2\2\2\24\u00c6\3\2\2\2\26"+
 		"\u00d3\3\2\2\2\30\u00f0\3\2\2\2\32\33\7\6\2\2\33\34\5\4\3\2\34\35\7\7"+
 		"\2\2\35\37\3\2\2\2\36\32\3\2\2\2\36\37\3\2\2\2\37 \3\2\2\2 \"\5\b\5\2"+
-		"!#\5\n\6\2\"!\3\2\2\2\"#\3\2\2\2#&\3\2\2\2$\'\5\f\7\2%\'\7)\2\2&$\3\2"+
+		"!#\5\n\6\2\"!\3\2\2\2\"#\3\2\2\2#&\3\2\2\2$\'\5\f\7\2%\'\7(\2\2&$\3\2"+
 		"\2\2&%\3\2\2\2&\'\3\2\2\2\'\3\3\2\2\2(-\5\6\4\2)*\7\4\2\2*,\5\6\4\2+)"+
 		"\3\2\2\2,/\3\2\2\2-+\3\2\2\2-.\3\2\2\2.\5\3\2\2\2/-\3\2\2\2\60\63\5\24"+
-		"\13\2\61\62\7\3\2\2\62\64\7+\2\2\63\61\3\2\2\2\63\64\3\2\2\2\64\7\3\2"+
+		"\13\2\61\62\7\3\2\2\62\64\7*\2\2\63\61\3\2\2\2\63\64\3\2\2\2\64\7\3\2"+
 		"\2\2\65\66\b\5\1\2\66\67\7\31\2\2\67C\5\b\5\289\7\33\2\29:\5\b\5\2:;\7"+
 		"\34\2\2;C\3\2\2\2<=\7\b\2\2=>\7\33\2\2>?\5\b\5\2?@\7\34\2\2@C\3\2\2\2"+
 		"AC\5\16\b\2B\65\3\2\2\2B8\3\2\2\2B<\3\2\2\2BA\3\2\2\2CO\3\2\2\2DE\6\5"+
@@ -1824,16 +1824,16 @@ public class AQLParser extends Parser {
 		"\2np\3\2\2\2om\3\2\2\2ps\7\34\2\2qr\7\4\2\2rt\7 \2\2sq\3\2\2\2st\3\2\2"+
 		"\2tu\3\2\2\2uv\7\34\2\2v\r\3\2\2\2wx\5\24\13\2xy\7!\2\2yz\5\24\13\2z\u008d"+
 		"\3\2\2\2{|\5\24\13\2|}\7\35\2\2}~\5\20\t\2~\u008d\3\2\2\2\177\u0080\7"+
-		"*\2\2\u0080\u0081\7\36\2\2\u0081\u008d\7+\2\2\u0082\u0083\7*\2\2\u0083"+
-		"\u008d\7\37\2\2\u0084\u0085\7*\2\2\u0085\u0086\7\t\2\2\u0086\u0087\7\33"+
+		")\2\2\u0080\u0081\7\36\2\2\u0081\u008d\7*\2\2\u0082\u0083\7)\2\2\u0083"+
+		"\u008d\7\37\2\2\u0084\u0085\7)\2\2\u0085\u0086\7\t\2\2\u0086\u0087\7\33"+
 		"\2\2\u0087\u0088\5\24\13\2\u0088\u0089\7\4\2\2\u0089\u008a\5\24\13\2\u008a"+
 		"\u008b\7\34\2\2\u008b\u008d\3\2\2\2\u008cw\3\2\2\2\u008c{\3\2\2\2\u008c"+
 		"\177\3\2\2\2\u008c\u0082\3\2\2\2\u008c\u0084\3\2\2\2\u008d\17\3\2\2\2"+
 		"\u008e\u008f\7\33\2\2\u008f\u0094\5\22\n\2\u0090\u0091\7\4\2\2\u0091\u0093"+
 		"\5\22\n\2\u0092\u0090\3\2\2\2\u0093\u0096\3\2\2\2\u0094\u0092\3\2\2\2"+
 		"\u0094\u0095\3\2\2\2\u0095\u0097\3\2\2\2\u0096\u0094\3\2\2\2\u0097\u0098"+
-		"\7\34\2\2\u0098\21\3\2\2\2\u0099\u009e\7+\2\2\u009a\u009e\7\"\2\2\u009b"+
-		"\u009e\7#\2\2\u009c\u009e\7$\2\2\u009d\u0099\3\2\2\2\u009d\u009a\3\2\2"+
+		"\7\34\2\2\u0098\21\3\2\2\2\u0099\u009e\7*\2\2\u009a\u009e\7\"\2\2\u009b"+
+		"\u009e\7#\2\2\u009c\u009e\7 \2\2\u009d\u0099\3\2\2\2\u009d\u009a\3\2\2"+
 		"\2\u009d\u009b\3\2\2\2\u009d\u009c\3\2\2\2\u009e\23\3\2\2\2\u009f\u00a0"+
 		"\b\13\1\2\u00a0\u00a1\7\33\2\2\u00a1\u00a2\5\24\13\2\u00a2\u00a3\7\34"+
 		"\2\2\u00a3\u00c7\3\2\2\2\u00a4\u00a5\7\n\2\2\u00a5\u00a6\7\33\2\2\u00a6"+
@@ -1846,26 +1846,26 @@ public class AQLParser extends Parser {
 		"\u00bb\7\33\2\2\u00bb\u00c7\7\34\2\2\u00bc\u00c7\5\26\f\2\u00bd\u00be"+
 		"\7\32\2\2\u00be\u00bf\7\33\2\2\u00bf\u00c0\5\24\13\2\u00c0\u00c1\7\4\2"+
 		"\2\u00c1\u00c2\7\"\2\2\u00c2\u00c3\7\34\2\2\u00c3\u00c7\3\2\2\2\u00c4"+
-		"\u00c7\7*\2\2\u00c5\u00c7\5\22\n\2\u00c6\u009f\3\2\2\2\u00c6\u00a4\3\2"+
+		"\u00c7\7)\2\2\u00c5\u00c7\5\22\n\2\u00c6\u009f\3\2\2\2\u00c6\u00a4\3\2"+
 		"\2\2\u00c6\u00ab\3\2\2\2\u00c6\u00b2\3\2\2\2\u00c6\u00b9\3\2\2\2\u00c6"+
 		"\u00bc\3\2\2\2\u00c6\u00bd\3\2\2\2\u00c6\u00c4\3\2\2\2\u00c6\u00c5\3\2"+
-		"\2\2\u00c7\u00d0\3\2\2\2\u00c8\u00c9\6\13\5\3\u00c9\u00ca\7-\2\2\u00ca"+
-		"\u00cf\5\24\13\2\u00cb\u00cc\6\13\6\3\u00cc\u00cd\7-\2\2\u00cd\u00cf\5"+
+		"\2\2\u00c7\u00d0\3\2\2\2\u00c8\u00c9\6\13\5\3\u00c9\u00ca\7,\2\2\u00ca"+
+		"\u00cf\5\24\13\2\u00cb\u00cc\6\13\6\3\u00cc\u00cd\7,\2\2\u00cd\u00cf\5"+
 		"\30\r\2\u00ce\u00c8\3\2\2\2\u00ce\u00cb\3\2\2\2\u00cf\u00d2\3\2\2\2\u00d0"+
 		"\u00ce\3\2\2\2\u00d0\u00d1\3\2\2\2\u00d1\25\3\2\2\2\u00d2\u00d0\3\2\2"+
 		"\2\u00d3\u00d4\t\2\2\2\u00d4\u00d6\7\33\2\2\u00d5\u00d7\7\23\2\2\u00d6"+
-		"\u00d5\3\2\2\2\u00d6\u00d7\3\2\2\2\u00d7\u00d8\3\2\2\2\u00d8\u00d9\7*"+
-		"\2\2\u00d9\u00da\7\34\2\2\u00da\27\3\2\2\2\u00db\u00dd\7%\2\2\u00dc\u00de"+
-		"\7&\2\2\u00dd\u00dc\3\2\2\2\u00dd\u00de\3\2\2\2\u00de\u00e0\3\2\2\2\u00df"+
-		"\u00e1\7\'\2\2\u00e0\u00df\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1\u00f1\3\2"+
-		"\2\2\u00e2\u00e4\7%\2\2\u00e3\u00e2\3\2\2\2\u00e3\u00e4\3\2\2\2\u00e4"+
-		"\u00e5\3\2\2\2\u00e5\u00e7\7&\2\2\u00e6\u00e8\7\'\2\2\u00e7\u00e6\3\2"+
-		"\2\2\u00e7\u00e8\3\2\2\2\u00e8\u00f1\3\2\2\2\u00e9\u00eb\7%\2\2\u00ea"+
-		"\u00e9\3\2\2\2\u00ea\u00eb\3\2\2\2\u00eb\u00ed\3\2\2\2\u00ec\u00ee\7&"+
-		"\2\2\u00ed\u00ec\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef"+
-		"\u00f1\7\'\2\2\u00f0\u00db\3\2\2\2\u00f0\u00e3\3\2\2\2\u00f0\u00ea\3\2"+
-		"\2\2\u00f1\31\3\2\2\2\34\36\"&-\63BMOV`ms\u008c\u0094\u009d\u00c6\u00ce"+
-		"\u00d0\u00d6\u00dd\u00e0\u00e3\u00e7\u00ea\u00ed\u00f0";
+		"\u00d5\3\2\2\2\u00d6\u00d7\3\2\2\2\u00d7\u00d8\3\2\2\2\u00d8\u00d9\7)"+
+		"\2\2\u00d9\u00da\7\34\2\2\u00da\27\3\2\2\2\u00db\u00dd\7$\2\2\u00dc\u00de"+
+		"\7%\2\2\u00dd\u00dc\3\2\2\2\u00dd\u00de\3\2\2\2\u00de\u00e0\3\2\2\2\u00df"+
+		"\u00e1\7&\2\2\u00e0\u00df\3\2\2\2\u00e0\u00e1\3\2\2\2\u00e1\u00f1\3\2"+
+		"\2\2\u00e2\u00e4\7$\2\2\u00e3\u00e2\3\2\2\2\u00e3\u00e4\3\2\2\2\u00e4"+
+		"\u00e5\3\2\2\2\u00e5\u00e7\7%\2\2\u00e6\u00e8\7&\2\2\u00e7\u00e6\3\2\2"+
+		"\2\u00e7\u00e8\3\2\2\2\u00e8\u00f1\3\2\2\2\u00e9\u00eb\7$\2\2\u00ea\u00e9"+
+		"\3\2\2\2\u00ea\u00eb\3\2\2\2\u00eb\u00ed\3\2\2\2\u00ec\u00ee\7%\2\2\u00ed"+
+		"\u00ec\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef\u00f1\7&"+
+		"\2\2\u00f0\u00db\3\2\2\2\u00f0\u00e3\3\2\2\2\u00f0\u00ea\3\2\2\2\u00f1"+
+		"\31\3\2\2\2\34\36\"&-\63BMOV`ms\u008c\u0094\u009d\u00c6\u00ce\u00d0\u00d6"+
+		"\u00dd\u00e0\u00e3\u00e7\u00ea\u00ed\u00f0";
 	public static final ATN _ATN =
 		ATNSimulator.deserialize(_serializedATN.toCharArray());
 	static {

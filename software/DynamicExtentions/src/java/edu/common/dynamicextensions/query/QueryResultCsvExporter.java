@@ -9,6 +9,7 @@ import edu.common.dynamicextensions.nutility.IoUtil;
 import au.com.bytecode.opencsv.CSVWriter;
 
 public class QueryResultCsvExporter implements QueryResultExporter {
+	private static final String NULL_STR_MARKER = "\0\0\0\0\0";
 	
 	@Override
 	public QueryResponse export(String exportPath, Query query) {
@@ -63,7 +64,14 @@ public class QueryResultCsvExporter implements QueryResultExporter {
 
 			Iterator<String[]> iterator = result.stringifiedRowIterator();
 			while (iterator.hasNext()) {
-				csvWriter.writeNext(iterator.next());
+				String[] row = iterator.next();
+				for (int i = 0; i < row.length; ++i) {
+					if (row[i].equals(NULL_STR_MARKER)) {
+						row[i] = "All";
+					}					
+				}
+				
+				csvWriter.writeNext(row);
 			}			
 		} catch (Exception e) {
 			throw new RuntimeException("Error writing query result data to CSV file", e);

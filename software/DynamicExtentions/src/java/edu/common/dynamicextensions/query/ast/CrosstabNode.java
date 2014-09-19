@@ -13,7 +13,7 @@ public class CrosstabNode implements Node, Serializable {
 	
 	private List<Integer> measureColumns = new ArrayList<Integer>();
 	
-	private String rollupType;
+	private boolean includeSubTotals = false;
 
 	public String getName() {
 		return name;
@@ -47,12 +47,12 @@ public class CrosstabNode implements Node, Serializable {
 		this.measureColumns = measureColumns;
 	}
 
-	public String getRollupType() {
-		return rollupType;
+	public boolean isIncludeSubTotals() {
+		return includeSubTotals;
 	}
 
-	public void setRollupType(String rollupType) {
-		this.rollupType = rollupType;
+	public void setIncludeSubTotals(boolean includeSubTotals) {
+		this.includeSubTotals = includeSubTotals;
 	}
 
 	@Override
@@ -61,6 +61,7 @@ public class CrosstabNode implements Node, Serializable {
 		int result = prime * 1 + colGroupByColumn;
 		result = prime * result + measureColumns.hashCode();
 		result = prime * result	+ rowGroupByColumns.hashCode();
+		result = prime * result + (includeSubTotals ? 1 : 0); 
 		return result;
 	}
 
@@ -95,6 +96,6 @@ public class CrosstabNode implements Node, Serializable {
 			return false;
 		}
 		
-		return true;
+		return includeSubTotals != other.includeSubTotals;
 	}
 }

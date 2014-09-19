@@ -280,6 +280,10 @@ edu.common.de.Form = function(args) {
     var deleteForm = $("<button/>").attr({"type": "button", "id": "deleteForm"}).addClass("btn btn-warning").append("Delete");
     var print      = $("<button/>").attr({"type": "button", "id": "print"}).addClass("btn btn-info").append("Print");
 
+    if(this.formData == undefined) {
+      deleteForm.attr('disabled', true);
+      print.attr('disabled', true);
+    }
     var that = this;
     save.on("click", function() { that.save(); });
     cancel.on("click", function() { that.cancel(); });

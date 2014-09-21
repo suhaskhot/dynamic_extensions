@@ -489,17 +489,17 @@ edu.common.de.DataTable = function(args) {
     this.formDiv.empty();
   };
 
-  this.render = function() { // TODO: Which table data is this referring to?
+  this.render = function() {
     var that = this;
     if (this.formDefXhr) {
       this.formDefXhr.then(function(formDef) {
         that.formDef = formDef;
-        if (tableData != null && tableData != undefined) {
+        if (this.tableData != null && this.tableData != undefined) {
           this.render0();
         }
       });
     } else {
-      if (tableData != null && tableData != undefined) {
+      if (this.tableData != null && this.tableData != undefined) {
         this.render0();
       }
     }
@@ -532,8 +532,8 @@ edu.common.de.DataTable = function(args) {
     for (var j =0 ; j < rows.length; j++) {
       var row = rows[j];
       for (k = 0 ; k < row.length; k++) {
-        tr.append($("<th/>").append(row[k].caption).css("width", "200px"));
-        width += 200;
+        tr.append($("<th/>").append(row[k].caption).css("width", "220px"));
+        width += 220;
       }
     }
 
@@ -542,15 +542,17 @@ edu.common.de.DataTable = function(args) {
     this.tableRowsData = [];
     var trs = [];
     for (var i = 0; i < this.tableData.length; i++) {
-      var tr = this.renderEntityRecords(this.tableData[i]);
-      trs.push(tr);
+      var records = this.renderEntityRecords(this.tableData[i]);
+      trs = trs.concat(records);
     }
 
     var tableBody = $("<tbody/>").append(trs);
 
-    var tbl = $("<table/>").css("width", width + "px").css("min-width", "100%")
-      .attr("id", "data-table")
+    var tbl = $("<table/>").attr("id", "data-table")
       .addClass("table table-striped table-bordered")
+      .css("width", width + "px")
+      .css("min-width", "100%")
+      .css("max-width",  width + "px")
       .append(tableHeader)
       .append(tableBody);
 
@@ -628,9 +630,10 @@ edu.common.de.DataTable = function(args) {
 
     var value = formData ? formData[field.name] : null;
     var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
-    fieldObj.setValue(recId, value);
 
     var inputEl = fieldObj.render(); // TODO: Do we need to render in view mode?
+
+    fieldObj.setValue(recId, value);
     this.fieldObjs.push(fieldObj);
 
     if (mode == 'view') {
@@ -664,8 +667,8 @@ edu.common.de.DataTable = function(args) {
       }
 
       var formData = {
-        appData: appData
-        recordId: this.tableRowsData[i].recordId;
+        appData: appData,
+        recordId: this.tableRowsData[i].recordId
       };
       
       for (var j = 0; j < fieldObjs.length; ++j) {
@@ -728,7 +731,7 @@ edu.common.de.DataTable = function(args) {
         }
 
         this.tableRowsData.splice(j, 1);
-        selectedRows[i].closest("tr").remove();
+        $(selectedRows[i]).closest("tr").remove();
         lastIdx = j;
         break;
       }
@@ -743,7 +746,7 @@ edu.common.de.DataTable = function(args) {
     var checked = false;
     var cbEls = jQuery("input[name='selectRow']");
     for (var i = 0; i < cbEls.length; ++i) {
-      if (chEls[i].checked) {
+      if (cbEls[i].checked) {
         checked = true;
         break;
       }
@@ -943,7 +946,7 @@ edu.common.de.DatePicker = function(id, field) {
       .addClass("form-control");
 
     var dateField = $("<div/>").addClass("plus-addon plus-addon-input-right de-date-picker")
-      .append(this.dataEl)
+      .append(this.dateEl)
       .append($("<span/>").addClass("glyphicon glyphicon-calendar"));
 
     this.inputEl = $("<div/>");
@@ -955,6 +958,8 @@ edu.common.de.DatePicker = function(id, field) {
       this.timeEl = $("<input/>")
         .prop({id: 'time', type: 'text', title: field.toolTip})
         .addClass("form-control");
+
+      dateField.css("width","59%");
 
       var timeField = $("<div/>").addClass("plus-addon plus-addon-input-right de-time-picker")
         .append(this.timeEl)

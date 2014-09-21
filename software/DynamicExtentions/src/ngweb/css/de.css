@@ -206,7 +206,7 @@ select.form-control.de-input-error + .chosen-container-multi .chosen-choices {
 }
 
 .de-date-picker {
-  width: 59%;
+  width: 100%;
   margin-right: 5%;
   float: left;
 }

@@ -19,7 +19,7 @@ edu.common.de.RequiredValidator = function(field, dataEl) {
       if (dataEl.prop('type') == 'checkbox') {
         valid = dataEl.prop('checked');
       } else {
-        valid = !!dataEl.val();
+        valid = dataEl.val().trim().length != 0;
       }
       el = field.inputEl;
     }
@@ -37,49 +37,50 @@ edu.common.de.RequiredValidator = function(field, dataEl) {
 edu.common.de.RangeValidator = function(field, dataEl, params) {
   this.validate = function() {
     var val = dataEl.val();
-    if (val && !isNaN(Number(val))) {
-      var number = Number(val);
-      if (params.min != null && params.min != undefined && params.min.length > 0 && number < Number(params.min)) {
-        edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be less than " + params.min);
-        return false;
-      } else if (params.max != null && params.max != undefined && params.max.length > 0 && number > Number(params.max)) {
-        edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be more than " + params.max);
-        return false;
-      } else {
-        edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
-        return true;
-      }
+    if (!$.isNumeric(val)) {
+      return true; // range validator not applicable for non-numeric fields
     }
 
-    return true;
+    var number = Number(val);
+    if ($.isNumeric(params.min) && number < Number(params.min)) {
+      edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be less than " + params.min);
+      return false;
+    } else if ($.isNumeric(params.max) && number > Number(params.max)) {
+      edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot be more than " + params.max);
+      return false;
+    } else {
+      edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
+      return true;
+    }
   };
 };
 
 edu.common.de.NumericValidator = function(field, dataEl, params) {
   this.validate = function() {
     var val = dataEl.val();
-    if (val) {
-      var number = Number(val);
-      if (isNaN(number)) {
-        edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " must be a numeric");
-        return false;
-      }
-
-      var numberParts = val.split(".");
-      var noOfDigits = params.noOfDigitsAfterDecimal;
-      if (numberParts.length > 1 && noOfDigits != null && noOfDigits != undefined) {
-        var realPart = numberParts[1];
-        if (realPart.length > noOfDigits) {
-          edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " cannot have more than " + noOfDigits + " digits after decimal point");
-          return false;
-        }
-      } else {
-        edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
-        return true;
-      }
+    if (!val || val.trim().length == 0) { // empty field
+      return true; 
     }
 
-    return true;
+    if (!$.isNumeric(val)) {
+      edu.common.de.Utility.highlightError(field.inputEl, field.getCaption() + " must be a numeric");
+      return false;
+    }
+
+    var numberParts = val.split(".");
+    var noOfDigits = params.noOfDigitsAfterDecimal;
+    if (numberParts.length > 1 && noOfDigits != null && noOfDigits != undefined) {
+      var realPart = numberParts[1].trim();
+      if (realPart.length > noOfDigits) {
+        edu.common.de.Utility.highlightError(
+          field.inputEl, 
+          field.getCaption() + " cannot have more than " + noOfDigits + " digits after decimal point");
+        return false;
+      }
+    } else {
+      edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
+      return true;
+    }
   };
 };
 
@@ -203,13 +204,14 @@ edu.common.de.Form = function(args) {
   };
 
   this.render0 = function() {
-    var formCtrls = $("<div/>");
-
     if (this.formDef.rows == undefined) {
       this.formDef = JSON.parse(this.formDef);
     }
+
     var rows = this.formDef.rows;
     this.processFormDef("", rows);
+
+    var formCtrls = $("<div/>");
     for (var i = 0; i < rows.length; ++i) {
       formCtrls.append(this.rowCtrls(rows[i]));
     }
@@ -227,12 +229,17 @@ edu.common.de.Form = function(args) {
       this.formData = JSON.parse(this.formData);
     }
 
+    var recId = undefined;
+    if (this.formData) {
+      recId = this.formData.id;
+    }
+
     for (var i = 0; i < this.fieldObjs.length; ++i) {
-      if (this.formData) {
-        var recId = this.formData.id;
-        this.fieldObjs[i].setValue(recId, this.formData[this.fieldObjs[i].getName()]);
+      var fieldObj = this.fieldObjs[i];
+      if (recId) {
+        fieldObj.setValue(recId, this.formData[fieldObj.getName()]);
       }
-      this.fieldObjs[i].postRender();
+      fieldObj.postRender();
     }
   };
 
@@ -273,24 +280,26 @@ edu.common.de.Form = function(args) {
   };
 
   this.getActionButtons = function() {
-    var btns =   $("<div/>").addClass("modal-footer");
-    
     var save       = $("<button/>").attr({"type": "button", "id": "saveForm"}).addClass("btn btn-primary").append("Save");
     var cancel     = $("<button/>").attr({"type": "button", "id": "cancelForm"}).addClass("btn btn-default").append("Cancel");
     var deleteForm = $("<button/>").attr({"type": "button", "id": "deleteForm"}).addClass("btn btn-warning").append("Delete");
     var print      = $("<button/>").attr({"type": "button", "id": "print"}).addClass("btn btn-info").append("Print");
 
-    if(this.formData == undefined) {
+    if (!this.formData) {
       deleteForm.attr('disabled', true);
       print.attr('disabled', true);
     }
+
     var that = this;
     save.on("click", function() { that.save(); });
     cancel.on("click", function() { that.cancel(); });
     deleteForm.on("click", function() { that.deleteForm(); });
     print.on("click", function() { that.print(); });
     
-    return edu.common.de.Utility.row().append(btns.append(cancel).append(deleteForm).append(print).append(save));
+    var btns =   $("<div/>").addClass("modal-footer")
+      .append(cancel).append(deleteForm)
+      .append(print).append(save);
+    return edu.common.de.Utility.row().append(btns);
   };
 
   this.save = function() {
@@ -368,12 +377,13 @@ edu.common.de.Form = function(args) {
     var trs = [];
     for (var i = 0; i < fields.length; ++i) {
       var tr = $("<tr/>");
-      tr.append($("<td/>").addClass("de-print-label")
-        .append($("<label/>").append(fields[i].caption)));
+      tr.append(
+        $("<td/>").addClass("de-print-label")
+          .append($("<label/>").append(fields[i].caption)));
 
       if (fields[i].type != 'subForm') {
         var val = this.formData[fields[i].name];
-        if (fields[i].type == 'fileUpload' && !val && val != undefined) {
+        if (fields[i].type == 'fileUpload' && !val && val != undefined) { // !val???
           val = val.filename;
         } 
 
@@ -427,6 +437,7 @@ edu.common.de.Form = function(args) {
       
       trs.push(tr);
     }
+
     return trs;
   };
 
@@ -460,7 +471,6 @@ edu.common.de.DataTable = function(args) {
   this.tableRowsData = [];
   this.fieldObjs = [];
   this.formDefXhr = null;
-  this.tableDataXhr = null;
 
   if (!this.formDef && this.formDefUrl) {
     var url = this.formDefUrl.replace(":formId", this.formId);
@@ -479,96 +489,117 @@ edu.common.de.DataTable = function(args) {
     this.formDiv.empty();
   };
 
-  this.render = function() {
+  this.render = function() { // TODO: Which table data is this referring to?
     var that = this;
     if (this.formDefXhr) {
       this.formDefXhr.then(function(formDef) {
-      that.formDef = formDef;
-      if(tableData != null && tableData != undefined) {
-        this.render0();
-      }
+        that.formDef = formDef;
+        if (tableData != null && tableData != undefined) {
+          this.render0();
+        }
       });
     } else {
-	  if(tableData != null && tableData != undefined) {
-	    this.render0();
-	  }
-	}
+      if (tableData != null && tableData != undefined) {
+        this.render0();
+      }
+    }
   };
 
   this.render0 = function() {
     this.formDiv.empty();
-    this.tableRowsData = [];
-    var trs = [];
+
     // Render Table Header Part
     if (this.formDef.rows == undefined) {
       this.formDef = JSON.parse(this.formDef);
     }
+
+    var width = 0;
     var tr = $("<tr/>");
-    if(this.mode == 'add') {
+    if (this.mode == 'add') {
       tr.append($("<th/>").append().addClass("table-th").css("width", "20px"));
+      width += 20;
     }
 
     tr.append($("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "200px"));
-    for(var i = 0; i < this.appColumns.length; i++) {
+    width += 200;
+
+    for (var i = 0; i < this.appColumns.length; i++) {
       tr.append($("<th/>").append(this.appColumns[i].label).addClass("table-th").css("width", "200px"));
+      width += 200;
     }
 
     var rows = this.formDef.rows;
-    for(var j =0 ; j < rows.length; j++) {
+    for (var j =0 ; j < rows.length; j++) {
       var row = rows[j];
-      for(k = 0 ; k < row.length; k++ ) {
+      for (k = 0 ; k < row.length; k++) {
         tr.append($("<th/>").append(row[k].caption).css("width", "200px"));
+        width += 200;
       }
     }
+
     var tableHeader = $("<thead/>").append(tr);
 
-    for(var l = 0; l< this.tableData.length; l++ ) {
-      var tr = this.renderFormRecords(this.tableData[l]);
-      trs = trs.concat(tr);
+    this.tableRowsData = [];
+    var trs = [];
+    for (var i = 0; i < this.tableData.length; i++) {
+      var tr = this.renderEntityRecords(this.tableData[i]);
+      trs.push(tr);
     }
 
     var tableBody = $("<tbody/>").append(trs);
-    var tableWidth = rows.length > 5 ? (200 * rows.length).toString().concat("px") : "100%";
-    var tbl = $("<div/>").css("width", tableWidth);
-    tbl.append(
-	               $("<table/>").attr({"id": "data-table"}).addClass("table table-striped table-bordered").append(tableHeader).append(tableBody));
+
+    var tbl = $("<table/>").css("width", width + "px").css("min-width", "100%")
+      .attr("id", "data-table")
+      .addClass("table table-striped table-bordered")
+      .append(tableHeader)
+      .append(tableBody);
+
     this.formDiv.append(tbl);
   };
 
-  this.renderFormRecords = function(dataTableRow) {
+  this.renderEntityRecords = function(entityRecs) {
     var trs = [];
-    var formDataRecords = dataTableRow.records;
-    if(formDataRecords.length > 0) {
-      for(var i = 0; i< formDataRecords.length; i++) {
-        trs.push( this.renderTableRow(this.mode, dataTableRow.key, dataTableRow.appColumnsData, formDataRecords[i]) );
+    var records = entityRecs.records;
+    if (records.length > 0) {
+      for (var i = 0; i < records.length; i++) {
+        trs.push(this.renderTableRow(this.mode, entityRecs.key, entityRecs.appColumnsData, records[i]));
       }
     } else {
-      trs.push( this.renderTableRow(this.mode, dataTableRow.key, dataTableRow.appColumnsData, null) );
+      trs.push(this.renderTableRow(this.mode, entityRecs.key, entityRecs.appColumnsData));
     }
+
     return trs;
   };
 
   this.renderTableRow = function(mode, key, appColumnsData, formData) {
+    var recordId = undefined;
+    if (formData) {
+      recordId = (formData.id || formData.id == 0) ? formData.id : formData.recordId;
+    }
+
     this.fieldObjs = [];
+
     var tr = $("<tr/>");
     var that = this;
-    if(this.mode == 'add') {
-      var deleteChkBox = $("<input/>").prop({type : 'checkbox', name: 'deleteRow', value: key.id , title: key.label });
-      deleteChkBox.on("click", function() { that.onRowSelect();});
-      tr.append($("<td/>").append(deleteChkBox));
+
+    if (this.mode == 'add') {
+      var selectRow = $("<input/>").prop({type : 'checkbox', name: 'selectRow', value: key.id , title: key.label});
+      selectRow.on("click", function() { that.onRowSelect();});
+      tr.append($("<td/>").append(selectRow));
     }
+
     tr.append($("<td/>").append(key.label));
 
     var appColumns = this.appColumns;
-    for(var i = 0; i < appColumns.length; i++) {
+    for (var i = 0; i < appColumns.length; i++) {
       tr.append($("<td/>").append(appColumnsData[appColumns[i].id]));
     }
 
-	var rows = this.formDef.rows;
-	for(var j = 0; j < rows.length; j++) {
-	  var row = rows[j];
-	  for(k = 0; k < row.length; k++ ) {
-        tr.append($("<td/>").append(this.createFieldEl(mode, row[k], formData)));
+    var rows = this.formDef.rows;
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      for (j = 0; j < row.length; j++ ) {
+        tr.append($("<td/>").append(this.createFieldEl(mode, row[j], recordId, formData)));
       }
     }
 
@@ -576,22 +607,33 @@ edu.common.de.DataTable = function(args) {
       this.fieldObjs[i].postRender();
     }
 
-    var recordId = (formData != undefined && formData != null) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
-    this.tableRowsData.push({fieldObjs:this.fieldObjs, recordId:recordId, rowId:key.id, rowLabel:key.label, appColumnsData:appColumnsData });
-   return tr;
+
+    this.tableRowsData.push({
+      fieldObjs: this.fieldObjs, 
+      recordId: recordId, 
+      rowId: key.id, 
+      rowLabel: key.label, 
+      appColumnsData: appColumnsData 
+    });
+
+    return tr;
   };
 
-  this.createFieldEl = function(mode, field, formData) {
-    if (field.type == 'checkbox') { field.type = 'listbox'; }
-    if (field.type == 'radiobutton') { field.type = 'combobox'; }
+  this.createFieldEl = function(mode, field, recId, formData) {
+    if (field.type == 'checkbox') { 
+      field.type = 'listbox'; 
+    } else if (field.type == 'radiobutton') { 
+      field.type = 'combobox'; 
+    }
 
+    var value = formData ? formData[field.name] : null;
     var fieldObj = edu.common.de.FieldFactory.getField(field, undefined, args);
-    var inputEl = fieldObj.render();
+    fieldObj.setValue(recId, value);
+
+    var inputEl = fieldObj.render(); // TODO: Do we need to render in view mode?
     this.fieldObjs.push(fieldObj);
-    var recId = (formData != null && formData != undefined) ? (formData.id != undefined) ? formData.id : formData.recordId : null;
-    var value = (formData != null && formData != undefined) ? formData[field.name] : null;
-    fieldObj.setValue(recId,value);
-    if(mode == 'view') {
+
+    if (mode == 'view') {
       return fieldObj.getDisplayValue().value;
     } else {
       return inputEl;
@@ -605,36 +647,39 @@ edu.common.de.DataTable = function(args) {
 
   this.getData = function() {
     var tblRowsFormData = [];
-    for(var i = 0; i< this.tableRowsData.length; i++) {
+    if (!this.tableRowsData || this.tableRowsData.length == 0) {
+      return tblRowsFormData;
+    }
+
+    for (var i = 0; i < this.tableRowsData.length; i++) {
       var fieldObjs = this.tableRowsData[i].fieldObjs;
 
-      var appData = $.extend({},args.appData);
+      var appData = $.extend({}, args.appData); // TODO: Why do we need to copy entire app data?
       appData.id = this.tableRowsData[i].rowId;
       appData.label = this.tableRowsData[i].rowLabel;
 
-      if (!this.validate(fieldObjs)) {
-        if (args.onValidationError) {
-          args.onValidationError();
-        }
+      if (!this.validate(fieldObjs) && args.onValidationError) {
+        args.onValidationError();
         return;
       }
 
-      var formData = {appData: appData};
-      var recordId = this.tableRowsData[i].recordId;
-      if (recordId) {
-        formData.recordId = recordId;
-      }
-
+      var formData = {
+        appData: appData
+        recordId: this.tableRowsData[i].recordId;
+      };
+      
       for (var j = 0; j < fieldObjs.length; ++j) {
-        var field = fieldObjs[j];
-        var value = field.getValue();
+        var value = fieldObjs[j].getValue();
         if (!value) { // note doesn't have value;
           continue;
         }
+
         formData[value.name] = value.value;
       }
+
       tblRowsFormData.push(formData);
     }
+
     return tblRowsFormData;
   };
 
@@ -645,17 +690,22 @@ edu.common.de.DataTable = function(args) {
         valid = false;
       }
     }
+
     return valid;
   };
 
   this.copyFirstToAll = function() {
-    var firstRowFieldObjs = this.tableRowsData[0].fieldObjs;
-    for(var i = 1; i< this.tableRowsData.length; i++) {
+    if (!this.tableRowsData || this.tableRowsData.length == 0) {
+      return;
+    }
+
+    var firstRow = this.tableRowsData[0].fieldObjs;
+    for (var i = 1; i < this.tableRowsData.length; i++) {
       var fieldObjs = this.tableRowsData[i].fieldObjs;
       var recordId = this.tableRowsData[i].recordId;
-      for(var j =0; j < fieldObjs.length; j++) {
-        var value = firstRowFieldObjs[j].getValue();
-        if(value != undefined) {
+      for (var j = 0; j < fieldObjs.length; j++) {
+        var value = firstRow[j].getValue();
+        if (value != undefined) {
           fieldObjs[j].setValue(recordId, value.value);
         }
       }
@@ -663,34 +713,44 @@ edu.common.de.DataTable = function(args) {
   };
 
   this.deleteRows = function() {
-    var that = this;
-    jQuery("input[name='deleteRow']").each(function() {
-      if(this.checked) {
-        selectedCheckbox = this;
-        for(var i = 0; i< that.tableRowsData.length; i++) {
-          var rowId = that.tableRowsData[i].rowId;
-          if(rowId == selectedCheckbox.value) {
-            that.tableRowsData.splice(i,1);
-            var tr = $(selectedCheckbox).closest("tr").remove();
-          }
-        }
+    var selectedRows = [];
+    jQuery("input[name='selectRow']").each(function() {
+      if (this.checked) {
+        selectedRows.push(this);
       }
     });
-  };
 
-  this.onRowSelect = function() {
-    if(args.onRowSelect) {
-      var checked = [];
-      jQuery("input[name='deleteRow']").each(function() {
-        if(this.checked) {
-          checked.push(this.value);
+    var lastIdx = 0;
+    for (var i = 0; i < selectedRows.length; ++i) {
+      for (var j = lastIdx; j < this.tableRowsData.length; ++j) {
+        if (selectedRows[i].value != this.tableRowsData[j].rowId) {
+          continue;
         }
-      });
-      isRowSelected = (checked.length == 0) ? false : true;
-      args.onRowSelect(isRowSelected);
+
+        this.tableRowsData.splice(j, 1);
+        selectedRows[i].closest("tr").remove();
+        lastIdx = j;
+        break;
+      }
     }
   };
 
+  this.onRowSelect = function() {
+    if (!args.onRowSelect) {
+      return;
+    }
+
+    var checked = false;
+    var cbEls = jQuery("input[name='selectRow']");
+    for (var i = 0; i < cbEls.length; ++i) {
+      if (chEls[i].checked) {
+        checked = true;
+        break;
+      }
+    }
+
+    args.onRowSelect(checked);
+  };
 };
 
 edu.common.de.FieldFactory = {
@@ -738,7 +798,10 @@ edu.common.de.TextField = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip, value: field.defaultValue}).addClass("form-control");
+    this.inputEl = $("<input/>")
+      .prop({id: id, type: 'text', title: field.toolTip, value: field.defaultValue})
+      .addClass("form-control");
+
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;
   };
@@ -781,7 +844,10 @@ edu.common.de.NumberField = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<input/>").prop({id: id, type: 'text', title: field.toolTip, value: field.defaultValue}).addClass("form-control");
+    this.inputEl = $("<input/>") 
+      .prop({id: id, type: 'text', title: field.toolTip, value: field.defaultValue})
+      .addClass("form-control");
+
     var rules = field.validationRules.concat({name: 'numeric', params: {noOfDigitsAfterDecimal: field.noOfDigitsAfterDecimal}});
     this.validator = new edu.common.de.FieldValidator(rules, this);
     return this.inputEl;
@@ -825,7 +891,9 @@ edu.common.de.TextArea = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.inputEl = $("<textarea/>").prop({id: id, rows: field.noOfRows, title: field.toolTip, value: field.defaultValue}).addClass("form-control");
+    this.inputEl = $("<textarea/>")
+      .prop({id: id, rows: field.noOfRows, title: field.toolTip, value: field.defaultValue})
+      .addClass("form-control");
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;
   };
@@ -865,30 +933,37 @@ edu.common.de.TextArea = function(id, field) {
 
 edu.common.de.DatePicker = function(id, field) {
   this.inputEl = null;
-  this.date = null;
-  this.time = null;
+  this.dateEl = null;
+  this.timeEl = null;
   this.validator;
 
   this.render = function() {
+    this.dateEl = $("<input/>")
+      .prop({id: id, type: 'text', title: field.toolTip})
+      .addClass("form-control");
 
-    this.date = $("<input/>").prop({id: id, type: 'text', title: field.toolTip}).addClass("form-control");
-    var dateField = $("<div/>").addClass("plus-addon plus-addon-input-right de-date-picker");
-    dateField.append(this.date).append($("<span/>").addClass("glyphicon glyphicon-calendar"));
+    var dateField = $("<div/>").addClass("plus-addon plus-addon-input-right de-date-picker")
+      .append(this.dataEl)
+      .append($("<span/>").addClass("glyphicon glyphicon-calendar"));
 
-    var dateTime = $("<div/>");
-    dateTime.append(dateField);
+    this.inputEl = $("<div/>");
+    this.inputEl.append(dateField);
 
     var format = field.format;
-    if(format.indexOf('HH:mm') != -1) {
+    if (format.indexOf('HH:mm') != -1) {
       dateFmt = dateFormat.concat(" HH:mm");
-      this.time = $("<input/>").prop({id: 'time', type: 'text', title: field.toolTip}).addClass("form-control");
-      var timeField = $("<div/>").addClass("plus-addon plus-addon-input-right de-time-picker");
-      timeField.append(this.time).append($("<span/>").addClass("glyphicon glyphicon-time"));
-      dateTime.append(timeField);
+      this.timeEl = $("<input/>")
+        .prop({id: 'time', type: 'text', title: field.toolTip})
+        .addClass("form-control");
+
+      var timeField = $("<div/>").addClass("plus-addon plus-addon-input-right de-time-picker")
+        .append(this.timeEl)
+        .append($("<span/>").addClass("glyphicon glyphicon-time"));
+
+      this.inputEl.append(timeField);
     }
 
-    this.inputEl = dateTime;
-    this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.date);
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.dateEl);
 
     if (format && format.length != 0) {
       format = format.toUpperCase();
@@ -905,17 +980,18 @@ edu.common.de.DatePicker = function(id, field) {
       format = 0; // minViewMode = 0 days
     }
 
-    this.date.datepicker({
+    this.dateEl.datepicker({
       format: typeof dateFormat == "undefined" ? format : dateFormat,
       autoclose: true,
       minViewMode: format});
 
-    if(this.time != null ) {
-      this.time.timepicker({
+    if (this.timeEl) {
+      this.timeEl.timepicker({
         defaultTime: false,
         showMeridian: false
       });
     }
+
     return this.inputEl;
   };
 
@@ -935,28 +1011,31 @@ edu.common.de.DatePicker = function(id, field) {
   };
 	  
   this.getValue = function() {
-    var date = this.date.val();
-    var value = (this.time == null) ? date : date.concat(" ").concat(this.time.val());
-    return {name: field.name, value: value};
+    var val = this.dateEl.val();
+    if (this.timeEl) {
+      val = val + ' ' + this.timeEl.val();
+    }
+    return {name: field.name, value: val};
   };
 
   this.setValue = function(recId, value) {
     this.recId = recId;
-    if(value != null && value != undefined) {
-      var format = field.format;
-      if(format.indexOf('HH:mm') != -1) {
-        var dateTime = value.split(" ");
-        this.date.val(dateTime[0]);
-        this.time.val(dateTime[1]);
-      } else {
-        this.date.val(value);
-      }
+    if (!value || value.trim().length == 0) {
+      return;
+    }
+
+    var format = field.format;
+    if (format.indexOf('HH:mm') != -1) { // TODO: Fix this
+      var dateTime = value.split(" ");
+      this.dateEl.val(dateTime[0]);
+      this.timeEl.val(dateTime[1]);
+    } else {
+      this.dateEl.val(value);
     }
   };
 
   this.getDisplayValue = function() {
-    var value = (this.time == null) ? this.date.val() : this.date.val().concat(" ").concat(this.time.val());
-    return {name: field.name, value: value};
+    return this.getValue();
   }
   
   this.validate = function() {
@@ -970,8 +1049,11 @@ edu.common.de.BooleanCheckbox = function(id, field) {
   this.validator;
 
   this.render = function() {
-    this.dataEl = $("<input/>").prop({type: 'checkbox', id: id, value: 'true', title: field.toolTip});
-    this.inputEl = $("<div/>").append(this.dataEl).css("padding", "6px 0px");
+    this.dataEl = $("<input/>")
+      .prop({type: 'checkbox', id: id, value: 'true', title: field.toolTip});
+    this.inputEl = $("<div/>")
+      .append(this.dataEl).css("padding", "6px 0px");
+
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.dataEl);
     this.setValue(undefined, field.defaultChecked)
     return this.inputEl;
@@ -1023,8 +1105,9 @@ edu.common.de.SelectField = function(id, field) {
   this.validator;
 
   this.render = function() {
+    var isMultiSelect = (field.type == 'listbox' || field.type == 'multiSelectListbox');
     this.inputEl = $("<select/>")
-      .prop({id: id, multiple: (field.type == 'listbox' || field.type == 'multiSelectListbox'), title: field.toolTip})
+      .prop({id: id, multiple: isMultiSelect, title: field.toolTip})
       .addClass("form-control")
       .append($("<option/>"));
 
@@ -1033,6 +1116,7 @@ edu.common.de.SelectField = function(id, field) {
       var pv = field.pvs[i];
       this.inputEl.append($("<option/>").prop("value", pv.value).append(pv.value));
     }
+
     return this.inputEl;
   };
 
@@ -1100,6 +1184,7 @@ edu.common.de.GroupField = function(id, field) {
       if (field.defaultValue != undefined &&  field.defaultValue.value == pv.value) {
         defaultVal = true;
       }
+
       var btn = $("<input/>").prop({type: type, name: field.name + id, value: pv.value, title: field.toolTip, checked: defaultVal});
       currentDiv.append($("<label/>").addClass(typeclass).append(btn).append(pv.value).css("width", width));
       this.inputEls.push(btn);
@@ -1157,7 +1242,7 @@ edu.common.de.GroupField = function(id, field) {
       if ($.inArray(this.inputEls[i].val(), checked) != -1) {
         this.inputEls[i].prop('checked', true);
       } else {
-          this.inputEls[i].prop('checked', false);
+        this.inputEls[i].prop('checked', false);
       }
     }
   };
@@ -1206,9 +1291,9 @@ edu.common.de.SubFormField = function(id, sfField, args) {
   this.render = function() {
     this.sfFieldsEl = $("<div/>");
     this.subFormEl = $("<div/>").prop({id: id, title: sfField.toolTip})
-                       .append(this.getHeading())
-                       .append(this.sfFieldsEl)
-                       .append(this.getAddButton());
+      .append(this.getHeading())
+      .append(this.sfFieldsEl)
+      .append(this.getAddButton());
 
     return this.subFormEl;
   };
@@ -1364,10 +1449,9 @@ edu.common.de.FileUploadField = function(id, field, args) {
 
   this.render = function() {
     var that = this;
-
-    this.inputEl  = $("<div/>").prop({title: field.toolTip})
-    	.addClass("de-fileupload form-control clearfix");
-
+    this.inputEl  = $("<div/>") 
+      .prop({title: field.toolTip})
+      .addClass("de-fileupload form-control clearfix");
     this.fileNameSpan = $("<span/>");
     this.inputEl.append(this.fileNameSpan);
 
@@ -1423,7 +1507,6 @@ edu.common.de.FileUploadField = function(id, field, args) {
   };
 
   this.postRender = function() {
-    
   };
 
   this.getName = function() {
@@ -1605,7 +1688,7 @@ edu.common.de.Utility = {
         } else if (field.dataType == "FLOAT") {
           parsedVal[i] = parseFloat(value[i]).toString();
         }
-	  }
+      }
     } else {
       if (field.dataType == "INTEGER") {
         parsedVal = parseInt(value);
@@ -1616,5 +1699,4 @@ edu.common.de.Utility = {
     }
     return parsedVal;
   }
-	  
 };

@@ -87,7 +87,7 @@ public class DatePicker extends Control implements Serializable {
 				fmt = DEFAULT_DATE_FORMAT;
 			}
 			
-			if(format.contains("HH:mm")) {
+			if (format.contains("HH:mm")) {
 				String timeFormat = DEApp.getTimeFormat() == null ? DEFAULT_TIME_FORMAT : DEApp.getTimeFormat(); 
 				fmt = fmt.concat(" "+ timeFormat);
 			}
@@ -96,7 +96,7 @@ public class DatePicker extends Control implements Serializable {
 			simpleDateFormat.setLenient(false);
 			return simpleDateFormat.parse(value);
 		} catch (Exception e) {
-			throw new RuntimeException("Error creating date object from [" + value + "]", e);
+			throw new RuntimeException("Error creating date object from [" + value + "]. Format: " + format, e);
 		}
 	}
 	

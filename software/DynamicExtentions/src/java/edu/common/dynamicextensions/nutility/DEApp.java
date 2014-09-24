@@ -26,7 +26,7 @@ public class DEApp {
 		}
 
 		DEApp.fileUploadDir = fileUploadDir;
-		DEApp.dateFormat = dateFormat != null ? dateFormat : "MM/dd/yyyy";
+		DEApp.dateFormat = dateFormat != null ? dateFormat : "MM-dd-yyyy";
 		DEApp.timeFormat = timeFormat !=null ? timeFormat : "HH:mm";
 	}
 

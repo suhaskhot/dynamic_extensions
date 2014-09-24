@@ -949,7 +949,7 @@ edu.common.de.DatePicker = function(id, field) {
       .append(this.dateEl)
       .append($("<span/>").addClass("glyphicon glyphicon-calendar"));
 
-    this.inputEl = $("<div/>");
+    this.inputEl = $("<div/>").addClass("clearfix");
     this.inputEl.append(dateField);
 
     var format = field.format;

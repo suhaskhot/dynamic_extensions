@@ -66,7 +66,7 @@ public class QueryResultCsvExporter implements QueryResultExporter {
 			while (iterator.hasNext()) {
 				String[] row = iterator.next();
 				for (int i = 0; i < row.length; ++i) {
-					if (row[i].equals(NULL_STR_MARKER)) {
+					if (row[i] != null && row[i].equals(NULL_STR_MARKER)) {
 						row[i] = "All";
 					}					
 				}

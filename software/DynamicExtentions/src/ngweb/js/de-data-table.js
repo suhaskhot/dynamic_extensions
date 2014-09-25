@@ -55,16 +55,20 @@ edu.common.de.DataTable = function(args) {
     var width = 0;
     var tr = $("<tr/>");
     if (this.mode == 'add') {
-      tr.append($("<th/>").append().addClass("table-th").css("width", "20px"));
+      tr.append($("<th/>").append().addClass("table-th ").css("width", "20px"));
       width += 20;
     }
 
-    tr.append($("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "100px"));
-    width += 200;
+    tr.append($("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "120px"));
+    width += 120;
 
     for (var i = 0; i < this.appColumns.length; i++) {
-      tr.append($("<th/>").append(this.appColumns[i].label).addClass("table-th").css("width", "100px"));
-      width += 200;
+      tr.append($("<th/>")
+        .append( $("<div/>").append(this.appColumns[i].label)
+                 .addClass("truncate") )
+        .addClass("table-th").css("width", "120px")
+        .attr('title', this.appColumns[i].label));
+      width += 120;
     }
 
     var rows = this.formDef.rows;
@@ -129,11 +133,23 @@ edu.common.de.DataTable = function(args) {
       tr.append($("<td/>").append(selectRow));
     }
 
-    tr.append($("<td/>").append(key.label));
+    tr.append($("<td/>")
+      .append(
+        $("<div/>")
+        .addClass("truncate")
+        .append(key.label)
+      )
+      .attr('title', key.label));
 
     var appColumns = this.appColumns;
     for (var i = 0; i < appColumns.length; i++) {
-      tr.append($("<td/>").append(appColumnsData[appColumns[i].id]));
+      tr.append($("<td/>")
+        .append(
+          $("<div/>")
+          .addClass("truncate")
+          .append(appColumnsData[appColumns[i].id])
+        )
+        .attr('title',appColumnsData[appColumns[i].id]));
     }
 
     var rows = this.formDef.rows;

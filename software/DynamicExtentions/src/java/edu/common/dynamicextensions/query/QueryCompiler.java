@@ -146,7 +146,7 @@ public class QueryCompiler
             }
             
             JoinTree child = current.getChild(link.getRefTab());            
-            if(child == null) {
+            if (child == null) {
                 child = new JoinTree(link.getRefTab(), "t" + tabCnt++);
                 child.setParent(current);
                 child.setForeignKey(link.getRefTabKey());
@@ -169,7 +169,7 @@ public class QueryCompiler
         String fieldNameParts[] = startField.split("\\.");
         for (int i = 0; i < fieldNameParts.length; i++) {
             JoinTree child = formTree.getChild(queryId + "." + fieldNameParts[i]);
-            if (child == null) { // TODO: should this be done?
+            if (child == null && i != (fieldNameParts.length  - 1)) { // TODO: should this be done?
             	child = formTree.getChild("0." + fieldNameParts[i]);
             }            	
 
@@ -464,7 +464,7 @@ public class QueryCompiler
         
         form = formTree.getForm();
         ctrl = form.getControlByUdn(fieldNameParts[fieldNameParts.length - 1]);
-        if(ctrl == null) {
+        if (ctrl == null) {
         	throw new IllegalArgumentException("Invalid field: " + field.getName());
         }
         
@@ -492,6 +492,10 @@ public class QueryCompiler
     }    
         
     private JoinTree getSubFormTree(int queryId, JoinTree formTree, String fieldName, boolean failIfAbsent) {
+    	return getSubFormTree(queryId, formTree, fieldName, failIfAbsent, null);
+    }
+    
+    private JoinTree getSubFormTree(int queryId, JoinTree formTree, String fieldName, boolean failIfAbsent, String extnForm) {
     	Container form = formTree.getForm();
     	Control ctrl = form.getControlByUdn(fieldName);
     	
@@ -499,21 +503,25 @@ public class QueryCompiler
     		throw new IllegalArgumentException("Field is not sub-form:" + fieldName);
     	}
     	
+    	String key = fieldName;
+    	if (extnForm != null) {
+    		key += "." + extnForm;
+    	}
+    	
     	SubFormControl sfCtrl = (SubFormControl)ctrl;
-    	JoinTree sfTree = formTree.getChild(queryId + "." + sfCtrl.getName());
+    	JoinTree sfTree = formTree.getChild(queryId + "." + key);
     	if (sfTree == null && failIfAbsent) {
     		return null;
     	}
     	
     	if (sfTree == null) {
     		sfTree = getSubFormTree(formTree, sfCtrl);
-    		formTree.addChild(queryId + "." + sfCtrl.getName(), sfTree);
+    		formTree.addChild(queryId + "." + key, sfTree);
     	}
     	
     	return sfTree;
     }
-    
-    
+        
     private JoinTree analyzeSubFormFields(
     		int queryId, 
     		JoinTree formTree, 
@@ -543,7 +551,7 @@ public class QueryCompiler
     		String[] fieldNameParts, String[] captions, 
     		boolean failIfAbsent) {
     	
-    	JoinTree extensionTree = getSubFormTree(queryId, formTree, fieldNameParts[1], failIfAbsent);
+    	JoinTree extensionTree = getSubFormTree(queryId, formTree, fieldNameParts[1], failIfAbsent, fieldNameParts[2]);
     	if (extensionTree == null) {
     		return null;    		
     	}

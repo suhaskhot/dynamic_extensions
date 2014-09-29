@@ -73,4 +73,8 @@ public class JdbcDao {
 	public Long getNextId(String tableName) {
 		return IdGenerator.getInstance().getNextId(tableName);
 	}		
+	
+	public int[] batchUpdate(final String sql, final List<Object[]> records) {
+		return jdbcTemplate.batchUpdate(sql, records);
+	}
 }

@@ -97,7 +97,11 @@ public class PvDataSource implements Serializable {
 	}
 	
 	public PermissibleValue getDefaultValue(Date activationDate) {
-		return getPvVersion(activationDate).getDefaultValue();
+		if (sql == null ) {
+			return getPvVersion(activationDate).getDefaultValue();
+		}
+		
+		return null;
 	}
 	
 	@Override

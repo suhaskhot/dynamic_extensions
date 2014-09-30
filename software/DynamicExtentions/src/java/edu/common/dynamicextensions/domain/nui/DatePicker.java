@@ -112,7 +112,7 @@ public class DatePicker extends Control implements Serializable {
 				fmt = DEFAULT_DATE_FORMAT;
 			}
 			
-			if(format.contains("HH:mm")) {
+			if (format.contains("HH:mm")) {
 				String timeFormat = DEApp.getTimeFormat() == null ? DEFAULT_TIME_FORMAT : DEApp.getTimeFormat(); 
 				fmt = fmt.concat(" "+ timeFormat);
 			}

@@ -133,7 +133,12 @@ edu.common.de.FieldValidator = function(rules, field, dataEl) {
 };
 
 edu.common.de.Form = function(args) {
-  this.formDiv = $("#" + args.formDiv);
+  if (typeof args.formDiv == "string") {
+    this.formDiv = $("#" + args.formDiv);
+  } else {
+    this.formDiv = args.formDiv;
+  }
+
   this.fieldObjs = [];
  
   this.formId = args.id;
@@ -222,25 +227,47 @@ edu.common.de.Form = function(args) {
       formCtrls.append(this.getActionButtons());
     }
 
-    var panel = edu.common.de.Utility.panel(this.formDef.caption, formCtrls, 'default');
+    var caption = args.showTitle == false ? undefined : this.formDef.caption;
+    var panel = edu.common.de.Utility.panel(caption, formCtrls, 'default');
     this.formDiv.append(panel);
 
     if (this.formData != undefined) {
       this.formData = JSON.parse(this.formData);
     }
 
+    this.setValue(this.formData);
+  };
+
+  this.setValue = function(formData) {
     var recId = undefined;
-    if (this.formData) {
-      recId = this.formData.id;
+    if (formData) {
+      recId = formData.id;
     }
 
     for (var i = 0; i < this.fieldObjs.length; ++i) {
       var fieldObj = this.fieldObjs[i];
       if (recId) {
-        fieldObj.setValue(recId, this.formData[fieldObj.getName()]);
+        fieldObj.setValue(recId, formData[fieldObj.getName()]);
       }
       fieldObj.postRender();
     }
+  };
+
+  this.getValue = function() {
+    var formData = {};
+
+    for (var i = 0; i < this.fieldObjs.length; ++i) {
+      var field = this.fieldObjs[i];
+      var value = field.getValue();
+
+      if (!value) { // note doesn't have value;
+        continue;
+      }
+
+      formData[value.name] = value.value;
+    }
+
+    return formData;
   };
 
   this.rowCtrls = function(row) {
@@ -322,17 +349,7 @@ edu.common.de.Form = function(args) {
       method = 'POST';
     }
 
-    for (var i = 0; i < this.fieldObjs.length; ++i) {
-      var field = this.fieldObjs[i];
-      var value = field.getValue();
-
-      if (!value) { // note doesn't have value;
-        continue;
-      }
-
-      formData[value.name] = value.value;
-    }
- 
+    $.extend(formData, this.getValue());
     var that = this;
     $.ajax({
       type: method,
@@ -364,81 +381,11 @@ edu.common.de.Form = function(args) {
   };
 
   this.getFormPrintHtml = function() {
-    var formCtrls = $("<tbody/>");
-    for (var i = 0; i < this.formDef.rows.length; ++i) {
-      formCtrls.append(this.readOnlyCtrls(this.formDef.rows[i]));
-    }
-
     return $("<div/>").append(
-      $("<table/>").addClass("table table-condensed table-bordered").css("width", "100%").append(formCtrls));
-  };
-
-  this.readOnlyCtrls = function(fields) {
-    var trs = [];
-    for (var i = 0; i < fields.length; ++i) {
-      var tr = $("<tr/>");
-      tr.append(
-        $("<td/>").addClass("de-print-label")
-          .append($("<label/>").append(fields[i].caption)));
-
-      if (fields[i].type != 'subForm') {
-        var val = this.formData[fields[i].name];
-        if (fields[i].type == 'fileUpload' && !val && val != undefined) { // !val???
-          val = val.filename;
-        } 
-
-        if (val == undefined || val == null) {
-          val = "N/A";
-        } 
-    
-        if (val instanceof Array) { 
-          val = val.join();
-        }
-
-        tr.append($("<td/>").addClass("de-print-value").append(val));
-      } else {
-        var subFormData = this.formData[fields[i].name];
-        var subFormDef = fields[i];
-
-        var tableEl = $("<table/>").addClass("table table-condensed");
-        var thEl = $("<tr/>");
-     
-        var fieldNames = [];
-        for (var j = 0; j < subFormDef.rows.length; ++j) {
-          for (var k = 0; k < subFormDef.rows[j].length; ++k) {
-            thEl.append($("<th/>").append(subFormDef.rows[j][k].caption));          
-            fieldNames.push(subFormDef.rows[j][k].name);
-          }        
-        }
-        tableEl.append($("<thead/>").append(thEl));
-
-        var tbodyEl = $("<tbody/>");
-        tableEl.append(tbodyEl);
-
-        for (var j = 0; j < subFormData.length; ++j) {
-          var trEl = $("<tr/>");
-          for (var k = 0; k < fieldNames.length; ++k) {
-            var val = subFormData[j][fieldNames[k]];
-            if (val == undefined || val == null) {
-              val = "N/A";
-            }
-
-            if (val instanceof Array) {
-              val = val.join();
-            }
-
-            trEl.append($("<td/>").append(val));
-          }
-          tbodyEl.append(trEl);
-        }
-
-        tr.append($("<td/>").addClass("de-print-value").append(tableEl));    
-      }
-      
-      trs.push(tr);
-    }
-
-    return trs;
+      $("<table/>")
+        .addClass("table table-condensed table-bordered")
+        .css("width", "100%")
+        .append(this.getPrintEl()));
   };
 
   this.deleteForm = function() {
@@ -457,6 +404,31 @@ edu.common.de.Form = function(args) {
 
     return valid;
   };
+
+  this.getPrintEl = function() {
+    var els = [];
+    for (var i = 0; i < this.fieldObjs.length; ++i) {
+      if (this.fieldObjs[i] instanceof edu.common.de.Note) {
+        continue;
+      }
+
+      var tr = $("<tr/>");
+
+      var captionTd = $("<td/>")
+        .addClass("de-print-label")
+        .append($("<label/>").append(this.fieldObjs[i].getCaption()));   
+      tr.append(captionTd);
+
+      var valueTd = $("<td/>")
+        .addClass("de-print-value")
+        .append(this.fieldObjs[i].getPrintEl ? this.fieldObjs[i].getPrintEl() : "Undefined Print Fn");
+      tr.append(valueTd);
+
+      els.push(tr);
+    }
+
+    return $("<tbody/>").append(els);
+   };
 };
 
 edu.common.de.FieldFactory = {
@@ -481,8 +453,10 @@ edu.common.de.FieldFactory = {
       fieldObj = new edu.common.de.SelectField(id, field, args);
     } else if (field.type == 'radiobutton' || field.type == 'checkbox') {
       fieldObj = new edu.common.de.GroupField(id, field, args);
-    } else if (field.type == 'subForm') {
+    } else if (field.type == 'subForm' && !field.singleEntry) {
       fieldObj = new edu.common.de.SubFormField(id, field, args);
+    } else if (field.type == 'subForm' && field.singleEntry) {
+      fieldObj = new edu.common.de.ComponentForm(id, field, args);
     } else if (field.type == 'fileUpload') {
       fieldObj = new edu.common.de.FileUploadField(id, field, args);
     } else if (field.type == 'label') {
@@ -543,6 +517,10 @@ edu.common.de.TextField = function(id, field) {
   this.validate = function() {
     return this.validator.validate();
   };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
+  };
 };
 
 edu.common.de.NumberField = function(id, field) {
@@ -590,6 +568,10 @@ edu.common.de.NumberField = function(id, field) {
   this.validate = function() {
     return this.validator.validate();
   };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
+  };
 };
 
 edu.common.de.TextArea = function(id, field) {
@@ -634,6 +616,10 @@ edu.common.de.TextArea = function(id, field) {
   
   this.validate = function() {
     return this.validator.validate();
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
   };
 };
 
@@ -749,6 +735,10 @@ edu.common.de.DatePicker = function(id, field) {
   this.validate = function() {
     return this.validator.validate();
   };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
+  };
 };
 
 edu.common.de.BooleanCheckbox = function(id, field) {
@@ -805,6 +795,10 @@ edu.common.de.BooleanCheckbox = function(id, field) {
   
   this.validate = function() {
     return this.validator.validate();
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
   };
 };
 
@@ -863,6 +857,10 @@ edu.common.de.SelectField = function(id, field) {
   
   this.validate = function() {
     return this.validator.validate();
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
   };
 };
 
@@ -964,6 +962,55 @@ edu.common.de.GroupField = function(id, field) {
   this.validate = function() {
     return this.validator.validate();
   };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
+  };
+};
+
+edu.common.de.ComponentForm = function(id, field, args) {
+  this.render = function() {
+    this.el = $("<div/>");
+    this.form = new edu.common.de.Form({
+      formDef: field, 
+      formDiv: this.el, 
+      showActionBtns: false,
+      showTitle: false
+    });
+    this.form.render();
+    return this.el;
+  }
+
+  this.postRender = function() {
+  };
+
+  this.getCaption = function() {
+    return field.caption;
+  };
+
+  this.getName = function() {
+    return field.name;
+  };
+
+  this.getValue = function() {
+    return {name: field.name, value: [this.form.getValue()]};
+  };
+
+  this.setValue = function(recId, value) {
+    var formData = {}
+    if (value && value instanceof Array) {
+      formData = value[0];
+    }
+    this.form.setValue(formData);
+  };
+
+  this.validate = function() {
+    return this.form.validate();
+  };
+
+  this.getPrintEl = function() {
+    return $("<table/>").addClass("table table-condensed").append(this.form.getPrintEl());
+  };
 };
 
 edu.common.de.SubFormField = function(id, sfField, args) {
@@ -1002,7 +1049,6 @@ edu.common.de.SubFormField = function(id, sfField, args) {
       .append(this.getHeading())
       .append(this.sfFieldsEl)
       .append(this.getAddButton());
-
     return this.subFormEl;
   };
 
@@ -1011,6 +1057,10 @@ edu.common.de.SubFormField = function(id, sfField, args) {
 
   this.getName = function() {
     return sfField.name;
+  };
+
+  this.getCaption = function() {
+    return sfField.caption;
   };
 
   this.getValue = function() {
@@ -1133,6 +1183,32 @@ edu.common.de.SubFormField = function(id, sfField, args) {
     }
 
     return valid;
+  };
+
+  this.getPrintEl = function() {
+    if (!this.fieldObjsRows || this.fieldObjsRows.length == 0) {
+      return $("<span/>").append("N/A");
+    }
+
+    var theadRow = $("<tr/>");
+    for (var i = 0; i < this.fieldObjsRows[0].length; ++i) {
+      var field = this.fieldObjsRows[0][i];
+      theadRow.append($("<th/>").append(field.getCaption()));
+    }
+
+    var thead = $("<thead/>").append(theadRow);
+
+    var tbody = $("<tbody/>");
+    for (var i = 0; i < this.fieldObjsRows.length; ++ i) {
+      var tr = $("<tr/>");
+      for (var j = 0; j < this.fieldObjsRows[i].length; ++j) {
+        var field = this.fieldObjsRows[i][j];
+        tr.append($("<td/>").append(edu.common.de.Utility.getPrintEl(field)));
+      }
+      tbody.append(tr);
+    }
+
+    return $("<table/>").addClass("table table-condensed").append(thead).append(tbody);
   };
 };
 
@@ -1264,11 +1340,19 @@ edu.common.de.FileUploadField = function(id, field, args) {
   };
 
   this.getDisplayValue = function() {
-    return {name: field.name, value: this.value};
+    var filename = undefined;
+    if (this.value) {
+      filename = this.value.filename;
+    }
+    return {name: field.name, value: filename};
   };
 
   this.validate = function() {
     return this.validator.validate();
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
   };
 };
 
@@ -1322,6 +1406,7 @@ edu.common.de.UnknownField = function(id, field) {
   };
 
   this.getValue = function(value) {
+    return {name: field.name, value: "Unknown"};
   };
 
   this.setValue = function(recId, value) {
@@ -1329,6 +1414,10 @@ edu.common.de.UnknownField = function(id, field) {
   
   this.validate = function() {
     return false;
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
   };
 };
 
@@ -1406,5 +1495,18 @@ edu.common.de.Utility = {
       parsedVal = parsedVal.toString();
     }
     return parsedVal;
+  },
+
+  getPrintEl: function(fieldObj) {
+    var val = fieldObj.getDisplayValue().value;
+    if (val == undefined || val == null) {
+      val = "N/A";
+    }
+
+    if (val instanceof Array) {
+      val = val.join(", ");
+    }
+
+    return $("<span/>").append(val);
   }
 };

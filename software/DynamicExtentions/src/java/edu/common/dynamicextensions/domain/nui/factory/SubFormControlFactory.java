@@ -25,7 +25,7 @@ public class SubFormControlFactory extends AbstractControlFactory {
 		SubFormControl subForm = new SubFormControl();
 		setControlProps(subForm, ele, row, xPos);
 		
-		Integer numEntries = getIntValue(ele, "maxEntries", null);
+		Integer numEntries = getIntValue(ele, "maxEntries", -1);
 		if (numEntries != null) {
 			subForm.setNoOfEntries(numEntries);
 		} 

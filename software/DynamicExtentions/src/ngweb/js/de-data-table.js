@@ -55,28 +55,36 @@ edu.common.de.DataTable = function(args) {
     var width = 0;
     var tr = $("<tr/>");
     if (this.mode == 'add') {
-      tr.append($("<th/>").append().addClass("table-th ").css("width", "20px"));
-      width += 20;
+      tr.append($("<th/>").append().addClass("table-th ").css("width", "30px"));
+      width += 30;
     }
 
-    tr.append($("<th/>").append(args.idColumnLabel).addClass("table-th").css("width", "120px"));
-    width += 120;
+    tr.append($("<th/>")
+      .append( $("<div/>").append(args.idColumnLabel)
+        .addClass("truncate-small"))
+      .addClass("table-th").css("width", "110px")
+      .attr('title', args.idColumnLabel));
+    width += 110;
 
     for (var i = 0; i < this.appColumns.length; i++) {
       tr.append($("<th/>")
         .append( $("<div/>").append(this.appColumns[i].label)
-                 .addClass("truncate") )
-        .addClass("table-th").css("width", "120px")
+          .addClass("truncate-small") )
+        .addClass("table-th").css("width", "110px")
         .attr('title', this.appColumns[i].label));
-      width += 120;
+      width += 110;
     }
 
     var rows = this.formDef.rows;
     for (var j =0 ; j < rows.length; j++) {
       var row = rows[j];
       for (k = 0 ; k < row.length; k++) {
-        tr.append($("<th/>").append(row[k].caption).css("width", "220px"));
-        width += 220;
+        var colWidth = (row[k].type == 'datePicker') ? 225 : 200;
+        tr.append($("<th/>")
+        .append($("<div/>").append(row[k].caption).addClass("truncate"))
+        .css("width", colWidth+"px")
+        .attr('title', row[k].caption));
+        width += colWidth;
       }
     }
 
@@ -136,7 +144,7 @@ edu.common.de.DataTable = function(args) {
     tr.append($("<td/>")
       .append(
         $("<div/>")
-        .addClass("truncate")
+        .addClass("truncate-small")
         .append(key.label)
       )
       .attr('title', key.label));
@@ -146,7 +154,7 @@ edu.common.de.DataTable = function(args) {
       tr.append($("<td/>")
         .append(
           $("<div/>")
-          .addClass("truncate")
+          .addClass("truncate-small")
           .append(appColumnsData[appColumns[i].id])
         )
         .attr('title',appColumnsData[appColumns[i].id]));

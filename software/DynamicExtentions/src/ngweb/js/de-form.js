@@ -1149,6 +1149,10 @@ edu.common.de.SubFormField = function(id, sfField, args) {
     var rowDiv = $("<div/>").addClass("form-group clearfix").css("white-space", "nowrap");
     for (var i = 0; i < this.fields.length; ++i) {
       var field = this.fields[i];
+      if (field.type == 'subForm') {
+        continue;
+      }
+
       var fieldObj = edu.common.de.FieldFactory.getField(field, this.rowIdx, args);
       var fieldEl = fieldObj.render();
       rowDiv.append(this.cell(fieldEl));

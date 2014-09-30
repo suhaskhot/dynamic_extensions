@@ -1031,12 +1031,12 @@ edu.common.de.SubFormField = function(id, sfField, args) {
   };
 
   this.getWidthClass = function(numFields) {
-    var width = "9%";
-    if (numFields < 10) {
-      width = Math.floor(95 / numFields) + "%";
+    var width = Math.floor(95 / numFields);
+    if (width < 20) {
+      width = 20;
     }
 
-    return width;
+    return width + "%";
   };
 
   this.fields = this.getFields();
@@ -1045,10 +1045,17 @@ edu.common.de.SubFormField = function(id, sfField, args) {
 
   this.render = function() {
     this.sfFieldsEl = $("<div/>");
-    this.subFormEl = $("<div/>").prop({id: id, title: sfField.toolTip})
+  
+    var subFormContent = $("<div/>").addClass("de-sf-content");
+    subFormContent
       .append(this.getHeading())
-      .append(this.sfFieldsEl)
+      .append(this.sfFieldsEl);
+
+
+    this.subFormEl = $("<div/>").prop({id: id, title: sfField.toolTip})
+      .append(subFormContent)
       .append(this.getAddButton());
+
     return this.subFormEl;
   };
 
@@ -1104,10 +1111,12 @@ edu.common.de.SubFormField = function(id, sfField, args) {
   };
 
   this.getHeading = function() {
-    var heading = $("<div/>").addClass("form-group clearfix");
+    var heading = $("<div/>").addClass("form-group clearfix").css("white-space", "nowrap");
     for (var i = 0; i < this.fields.length; ++i) {
       var field = this.fields[i];
-      var column = $("<div/>").css("width", this.widthCls).addClass("de-sf-field form-inline").append(field.caption);
+      var column = $("<div/>").css("width", this.widthCls)
+        .addClass("de-sf-cell")
+        .append(field.caption);
       heading.append(column);
     }
 
@@ -1137,7 +1146,7 @@ edu.common.de.SubFormField = function(id, sfField, args) {
   this.addSubFormFieldsRow = function(postRender, recId) {
     var fieldObjs = [];
 
-    var rowDiv = $("<div/>").addClass("form-group clearfix");
+    var rowDiv = $("<div/>").addClass("form-group clearfix").css("white-space", "nowrap");
     for (var i = 0; i < this.fields.length; ++i) {
       var field = this.fields[i];
       var fieldObj = edu.common.de.FieldFactory.getField(field, this.rowIdx, args);
@@ -1168,7 +1177,7 @@ edu.common.de.SubFormField = function(id, sfField, args) {
       width = this.widthCls;
     }
 
-    return $("<div/>").css("width", width).addClass("form-inline de-sf-field").append(el);
+    return $("<div/>").css("width", width).addClass("de-sf-cell").append(el);
   };
   
   this.validate = function() {

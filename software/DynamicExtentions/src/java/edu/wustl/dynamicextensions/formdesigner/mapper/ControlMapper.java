@@ -549,7 +549,10 @@ public class ControlMapper {
 			Properties controlProps = new Properties();
 			controlProps.setProperty(CSDConstants.CONTROL_TYPE, CSDConstants.SUB_FORM);
 			getCommonProperties(controlProps, control);
-			Container subContainer = ((SubFormControl) control).getSubContainer();
+			
+			SubFormControl sfCtrl = (SubFormControl) control;
+			Container subContainer = sfCtrl.getSubContainer();
+			controlProps.setProperty("singleEntry", sfCtrl.getNoOfEntries() == -1 ? false : true);
 			controlProps.setProperty("subFormName", subContainer.getName());
 			controlProps.setProperty("subForm", new RegularContainerMapper().containerToProperties(subContainer)
 					.getAllProperties());

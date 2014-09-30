@@ -2099,6 +2099,7 @@ var getNewField = function(args) {
   } else if (field.type == 'subForm') {
     newField = new getDEJson({json :field.subForm});
     newField['type'] = field.type;
+    newField['singleEntry'] = field.singleEntry;
   } else if (field.type == 'note') {
     newField['type']  = 'label';
     newField['note'] = true;

@@ -1,10 +1,16 @@
 
-.de-sf-field {
-  float: left;
-  padding-right: 15px;
-  padding-left: 15px;
+.de-sf-content {
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+
+.de-sf-cell {
+  display: inline-block;
+  padding-right: 10px;
+  padding-left: 10px;
   min-height: 1px;
   position: relative;
+  white-space: pre-wrap;
 }
 
 .de-fileupload .de-input-addon {

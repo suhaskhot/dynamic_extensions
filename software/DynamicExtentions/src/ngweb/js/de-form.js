@@ -19,7 +19,7 @@ edu.common.de.RequiredValidator = function(field, dataEl) {
       if (dataEl.prop('type') == 'checkbox') {
         valid = dataEl.prop('checked');
       } else {
-        valid = dataEl.val().trim().length != 0;
+        valid = dataEl.val() && dataEl.val().length != 0;
       }
       el = field.inputEl;
     }
@@ -77,10 +77,10 @@ edu.common.de.NumericValidator = function(field, dataEl, params) {
           field.getCaption() + " cannot have more than " + noOfDigits + " digits after decimal point");
         return false;
       }
-    } else {
-      edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
-      return true;
-    }
+    } 
+
+    edu.common.de.Utility.unHighlightError(field.inputEl, field.getTooltip());
+    return true;
   };
 };
 

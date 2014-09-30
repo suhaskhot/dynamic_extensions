@@ -851,7 +851,7 @@ edu.common.de.SelectField = function(id, field) {
 
   this.getDisplayValue = function() {
     var value = this.inputEl.val();
-    value = (value instanceof Array) ? value.join().substring(1) : value;
+    value = (value instanceof Array) ? value.join() : value;
     return {name: field.name, value: value};
   };
   

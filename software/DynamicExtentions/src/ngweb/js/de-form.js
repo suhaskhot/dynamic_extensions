@@ -643,11 +643,11 @@ edu.common.de.DatePicker = function(id, field) {
       .append(this.dateEl)
       .append($("<span/>").addClass("glyphicon glyphicon-calendar"));
 
-    this.inputEl = $("<div/>").addClass("clearfix");
+    this.inputEl = $("<div/>"); 
     this.inputEl.append(dateField);
 
     var format = field.format;
-    if (format.indexOf('HH:mm') != -1) {
+    if (format && format.indexOf('HH:mm') != -1) {
       dateFmt = dateFormat.concat(" HH:mm");
       this.timeEl = $("<input/>")
         .prop({id: 'time', type: 'text', title: field.toolTip})
@@ -1115,11 +1115,23 @@ edu.common.de.SubFormField = function(id, sfField, args) {
     return sfField.name;
   };
 
+  var getSfFieldWidth = function(field) { 
+    if (field.type != 'datePicker') {
+      return 20 + "%";
+    }
+
+    if (field.format && field.format.indexOf("HH:mm") != -1) {
+      return 25 + "%";
+    }
+
+    return 20 + "%";
+  };
+    
   this.getHeading = function() {
     var heading = $("<div/>").addClass("form-group clearfix").css("white-space", "nowrap");
     for (var i = 0; i < this.fields.length; ++i) {
       var field = this.fields[i];
-      var column = $("<div/>").css("width", this.widthCls)
+      var column = $("<div/>").css("width", getSfFieldWidth(field))
         .addClass("de-sf-cell")
         .append(field.caption);
       heading.append(column);
@@ -1160,7 +1172,7 @@ edu.common.de.SubFormField = function(id, sfField, args) {
 
       var fieldObj = edu.common.de.FieldFactory.getField(field, this.rowIdx, args);
       var fieldEl = fieldObj.render();
-      rowDiv.append(this.cell(fieldEl));
+      rowDiv.append(this.cell(fieldEl, getSfFieldWidth(field)));
       fieldObjs.push(fieldObj);
     }
 

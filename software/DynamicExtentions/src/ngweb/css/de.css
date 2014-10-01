@@ -2,6 +2,7 @@
 .de-sf-content {
   overflow-x: auto;
   margin-bottom: 10px;
+  overflow-y: hidden;
 }
 
 .de-sf-cell {
@@ -11,6 +12,7 @@
   min-height: 1px;
   position: relative;
   white-space: pre-wrap;
+  vertical-align: top;
 }
 
 .de-fileupload .de-input-addon {
@@ -211,15 +213,20 @@ select.form-control.de-input-error + .chosen-container-multi .chosen-choices {
   color:  #333;
 }
 
+.de-sf-cell .de-date-picker, .de-sf-cell .de-time-picker {
+  display: inline-block;
+  float: none!important;
+}
+
 .de-date-picker {
   width: 100%;
   margin-right: 1%;
-  float: left;
+  display: inline-block;
 }
 
 .de-time-picker {
-   width: 40%;
-   float: left;
+  width: 40%;
+  display: inline-block;
  }
 
 .truncate-small {

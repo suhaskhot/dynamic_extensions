@@ -815,7 +815,7 @@ edu.common.de.SelectField = function(id, field) {
     var isMultiSelect = (field.type == 'listbox' || field.type == 'multiSelectListbox');
     this.inputEl = $("<select/>")
       .prop({id: id, multiple: isMultiSelect, title: field.toolTip})
-      .addClass("form-control")
+      .addClass("de-select")
       .append($("<option/>"));
 
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
@@ -828,7 +828,7 @@ edu.common.de.SelectField = function(id, field) {
   };
 
   this.postRender = function() {
-    this.inputEl.chosen({width: "100%", allow_single_deselect: true});
+    this.inputEl.select2({allowClear: true});
   };
 
   this.getName = function() {
@@ -851,7 +851,6 @@ edu.common.de.SelectField = function(id, field) {
     value = edu.common.de.Utility.getValueByDataType(field, value);
     this.recId = recId;
     this.inputEl.val(value);
-    this.inputEl.trigger("chosen:updated");
   };
 
   this.getDisplayValue = function() {

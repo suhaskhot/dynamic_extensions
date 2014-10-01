@@ -243,4 +243,13 @@ select.form-control.de-input-error + .chosen-container-multi .chosen-choices {
   text-overflow: ellipsis;
 }
 
+.de-select {
+  display: block;
+}
 
+.select2-container-multi .select2-choices .select2-search-choice {
+  background-clip: initial;
+  background-image: none;
+  background: white;
+  margin: 7px 0 3px 5px;
+}

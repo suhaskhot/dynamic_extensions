@@ -579,8 +579,13 @@ edu.common.de.TextArea = function(id, field) {
   this.validator;
 
   this.render = function() {
+    var noOfRows = 2;
+    if (field.noOfRows && field.noOfRows > 0) {
+      noOfRows = field.noOfRows;
+    }
+
     this.inputEl = $("<textarea/>")
-      .prop({id: id, rows: field.noOfRows, title: field.toolTip, value: field.defaultValue})
+      .prop({id: id, rows: noOfRows, title: field.toolTip, value: field.defaultValue})
       .addClass("form-control");
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
     return this.inputEl;

@@ -155,11 +155,15 @@ public class NumberField extends TextField implements Serializable {
 	
 	@Override
 	public String toString(Object value) {
+		if (value instanceof Number) {
+			value = new BigDecimal(((Number)value).toString());
+		}
+		
 		if (!(value instanceof BigDecimal)) {
 			return null;
 		}
+		
 		BigDecimal numberValue = (BigDecimal) value;
-
 		if (BigDecimal.ZERO.compareTo(numberValue) == 0) {
 			numberValue = BigDecimal.ZERO;
 		} else {

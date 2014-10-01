@@ -851,6 +851,7 @@ edu.common.de.SelectField = function(id, field) {
     value = edu.common.de.Utility.getValueByDataType(field, value);
     this.recId = recId;
     this.inputEl.val(value);
+    this.inputEl.trigger('change');
   };
 
   this.getDisplayValue = function() {

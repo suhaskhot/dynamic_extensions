@@ -196,7 +196,9 @@ edu.common.de.DataTable = function(args) {
 
     var inputEl = fieldObj.render(); // TODO: Do we need to render in view mode?
 
-    fieldObj.setValue(recId, value);
+    if (value) {
+      fieldObj.setValue(recId, value);
+    }
     this.fieldObjs.push(fieldObj);
 
     if (mode == 'view') {

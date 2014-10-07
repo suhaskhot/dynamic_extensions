@@ -519,7 +519,7 @@ public class QueryCompiler
     		formTree.addChild(queryId + "." + key, sfTree);
     	}
     	
-    	return sfTree;
+    	return sfTree; // add join inner when extnForm is not null
     }
         
     private JoinTree analyzeSubFormFields(

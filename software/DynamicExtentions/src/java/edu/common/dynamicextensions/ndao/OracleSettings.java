@@ -35,7 +35,7 @@ public class OracleSettings implements DbSettings {
 
 	@Override
 	public String getDateColType() {
-		return "DATE";
+		return "TIMESTAMP";
 	}
 
 	@Override

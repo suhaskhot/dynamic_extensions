@@ -202,21 +202,51 @@ public class QueryGenerator {
         StringBuilder from = new StringBuilder();
         JoinTree parentTree = joinTree.getParent();
         
-        if (parentTree != null) {
+        if (parentTree != null && !joinTree.isExtensionForm()) {
         	from.append(" left join ");
-        }        
+        } else if (parentTree != null && joinTree.isExtensionForm()) {
+        	//
+        	// The parent node is an extension form link (i.e. record entries table)
+        	// We'll inner join the extension form with record entries to avoid
+        	// selecting other form data entries
+        	//
+        	from.append(" inner join ");
+        }
+        
+        if (joinTree.getExtnFk() != null) {
+        	//
+        	// The current node (joinTree) is an extension form link (i.e. record entries table)
+        	// We'll group joins related to extension form within parenthesis 
+        	//
+        	from.append("(");
+        }
+        
         from.append(joinTree.getTab()).append(" ").append(joinTree.getAlias()).append(" ");
         
-        if (!joinTree.isExtensionForm() && parentTree != null) {
+        if (!joinTree.isExtensionForm() && parentTree != null && joinTree.getExtnFk() == null) { 
+        	//
+        	// Normal form
+        	//
             from.append(" on ").append(joinTree.getAlias()).append(".").append(joinTree.getForeignKey())
                 .append(" = ").append(parentTree.getAlias()).append(".").append(joinTree.getParentKey());
         } else if (joinTree.isExtensionForm() && parentTree != null) {
+        	//
+        	// Extension form
+        	//
         	from.append(" on ").append(joinTree.getAlias()).append(".").append(joinTree.getForm().getPrimaryKey())
         		.append(" = ").append(parentTree.getAlias()).append(".").append(parentTree.getExtnFk());
         } 
 
         for (JoinTree child : joinTree.getChildren()) {
         	from.append(buildFromClause(child));
+        }
+        
+        if (joinTree.getExtnFk() != null && parentTree != null) {
+        	//
+        	// Record entries form. Join with its parent form
+        	//
+        	from.append(") on ").append(joinTree.getAlias()).append(".").append(joinTree.getForeignKey())
+        		.append(" = ").append(parentTree.getAlias()).append(".").append(joinTree.getParentKey());
         }
 
         return from.toString();

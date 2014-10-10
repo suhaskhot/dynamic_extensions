@@ -13,6 +13,7 @@ import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
+import edu.common.dynamicextensions.domain.nui.LookupControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.ndao.DbSettingsFactory;
 import edu.common.dynamicextensions.query.ast.AggregateNode;
@@ -484,10 +485,13 @@ public class QueryGenerator {
     	return result;
     }
         
-    private String getFieldNodeSql(FieldNode field) {
+    private String getFieldNodeSql(FieldNode field) {    	
     	String column = field.getCtrl().getDbColumnName();
     	if (field.getCtrl() instanceof FileUploadControl) {
     		column += "_NAME";
+    	} else if (field.getCtrl() instanceof LookupControl) {
+    		LookupControl luCtrl = (LookupControl)field.getCtrl();
+    		column = luCtrl.getValueColumn();
     	}
     	
     	return field.getTabAlias() + "." + column;

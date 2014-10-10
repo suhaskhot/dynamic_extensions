@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.common.dynamicextensions.domain.nui.Container;
-import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
+import edu.common.dynamicextensions.domain.nui.Control;
 
 public class JoinTree
 {
@@ -19,7 +19,7 @@ public class JoinTree
 	
 	private Container form;
 	
-	private MultiSelectControl field;
+	private Control field;
 	
 	private JoinTree parent;
 	
@@ -95,11 +95,11 @@ public class JoinTree
         this.form = form;
     }
 
-    public MultiSelectControl getField() {
+    public Control getField() {
         return field;
     }
 
-    public void setField(MultiSelectControl field) {
+    public void setField(Control field) {
         this.field = field;
     }
 

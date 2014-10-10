@@ -14,6 +14,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.LookupControl;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
 import edu.common.dynamicextensions.domain.nui.SubFormControl;
 import edu.common.dynamicextensions.napi.VersionedContainer;
@@ -200,17 +201,29 @@ public class QueryCompiler
         return sfTree;
     }
     
-    private JoinTree getFieldTree(JoinTree parentNode, MultiSelectControl field) {
-        JoinTree fieldTree = new JoinTree();
-        fieldTree.setField(field);
-        fieldTree.setTab(field.getTableName());
-        fieldTree.setParent(parentNode);
-        fieldTree.setAlias((new StringBuilder()).append("t").append(tabCnt++).toString());
-        fieldTree.setParentKey(field.getParentKey());
-        fieldTree.setForeignKey(field.getForeignKey());
-        return fieldTree;
+    private JoinTree getFieldTree(JoinTree parentNode, Control field) {
+		JoinTree fieldTree = new JoinTree();
+		fieldTree.setField(field);
+		fieldTree.setParent(parentNode);
+		fieldTree.setAlias((new StringBuilder()).append("t").append(tabCnt++).toString());
+
+		if (field instanceof MultiSelectControl) {
+			MultiSelectControl msCtrl = (MultiSelectControl) field;
+			fieldTree.setTab(msCtrl.getTableName());
+			fieldTree.setParentKey(msCtrl.getParentKey());
+			fieldTree.setForeignKey(msCtrl.getForeignKey());
+		} else if (field instanceof LookupControl) {
+			LookupControl luCtrl = (LookupControl) field;
+			fieldTree.setTab(luCtrl.getTableName());
+			fieldTree.setParentKey(luCtrl.getParentKey());
+			fieldTree.setForeignKey(luCtrl.getLookupKey());
+		} else {
+			throw new RuntimeException("Cannot create field tree for unknown type: " + field.getClass());
+		}
+
+		return fieldTree;
     }
-    
+        
     private Map<String, JoinTree> analyzeExpr(QueryExpressionNode expr) {
         Map<String, JoinTree> joinMap = new HashMap<String, JoinTree>();        
         analyzeFilterNodeMarker(0, expr.getFilterExpr(), joinMap);
@@ -469,15 +482,14 @@ public class QueryCompiler
         }
         
         String tabAlias = formTree.getAlias();
-        if (ctrl instanceof MultiSelectControl) {
+        if (ctrl instanceof MultiSelectControl || ctrl instanceof LookupControl) {
         	JoinTree fieldTree = formTree.getChild(queryId + "." + ctrl.getName());
         	if (fieldTree == null && failIfAbsent) {
         		return false;
         	}
         	
         	if (fieldTree == null) {
-        		MultiSelectControl msField = (MultiSelectControl)ctrl;
-        		fieldTree = getFieldTree(formTree, msField);
+        		fieldTree = getFieldTree(formTree, ctrl);
         		formTree.addChild(queryId + "." + ctrl.getName(), fieldTree);
         	}
         	

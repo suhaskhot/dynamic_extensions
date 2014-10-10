@@ -1,10 +1,16 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class Label extends Control implements Serializable {
 	private static final long serialVersionUID = 5717603046743274148L;
@@ -77,4 +83,25 @@ public class Label extends Control implements Serializable {
 		props.put("heading", isHeading());
 		props.put("note", isNote());		
 	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "label");
+		writeElement(writer, "name", getName());
+		writeElement(writer, "udn", getUserDefinedName());
+
+		if (isHeading()) {
+			writeElement(writer, "heading", getCaption());
+		} else if (isNote()){
+			writeElement(writer, "note", getCaption());
+		} else {
+			writeElement(writer, "caption", getCaption());
+		}
+		
+		writeElement(writer, "customLabel", getCustomLabel());
+		writeElement(writer, "phi",         isPhi());
+		writeElement(writer, "mandatory",   isMandatory());
+		writeElement(writer, "toolTip",     getToolTip());
+		writeElementEnd(writer, "label");		
+	}	
 }

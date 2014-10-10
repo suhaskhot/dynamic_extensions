@@ -1,9 +1,16 @@
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
@@ -107,5 +114,35 @@ public class StringTextField extends TextField implements Serializable {
 		props.put("type", "stringTextField");
 		props.put("url", isUrl());
 		props.put("password", isPassword());		
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {		
+		writeElementStart(writer, "textField");	
+		super.serializeToXml(writer, props);
+		
+		writeElement(writer, "url",      isUrl());
+		writeElement(writer, "password", isPassword());
+					
+		for (ValidationRule rule : getValidationRules()) {
+			if (!rule.getName().equals("textLength")) {
+				continue;
+			}
+			
+			for (Entry<String, String> ruleParam : rule.getParams().entrySet()) {
+				String prop = "";
+				if (ruleParam.getKey().equals("min")) {
+					prop = "minLength";
+				} else if (ruleParam.getKey().equals("max")) {
+					prop = "maxLength";
+				} 
+				
+				if (!prop.isEmpty()) {
+					writeElement(writer, prop, ruleParam.getValue());
+				}
+			}
+		}
+		
+		writeElementEnd(writer, "textField");		
 	}
 }

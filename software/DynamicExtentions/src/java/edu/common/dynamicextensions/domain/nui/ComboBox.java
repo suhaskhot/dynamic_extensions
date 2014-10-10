@@ -1,8 +1,14 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Map;
+import java.util.Properties;
 
 public class ComboBox extends SelectControl implements Serializable {
 	private static final long serialVersionUID = 6015502487841170385L;
@@ -71,5 +77,16 @@ public class ComboBox extends SelectControl implements Serializable {
 	public void getProps(Map<String, Object> props) {
 		super.getProps(props);
 		props.put("type", "combobox");		
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "dropDown");
+		super.serializeToXml(writer, props);
+		
+		writeElement(writer, "lazyLoad",      isLazyPvFetchingEnabled());
+		writeElement(writer, "width",         getNoOfColumns());			
+		writeElement(writer, "minQueryChars", getMinQueryChars());				
+		writeElementEnd(writer, "dropDown");		
 	}
 }

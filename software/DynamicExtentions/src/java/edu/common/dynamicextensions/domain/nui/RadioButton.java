@@ -1,10 +1,16 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class RadioButton extends SelectControl implements Serializable {
 	private static final long serialVersionUID = -1336506050252009947L;
@@ -53,5 +59,13 @@ public class RadioButton extends SelectControl implements Serializable {
 	public void getProps(Map<String, Object> props) {
 		super.getProps(props);
 		props.put("type", "radiobutton");
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "radioButton");
+		super.serializeToXml(writer, props);			
+		writeElement(writer, "optionsPerRow", getOptionsPerRow());			
+		writeElementEnd(writer, "radioButton");		
 	}
 }

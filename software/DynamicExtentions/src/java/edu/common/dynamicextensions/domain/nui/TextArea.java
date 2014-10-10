@@ -1,10 +1,16 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
 
@@ -97,5 +103,14 @@ public class TextArea extends TextField implements Serializable {
 		props.put("noOfRows", getNoOfRows());
 		props.put("minLength", getMinLength());
 		props.put("maxLength", getMaxLength());		
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "textArea");
+		super.serializeToXml(writer, props);
+		
+		writeElement(writer, "height", getNoOfRows());			
+		writeElementEnd(writer, "textArea");		
 	}
 }

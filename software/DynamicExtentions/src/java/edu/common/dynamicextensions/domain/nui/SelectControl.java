@@ -3,7 +3,15 @@
  */
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -12,10 +20,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import edu.common.dynamicextensions.napi.ControlValue;
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+import edu.common.dynamicextensions.nutility.ContainerXmlSerializer;
+import edu.common.dynamicextensions.nutility.IoUtil;
 
 public abstract class SelectControl extends Control implements Serializable {
 	private static final long serialVersionUID = 7354155108839121342L;
@@ -225,5 +237,25 @@ public abstract class SelectControl extends Control implements Serializable {
 		List<PermissibleValue> pvs = pvDataSrc.getPermissibleValues(Calendar.getInstance().getTime());
 		props.put("pvs", pvs);
 		props.put("pvOrdering", pvDataSrc.getOrdering().name());		
+	}
+
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		super.serializeToXml(writer, props);
+
+		writeElement(writer, "defaultValue", getDefaultValue());
+		writeElementStart(writer, "options");
+		
+		PvDataSource pvDataSource = getPvDataSource();
+		String sql = pvDataSource.getSql();
+		if (sql != null) {
+			writeElement(writer, "sql", sql);
+		} else {
+			Date today = Calendar.getInstance().getTime();
+			List<PermissibleValue> pvs = pvDataSource.getPermissibleValues(today);
+			ContainerXmlSerializer.writePvValues(writer, pvs, getName(), props);
+		}
+
+		writeElementEnd(writer, "options");		
 	}
 }

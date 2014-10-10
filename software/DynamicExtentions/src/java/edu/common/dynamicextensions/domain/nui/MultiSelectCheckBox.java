@@ -1,10 +1,16 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -116,5 +122,13 @@ public class MultiSelectCheckBox extends SelectControl implements MultiSelectCon
 	public void getProps(Map<String, Object> props) {
 		super.getProps(props);
 		props.put("type", "checkbox"); 
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "checkBox");			
+		super.serializeToXml(writer, props);			
+		writeElement(writer, "optionsPerRow", getOptionsPerRow());			
+		writeElementEnd(writer, "checkBox");		
 	}
 }

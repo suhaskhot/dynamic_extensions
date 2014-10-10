@@ -1,12 +1,19 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -182,5 +189,40 @@ public class NumberField extends TextField implements Serializable {
 		props.put("maxValue", getMaxValue());
 		props.put("calculated", isCalculated());
 		props.put("formula", getFormula());		
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "numberField");
+		super.serializeToXml(writer, props);
+
+		writeElement(writer, "noOfDigits", getNoOfDigits());			
+		if (getNoOfDigitsAfterDecimal() != 0) {
+			writeElement(writer, "noOfDigitsAfterDecimal", getNoOfDigitsAfterDecimal());
+		}
+		
+		writeElement(writer, "formula",          getFormula());
+		writeElement(writer, "measurementUnits", getMeasurementUnits());
+	
+		for (ValidationRule valRule : getValidationRules()) {				
+			if (!valRule.getName().equals("range")) {
+				continue;
+			}
+			
+			for (Entry<String, String> ruleParam : valRule.getParams().entrySet()) {
+				String prop = "";
+				if (ruleParam.equals("min")) {
+					prop = "minValue";
+				} else if (ruleParam.equals("max")) {
+					prop = "maxValue";
+				} 
+				
+				if (!prop.isEmpty()) {
+					writeElement(writer, prop, ruleParam.getValue());
+				}
+			}
+		}
+		
+		writeElementEnd(writer, "numberField");		
 	}
 }

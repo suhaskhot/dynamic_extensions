@@ -1,13 +1,18 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeCDataElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -446,6 +451,18 @@ public abstract class Control implements Comparable<Control>, Serializable {
 		getProps(ctrlProps);
 		return ctrlProps;
 	}
-	
+		
 	public abstract void getProps(Map<String, Object> props);
+	
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElement(writer, "name",        getName());
+		writeElement(writer, "udn",         getUserDefinedName());
+		writeElement(writer, "caption",     getCaption());
+		writeCDataElement(writer, "customLabel", getCustomLabel());
+		writeElement(writer, "phi",         isPhi());
+		writeElement(writer, "mandatory",   isMandatory());
+		writeElement(writer, "toolTip",     getToolTip());
+		writeElement(writer, "showLabel",   showLabel());
+		writeElement(writer, "showInGrid",  showInGrid());
+	}	
 }

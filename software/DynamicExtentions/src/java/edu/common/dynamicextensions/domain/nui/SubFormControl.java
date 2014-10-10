@@ -1,14 +1,21 @@
 
 package edu.common.dynamicextensions.domain.nui;
 
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
+import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
+
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
 import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+import edu.common.dynamicextensions.nutility.ContainerXmlSerializer;
 
 public class SubFormControl extends Control implements Serializable {
 	private static final long serialVersionUID = 8920374924982826593L;
@@ -193,5 +200,17 @@ public class SubFormControl extends Control implements Serializable {
 		props.put("type", "subForm");
 		props.put("singleEntry", noOfEntries == -1 ? false : true);
 		props.putAll(getSubContainer().getProps());
+	}
+	
+	@Override
+	public void serializeToXml(Writer writer, Properties props) {
+		writeElementStart(writer, "subForm");			
+		writeElement(writer, "maxEntries",         getNoOfEntries());		
+		writeElement(writer, "showAddMoreLink",    showAddMoreLink());	
+		writeElement(writer, "udn",                getUserDefinedName());	
+		writeElement(writer, "pasteButtonEnabled", isPasteButtonEnabled());			
+
+		new ContainerXmlSerializer(getSubContainer(), writer, props).serializeView();			
+		writeElementEnd(writer, "subForm");				
 	}
 }

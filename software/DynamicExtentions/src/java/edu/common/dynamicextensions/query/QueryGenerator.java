@@ -2,6 +2,7 @@ package edu.common.dynamicextensions.query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -360,6 +361,10 @@ public class QueryGenerator {
     		throw new RuntimeException("Invalid filter"); // add more info here
     	}
     	
+    	if (isDateCmpFilter(filter)) {
+    		return getDateCmpSql(filter);
+    	}
+    	
         String filterExpr = null, rhs = null;        
         String lhs = getExpressionNodeSql(filter.getLhs(), filter.getLhs().getType());        
         switch (filter.getRelOp()) {
@@ -422,11 +427,24 @@ public class QueryGenerator {
     	
     	return isValid;
     }
-
-    private boolean isValidOp(ExpressionNode lhs, RelationalOp op, ExpressionNode rhs) {
-    	// check validity of {lhs.getType(), op, rhs.getType()} or {lhs.getType(), op}    	
-    	return true;    	
+    
+    private boolean isDateCmpFilter(FilterNode filter) {
+    	DataType lhsType = filter.getLhs().getType();
+    	if (lhsType != DataType.DATE) {
+    		return false;
+    	}
+    	    	
+    	if (filter.getRelOp() == RelationalOp.BETWEEN || !(filter.getRhs() instanceof LiteralValueNode)) {
+    		return false;
+    	}
+    	
+    	return true;
     }
+
+//    private boolean isValidOp(ExpressionNode lhs, RelationalOp op, ExpressionNode rhs) {
+//    	// check validity of {lhs.getType(), op, rhs.getType()} or {lhs.getType(), op}    	
+//    	return true;    	
+//    }
 
     private String removeQuotes(String value) {
         if (value != null && value.charAt(0) == '"' && value.charAt(value.length() - 1) == '"') {
@@ -436,6 +454,43 @@ public class QueryGenerator {
         return value;
     }
     
+    private String getDateCmpSql(FilterNode filter) {    	    	
+    	String lhsSql = getExpressionNodeSql(filter.getLhs(), filter.getLhs().getType());
+    	
+    	LiteralValueNode rhsLiteral = (LiteralValueNode)filter.getRhs();
+    	String dateLiteral = removeQuotes(rhsLiteral.getValues().get(0).toString());    	
+    	Date date = getDateInAppFormat(dateLiteral);
+    	
+    	String d0Sql = getDateLiteralSql(date);    	
+    	if (!isTimePartZero(date)) {
+    		return lhsSql + " " + filter.getRelOp().symbol() + " " + d0Sql;
+    	} 
+
+    	String d1Sql = getDateLiteralSql(getEndOfDayTime(date));    			    			
+    	switch (filter.getRelOp()) {
+    		case EQ:
+    			return "(" + ge(lhsSql, d0Sql) + " and " + le(lhsSql, d1Sql) + ")";
+    			
+    		case GT:
+    			return gt(lhsSql, d1Sql);
+    			
+    		case GE:
+    			return ge(lhsSql, d0Sql);
+    			
+    		case LT:
+    			return lt(lhsSql, d0Sql);
+    			
+    		case LE:
+    			return le(lhsSql, d1Sql);
+    			
+    		case NE:
+    			return "(" + lt(lhsSql, d0Sql) + " or " + gt(lhsSql, d1Sql) + ")";
+    			
+    		default:
+    			throw new IllegalArgumentException("Unexcepted operator for date: " + filter.getRelOp().symbol());    			    		
+    	}
+    }
+        
     private String getExpressionNodeSql(ExpressionNode exprNode, DataType type) {
     	String result = "";
     	
@@ -464,13 +519,7 @@ public class QueryGenerator {
     		result = getAggregateSql((AggregateNode)exprNode);
     	} else if (exprNode instanceof BetweenNode) {
 			BetweenNode betweenNode = (BetweenNode)exprNode;
-			result = new StringBuilder()
-					.append(getExpressionNodeSql(betweenNode.getLhs(), betweenNode.getType()))
-					.append(" between ")
-					.append(getExpressionNodeSql(betweenNode.getMinNode(), betweenNode.getType()))
-					.append(" and ")
-					.append(getExpressionNodeSql(betweenNode.getMaxNode(), betweenNode.getType()))
-					.toString();
+			result = getBetweenNodeSql(betweenNode);
 		} else if (exprNode instanceof RoundOffNode) {
 			RoundOffNode roundOffNode = (RoundOffNode)exprNode;
 			result = new StringBuilder()
@@ -504,17 +553,10 @@ public class QueryGenerator {
     		case STRING:
     			result = removeQuotes(value.getValues().get(0).toString());
     			if (coercionType == DataType.DATE) {
-                                result = "'" + getDateInDbFormat(result) + "'";
-
-        			String dbProduct = DbSettingsFactory.getProduct().toLowerCase();
-        			if (dbProduct.equals("oracle")) {
-        				result = "to_date(" + result + ", 'MM-DD-YYYY HH24:MI')";
-        			} else if (dbProduct.equals("mysql")) {
-        				result = "str_to_date(" + result + ", '%m-%d-%Y %H:%i')";
-        			}    				    				
+    				result = getDateLiteralSql(result);
     			} else {
-                                result = "'" + StringEscapeUtils.escapeSql(result) + "'";
-                        }
+    				result = "'" + StringEscapeUtils.escapeSql(result) + "'";
+    			}
     			break;
     			
     		case BOOLEAN:
@@ -527,6 +569,25 @@ public class QueryGenerator {
         }
     	
         return result;
+    }
+    
+    private String getDateLiteralSql(String dateLiteral) {
+    	return getDateLiteralSql0("'" + getDateInDbFormat(dateLiteral) + "'");
+    }
+    
+    private String getDateLiteralSql(Date date) {
+    	return getDateLiteralSql0("'" +  getDateInDbFormat(date) + "'");    	
+    }
+    	
+    private String getDateLiteralSql0(String dateLiteralInDbFmt) {
+    	String result = "";    
+    	if (DbSettingsFactory.isOracle()) {
+    		result = "to_date(" + dateLiteralInDbFmt + ", 'MM-DD-YYYY HH24:MI')";    		
+    	} else if (DbSettingsFactory.isMySQL()) {
+    		result = "str_to_date(" + dateLiteralInDbFmt + ", '%m-%d-%Y %H:%i')";    		
+    	}
+    	
+    	return result;
     }
     
     private String getStringMatchSql(LiteralValueNode stringNode, RelationalOp op) {
@@ -567,7 +628,12 @@ public class QueryGenerator {
 					months = -months;    				    	
 				}
 				
-				expr = "add_months(" + loperand + ", " + months + ")";
+				if (DbSettingsFactory.isMySQL()) {
+					expr = "adddate(" + loperand + ", interval " + months + " month)";
+				} else if (DbSettingsFactory.isOracle()){
+					expr = "add_months(" + loperand + ", " + months + ")";
+				}
+				
 			}
 			
 			if (di.getDays() != 0) {
@@ -687,8 +753,39 @@ public class QueryGenerator {
     	
     	return "";    	
     }
+    
+    private String getBetweenNodeSql(BetweenNode node) {    	    	
+    	if (node.getType() != DataType.DATE) {
+    		String lhsSql = getExpressionNodeSql(node.getLhs(), node.getType());
+    		String minSql = getExpressionNodeSql(node.getMinNode(), node.getType());
+    		String maxSql = getExpressionNodeSql(node.getMaxNode(), node.getType());
+    		return lhsSql + " between " + minSql + " and " + maxSql;
+    	}
+    	
+    	FilterNode lowerBound = new FilterNode();
+    	lowerBound.setLhs(node.getLhs());
+    	lowerBound.setRelOp(RelationalOp.GE);
+    	lowerBound.setRhs(node.getMinNode());
+    	
+    	FilterNode upperBound = new FilterNode();
+    	upperBound.setLhs(node.getLhs());
+    	upperBound.setRelOp(RelationalOp.LE);
+    	upperBound.setRhs(node.getMaxNode());
+    	
+    	return "(" + buildFilter(lowerBound) + " and " + buildFilter(upperBound) + ")";    			    	
+    }
 
 	private String getDateInDbFormat(String date) {
+		Date appDate = getDateInAppFormat(date);
+		return getDateInDbFormat(appDate);
+	}
+	
+	private String getDateInDbFormat(Date date) {
+		SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat);
+		return dbSdf.format(date);		
+	}
+		
+	private Date getDateInAppFormat(String date) {
 		try {
 			Date appDate = null;
 			try {
@@ -696,14 +793,13 @@ public class QueryGenerator {
 			} catch (ParseException pe) {
 				appDate = new SimpleDateFormat(dateFormat).parse(date);
 			}
-
-			SimpleDateFormat dbSdf = new SimpleDateFormat(dbDateFormat);
-			return dbSdf.format(appDate);
+			
+			return appDate;
 		} catch (ParseException pe) {
 			throw new IllegalArgumentException("Invalid date: " + date, pe);
-		}
+		}		
 	}
-	
+			
 	private String and(String clause1, String clause2) {
 		if (clause2 == null || clause2.isEmpty()) {
 			return clause1;
@@ -712,5 +808,42 @@ public class QueryGenerator {
 		return new StringBuilder().append("(").append(clause1).append(")")
 				.append(" AND ").append("(").append(clause2).append(")")
 				.toString();		
+	}	
+	
+	private boolean isTimePartZero(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		int hours = cal.get(Calendar.HOUR_OF_DAY);
+		int minutes = cal.get(Calendar.MINUTE);
+		int seconds = cal.get(Calendar.SECOND);
+		
+		return hours == 0 && minutes == 0 && seconds == 0;
 	}
+	
+	private Date getEndOfDayTime(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		return cal.getTime();		
+	}
+	
+	private String ge(String lhs, String rhs) {
+		return lhs + " " + RelationalOp.GE.symbol() + " " + rhs;
+	}
+	
+	private String le(String lhs, String rhs) {
+		return lhs + " " + RelationalOp.LE.symbol() + " " + rhs;
+	}
+
+	private String lt(String lhs, String rhs) {
+		return lhs + " " + RelationalOp.LT.symbol() + " " + rhs;
+	}
+	
+	private String gt(String lhs, String rhs) {
+		return lhs + " " + RelationalOp.GT.symbol() + " " + rhs;
+	}	
 }

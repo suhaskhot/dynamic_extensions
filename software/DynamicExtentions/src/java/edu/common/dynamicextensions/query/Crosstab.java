@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import edu.common.dynamicextensions.domain.nui.DataType;
 import edu.common.dynamicextensions.domain.nui.DatePicker;
+import edu.common.dynamicextensions.nutility.Util;
 import edu.common.dynamicextensions.query.ast.CrosstabNode;
 import edu.common.dynamicextensions.query.ast.ExpressionNode;
 import edu.common.dynamicextensions.query.ast.FieldNode;
@@ -165,6 +166,9 @@ public class Crosstab implements ResultPostProc {
 		
 		Object colKeyVal = rs.getObject(ctSpec.getColGroupByColumn());
 		colKeyVal = colKeyVal == null ? "" : colKeyVal;
+		if (Util.isOraTimestamp(colKeyVal)) {
+			colKeyVal = Util.getDateFromOraTimestamp(colKeyVal);
+		}
 		
 		Map<String, Object> measureMap = new LinkedHashMap<String, Object>();
 		for (int idx : ctSpec.getMeasureColumns()) {

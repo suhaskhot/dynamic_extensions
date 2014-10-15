@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import edu.common.dynamicextensions.ndao.DbSettingsFactory;
+import edu.common.dynamicextensions.nutility.Util;
 import edu.common.dynamicextensions.query.ast.FieldNode;
 
 public class QueryResultData {
@@ -203,6 +204,15 @@ public class QueryResultData {
                 result[j] = tsf.format(row[j]);
             } else if (row[j] instanceof Date && sdf != null){
                 result[j] = sdf.format(row[j]);
+            } else if (Util.isOraTimestamp(row[j])) {
+            	Date dateObj = Util.getDateFromOraTimestamp(row[j]);
+            	if (tsf != null) {
+            		result[j] = tsf.format(dateObj);
+            	} else if (sdf != null) {
+            		result[j] = sdf.format(dateObj);
+            	} else {
+            		result[j] = dateObj.toString();
+            	}            	            		
             } else {
             	result[j] = row[j].toString();
             }

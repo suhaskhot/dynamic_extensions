@@ -4,14 +4,24 @@ package edu.common.dynamicextensions.domain.nui;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElement;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementEnd;
 import static edu.common.dynamicextensions.nutility.XmlUtil.writeElementStart;
-import edu.common.dynamicextensions.ndao.*;
-import edu.common.dynamicextensions.nutility.*;
 
-import org.apache.commons.lang.*;
+import java.io.Serializable;
+import java.io.Writer;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import org.apache.commons.beanutils.MethodUtils;
+import org.apache.commons.lang.StringUtils;
+
+import edu.common.dynamicextensions.ndao.ColumnTypeHelper;
+import edu.common.dynamicextensions.nutility.DEApp;
+import edu.common.dynamicextensions.nutility.Util;
 
 public class DatePicker extends Control implements Serializable {
 	private static final long serialVersionUID = 6046956576964435896L;
@@ -120,7 +130,7 @@ public class DatePicker extends Control implements Serializable {
 				fmt = fmt.concat(" "+ timeFormat);
 			}
 			
-			return new SimpleDateFormat(fmt).format((Date)value);
+			return new SimpleDateFormat(fmt).format(getDateObj(value));
 		} catch (Exception e) {
 			throw new RuntimeException("Error converting date to string: " + value, e);
 		}
@@ -194,5 +204,19 @@ public class DatePicker extends Control implements Serializable {
 		
 		writeElement(writer, "default", defaultDate);
 		writeElementEnd(writer, "datePicker");		
+	}
+	
+	private Date getDateObj(Object value) {
+		try {
+			if (Util.isOraTimestamp(value)) { 
+				return Util.getDateFromOraTimestamp(value);
+			} else if (value instanceof Date){ 
+				return (Date)value;
+			} else {
+				throw new IllegalArgumentException("Unknown object type");
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error converting input object: " + value.getClass().getName() + " to java.util.Date", e);
+		}
 	}
 }

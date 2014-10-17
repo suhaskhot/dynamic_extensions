@@ -329,17 +329,12 @@ public class QueryGenerator {
     		return groupBy.toString();
     	}
     	
-    	Set<ExpressionNode> nodes = new HashSet<ExpressionNode>();
     	for (ExpressionNode node : selectList.getElements()) {
     		if (node.isAggregateExpression()) {
     			continue;
     		}
     		
-    		nodes.add(node);    		
-    	}
-    	
-    	for (ExpressionNode node : nodes) {
-    		groupBy.append(node.getColumnAlias()).append(", ");
+    		groupBy.append(getExpressionNodeSql(node, node.getType())).append(", ");
     	}
     	
     	if (groupBy.length() != 0) {

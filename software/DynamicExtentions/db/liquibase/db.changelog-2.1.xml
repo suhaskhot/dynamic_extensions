@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <property name="nullable.ts.type" value="timestamp null" dbms="mysql" />
+  <property name="nullable.ts.type" value="timestamp"      dbms="oracle" />
+
+  <changeSet author="vpawar" id="Add column to soft delete a form">
+    <addColumn tableName="DYEXTN_CONTAINERS">
+      <column name="DELETED_ON" type="${nullable.ts.type}">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="vpawar" id="Index column used to indicate soft delete of form">
+    <createIndex 
+      indexName="IDX_DE_FORM_DELETED_ON"
+      tableName="DYEXTN_CONTAINERS"
+      unique="false">
+      <column name="DELETED_ON" type="${timestamp.type}"/>
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

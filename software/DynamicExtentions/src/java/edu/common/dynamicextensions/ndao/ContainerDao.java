@@ -26,32 +26,36 @@ public class ContainerDao {
 
 	private static final String UPDATE_CONTAINER_SQL_MYSQL = 
 			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = ? " +
-			"WHERE IDENTIFIER = ?";
+			"WHERE IDENTIFIER = ? AND DELETED_ON IS NULL";
 	
 	private static final String UPDATE_CONTAINER_SQL_ORACLE = 
 			"UPDATE DYEXTN_CONTAINERS SET NAME = ?, CAPTION = ?, LAST_MODIFIED_BY = ?, LAST_MODIFY_TIME = ?, XML = empty_blob() " +
-			"WHERE IDENTIFIER = ?";
+			"WHERE IDENTIFIER = ? AND DELETED_ON IS NULL";
 	
 	private static final String GET_CONTAINER_XML_BY_ID_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
-			+ " FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+			+ " FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ? AND DELETED_ON IS NULL";
 	
 	private static final String GET_CONTAINER_XML_BY_NAME_SQL = "SELECT XML, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME"
-			+ " FROM DYEXTN_CONTAINERS WHERE NAME = ?";
+			+ " FROM DYEXTN_CONTAINERS WHERE NAME = ? AND DELETED_ON IS NULL";
 	
 	private static final String GET_CONTAINER_NAME_BY_ID =  
-			"SELECT NAME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+			"SELECT NAME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ? AND DELETED_ON IS NULL";
 		
 	private static final String GET_CONTAINER_INFO =
 			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
-			"FROM DYEXTN_CONTAINERS";
+			"FROM DYEXTN_CONTAINERS " +
+			"WHERE DELETED_ON IS NULL";
 	
 	private static final String GET_CONTAINER_INFO_BY_CREATOR_SQL = 
 			"SELECT IDENTIFIER, NAME, CAPTION, CREATED_BY, CREATE_TIME, LAST_MODIFIED_BY, LAST_MODIFY_TIME " +
-			"FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ?";
+			"FROM DYEXTN_CONTAINERS WHERE CREATED_BY = ? AND DELETED_ON IS NULL";
 	
-	private static final String GET_LAST_UPDATED_TIME_SQL = "SELECT LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+	private static final String GET_LAST_UPDATED_TIME_SQL = 
+			"SELECT LAST_MODIFY_TIME FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ? AND DELETED_ON IS NULL";
 	
 	private static final String DELETE_CONTAINER_SQL = "DELETE FROM DYEXTN_CONTAINERS WHERE IDENTIFIER = ?";
+	
+	private static final String SOFT_DELETE_CONTAINER_SQL = "UPDATE DYEXTN_CONTAINERS SET DELETED_ON = ? WHERE IDENTIFIER = ?";
 
 	private JdbcDao jdbcDao = null;
 	
@@ -108,18 +112,27 @@ public class ContainerDao {
 		}
 	}
 	
-	public void delete(Long id) { 
+	public boolean delete(Long id, boolean softDelete) { 
 		Integer rowsDeleted = null;
 		
 		try { 
-			rowsDeleted = jdbcDao.executeUpdate(DELETE_CONTAINER_SQL, Collections.singletonList(id));
+			List<Object> params = new ArrayList<Object>();
+			String sql = null;
+			if (softDelete) {
+				sql = SOFT_DELETE_CONTAINER_SQL;
+				params.add(Calendar.getInstance().getTime());
+				params.add(id);
+			} else {
+				sql = DELETE_CONTAINER_SQL;
+				params.add(id);
+			}
+			
+			rowsDeleted = jdbcDao.executeUpdate(sql, params);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Error deleting form", e);
 		}
-
-		if (rowsDeleted == null || rowsDeleted != 1) {
-			throw new RuntimeException("Deletion of container failed!, The container with id: " + id + " was not found!");
-		}
+		
+		return rowsDeleted != null && rowsDeleted == 1;
 	}
 	
 	public Container getById(Long id) throws SQLException {

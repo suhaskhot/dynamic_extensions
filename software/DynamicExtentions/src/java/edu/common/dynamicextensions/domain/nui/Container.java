@@ -701,9 +701,12 @@ public class Container implements Serializable {
 		} 
 	}
 	
-	public static void deleteContainer(Long id) {
-		ContainerDao dao = new ContainerDao(JdbcDaoFactory.getJdbcDao());
-		dao.delete(id);
+	public static boolean deleteContainer(Long id) {
+		return new ContainerDao(JdbcDaoFactory.getJdbcDao()).delete(id, false);
+	}
+	
+	public static boolean softDeleteContainer(Long id) {
+		return new ContainerDao(JdbcDaoFactory.getJdbcDao()).delete(id, true);
 	}
 				
 	public static Container getContainer(Long id) {

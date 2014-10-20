@@ -12,6 +12,7 @@ import java.util.Set;
 
 import edu.common.dynamicextensions.domain.nui.Container;
 import edu.common.dynamicextensions.domain.nui.Control;
+import edu.common.dynamicextensions.domain.nui.DatePicker;
 import edu.common.dynamicextensions.domain.nui.FileUploadControl;
 import edu.common.dynamicextensions.domain.nui.Label;
 import edu.common.dynamicextensions.domain.nui.MultiSelectControl;
@@ -151,7 +152,14 @@ public class FormDataManagerImpl implements FormDataManager {
 								ctrlValue = new ControlValue(ctrl, null);
 							}
 						} else {
-							String value = ctrl.toString(rs.getObject(ctrl.getDbColumnName()));
+							Object rsObj = null;
+							if (ctrl instanceof DatePicker) {
+								rsObj = rs.getTimestamp(ctrl.getDbColumnName());
+							} else {
+								rsObj = rs.getObject(ctrl.getDbColumnName());
+							}
+							
+							String value = ctrl.toString(rsObj);
 							ctrlValue = new ControlValue(ctrl, value);
 						}
 							

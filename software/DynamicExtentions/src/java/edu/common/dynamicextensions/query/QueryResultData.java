@@ -106,6 +106,9 @@ public class QueryResultData {
                 Object[] row = new Object[columnCount];
                 for (int i = 0; i < columnCount; ++i) {
                     row[i] = rs.getObject(i + 1);
+                    if (row[i] instanceof Date) {
+                    	row[i] = rs.getTimestamp(i + 1);
+                    }
                 }
                 
                 if (screener != null) {

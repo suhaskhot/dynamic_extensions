@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -325,8 +326,13 @@ public class ShallowWideRowGenerator {
             if (columns == null) {
                 columns = new ArrayList<ResultColumn>();
                 aliasColumnValuesMap.put(alias, columns);
+            }
+            
+            Object obj = rs.getObject(col);
+            if (obj instanceof Date) {
+            	obj = rs.getTimestamp(col);
             }            
-            columns.add(new ResultColumn(element, rs.getObject(col)));         
+            columns.add(new ResultColumn(element, obj));         
         }
         
         return aliasColumnValuesMap;

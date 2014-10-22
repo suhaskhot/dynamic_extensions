@@ -3,6 +3,7 @@ package edu.common.dynamicextensions.query;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,6 +56,7 @@ public class WideRowNode implements Serializable {
     	List<ResultColumn> currentRow = new ArrayList<ResultColumn>();
     	if (this.columns != null) {
     		currentRow.addAll(this.columns);
+    		Collections.sort(currentRow, POS_BASED_COMPARATOR);
     	}
     	
     	List<List<ResultColumn>> rows = new ArrayList<List<ResultColumn>>();
@@ -65,11 +67,21 @@ public class WideRowNode implements Serializable {
     		
     		if (tabFormTypeMap.get(childTabRows.getKey())) {
     			for (List<ResultColumn> existingRow : rows) {
+    				int childRowPos = -1, insertIdx = -1;
+    				
         			for (Map.Entry<String, WideRowNode> childRow : childTabRows.getValue().entrySet()) {
         				List<List<ResultColumn>> flattenedChildRows = childRow.getValue().flatten(maxRowCntMap, tabFormTypeMap, tabFieldsMap);            				            			
         				for (List<ResultColumn> flattenedChildRow : flattenedChildRows) {
+        					if (childRowPos == -1) {
+        						childRowPos = getFirstElementPos(flattenedChildRow);
+        					}
+        					
         					List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
-        					row.addAll(flattenedChildRow);
+        					if (insertIdx == -1) {
+        						insertIdx = getIndexToInsert(row, childRowPos);
+        					}
+        					
+        					addChildRow(row, flattenedChildRow, insertIdx);
         					currentRows.add(row);
         				}
         			}
@@ -78,15 +90,9 @@ public class WideRowNode implements Serializable {
         				continue;
         			}
         			
-            		List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
-            		if (tabFields == null) {
-            			tabFields = Collections.emptyList();
-            		}
-            			
             		List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
-            		for (ExpressionNode fieldExpr : tabFields) {
-            			row.add(new ResultColumn(fieldExpr, 0));
-            		}                			
+            		List<ExpressionNode> tabFields = tabFieldsMap.get(childTabRows.getKey());
+            		addEmptyChildRow(row, tabFields);
             		currentRows.add(row);
     			}
     		} else { // sub-form or multi-valued and deep
@@ -94,15 +100,22 @@ public class WideRowNode implements Serializable {
         			List<ResultColumn> row = new ArrayList<ResultColumn>(existingRow);
         			WideRowNode childNode = null;
         			int instance = 0;
+        			int childRowPos = -1, insertIdx = -1;
+        			
         			for (Map.Entry<String, WideRowNode> childRow : childTabRows.getValue().entrySet()) {
         				childNode = childRow.getValue();
         				List<List<ResultColumn>> flattenedChildRows = childNode.flatten(maxRowCntMap, tabFormTypeMap, tabFieldsMap);
+        				
         				for (List<ResultColumn> flattenedChildRow : flattenedChildRows) {
-        					for (ResultColumn col : flattenedChildRow) {
-        						col.setInstance(instance);
-        						row.add(col);
+        					if (childRowPos == -1) {
+        						childRowPos = getFirstElementPos(flattenedChildRow);
         					}
-//        					row.addAll(flattenedChildRow);
+        					
+        					if (insertIdx == -1) {
+        						insertIdx = getIndexToInsert(row, childRowPos);
+        					}
+        					
+        					addChildRow(row, flattenedChildRow, insertIdx, instance);
         				}   
         				
         				++instance;
@@ -120,25 +133,13 @@ public class WideRowNode implements Serializable {
         				currentRows.add(row);
         				continue;
         			}
-        			            			        			
-        			List<ExpressionNode> tabFields = null;
-        			if (childNode != null) {
-        				tabFields = getTabFieldsMap(tabFieldsMap, childNode.getAliases());
-        			} else {
-        				tabFields = tabFieldsMap.get(childTabRows.getKey()); // not sure when this condition occurs
+
+        			if (childNode == null) {
+        				throw new RuntimeException("Unexpected scenario: child node is null");
         			}
         			
-        			if (tabFields == null) {
-        				tabFields = Collections.emptyList();
-        			}
-        			            			
-            		for (int i = rowCount; i < maxCount; ++i) {
-            			for (ExpressionNode fieldExpr : tabFields) {
-            				row.add(new ResultColumn(fieldExpr, i));
-            			}
-            		}
-            		
-            		currentRows.add(row);        				
+        			addEmptyChildRows(tabFieldsMap, maxRowCntMap, childNode.alias, childNode.getAliases(false), row, rowCount, maxCount);
+        			currentRows.add(row);	
     			}
     		}
     		
@@ -149,15 +150,16 @@ public class WideRowNode implements Serializable {
     }
     
     
-    private Set<String> getAliases() {   	
-		Set<String> aliases = new HashSet<String>();
-		aliases.add(alias);
-
+    private Set<String> getAliases(boolean incThisNodeAlias) {   	
+		Set<String> aliases = new HashSet<String>();		
+		if (incThisNodeAlias) {
+			aliases.add(alias);
+		}
+		
 		for (Map<String, WideRowNode> childrenRows : childrenRowsMap.values()) {
-			for (Map.Entry<String, WideRowNode> wideRow : childrenRows
-					.entrySet()) {
+			for (Map.Entry<String, WideRowNode> wideRow : childrenRows.entrySet()) {
 				if (wideRow.getValue() != null) {
-					aliases.addAll(wideRow.getValue().getAliases());
+					aliases.addAll(wideRow.getValue().getAliases(true));
 					break;
 				}
 			}
@@ -166,16 +168,106 @@ public class WideRowNode implements Serializable {
 		return aliases;
     }
     
-    private List<ExpressionNode> getTabFieldsMap(Map<String, List<ExpressionNode>> tabFieldsMap, Set<String> aliases) {
-		List<ExpressionNode> tabFields = new ArrayList<ExpressionNode>();
-		for (String alias : aliases) {
-			List<ExpressionNode> fields = tabFieldsMap.get(alias);
+	private void addEmptyChildRows(
+			Map<String, List<ExpressionNode>> tabFieldsMap,
+			Map<String, Integer> maxRowCntMap, String alias,
+			Set<String> childAliases, List<ResultColumn> parentRow, 
+			int from, int to) {
+
+		List<ResultColumn> childColumns = new ArrayList<ResultColumn>();
+		for (String childAlias : childAliases) {
+			List<ExpressionNode> fields = tabFieldsMap.get(childAlias);
 			if (fields == null) {
 				continue;
 			}
-			tabFields.addAll(fields);
+
+			Integer maxRowCnt = maxRowCntMap.get(childAlias);
+			if (maxRowCnt == null) {
+				maxRowCnt = 0;
+			}
+
+			addChildRows(childColumns, getResultColumns(fields), 0, maxRowCnt);
 		}
 
-		return tabFields;
-    }    
+		List<ResultColumn> mainColumns = new ArrayList<ResultColumn>();
+		List<ExpressionNode> fields = tabFieldsMap.get(alias);
+		if (fields != null) {
+			mainColumns = getResultColumns(fields);
+		}
+
+		if (!childColumns.isEmpty()) {
+			addChildRow(mainColumns, childColumns);
+		}
+
+		addChildRows(parentRow, mainColumns, from, to);
+	}
+
+	private Comparator<ResultColumn> POS_BASED_COMPARATOR = new Comparator<ResultColumn>() {
+		@Override
+		public int compare(ResultColumn col0, ResultColumn col1) {
+			return col0.getExpression().getPos() - col1.getExpression().getPos();
+		}
+	};
+
+	private int getFirstElementPos(List<ResultColumn> columns) {
+		return columns.get(0).getExpression().getPos();
+	}
+
+	private int getIndexToInsert(List<ResultColumn> columns, int pos) {
+		int idx = 0;
+		for (ResultColumn rc : columns) {
+			if (rc.getExpression().getPos() >= pos) {
+				break;
+			}
+
+			++idx;
+		}
+
+		return idx;
+	}
+
+	private void addEmptyChildRow(List<ResultColumn> parentRow, List<ExpressionNode> tabFields) {
+		if (tabFields == null || tabFields.isEmpty()) {
+			return;
+		}
+
+		List<ResultColumn> childRow = getResultColumns(tabFields);
+		addChildRows(parentRow, childRow, 0, 1);
+	}
+
+	private void addChildRow(List<ResultColumn> parentRow, List<ResultColumn> childRow) {
+		int childPos = getFirstElementPos(childRow);
+		int insertIdx = getIndexToInsert(parentRow, childPos);
+		addChildRow(parentRow, childRow, insertIdx);
+	}
+
+	private void addChildRow(List<ResultColumn> parentRow, List<ResultColumn> childRow, int index) {
+		addChildRows(parentRow, childRow, index, 0, 1);
+	}
+
+	private void addChildRow(List<ResultColumn> parentRow, List<ResultColumn> childRow, int index, int instance) {
+		parentRow.addAll(index + instance * childRow.size(), childRow);
+	}
+
+	private void addChildRows(List<ResultColumn> parentRow, List<ResultColumn> childRow, int fromInstance, int toInstance) {
+		int childRowPos = getFirstElementPos(childRow);
+		int insertIdx = getIndexToInsert(parentRow, childRowPos);
+		addChildRows(parentRow, childRow, insertIdx, fromInstance, toInstance);
+	}
+
+	private void addChildRows(List<ResultColumn> parentRow, List<ResultColumn> childRow, int index, int fromInstance, int toInstance) {
+		for (int i = fromInstance; i < toInstance; ++i) {
+			addChildRow(parentRow, childRow, index, i);
+		}
+	}
+
+	private List<ResultColumn> getResultColumns(List<ExpressionNode> tabFields) {
+		List<ResultColumn> columns = new ArrayList<ResultColumn>();
+		for (ExpressionNode fieldExpr : tabFields) {
+			columns.add(new ResultColumn(fieldExpr, 0));
+		}
+
+		Collections.sort(columns, POS_BASED_COMPARATOR);
+		return columns;
+	}
 }

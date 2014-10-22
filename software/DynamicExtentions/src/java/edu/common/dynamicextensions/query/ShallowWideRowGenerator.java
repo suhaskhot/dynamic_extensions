@@ -18,41 +18,6 @@ import edu.common.dynamicextensions.query.ast.QueryExpressionNode;
 import edu.common.dynamicextensions.query.cachestore.LinkedEhCacheMap;
 
 public class ShallowWideRowGenerator {
-	private static final Comparator<ResultColumn> RESULT_COL_SORTER = 
-		new Comparator<ResultColumn>() {
-			@Override
-			public int compare(ResultColumn arg0, ResultColumn arg1) {
-				//return arg0.getExpression().getPos() - arg1.getExpression().getPos();
-				
-				// fixed
-				ExpressionNode expr0 = arg0.getExpression();
-				ExpressionNode expr1 = arg1.getExpression();
-				
-				String[] forms0 = expr0.getFormNames();
-				String[] forms1 = expr1.getFormNames();
-				
-				if (forms0.length != forms1.length || forms0.length != 1 || !forms0[0].equals(forms1[0])) {
-					return arg0.getExpression().getPos() - arg1.getExpression().getPos();
-				}
-				
-				int pos0 = getPos(arg0.getInstance(), expr0);
-				int pos1 = getPos(arg1.getInstance(), expr1);
-				return pos0 - pos1;
-			}
-			
-			private int getPos(int instance, ExpressionNode exprNode) {
-				int pos = instance * 100 + exprNode.getPos();
-				if (exprNode instanceof FieldNode) {
-					FieldNode field = (FieldNode)exprNode;
-					if (field.getCtrl() instanceof MultiSelectControl) {
-						pos = exprNode.getPos();
-					}
-				}
-				
-				return pos;				
-			}
-    	};
-    
     private LinkedEhCacheMap<String, WideRowNode> wideRows = new LinkedEhCacheMap<String, WideRowNode>();
     
     private Map<String, String[]> tabJoinPath = new HashMap<String, String[]>();
@@ -172,7 +137,6 @@ public class ShallowWideRowGenerator {
     		columns = getTabColumns(aliasRowCountMap, tabFieldsMap);
     	}
 
-    	Collections.sort(columns, RESULT_COL_SORTER);        
         return columns;    	
     }
     
@@ -230,8 +194,7 @@ public class ShallowWideRowGenerator {
     	List<Object[]> result = new ArrayList<Object[]>();
     	
         List<List<ResultColumn>> rows = wideRow.flatten(aliasRowCountMap, tabFormTypeMap, tabFieldsMap);        
-        for (List<ResultColumn> row : rows) {
-            Collections.sort(row, RESULT_COL_SORTER);            
+        for (List<ResultColumn> row : rows) {            
             Object[] values = new Object[row.size()];
             int i = 0;
             for (ResultColumn col : row) {

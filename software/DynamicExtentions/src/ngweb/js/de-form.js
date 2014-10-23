@@ -1451,6 +1451,153 @@ edu.common.de.UnknownField = function(id, field) {
   };
 };
 
+edu.common.de.LookupField = function(params) {
+  this.inputEl = null;
+
+  this.control = null;
+
+  this.value = '';
+
+  this.validator;
+
+  var timeout = undefined;
+
+  var field = params.field;
+ 
+  var id = params.id;
+
+  var that = this;
+
+  var qFunc = function(qTerm, qCallback) {
+    var timeInterval = 500;
+    if (qTerm.length == 0) {
+      timeInterval = 0;
+    }
+
+    if (timeout != undefined) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(
+      function() { 
+        var promise = that.search(qTerm);
+        $.when(promise).done(
+          function(results) {
+            qCallback(results);
+          }
+        );
+      }, 
+      timeInterval);
+  };
+
+  var onChange = function(selected) { 
+    if (selected) {
+      that.value = selected.id;
+    } else {
+      that.value = '';
+    }
+  };
+
+  var initSelection = function(elem, callback) {
+    if (!that.value) {
+      $.when(that.getDefaultValue()).done(
+        function(result) {
+          that.value = result.id;
+          that.control.setValue(result.id);
+          callback(result);
+        }
+      );
+    }
+
+    $.when(that.lookup(that.value)).done(
+      function(result) {
+        callback(result);
+      }
+    );
+  };
+
+  this.render = function() {
+    this.inputEl = $("<input/>")
+      .prop({id: id, title: field.toolTip, value: field.defaultValue})
+      .css("border", "0px").css("padding", "0px")
+      .val("")
+      .addClass("form-control");
+    this.validator = new edu.common.de.FieldValidator(field.validationRules, this);
+    return this.inputEl;
+  };
+
+  this.postRender = function() {
+    this.control = new Select2Search(this.inputEl);
+    this.control.onQuery(qFunc).onChange(onChange);
+    this.control.setValue(this.value);
+    this.control.onInitSelection(initSelection).render();
+  };
+
+  this.getName = function() {
+    return field.name;
+  };
+
+  this.getCaption = function() {
+    return field.caption;
+  };
+
+  this.getTooltip = function() {
+    return field.toolTip ? field.toolTip : field.caption;
+  };
+
+  this.getValue = function() {
+    var val = this.control.getValue();
+    if (val) {
+      val = val.id;
+    }
+
+    return {name: field.name, value: val ? val : ''};
+  };
+
+  this.getDisplayValue = function() {
+    if(!this.control) {
+      this.postRender();
+    }
+    var val = this.control.getValue();
+    if (val) {
+      var displayValue = val.text;
+    }
+    return {name: field.name, value: displayValue ? displayValue : '' };
+  }
+
+  this.setValue = function(recId, value) {
+    this.recId = recId;
+    this.value = value ? value : '';
+    if (this.control) {
+      this.control.setValue(value);
+    }
+  };
+
+  this.validate = function() {
+    return this.validator.validate();
+  };
+
+  this.getPrintEl = function() {
+    return edu.common.de.Utility.getPrintEl(this);
+  };
+};
+
+edu.common.de.LookupField.extend = function(child) {
+  var base = this;
+
+  if (child) {
+    for(var prop in child)  {
+      base[prop] = child[prop];
+    }
+
+    for(var prop in child)  {
+      base.prototype[prop] = child[prop];
+    }
+  }
+
+  return base;
+};
+
 edu.common.de.Utility = {
   /**
    * Valid values for context are primary, success, info, warning, danger

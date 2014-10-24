@@ -1451,6 +1451,110 @@ edu.common.de.UnknownField = function(id, field) {
   };
 };
 
+
+edu.common.de.Utility = {
+  /**
+   * Valid values for context are primary, success, info, warning, danger
+   */
+  panel: function(title, content, context) {
+    if (!context) {
+      context = "default";
+    }
+
+    var panelDiv = $("<div/>").addClass("panel").addClass("panel-" + context);
+    if (title) {
+      var panelHeading = $("<div/>").addClass("panel-heading");
+      var titleDiv = $("<div/>").addClass("panel-title").append(title);
+      panelHeading.append(titleDiv);
+      panelDiv.append(panelHeading);
+    }
+
+    var panelBody = $("<div/>").addClass("panel-body").append(content);
+    panelDiv.append(panelBody);
+
+    return panelDiv;
+  },
+
+  row: function() {
+    return $("<div/>").addClass("row");
+  },
+
+  label: function(caption, attrs) {
+    return $("<label/>").append(caption).prop(attrs);
+  },
+
+  iconButton: function(options) {
+    return $("<button/>").addClass(options.btnClass)
+             .append($("<span/>").addClass("glyphicon glyphicon-" + options.icon));
+  },
+
+  highlightError: function(el, tooltip) {
+    if (el.is('select')) {
+      el.next().attr('title', tooltip);
+    }
+    el.addClass('de-input-error').attr('title', tooltip);
+  },
+
+  unHighlightError: function(el, tooltip) {
+    if (el.is('select')) {
+      el.next().attr('title', tooltip);
+    }
+    el.removeClass('de-input-error').attr('title', tooltip);
+  },
+  
+  getValueByDataType: function(field, value) {
+    if (value == undefined || field.dataType == "STRING" || field.dataType == "BOOLEAN") {
+      return value;
+    }
+	
+    var parsedVal;
+    if (value instanceof Array) {
+      parsedVal = [];
+      for (var i = 0 ; i < value.length ; i++) {
+        if (field.dataType == "INTEGER") {
+          parsedVal[i] = parseInt(value[i]).toString();
+        } else if (field.dataType == "FLOAT") {
+          parsedVal[i] = parseFloat(value[i]).toString();
+        }
+      }
+    } else {
+      if (field.dataType == "INTEGER") {
+        parsedVal = parseInt(value);
+      } else if (field.dataType == "FLOAT") {
+        parsedVal = parseFloat(value);
+      }
+      parsedVal = parsedVal.toString();
+    }
+    return parsedVal;
+  },
+
+  getPrintEl: function(fieldObj) {
+    var val = fieldObj.getDisplayValue().value;
+    if (val == undefined || val == null) {
+      val = "N/A";
+    }
+
+    if (val instanceof Array) {
+      val = val.join(", ");
+    }
+
+    return $("<span/>").append(val);
+  }
+};
+
+edu.common.de.Extend = function(props) {
+  var parent = this;
+  var child = function() { return parent.apply(this, arguments); };
+
+  $.extend(child, parent);
+  if (props) {
+    $.extend(child.prototype, props);
+  }
+
+  child.__super__ = parent.prototype;
+  return child;
+};
+
 edu.common.de.LookupField = function(params) {
   this.inputEl = null;
 
@@ -1580,110 +1684,120 @@ edu.common.de.LookupField = function(params) {
   this.getPrintEl = function() {
     return edu.common.de.Utility.getPrintEl(this);
   };
+
+  this.getDefaultValue = function() {
+    return this.svc.getDefaultEntity();
+  };
+
+  this.lookup = function(containerId) {
+    return this.svc.getEntity(containerId);
+  };
+
+  this.search = function(qTerm) {
+    return this.svc.getEntities(qTerm);
+  };
 };
 
-edu.common.de.LookupField.extend = function(child) {
-  var base = this;
+edu.common.de.LookupField.extend = edu.common.de.Extend;
 
-  if (child) {
-    for(var prop in child)  {
-      base[prop] = child[prop];
+edu.common.de.LookupSvc = function(params) {
+  var entitiesMap = {};
+ 
+  var defaultList = [];
+
+  var defaultValue;
+
+  this.getEntities = function(queryTerm) {
+    var deferred = $.Deferred();
+    if (!queryTerm && defaultList.length > 0) {
+      deferred.resolve(defaultList);
+      return deferred.promise();
     }
 
-    for(var prop in child)  {
-      base.prototype[prop] = child[prop];
-    }
-  }
-
-  return base;
-};
-
-edu.common.de.Utility = {
-  /**
-   * Valid values for context are primary, success, info, warning, danger
-   */
-  panel: function(title, content, context) {
-    if (!context) {
-      context = "default";
-    }
-
-    var panelDiv = $("<div/>").addClass("panel").addClass("panel-" + context);
-    if (title) {
-      var panelHeading = $("<div/>").addClass("panel-heading");
-      var titleDiv = $("<div/>").addClass("panel-title").append(title);
-      panelHeading.append(titleDiv);
-      panelDiv.append(panelHeading);
-    }
-
-    var panelBody = $("<div/>").addClass("panel-body").append(content);
-    panelDiv.append(panelBody);
-
-    return panelDiv;
-  },
-
-  row: function() {
-    return $("<div/>").addClass("row");
-  },
-
-  label: function(caption, attrs) {
-    return $("<label/>").append(caption).prop(attrs);
-  },
-
-  iconButton: function(options) {
-    return $("<button/>").addClass(options.btnClass)
-             .append($("<span/>").addClass("glyphicon glyphicon-" + options.icon));
-  },
-
-  highlightError: function(el, tooltip) {
-    if (el.is('select')) {
-      el.next().attr('title', tooltip);
-    }
-    el.addClass('de-input-error').attr('title', tooltip);
-  },
-
-  unHighlightError: function(el, tooltip) {
-    if (el.is('select')) {
-      el.next().attr('title', tooltip);
-    }
-    el.removeClass('de-input-error').attr('title', tooltip);
-  },
-  
-  getValueByDataType: function(field, value) {
-    if (value == undefined || field.dataType == "STRING" || field.dataType == "BOOLEAN") {
-      return value;
-    }
-	
-    var parsedVal;
-    if (value instanceof Array) {
-      parsedVal = [];
-      for (var i = 0 ; i < value.length ; i++) {
-        if (field.dataType == "INTEGER") {
-          parsedVal[i] = parseInt(value[i]).toString();
-        } else if (field.dataType == "FLOAT") {
-          parsedVal[i] = parseFloat(value[i]).toString();
-        }
-      }
+    var baseUrl = this.getApiUrl();
+    var xhr;
+    if (queryTerm) {      
+      xhr = $.ajax({type: 'GET', url: baseUrl, data: this.searchRequest(queryTerm)});
+    } else if (this.getAllXhr) {
+      xhr = this.getAllXhr;
     } else {
-      if (field.dataType == "INTEGER") {
-        parsedVal = parseInt(value);
-      } else if (field.dataType == "FLOAT") {
-        parsedVal = parseFloat(value);
+      xhr = this.getAllXhr = $.ajax({type: 'GET', url: baseUrl, data: this.searchRequest(queryTerm)});
+    }
+   
+   
+    var that = this;
+    xhr.done(
+      function(data) {
+        var result = that.formatResults(data);
+        if (!queryTerm) {
+          defaultList = result;
+        }
+
+        deferred.resolve(result);
       }
-      parsedVal = parsedVal.toString();
-    }
-    return parsedVal;
-  },
+    ).fail(
+      function(data) {
+        alert("Failed to load entities list");
+        deferred.resolve([]);
+      }
+    );
 
-  getPrintEl: function(fieldObj) {
-    var val = fieldObj.getDisplayValue().value;
-    if (val == undefined || val == null) {
-      val = "N/A";
+    return deferred.promise();
+  };
+
+  this.getEntity = function(id) {
+    var deferred = $.Deferred(); 
+    var entity = entitiesMap[id];
+    if (entity) {
+      deferred.resolve(entity);
+      return deferred.promise();
     }
 
-    if (val instanceof Array) {
-      val = val.join(", ");
+    for (var i = 0; i < defaultList.length; ++i) {
+      if (defaultList[i].id == id) { 
+        deferred.resolve(defaultList[i]);
+        return deferred.promise();
+      }
     }
 
-    return $("<span/>").append(val);
-  }
+    var that = this;
+    var baseUrl = this.getApiUrl();
+    $.ajax({type: 'GET', url: baseUrl + id})
+      .done(function(data) {
+        var result = that.formatResult(data);
+        entitiesMap[id] = result;
+        deferred.resolve(result);
+      })
+      .fail(function(data) {
+        alert("Failed to retrieve entity")
+        deferred.resolve(undefined);
+      });
+
+    return deferred.promise();
+  };
+
+  this.getDefaultEntity = function() {
+    var deferred = $.Deferred(); 
+    if (defaultValue) {
+      deferred.resolve(defaultValue);
+      return deferred.promise();
+    }
+
+    var that = this;
+    this.getDefaultValue().done(
+      function(data) {
+        var result = that.formatResult(data);
+        entitiesMap[result.id] = result;
+        defaultValue = result;
+        deferred.resolve(result);
+      })
+      .fail(function(data) {
+        alert("Failed to retrieve default value");
+        deferred.resolve(undefined);
+      });
+
+    return deferred.promise();
+  };
 };
+
+edu.common.de.LookupSvc.extend = edu.common.de.Extend;

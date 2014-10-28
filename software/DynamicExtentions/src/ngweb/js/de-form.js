@@ -1612,12 +1612,13 @@ edu.common.de.LookupField = function(params) {
         }
       );
     }
-
-    $.when(that.lookup(that.value)).done(
-      function(result) {
-        callback(result);
-      }
-    );
+    else {
+      $.when(that.lookup(that.value)).done(
+        function(result) {
+          callback(result);
+        }
+      );
+    }
   };
 
   this.render = function() {
@@ -1689,8 +1690,8 @@ edu.common.de.LookupField = function(params) {
     return this.svc.getDefaultEntity();
   };
 
-  this.lookup = function(containerId) {
-    return this.svc.getEntity(containerId);
+  this.lookup = function(id) {
+    return this.svc.getEntity(id);
   };
 
   this.search = function(qTerm) {

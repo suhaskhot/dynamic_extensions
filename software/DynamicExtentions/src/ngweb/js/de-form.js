@@ -731,6 +731,8 @@ edu.common.de.DatePicker = function(id, field) {
     } else {
       this.dateEl.val(value);
     }
+
+    this.dateEl.datepicker('update');
   };
 
   this.getDisplayValue = function() {
@@ -1611,8 +1613,7 @@ edu.common.de.LookupField = function(params) {
           callback(result);
         }
       );
-    }
-    else {
+    } else {
       $.when(that.lookup(that.value)).done(
         function(result) {
           callback(result);

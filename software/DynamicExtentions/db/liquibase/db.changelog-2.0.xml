@@ -3,8 +3,11 @@
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+  http://www.liquibase.org/xml/ns/dbchangelog-ext 
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
   <property name="int.type"         value="bigint"         dbms="mysql"/>
   <property name="int.type"         value="number(19,0)"   dbms="oracle"/>
@@ -17,12 +20,18 @@
   <property name="clob.type"        value="longtext"       dbms="mysql"/>
   <property name="string.type"      value="varchar"        dbms="mysql" />
   <property name="string.type"      value="varchar2"       dbms="oracle" />
-  <property name="ts.type"          value="timestamp DEFAULT CURRENT_TIMESTAMP"  dbms="mysql" />
+  <property name="ts.type"          value="timestamp"      dbms="mysql" />
   <property name="ts.type"          value="timestamp"      dbms="oracle" />
   <property name="nullable.ts.type" value="timestamp null" dbms="mysql" />
   <property name="nullable.ts.type" value="timestamp"      dbms="oracle" />
 
-  <changeSet id="1" author="ka">
+  <changeSet id="create forms table" author="ka">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <changeSetExecuted id="1" author="ka" changeLogFile="db.changelog-2.0.xml"/>
+      </not>
+    </preConditions>
+
     <createTable tableName="DYEXTN_CONTAINERS">
       <column name="IDENTIFIER" type="${int.type}">
         <constraints primaryKey="true" nullable="false"/>

@@ -1227,6 +1227,10 @@ edu.common.de.SubFormField = function(id, sfField, args) {
     var theadRow = $("<tr/>");
     for (var i = 0; i < this.fieldObjsRows[0].length; ++i) {
       var field = this.fieldObjsRows[0][i];
+      if (field instanceof edu.common.de.Note) {
+        continue;
+      }
+
       theadRow.append($("<th/>").append(field.getCaption()));
     }
 
@@ -1237,6 +1241,9 @@ edu.common.de.SubFormField = function(id, sfField, args) {
       var tr = $("<tr/>");
       for (var j = 0; j < this.fieldObjsRows[i].length; ++j) {
         var field = this.fieldObjsRows[i][j];
+        if (field instanceof edu.common.de.Note) {
+          continue;
+        }
         tr.append($("<td/>").append(edu.common.de.Utility.getPrintEl(field)));
       }
       tbody.append(tr);
@@ -1423,6 +1430,10 @@ edu.common.de.Note = function(id, field) {
   this.validate = function() {
     return true;
   };
+
+  this.getDisplayValue = function() {
+    return {name: field.name, value: field.caption};
+  }
 };
 
 edu.common.de.UnknownField = function(id, field) {

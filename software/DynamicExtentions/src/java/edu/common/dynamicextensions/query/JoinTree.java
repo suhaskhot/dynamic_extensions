@@ -234,8 +234,8 @@ public class JoinTree
     		return getNonLinkParentNode(tree1);
     	}
     	
-    	JoinTree tree1Parent = getNonLinkParentNode(tree1);
-    	JoinTree tree2Parent = getNonLinkParentNode(tree2);
+    	JoinTree tree1Parent = getNonLinkParentNode(tree1.getParent());
+    	JoinTree tree2Parent = getNonLinkParentNode(tree2.getParent());
     	return getCommonAncestor(tree1Parent, tree2Parent);
     }
     
@@ -244,7 +244,8 @@ public class JoinTree
     }
     
     private JoinTree getNonLinkParentNode(JoinTree joinTree) {
-    	if (joinTree.form == null && joinTree.field == null) {
+    	if ((joinTree.form == null && joinTree.field == null) || 
+    		(joinTree.form != null && joinTree.form.getName().equals("extensions")))  {
     		return getNonLinkParentNode(joinTree.getParent());
     	}
     	

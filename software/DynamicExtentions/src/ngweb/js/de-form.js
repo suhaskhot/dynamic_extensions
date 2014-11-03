@@ -636,7 +636,7 @@ edu.common.de.DatePicker = function(id, field) {
 
   this.render = function() {
     this.dateEl = $("<input/>")
-      .prop({id: id, type: 'text', title: field.toolTip})
+      .prop({id: id, type: 'text'})
       .addClass("form-control");
 
     var dateField = $("<div/>").addClass("plus-addon plus-addon-input-right de-date-picker")
@@ -650,7 +650,7 @@ edu.common.de.DatePicker = function(id, field) {
     if (format && format.indexOf('HH:mm') != -1) {
       dateFmt = dateFormat.concat(" HH:mm");
       this.timeEl = $("<input/>")
-        .prop({id: 'time', type: 'text', title: field.toolTip})
+        .prop({id: 'time', type: 'text'})
         .addClass("form-control");
 
       dateField.css("width","59%");
@@ -662,6 +662,7 @@ edu.common.de.DatePicker = function(id, field) {
       this.inputEl.append(timeField);
     }
 
+    this.inputEl.prop({title: field.toolTip});
     this.validator = new edu.common.de.FieldValidator(field.validationRules, this, this.dateEl);
 
     if (format && format.length != 0) {
@@ -831,6 +832,7 @@ edu.common.de.SelectField = function(id, field) {
 
   this.postRender = function() {
     this.inputEl.select2({allowClear: true});
+    this.inputEl.siblings('div.select2-container').prop({title: field.toolTip});
   };
 
   this.getName = function() {
@@ -1492,14 +1494,14 @@ edu.common.de.Utility = {
 
   highlightError: function(el, tooltip) {
     if (el.is('select')) {
-      el.next().attr('title', tooltip);
+      el.siblings('div.select2-container').attr('title', tooltip);
     }
     el.addClass('de-input-error').attr('title', tooltip);
   },
 
   unHighlightError: function(el, tooltip) {
     if (el.is('select')) {
-      el.next().attr('title', tooltip);
+      el.siblings('div.select2-container').attr('title', tooltip);
     }
     el.removeClass('de-input-error').attr('title', tooltip);
   },
